@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/03/13  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2006/09/19  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -494,6 +495,7 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
   private QS001FollowTimeComboDocumentListener endTimeFollowListener;
   private CareServiceCodeCalcurater calcurater;
   private boolean serviceModify = false;
+  private boolean serviceListLockFlag = false;
   private Dimension servicePreferredSize;
   //getter/setter
 
@@ -741,14 +743,14 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
    * monthlyPanelを返します。
    * @return monthlyPanel
    */
-  protected QS001002 getMonthlyPanel(){
+  public QS001002 getMonthlyPanel(){
     return monthlyPanel;
   }
   /**
    * monthlyPanelを設定します。
    * @param monthlyPanel monthlyPanel
    */
-  protected void setMonthlyPanel(QS001002 monthlyPanel){
+  public void setMonthlyPanel(QS001002 monthlyPanel){
     this.monthlyPanel = monthlyPanel;
   }
 
@@ -870,6 +872,21 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
    */
   protected void setServiceModify(boolean serviceModify){
     this.serviceModify = serviceModify;
+  }
+
+  /**
+   * serviceListLockFlagを返します。
+   * @return serviceListLockFlag
+   */
+  protected boolean getServiceListLockFlag(){
+    return serviceListLockFlag;
+  }
+  /**
+   * serviceListLockFlagを設定します。
+   * @param serviceListLockFlag serviceListLockFlag
+   */
+  protected void setServiceListLockFlag(boolean serviceListLockFlag){
+    this.serviceListLockFlag = serviceListLockFlag;
   }
 
   /**

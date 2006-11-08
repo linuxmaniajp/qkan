@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司 和善
- * 作成日: 2006/03/06  日本コンピューター株式会社 上司 和善 新規作成
+ * 作成日: 2006/05/10  日本コンピューター株式会社 上司 和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 利用者登録イベント定義(QU002) 
@@ -737,6 +738,7 @@ public abstract class QU002Event extends QU002SQL {
   public static final Date MIN_DATE = ACCastUtilities.toDate("0001/01/01", null);
   public static final String AFFAIR_ID = "QU002";
   public static final int INDEX_OF_PROVIDER_SHIEN = 1;
+  public static final int INDEX_OF_PROVIDER_YOBOU_SHIEN = 3;
   public static final int INSURE_RATE_SEIHO = 0;
   public static final int CHECK_MODE_INSERT = 1;
   public static final int CHECK_MODE_UPDATE = 2;
@@ -770,7 +772,9 @@ public abstract class QU002Event extends QU002SQL {
   public static final int IDOU_OTHER_IRYO_KANGO = 5;
   public static final int IDOU_OTHER_SHISETSU3 = 5;
   public static final int SERVICE_TYPE_SHIEN = 14311;
+  public static final int SERVICE_TYPE_YOBOU_SHIEN = 14611;
   public static final int SERVICE_TYPE_SHOKIBO = 17311;
+  public static final int SERVICE_TYPE_YOBOU_SHOKIBO = 17511;
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
   public static final int YOUKAIGODO_HIGAITOU = 1;
@@ -781,6 +785,8 @@ public abstract class QU002Event extends QU002SQL {
   private VRList kaigoHistoryList = new VRArrayList();
   private VRList idouHistoryList = new VRArrayList();
   private VRList shisetsuHistoryList = new VRArrayList();
+  private VRList providerListKaigoShien = new VRArrayList();
+  private VRList providerListYobouShien = new VRArrayList();
   private ACTableModelAdapter kaigoTableModel;
   private ACTableModelAdapter idouTableModel;
   private ACSnapshot snapShotKaigo = new ACSnapshot();
@@ -1055,6 +1061,36 @@ public abstract class QU002Event extends QU002SQL {
    */
   protected void setShisetsuHistoryList(VRList shisetsuHistoryList){
     this.shisetsuHistoryList = shisetsuHistoryList;
+  }
+
+  /**
+   * providerListKaigoShienを返します。
+   * @return providerListKaigoShien
+   */
+  protected VRList getProviderListKaigoShien(){
+    return providerListKaigoShien;
+  }
+  /**
+   * providerListKaigoShienを設定します。
+   * @param providerListKaigoShien providerListKaigoShien
+   */
+  protected void setProviderListKaigoShien(VRList providerListKaigoShien){
+    this.providerListKaigoShien = providerListKaigoShien;
+  }
+
+  /**
+   * providerListYobouShienを返します。
+   * @return providerListYobouShien
+   */
+  protected VRList getProviderListYobouShien(){
+    return providerListYobouShien;
+  }
+  /**
+   * providerListYobouShienを設定します。
+   * @param providerListYobouShien providerListYobouShien
+   */
+  protected void setProviderListYobouShien(VRList providerListYobouShien){
+    this.providerListYobouShien = providerListYobouShien;
   }
 
   /**

@@ -566,7 +566,7 @@ public class QO012 extends QO012Event {
 		// 43
 		// UNIT_TOTAL
 
-		String[] csvDataTableSchema = new String[28];
+		String[] csvDataTableSchema = new String[45];
 		csvDataTableSchema[0] = "YEAR_AND_MONTH";
 		csvDataTableSchema[1] = "INSURED_ID";
 		csvDataTableSchema[2] = "NAME";
@@ -594,7 +594,24 @@ public class QO012 extends QO012Event {
 		csvDataTableSchema[24] = "72";
 		csvDataTableSchema[25] = "73";
 		csvDataTableSchema[26] = "43";
-		csvDataTableSchema[27] = "UNIT_TOTAL";
+		csvDataTableSchema[27] = "61";
+		csvDataTableSchema[28] = "62";
+		csvDataTableSchema[29] = "63";
+		csvDataTableSchema[30] = "64";
+		csvDataTableSchema[31] = "65";
+		csvDataTableSchema[32] = "66";
+		csvDataTableSchema[33] = "67";
+		csvDataTableSchema[34] = "24";
+		csvDataTableSchema[35] = "25";
+		csvDataTableSchema[36] = "26";
+		csvDataTableSchema[37] = "34";
+		csvDataTableSchema[38] = "35";
+		csvDataTableSchema[39] = "46";
+		csvDataTableSchema[40] = "74";
+		csvDataTableSchema[41] = "75";
+		csvDataTableSchema[42] = "37";
+		csvDataTableSchema[43] = "39";
+		csvDataTableSchema[44] = "UNIT_TOTAL";
 
 		// 格納
 		ACTableModelAdapter csvDataTableModel = new ACTableModelAdapter();
@@ -703,12 +720,27 @@ public class QO012 extends QO012Event {
 				// 年月別保険請求額合計を取得
 				totalMap.setData("TOTAL6", ACCastUtilities.toInteger(claimAmount));
 
+				// 給付管理票を読み込んだ後の場合は非表示になっているので表示に
+				getTotalInfoTableColumn3().setVisible(true);
+				getTotalInfoTableColumn4().setVisible(true);
+				getTotalInfoTableColumn5().setVisible(true);
+				getTotalInfoTableColumn6().setVisible(true);
+				// 文字列調整
+				getTotalInfoTableColumn2().setColumns(10);
+				
 			} else {
 				// 給付管理表の場合
 				totalMap.setData("TOTAL1", claimYearAndMonth.getData("YEAR_AND_MONTH"));
 				// 件数を取得
 				totalMap.setData("TOTAL2", ACCastUtilities.toInteger(annualTotalList.size()));
+				
+				// 表示しない部分を非表示に
+				getTotalInfoTableColumn3().setVisible(false);
+				getTotalInfoTableColumn4().setVisible(false);
+				getTotalInfoTableColumn5().setVisible(false);
+				getTotalInfoTableColumn6().setVisible(false);
 			}
+			
 			// 集計情報テーブルリストに加える
 			getTotalInfoTableList().add(totalMap);
 
@@ -741,7 +773,7 @@ public class QO012 extends QO012Event {
 				getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_812);
 				break;
 			case 821:
-				// データ種別が812の場合
+				// データ種別が821の場合
 				// headerMapに文字列"介護給付費請求明細書（居宅サービス計画費）情報" BINDPATH FILE_TYPEで格納する
 				// そのまま継続する
 				getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_821);
@@ -1141,12 +1173,22 @@ public class QO012 extends QO012Event {
 		}
 
 		// 被保険者番号とoutputTableMapのINSURED_IDが一致するなら
-		// 43(プラン)をBIND_PATHとしてフラグ1を格納する。
-		// そのうちフォーマッタ化する
-		returnDataMap.setData("43", MATRIX_ON);
-		// 集計カウント用フラグを格納する
-		returnDataMap.setData("PLAN_FLAG", ON);
-
+		
+		// 交換識別番号を調べて
+		if (getInputCSVFile().getValueAtString(rowIndex, COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE).equals("8122")) {
+			// 介護の場合
+			// 43(プラン)をBIND_PATHとしてフラグ1を格納する。
+			returnDataMap.setData("43", MATRIX_ON);
+			// 集計カウント用フラグを格納する
+			returnDataMap.setData("PLAN_FLAG", ON);		
+		} else if(getInputCSVFile().getValueAtString(rowIndex, COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE).equals("8123")) {
+			// 予防の場合
+			// 46(プラン)をBIND_PATHとしてフラグ1を格納する。
+			returnDataMap.setData("46", MATRIX_ON);
+			// 集計カウント用フラグを格納する
+			returnDataMap.setData("PLAN_FLAG", ON);
+		}
+		
 		// 単位数を取得する
 		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_17_UNIT_TOTAL))) {
 			returnDataMap.setData("UNIT_TOTAL", ACCastUtilities.toInteger(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_17_UNIT_TOTAL)));

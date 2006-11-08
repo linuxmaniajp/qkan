@@ -67,27 +67,33 @@ public class QkanInsureTypeDivision extends Format {
         String[] spStr = code.split("-");        
         //解析結果をチェックする。
         if(spStr.length > 0){
-
-            String strInsurerd = String.valueOf(spStr[0]);
-            //被保険者番号が生保単独である場合
-            if("H".equals(strInsurerd.substring(0,1))){
-                toAppendTo.append("生保単独");
-            }else{
-                toAppendTo.append("介護");
-            }
             
+            String strInsurerd = String.valueOf(spStr[0]);
+            if(!"".equals(strInsurerd)){
+                //被保険者番号が生保単独である場合
+                if("H".equals(strInsurerd.substring(0,1))){
+                    toAppendTo.append("生保単独");
+                }else{
+                    toAppendTo.append("介護");
+                }
+            }
             //文字列の長さをチェックする。
-            if(spStr.length <= 2){
-                String strStyle = String.valueOf(spStr[1]);
-                if("20101".equals(strStyle)){
+            if(code != null){
+                String strStyle = "";
+                // 医療で被保険者番号が取得できなかった場合
+                if(code.indexOf("-")>=0){
+                    int i = code.indexOf("-");
+                    // ハイフンを除いたデータを作成
+                    strStyle = code.substring(i+1,code.length());
+                }
+                if(strStyle.endsWith("20101")){
                     toAppendTo = new StringBuffer();
                     toAppendTo.append("社保");
-                }else if("20102".equals(strStyle)){
+                }else if(strStyle.endsWith("20102")){
                     toAppendTo = new StringBuffer();
                     toAppendTo.append("国保");
                 }
             }
-            
         }
         
         

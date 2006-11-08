@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/04/17  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/09/06  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -121,6 +121,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel comment1;
 
+  private ACLabel dbSettingComments;
+
   private ACGroupBox pdfFileSelects;
 
   private ACTextField pdfFileSelectFileName;
@@ -152,6 +154,14 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACGroupBox others;
 
   private ACIntegerCheckBox oncePerMonth;
+
+  private ACLabelContainer taxContainer;
+
+  private ACTextField tax;
+
+  private ACLabel taxUnit;
+
+  private ACButton taxChange;
 
   private ACGroupBox backupResotres;
 
@@ -483,7 +493,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       comment1 = new ACLabel();
 
-      comment1.setText("データベースの場所の設定にあたっては、以下の点に留意ください。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、接続先のコンピューターにFirebirdをインストールする必要があります。" + ACConstants.LINE_SEPARATOR + "　※NAS/SAN等の外部ストレージは利用できません。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、他のコンピューターでのデータベースのファイルパスを手入力してください。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、データの退避と復元を実行する事はできません。" + ACConstants.LINE_SEPARATOR + "　※他のコンピューター上で給管鳥を起動し、データの退避と復元を実行してください。" + ACConstants.LINE_SEPARATOR + "・データベースの場所に日本語を含める事はできません。使用するデータベースは、日本語を含まない場所に移動してください。" + ACConstants.LINE_SEPARATOR + "　例 ○： C:\\qkan4.5\\Data\\QKAN.FDB" + ACConstants.LINE_SEPARATOR + "　例 ×： C:\\給管鳥\\Data\\QKAN.FDB");
+      comment1.setText("データベースの場所の設定にあたっては、以下の点に留意ください。");
 
       comment1.setForeground(Color.blue);
 
@@ -492,6 +502,27 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       addComment1();
     }
     return comment1;
+
+  }
+
+  /**
+   * DB設定コメントを取得します。
+   * @return DB設定コメント
+   */
+  public ACLabel getDbSettingComments(){
+    if(dbSettingComments==null){
+
+      dbSettingComments = new ACLabel();
+
+      dbSettingComments.setText("・他のコンピューターを選択した場合は、接続先のコンピューターにFirebirdをインストールする必要があります。" + ACConstants.LINE_SEPARATOR + "　※NAS/SAN等の外部ストレージは利用できません。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、他のコンピューターでのデータベースのファイルパスを手入力してください。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、データの退避と復元を実行する事はできません。" + ACConstants.LINE_SEPARATOR + "　※他のコンピューター上で給管鳥を起動し、データの退避と復元を実行してください。" + ACConstants.LINE_SEPARATOR + "・データベースの場所に日本語を含める事はできません。使用するデータベースは、日本語を含まない場所に移動してください。" + ACConstants.LINE_SEPARATOR + "　例 ○： C:\\qkan4.5\\Data\\QKAN.FDB" + ACConstants.LINE_SEPARATOR + "　例 ×： C:\\給管鳥\\Data\\QKAN.FDB");
+
+      dbSettingComments.setForeground(Color.blue);
+
+      dbSettingComments.setAutoWrap(true);
+
+      addDbSettingComments();
+    }
+    return dbSettingComments;
 
   }
 
@@ -689,7 +720,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       printHomeMedicalAdvice = new ACIntegerCheckBox();
 
-      printHomeMedicalAdvice.setText("31居宅療養管理指導");
+      printHomeMedicalAdvice.setText("31,34居宅療養管理指導");
 
       printHomeMedicalAdvice.setBindPath("PRINT_HOME_MEDICAL_ADVICE");
 
@@ -700,15 +731,15 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 32認知症対応型・33特定施設入所者を取得します。
-   * @return 32認知症対応型・33特定施設入所者
+   * 32,37認知症対応型・33,35,36特定施設入居者を取得します。
+   * @return 32,37認知症対応型・33,35,36特定施設入居者
    */
   public ACIntegerCheckBox getNinchishoTokuteiShisetsu(){
     if(ninchishoTokuteiShisetsu==null){
 
       ninchishoTokuteiShisetsu = new ACIntegerCheckBox();
 
-      ninchishoTokuteiShisetsu.setText("32認知症対応型・33特定施設入所者");
+      ninchishoTokuteiShisetsu.setText("32,37認知症対応型・33,35,36特定施設入居者");
 
       ninchishoTokuteiShisetsu.setBindPath("NINCHISHO_TOKUTEI_SHISETSU");
 
@@ -727,7 +758,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       shisetsuService = new ACIntegerCheckBox();
 
-      shisetsuService.setText("51,52,53施設サービス");
+      shisetsuService.setText("51,52,53,54施設サービス");
 
       shisetsuService.setBindPath("SHISETSU_SERVICE");
 
@@ -782,13 +813,91 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       oncePerMonth = new ACIntegerCheckBox();
 
-      oncePerMonth.setText("<html>緊急時訪問看護加算・特定管理加算を<br>月1回算定に設定する</html>");
+      oncePerMonth.setText("<html>緊急時訪問看護加算・特別管理加算を<br>月1回算定に設定する</html>");
 
       oncePerMonth.setBindPath("ONCE_PER_MONTH");
 
       addOncePerMonth();
     }
     return oncePerMonth;
+
+  }
+
+  /**
+   * 税率コンテナを取得します。
+   * @return 税率コンテナ
+   */
+  public ACLabelContainer getTaxContainer(){
+    if(taxContainer==null){
+
+      taxContainer = new ACLabelContainer();
+
+      taxContainer.setText("消費税率");
+
+      addTaxContainer();
+    }
+    return taxContainer;
+
+  }
+
+  /**
+   * 税率を取得します。
+   * @return 税率
+   */
+  public ACTextField getTax(){
+    if(tax==null){
+
+      tax = new ACTextField();
+
+      tax.setEditable(false);
+
+      tax.setColumns(3);
+
+      tax.setCharType(VRCharType.ONLY_FLOAT);
+
+      tax.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      tax.setIMEMode(InputSubset.LATIN);
+
+      tax.setMaxLength(3);
+
+      addTax();
+    }
+    return tax;
+
+  }
+
+  /**
+   * 税率単位を取得します。
+   * @return 税率単位
+   */
+  public ACLabel getTaxUnit(){
+    if(taxUnit==null){
+
+      taxUnit = new ACLabel();
+
+      taxUnit.setText("%");
+
+      addTaxUnit();
+    }
+    return taxUnit;
+
+  }
+
+  /**
+   * 税率編集を取得します。
+   * @return 税率編集
+   */
+  public ACButton getTaxChange(){
+    if(taxChange==null){
+
+      taxChange = new ACButton();
+
+      taxChange.setText("編集");
+
+      addTaxChange();
+    }
+    return taxChange;
 
   }
 
@@ -943,9 +1052,11 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   protected void addServerSelectRadiosModel(){
 
     getServerSelectRadioItem1().setButtonIndex(1);
+
     getServerSelectRadiosModel().add(getServerSelectRadioItem1());
 
     getServerSelectRadioItem2().setButtonIndex(2);
+
     getServerSelectRadiosModel().add(getServerSelectRadioItem2());
 
   }
@@ -1003,12 +1114,21 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     dbComment.add(getComment1(), VRLayout.NORTH);
 
+    dbComment.add(getDbSettingComments(), VRLayout.NORTH);
+
   }
 
   /**
    * コメント1に内部項目を追加します。
    */
   protected void addComment1(){
+
+  }
+
+  /**
+   * DB設定コメントに内部項目を追加します。
+   */
+  protected void addDbSettingComments(){
 
   }
 
@@ -1107,7 +1227,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 32認知症対応型・33特定施設入所者に内部項目を追加します。
+   * 32,37認知症対応型・33,35,36特定施設入居者に内部項目を追加します。
    */
   protected void addNinchishoTokuteiShisetsu(){
 
@@ -1134,12 +1254,48 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     others.add(getOncePerMonth(), VRLayout.FLOW_RETURN);
 
+    others.add(getTaxContainer(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
    * 緊急時訪問看護加算・特別管理加算を月1回算定に設定するに内部項目を追加します。
    */
   protected void addOncePerMonth(){
+
+  }
+
+  /**
+   * 税率コンテナに内部項目を追加します。
+   */
+  protected void addTaxContainer(){
+
+    taxContainer.add(getTax(), VRLayout.FLOW);
+
+    taxContainer.add(getTaxUnit(), VRLayout.FLOW);
+
+    taxContainer.add(getTaxChange(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 税率に内部項目を追加します。
+   */
+  protected void addTax(){
+
+  }
+
+  /**
+   * 税率単位に内部項目を追加します。
+   */
+  protected void addTaxUnit(){
+
+  }
+
+  /**
+   * 税率編集に内部項目を追加します。
+   */
+  protected void addTaxChange(){
 
   }
 
@@ -1190,7 +1346,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO005Design.class.getName()));
     } catch (Exception e) {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/07  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/06/05  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 週間表画面項目デザイン(QS001002) 
@@ -118,6 +118,10 @@ public class QS001002Design extends ACPanel {
   private ACButton coordinatePrivateExpenses;
 
   private ACButton detailsbutton;
+
+  private ACPanel addInfomations;
+
+  private ACButton planUnit;
 
   private ACPanel monthlyCharts;
 
@@ -302,6 +306,8 @@ public class QS001002Design extends ACPanel {
 
       calcurate.setText("再集計");
 
+      calcurate.setToolTipText("サービス単位数を再集計します。");
+
       addCalcurate();
     }
     return calcurate;
@@ -405,11 +411,12 @@ public class QS001002Design extends ACPanel {
     if(coordinatePrivateExpenses==null){
 
       coordinatePrivateExpenses = new ACButton();
-      
+
       coordinatePrivateExpenses.setText("自己負担調整");
 
-
       coordinatePrivateExpenses.setEnabled(false);
+
+      coordinatePrivateExpenses.setToolTipText("利用者の自己負担分を調整します。");
 
       addCoordinatePrivateExpenses();
     }
@@ -428,9 +435,45 @@ public class QS001002Design extends ACPanel {
 
       detailsbutton.setText("集計明細");
 
+      detailsbutton.setToolTipText("サービスごとの集計情報を表示します。");
+
       addDetailsbutton();
     }
     return detailsbutton;
+
+  }
+
+  /**
+   * 追加情報領域を取得します。
+   * @return 追加情報領域
+   */
+  public ACPanel getAddInfomations(){
+    if(addInfomations==null){
+
+      addInfomations = new ACPanel();
+
+      addAddInfomations();
+    }
+    return addInfomations;
+
+  }
+
+  /**
+   * 計画単位数を取得します。
+   * @return 計画単位数
+   */
+  public ACButton getPlanUnit(){
+    if(planUnit==null){
+
+      planUnit = new ACButton();
+
+      planUnit.setText("計画単位数");
+
+      planUnit.setToolTipText("計画単位数を編集します。");
+
+      addPlanUnit();
+    }
+    return planUnit;
 
   }
 
@@ -517,6 +560,7 @@ public class QS001002Design extends ACPanel {
 
     uppers.add(getButtons(), VRLayout.CLIENT);
 
+    uppers.add(getAddInfomations(), VRLayout.SOUTH);
   }
 
   /**
@@ -602,6 +646,22 @@ public class QS001002Design extends ACPanel {
    * 集計明細画面に内部項目を追加します。
    */
   protected void addDetailsbutton(){
+
+  }
+
+  /**
+   * 追加情報領域に内部項目を追加します。
+   */
+  protected void addAddInfomations(){
+
+    addInfomations.add(getPlanUnit(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 計画単位数に内部項目を追加します。
+   */
+  protected void addPlanUnit(){
 
   }
 

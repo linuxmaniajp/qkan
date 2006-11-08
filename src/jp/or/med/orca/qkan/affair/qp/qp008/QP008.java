@@ -186,6 +186,15 @@ public class QP008 extends QP008Event {
                 // 画面状態を変更する。
                 // 画面に「出力は正常に終了しました。ファイル名：（出力したファイルパス）」を表示する。
                 
+                // 2006/08/28 add begin kamitsukasa
+                // 訪問看護療養費領収書対応
+                if(outFilePath == null){
+                    QkanMessageList.getInstance().QP001_ERROR_OF_CSV_OUTPUT();
+                    dispose();
+                    return;
+                }
+                // 2006/08/28 add end kamitsukasa
+                
                 getComment().setText("　　出力は正常に終了しました。\n　　ファイル名：" + outFilePath);
                 setState_INFO();
                 //outPut に trueを設定する。

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2006/02/17  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2006/06/02  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 
 /**
  * 利用者向け請求詳細編集SQL定義(QP003) 
@@ -440,18 +440,6 @@ public class QP003SQL extends QP003State {
     sb.append(")");
 
     sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" CLAIM_PATIENT_DETAIL.CLAIM_ID");
-
-    sb.append(" =");
-
-    sb.append(" CLAIM.CLAIM_ID");
-
-    sb.append(")");
-
-    sb.append("AND");
 
     sb.append("(");
 
@@ -922,6 +910,328 @@ public class QP003SQL extends QP003State {
     sb.append(" =");
 
     sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「登録パッシブチェック用」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_NEW_CLAIM_PATIENT_DETAIL(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" CLAIM.CLAIM_ID");
+
+    sb.append(" FROM");
+
+    sb.append(" CLAIM");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.TARGET_DATE");
+
+    sb.append(" =");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CLAIM_DATE");
+
+    sb.append(" =");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("CLAIM_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PROVIDER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CLAIM_STYLE_TYPE");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_STYLE_TYPE", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CATEGORY_NO");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CATEGORY_NO", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「直近の利用者向け請求書情報取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_LAST_CLAIM_NO(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(" FROM");
+
+    sb.append(" CLAIM");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PROVIDER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CLAIM_STYLE_TYPE");
+
+    sb.append(" =");
+
+    sb.append(" 30101");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CATEGORY_NO");
+
+    sb.append(" =");
+
+    sb.append(" 16");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.TARGET_DATE");
+
+    sb.append(" =");
+
+    sb.append(" (");
+
+    sb.append("SELECT");
+
+    sb.append(" MAX(CLAIM.TARGET_DATE)");
+
+    sb.append(" FROM");
+
+    sb.append(" CLAIM");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PROVIDER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CLAIM_STYLE_TYPE");
+
+    sb.append(" =");
+
+    sb.append(" 30101");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CATEGORY_NO");
+
+    sb.append(" =");
+
+    sb.append(" 16");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.TARGET_DATE");
+
+    sb.append(" <");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append(")");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「直近の利用者向け請求書情報取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_LAST_CLAIM_PATIENT(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(",SELF_SERVICE_NO1");
+
+    sb.append(",SELF_PAY_NO1");
+
+    sb.append(",SELF_SERVICE_NO2");
+
+    sb.append(",SELF_PAY_NO2");
+
+    sb.append(",SELF_SERVICE_NO3");
+
+    sb.append(",SELF_PAY_NO3");
+
+    sb.append(",OTHER_HIMOKU_NO1");
+
+    sb.append(",OTHER_PAY_NO1");
+
+    sb.append(",OTHER_HIMOKU_NO2");
+
+    sb.append(",OTHER_PAY_NO2");
+
+    sb.append(",OTHER_HIMOKU_NO3");
+
+    sb.append(",OTHER_PAY_NO3");
+
+    sb.append(",OTHER_HIMOKU_NO4");
+
+    sb.append(",OTHER_PAY_NO4");
+
+    sb.append(",OTHER_HIMOKU_NO5");
+
+    sb.append(",OTHER_PAY_NO5");
+
+    sb.append(",KOJO_TARGET");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(" FROM");
+
+    sb.append(" CLAIM_PATIENT_DETAIL");
 
     sb.append(" WHERE");
 

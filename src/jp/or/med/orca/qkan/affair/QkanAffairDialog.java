@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.core.ACAffairDialog;
+import jp.nichicom.ac.core.ACDBManagerCreatable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.io.ACPropertyXML;
@@ -15,7 +16,7 @@ import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACLoggerDBManager;
 import jp.nichicom.ac.sql.ACPassiveCheck;
 import jp.nichicom.ac.util.ACSnapshot;
-import jp.nichicom.ac.util.ACSplashable;
+import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRMap;
@@ -95,24 +96,28 @@ public class QkanAffairDialog extends ACAffairDialog {
      */
     protected ACDBManager getDBManager() throws Exception {
         if (dbm == null) {
-            // システム設定ファイルからDBの設定を取得
-            ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
-            if (xml == null) {
-                throw new FileNotFoundException("システム設定ファイルを開けません。");
-            }
-            String server = xml.getValueAt("DBConfig/Server");
-            int port = Integer.parseInt(xml.getValueAt("DBConfig/Port"));
-            String userName = xml.getValueAt("DBConfig/UserName");
-            String pass = xml.getValueAt("DBConfig/Password");
-            String path = xml.getValueAt("DBConfig/Path");
-            int loginTimeout = Integer.parseInt(xml
-                    .getValueAt("DBConfig/LoginTimeOut"));
-            int maxPoolSize = Integer.parseInt(xml
-                    .getValueAt("DBConfig/MaxPoolSize"));
+            //2006/10/04 replace-begin Tozo TANAKA システムプロセッサにDB生成処理を委譲
+//            // システム設定ファイルからDBの設定を取得
+//            ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
+//            if (xml == null) {
+//                throw new FileNotFoundException("システム設定ファイルを開けません。");
+//            }
+//            String server = xml.getValueAt("DBConfig/Server");
+//            int port = Integer.parseInt(xml.getValueAt("DBConfig/Port"));
+//            String userName = xml.getValueAt("DBConfig/UserName");
+//            String pass = xml.getValueAt("DBConfig/Password");
+//            String path = xml.getValueAt("DBConfig/Path");
+//            int loginTimeout = Integer.parseInt(xml
+//                    .getValueAt("DBConfig/LoginTimeOut"));
+//            int maxPoolSize = Integer.parseInt(xml
+//                    .getValueAt("DBConfig/MaxPoolSize"));
+//
+//            String charSet = xml.getValueAt("DBConfig/CharSet");
+//            dbm = new ACLoggerDBManager(new BridgeFirebirdDBManager(server, port, userName, pass,
+//                    path, loginTimeout, maxPoolSize, charSet));
 
-            String charSet = xml.getValueAt("DBConfig/CharSet");
-            dbm = new ACLoggerDBManager(new BridgeFirebirdDBManager(server, port, userName, pass,
-                    path, loginTimeout, maxPoolSize, charSet));
+            dbm = ((ACDBManagerCreatable)ACFrame.getInstance().getFrameEventProcesser()).createDBManager();
+            //2006/10/04 replace-end Tozo TANAKA システムプロセッサにDB生成処理を委譲
         }
         return dbm;
     }

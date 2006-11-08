@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/09  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/08/22  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 設定変更・メンテナンスイベント定義(QO005) 
@@ -190,6 +191,22 @@ public abstract class QO005Event extends QO005State {
             }
         }
     });
+    getTaxChange().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                taxChangeActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -235,6 +252,13 @@ public abstract class QO005Event extends QO005State {
    * @throws Exception 処理例外
    */
   protected abstract void pdfFileSelectFileCompareButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「消費税率設定」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void taxChangeActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
@@ -356,12 +380,12 @@ public abstract class QO005Event extends QO005State {
    */
   public abstract boolean checkDBConnect(VRMap params) throws Exception;
 
-	/**
-	 * デフォルトのファイル名を取得します。
-	 * 
-	 * @param fileExtension
-	 *            拡張子
-	 * @return ファイル名
-	 */
-	public abstract String getDefaultFileName(String fileExtension) throws Exception;
+  /**
+   * 「消費税率の取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkTax() throws Exception;
+
 }

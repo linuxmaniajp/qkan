@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/03/03  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/06/06  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 公費・減免情報状態定義(QU004) 
  */
@@ -197,6 +197,54 @@ public class QU004State extends QU004Design {
         getShahukuInfoButtonConpile().setEnabled(true);
 
         getShahukuInfoButtonDelete().setEnabled(true);
+
+  }
+
+  /**
+   * 「介護その他公費OFF」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_KAIGO_OTHER_OFF() throws Exception {
+
+        getKaigoInfoKohiNo().setEditable(false);
+
+        getKaigoInfoServices().setVisible(false);
+
+  }
+
+  /**
+   * 「介護その他公費ON」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_KAIGO_OTHER_ON() throws Exception {
+
+        getKaigoInfoKohiNo().setEditable(true);
+
+        getKaigoInfoServices().setVisible(true);
+
+  }
+
+  /**
+   * 「医療その他公費OFF」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_IRYO_OTHER_OFF() throws Exception {
+
+        getIryoInfoKohiNo().setEditable(false);
+
+        getIryoInfoServices().setVisible(false);
+
+  }
+
+  /**
+   * 「医療その他公費ON」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_IRYO_OTHER_ON() throws Exception {
+
+        getIryoInfoKohiNo().setEditable(true);
+
+        getIryoInfoServices().setVisible(true);
 
   }
 

@@ -10,7 +10,8 @@ public class QkanStarter {
                     ACClassLoader.toURL(new String[] {
                             "lib/firebirdsql-full.jar", "lib/iText.jar",
                             "lib/iTextAsian.jar", "lib/vr-impl.jar",
-                            "lib/bridge.jar","lib/ac-lib-impl.jar" }), new String[] { "jp" });
+                            "lib/bridge.jar","lib/ac-lib-impl.jar" }), new String[] { "jp" },
+                            args);
         } catch (Throwable ex) {
             ex.printStackTrace();
         }

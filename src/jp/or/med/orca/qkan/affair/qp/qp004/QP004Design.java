@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/04/11  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2006/05/12  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -352,9 +352,9 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
       patientName.setEditable(false);
 
-      patientName.setColumns(12);
+      patientName.setColumns(35);
 
-      patientName.setMaxLength(28);
+      patientName.setMaxLength(34);
 
       addPatientName();
     }
@@ -1361,7 +1361,7 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
       shinryoDeseaseText.setBindPath("501008");
 
       shinryoDeseaseText.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);// V4.5.8対応
-      
+
       shinryoDeseaseText.setIMEMode(InputSubset.KANJI);
 
       shinryoDeseaseText.setMaxLength(50);// V4.5.8対応
@@ -2146,7 +2146,6 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QP004Design.class.getName()));
     } catch (Exception e) {

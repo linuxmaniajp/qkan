@@ -613,6 +613,9 @@ public class QO005 extends QO005Event {
 			fileCpy(restorePath, getProperty("DBConfig/Path"));
 
 			// 正常終了した場合
+            //税率を再設定する。
+            checkTax();
+            
 			// 正常終了通知メッセージを表示する。 ID = QO005_RESTORE_SUCCESSED
 			QkanMessageList.getInstance().QO005_RESTORE_SUCCESSED();
 
@@ -722,6 +725,8 @@ public class QO005 extends QO005Event {
 		// 画面の「IP(serverSelectIpText)」の状態を設定する。
 		setServerSelectIpTextState();
 
+//      税率を再設定する。
+        checkTax();
 	}
 
 	/**
@@ -842,6 +847,8 @@ public class QO005 extends QO005Event {
 		getContents().applySource();
 		// 設定ファイルに情報を書き込む。
 		if (saveSettingFile(settings)) {
+            //税率を再設定する。
+            checkTax();
 			return true;
 		}
 		return false;
@@ -1127,5 +1134,49 @@ public class QO005 extends QO005Event {
 		today = vrdf.format(cal.getTime());
 		return "qk" + today + "." + fileExtension;
 	}
+
+      /**
+       * 「消費税率設定」イベントです。
+       * @param e イベント情報
+       * @throws Exception 処理例外
+       */
+    protected void taxChangeActionPerformed(ActionEvent e) throws Exception {
+//        ※消費税率の設定
+        if(ACTextUtilities.isNullText(getTax())){
+//        消費税率(tax)が空欄の場合                                                 
+//            データベースの設定が完了していない旨のメッセージを表示する。※メッセージID = QO005_ERROR_OF_DB_FAILED
+            QkanMessageList.getInstance().QO005_ERROR_OF_DB_FAILED();
+//            処理を中断する。
+            return;
+        }
+//        消費税率編集画面を生成し、現在の消費税率(tax)の値を引数に表示する。
+        double oldVal = ACCastUtilities.toDouble(getTax().getText(),0);
+        double newVal = new QO005001().showModal(oldVal);
+        if(oldVal!=newVal){
+//            表示結果として返却された消費税率が、現在の消費税率(tax)の値と異なる場合                                              
+//                返却された消費税率でマスタを更新する。       
+            QkanCommon.setTax(getDBManager(), newVal);
+//                消費税率(tax)に返却された消費税率を設定する。
+            getTax().setText(ACCastUtilities.toString(newVal));
+        }
+    }
+
+    /**
+     * 「消費税率の取得」に関する処理を行ないます。
+     *
+     * @throws Exception 処理例外
+     *
+     */
+    public void checkTax() throws Exception {
+//        消費税率が取得可能か検査する。
+        double val = QkanCommon.getTax(getDBManager());
+        if(val>=0){
+//          消費税率を取得できた場合は消費税率(tax)にその値を設定する。        
+            getTax().setText(ACCastUtilities.toString(val));
+        }else{
+//        消費税率を取得できなかった場合は消費税率(tax)を空欄とする。        
+            getTax().setText("");
+        }
+    }
 
 }

@@ -74,7 +74,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 
 /**
  * 老人訪問看護・訪問看護の情報提供書イベント定義(QC00301) 

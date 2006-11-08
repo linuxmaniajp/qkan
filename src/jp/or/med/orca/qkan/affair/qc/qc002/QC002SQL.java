@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 報告書情報入力
- * 作成日: 2006/03/31  日本コンピューター株式会社 報告書情報入力 新規作成
+ * 作成日: 2006/05/17  日本コンピューター株式会社 報告書情報入力 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -746,7 +747,7 @@ public class QC002SQL extends QC002State {
 
     sb.append(" WHEN");
 
-    sb.append(" 1 THEN 2 ELSE 5 END AS VISIT_VALUE");
+    sb.append(" 1 THEN 2 WHEN 2THEN 5 ELSE 6 END AS VISIT_VALUE");
 
     sb.append(",COUNT(SERVICE_DATE)");
 
@@ -798,7 +799,7 @@ public class QC002SQL extends QC002State {
 
     sb.append(" IN");
 
-    sb.append(" (11311,20101)");
+    sb.append(" (11311,20101,16311)");
 
     sb.append(")");
 
@@ -924,7 +925,7 @@ public class QC002SQL extends QC002State {
 
     sb.append(" IN");
 
-    sb.append(" (11311,20101)");
+    sb.append(" (11311,20101,16311)");
 
     sb.append(")");
 

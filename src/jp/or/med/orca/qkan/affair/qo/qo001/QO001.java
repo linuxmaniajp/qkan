@@ -138,6 +138,8 @@ public class QO001 extends QO001Event {
             getInsurerInfoTable().setSelectedSortedFirstRow();
 
         }
+        //選択利用者にスクロールする
+        getInsurerInfoTable().scrollSelectedToVisible();
         params.clear();
     }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/04/12  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/05/01  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -1492,6 +1492,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       medicalInstitusion.setMaxLength(60);
 
+      medicalInstitusion.setMaxColumns(45);
+
       medicalInstitusion.setModel(getMedicalInstitusionModel());
 
       addMedicalInstitusion();
@@ -2520,6 +2522,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       senmonin.setMaxLength(32);
 
+      senmonin.setMaxColumns(15);
+
       senmonin.setModel(getSenmoninModel());
 
       addSenmonin();
@@ -2574,6 +2578,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
       providerName.setIMEMode(InputSubset.KANJI);
 
       providerName.setMaxLength(60);
+
+      providerName.setMaxColumns(23);
 
       providerName.setModel(getProviderNameModel());
 
@@ -4187,7 +4193,6 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QC005Design.class.getName()));
     } catch (Exception e) {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2006/04/17  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2006/05/10  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -234,6 +234,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private ACRadioButtonItem kaigoInfoKyotakuServiceRadioItem1;
 
   private ACRadioButtonItem kaigoInfoKyotakuServiceRadioItem2;
+
+  private ACRadioButtonItem kaigoInfoKyotakuServiceRadioItem3;
 
   private ACComboBox kaigoInfoKyotakuServicePlanCombo;
 
@@ -1650,6 +1652,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       kaigoInfoInsurerName.setRenderBindPath("INSURER_NAME");
 
+      kaigoInfoInsurerName.setMaxColumns(18);
+
       kaigoInfoInsurerName.setModel(getKaigoInfoInsurerNameModel());
 
       addKaigoInfoInsurerName();
@@ -1933,6 +1937,27 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 介護予防支援事業所を取得します。
+   * @return 介護予防支援事業所
+   */
+  public ACRadioButtonItem getKaigoInfoKyotakuServiceRadioItem3(){
+    if(kaigoInfoKyotakuServiceRadioItem3==null){
+
+      kaigoInfoKyotakuServiceRadioItem3 = new ACRadioButtonItem();
+
+      kaigoInfoKyotakuServiceRadioItem3.setText("介護予防支援事業所");
+
+      kaigoInfoKyotakuServiceRadioItem3.setGroup(getKaigoInfoKyotakuServiceRadio());
+
+      kaigoInfoKyotakuServiceRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addKaigoInfoKyotakuServiceRadioItem3();
+    }
+    return kaigoInfoKyotakuServiceRadioItem3;
+
+  }
+
+  /**
    * 居宅サービス計画作成者・コンボを取得します。
    * @return 居宅サービス計画作成者・コンボ
    */
@@ -1951,7 +1976,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       kaigoInfoKyotakuServicePlanCombo.setRenderBindPath("PROVIDER_NAME");
 
-      kaigoInfoKyotakuServicePlanCombo.setMaxLength(20);
+      kaigoInfoKyotakuServicePlanCombo.setMaxColumns(20);
 
       kaigoInfoKyotakuServicePlanCombo.setModel(getKaigoInfoKyotakuServicePlanComboModel());
 
@@ -4930,6 +4955,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
     getKaigoInfoKyotakuServiceRadioItem2().setButtonIndex(2);
     getKaigoInfoKyotakuServiceRadioModel().add(getKaigoInfoKyotakuServiceRadioItem2());
 
+    getKaigoInfoKyotakuServiceRadioItem3().setButtonIndex(3);
+    getKaigoInfoKyotakuServiceRadioModel().add(getKaigoInfoKyotakuServiceRadioItem3());
+
   }
 
   /**
@@ -4943,6 +4971,13 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 被保険者に内部項目を追加します。
    */
   protected void addKaigoInfoKyotakuServiceRadioItem2(){
+
+  }
+
+  /**
+   * 介護予防支援事業所に内部項目を追加します。
+   */
+  protected void addKaigoInfoKyotakuServiceRadioItem3(){
 
   }
 
@@ -5938,7 +5973,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QU002Design.class.getName()));
     } catch (Exception e) {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/03/17  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/06/05  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績データ作成 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -97,7 +98,13 @@ public class QP005State extends QP005Design {
 
         getNyushoInfos().setEnabled(false);
 
+        getDetailsInfoTable().setVisible(true);
+
         getKyotakuDetailsInfoTable().setVisible(false);
+
+        getParticularInfoTable().setVisible(true);
+
+        getSpecialClinicInfoTable().setVisible(false);
 
   }
 
@@ -109,7 +116,13 @@ public class QP005State extends QP005Design {
 
         getParticularInfos().setEnabled(false);
 
+        getDetailsInfoTable().setVisible(true);
+
         getKyotakuDetailsInfoTable().setVisible(false);
+
+        getParticularInfoTable().setVisible(true);
+
+        getSpecialClinicInfoTable().setVisible(false);
 
   }
 
@@ -121,7 +134,11 @@ public class QP005State extends QP005Design {
 
         getShahukuInfos().setEnabled(false);
 
+        getDetailsInfoTable().setVisible(true);
+
         getKyotakuDetailsInfoTable().setVisible(false);
+
+        getParticularInfoTable().setVisible(true);
 
         getSpecialClinicInfoTable().setVisible(false);
 
@@ -135,11 +152,13 @@ public class QP005State extends QP005Design {
 
         getShahukuInfos().setVisible(false);
 
+        getDetailsInfoTable().setVisible(true);
+
         getKyotakuDetailsInfoTable().setVisible(false);
 
-        getParticularInfoPanel().setVisible(false);
-
         getParticularInfoTable().setVisible(false);
+
+        getSpecialClinicInfoTable().setVisible(true);
 
   }
 
@@ -155,7 +174,13 @@ public class QP005State extends QP005Design {
 
         getShahukuInfos().setEnabled(false);
 
+        getDetailsInfoTable().setVisible(true);
+
         getKyotakuDetailsInfoTable().setVisible(false);
+
+        getParticularInfoTable().setVisible(true);
+
+        getSpecialClinicInfoTable().setVisible(false);
 
   }
 
@@ -174,6 +199,14 @@ public class QP005State extends QP005Design {
         getNyushoInfos().setEnabled(false);
 
         getShahukuInfos().setEnabled(false);
+
+        getDetailsInfoTable().setVisible(false);
+
+        getKyotakuDetailsInfoTable().setVisible(true);
+
+        getParticularInfoTable().setVisible(true);
+
+        getSpecialClinicInfoTable().setVisible(false);
 
   }
 

@@ -83,7 +83,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -610,8 +609,29 @@ public class QP003 extends QP003Event {
             // 画面上のデータのチェックを行う。
             doCheckInput();
 
-            // 更新モードの場合（processModeが共通定数のPROCESS_MODE_UPDATEの場合）
-            if (getProcessMode() == QkanConstants.PROCESS_MODE_UPDATE) {
+            if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
+                // 登録モードの場合（processModeが共通定数のPROCESS_MODE_INSERTの場合）
+            	// 同利用者の同月のデータが作成されていないかチェックする。
+            	VRMap param = new VRHashMap();
+            	VRBindPathParser.set("PATIENT_ID", param, new Integer(getPatientId()));
+            	VRBindPathParser.set("TARGET_DATE", param, getTargetDate());
+            	VRBindPathParser.set("CLAIM_DATE", param, getClaimDate());
+            	VRBindPathParser.set("PROVIDER_ID", param, getProviderId());
+            	VRBindPathParser.set("CLAIM_STYLE_TYPE", param, new Integer(STYLE_TYPE_CLAIM_FOR_PATIENT));
+            	VRBindPathParser.set("CATEGORY_NO", param, new Integer(CATEGORY_NO_CLAIM_FOR_PATIENT));
+            	VRList list = getDBManager().executeQuery(getSQL_GET_NEW_CLAIM_PATIENT_DETAIL(param));
+            	if(!list.isEmpty()){
+                    //テーブルロック解除のためロールバック
+                    getDBManager().rollbackTransaction();
+                    // エラーメッセージを表示する。
+                    QkanMessageList.getInstance()
+                            .ERROR_OF_PASSIVE_CHECK_ON_UPDATE();
+                    // ・メッセージID：ERROR_OF_PASSIVE_CHECK_ON_UPDATE
+            		return false;
+            	}
+                // （終了）
+            }else if (getProcessMode() == QkanConstants.PROCESS_MODE_UPDATE) {
+                // 更新モードの場合（processModeが共通定数のPROCESS_MODE_UPDATEの場合）
                 // パッシブチェックのタスクをクリアする。
                 // clearPassiveTask();
                 getPassiveChecker().clearPassiveTask();
@@ -1011,6 +1031,74 @@ public class QP003 extends QP003Event {
         // modelMapを画面に展開する。
         getContents().bindModelSource();
 
+    }
+
+    /**
+     * 利用者向け請求書前月読込みに関する処理です。
+     */
+    protected void openActionPerformed(ActionEvent e) throws Exception {
+        // 予防時対応
+        // 2006/06/05
+        // ※処理実行確認
+        // 処理実行の確認のため、メッセージを表示する。※メッセージID =
+        // QC001_WARNING_ON_READ_OF_MOST_NEW_DATA
+        int msgID = QkanMessageList.getInstance()
+                .QC001_WARNING_ON_READ_OF_MOST_NEW_DATA();
+
+        // ｢OK」選択時
+        // 処理を継続する。
+        if (msgID == ACMessageBox.RESULT_CANCEL) {
+            // 「キャンセル」選択時
+            // 処理を中断する。
+            return;
+        }
+
+        VRMap sqlParam = new VRHashMap();
+        // SQL文で使用するパラメーターを格納する。
+        sqlParam.setData("PATIENT_ID",ACCastUtilities.toInteger(getPatientId()));
+        sqlParam.setData("TARGET_DATE",getTargetDate());
+        sqlParam.setData("PROVIDER_ID",getProviderId());
+        sqlParam.setData("INSURER_ID",getInsurerId());
+        sqlParam.setData("INSURED_ID",getInsuredId());
+        // 請求テーブルより過去の直近のデータの CLAIM_ID を取得する。
+        VRList lastClaimPatientNo = getDBManager().executeQuery(
+                getSQL_GET_LAST_CLAIM_NO(sqlParam));
+        
+        // 結果が返ってきた場合
+        if(!lastClaimPatientNo.isEmpty()){
+            VRMap map = (VRMap)lastClaimPatientNo.getData(0);
+            // CLAIM_IDを格納する。
+            String lastClaimId = ACCastUtilities.toString(map
+                    .getData("CLAIM_ID"));
+            
+            sqlParam = new VRHashMap();
+            // 取得したCLAIM_IDで PATIENT_CLAIM_DETAILテーブル からデータを取得する。
+            sqlParam.setData("CLAIM_ID",lastClaimId);
+            VRList lastClaimPatient =  getDBManager().executeQuery(
+                    getSQL_GET_LAST_CLAIM_PATIENT(sqlParam));
+            // 過去のデータが取得できた場合
+            if(!lastClaimPatient.isEmpty()){
+                // 取得したデータを contents に設定する。
+                getContents().setSource((VRMap)lastClaimPatient.getData(0));
+                // データを contents に展開する。
+                getContents().bindSource();
+                // 再計算処理を行う。
+                calcSum();
+            }else{
+                // 万が一取得できなかった場合の処理
+                // データが存在しなかったことを表すメッセージを表示
+                QkanMessageList.getInstance().QC001_NOTICE_HAS_NO_LAST_DATA();
+                // 処理を終了する。（何も行わない）
+                return;
+            }
+            
+        }else{
+            // データが存在しなかったことを表すメッセージを表示
+            QkanMessageList.getInstance().QC001_NOTICE_HAS_NO_LAST_DATA();
+            // 処理を終了する。（何も行わない）
+            return;
+        }
+        
     }
 
 }

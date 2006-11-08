@@ -38,6 +38,8 @@ import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
+import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACTextUtilities;
@@ -53,6 +55,7 @@ import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
+import jp.or.med.orca.qkan.affair.qc.qc002.QC002P01;
 import jp.or.med.orca.qkan.affair.qm.qm002.QM002;
 import jp.or.med.orca.qkan.affair.qo.qo004.QO004;
 import jp.or.med.orca.qkan.text.QkanProviderAreaTypeFormat;
@@ -167,6 +170,8 @@ public class QO003 extends QO003Event {
 				// テーブルの1行目を選択状態にする。
 				getProviderTable().setSelectedSortedFirstRow();
 			}
+            //選択利用者までスクロール
+			getProviderTable().scrollSelectedToVisible();
 		}
 	}
 
@@ -750,4 +755,39 @@ public class QO003 extends QO003Event {
 			ACFrame.getInstance().next(affair);
 		}
 	}
+
+      /**
+         * 「印刷」イベントです。
+         * 
+         * @param e イベント情報
+         * @throws Exception 処理例外
+         */
+    protected void printActionPerformed(ActionEvent e) throws Exception {
+        // 事業所一覧の印刷
+        // ※印刷パラメタの構築
+        // 印刷クラスのパラメタ用にレコードを宣言し生成する。
+        VRMap param = new VRHashMap();
+        // 事業所情報(providerList)をパラメタレコードのキー[PROVIDERS]として格納する。
+        param.setData("PROVIDERS", getProviderList());
+        // DBマネージャをパラメタレコードのキー[DBM]として格納する。
+        param.setData("DBM", getDBManager());
+        // ※印刷定義処理
+        // 帳票操作クラス(ACChotarouXMLWriter)を生成する。
+        ACChotarouXMLWriter writer = new ACChotarouXMLWriter();
+        // 帳票操作クラスに印刷定義を開始させる。
+        writer.beginPrintEdit();
+        // 印刷クラス生成
+        QO003P01 qo003p01 = new QO003P01();
+
+        // 印刷する。
+        if (qo003p01.doPrint(writer, param)) {
+            // 事業所一覧印刷クラス(QO003P01)を生成し、パラメタレコードを引数として印刷定義(doPrint)を実行する。
+            // 帳票操作クラスに印刷定義を終了させる。
+            writer.endPrintEdit();
+            // 帳票操作クラスに印刷させる。
+            ACChotarouXMLUtilities.openPDF(writer);
+        }
+
+    }
+
 }

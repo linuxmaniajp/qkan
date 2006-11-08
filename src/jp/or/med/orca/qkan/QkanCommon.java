@@ -2,6 +2,7 @@ package jp.or.med.orca.qkan;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -19,13 +20,18 @@ import javax.swing.JTextField;
 
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
+import jp.nichicom.ac.core.ACDBManagerCreatable;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACSeparateTableManager;
 import jp.nichicom.ac.text.ACNowAgeFormat;
+import jp.nichicom.ac.text.ACSQLSafeDateFormat;
 import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
 import jp.nichicom.ac.text.ACSQLSafeNullToZeroIntegerFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.bridge.sql.BridgeFirebirdSeparateTable;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -42,6 +48,7 @@ import jp.nichicom.vr.util.VRLinkedHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 
 /**
  * 給管帳システム全体から利用可能な共通関数群です。
@@ -53,7 +60,22 @@ import jp.nichicom.vr.util.logging.VRLogger;
  * @version 1.0 2005/12/01
  */
 public class QkanCommon {
+    /**
+     * すべての保険者を対象とする検索モード定数です。
+     */
+    public static final int INSURER_FIND_ALL = 0;
+    /**
+     * 介護保険もしくは指定なしの保険者を対象とする検索モード定数です。
+     */
+    public static final int INSURER_FIND_CARE_ONLY = 1;
+
+    /**
+     * 医療保険もしくは指定なしの保険者を対象とする検索モード定数です。
+     */
+    public static final int INSURER_FIND_MEDICAL_ONLY = 2;
+
     private static ACNowAgeFormat ageFormat = new ACNowAgeFormat();
+
     private static ACSeparateTableManager separateTableManager;
 
     /**
@@ -81,12 +103,60 @@ public class QkanCommon {
     }
 
     /**
+     * 指定画面項目以下のラジオグループ/テキスト/チェックのEnabled状態を引数のMapに退避します。
+     * 
+     * @param target 対象
+     * @param map バックアップ先マップ
+     */
+    public static void captureEnabled(Component target, Map map) {
+        if ((target instanceof VRRadioButtonGroup)
+                || (target instanceof JTextField)
+                || (target instanceof JCheckBox)
+                || (target instanceof JComboBox)) {
+            map.put(target, new Boolean(target.isEnabled()));
+        } else if (target instanceof Container) {
+            if (target instanceof VRLabelContainer) {
+                // ラベルコンテナ
+                map.put(target, new Boolean(target.isEnabled()));
+            }
+            int end = ((Container) target).getComponentCount();
+            for (int i = 0; i < end; i++) {
+                // 再帰
+                captureEnabled(((Container) target).getComponent(i), map);
+            }
+        }
+
+    }
+
+    /**
+     * 「指定キーのデータ型をStringからIntegerに変換」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public static void convertValueFromStringToInteger(VRMap map, Object[] keys)
+            throws Exception {
+        // 指定KEYのデータ型の変換関数
+        if ((map != null) && (keys != null)) {
+            int end = keys.length;
+            for (int i = 0; i < end; i++) {
+                Object targetKey = keys[i];
+                Object targetData = VRBindPathParser.get(targetKey, map);
+                VRBindPathParser.set(targetKey, map, ACCastUtilities.toInteger(
+                        targetData, null));
+            }
+        }
+    }
+
+    /**
      * デバッグ実行用に最低限の初期化を行ないます。
      */
     public static void debugInitialize() {
         try {
             ACDBManager dbm;
-            dbm = new BridgeFirebirdDBManager();
+            //2006/10/04 replace-begin Tozo TANAKA システムプロセッサにDB生成処理を委譲
+            //dbm = new BridgeFirebirdDBManager();
+            dbm = ((ACDBManagerCreatable)ACFrame.getInstance().getFrameEventProcesser()).createDBManager();
+            //2006/10/04 replace-end Tozo TANAKA システムプロセッサにDB生成処理を委譲
             VRList list;
 
             // コードマスタの取得と変換
@@ -129,6 +199,35 @@ public class QkanCommon {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 認定履歴から非該当をフィルタリングします。
+     * 
+     * @param list 認定履歴
+     * @return フィルタリング結果
+     */
+    public static VRList filterNotCorrespond(VRList list) {
+        int size = list.size();
+        if (size > 1) {
+            // 非該当も含めて認定履歴が2件以上存在する場合
+            VRList dest = new VRArrayList(size);
+
+            // 認定履歴を全走査し、非該当以外を抽出する・
+            for (int i = 0; i < size; i++) {
+                Map map = (Map) list.get(i);
+                if (!"1".equals(ACCastUtilities.toString(map.get("JOTAI_CODE"),
+                        ""))) {
+                    // 非該当でなければ追加
+                    dest.add(map);
+                }
+            }
+            if (!dest.isEmpty()) {
+                // 要介護認定が1件以上あれば要介護履歴のみを返す。
+                return dest;
+            }
+        }
+        return list;
     }
 
     /**
@@ -252,7 +351,6 @@ public class QkanCommon {
         }
         return new VRArrayList();
     }
-
     /**
      * 番号予約関数です。
      * <p>
@@ -318,7 +416,6 @@ public class QkanCommon {
         }
         return beginNo;
     }
-
     /**
      * 請求詳細情報取得関数です。
      * <p>
@@ -349,7 +446,6 @@ public class QkanCommon {
             throws Exception {
         return getClaimDetail(dbm, claimDate, -1);
     }
-
     /**
      * 請求詳細情報取得関数です。
      * <p>
@@ -386,10 +482,9 @@ public class QkanCommon {
             // 利用者IDを指定しているならば特定の利用者のみ。未指定ならば全利用者を対象とする。
             sb.append(" AND(CLAIM.PATIENT_ID = " + patientID + ")");
         }
-        return getClaimDetailCustom(dbm, sb.toString());
+        return getClaimDetailCustom(dbm, claimDate, sb.toString());
 
     }
-
     /**
      * 請求詳細情報取得関数です。
      * <p>
@@ -409,10 +504,11 @@ public class QkanCommon {
      * </p>
      * 
      * @param dbm DBManager
+     * @param claimDate 請求年月日
      * @param where 親情報のwhere句
      * @throws Exception 処理例外
      */
-    public static VRList getClaimDetailCustom(ACDBManager dbm, String where)
+    public static VRList getClaimDetailCustom(ACDBManager dbm, Date claimDate, String where)
             throws Exception {
 
         if (dbm == null) {
@@ -422,7 +518,7 @@ public class QkanCommon {
 
         // テーブル分割後の修飾語を取得
         int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
-                "CLAIM_DETAIL", new Date());
+                "CLAIM_DETAIL", claimDate);
         if (modify < 0) {
             return new VRArrayList();
         }
@@ -477,7 +573,7 @@ public class QkanCommon {
         return new VRArrayList(result.values());
 
     }
-
+    
     /**
      * コードマスタ内名称取得関数です。
      * <p>
@@ -543,18 +639,30 @@ public class QkanCommon {
         return -1;
 
     }
+
     /**
-     * すべての保険者を対象とする検索モード定数です。
+     * 保険者基本情報取得関数です。
+     * <p>
+     * 保険者基本情報を取得します。
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(保険者情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
+     * ASC 保険者番号
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @return 保険者情報(保険者番号順)
+     * @throws Exception 処理例外
      */
-    public static final int INSURER_FIND_ALL = 0;
-    /**
-     * 介護保険もしくは指定なしの保険者を対象とする検索モード定数です。
-     */
-    public static final int INSURER_FIND_CARE_ONLY = 1;
-    /**
-     * 医療保険もしくは指定なしの保険者を対象とする検索モード定数です。
-     */
-    public static final int INSURER_FIND_MEDICAL_ONLY = 2;
+    public static VRList getInsurerInfo(ACDBManager dbm) throws Exception {
+        return getInsurerInfo(dbm, null);
+    }
+
     /**
      * 保険者基本情報取得関数です。
      * <p>
@@ -590,7 +698,7 @@ public class QkanCommon {
         }
         return getInsurerInfo(dbm);
     }
-    
+
     /**
      * 保険者基本情報取得関数です。
      * <p>
@@ -607,11 +715,244 @@ public class QkanCommon {
      * </p>
      * 
      * @param dbm DBManager
+     * @param insurerID 保険者番号
      * @return 保険者情報(保険者番号順)
      * @throws Exception 処理例外
      */
-    public static VRList getInsurerInfo(ACDBManager dbm) throws Exception {
-        return getInsurerInfo(dbm, null);
+    public static VRList getInsurerInfo(ACDBManager dbm, String insurerID)
+            throws Exception {
+        return getInsurerInfo(dbm, insurerID, "");
+    }
+
+    /**
+     * 保険者基本情報取得関数です。
+     * <p>
+     * 保険者基本情報を取得します。
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(保険者情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
+     * ASC 保険者番号
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @param insurerID 保険者番号
+     * @param where 追加の検索条件
+     * @return 保険者情報(保険者番号順)
+     * @throws Exception 処理例外
+     */
+    public static VRList getInsurerInfo(ACDBManager dbm, String insurerID, String where)
+            throws Exception {
+        StringBuffer sb;
+
+        sb = new StringBuffer();
+        sb.append("SELECT");
+        sb.append(" INSURER.INSURER_ID,");
+        // del sta shin fujihara 2005.12.7
+        // INSURER.INSURER_KANAは存在しないため、結果セットから削除
+        // sb.append(" INSURER.INSURER_KANA,");
+        // del end shin fujihara 2005.12.7
+        sb.append(" INSURER.INSURER_NAME,");
+        sb.append(" INSURER.INSURER_TYPE,");
+        sb.append(" INSURER.INSURER_ZIP_FIRST,");
+        sb.append(" INSURER.INSURER_ZIP_SECOND,");
+        sb.append(" INSURER.INSURER_ADDRESS,");
+        sb.append(" INSURER.INSURER_TEL_FIRST,");
+        sb.append(" INSURER.INSURER_TEL_SECOND,");
+        sb.append(" INSURER.INSURER_TEL_THIRD,");
+        sb.append(" INSURER.LAST_TIME");
+        sb.append(" FROM");
+        sb.append(" INSURER");
+        // edit sta shin fujihara 2005.12.7
+        // null のときではなく、!nullのとき、whereを付加する。
+        // if (NCCommon.getInstance().isNullText(insurerID)) {
+        sb.append(" WHERE");
+        if (!ACTextUtilities.isNullText(insurerID)) {
+            // edit end shin fujihara 2005.12.7
+            sb.append(" (INSURER.INSURER_ID = '" + insurerID + "')");
+        } else {
+            sb.append(" (INSURER.DELETE_FLAG = 0)");
+        }
+        if((where!=null)&&(!"".equals(where))){
+            //追加の検索条件
+            sb.append(where);
+        }
+        sb.append(" ORDER BY");
+        sb.append(" INSURER.INSURER_ID ASC");
+
+        if (dbm == null) {
+            return new VRArrayList();
+        }
+        return dbm.executeQuery(sb.toString());
+    }
+
+    /**
+     * 保険者基本情報取得関数です。
+     * <p>
+     * 介護保険もしくは指定なしの保険者基本情報を取得します。
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(保険者情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
+     * ASC 保険者番号
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @param insurerID 保険者番号
+     * @return 保険者情報(保険者番号順)
+     * @throws Exception 処理例外
+     */
+    public static VRList getInsurerInfoCareOnly(ACDBManager dbm)
+            throws Exception {
+        return getInsurerInfo(dbm, null, " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,1)))");
+    }
+
+    // /**
+    // * 利用者要介護情報取得関数です。
+    // * <p>
+    // * すべての利用者の要介護情報を取得します。
+    // * </p>
+    // * <p>
+    // * 利用者の基本情報は取得しません。
+    // * </p>
+    // * <p>
+    // * ※同月内に要介護情報が2つ以上存在する場合、月末に近く最も大きく履歴番号が新しいものを取得します。
+    // * </p>
+    // * <p>
+    // * 返り値 <br />
+    // * <code>List{ <br />
+    // * Map(利用者要介護情報) <br />
+    // * key:フィールド名 <br />
+    // * val:値 <br />
+    // * }</code><br />
+    // * ASC 利用者ID
+    // * </p>
+    // *
+    // * @param dbm DBManager
+    // * @param targetMonth 対象年月
+    // * @param patientID 利用者番号
+    // * @return 検索結果
+    // * @throws Exception 処理例外
+    // */
+    // public static VRList getPatientInsureInfoOnEndOfMonth(ACDBManager dbm,
+    // Date targetMonth) throws Exception {
+    // // 同一期間内で開始日の一番大きいもの
+    // return getPatientInsureInfoImpl(
+    // dbm,
+    // targetMonth,
+    // -1,
+    // " AND(PATIENT_NINTEI_HISTORY.INSURE_VALID_START = (SELECT
+    // MAX(PATIENT_NINTEI_HISTORY.INSURE_VALID_START)",
+    // "))");
+    // }
+
+    /**
+     * 保険者基本情報取得関数です。
+     * <p>
+     * 医療保険もしくは指定なしの保険者基本情報を取得します。
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(保険者情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
+     * ASC 保険者番号
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @param insurerID 保険者番号
+     * @return 保険者情報(保険者番号順)
+     * @throws Exception 処理例外
+     */
+    public static VRList getInsurerInfoMedicalOnly(ACDBManager dbm)
+            throws Exception {
+        return getInsurerInfo(dbm, null, " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,2)))");
+    }
+
+    /**
+     * サービスコードマスタ取得関数です。
+     * <p>
+     * 対象年月を渡した場合：ある期間において有効なサービスを取得します。<br/>
+     * 対象年月を省略した場合：期間に関係なく全てのサービス種類を取得します。
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @return サービス種類をキー、サービス定義情報集合を値にしたマップ
+     * @throws Exception 処理例外
+     */
+    public static VRMap getMasterService(ACDBManager dbm) throws Exception {
+        return getMasterService(dbm, null);
+    }
+
+    /**
+     * サービスコードマスタ取得関数です。
+     * <p>
+     * 対象年月を渡した場合：ある期間において有効なサービスを取得します。<br/>
+     * 対象年月を省略した場合：期間に関係なく全てのサービス種類を取得します。
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @param targetDate 対象年月
+     * @return サービス種類をキー、サービス定義情報集合を値にしたマップ
+     * @throws Exception 処理例外
+     */
+    public static VRMap getMasterService(ACDBManager dbm, Date targetDate)
+            throws Exception {
+        StringBuffer sb;
+
+        sb = new StringBuffer();
+        sb.append("SELECT");
+        sb.append(" M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL,");
+        sb.append(" M_SERVICE.SERVICE_VALID_START,");
+        sb.append(" M_SERVICE.SERVICE_VALID_END,");
+        sb.append(" M_SERVICE.SERVICE_CODE_KIND,");
+        sb.append(" M_SERVICE.SERVICE_NAME,");
+        sb.append(" M_SERVICE.SERVICE_ABBREVIATION,");
+        sb.append(" M_SERVICE.SERVICE_KIND_NAME,");
+        sb.append(" M_SERVICE.SERVICE_CALENDAR_ABBREVIATION,");
+        sb.append(" M_SERVICE.CLAIM_STYLE_TYPE,");
+        sb.append(" M_SERVICE.BUSINESS_TYPE,");
+        sb.append(" M_SERVICE.CALENDAR_PASTE_FLAG,");
+        sb.append(" M_SERVICE.CHANGES_CONTENT_TYPE,");
+        sb.append(" M_SERVICE.CLAIM_LAYER,");
+        sb.append(" M_SERVICE.SERVICE_SORT");
+        sb.append(" FROM");
+        sb.append(" M_SERVICE");
+        sb.append(" WHERE");
+        sb.append(" (M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(");
+        sb.append(" SELECT DISTINCT");
+        sb.append(" M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL");
+        sb.append(" FROM");
+        sb.append(" M_SERVICE");
+        if (targetDate != null) {
+            String date = VRDateParser.format(targetDate, "yyyy/MM/dd");
+            sb.append(" WHERE");
+            sb.append(" (M_SERVICE.SERVICE_VALID_START<='" + date + "')");
+            sb.append(" AND (M_SERVICE.SERVICE_VALID_END>='" + date + "')");
+        }
+        sb.append(" )");
+        sb.append(" )");
+        sb.append(" ORDER BY");
+        sb.append(" M_SERVICE.SERVICE_SORT ASC");
+
+        VRMap map = new VRLinkedHashMap();
+        if (dbm != null) {
+            VRList list = dbm.executeQuery(sb.toString());
+            // SYSTEM_SERVICE_KIND_DETAILをキーにListをMapに変換
+            ACBindUtilities.setMapFromArray(list, map,
+                    "SYSTEM_SERVICE_KIND_DETAIL");
+        }
+        return map;
     }
 
     /**
@@ -818,74 +1159,6 @@ public class QkanCommon {
     }
 
     /**
-     * 認定履歴から非該当をフィルタリングします。
-     * 
-     * @param list 認定履歴
-     * @return フィルタリング結果
-     */
-    public static VRList filterNotCorrespond(VRList list) {
-        int size = list.size();
-        if (size > 1) {
-            // 非該当も含めて認定履歴が2件以上存在する場合
-            VRList dest = new VRArrayList(size);
-
-            // 認定履歴を全走査し、非該当以外を抽出する・
-            for (int i = 0; i < size; i++) {
-                Map map = (Map) list.get(i);
-                if (!"1".equals(ACCastUtilities.toString(map.get("JOTAI_CODE"),
-                        ""))) {
-                    // 非該当でなければ追加
-                    dest.add(map);
-                }
-            }
-            if (!dest.isEmpty()) {
-                // 要介護認定が1件以上あれば要介護履歴のみを返す。
-                return dest;
-            }
-        }
-        return list;
-    }
-
-    // /**
-    // * 利用者要介護情報取得関数です。
-    // * <p>
-    // * すべての利用者の要介護情報を取得します。
-    // * </p>
-    // * <p>
-    // * 利用者の基本情報は取得しません。
-    // * </p>
-    // * <p>
-    // * ※同月内に要介護情報が2つ以上存在する場合、月末に近く最も大きく履歴番号が新しいものを取得します。
-    // * </p>
-    // * <p>
-    // * 返り値 <br />
-    // * <code>List{ <br />
-    // * Map(利用者要介護情報) <br />
-    // * key:フィールド名 <br />
-    // * val:値 <br />
-    // * }</code><br />
-    // * ASC 利用者ID
-    // * </p>
-    // *
-    // * @param dbm DBManager
-    // * @param targetMonth 対象年月
-    // * @param patientID 利用者番号
-    // * @return 検索結果
-    // * @throws Exception 処理例外
-    // */
-    // public static VRList getPatientInsureInfoOnEndOfMonth(ACDBManager dbm,
-    // Date targetMonth) throws Exception {
-    // // 同一期間内で開始日の一番大きいもの
-    // return getPatientInsureInfoImpl(
-    // dbm,
-    // targetMonth,
-    // -1,
-    // " AND(PATIENT_NINTEI_HISTORY.INSURE_VALID_START = (SELECT
-    // MAX(PATIENT_NINTEI_HISTORY.INSURE_VALID_START)",
-    // "))");
-    // }
-
-    /**
      * 利用者要介護情報取得関数です。
      * <p>
      * 指定の利用者の要介護情報を取得します。
@@ -964,77 +1237,6 @@ public class QkanCommon {
 
         return filterNotCorrespond(dbm.executeQuery(sb.toString()));
     }
-
-    // /**
-    // * 利用者要介護情報取得関数です。
-    // * <p>
-    // * すべての利用者の要介護情報を取得します。
-    // * </p>
-    // * <p>
-    // * 利用者の基本情報は取得しません。
-    // * </p>
-    // * <p>
-    // * ※同月内に要介護情報が2つ以上存在する場合、支給限度額が最も大きく履歴番号が新しいものを取得します。
-    // * </p>
-    // * <p>
-    // * 返り値 <br />
-    // * <code>List{ <br />
-    // * Map(利用者要介護情報) <br />
-    // * key:フィールド名 <br />
-    // * val:値 <br />
-    // * }</code><br />
-    // * ASC 利用者ID
-    // * </p>
-    // *
-    // * @param dbm DBManager
-    // * @param targetMonth 対象年月
-    // * @return 検索結果
-    // * @throws Exception 処理例外
-    // */
-    // public static VRList getPatientInsureInfoOnLimitRate(ACDBManager dbm,
-    // Date targetMonth) throws Exception {
-    // // 同一期間内で支給限度額の一番大きいもの
-    // return getPatientInsureInfoOnLimitRate(dbm, targetMonth, -1);
-    // }
-
-    // /**
-    // * 利用者要介護情報取得関数です。
-    // * <p>
-    // * 指定の利用者の要介護情報を取得します。
-    // * </p>
-    // * <p>
-    // * 利用者の基本情報は取得しません。
-    // * </p>
-    // * <p>
-    // * ※同月内に要介護情報が2つ以上存在する場合、支給限度額が最も大きく履歴番号が新しいものを取得します。
-    // * </p>
-    // * <p>
-    // * 返り値 <br />
-    // * <code>List{ <br />
-    // * Map(利用者要介護情報) <br />
-    // * key:フィールド名 <br />
-    // * val:値 <br />
-    // * }</code><br />
-    // * ASC 利用者ID
-    // * </p>
-    // *
-    // * @param dbm DBManager
-    // * @param targetMonth 対象年月
-    // * @param patientID 利用者番号
-    // * @return 検索結果
-    // * @throws Exception 処理例外
-    // */
-    // public static VRList getPatientInsureInfoOnLimitRate(ACDBManager dbm,
-    // Date targetMonth, int patientID) throws Exception {
-    // // 同一期間内で支給限度額の一番大きいもの
-    // return getPatientInsureInfoImpl(
-    // dbm,
-    // targetMonth,
-    // patientID,
-    // " AND(PATIENT_NINTEI_HISTORY.LIMIT_RATE = (SELECT
-    // MAX(PATIENT_NINTEI_HISTORY.LIMIT_RATE)",
-    // "))");
-    // }
 
     /**
      * 要介護認定情報取得関数です。
@@ -1134,6 +1336,35 @@ public class QkanCommon {
         return null;
     }
 
+    // /**
+    // * 事業所情報取得関数です。
+    // * <p>
+    // * 事業所サービス情報から事業所の提供しているサービス情報を取得する。 <br />
+    // * <code>例：予定入力画面の「サービスの選択」リストにサービスをセット<br />
+    // * ※居宅介護支援事業所の場合、施設系サービス以外を全て取得する。<br />
+    // * ※主として提供事業者でログインした場合に使う。</code>
+    // * </p>
+    // * <p>
+    // * 返り値 <br />
+    // * <code>List{ <br />
+    // * Map(サービス情報) <br />
+    // * key:フィールド名 <br />
+    // * val:値 <br />
+    // * }</code><br />
+    // * ASC サービス種類
+    // * </p>
+    // *
+    // * @param dbm DBManager
+    // * @return 事業所情報(サービス種類)
+    // * @throws Exception 処理例外
+    // */
+    // public static VRList getProviderServiceType(ACDBManager dbm)
+    // throws Exception {
+    //
+    // return getProviderServiceType(dbm, QkanSystemInformation.getInstance()
+    // .getLoginProviderID());
+    // }
+
     /**
      * 事業所情報取得関数です。
      * <p>
@@ -1155,45 +1386,6 @@ public class QkanCommon {
      */
     public static VRList getProviderInfo(ACDBManager dbm) throws Exception {
         return getProviderInfoImpl(dbm, " WHERE (PROVIDER.DELETE_FLAG = 0)");
-    }
-
-    /**
-     * 事業所情報取得関数です。
-     * <p>
-     * 指定したサービスを提供している事業所の情報を取得します。 <br />
-     * <code>例：居宅介護支援事業所のサービス予定画面の事業所コンボにセット</code>
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(事業所情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 事業所番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param serviceKind 独自サービス種類コード集合
-     * @return 事業所情報(事業所番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getProviderInfo(ACDBManager dbm, List serviceKinds)
-            throws Exception {
-        StringBuffer sb = new StringBuffer();
-        sb.append(" ,PROVIDER_SERVICE");
-        sb.append(" WHERE");
-        sb.append(" (PROVIDER.PROVIDER_ID = PROVIDER_SERVICE.PROVIDER_ID)");
-        int last = serviceKinds.size() - 1;
-        if (last >= 0) {
-            sb.append(" AND(PROVIDER_SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(");
-            for (int i = 0; i < last; i++) {
-                sb.append(String.valueOf(serviceKinds.get(i)) + ",");
-            }
-            sb.append(String.valueOf(serviceKinds.get(last)) + "))");
-        }
-        sb.append(" AND(PROVIDER.DELETE_FLAG = 0)");
-        return getProviderInfoImpl(dbm, sb.toString());
     }
 
     /**
@@ -1270,6 +1462,45 @@ public class QkanCommon {
     /**
      * 事業所情報取得関数です。
      * <p>
+     * 指定したサービスを提供している事業所の情報を取得します。 <br />
+     * <code>例：居宅介護支援事業所のサービス予定画面の事業所コンボにセット</code>
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(事業所情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
+     * ASC 事業所番号
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @param serviceKind 独自サービス種類コード集合
+     * @return 事業所情報(事業所番号順)
+     * @throws Exception 処理例外
+     */
+    public static VRList getProviderInfo(ACDBManager dbm, List serviceKinds)
+            throws Exception {
+        StringBuffer sb = new StringBuffer();
+        sb.append(" ,PROVIDER_SERVICE");
+        sb.append(" WHERE");
+        sb.append(" (PROVIDER.PROVIDER_ID = PROVIDER_SERVICE.PROVIDER_ID)");
+        int last = serviceKinds.size() - 1;
+        if (last >= 0) {
+            sb.append(" AND(PROVIDER_SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(");
+            for (int i = 0; i < last; i++) {
+                sb.append(String.valueOf(serviceKinds.get(i)) + ",");
+            }
+            sb.append(String.valueOf(serviceKinds.get(last)) + "))");
+        }
+        sb.append(" AND(PROVIDER.DELETE_FLAG = 0)");
+        return getProviderInfoImpl(dbm, sb.toString());
+    }
+
+    /**
+     * 事業所情報取得関数です。
+     * <p>
      * 事業所情報編集時、選択事業所情報を取得します。
      * </p>
      * <p>
@@ -1294,6 +1525,162 @@ public class QkanCommon {
         }
         return getProviderInfoImpl(dbm, " WHERE (PROVIDER.PROVIDER_ID = '"
                 + providerID + "')");
+    }
+
+    // /**
+    // * 利用者要介護情報取得関数です。
+    // * <p>
+    // * 指定の利用者の要介護情報を取得します。
+    // * </p>
+    // * <p>
+    // * 利用者の基本情報は取得しません。
+    // * </p>
+    // * <p>
+    // * ※同月内に要介護情報が2つ以上存在する場合、支給限度額が最も大きく履歴番号が新しいものを取得します。
+    // * </p>
+    // * <p>
+    // * 返り値 <br />
+    // * <code>List{ <br />
+    // * Map(利用者要介護情報) <br />
+    // * key:フィールド名 <br />
+    // * val:値 <br />
+    // * }</code><br />
+    // * ASC 利用者ID
+    // * </p>
+    // *
+    // * @param dbm DBManager
+    // * @param targetMonth 対象年月
+    // * @param patientID 利用者番号
+    // * @param filterSubQueryBegin 絞込み条件のサブクエリのWHERE句までのSQL文
+    // * @param filterSubQueryEnd 絞込み条件のサブクエリのWHERE句以降のSQL文
+    // * @return 検索結果
+    // * @throws Exception 処理例外
+    // */
+    // protected static VRList getPatientInsureInfoImpl(ACDBManager dbm,
+    // Date targetMonth, int patientID, String filterSubQueryBegin,
+    // String filterSubQueryEnd) throws Exception {
+    // if (dbm == null) {
+    // return new VRArrayList();
+    // }
+    //
+    // StringBuffer sb;
+    //
+    // // FROM～要介護度以外のWHERE句まで
+    // sb = new StringBuffer();
+    // sb.append(" FROM");
+    // sb.append(" PATIENT_NINTEI_HISTORY");
+    // sb.append(" WHERE");
+    //
+    // // 有効期間をチェックするSQL文
+    // sb.append(createWhereStatementOfNinteiHistory(targetMonth));
+    //
+    // if (patientID >= 0) {
+    // // 利用者で絞り込む場合
+    // sb.append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID
+    // + ")");
+    // }
+    // String fromWhere = sb.toString();
+    //
+    // // メインSQL文を構築
+    // sb = new StringBuffer();
+    // sb.append("SELECT");
+    // sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.INSURER_ID,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.INSURED_ID,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.INSURE_RATE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.PLANNER,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.PROVIDER_ID,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.SHUBETSU_CODE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.CHANGE_CODE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.JOTAI_CODE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.SHINSEI_DATE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_DATE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.STOP_DATE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.STOP_REASON,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.REPORTED_DATE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.LIMIT_RATE,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.EXTERNAL_USE_LIMIT");
+    // sb.append(fromWhere);
+    //
+    // if (!ACTextUtilities.isNullText(filterSubQueryBegin)) {
+    // // サブクエリによる絞込み
+    // // 主に支給限度額や月末を基準にする
+    // sb.append(filterSubQueryBegin);
+    // sb.append(fromWhere);
+    // if (filterSubQueryEnd != null) {
+    // sb.append(filterSubQueryEnd);
+    // }
+    //
+    // }
+    //
+    // sb.append(" ORDER BY");
+    // sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID ASC,");
+    // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID DESC");
+    //
+    // VRList result = dbm.executeQuery(sb.toString());
+    //
+    // // 前回認定優先を考慮しつつ検索結果から対象月の履歴と結合された利用者情報を抽出する
+    // VRList filteredResult = new VRArrayList();
+    // boolean mustNextPatient = false;
+    // VRMap targetRow = null;
+    // Object processPatientID = null;
+    // Iterator it = result.iterator();
+    // while (it.hasNext()) {
+    // VRMap row = (VRMap) it.next();
+    // Object obj = VRBindPathParser.get("PATIENT_ID", row);
+    // // 利用者番号の変化を比較
+    // if (!obj.equals(processPatientID)) {
+    // if (processPatientID == null) {
+    // // 初回
+    // processPatientID = obj;
+    // } else {
+    // // 次の利用者に切り替わったので既存の利用者を確定
+    // filteredResult.addData(targetRow);
+    // }
+    // mustNextPatient = false;
+    // } else if (mustNextPatient) {
+    // // 適用する認定が確定済みにつき次の利用者を探す
+    // continue;
+    // }
+    // targetRow = row;
+    // // 同一利用者・期間・要介護度のうち、最初の行(最新の認定履歴)を当該優先認定履歴とする
+    // mustNextPatient = true;
+    //
+    // }
+    //
+    // if (targetRow != null) {
+    // // 最後に発見した利用者を確定する
+    // filteredResult.addData(targetRow);
+    // }
+    //
+    // return filteredResult;
+    // }
+    /**
+     * 事業所情報取得関数です。
+     * <p>
+     * 事業所情報編集時、選択事業所情報を取得します。
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(事業所情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
+     * ASC 事業所番号
+     * </p>
+     * 
+     * @param dbm DBManager
+     * @param where 絞込み句
+     * @return 事業所情報(事業所番号順)
+     * @throws Exception 処理例外
+     */
+    public static VRList getProviderInfoCustom(ACDBManager dbm, String where)
+            throws Exception {
+        return getProviderInfoImpl(dbm, where);
     }
 
     /**
@@ -1437,35 +1824,6 @@ public class QkanCommon {
         return new VRArrayList(result.values());
 
     }
-
-    // /**
-    // * 事業所情報取得関数です。
-    // * <p>
-    // * 事業所サービス情報から事業所の提供しているサービス情報を取得する。 <br />
-    // * <code>例：予定入力画面の「サービスの選択」リストにサービスをセット<br />
-    // * ※居宅介護支援事業所の場合、施設系サービス以外を全て取得する。<br />
-    // * ※主として提供事業者でログインした場合に使う。</code>
-    // * </p>
-    // * <p>
-    // * 返り値 <br />
-    // * <code>List{ <br />
-    // * Map(サービス情報) <br />
-    // * key:フィールド名 <br />
-    // * val:値 <br />
-    // * }</code><br />
-    // * ASC サービス種類
-    // * </p>
-    // *
-    // * @param dbm DBManager
-    // * @return 事業所情報(サービス種類)
-    // * @throws Exception 処理例外
-    // */
-    // public static VRList getProviderServiceType(ACDBManager dbm)
-    // throws Exception {
-    //
-    // return getProviderServiceType(dbm, QkanSystemInformation.getInstance()
-    // .getLoginProviderID());
-    // }
 
     /**
      * 事業所情報取得関数です。
@@ -1622,7 +1980,7 @@ public class QkanCommon {
         sb.append(" AND");
         sb.append(getServiceUseTypeSQLWithoutAnd(useType));
 
-        return getServiceDetailCustom(dbm, sb.toString());
+        return getServiceDetailCustom(dbm, targetMonth, sb.toString());
     }
 
     /**
@@ -1644,7 +2002,7 @@ public class QkanCommon {
      * @return 検索結果
      * @throws Exception 処理例外
      */
-    public static VRList getServiceDetailCustom(ACDBManager dbm, String where)
+    public static VRList getServiceDetailCustom(ACDBManager dbm, Date targetMonth, String where)
             throws Exception {
         StringBuffer sb;
 
@@ -1655,8 +2013,11 @@ public class QkanCommon {
 
         String tableSaffix;
         // テーブル分割後の修飾語を取得
+        if(targetMonth==null){
+            targetMonth = ACDateUtilities.createDate(2006,4);
+        }
         int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
-                "SERVICE_DETAIL", new Date());
+                "SERVICE_DETAIL", targetMonth);
         // 管理テーブルの更新がありうるのでトランザクションをコミット
         if (modify < 0) {
             return new VRArrayList();
@@ -1752,7 +2113,7 @@ public class QkanCommon {
         // + QkanSystemInformation.getInstance().getLoginProviderID()
         // + "')");
 
-        return getServiceDetailCustom(dbm, sb.toString());
+        return getServiceDetailCustom(dbm, null, sb.toString());
     }
 
     /**
@@ -1788,7 +2149,7 @@ public class QkanCommon {
         // + "')");
         sb.append(" AND(SERVICE.SYSTEM_SERVICE_KIND_DETAIL = " + serviceKind
                 + ")");
-        return getServiceDetailCustom(dbm, sb.toString());
+        return getServiceDetailCustom(dbm, null, sb.toString());
     }
 
     /**
@@ -1820,7 +2181,88 @@ public class QkanCommon {
         sb.append(" AND(SERVICE.SERVICE_USE_TYPE = "
                 + QkanConstants.SERVICE_USE_TYPE_PATTERN + ")");
         sb.append(where);
-        return getServiceDetailCustom(dbm, sb.toString());
+        return getServiceDetailCustom(dbm, null, sb.toString());
+    }
+
+    /**
+     * 指定画面項目以下の無効なラジオグループ/テキスト/チェックのバインドパスを引数のMapから除外します。
+     * 
+     * @param target 対象
+     * @param map キーマップ
+     */
+    public static void removeDisabledBindPath(Component target, Map map) {
+        if ((target instanceof VRRadioButtonGroup)
+                || (target instanceof AbstractVRTextField)
+                || (target instanceof AbstractVRCheckBox)
+                || (target instanceof AbstractVRComboBox)) {
+            if (!target.isEnabled()) {
+                map.remove(((VRBindable) target).getBindPath());
+            }
+        } else if (target instanceof Container) {
+            int end = ((Container) target).getComponentCount();
+            for (int i = 0; i < end; i++) {
+                // 再帰
+                removeDisabledBindPath(((Container) target).getComponent(i),
+                        map);
+            }
+        }
+
+    }
+
+    /**
+     * [key=Component,value=Boolean]形式のMapから画面項目のEnabled状態を復元します。
+     * 
+     * @param map リストア元マップ
+     */
+    public static void restoreEnabled(Map map) {
+        if (map != null) {
+            Iterator it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry ent = (Map.Entry) it.next();
+                if (ent.getKey() instanceof Component) {
+                    if (ent.getValue() instanceof Boolean) {
+                        ((Component) ent.getKey()).setEnabled(((Boolean) ent
+                                .getValue()).booleanValue());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 指定画面項目以下のラジオグループに対し、すべて最初のラジオを選択させます。
+     * 
+     * @param target 対象
+     */
+    public static void selectFirstRadioItem(Component target) {
+        if (target instanceof VRRadioButtonGroup) {
+            // 一つ目の項目を選択する
+            if (((VRRadioButtonGroup) target).getButtonCount() > 0) {
+                ((VRRadioButtonGroup) target).getButton(1).setSelected(true);
+            }
+        } else if (target instanceof JCheckBox) {
+            ((JCheckBox) target).setSelected(false);
+        } else if (target instanceof Container) {
+            int end = ((Container) target).getComponentCount();
+            for (int i = 0; i < end; i++) {
+                // 再帰
+                selectFirstRadioItem(((Container) target).getComponent(i));
+            }
+        }
+
+    }
+
+    /**
+     * 一覧の検索条件となる文字列にTrim等の処理を行なって返します。
+     * <p>
+     * システム全体として統一の挙動をさせるために通す関数です。現時点ではそのまま返します。
+     * </p>
+     * 
+     * @param text 変換元
+     * @return 変換結果
+     */
+    public static String toFindString(String text) {
+        return text;
     }
 
     /**
@@ -1983,7 +2425,7 @@ public class QkanCommon {
         if (!ACTextUtilities.isNullText(providerId)) {
             sb.append(" AND(CLAIM.PROVIDER_ID = '" + providerId + "')");
         }
-        return updateClaimDetailCustom(dbm, details, sb.toString());
+        return updateClaimDetailCustom(dbm, details, targetDate, sb.toString());
     }
 
     /**
@@ -2006,91 +2448,112 @@ public class QkanCommon {
      * 
      * @param dbm DBManager
      * @param details 登録データ
+     * @param targetDate 対象年月
      * @param where 親情報に対するwhere句
      * @return 更新レコード数
      * @throws Exception 処理例外
      */
     public static int updateClaimDetailCustom(ACDBManager dbm, VRList details,
-            String where) throws Exception {
+            Date targetDate, String where) throws Exception {
 
         if (dbm == null) {
             return 0;
         }
         int updateCount = 0;
         // テーブル分割後の修飾語を取得
-        int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
-                "CLAIM_DETAIL", new Date());
-        if (modify < 0) {
-            return 0;
+        if(targetDate==null){
+            targetDate = ACDateUtilities.createDate(2006,4);
         }
 
-        // 作成したテーブル名は「元のテーブル名_年度」となる
-        String tableSaffix = "_" + modify;
-
+        //2006/06/06 tozo TANAKA begin edit 請求テーブルの年度別生成対応のため
         StringBuffer sb;
-
-        // 一括削除 開始 ====================================================
         if ((where == null) || ("".equals(where))) {
             where = "";
         } else {
-            where = " WHERE " + where;
+            where = appendFrontWhere(where);
         }
+
         // 親情報特定のためのSQL文
         sb = new StringBuffer();
         sb.append("SELECT");
-        sb.append(" CLAIM.CLAIM_ID");
+        sb.append(" DISTINCT");
+        sb.append(" CLAIM.CLAIM_DATE");
         sb.append(" FROM");
         sb.append(" CLAIM");
-        sb.append(where);
-        VRList ids = dbm.executeQuery(sb.toString());
-
-        int end = ids.size();
-        if (end > 0) {
-            // 既存の親IDをIN句として連結
-            sb = new StringBuffer();
-            sb.append(".CLAIM_ID IN (");
-            sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
-            for (int i = 1; i < end; i++) {
-                sb.append(",");
-                sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
+        sb.append(" WHERE");
+        sb.append("(TARGET_DATE = '");
+        sb.append(VRDateParser.format(targetDate, "yyyy-MM-dd"));
+        sb.append("')");
+        VRList claimDates = dbm.executeQuery(sb.toString());
+        Iterator it=claimDates.iterator();
+        while(it.hasNext()){
+            //対象年月が一致する既存データの請求年月を全走査し、詳細データの実テーブルを検出する
+            int modify = getSeparateTableManager().getTableModifyFromDate(
+                    dbm,
+                    "CLAIM_DETAIL",
+                    ACCastUtilities.toDate(VRBindPathParser.get("CLAIM_DATE",
+                            (VRMap) it.next())));
+            if (modify < 0) {
+                continue;
             }
-            sb.append(")");
-            String parentIDSQL = sb.toString();
 
-            // 詳細文字列/数値/日付情報
-            String[] tableNames = new String[] { "CLAIM_DETAIL_TEXT",
-                    "CLAIM_DETAIL_INTEGER", "CLAIM_DETAIL_DATE" };
-            for (int i = 0; i < tableNames.length; i++) {
-                String tableName = tableNames[i] + tableSaffix;
+            // 作成したテーブル名は「元のテーブル名_年度」となる
+            String tableSaffix = "_" + modify;
+
+
+            // 一括削除 開始 ====================================================
+            // 親情報特定のためのSQL文
+            sb = new StringBuffer();
+            sb.append("SELECT");
+            sb.append(" CLAIM.CLAIM_ID");
+            sb.append(" FROM");
+            sb.append(" CLAIM");
+            sb.append(where);
+            VRList ids = dbm.executeQuery(sb.toString());
+
+            int end = ids.size();
+            if (end > 0) {
+                // 既存の親IDをIN句として連結
                 sb = new StringBuffer();
-                sb.append("DELETE FROM ");
-                sb.append(tableName);
-                sb.append(" WHERE ");
-                sb.append(tableName);
-                sb.append(parentIDSQL);
-                dbm.executeUpdate(sb.toString());
-            }
-            // // 利用者請求情報
-            // sb = new StringBuffer();
-            // sb.append("DELETE FROM ");
-            // sb.append(" CLAIM_PATIENT_DETAIL");
-            // sb.append(" WHERE ");
-            // sb.append(" CLAIM_PATIENT_DETAIL.CLAIM_ID");
-            // sb.append(" IN (");
-            // sb.append(claimSelect);
-            // sb.append(")");
-            // dbm.executeUpdate(sb.toString());
+                sb.append(".CLAIM_ID IN (");
+                sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
+                for (int i = 1; i < end; i++) {
+                    sb.append(",");
+                    sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
+                }
+                sb.append(")");
+                String parentIDSQL = sb.toString();
 
-            // 親情報
-            sb = new StringBuffer();
-            sb.append("DELETE FROM");
-            sb.append(" CLAIM");
-            sb.append(" WHERE ");
-            sb.append(" CLAIM");
-            sb.append(parentIDSQL);
-            dbm.executeUpdate(sb.toString());
+                // 詳細文字列/数値/日付情報
+                String[] tableNames = new String[] { "CLAIM_DETAIL_TEXT",
+                        "CLAIM_DETAIL_INTEGER", "CLAIM_DETAIL_DATE" };
+                for (int i = 0; i < tableNames.length; i++) {
+                    String tableName = tableNames[i] + tableSaffix;
+                    sb = new StringBuffer();
+                    sb.append("DELETE FROM ");
+                    sb.append(tableName);
+                    sb.append(" WHERE ");
+                    sb.append(tableName);
+                    sb.append(parentIDSQL);
+                    dbm.executeUpdate(sb.toString());
+                }
+
+                // 親情報
+                sb = new StringBuffer();
+                sb.append("DELETE FROM");
+                sb.append(" CLAIM");
+                sb.append(" WHERE ");
+                sb.append(" CLAIM");
+                sb.append(parentIDSQL);
+                //add sta 2006.05.25 fujihara.shin
+                //再集計時、利用者向け請求の情報を消さないよう修整
+                sb.append(" AND CLAIM.CATEGORY_NO <> 16");
+                //add end 2006.05.25 fujihara.shin
+                dbm.executeUpdate(sb.toString());
+            }            
         }
         // 一括削除 終了 ====================================================
+        //2006/06/06 tozo TANAKA end edit 請求テーブルの年度別生成対応のため
 
         if (!details.isEmpty()) {
 
@@ -2110,7 +2573,21 @@ public class QkanCommon {
             VRMap detailMaster = getDetailMaster(dbm,
                     QkanConstants.DETAIL_MASTER_CLAIM);
 
-            Iterator it = details.iterator();
+            
+            //2006/06/06 tozo TANAKA begin add 請求テーブルの年度別生成対応のため
+            //登録データの請求年月をもとに詳細情報の実テーブルを求める
+            int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
+                    "CLAIM_DETAIL", ACCastUtilities.toDate(VRBindPathParser.get("CLAIM_DATE", (VRMap)details.getData())));
+            if (modify < 0) {
+                return 0;
+            }
+
+            // 作成したテーブル名は「元のテーブル名_年度」となる
+            String tableSaffix = "_" + modify;
+            //2006/06/06 tozo TANAKA end add 請求テーブルの年度別生成対応のため
+
+            
+            it = details.iterator();
             while (it.hasNext()) {
                 VRMap row = (VRMap) it.next();
                 // 主キーの存在確認
@@ -2166,86 +2643,6 @@ public class QkanCommon {
                 sb.append(" ,CURRENT_TIMESTAMP");
                 sb.append(")");
                 dbm.executeUpdate(sb.toString());
-
-                // // 利用者請求情報
-                // sb = new StringBuffer();
-                // sb.append("INSERT INTO");
-                // sb.append(" CLAIM_PATIENT_DETAIL");
-                // sb.append(" (");
-                // sb.append(" CLAIM_ID");
-                // sb.append(" ,SELF_SERVICE_NO1");
-                // sb.append(" ,SELF_PAY_NO1");
-                // sb.append(" ,SELF_SERVICE_NO2");
-                // sb.append(" ,SELF_PAY_NO2");
-                // sb.append(" ,SELF_SERVICE_NO3");
-                // sb.append(" ,SELF_PAY_NO3");
-                // sb.append(" ,OTHER_HIMOKU_NO1");
-                // sb.append(" ,OTHER_PAY_NO1");
-                // sb.append(" ,OTHER_HIMOKU_NO2");
-                // sb.append(" ,OTHER_PAY_NO2");
-                // sb.append(" ,OTHER_HIMOKU_NO3");
-                // sb.append(" ,OTHER_PAY_NO3");
-                // sb.append(" ,OTHER_HIMOKU_NO4");
-                // sb.append(" ,OTHER_PAY_NO4");
-                // sb.append(" ,OTHER_HIMOKU_NO5");
-                // sb.append(" ,OTHER_PAY_NO5");
-                // sb.append(" ,KOJO_TARGET");
-                // sb.append(" ,LAST_TIME");
-                // sb.append(" )VALUES(");
-                // sb.append(uniqueID);
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("SELF_SERVICE_NO1",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("SELF_PAY_NO1",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("SELF_SERVICE_NO2",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("SELF_PAY_NO2",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("SELF_SERVICE_NO3",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("SELF_PAY_NO3",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("OTHER_HIMOKU_NO1",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("OTHER_PAY_NO1",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("OTHER_HIMOKU_NO2",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("OTHER_PAY_NO2",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("OTHER_HIMOKU_NO3",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("OTHER_PAY_NO3",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("OTHER_HIMOKU_NO4",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("OTHER_PAY_NO4",
-                // row));
-                // sb.append(" ,'" +
-                // VRBindPathParser.get("OTHER_HIMOKU_NO5",
-                // row)
-                // + "'");
-                // sb.append(" ," + VRBindPathParser.get("OTHER_PAY_NO5",
-                // row));
-                // sb.append(" ," + VRBindPathParser.get("KOJO_TARGET",
-                // row));
-                // sb.append(" ,CURRENT_TIMESTAMP");
-                // sb.append(")");
-                // dbm.executeUpdate(sb.toString());
 
                 // 詳細情報の登録
 
@@ -2319,7 +2716,7 @@ public class QkanCommon {
 
         return updateCount;
     }
-
+    
     /**
      * 事業所提供サービス詳細情報更新関数です。
      * <p>
@@ -2351,7 +2748,6 @@ public class QkanCommon {
         sb.append(" (PROVIDER_SERVICE.PROVIDER_ID = '" + providerID + "')");
         return updateProviderServiceDetailCustom(dbm, details, sb.toString());
     }
-
     /**
      * 事業所提供サービス詳細情報更新関数です。
      * <p>
@@ -2557,7 +2953,7 @@ public class QkanCommon {
 
         return updateCount;
     }
-
+    
     /**
      * サービス詳細情報更新関数です。
      * <p>
@@ -2610,7 +3006,7 @@ public class QkanCommon {
         sb.append(" AND");
         sb.append(getServiceUseTypeSQLWithoutAnd(useType));
 
-        return updateServiceDetailCustom(dbm, details, sb.toString());
+        return updateServiceDetailCustom(dbm, details, targetDate, sb.toString());
     }
 
     /**
@@ -2636,19 +3032,23 @@ public class QkanCommon {
      * 
      * @param dbm DBManager
      * @param details 登録データ
+     * @param targetDate 対象年月
      * @param where 親情報のwhere句
      * @return 更新レコード数
      * @throws Exception 処理例外
      */
     public static int updateServiceDetailCustom(ACDBManager dbm,
-            VRList details, String where) throws Exception {
+            VRList details, Date targetDate, String where) throws Exception {
         if (dbm == null) {
             return 0;
         }
         int updateCount = 0;
         // テーブル分割後の修飾語を取得
+        if(targetDate==null){
+            targetDate = ACDateUtilities.createDate(2006,4);
+        }
         int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
-                "SERVICE_DETAIL", new Date());
+                "SERVICE_DETAIL", targetDate);
         if (modify < 0) {
             return 0;
         }
@@ -2739,7 +3139,11 @@ public class QkanCommon {
                     id = String.valueOf(idVal);
                 } else {
                     Integer newID = new Integer(uniqueID++);
-                    row.put("SERVICE_ID", newID);
+                    try{
+                        row.put("SERVICE_ID", newID);
+                    }catch(java.util.ConcurrentModificationException ex){
+                        //イテレーションの同期例外は無視
+                    }
                     id = String.valueOf(newID);
                 }
                 // 基本情報の登録
@@ -2893,7 +3297,6 @@ public class QkanCommon {
         return updateServicePatternDetailCustom(dbm, details,
                 " (SERVICE.SYSTEM_SERVICE_KIND_DETAIL = " + serviceKind + ")");
     }
-
     /**
      * サービスパターン詳細情報更新関数です。
      * <p>
@@ -2962,7 +3365,7 @@ public class QkanCommon {
         }
         sb.append(" (SERVICE.SERVICE_USE_TYPE = "
                 + QkanConstants.SERVICE_USE_TYPE_PATTERN + ")");
-        return updateServiceDetailCustom(dbm, details, sb.toString());
+        return updateServiceDetailCustom(dbm, details, null, sb.toString());
     }
 
     /**
@@ -3123,146 +3526,6 @@ public class QkanCommon {
     }
 
     /**
-     * 保険者基本情報取得関数です。
-     * <p>
-     * 介護保険もしくは指定なしの保険者基本情報を取得します。
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(保険者情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 保険者番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param insurerID 保険者番号
-     * @return 保険者情報(保険者番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getInsurerInfoCareOnly(ACDBManager dbm)
-            throws Exception {
-        return getInsurerInfo(dbm, null, " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,1)))");
-    }
-    
-    /**
-     * 保険者基本情報取得関数です。
-     * <p>
-     * 医療保険もしくは指定なしの保険者基本情報を取得します。
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(保険者情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 保険者番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param insurerID 保険者番号
-     * @return 保険者情報(保険者番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getInsurerInfoMedicalOnly(ACDBManager dbm)
-            throws Exception {
-        return getInsurerInfo(dbm, null, " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,2)))");
-    }
-    /**
-     * 保険者基本情報取得関数です。
-     * <p>
-     * 保険者基本情報を取得します。
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(保険者情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 保険者番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param insurerID 保険者番号
-     * @return 保険者情報(保険者番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getInsurerInfo(ACDBManager dbm, String insurerID)
-            throws Exception {
-        return getInsurerInfo(dbm, insurerID, "");
-    }
-    
-    /**
-     * 保険者基本情報取得関数です。
-     * <p>
-     * 保険者基本情報を取得します。
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(保険者情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 保険者番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param insurerID 保険者番号
-     * @param where 追加の検索条件
-     * @return 保険者情報(保険者番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getInsurerInfo(ACDBManager dbm, String insurerID, String where)
-            throws Exception {
-        StringBuffer sb;
-
-        sb = new StringBuffer();
-        sb.append("SELECT");
-        sb.append(" INSURER.INSURER_ID,");
-        // del sta shin fujihara 2005.12.7
-        // INSURER.INSURER_KANAは存在しないため、結果セットから削除
-        // sb.append(" INSURER.INSURER_KANA,");
-        // del end shin fujihara 2005.12.7
-        sb.append(" INSURER.INSURER_NAME,");
-        sb.append(" INSURER.INSURER_TYPE,");
-        sb.append(" INSURER.INSURER_ZIP_FIRST,");
-        sb.append(" INSURER.INSURER_ZIP_SECOND,");
-        sb.append(" INSURER.INSURER_ADDRESS,");
-        sb.append(" INSURER.INSURER_TEL_FIRST,");
-        sb.append(" INSURER.INSURER_TEL_SECOND,");
-        sb.append(" INSURER.INSURER_TEL_THIRD,");
-        sb.append(" INSURER.LAST_TIME");
-        sb.append(" FROM");
-        sb.append(" INSURER");
-        // edit sta shin fujihara 2005.12.7
-        // null のときではなく、!nullのとき、whereを付加する。
-        // if (NCCommon.getInstance().isNullText(insurerID)) {
-        sb.append(" WHERE");
-        if (!ACTextUtilities.isNullText(insurerID)) {
-            // edit end shin fujihara 2005.12.7
-            sb.append(" (INSURER.INSURER_ID = '" + insurerID + "')");
-        } else {
-            sb.append(" (INSURER.DELETE_FLAG = 0)");
-        }
-        if((where!=null)&&(!"".equals(where))){
-            //追加の検索条件
-            sb.append(where);
-        }
-        sb.append(" ORDER BY");
-        sb.append(" INSURER.INSURER_ID ASC");
-
-        if (dbm == null) {
-            return new VRArrayList();
-        }
-        return dbm.executeQuery(sb.toString());
-    }
-
-    /**
      * 医療機関情報取得関数です。
      * <p>
      * 返り値 <br />
@@ -3312,138 +3575,6 @@ public class QkanCommon {
         }
         return dbm.executeQuery(sb.toString());
     }
-
-    // /**
-    // * 利用者要介護情報取得関数です。
-    // * <p>
-    // * 指定の利用者の要介護情報を取得します。
-    // * </p>
-    // * <p>
-    // * 利用者の基本情報は取得しません。
-    // * </p>
-    // * <p>
-    // * ※同月内に要介護情報が2つ以上存在する場合、支給限度額が最も大きく履歴番号が新しいものを取得します。
-    // * </p>
-    // * <p>
-    // * 返り値 <br />
-    // * <code>List{ <br />
-    // * Map(利用者要介護情報) <br />
-    // * key:フィールド名 <br />
-    // * val:値 <br />
-    // * }</code><br />
-    // * ASC 利用者ID
-    // * </p>
-    // *
-    // * @param dbm DBManager
-    // * @param targetMonth 対象年月
-    // * @param patientID 利用者番号
-    // * @param filterSubQueryBegin 絞込み条件のサブクエリのWHERE句までのSQL文
-    // * @param filterSubQueryEnd 絞込み条件のサブクエリのWHERE句以降のSQL文
-    // * @return 検索結果
-    // * @throws Exception 処理例外
-    // */
-    // protected static VRList getPatientInsureInfoImpl(ACDBManager dbm,
-    // Date targetMonth, int patientID, String filterSubQueryBegin,
-    // String filterSubQueryEnd) throws Exception {
-    // if (dbm == null) {
-    // return new VRArrayList();
-    // }
-    //
-    // StringBuffer sb;
-    //
-    // // FROM～要介護度以外のWHERE句まで
-    // sb = new StringBuffer();
-    // sb.append(" FROM");
-    // sb.append(" PATIENT_NINTEI_HISTORY");
-    // sb.append(" WHERE");
-    //
-    // // 有効期間をチェックするSQL文
-    // sb.append(createWhereStatementOfNinteiHistory(targetMonth));
-    //
-    // if (patientID >= 0) {
-    // // 利用者で絞り込む場合
-    // sb.append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID
-    // + ")");
-    // }
-    // String fromWhere = sb.toString();
-    //
-    // // メインSQL文を構築
-    // sb = new StringBuffer();
-    // sb.append("SELECT");
-    // sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.INSURER_ID,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.INSURED_ID,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.INSURE_RATE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.PLANNER,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.PROVIDER_ID,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.SHUBETSU_CODE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.CHANGE_CODE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.JOTAI_CODE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.SHINSEI_DATE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_DATE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.STOP_DATE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.STOP_REASON,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.REPORTED_DATE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.LIMIT_RATE,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.EXTERNAL_USE_LIMIT");
-    // sb.append(fromWhere);
-    //
-    // if (!ACTextUtilities.isNullText(filterSubQueryBegin)) {
-    // // サブクエリによる絞込み
-    // // 主に支給限度額や月末を基準にする
-    // sb.append(filterSubQueryBegin);
-    // sb.append(fromWhere);
-    // if (filterSubQueryEnd != null) {
-    // sb.append(filterSubQueryEnd);
-    // }
-    //
-    // }
-    //
-    // sb.append(" ORDER BY");
-    // sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID ASC,");
-    // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID DESC");
-    //
-    // VRList result = dbm.executeQuery(sb.toString());
-    //
-    // // 前回認定優先を考慮しつつ検索結果から対象月の履歴と結合された利用者情報を抽出する
-    // VRList filteredResult = new VRArrayList();
-    // boolean mustNextPatient = false;
-    // VRMap targetRow = null;
-    // Object processPatientID = null;
-    // Iterator it = result.iterator();
-    // while (it.hasNext()) {
-    // VRMap row = (VRMap) it.next();
-    // Object obj = VRBindPathParser.get("PATIENT_ID", row);
-    // // 利用者番号の変化を比較
-    // if (!obj.equals(processPatientID)) {
-    // if (processPatientID == null) {
-    // // 初回
-    // processPatientID = obj;
-    // } else {
-    // // 次の利用者に切り替わったので既存の利用者を確定
-    // filteredResult.addData(targetRow);
-    // }
-    // mustNextPatient = false;
-    // } else if (mustNextPatient) {
-    // // 適用する認定が確定済みにつき次の利用者を探す
-    // continue;
-    // }
-    // targetRow = row;
-    // // 同一利用者・期間・要介護度のうち、最初の行(最新の認定履歴)を当該優先認定履歴とする
-    // mustNextPatient = true;
-    //
-    // }
-    //
-    // if (targetRow != null) {
-    // // 最後に発見した利用者を確定する
-    // filteredResult.addData(targetRow);
-    // }
-    //
-    // return filteredResult;
-    // }
 
     /**
      * 事業所情報取得関数です。
@@ -3531,6 +3662,7 @@ public class QkanCommon {
             separateTableManager.setTimeStampFieldName("LAST_TIME");
             separateTableManager.setUseManagementTable(true);
             separateTableManager.setUseTimestampField(true);
+            separateTableManager.setFiscalYear(true);
 
             ArrayList tables;
             // サービス
@@ -3725,205 +3857,192 @@ public class QkanCommon {
     }
 
     /**
-     * 一覧の検索条件となる文字列にTrim等の処理を行なって返します。
-     * <p>
-     * システム全体として統一の挙動をさせるために通す関数です。現時点ではそのまま返します。
-     * </p>
-     * 
-     * @param text 変換元
-     * @return 変換結果
+     * 「利用者の当月の認定履歴のうち、申請中の履歴がないかチェックします。」に関する処理を行います。
+     * @param ACDBManager dbm
+     * @param Date targetDate 対象年月
+     * @param int patientId 利用者ID
+     * @return 申請中の履歴が存在しない場合true 存在する場合false
+     * @throws Exception 処理例外
      */
-    public static String toFindString(String text) {
-        return text;
-    }
+    public static boolean isFullDecisionPatientInsureInfo(ACDBManager dbm,
+			Date targetDate, int patientId) throws Exception {
+
+		// 当月の要介護認定履歴を取得する。
+		VRList list = QkanCommon.getPatientInsureInfoHistory(dbm, targetDate,
+				patientId);
+
+		if (list == null || list.size() < 1) {
+			return false;
+		}
+
+		for (int i = 0; i < list.size(); i++) {
+			VRMap record = (VRMap) list.get(i);
+			int changeFlag = ACCastUtilities
+					.toInt(record.get("CHANGE_CODE"), 1);
+			// 申請中の履歴があった場合はfalseを返す。
+			if (changeFlag == 1) {
+				return false;
+			}
+		}
+
+		// 申請中の履歴が存在しない場合はtrueを返す。
+		return true;
+
+	}
 
     /**
-     * サービスコードマスタ取得関数です。
+     * 消費税率取得関数です。
      * <p>
-     * 対象年月を渡した場合：ある期間において有効なサービスを取得します。<br/>
-     * 対象年月を省略した場合：期間に関係なく全てのサービス種類を取得します。
+     * 取得に失敗した場合、-1が返ります。
      * </p>
      * 
      * @param dbm DBManager
-     * @return サービス種類をキー、サービス定義情報集合を値にしたマップ
+     * @return 消費税率
      * @throws Exception 処理例外
      */
-    public static VRMap getMasterService(ACDBManager dbm) throws Exception {
-        return getMasterService(dbm, null);
+    public static double getTax(ACDBManager dbm) throws Exception {
+        try {
+            VRList list = dbm.executeQuery("SELECT TAX FROM TAX");
+            if (!list.isEmpty()) {
+                return ACCastUtilities.toDouble(VRBindPathParser.get("TAX",
+                        (VRMap) list.getData()), -1);
+            }
+        } catch (SQLException ex) {
+        }
+        return -1;
     }
 
     /**
-     * サービスコードマスタ取得関数です。
+     * 消費税率設定関数です。
+     * 
+     * @param dbm DBManager
+     * @return 消費税率
+     * @throws Exception 処理例外
+     */
+    public static void setTax(ACDBManager dbm, double val) throws Exception {
+        dbm.executeUpdate("UPDATE TAX SET TAX="+val+", LAST_TIME=CURRENT_TIMESTAMP");
+    }
+
+    /**
+     * 医療保険情報取得関数です。
      * <p>
-     * 対象年月を渡した場合：ある期間において有効なサービスを取得します。<br/>
-     * 対象年月を省略した場合：期間に関係なく全てのサービス種類を取得します。
+     * 指定の期間に有効な医療保険情報を取得する。 <br />
+     * <code>例：訪問看護療養費領収書作成時に請求期間のチェックに使用する。</code>
+     * </p>
+     * <p>
+     * 返り値 <br />
+     * <code>List{ <br />
+     * Map(医療保険情報) <br />
+     * key:フィールド名 <br />
+     * val:値 <br />
+     * }</code><br />
      * </p>
      * 
      * @param dbm DBManager
-     * @param targetDate 対象年月
-     * @return サービス種類をキー、サービス定義情報集合を値にしたマップ
+     * @param patientID 利用者ID
+     * @param start 期間開始年月日
+     * @param end 期間終了年月日
+     * @return 医療保険情報
      * @throws Exception 処理例外
      */
-    public static VRMap getMasterService(ACDBManager dbm, Date targetDate)
-            throws Exception {
+    public static VRList getMedicalInsureInfo(ACDBManager dbm,
+            int patientID, Date start, Date end) throws Exception {
         StringBuffer sb;
 
+        ACSQLSafeDateFormat fmt = new ACSQLSafeDateFormat();
+        String startText = fmt.format(start, "yyyy-MM-dd");
+        String endText = fmt.format(end, "yyyy-MM-dd");
+        
         sb = new StringBuffer();
         sb.append("SELECT");
-        sb.append(" M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL,");
-        sb.append(" M_SERVICE.SERVICE_VALID_START,");
-        sb.append(" M_SERVICE.SERVICE_VALID_END,");
-        sb.append(" M_SERVICE.SERVICE_CODE_KIND,");
-        sb.append(" M_SERVICE.SERVICE_NAME,");
-        sb.append(" M_SERVICE.SERVICE_ABBREVIATION,");
-        sb.append(" M_SERVICE.SERVICE_KIND_NAME,");
-        sb.append(" M_SERVICE.SERVICE_CALENDAR_ABBREVIATION,");
-        sb.append(" M_SERVICE.CLAIM_STYLE_TYPE,");
-        sb.append(" M_SERVICE.BUSINESS_TYPE,");
-        sb.append(" M_SERVICE.CALENDAR_PASTE_FLAG,");
-        sb.append(" M_SERVICE.CHANGES_CONTENT_TYPE,");
-        sb.append(" M_SERVICE.CLAIM_LAYER,");
-        sb.append(" M_SERVICE.SERVICE_SORT");
+        sb.append(" PATIENT_MEDICAL_HISTORY.PATIENT_ID");
+        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_HISTORY_ID");
+        sb.append(",PATIENT_MEDICAL_HISTORY.INSURE_TYPE");
+        sb.append(",PATIENT_MEDICAL_HISTORY.OLD_FLAG");
+        sb.append(",PATIENT_MEDICAL_HISTORY.SELF_FLAG");
+        sb.append(",PATIENT_MEDICAL_HISTORY.OLD_RATE_FLAG");
+        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_LAW_NO");
+        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_INSURER_ID");
+        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_INSURE_ID");
+        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
+        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
+        sb.append(",PATIENT_MEDICAL_HISTORY.BENEFIT_RATE");
+        sb.append(",PATIENT_MEDICAL_HISTORY.CITY_LAW_NO");
+        sb.append(",PATIENT_MEDICAL_HISTORY.CITY_INSURER_ID");
+        sb.append(",PATIENT_MEDICAL_HISTORY.OLD_RECIPIENT_ID");
+        sb.append(",PATIENT_MEDICAL_HISTORY.LAST_TIME");
         sb.append(" FROM");
-        sb.append(" M_SERVICE");
+        sb.append(" PATIENT_MEDICAL_HISTORY");
         sb.append(" WHERE");
-        sb.append(" (M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(");
-        sb.append(" SELECT DISTINCT");
-        sb.append(" M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL");
-        sb.append(" FROM");
-        sb.append(" M_SERVICE");
-        if (targetDate != null) {
-            String date = VRDateParser.format(targetDate, "yyyy/MM/dd");
-            sb.append(" WHERE");
-            sb.append(" (M_SERVICE.SERVICE_VALID_START<='" + date + "')");
-            sb.append(" AND (M_SERVICE.SERVICE_VALID_END>='" + date + "')");
-        }
-        sb.append(" )");
-        sb.append(" )");
-        sb.append(" ORDER BY");
-        sb.append(" M_SERVICE.SERVICE_SORT ASC");
+        sb.append("(");
+        sb.append(" PATIENT_MEDICAL_HISTORY.PATIENT_ID");
+        sb.append(" =");
+        sb.append(patientID);
+        sb.append(")");
+        sb.append("AND");
+        sb.append("(");
+        sb.append("(");
+        
+        sb.append("(");
+        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
+        sb.append(" <=");
+        sb.append(startText);
+        sb.append(")");
+        sb.append("AND");
+        sb.append("(");
+        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
+        sb.append(" >=");
+        sb.append(endText);
+        sb.append(")");
 
-        VRMap map = new VRLinkedHashMap();
-        if (dbm != null) {
-            VRList list = dbm.executeQuery(sb.toString());
-            // SYSTEM_SERVICE_KIND_DETAILをキーにListをMapに変換
-            ACBindUtilities.setMapFromArray(list, map,
-                    "SYSTEM_SERVICE_KIND_DETAIL");
+        sb.append(")");
+        sb.append("OR");
+        sb.append("(");
+
+        sb.append("(");
+        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
+        sb.append(" >=");
+        sb.append(startText);
+        sb.append(")");
+        sb.append("AND");
+        sb.append("(");
+        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
+        sb.append(" <=");
+        sb.append(endText);
+
+        sb.append(")");
+        sb.append(")");
+        sb.append(")");
+        
+        if (dbm == null) {
+            return new VRArrayList();
         }
-        return map;
+        return dbm.executeQuery(sb.toString());
     }
 
     /**
-     * 指定画面項目以下のラジオグループに対し、すべて最初のラジオを選択させます。
-     * 
-     * @param target 対象
+     * 外部連携用に初期化を行います。
      */
-    public static void selectFirstRadioItem(Component target) {
-        if (target instanceof VRRadioButtonGroup) {
-            // 一つ目の項目を選択する
-            if (((VRRadioButtonGroup) target).getButtonCount() > 0) {
-                ((VRRadioButtonGroup) target).getButton(1).setSelected(true);
-            }
-        } else if (target instanceof JCheckBox) {
-            ((JCheckBox) target).setSelected(false);
-        } else if (target instanceof Container) {
-            int end = ((Container) target).getComponentCount();
-            for (int i = 0; i < end; i++) {
-                // 再帰
-                selectFirstRadioItem(((Container) target).getComponent(i));
-            }
-        }
-
+    public static void initializeForBackgroundCall(){
+        ACFrame.getInstance().setFrameEventProcesser(
+                new QkanFrameEventProcesser());
+        QkanCommon.debugInitialize();
     }
-
     /**
-     * 指定画面項目以下の無効なラジオグループ/テキスト/チェックのバインドパスを引数のMapから除外します。
-     * 
-     * @param target 対象
-     * @param map キーマップ
-     */
-    public static void removeDisabledBindPath(Component target, Map map) {
-        if ((target instanceof VRRadioButtonGroup)
-                || (target instanceof AbstractVRTextField)
-                || (target instanceof AbstractVRCheckBox)
-                || (target instanceof AbstractVRComboBox)) {
-            if (!target.isEnabled()) {
-                map.remove(((VRBindable) target).getBindPath());
-            }
-        } else if (target instanceof Container) {
-            int end = ((Container) target).getComponentCount();
-            for (int i = 0; i < end; i++) {
-                // 再帰
-                removeDisabledBindPath(((Container) target).getComponent(i),
-                        map);
-            }
-        }
-
-    }
-
-    /**
-     * 指定画面項目以下のラジオグループ/テキスト/チェックのEnabled状態を引数のMapに退避します。
-     * 
-     * @param target 対象
-     * @param map バックアップ先マップ
-     */
-    public static void captureEnabled(Component target, Map map) {
-        if ((target instanceof VRRadioButtonGroup)
-                || (target instanceof JTextField)
-                || (target instanceof JCheckBox)
-                || (target instanceof JComboBox)) {
-            map.put(target, new Boolean(target.isEnabled()));
-        } else if (target instanceof Container) {
-            if (target instanceof VRLabelContainer) {
-                // ラベルコンテナ
-                map.put(target, new Boolean(target.isEnabled()));
-            }
-            int end = ((Container) target).getComponentCount();
-            for (int i = 0; i < end; i++) {
-                // 再帰
-                captureEnabled(((Container) target).getComponent(i), map);
-            }
-        }
-
-    }
-
-    /**
-     * [key=Component,value=Boolean]形式のMapから画面項目のEnabled状態を復元します。
-     * 
-     * @param map リストア元マップ
-     */
-    public static void restoreEnabled(Map map) {
-        if (map != null) {
-            Iterator it = map.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry ent = (Map.Entry) it.next();
-                if (ent.getKey() instanceof Component) {
-                    if (ent.getValue() instanceof Boolean) {
-                        ((Component) ent.getKey()).setEnabled(((Boolean) ent
-                                .getValue()).booleanValue());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 「指定キーのデータ型をStringからIntegerに変換」に関する処理を行ないます。
-     * 
+     * 外部連携用のDBマネージャを返します。
+     * @return DBマネージャ
      * @throws Exception 処理例外
      */
-    public static void convertValueFromStringToInteger(VRMap map, Object[] keys)
-            throws Exception {
-        // 指定KEYのデータ型の変換関数
-        if ((map != null) && (keys != null)) {
-            int end = keys.length;
-            for (int i = 0; i < end; i++) {
-                Object targetKey = keys[i];
-                Object targetData = VRBindPathParser.get(targetKey, map);
-                VRBindPathParser.set(targetKey, map, ACCastUtilities.toInteger(
-                        targetData, null));
-            }
-        }
+    public static ACDBManager createDBManagerForBackgroundCall() throws Exception{
+        return ((ACDBManagerCreatable) ACFrame.getInstance()
+                .getFrameEventProcesser()).createDBManager();
     }
-
+    /**
+     * 外部連携用のシステムイベント処理クラスを返します。
+     * @return システムイベント処理クラス
+     */
+    public static ACFrameEventProcesser getFrameEventProcesserForBackgroundCall(){
+        return ACFrame.getInstance().getFrameEventProcesser();
+    }
+    
 }

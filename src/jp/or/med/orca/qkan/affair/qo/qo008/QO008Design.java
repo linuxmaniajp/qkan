@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/03/04  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/08/28  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 定型文項目一覧画面項目デザイン(QO008) 
@@ -324,7 +324,7 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
 
       fixedFormLabel = new ACLabel();
 
-      fixedFormLabel.setText("編集したい定型文項目を選択し、「編集」ボタンを押してください。");
+      fixedFormLabel.setText("編集したい定型文項目を選択してください。");
 
       addFixedFormLabel();
     }
@@ -343,7 +343,7 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
 
       fixedFormTable.setColumnModel(getFixedFormTableColumnModel());
 
-      fixedFormTable.setPreferredSize(new Dimension(700,80));
+      fixedFormTable.setPreferredSize(new Dimension(700,140));
 
       addFixedFormTable();
     }
@@ -393,11 +393,11 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getFixedFormTableColumn２(){
     if(fixedFormTableColumn２==null){
 
-      fixedFormTableColumn２ = new ACTableColumn(0);
+      fixedFormTableColumn２ = new ACTableColumn();
 
       fixedFormTableColumn２.setHeaderValue("分類");
 
-      fixedFormTableColumn２.setColumns(10);
+      fixedFormTableColumn２.setColumns(14);
 
       addFixedFormTableColumn２();
     }
@@ -1414,7 +1414,9 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
     return true;
   }
   public Component getFirstFocusComponent() {
+
     return null;
+
   }
   public void initAffair(ACAffairInfo affair) throws Exception {
   }
@@ -1422,7 +1424,6 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO008Design.class.getName()));
     } catch (Exception e) {

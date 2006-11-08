@@ -632,13 +632,21 @@ public abstract class QP005Event extends QP005SQL {
   public static final int CATEGORY_NO9 = 9;
   public static final int CATEGORY_NO10 = 10;
   public static final int FORMAT_STYLE2 = 10211;
+  public static final int FORMAT_STYLE22 = 10212;
   public static final int FORMAT_STYLE3 = 10311;
+  public static final int FORMAT_STYLE32 = 10312;
   public static final int FORMAT_STYLE4 = 10411;
+  public static final int FORMAT_STYLE42 = 10412;
   public static final int FORMAT_STYLE5 = 10511;
+  public static final int FORMAT_STYLE52 = 10512;
   public static final int FORMAT_STYLE6 = 10611;
-  public static final int FORMAT_STYLE6_3 = 10613;
-  public static final int FORMAT_STYLE6_5 = 10615;
+  public static final int FORMAT_STYLE62 = 10612;
+  public static final int FORMAT_STYLE63 = 10613;
+  public static final int FORMAT_STYLE64 = 10614;
+  public static final int FORMAT_STYLE65 = 10615;
+  public static final int FORMAT_STYLE66 = 10616;
   public static final int FORMAT_STYLE7 = 10711;
+  public static final int FORMAT_STYLE72 = 10712;
   public static final int FORMAT_STYLE8 = 10811;
   public static final int FORMAT_STYLE9 = 10911;
   public static final int FORMAT_STYLE10 = 11011;
@@ -1911,6 +1919,25 @@ public abstract class QP005Event extends QP005SQL {
    */
   public abstract void doSetClaimData() throws Exception;
 
+  /**
+   * 「請求データのソート」に関する処理を行います。
+   * @param list 対象レコード集合
+   * @param keys ソートキー
+   * @return ソートされたレコード集合
+   * @throws Exception
+   */
+  public abstract VRList getSortedData(VRList list, String[] keys) throws Exception;
+
+  /**
+   * 「請求データのソート」に関する処理を行います。
+   * @param list 対象レコード集合
+   * @param keys ソートキー
+   * @param digits 指定桁数
+   * @return ソートされたレコード集合
+   * @throws Exception
+   */
+  public abstract VRList getSortedData(VRList list, String[] keys, int[] digits) throws Exception;
+		
   /**
    * 「詳細テーブル表示用データ作成」に関する処理を行ないます。
    *

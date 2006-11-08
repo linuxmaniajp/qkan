@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/04/15  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2006/10/12  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -955,7 +955,7 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「同一帳票様式のサービスにかかる公費は、ひと月に[num]件までとしてください。」を表示します。
+   * メッセージ「明細書に印字できる公費は最大[num]件のため、同一帳票様式の＜改行＞サービスにかかる公費を、ひと月に[num]件までとしてください。」を表示します。
    * <p>
    * 同月内に、同一帳票様式のサービスを選択している公費情報が4件以上（医療なら3件以上）ある場合。
    * 第一引数：＜num＞　3件
@@ -972,7 +972,7 @@ public class QkanMessageList {
            );
   }
   /**
-   * メッセージ「同一帳票様式のサービスにかかる公費は、ひと月に[num]件までとしてください。」を表示します。
+   * メッセージ「明細書に印字できる公費は最大[num]件のため、同一帳票様式の＜改行＞サービスにかかる公費を、ひと月に[num]件までとしてください。」を表示します。
    * <p>
    * 同月内に、同一帳票様式のサービスを選択している公費情報が4件以上（医療なら3件以上）ある場合。
    * 第一引数：＜num＞　3件
@@ -987,7 +987,11 @@ public class QkanMessageList {
                         ) throws Exception{
     StringBuffer sb = new StringBuffer();
 
-    sb.append("同一帳票様式のサービスにかかる公費は、ひと月に");
+    sb.append("明細書に印字できる公費は最大");
+
+    sb.append(arg1);
+
+    sb.append("件のため、同一帳票様式の" + ACConstants.LINE_SEPARATOR + "サービスにかかる公費を、ひと月に");
 
     sb.append(arg1);
 
@@ -998,16 +1002,47 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「有効期間が、登録されている要介護認定の有効期間と重なっています。＜改行＞重なっている要介護認定の有効期間終了日を変更してもよろしいですか？」を表示します。
+   * メッセージ「有効期間が、登録されている[target]の有効期間と重なっています。＜改行＞重なっている[target]の有効期間終了日を変更してもよろしいですか？」を表示します。
    * <p>
-   * 要介護認定の有効期間が重複した場合に表示する。OKが選択された場合、重なっている要介護認定の有効期間終了日を、登録しようとしている要介護認定の有効期間開始日の前日に設定する。
+   * [target]の有効期間が重複した場合に表示する。OKが選択された場合、重なっている[target]の有効期間終了日を、登録しようとしている[target]の有効期間開始日の前日に設定する。
    * </p>
+   * @param param パラメタ
    * @throws Exception 処理例外
    * @return 選択したボタンID
    */
-  public int QU002_WARNING_OF_DUPLICATE_KAIGO() throws Exception{
+  public int WARNING_OF_DUPLICATE_TERM(VRMap param) throws Exception {
+    return WARNING_OF_DUPLICATE_TERM(
 
-    return ACMessageBox.show("有効期間が、登録されている要介護認定の有効期間と重なっています。" + ACConstants.LINE_SEPARATOR + "重なっている要介護認定の有効期間終了日を変更してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+      VRBindPathParser.get("target", param)
+
+           );
+  }
+  /**
+   * メッセージ「有効期間が、登録されている[target]の有効期間と重なっています。＜改行＞重なっている[target]の有効期間終了日を変更してもよろしいですか？」を表示します。
+   * <p>
+   * [target]の有効期間が重複した場合に表示する。OKが選択された場合、重なっている[target]の有効期間終了日を、登録しようとしている[target]の有効期間開始日の前日に設定する。
+   * </p>
+   * @param arg1 target
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int WARNING_OF_DUPLICATE_TERM(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("有効期間が、登録されている");
+
+    sb.append(arg1);
+
+    sb.append("の有効期間と重なっています。" + ACConstants.LINE_SEPARATOR + "重なっている");
+
+    sb.append(arg1);
+
+    sb.append("の有効期間終了日を変更してもよろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
 
@@ -1634,7 +1669,7 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「ひと月に、異なる被保険者番号は3つまでしか登録できません。」を表示します。
+   * メッセージ「ひと月に、異なる被保険者番号は2つまでしか登録できません。＜改行＞3つ以上登録する場合は、同名の新しい利用者を作成してください。」を表示します。
    * <p>
    * 要介護認定情報の追加・編集時、1月に異なる被保険者番号が3つ以上存在することになる場合。
    * </p>
@@ -1643,7 +1678,7 @@ public class QkanMessageList {
    */
   public int QP002_ERROR_OF_INSURED_ID() throws Exception{
 
-    return ACMessageBox.show("ひと月に、異なる被保険者番号は3つまでしか登録できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+    return ACMessageBox.show("ひと月に、異なる被保険者番号は2つまでしか登録できません。" + ACConstants.LINE_SEPARATOR + "3つ以上登録する場合は、同名の新しい利用者を作成してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
   }
 
@@ -2256,7 +2291,7 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「給付率には、91以上100以下の数値を入力してください。」を表示します。
+   * メッセージ「給付率には、91以上100以下の値を入力してください。」を表示します。
    * <p>
    * 給付率の値が、90未満もしくは101以上であった場合
    * </p>
@@ -2265,7 +2300,7 @@ public class QkanMessageList {
    */
   public int QU004_ERROR_OF_BENEFIT_RATE_VALUE() throws Exception{
 
-    return ACMessageBox.show("給付率には、91以上100以下の数値を入力してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+    return ACMessageBox.show("給付率には、91以上100以下の値を入力してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
   }
 
@@ -2840,7 +2875,7 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「居宅サービス計画を作成する事業所が選択されていません。＜改行＞＜改行＞※居宅サービス計画を作成する事業所が登録されていない場合は、事業所登録画面にて＜改行＞　居宅介護支援サービスを提供する事業所を登録してください。」を表示します。
+   * メッセージ「居宅サービス計画を作成する事業所が選択されていません。＜改行＞＜改行＞※居宅サービス計画を作成する事業所が登録されていない場合は、事業所登録画面にて＜改行＞　以下のいずれかのサービスを提供する事業所を登録してください。＜改行＞　　　・居宅介護支援＜改行＞　　　・介護予防支援＜改行＞　　　・小規模多機能型居宅介護＜改行＞　　　・介護予防小規模多機能型居宅介護」を表示します。
    * <p>
    * 要介護認定履歴の居宅介護支援事業所が選択されていなかった場合
    * </p>
@@ -2849,7 +2884,7 @@ public class QkanMessageList {
    */
   public int QU002_ERROR_OF_NO_DATA_SHIEN_PROVIDER() throws Exception{
 
-    return ACMessageBox.show("居宅サービス計画を作成する事業所が選択されていません。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "※居宅サービス計画を作成する事業所が登録されていない場合は、事業所登録画面にて" + ACConstants.LINE_SEPARATOR + "　居宅介護支援サービスを提供する事業所を登録してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+    return ACMessageBox.show("居宅サービス計画を作成する事業所が選択されていません。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "※居宅サービス計画を作成する事業所が登録されていない場合は、事業所登録画面にて" + ACConstants.LINE_SEPARATOR + "　以下のいずれかのサービスを提供する事業所を登録してください。" + ACConstants.LINE_SEPARATOR + "　　　・居宅介護支援" + ACConstants.LINE_SEPARATOR + "　　　・介護予防支援" + ACConstants.LINE_SEPARATOR + "　　　・小規模多機能型居宅介護" + ACConstants.LINE_SEPARATOR + "　　　・介護予防小規模多機能型居宅介護", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
   }
 
@@ -2905,7 +2940,7 @@ public class QkanMessageList {
    */
   public int QU002_WARNING_OF_CHANGE_RATE_FOR_SEIHO_TANDOKU() throws Exception{
 
-    return ACMessageBox.show("被保険者番号が「H」で始まっているため、生保単独とみなし" + ACConstants.LINE_SEPARATOR + "介護保険給付率を0%にします。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_YES);
+    return ACMessageBox.show("被保険者番号が「H」で始まっているため、生保単独とみなし" + ACConstants.LINE_SEPARATOR + "介護保険給付率を0%にします。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
 
   }
 
@@ -3049,6 +3084,317 @@ public class QkanMessageList {
     sb.append("としてください。");
 
     return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「介護支援専門員番号が未入力のサービスがあります。」を表示します。
+   * <p>
+   * 介護支援専門員番号未入力だった場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_SENMONIN_NO() throws Exception{
+
+    return ACMessageBox.show("介護支援専門員番号が未入力のサービスがあります。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「接続先の設定が不正です。＜改行＞接続先ホストやポート番号を見直してください。」を表示します。
+   * <p>
+   * 接続時エラー
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_ERROR_OF_CONECT() throws Exception{
+
+    return ACMessageBox.show("接続先の設定が不正です。" + ACConstants.LINE_SEPARATOR + "接続先ホストやポート番号を見直してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「すべての患者を検索します。よろしいですか？＜改行＞※100件あたり5秒程度かかります。」を表示します。
+   * <p>
+   * 検索時
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_QUESTION_OF_FIND() throws Exception{
+
+    return ACMessageBox.show("すべての患者を検索します。よろしいですか？" + ACConstants.LINE_SEPARATOR + "※100件あたり5秒程度かかります。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「[State]に失敗しました。[Item]」を表示します。
+   * <p>
+   * 接続エラー（カスタム）
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_ERROR_OF_CONECT_CUSTOM(VRMap param) throws Exception {
+    return QO013_ERROR_OF_CONECT_CUSTOM(
+
+      VRBindPathParser.get("State", param)
+
+      , VRBindPathParser.get("Item", param)
+
+           );
+  }
+  /**
+   * メッセージ「[State]に失敗しました。[Item]」を表示します。
+   * <p>
+   * 接続エラー（カスタム）
+   * </p>
+   * @param arg1 State
+   * @param arg2 Item
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_ERROR_OF_CONECT_CUSTOM(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("に失敗しました。");
+
+    sb.append(arg2);
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「DBSのバージョンが異なります。」を表示します。
+   * <p>
+   * 接続エラー（DBS）
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_ERROR_OF_CONECT_DATA_BASE_VERSION() throws Exception{
+
+    return ACMessageBox.show("DBSのバージョンが異なります。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「設定ファイルへの書き込みに失敗しました。＜改行＞処理を中断します。」を表示します。
+   * <p>
+   * プロパティファイルへの書き込み失敗時
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_ERROR_OF_WRITE_PROPERTY() throws Exception{
+
+    return ACMessageBox.show("設定ファイルへの書き込みに失敗しました。" + ACConstants.LINE_SEPARATOR + "処理を中断します。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「患者情報が存在しません。」を表示します。
+   * <p>
+   * 患者情報取得失敗時
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_NO_PATIENT() throws Exception{
+
+    return ACMessageBox.show("患者情報が存在しません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「患者情報を取得しました。」を表示します。
+   * <p>
+   * 患者情報取得成功時
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_SUCCESS_PATIENT() throws Exception{
+
+    return ACMessageBox.show("患者情報を取得しました。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「患者情報を取り込みました。」を表示します。
+   * <p>
+   * 患者情報取り込み成功時
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_SUCCESS_INSERT() throws Exception{
+
+    return ACMessageBox.show("患者情報を取り込みました。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「2件以上の保険情報が混在した領収書は作成できません。＜改行＞利用者情報を確認し、保険の有効期間ごとに分けて領収書を作成してください。」を表示します。
+   * <p>
+   * 2件以上の保険の有効期間をまたぐ請求期間を指定した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP011_ERROR_OF_MULTIPLE_INSURE_SPAN() throws Exception{
+
+    return ACMessageBox.show("2件以上の保険情報が混在した領収書は作成できません。" + ACConstants.LINE_SEPARATOR + "利用者情報を確認し、保険の有効期間ごとに分けて領収書を作成してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「請求期間に有効な保険情報が存在しません。＜改行＞全額利用者負担として作成しますか？」を表示します。
+   * <p>
+   * 有効な保険情報が存在しない場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP011_WARNING_OF_INVALID_INSURE_SPAN() throws Exception{
+
+    return ACMessageBox.show("請求期間に有効な保険情報が存在しません。" + ACConstants.LINE_SEPARATOR + "全額利用者負担として作成しますか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「消費税率を再設定します。よろしいですか？」を表示します。
+   * <p>
+   * 訪問看護療養費領収書編集にて税率再設定を行う場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP012_QUESTION_OF_TAX_CHANGE() throws Exception{
+
+    return ACMessageBox.show("消費税率を再設定します。よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「データベースの設定が完了していません。＜改行＞設定を更新後、いったん前画面に戻り、再度本画面を表示してください。」を表示します。
+   * <p>
+   * 消費税率を設定不能な状態で税率変更を行おうとした場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO005_ERROR_OF_DB_FAILED() throws Exception{
+
+    return ACMessageBox.show("データベースの設定が完了していません。" + ACConstants.LINE_SEPARATOR + "設定を更新後、いったん前画面に戻り、再度本画面を表示してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「保険情報が変更されたため、請求期間の実績を読み込めません。＜改行＞（2件以上の保険情報が混在した領収書は作成できません。）」を表示します。
+   * <p>
+   * 2件以上の保険の有効期間をまたぐ請求期間を指定した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP012_ERROR_OF_MULTIPLE_INSURE_SPAN() throws Exception{
+
+    return ACMessageBox.show("保険情報が変更されたため、請求期間の実績を読み込めません。" + ACConstants.LINE_SEPARATOR + "（2件以上の保険情報が混在した領収書は作成できません。）", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「請求期間に有効な保険情報が存在しません。＜改行＞全額利用者負担として実績を読み込みますか？」を表示します。
+   * <p>
+   * 有効な保険情報が存在しない場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP012_WARNING_OF_INVALID_INSURE_SPAN() throws Exception{
+
+    return ACMessageBox.show("請求期間に有効な保険情報が存在しません。" + ACConstants.LINE_SEPARATOR + "全額利用者負担として実績を読み込みますか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「請求期間における訪問看護の実績を読み込みます。＜改行＞（現在入力されている提供日・保険適用負担は消えてしまいます。）＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 訪問看護療養費領収書編集で訪問看護の実績を読込む場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP012_WARNING_OF_OPEN_RESULT() throws Exception{
+
+    return ACMessageBox.show("請求期間における訪問看護の実績を読み込みます。" + ACConstants.LINE_SEPARATOR + "（現在入力されている提供日・保険適用負担は消えてしまいます。）" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「印刷履歴を確定しますか？」を表示します。
+   * <p>
+   * 印刷済みにするかの確認
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP012_QUESTION_OF_PRINT_COMMIT() throws Exception{
+
+    return ACMessageBox.show("印刷履歴を確定しますか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_YES);
+
+  }
+
+  /**
+   * メッセージ「領収額合計は999,999,999までとしてください。」を表示します。
+   * <p>
+   * 異常な高額を領収額合計とした場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP012_ERROR_OF_TOTAL_LIMIT_OVER() throws Exception{
+
+    return ACMessageBox.show("領収額合計は999,999,999までとしてください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「CSV出力に失敗しました。＜改行＞処理を終了します。」を表示します。
+   * <p>
+   * FD容量が足りないなど、CSV出力に失敗した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_ERROR_OF_CSV_OUTPUT() throws Exception{
+
+    return ACMessageBox.show("CSV出力に失敗しました。" + ACConstants.LINE_SEPARATOR + "処理を終了します。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「高齢7/8の指定に誤りがあります。＜改行＞印刷を実行しますか?」を表示します。
+   * <p>
+   * H18.9月以前に老人７割のデータが存在、もしくはH18.10以降に老人８割のデータが存在した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_OF_INJUSTICE_CLAIM() throws Exception{
+
+    return ACMessageBox.show("高齢7/8の指定に誤りがあります。" + ACConstants.LINE_SEPARATOR + "印刷を実行しますか?", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
 

@@ -97,75 +97,53 @@ public class QkanClaimStateFormat extends Format{
             }
 		//1:印刷
 		} else if("1".equals(code)){
-			//toAppendTo.append("印刷");
             toAppendTo.append("印刷");
             
         } else {
+        	//実績集計画面では、一律済と表示
             if("01".equals(affair)){
                 toAppendTo.append("済");
+                
+            //実績集計画面以外では、コードを比較し、状態を判定する。
             } else {
-                int printed = ACCastUtilities.toInt(getPrintedCode(affair), 0);
-                int csvOuted =  ACCastUtilities.toInt(getCSVOutCode(affair), 0);
+                int printed = getPrintedCode(affair);
+                int csvOuted =  getCSVOutCode(affair);
                 int printCode = ACCastUtilities.toInt(code,0);
                 
                 String appendStr = null;
                 if((printCode & printed) > 0){
+                //if((printCode & printed) == printed){
                     appendStr = "済";
                 }
                 if((printCode & csvOuted) > 0){
+                //if((printCode & csvOuted) == csvOuted){
                     appendStr = "CSV";
                 }
                 if(appendStr != null){
                     toAppendTo.append(appendStr);
                 }
+                /* for debug
+                System.out.println("ＤＢフラグ:" + printCode);
+                System.out.println("印刷フラグ:" + printed);
+                System.out.println("CSVフラグ:" + csvOuted);
+                /* */
             }
-
         }
-		//2:明済
-//		} else if("2".equals(code)){
-//			//toAppendTo.append("明済");
-//            toAppendTo.append("済");
-//        //4:明細CSV済
-//		} else if("4".equals(code)){
-//            toAppendTo.append("CSV");
-//        //8:給済
-//        } else if("8".equals(code)){
-//            //toAppendTo.append("給済");
-//            toAppendTo.append("済");
-//        //16:給CSV済
-//        } else if("16".equals(code)){
-//            toAppendTo.append("CSV");
-//        //32:利済
-//        } else if("32".equals(code)){
-//            //toAppendTo.append("利済");
-//            toAppendTo.append("済");
-//        //64:印刷済(医療)
-//        } else if("64".equals(code)){
-//            //toAppendTo.append("印刷済");
-//            toAppendTo.append("済");
-//        //128:請済
-//        } else if("128".equals(code)){
-//            //toAppendTo.append("請済");
-//            toAppendTo.append("済");
-//        //256:請CSV済
-//        } else if("256".equals(code)){
-//            toAppendTo.append("CSV");
-//        }
 		
 		return toAppendTo;
 	}
     
+	/**
+	 * 印刷済のコードを出力する。
+	 * @param affair
+	 * @param presentCode
+	 * @return
+	 */
     public static String getPrintedCode(String affair,Object presentCode) {
         int addition = 0;
         int code = 0;
         
-        String codeTemp = getPrintedCode(affair);
-        
-        if((codeTemp != null) && (codeTemp.length() > 0)){
-            try{
-                code = Integer.parseInt(codeTemp);
-            } catch(Exception e){}
-        }
+        code = getPrintedCode(affair);
         
         //現在の印刷進捗フラグを取得
         if((presentCode != null) && (String.valueOf(presentCode).length() > 0)){
@@ -183,53 +161,53 @@ public class QkanClaimStateFormat extends Format{
      * @param presentCode 現在の印刷進捗フラグ
      * @return
      */
-    public static String getPrintedCode(String affair) {
+    public static int getPrintedCode(String affair) {
+    	int code = 0;
+    	
         if((affair == null) || (affair.length() == 0)){
-            return "";
+            return code;
         }
-        
-        String code = "";
         
         //実績集計
         if("01".equals(affair)){
-            code = "0";
+            code = 0;
         //利用者一覧（給付管理票）
         } else if("02".equals(affair)){
-            code = "8";
+            code = 8;
         //利用者一覧（在宅サービス支援事業所請求）様式第二から第十
         } else if("03".equals(affair)){
-            code = "2";
+            code = 2;
         //利用者一覧（在宅サービス提供事業所請求）様式第七
         } else if("04".equals(affair)){
-            code = "2";
+            code = 2;
         //出荷直前の仕様変更に伴い未使用項目
         } else if("05".equals(affair)){
-            code = "";
+            code = 0;
         //利用者一覧（医療請求
         } else if("06".equals(affair)){
-            code = "64";
+            code = 64;
         //利用者一覧(利用者向け印刷)
         } else if("07".equals(affair)){
-            code = "32";
+            code = 32;
         //利用者一覧（介護給付費請求書）
         } else if("08".equals(affair)){
-            code = "128";
+            code = 128;
         }
         
-        return String.valueOf(code);
+        return code;
     }
     
+    /**
+     * CSV出力済のコードを取得する。
+     * @param affair
+     * @param presentCode
+     * @return
+     */
     public static String getCSVOutCode(String affair,Object presentCode) {
         int addition = 0;
         int code = 0;
         
-        String codeTemp = getCSVOutCode(affair);
-        
-        if((codeTemp != null) && (codeTemp.length() > 0)){
-            try{
-                code = Integer.parseInt(codeTemp);
-            } catch(Exception e){}
-        }
+        code = getCSVOutCode(affair);
         
         //現在の印刷進捗フラグを取得
         if((presentCode != null) && (String.valueOf(presentCode).length() > 0)){
@@ -248,40 +226,40 @@ public class QkanClaimStateFormat extends Format{
      * @param presentCode 現在の印刷進捗フラグ
      * @return
      */
-    public static String getCSVOutCode(String affair) {
+    public static int getCSVOutCode(String affair) {
+    	int code = 0;
+    	
         if((affair == null) || (affair.length() == 0)){
-            return "";
+            return code;
         }
-        
-        String code = "";
         
         //実績集計
         if("01".equals(affair)){
-            code = "";
+            code = 0;
         //利用者一覧（給付管理票）
         } else if("02".equals(affair)){
-            code = "16";
+            code = 16;
         //利用者一覧（在宅サービス支援事業所請求）様式第二から第十
         } else if("03".equals(affair)){
-            code = "4";
+            code = 4;
         //利用者一覧（在宅サービス提供事業所請求）様式第七
         } else if("04".equals(affair)){
-            code = "4";
+            code = 4;
         //出荷直前の仕様変更に伴い未使用項目
         } else if("05".equals(affair)){
-            code = "";
+            code = 0;
         //利用者一覧（医療請求
         } else if("06".equals(affair)){
-            code = "";
+            code = 0;
         //利用者一覧(利用者向け印刷)
         } else if("07".equals(affair)){
-            code = "";
+            code = 0;
         //利用者一覧（介護給付費請求書）
         } else if("08".equals(affair)){
-            code = "256";
+            code = 256;
         }
         
-        return String.valueOf(code);
+        return code;
         
     }
 

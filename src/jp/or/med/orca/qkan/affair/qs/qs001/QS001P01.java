@@ -78,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -409,8 +408,13 @@ public class QS001P01 extends QS001P01Event {
                         .get("WEEK_DAY")));
                 //ä˙ä‘
                 freedays.append(" ä˙ä‘ÅF");
-                freedays.append(QkanNonWeeklyServiceSpanFormat.getInstance().format(service
-                        .get(QkanConstants.SERVICE_SYSTEM_BIND_PATH_SPAN)));
+                freedays
+                        .append(QkanNonWeeklyServiceSpanFormat
+                                .getInstance()
+                                .format(
+                                        VRBindPathParser
+                                                .get(QkanConstants.SERVICE_SYSTEM_BIND_PATH_SPAN,
+                                                        (VRMap)service)));
             }
 
             ACChotarouXMLUtilities.setValue(writer, "nonWeek.h1.w2", freedays

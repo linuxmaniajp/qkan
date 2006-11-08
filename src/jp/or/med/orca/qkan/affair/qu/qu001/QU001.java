@@ -45,6 +45,7 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACHashMapFormat;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -266,49 +267,53 @@ public class QU001 extends QU001Event {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected void planInsertActionPerformed(ActionEvent e) throws Exception{
-    // ※サービス予定に遷移
-  	
-    //PATIENT_IDを格納するpatientIdを定義する。
-  	int patientId;
-    
-    // ※次画面に渡す値の取得
-    // 入力チェックを行う。
-    if(!checkValue()){
-    	return;
-    }
+  protected void planInsertActionPerformed(ActionEvent e) throws Exception {
+		// ※サービス予定に遷移
 
-    // 画面の「利用者一覧(patients)」の行が選択されているかどうかチェックする。
-    if(!getPatients().isSelected()){
-    	// 選択されていない場合
-    	
-    	// 処理を中断する。
-    	return;
-    	
-    }else{
-	    // 選択されている場合
-    	
-	    // 選択されている利用者の「利用者ID(PATIENT_ID)」を取得する。
-    	patientId = ACCastUtilities.toInt(VRBindPathParser.
-    			get("PATIENT_ID", (VRMap)getPatients().getSelectedModelRowValue()));
-    	
-    }
- 
-    // 利用者の要介護情報をチェックする。
-    if(!checkInsureInfo(patientId)){
-    	return;
-    }
-    
-    // 次画面に遷移する。
-    transferNext(patientId);
-    
- }
+		// PATIENT_IDを格納するpatientIdを定義する。
+		int patientId;
+
+		// ※次画面に渡す値の取得
+		// 入力チェックを行う。
+		if (!checkValue()) {
+			return;
+		}
+
+		// 画面の「利用者一覧(patients)」の行が選択されているかどうかチェックする。
+		if (!getPatients().isSelected()) {
+			// 選択されていない場合
+
+			// 処理を中断する。
+			return;
+
+		} else {
+			// 選択されている場合
+
+			// 選択されている利用者の「利用者ID(PATIENT_ID)」を取得する。
+			patientId = ACCastUtilities.toInt(VRBindPathParser.get(
+					"PATIENT_ID", (VRMap) getPatients()
+							.getSelectedModelRowValue()));
+
+		}
+
+		if (!checkInsureInfo(patientId)) {
+			// 利用者の要介護情報をチェックする。
+			return;
+		}
+
+		// 次画面に遷移する。
+		transferNext(patientId);
+
+	}
 
   /**
-   * 「サービス実績に遷移」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
+	 * 「サービス実績に遷移」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
   protected void resultInsertActionPerformed(ActionEvent e) throws Exception{
     // ※サービス実績に遷移
     
@@ -496,8 +501,8 @@ public class QU001 extends QU001Event {
   	
     // 画面の「利用者一覧(patients)」の行が選択されているかどうかチェックする。
     if(!getPatients().isSelected()){
-    	//選択されていない場合
-    	//何もしない。
+    	// 選択されていない場合
+    	// 何もしない。
     	return;
     }else{
 	    // 選択されている場合
@@ -507,15 +512,14 @@ public class QU001 extends QU001Event {
     }
     
     if("QS001".equals(getNextAffair()) || "QR001".equals(getNextAffair())){
-	    //予定・実績画面へ遷移する場合
-    	
+	    // 予定・実績画面へ遷移する場合
     	// 利用者の要介護情報をチェックする。
 	    if(!checkInsureInfo(patientId)){
 	    	return;
 	    }
     }
     
-    //次画面に遷移する。
+    // 次画面に遷移する。
     transferNext(patientId);
   	  	
   }
@@ -879,7 +883,7 @@ public class QU001 extends QU001Event {
     			
     			// 該当する利用者がいた場合、該当利用者を選択する。
     			getPatients().setSelectedModelRow(index);
-    			
+                getPatients().scrollSelectedToVisible();
     		}
     			
     		// 二重に使用されないように削除する。
@@ -1103,36 +1107,38 @@ public class QU001 extends QU001Event {
     return true;
     
   }
-  
+
   /**
    * 「利用者の要介護情報チェック」に関する処理を行います。
    * @param チェックを行う対象利用者の利用者ID
    * @return 要介護度を持っている場合true 持っていない場合false
    * @throws Exception 処理例外
    */
-  public boolean checkInsureInfo(int patientId) throws Exception{
-    // 選択された利用者の情報(基本情報・要介護度情報)を取得する。
-    VRList list = QkanCommon.getPatientInsureInfoOnEndOfMonth(
-    		getDBManager(), 
-			getTargetDate().getDate(), 
-			patientId);
+  public boolean checkInsureInfo(int patientId) throws Exception {
+		// 選択された利用者の情報(基本情報・要介護度情報)を取得する。
+	  	Date targetDate = getTargetDate().getDate();
+		VRList list = QkanCommon.getPatientInsureInfoOnEndOfMonth(
+				getDBManager(), targetDate, patientId);
 
-    if(list.size() == 0){
-	    // 要介護度情報が取得できなかった場合
-    	
-	    // 処理続行確認メッセージを表示する。※メッセージID = QU001_HAS_NO_YOKAIGODO
-    	if(QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO() == ACMessageBox.RESULT_CANCEL){
-		    // キャンセル選択時(処理中断時)
-    		
-		    // 処理を中断する。
-    		return false;
-    		
-    	}
-    }
-    	
-    return true;
-    
-  }
+		if ((list.size() == 0)
+				|| !(QkanCommon.isFullDecisionPatientInsureInfo(getDBManager(),
+						targetDate, patientId))) {
+			// 要介護度情報が取得できなかった場合
+			// もしくは申請中の要介護情報が存在する場合
+
+			// 処理続行確認メッセージを表示する。※メッセージID = QU001_HAS_NO_YOKAIGODO
+			if (QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO() == ACMessageBox.RESULT_CANCEL) {
+				// キャンセル選択時(処理中断時)
+
+				// 処理を中断する。
+				return false;
+
+			}
+		}
+
+		return true;
+
+	}
 
   public Component getFirstFocusComponent() {
 

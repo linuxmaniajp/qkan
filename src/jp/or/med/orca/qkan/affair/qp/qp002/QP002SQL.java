@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2006/03/28  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2006/05/19  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -81,7 +82,7 @@ import jp.or.med.orca.qkan.component.*;
 /**
  * 帳票(様式)選択SQL定義(QP002) 
  */
-public class QP002SQL extends QP002Design {
+public class QP002SQL extends QP002State {
   private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
   /**
    * コンストラクタです。
@@ -108,7 +109,7 @@ public class QP002SQL extends QP002Design {
 
     sb.append(" CLAIM.CLAIM_STYLE_TYPE");
 
-    sb.append(",CLAIM.INSURED_ID || '-' || CLAIM.CLAIM_STYLE_TYPE");
+    sb.append(",CASE WHEN CLAIM.INSURED_ID IS NULL THEN CLAIM.CLAIM_STYLE_TYPE ELSE CLAIM.INSURED_ID || '-' || CLAIM.CLAIM_STYLE_TYPE END");
 
     sb.append(" AS INSURED_ID");
 
@@ -119,6 +120,10 @@ public class QP002SQL extends QP002Design {
     sb.append(",CLAIM.INSURER_ID");
 
     sb.append(",CLAIM.PROVIDER_ID");
+
+    sb.append(",CLAIM.INSURED_ID");
+
+    sb.append(" AS UNIT_INSURED_ID");
 
     sb.append(",PROVIDER.PROVIDER_NAME");
 

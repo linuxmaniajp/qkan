@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 定型文編集
- * 作成日: 2006/02/21  日本コンピューター株式会社 定型文編集 新規作成
+ * 作成日: 2006/08/28  日本コンピューター株式会社 定型文編集 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 
 /**
  * 定型文編集SQL定義(QO008) 
@@ -127,11 +127,21 @@ public class QO008SQL extends QO008State {
 
     sb.append(" TABLE_TYPE");
 
-    sb.append(" =");
+    sb.append(" IN");
 
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("TABLE_TYPE", sqlParam)));
+    sb.append(" (1,2)");
 
     sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" TABLE_TYPE");
+
+    sb.append(" ASC");
+
+    sb.append(",FIXED_FORM_ID");
+
+    sb.append(" ASC");
 
     return sb.toString();
   }
@@ -173,9 +183,9 @@ public class QO008SQL extends QO008State {
 
     sb.append(" TABLE_TYPE");
 
-    sb.append(" =");
+    sb.append(" IN");
 
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("TABLE_TYPE", sqlParam)));
+    sb.append(" (1,2)");
 
     sb.append(")");
 
@@ -193,9 +203,11 @@ public class QO008SQL extends QO008State {
 
     sb.append(" ORDER BY");
 
-    sb.append(" CONTENT_SORT");
+    sb.append(" TABLE_TYPE");
 
     sb.append(" ");
+
+    sb.append(",CONTENT_SORT");
 
     return sb.toString();
   }
@@ -283,9 +295,9 @@ public class QO008SQL extends QO008State {
 
     sb.append(" TABLE_TYPE");
 
-    sb.append(" =");
+    sb.append(" IN");
 
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("TABLE_TYPE", sqlParam)));
+    sb.append(" (1,2)");
 
     sb.append(")");
 

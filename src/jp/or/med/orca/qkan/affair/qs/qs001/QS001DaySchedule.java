@@ -17,9 +17,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Position.Bias;
 
+import jp.nichicom.ac.component.ACMutableListBox;
 import jp.nichicom.ac.component.dnd.ACDroppable;
 import jp.nichicom.ac.component.dnd.event.ACDroppableListener;
 import jp.nichicom.vr.bind.VRBindSource;
+import jp.nichicom.vr.component.AbstractVRListBox;
 import jp.nichicom.vr.component.VRListBoxar;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.util.VRArrayList;
@@ -660,4 +662,16 @@ public class QS001DaySchedule extends VRPanel implements KeyListener,
     public void removeDroppableListener(ACDroppableListener l) {
         schedules.removeDroppableListener(l);       
     }
+    /**
+     * バインドソース形式でリストモデルを返します。
+     * <p>
+     * モデルがバインドソース形式から構成されていない場合、nullを返します。
+     * </p>
+     * 
+     * @return モデル
+     */
+    public VRBindSource getModelAtBindSource() {
+        return schedules.getModelAtBindSource();
+    }
+    
 }

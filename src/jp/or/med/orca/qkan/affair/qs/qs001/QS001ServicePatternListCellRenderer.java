@@ -42,7 +42,26 @@ public class QS001ServicePatternListCellRenderer extends
     private ACLabel span;
     private QS001DaySchedule useBeginList;
     private QS001DaySchedule useSpanList;
+    private QS001DaySchedule patternList;
     private VRMap masterService;
+
+    /**
+     * パターンリストインスタンス を返します。
+     * 
+     * @return パターンリストインスタンス
+     */
+    public QS001DaySchedule getPatternList() {
+        return patternList;
+    }
+
+    /**
+     * パターンリストインスタンス を設定します。
+     * 
+     * @param patternList パターンリストインスタンス
+     */
+    public void setPatternList(QS001DaySchedule patternList) {
+        this.patternList = patternList;
+    }
 
     /**
      * サービスマスタ を返します。
@@ -130,6 +149,20 @@ public class QS001ServicePatternListCellRenderer extends
 
     public Component getListCellRendererComponent(JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
+
+        Container parent = null;
+        if (list != null) {
+            //上位コントロールの取得
+            parent = list.getParent();
+            while (!(parent instanceof QS001DaySchedule)) {
+                if (parent != null) {
+                    parent = parent.getParent();
+                } else {
+                    break;
+                }
+            }
+        }
+
         VRMap map = null;
         if (value instanceof VRMap) {
 
@@ -144,9 +177,15 @@ public class QS001ServicePatternListCellRenderer extends
                     service = getMasterService().get(
                             ACCastUtilities.toInteger(serviceKind, 0));
                     if (service instanceof Map) {
-                        // サービスの略称名に置換
-                        serviceKind = String.valueOf(((Map) service)
-                                .get("SERVICE_CALENDAR_ABBREVIATION"));
+                        if (parent == getPatternList()) {
+                            // サービス名に置換
+                            serviceKind = String.valueOf(((Map) service)
+                                    .get("SERVICE_ABBREVIATION"));
+                        } else {
+                            // サービスの略称名に置換
+                            serviceKind = String.valueOf(((Map) service)
+                                    .get("SERVICE_CALENDAR_ABBREVIATION"));
+                        }
                     }
                 }
                 Object begin = VRBindPathParser.get("3", map);
@@ -161,10 +200,23 @@ public class QS001ServicePatternListCellRenderer extends
 
                 if (CareServiceCommon.isWelfareEquipment(map)) {
                     // 福祉用具貸与の場合は道具を表示する
+                    String itemBindPath;
+                    if (CareServiceCommon.isPreventService(map)) {
+                        itemBindPath = "1670101";
+                    }else{
+                        itemBindPath = "1170101";
+                    }
                     value = value
                             + " "
                             + QkanWelfareToolFormat.getInstance().format(
-                                    VRBindPathParser.get("1170101", map));
+                                    VRBindPathParser.get(itemBindPath, map));
+                }
+                // パターンリストである場合のみ番号を表示する。
+                if (parent == getPatternList()) {
+                    // 採番済みである場合は表示処理
+                    if(VRBindPathParser.has("10",map)){
+                        value = VRBindPathParser.get("10",map) + " - " + value;
+                    }
                 }
 
             } catch (ParseException e) {
@@ -174,17 +226,9 @@ public class QS001ServicePatternListCellRenderer extends
         Component comp = super.getListCellRendererComponent(list, value, index,
                 isSelected, cellHasFocus);
 
-        if (list != null) {
-            // 表示形式に応じてコントロールのVisibleを切り替える
-            Container parent = list.getParent();
-            while (!(parent instanceof QS001DaySchedule)) {
-                if (parent != null) {
-                    parent = parent.getParent();
-                } else {
-                    break;
-                }
-            }
-            try {
+        if (parent != null) {
+//          表示形式に応じてコントロールのVisibleを切り替える
+                        try {
                 if (parent == getUseBeginList()) {
                     String wday = "";
                     String spans = "";
@@ -247,6 +291,7 @@ public class QS001ServicePatternListCellRenderer extends
             } catch (ParseException e) {
             }
         }
+
         return contents;
 
     }

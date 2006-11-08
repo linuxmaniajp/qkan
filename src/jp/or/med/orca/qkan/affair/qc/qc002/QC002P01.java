@@ -524,6 +524,11 @@ public class QC002P01 extends QC002P01Event {
 			 case 5:
 				 ACChotarouXMLUtilities.setValue(writer,"calendar" + type + "Circle." + gridRow + ".w" + gridCol,"");
 				 break;
+             
+             //1“ú‚É3‰ñˆÈã‚Ì–K–â‚Å‚ ‚éê‡@
+             case 6:
+                 ACChotarouXMLUtilities.setValue(writer,"calendar" + type + "Circle." + gridRow + ".w" + gridCol,"");
+                 break;
 			 }
 				 
 		 	

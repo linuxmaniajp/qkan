@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口 雅彦
- * 作成日: 2006/04/04  日本コンピューター株式会社 樋口 雅彦 新規作成
+ * 作成日: 2006/05/11  日本コンピューター株式会社 樋口 雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -315,6 +316,8 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabelContainer homonkaisuCountContainer;
 
   private ACLabel homonkaisuCaption;
+
+  private ACButton homonkaisuResultReadButton;
 
   private ACGroupBox kangoContents;
 
@@ -2584,11 +2587,28 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
 
       homonkaisuCaption = new ACLabel();
 
-      homonkaisuCaption.setText("回");
+      homonkaisuCaption.setText("回 ");
 
       addHomonkaisuCaption();
     }
     return homonkaisuCaption;
+
+  }
+
+  /**
+   * 実績読込ボタンを取得します。
+   * @return 実績読込ボタン
+   */
+  public ACButton getHomonkaisuResultReadButton(){
+    if(homonkaisuResultReadButton==null){
+
+      homonkaisuResultReadButton = new ACButton();
+
+      homonkaisuResultReadButton.setText("実績読込");
+
+      addHomonkaisuResultReadButton();
+    }
+    return homonkaisuResultReadButton;
 
   }
 
@@ -3648,6 +3668,8 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
 
     homonkaisus.add(getHomonkaisuCaption(), VRLayout.FLOW);
 
+    homonkaisus.add(getHomonkaisuResultReadButton(), VRLayout.FLOW);
+
   }
 
   /**
@@ -3668,6 +3690,13 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
    * 1月当たりの訪問回数・キャプションに内部項目を追加します。
    */
   protected void addHomonkaisuCaption(){
+
+  }
+
+  /**
+   * 実績読込ボタンに内部項目を追加します。
+   */
+  protected void addHomonkaisuResultReadButton(){
 
   }
 
@@ -3752,7 +3781,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QC003Design.class.getName()));
     } catch (Exception e) {

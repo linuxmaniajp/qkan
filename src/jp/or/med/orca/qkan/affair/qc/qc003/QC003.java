@@ -996,5 +996,24 @@ public class QC003 extends QC003Event {
         //戻り値として情報提供先を返す
         return johoteikyosaki;
     }
+    
+    /**
+     * 「実績読込押下時」に関する処理を行います。
+     */
+    protected void homonkaisuResultReadButtonActionPerformed(ActionEvent e) throws Exception {
+//        訪問看護実施日数を取得する。 
+//        訪問看護実施回数を取得する。
+//        内部変数　applyMap を生成し下記のKEY/VALUを設定する。
+        VRMap applyMap = new VRHashMap();
+//            KEY：HOMON_KAISU_DAY　VALUE：取得した日数
+        applyMap.setData("HOMON_KAISU_DAY",ACCastUtilities.toString(getResultDayCount()));
+//            KEY：HOMON_KAISU_COUNT　VALUE：取得した回数
+        applyMap.setData("HOMON_KAISU_COUNT",ACCastUtilities.toString(getResultCount()));
+//        「病状・障害等の状態領域（points2）」にapplyMapをセットする。
+        getPoints2().setSource(applyMap);
+//        画面に展開する。                
+        getPoints2().bindSource();
+        
+    }
 
 }

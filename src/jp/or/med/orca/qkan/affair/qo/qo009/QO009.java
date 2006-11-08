@@ -463,6 +463,8 @@ public class QO009 extends QO009Event {
 				// 医療機関情報テーブルの1行目を選択した状態にする。
 				getMedicalFacilityTable().setSelectedSortedFirstRow();
 			}
+            //選択利用者までスクロール処理
+            getMedicalFacilityTable().scrollSelectedToVisible();
 		} else {
 			// 取得したデータが0件である場合
 			// tableModelにmedicalFacilityListをセットする。

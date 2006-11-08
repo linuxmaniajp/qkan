@@ -3,7 +3,9 @@ package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.LayoutManager;
 
 import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * サービスパネル用の基底パネルクラスです。
@@ -18,6 +20,24 @@ public class QS001ServicePanel extends ACPanel {
     private ACDBManager dbm;
     private boolean oldFacilityUser;
     private boolean planMode;
+    private VRMap selectedProvider;
+    private CareServiceCodeCalcurater calculater;
+
+    /**
+     * 単位数計算クラス を返します。
+     * @return 単位数計算クラス
+     */
+    public CareServiceCodeCalcurater getCalculater() {
+        return calculater;
+    }
+
+    /**
+     * 単位数計算クラス を設定します。
+     * @param calculater 単位数計算クラス
+     */
+    public void setCalculater(CareServiceCodeCalcurater calculater) {
+        this.calculater = calculater;
+    }
 
     /**
      * 予定モードであるか を返します。
@@ -115,5 +135,21 @@ public class QS001ServicePanel extends ACPanel {
      */
     public void binded() throws Exception{
         
+    }
+
+    /**
+     * selectedProvider を返します。
+     * @return selectedProvider
+     */
+    public VRMap getSelectedProvider() {
+        return selectedProvider;
+    }
+
+    /**
+     * selectedProvider を設定します。
+     * @param selectedProvider selectedProvider
+     */
+    public void setSelectedProvider(VRMap selectedProvider) {
+        this.selectedProvider = selectedProvider;
     }
 }

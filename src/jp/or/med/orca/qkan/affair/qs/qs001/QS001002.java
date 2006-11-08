@@ -106,28 +106,28 @@ public class QS001002 extends QS001002Event {
             // サービス予定の場合
             // 「集計情報領域(sumups)」を表示する。
             setState_SERVICE_PLAN();
-            // ※利用者情報(要介護度情報)の設定
-
-            // 要介護度履歴情報格納用のレコード集合 patientInsureInfoHistoryListを生成する。
-            VRList patientInsureInfoHistoryList = getPatientInsureInfoHistoryList();
-            // 最も重い要介護度履歴情報格納用レコード patientInsureInfoHeaviest を生成する。
-            VRMap patientInsureInfoHeaviest = QkanCommon
-                    .getPatientInsureInfoOnMostHeavy(patientInsureInfoHistoryList);
-            if (patientInsureInfoHeaviest != null) {
-                // patientInsureInfoHeaviestより、最大の限度額(LIMIT_RATE)を取得する。
-                // 取得した限度額を画面の「限度額(limit)」に設定する。
-                getLimit().setText(
-                        ACCastUtilities.toString(patientInsureInfoHeaviest
-                                .getData("LIMIT_RATE")));
-                
-                setPatientInsureInfoHeaviest(patientInsureInfoHeaviest);
-            }
-            recalcServiceTotal();
         }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
             // サービス実績の場合
             // 「集計情報領域(sumups)」を非表示にする。
             setState_SERVICE_RESULT();
         }
+        // ※利用者情報(要介護度情報)の設定
+
+        // 要介護度履歴情報格納用のレコード集合 patientInsureInfoHistoryListを生成する。
+        VRList patientInsureInfoHistoryList = getPatientInsureInfoHistoryList();
+        // 最も重い要介護度履歴情報格納用レコード patientInsureInfoHeaviest を生成する。
+        VRMap patientInsureInfoHeaviest = QkanCommon
+                .getPatientInsureInfoOnMostHeavy(patientInsureInfoHistoryList);
+        if (patientInsureInfoHeaviest != null) {
+            // patientInsureInfoHeaviestより、最大の限度額(LIMIT_RATE)を取得する。
+            // 取得した限度額を画面の「限度額(limit)」に設定する。
+            getLimit().setText(
+                    ACCastUtilities.toString(patientInsureInfoHeaviest
+                            .getData("LIMIT_RATE")));
+            
+            setPatientInsureInfoHeaviest(patientInsureInfoHeaviest);
+        }
+        recalcServiceTotal();
         
         getMonthlySchedule().addDroppableListener(getOwnerAffair());
 
@@ -143,11 +143,11 @@ public class QS001002 extends QS001002Event {
      */
     protected void coordinatePrivateExpensesActionPerformed(ActionEvent e)
             throws Exception {
-//        ■選択されているサービスに対する自費調整を行う                     
-//        ※集計情報再計算                        
-//            サービス種類ごとに下記の情報の再集計を行う。                  
-//                管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）                
-//                調整分(サービス毎に設定した自費・調整単位の合計)               
+// ■選択されているサービスに対する自費調整を行う
+// ※集計情報再計算
+// サービス種類ごとに下記の情報の再集計を行う。
+// 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
+// 調整分(サービス毎に設定した自費・調整単位の合計)
 //            集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。                   
 
         if (getSelectedServiceListBox() != null) {
@@ -163,7 +163,7 @@ public class QS001002 extends QS001002Event {
                          return;
                      }
                      
-                    //TODO 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象？
+                    // 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象
                     service.setData("SERVICE_DATE", date);
                     int reductedUnit = getCalcurater().getReductedUnit(service, false, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE, null);
                     if (reductedUnit > 0) {
@@ -210,11 +210,16 @@ public class QS001002 extends QS001002Event {
         // ■月間表の値が変更された場合のイベント
         // ※予定/実績判定
         // サービス予定なのか、サービス実績なのかをチェックする。
+        int useType=0;
+        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
         // サービス予定の場合
-        // 処理を継続する。
+        // 取得対象を月間予定(SERVICE_DETAIL_GET_PLAN)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_PLAN;
+        }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
         // サービス実績の場合
-        // 処理を中断する。
-
+            //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
+        }
 
             // ※集計情報再計算
             // 下記の情報の再集計を行う。
@@ -227,7 +232,7 @@ public class QS001002 extends QS001002Event {
             int adjustTotal = 0;
             int managementTotal = 0;
             Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
-            VRList list = getSchedule(QkanConstants.SERVICE_DETAIL_GET_PLAN_OF_MONTHLY_ONLY);
+            VRList list = getSchedule(useType, false);
             Iterator it = list.iterator();
             while (it.hasNext()) {
                 // サービスコードデータを取得
@@ -304,11 +309,12 @@ public class QS001002 extends QS001002Event {
      * 「スケジュール全体を取得」に関する処理を行ないます。
      * 
      * @param useType int
+     * @param includeFreeday boolean
      * @throws Exception 処理例外
      * @return VRList
      */
-    public VRList getSchedule(int useType) throws Exception {
-        return getMonthlySchedule().getSchedule(useType);
+    public VRList getSchedule(int useType, boolean includeFreeday) throws Exception {
+        return getMonthlySchedule().getSchedule(useType, includeFreeday);
     }
 
     /**
@@ -424,26 +430,35 @@ public class QS001002 extends QS001002Event {
      */
     protected void detailsbuttonActionPerformed(ActionEvent e) throws Exception {
         // ■集計明細を表示する
+        // ※予定/実績判定
+        // サービス予定なのか、サービス実績なのかをチェックする。
+        int useType=0;
+        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
+        // サービス予定の場合
+        // 取得対象を月間予定(SERVICE_DETAIL_GET_PLAN)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_PLAN;
+        }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
+        // サービス実績の場合
+            //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
+        }
+
         // ※集計情報再計算
         // サービス種類ごとに下記の情報の再集計を行う。
         // 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
         // 調整分(サービス毎に設定した自費・調整単位の合計)
         
-        VRList list = getSchedule(QkanConstants.SERVICE_DETAIL_GET_PLAN_OF_MONTHLY_ONLY);
+        VRList list = getSchedule(useType, false);
         CareServiceUnitCalcurateResult inLimitAmout = getCalcurater()
                 .getServiceUnitCalcurateResult(list,
                         CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT);
-        CareServiceUnitCalcurateResult outerService = getCalcurater()
-        .getServiceUnitCalcurateResult(list,
-                CareServiceCodeCalcurater.CALC_MODE_OUTER_SERVICE_LIMIT_AMOUNT);
-
 
         // 集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。
         updateTotal(inLimitAmout.getManagementTotal(), inLimitAmout.getAdjustTotal());
 
         // ※集計明細画面
         // 「QS001030 集計明細画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
-        new QS001030().showModal(inLimitAmout, outerService, getPatientInsureInfoHeaviest());
+        new QS001030().showModal(inLimitAmout, getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater(), list);
     }
 
     /**
@@ -465,14 +480,10 @@ public class QS001002 extends QS001002Event {
             return false;
         }
 
-        // 引数の予定/実績モードを基準に月間表を走査し、サービスの調整済み単位を合算する。
-        int getType;
-        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
-            getType = QkanConstants.SERVICE_DETAIL_GET_PLAN_OF_MONTHLY_ONLY;
-        } else {
+        // 実績モードならば無条件にtrueを返し、関数を終了する。
+        if (getProcessType() == QkanConstants.PROCESS_TYPE_RESULT) {
             //実績ならば常に印刷可能
             return true;
-//            getType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
         }
 
         //再集計ロジックを通す。
@@ -533,6 +544,43 @@ public class QS001002 extends QS001002Event {
      */
     public QS001DaySchedule getDayFreeServices() throws Exception {
         return getMonthlySchedule().getDayFreeServices();
+    }
+
+    /**
+     * 「計画単位数編集」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void planUnitActionPerformed(ActionEvent e) throws Exception {
+        // ※計画単位数編集画面の表示
+        QS001032 form = new QS001032();
+        // 計画単位数表示画面を「決定」ボタンで閉じた場合
+        if (form.showModal(getPlanUnits())) {
+            // 保持している計画単位数を差し替える。
+            setPlanUnits(form.getAppliedValue());
+            getOwnerAffair().setServiceModify(true);
+        }
+    }
+
+    /**
+     * 「計画単位数を取得」に関する処理を行ないます。
+     *
+     * @throws Exception 処理例外
+     * @return VRMap
+     */
+    public VRMap getServicePlanUnits() throws Exception {
+        return getPlanUnits();
+    }
+
+    /**
+     * 「計画単位数を設定」に関する処理を行ないます。
+     *
+     * @param services VRMap
+     * @throws Exception 処理例外
+     *
+     */
+    public void setServicePlanUnits(VRMap services) throws Exception {
+        setPlanUnits(services);
     }
 
 }

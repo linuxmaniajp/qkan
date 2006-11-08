@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionListener;
 
 import jp.nichicom.ac.component.dnd.event.ACDroppableListener;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -575,11 +576,12 @@ public class QS001MonthSchedule extends VRPanel {
      * スケジュールデータを返します。
      * 
      * @param useType 予定と実績のどちらとして取得するか
+     * @param includeFreeday 開始日の特定できないサービスも含めて取得するか
      * @return スケジュールデータ
      * @see QkanConstants.SERVICE_DETAIL_GET_PLAN
      * @see QkanConstants.SERVICE_DETAIL_GET_RESULT
      */
-    public VRList getSchedule(int useType) throws Exception {
+    public VRList getSchedule(int useType, boolean includeFreeday) throws Exception {
         QS001DaySchedule[] days = getSchedules(true, false);
 
         // 日別サービス
@@ -625,20 +627,24 @@ public class QS001MonthSchedule extends VRPanel {
             }
         }
 
-        VRList list = dayFreeService.getSchedule();
-        if ((list != null) && (!list.isEmpty())) {
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                // サービス提供日とUSE_TYPEを設定
-                try{
-                    VRMap row = (VRMap) it.next();
-                    VRBindPathParser.set("SERVICE_DATE", row, getTargetDate());
-                    VRBindPathParser.set("SERVICE_USE_TYPE", row, freeDayUseType);
-                }catch(java.util.ConcurrentModificationException ex){
-                    //イテレーションの同期例外は無視
+        if (includeFreeday) {
+            VRList list = dayFreeService.getSchedule();
+            if ((list != null) && (!list.isEmpty())) {
+                Iterator it = list.iterator();
+                while (it.hasNext()) {
+                    // サービス提供日とUSE_TYPEを設定
+                    try {
+                        VRMap row = (VRMap) it.next();
+                        VRBindPathParser.set("SERVICE_DATE", row,
+                                getTargetDate());
+                        VRBindPathParser.set("SERVICE_USE_TYPE", row,
+                                freeDayUseType);
+                    } catch (java.util.ConcurrentModificationException ex) {
+                        //イテレーションの同期例外は無視
+                    }
                 }
+                result.addAll(list);
             }
-            result.addAll(list);
         }
         return result;
     }
@@ -681,6 +687,10 @@ public class QS001MonthSchedule extends VRPanel {
         Iterator it = schedules.iterator();
         while (it.hasNext()) {
             VRMap row = (VRMap) it.next();
+            if(CareServiceCommon.isPlanUnitService(row)){
+                //システム管理サービスは無視する
+                continue;
+            }
             Object useType = VRBindPathParser.get("SERVICE_USE_TYPE", row);
             if (QkanConstants.SERVICE_USE_TYPE_PLAN_MONTHLY_DAY.equals(useType)
                     || QkanConstants.SERVICE_USE_TYPE_RESULT_MONTHLY_DAY

@@ -417,7 +417,7 @@ public class QP004 extends QP004Event {
 			// トランザクションを開始する。
 			getDBManager().beginTransaction();
 			// 請求データを取得し、VRList dataListに格納する。
-			VRList dataList = QkanCommon.getClaimDetailCustom(getDBManager(), whereStr);
+			VRList dataList = QkanCommon.getClaimDetailCustom(getDBManager(), getClaimDate(), whereStr);
 
 			// コミットする。
 			getDBManager().commitTransaction();
@@ -726,6 +726,10 @@ public class QP004 extends QP004Event {
 		// 下記のフィールドのVisibleがTrueで、かつ入力されている場合、未来の日付が入力されていないかチェックする。
 		// ・開始年月日（contentsStartDate）
 		// ※エラーの場合、String：msgParamを宣言し、"開始年月日に"を代入する。
+
+		// ここから 日付関係から未来日の制限を解除 2006/05/19日 廣瀬
+		// 	
+		/*
 		if (!checkFutureDate(getContentsStartDate(), "開始年月日に")) {
 			return false;
 		}
@@ -747,7 +751,9 @@ public class QP004 extends QP004Event {
 		if (!checkFutureDate(getContentsTaishoDate(), "退所（院）年月日に")) {
 			return false;
 		}
-
+		*/
+		// ここまで 日付関係から未来日の制限を解除 2006/05/19日 廣瀬		
+		
 		// 不正な値の場合
 		// エラーメッセージを表示する。
 		// ・メッセージID：ERROR_OF_FUTURE_DATE
@@ -887,14 +893,27 @@ public class QP004 extends QP004Event {
 				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
 
 				// まとめたレコード集合でDBを更新する。
-				QkanCommon.updateClaimDetailCustom(getDBManager(), allList, whereStr);
+				QkanCommon.updateClaimDetailCustom(getDBManager(), allList, getTargetDate(), whereStr);
 
 				// 更新に成功した場合
 				// コミットする。
 				getDBManager().commitTransaction();
 
 				// 最新のデータを取得し、VRList listに格納する。
-				VRList dataList = QkanCommon.getClaimDetailCustom(getDBManager(), whereStr);
+				VRList dataList = QkanCommon.getClaimDetailCustom(getDBManager(), getClaimDate(), whereStr);
+				
+				// add start 2006.06.06 shin.fujihara [QKAN500:0000152]最新データを画面に反映するよう修整//
+				//保持しているデータを一旦消去
+				getClaimListBasic().clear();
+				getClaimListDetail().clear();
+				getClaimListHideDetail().clear();
+				getClaimListSpecialClinic().clear();
+				getClaimListTotal().clear();
+				
+				//DBから取得した最新情報を再設定する
+				doFindCategory(dataList);
+				// add end 2006.06.06 shin.fujihara
+				
 				// パッシブチェック用にlistを退避する。
 				getPassiveChecker().reservedPassive(getPASSIVE_CHECK_KEY(), dataList);
 
@@ -1061,7 +1080,7 @@ public class QP004 extends QP004Event {
 					// ・CONTENT
 					int id = ACCastUtilities.toInt(claimDataMap.getData("CODE_ID"));
 					VRList masterCodeData = QkanCommon.getArrayFromMasterCode(id, "301018");
-					
+
 					boolean isEndOfKey = false;
 					String endOfKey = "";
 
@@ -1085,7 +1104,7 @@ public class QP004 extends QP004Event {
 							isEndOfKey = true;
 						}
 					}
-					
+
 					VRList newList = new VRArrayList();
 					// コンボ候補に付加
 					if (isEndOfKey) {
@@ -1097,7 +1116,7 @@ public class QP004 extends QP004Event {
 							newList.add(codeMap);
 						}
 						masterCodeData = newList;
-					}else{
+					} else {
 						for (int i = 0; i < masterCodeData.size(); i++) {
 							VRMap codeMap = (VRMap) masterCodeData.get(i);
 							codeMap = (VRMap) codeMap.clone();
@@ -1107,7 +1126,7 @@ public class QP004 extends QP004Event {
 						}
 						masterCodeData = newList;
 					}
-					
+
 					ACLabel cellLabel = new ACLabel();
 					cellLabel.setFormat(new QkanCustomForClaimCodeMasterFormat(id));
 					cell.setRenderer(cellLabel);
@@ -1150,7 +1169,7 @@ public class QP004 extends QP004Event {
 					// cellのeditorに生成したテキストを追加する。
 					cell.setEditor(cellTextField);
 
-					// V4.5.8対応　全角文字のみ許可
+					// V4.5.8対応 全角文字のみ許可
 					cellTextField.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);
 					cellTextField.setIMEMode(InputSubset.KANJI);
 					cellTextField.setMaxLength(100);

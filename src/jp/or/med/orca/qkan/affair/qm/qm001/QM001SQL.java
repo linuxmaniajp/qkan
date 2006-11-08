@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: ログイン画面
- * 作成日: 2006/03/11  日本コンピューター株式会社 ログイン画面 新規作成
+ * 作成日: 2006/05/25  日本コンピューター株式会社 ログイン画面 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -107,6 +108,10 @@ public class QM001SQL extends QM001State {
     sb.append(" PROVIDER_ID");
 
     sb.append(",PROVIDER_NAME");
+
+    sb.append(",PROVIDER_ID || '　' || PROVIDER_NAME");
+
+    sb.append(" AS SHOW_PROVIDER_NAME");
 
     sb.append(" FROM");
 
@@ -206,9 +211,9 @@ public class QM001SQL extends QM001State {
 
     sb.append(" ASC");
 
-    sb.append(",CONTENT_KEY");
-
-    sb.append(" ASC");
+//    sb.append(",CONTENT_KEY");
+//
+//    sb.append(" ASC");
 
     sb.append(",CONTENT_SORT");
 

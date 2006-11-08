@@ -250,13 +250,23 @@ public interface QkanConstants {
     public static final Integer SERVICE_SYSTEM_BIND_PATH_SPAN = new Integer(101);
     
     /**
-     * 90101-「その他」を表すサービス種類定数です。
+     * 10-サービスパターンの内部番号を表す数値です。
      */
-    public static final Integer SERVICE_KIND_DETAIL_OTHER = new Integer(90101);
+    public static final Integer INTERNAL_SERVICE_PATTERN_NO_BIND_PATH = new Integer(10);
+//    /**
+//     * 90101-「その他」を表すサービス種類定数です。
+//     */
+//    public static final Integer SERVICE_KIND_DETAIL_OTHER = new Integer(90101);
+//    /**
+//     * 90201-「主な日常生活上の活動」を表すサービス種類定数です。
+//     */
+//    public static final Integer SERVICE_KIND_DETAIL_DAILY_LIFE = new Integer(90201);
+    
     /**
-     * 90201-「主な日常生活上の活動」を表すサービス種類定数です。
+     * 1-「システム管理サービス」を表すサービス種類定数です。
      */
-    public static final Integer SERVICE_KIND_DETAIL_DAILY_LIFE = new Integer(90201);
+    public static final Integer SERVICE_KIND_DETAIL_SYSTEM_SERVICE = new Integer(
+            1);
     
     /**
      * 特定施設入所関連のサービスコードをあらわすサービスコード種類定数です。
@@ -273,7 +283,21 @@ public interface QkanConstants {
      */
     public static final String SERVICE_SYSTEM_KIND_DETAIL_OLD_FACILITIY_USER = "8";
     
+    /**
+     * 計画単位数をあらわすサービス詳細種類です。
+     */
+    public static final String SERVICE_SYSTEM_KIND_DETAIL_PLAN_UNIT = "1001";
+    
+    /**
+     * サービスの単独加算フラグをあらわすサービス詳細種類です。
+     */
+    public static final String SERVICE_SYSTEM_KIND_DETAIL_ADD_TYPE = "9";
 
+    /**
+     * サービスパターンのソート順をあらわすサービス詳細種類です。
+     */
+    public static final String SERVICE_SYSTEM_KIND_DETAIL_SORT_ORDER = "10";
+    
     
     // 特定診療費属性
     /**

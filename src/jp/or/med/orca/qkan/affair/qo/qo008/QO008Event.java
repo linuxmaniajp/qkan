@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/20  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/08/28  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -27,9 +27,7 @@
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qo.qo008;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -49,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -79,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 定型文編集イベント定義(QO008) 
@@ -105,7 +104,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 updateActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -121,7 +120,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormTableSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -137,7 +136,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditItemTableSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -153,7 +152,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditInsertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -169,7 +168,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditUpdateActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -185,7 +184,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditDeleteActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -201,7 +200,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditCancelDeleteActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -217,7 +216,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditItemManipulateButtonUpActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -233,7 +232,7 @@ public abstract class QO008Event extends QO008SQL {
             lockFlag = true;
             try {
                 fixedFormEditItemManipulateButtonDownActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -311,6 +310,7 @@ public abstract class QO008Event extends QO008SQL {
 
   private ACPassiveKey PASSIVE_CHECK_KEY;
   private int dataChangeFlag;
+  private int tableType;
   private int fixedFormId;
   public static final String AFFAIR_ID = "QO008";
   public static final int TABLE_TYPE_FIXED_FORM = 1;
@@ -354,6 +354,21 @@ public abstract class QO008Event extends QO008SQL {
    */
   protected void setDataChangeFlag(int dataChangeFlag){
     this.dataChangeFlag = dataChangeFlag;
+  }
+
+  /**
+   * tableTypeを返します。
+   * @return tableType
+   */
+  protected int getTableType(){
+    return tableType;
+  }
+  /**
+   * tableTypeを設定します。
+   * @param tableType tableType
+   */
+  protected void setTableType(int tableType){
+    this.tableType = tableType;
   }
 
   /**
@@ -461,8 +476,17 @@ public abstract class QO008Event extends QO008SQL {
    * 「保存処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
-   *
+   * @return boolean
    */
   public abstract boolean doSave() throws Exception;
+
+  /**
+   * 「グループごとにまとめたMapを作成する。」に関する処理を行ないます。
+   *
+   * @param list VRList
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void createGroupMap(VRList list) throws Exception;
 
 }

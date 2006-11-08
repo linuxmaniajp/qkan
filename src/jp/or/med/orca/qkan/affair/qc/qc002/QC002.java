@@ -835,17 +835,6 @@ public class QC002 extends QC002Event {
             // 取得したレコードをfindMapに設定する。
             findMap.putAll((VRMap) patientYokaigodo.getData(0));
         }
-        
-//        } else {
-//            // エラーメッセージを表示する。※メッセージID = ERROR_OF_PASSIVE_CHECK_ON_FIND
-//            int msgID = QkanMessageList.getInstance()
-//                    .ERROR_OF_NO_NINTEI_HISTORY();
-//            // 「QU001 利用者一覧」画面に戻る。(処理を抜ける)
-//                // エラー発生時強制戻り判別
-//                setForciblyBackCheckFlag(true);
-//                ACFrame.getInstance().back();
-//                return;
-//        }
 
         // 訪問看護報告書情報取得用のSQL文を取得する。
         // 取得したSQL文を発行する。
@@ -1211,8 +1200,8 @@ public class QC002 extends QC002Event {
                 String key = "CALENDAR_" + monthInfo + "_DAY"
                         + map.getData("VISIT_DATE_OF_DAY");
 
-                // カウントから2回以上の訪問か判断
-                if (Integer.parseInt(String.valueOf(map.getData("COUNT"))) <= 1) {
+                // カウントから1回以上の訪問か判断
+                if (Integer.parseInt(String.valueOf(map.getData("COUNT"))) == 1) {
                     // 既に訪問実績があるか確認する。
                     // 訪問実績があった場合
                     // 以下のKEYで格納する。
@@ -1228,9 +1217,10 @@ public class QC002 extends QC002Event {
                     // KEY:PATIENT_ID
                     serviceResultMap.setData("PATIENT_ID", new Integer(
                             getPatientID()));
-
-                    // 件数分ループした場合次処理へ
-                } else {
+                    
+                // カウントが２回である場合
+                } else if (ACCastUtilities.toInt(ACCastUtilities.toString(map.getData("COUNT"))) == 2) {
+                    // 2回 ◎ を設定
                     serviceResultMap.setData(key, new Integer(5));
 
                     serviceResultMap.setData("VISIT_DATE", map
@@ -1239,8 +1229,19 @@ public class QC002 extends QC002Event {
                     serviceResultMap.setData("PATIENT_ID", new Integer(
                             getPatientID()));
 
-                }
+                //予防時に対応 2006/05/12
+                //カウントが3回以上である場合
+                } else if (ACCastUtilities.toInt(ACCastUtilities.toString(map.getData("COUNT"))) >= 3){
+                    //3回以上 ◇ を設定
+                    serviceResultMap.setData(key, new Integer(6));
 
+                    serviceResultMap.setData("VISIT_DATE", map
+                            .getData("VISIT_DATE"));
+
+                    serviceResultMap.setData("PATIENT_ID", new Integer(
+                            getPatientID()));
+                }
+                //件数分ループした場合次処理へ
             }
 
         }

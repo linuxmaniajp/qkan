@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/04/10  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/05/25  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -508,9 +508,9 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       providerList.setModelBindPath("PROVIDER_LISTS");
 
-      providerList.setRenderBindPath("PROVIDER_NAME");
+      providerList.setRenderBindPath("SHOW_PROVIDER_NAME");
 
-      providerList.setMaxLength(24);
+      providerList.setMaxColumns(24);
 
       providerList.setModel(getProviderListModel());
 
@@ -1810,7 +1810,6 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QM001Design.class.getName()));
     } catch (Exception e) {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/01/13  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/06/01  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -27,9 +27,7 @@
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qo.qo003;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -37,15 +35,19 @@ import java.io.*;
 import java.sql.SQLException;
 import java.text.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import jp.nichicom.ac.*;
 import jp.nichicom.ac.bind.*;
 import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -76,7 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
+import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 事業所一覧イベント定義(QO003) 
@@ -101,7 +104,7 @@ public abstract class QO003Event extends QO003SQL {
             lockFlag = true;
             try {
                 findActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -117,7 +120,7 @@ public abstract class QO003Event extends QO003SQL {
             lockFlag = true;
             try {
                 detailActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -133,7 +136,7 @@ public abstract class QO003Event extends QO003SQL {
             lockFlag = true;
             try {
                 insertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -149,14 +152,13 @@ public abstract class QO003Event extends QO003SQL {
             lockFlag = true;
             try {
                 deleteActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
-
     getProviderTable().addMouseListener(new MouseAdapter(){
         private boolean lockFlag = false;
         public void mouseClicked(MouseEvent e) {
@@ -166,15 +168,32 @@ public abstract class QO003Event extends QO003SQL {
             lockFlag = true;
             try {
                 if (e.getClickCount() == 2) {
-                	providerTableMouseClicked(e);
+                    providerTableMouseClicked(e);
                 }
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
+    getPrint().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                printActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+
   }
   //コンポーネントイベント
 
@@ -212,6 +231,14 @@ public abstract class QO003Event extends QO003SQL {
    * @throws Exception 処理例外
    */
   protected abstract void providerTableMouseClicked(MouseEvent e) throws Exception;
+
+  /**
+   * 「印刷」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void printActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
   private ACPassiveKey PROVIDER_PASSIVE_CHECK_KEY;
@@ -219,7 +246,7 @@ public abstract class QO003Event extends QO003SQL {
   private String providerId;
   private String deleteErrorMsg;
   private VRMap affairMap = new VRHashMap();
-  private VRMap staffMap;
+  private VRMap staffMap = new VRHashMap();
   private VRList providerList = new VRArrayList();
   private ACTableModelAdapter providerTableModel;
   //getter/setter
@@ -374,7 +401,7 @@ public abstract class QO003Event extends QO003SQL {
    * 「削除処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
-   *
+   * @return boolean
    */
   public abstract boolean doDelete() throws Exception;
 
@@ -393,13 +420,5 @@ public abstract class QO003Event extends QO003SQL {
    *
    */
   public abstract void createFindState() throws Exception;
-
-  /**
-   * 「詳細画面遷移」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void transferNext() throws Exception;
 
 }

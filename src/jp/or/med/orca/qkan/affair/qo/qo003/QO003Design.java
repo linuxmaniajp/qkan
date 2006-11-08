@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/03/12  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2006/06/01  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録／修正 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -93,6 +94,8 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
   private ACAffairButton insert;
 
   private ACAffairButton delete;
+
+  private ACAffairButton print;
 
   private ACPanel contents;
 
@@ -254,6 +257,29 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 印刷ボタンを取得します。
+   * @return 印刷ボタン
+   */
+  public ACAffairButton getPrint(){
+    if(print==null){
+
+      print = new ACAffairButton();
+
+      print.setText("印刷(P)");
+
+      print.setToolTipText("事業所一覧の印刷を実行します。");
+
+      print.setMnemonic('P');
+
+      print.setIconPath(ACConstants.ICON_PATH_PRINT_24);
+
+      addPrint();
+    }
+    return print;
+
+  }
+
+  /**
    * クライアント領域を取得します。
    * @return クライアント領域
    */
@@ -336,11 +362,11 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
 
       findContentproviderType.setModelBindPath("PROVIDER_TYPE");
 
-      findContentproviderType.setModel(getFindContentproviderTypeModel());
-
       findContentproviderType.setRenderBindPath("CONTENT");
 
       findContentproviderType.setBlankable(true);
+
+      findContentproviderType.setModel(getFindContentproviderTypeModel());
 
       addFindContentproviderType();
     }
@@ -752,6 +778,7 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addButtons(){
 
+    buttons.add(getPrint(), VRLayout.EAST);
     buttons.add(getDelete(), VRLayout.EAST);
     buttons.add(getInsert(), VRLayout.EAST);
     buttons.add(getDetail(), VRLayout.EAST);
@@ -783,6 +810,13 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
    * 削除(D)に内部項目を追加します。
    */
   protected void addDelete(){
+
+  }
+
+  /**
+   * 印刷ボタンに内部項目を追加します。
+   */
+  protected void addPrint(){
 
   }
 
@@ -987,7 +1021,6 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO003Design.class.getName()));
     } catch (Exception e) {

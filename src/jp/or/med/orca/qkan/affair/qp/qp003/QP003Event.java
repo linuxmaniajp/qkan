@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/18  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/06/02  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -27,9 +27,7 @@
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qp.qp003;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -49,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -79,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 利用者向け請求詳細編集イベント定義(QP003) 
@@ -105,7 +104,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 insertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -121,7 +120,23 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 updateActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getOpen().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                openActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -137,7 +152,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentJikohutanUse1FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -153,7 +168,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentJikohutanUse2FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -169,7 +184,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentJikohutanUse3FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -185,7 +200,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentEtcUse1FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -201,7 +216,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentEtcUse2FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -217,7 +232,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentEtcUse3FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -233,7 +248,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentEtcUse4FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -249,7 +264,7 @@ public abstract class QP003Event extends QP003SQL {
             lockFlag = true;
             try {
                 contentEtcUse5FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -273,6 +288,13 @@ public abstract class QP003Event extends QP003SQL {
    * @throws Exception 処理例外
    */
   protected abstract void updateActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「直近の訪問看護計画書情報の読込」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void openActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「合計金額の計算」イベントです。

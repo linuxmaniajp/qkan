@@ -240,8 +240,6 @@ public abstract class QO012001Event extends QO012001Design {
 
 	// 変数定義
 
-	private VRMap renderMap = new VRHashMap();
-
 	private VRCSVFile inputCSVFile1;
 
 	private VRCSVFile inputCSVFile2;
@@ -297,25 +295,6 @@ public abstract class QO012001Event extends QO012001Design {
 	public static final int CONTROL_RECORD_FORMAT_4_RECORD_COUNT = 3; // データ件数
 
 	// getter/setter
-
-	/**
-	 * renderMapを返します。
-	 * 
-	 * @return renderMap
-	 */
-	protected VRMap getRenderMap() {
-		return renderMap;
-	}
-
-	/**
-	 * renderMapを設定します。
-	 * 
-	 * @param renderMap
-	 *            renderMap
-	 */
-	protected void setRenderMap(VRMap renderMap) {
-		this.renderMap = renderMap;
-	}
 
 	/**
 	 * inputCSVFile1を返します。

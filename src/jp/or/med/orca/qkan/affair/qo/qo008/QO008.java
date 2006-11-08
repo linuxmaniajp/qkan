@@ -83,7 +83,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -260,11 +259,11 @@ public class QO008 extends QO008Event {
 
             VRMap map = (VRMap) getFixedFormTable().getSelectedModelRowValue();
             setFixedFormId(ACCastUtilities.toInt(map.getData("FIXED_FORM_ID")));
+            setTableType(ACCastUtilities.toInt(map.getData("TABLE_TYPE")));
             
             // 現在選択中の分類に紐づく詳細項目群を取得する。
             if (getListGroupMap() != null) {
-                list = (VRList) getListGroupMap().getData(
-                        String.valueOf(getFixedFormId()));
+                list = (VRList) getListGroupMap().getData(getTableType()+"-"+getFixedFormId());
             }
             // fixedFormTableModelにlistを設定する。
             if(list.size() >= 0){
@@ -344,8 +343,8 @@ public class QO008 extends QO008Event {
         // VRList listを生成する。
         VRList list = new VRArrayList();
         // fixedFormTableModelに設定されているレコード集合をVRList listに格納する。
-        list = (VRList) getListGroupMap().getData(
-                String.valueOf(getFixedFormId()));
+        list = (VRList) getListGroupMap().getData(getTableType()+"-"
+                +getFixedFormId());
         
         
         // 追加可能なデータかどうかチェックする。
@@ -366,7 +365,7 @@ public class QO008 extends QO008Event {
         // KEY：FIXED_FORM_ID VALUE：fixedFormId
         // KEY：CONTENT_SORT VALUE：maxSort + 1
         map.setData("SQL_MODE", new Integer(String.valueOf(SQL_MODE_INSERT)));
-        map.setData("TABLE_TYPE", new Integer(TABLE_TYPE_FIXED_FORM));
+        map.setData("TABLE_TYPE", new Integer(getTableType()));
         map.setData("FIXED_FORM_ID", new Integer(getFixedFormId()));
         map.setData("CONTENT_SORT", new Integer(0));
         // mapをlistに追加する。
@@ -537,8 +536,8 @@ public class QO008 extends QO008Event {
         VRMap map = (VRMap) getFixedFormEditItemTable()
                 .getSelectedModelRowValue();
         //現在選択中の分類に紐づく項目を取得
-        VRList list = (VRList) getListGroupMap().getData(
-                String.valueOf(getFixedFormId()));
+        VRList list = (VRList) getListGroupMap().getData(getTableType()+"-"
+                +getFixedFormId());
         //選択行の１つ上のレコードを取得する。
         VRMap upRowMap = (VRMap) list.getData(getFixedFormEditItemTable()
                 .getSelectedModelRow() - 1);
@@ -571,8 +570,8 @@ public class QO008 extends QO008Event {
     protected void fixedFormEditItemManipulateButtonDownActionPerformed(
             ActionEvent e) throws Exception {
         // 選択行がテーブルの最終行でない場合
-        VRList list = (VRList) getListGroupMap().getData(
-                String.valueOf(getFixedFormId()));
+        VRList list = (VRList) getListGroupMap().getData(getTableType()+"-"
+                +getFixedFormId());
         if (getFixedFormEditItemTable().getSelectedModelRow() >= list.size() - 1) {
             return;
         }
@@ -628,7 +627,7 @@ public class QO008 extends QO008Event {
         setAffairTitle(AFFAIR_ID, getButtons());
 
         setPASSIVE_CHECK_KEY(new ACPassiveKey("FIXED_FORM", new String[] {
-                "FIXED_FORM_ID", "CONTENT_KEY" }, new Format[] { null, null },
+                "TABLE_TYPE", "FIXED_FORM_ID", "CONTENT_KEY" }, new Format[] { null, null, null },
                 "LAST_TIME", "LAST_TIME"));
 
         // ※テーブルモデルの設定
@@ -689,22 +688,33 @@ public class QO008 extends QO008Event {
         // 種類ごとにまとめたMapを生成する。
         createGroupMap(getFixedFormList());
         
-        //定型文が空だった場合のエラートラップ        
-        if(getListGroupMap().getData("1") == null|| getListGroupMap().getData("2") == null){
-            VRList list1 = new VRArrayList();
-            VRList list2 = new VRArrayList();
-            VRMap map = new VRHashMap();
-            //nullの場合は初期値を追加する。
-            if(getListGroupMap().getData("1") == null){
-                map.setData("1",list1);
+        //定型文が空だった場合のエラートラップ
+        VRMap map = new VRHashMap();
+        for(int i=1; i<=2; i++){
+            for(int j=1; j<=2; j++){
+                String key = i+"-"+j;
+                if(getListGroupMap().getData(key) == null){
+                    //listGroupMapにマージする。
+                    map.setData(key,new VRArrayList());
+                }
             }
-            //nullの場合は初期値を追加する。
-            if(getListGroupMap().getData("2") == null){
-                map.setData("2",list2);
-            }
-            //listGroupMapにマージする。
-            getListGroupMap().putAll(map);
-       }
+        }
+        getListGroupMap().putAll(map);
+//        if(getListGroupMap().getData("1") == null|| getListGroupMap().getData("2") == null){
+//            VRList list1 = new VRArrayList();
+//            VRList list2 = new VRArrayList();
+//            VRMap map = new VRHashMap();
+//            //nullの場合は初期値を追加する。
+//            if(getListGroupMap().getData("1") == null){
+//                map.setData("1",list1);
+//            }
+//            //nullの場合は初期値を追加する。
+//            if(getListGroupMap().getData("2") == null){
+//                map.setData("2",list2);
+//            }
+//            //listGroupMapにマージする。
+//            getListGroupMap().putAll(map);
+//       }
         
         // fixedFormTableの1行目を選択した状態に設定する。
         getFixedFormTable().setSelectedSortedFirstRow();
@@ -871,12 +881,14 @@ public class QO008 extends QO008Event {
             // リストから１つMapを取得
             VRMap map = (VRMap) list.getData(i);                        
             map.setData("SQL_MODE", new Integer(SQL_MODE_DEFAULT));
+            
+            String key = ACCastUtilities.toString(map.getData("TABLE_TYPE"))
+                    + "-"
+                    + ACCastUtilities.toString(map.getData("FIXED_FORM_ID"));
             // グループ化するキー名が既に存在しているかをチェックする
-            if (VRBindPathParser.has(String.valueOf(map
-                    .getData("FIXED_FORM_ID")), getListGroupMap())) {
+            if (VRBindPathParser.has(key, getListGroupMap())) {
                 // 該当するリストを取得
-                adder = (VRList) getListGroupMap().getData(
-                        String.valueOf(map.getData("FIXED_FORM_ID")));
+                adder = (VRList) getListGroupMap().getData(key);
                 // リストに追加
                 adder.add(map);
 
@@ -886,8 +898,7 @@ public class QO008 extends QO008Event {
                 // リストに追加                
                 adder.add(map);
                 // 新規のキー名で格納
-                getListGroupMap().setData(
-                        String.valueOf(map.getData("FIXED_FORM_ID")), adder);
+                getListGroupMap().setData(key, adder);
             }
         }
 

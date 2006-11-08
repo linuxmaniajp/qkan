@@ -37,11 +37,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.Format;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -66,9 +69,9 @@ import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.ac.util.ACSplashChaine;
-import jp.nichicom.ac.util.ACSplashable;
 import jp.nichicom.ac.util.adapter.ACListModelAdapter;
+import jp.nichicom.ac.util.splash.ACSplashChaine;
+import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.text.parsers.VRDateParser;
@@ -76,12 +79,15 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 import jp.or.med.orca.qkan.text.QkanJotaiCodeUnapplicableFormat;
+import jp.or.med.orca.qkan.text.QkanServiceAbbreviationFormat;
+import jp.or.med.orca.qkan.text.QkanServiceKindNameFormat;
 
 /**
  * サービス予定(QS001)
@@ -269,7 +275,7 @@ public class QS001 extends QS001Event {
             }
 
         }
-        getYokaigodo().setColumns(getYokaigodo().getText().length());
+        getYokaigodo().setColumns(getYokaigodo().getText().length()+1);
 
         // ※事業者が提供するサービス種類の設定
         // 登録されている事業所が提供するサービスを「サービス種類」に設定する。(どの事業所も提供しないサービスは表示しない)
@@ -296,6 +302,7 @@ public class QS001 extends QS001Event {
         services = QkanCommon.getServicePatternDetail(getDBManager());
         VRMap patterns = new VRHashMap();
         Iterator it = services.iterator();
+        boolean isExistingData = false;
         while (it.hasNext()) {
             VRMap row = (VRMap) it.next();
             Object kind = VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL",
@@ -307,8 +314,94 @@ public class QS001 extends QS001Event {
                 patterns.put(kind, targetPatterns);
             }
             ((VRList) targetPatterns).add(row);
+            // 予防時対応（要望対応）
+            //TODO パターン番号を採番済みであるか調べる
+            if(!isExistingData){
+                for(int i = 0;i<((VRList)targetPatterns).size();i++){
+                    // Mapに格納する
+                    VRMap map = (VRMap)((VRList)targetPatterns).getData(i);
+                    if (VRBindPathParser.has(ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),map)){
+                        // 一度でも該当すれば以降は通らない
+                        isExistingData = true;
+                        break;
+                    }
+                }
+            }
         }
         setServicePatternHash(patterns);
+        
+        if(!isExistingData){
+            // 採番済みでなかった場合
+            //  パターン番号を採番する。
+            it = patterns.values().iterator();
+            while (it.hasNext()) {
+                Object row = it.next();
+                if (row instanceof VRList) {
+                    VRList targetPatterns = (VRList)row;
+                    for(int i = 0;i<((VRList)targetPatterns).size();i++){
+                        VRMap inMap = new VRHashMap();
+                        inMap = (VRMap)((VRList)targetPatterns).getData(i);
+                        // 削除対象に追加
+                        getDeleteReseveServicePatterns().add(inMap);
+                        // 追加対象に追加
+                        getInsertReserveServicePatterns().add(inMap);                        
+                        // 存在しなかった場合（既存データ）
+                        VRBindPathParser.set(ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),inMap,ACCastUtilities.toInteger(i+1));
+                    }
+                }
+            }
+            
+        }else{
+            // 採番済みだった場合
+            // パターン番号を採番する。
+            it = patterns.values().iterator();
+            while (it.hasNext()) {
+                //サービス種類単位でパターンをソートする。
+                Object row = it.next();
+                if (row instanceof VRList) {
+                    VRList targetPatterns = (VRList)row;
+                    Map treeMap = new TreeMap();
+                    ArrayList keyNullList = new ArrayList();
+                    
+                    //パターン番号をキーにしてソートする。
+                    Iterator it2= targetPatterns.iterator();
+                    while(it2.hasNext()){
+                        VRMap  inMap = (VRMap)it2.next();
+                        //パターン番号をキーにしてTreeMapに入れる。自動的にソートがかかる。
+                        Object key = inMap.get(ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH));
+                        if(key==null){
+                            //なぜかサービスパターン番号が存在しなかった場合
+                            keyNullList.add(inMap);
+                            // 削除対象に追加
+                            getDeleteReseveServicePatterns().add(inMap);
+                            // 追加対象に追加
+                            getInsertReserveServicePatterns().add(inMap);                        
+                        }else{
+                            treeMap.put(key,inMap);
+                        }
+                    }
+                    //サービスパターン番号が存在しなかったものに採番する。
+                    it2= keyNullList.iterator();
+                    while(it2.hasNext()){
+                        VRMap  inMap = (VRMap)it2.next();
+                        //現在の登録数+1を採番する。
+                        Integer key = ACCastUtilities
+                                .toInteger(treeMap.size() + 1);
+                        VRBindPathParser
+                                .set(
+                                        ACCastUtilities
+                                                .toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),
+                                        inMap, key);
+                        treeMap.put(key,inMap);
+                    }
+                    
+                    
+                    //ソート結果に差し替える。
+                    targetPatterns.clear();
+                    targetPatterns.addAll(treeMap.values());
+                }
+            }
+        }
 
         // サービス単位計算クラスを生成する。
         VRMap hashedProviders = new VRHashMap();
@@ -345,9 +438,14 @@ public class QS001 extends QS001Event {
         // パターンパネルへセルレンダラを設定する。
         getPatternList().setCellRenderer(cellRenderer);
         getPatternList().setMasterService(masterService);
+        cellRenderer.setPatternList(getPatternList());
         // 月間表へセルレンダラを設定する。
         getMonthlyPanel().setCellRenderer(cellRenderer);
         getMonthlyPanel().setMasterService(masterService);
+        
+        QkanServiceAbbreviationFormat.getInstance().setMasterService(masterService);
+        QkanServiceKindNameFormat.getInstance().setMasterService(masterService);
+        
 
         // 「手」ボタンにドラッグイベントを関連付ける。
         getPicture().addDraggableListener(new ACDraggableListener() {
@@ -444,6 +542,8 @@ public class QS001 extends QS001Event {
             getServiceKindList().setSelectedIndex(0);
         }
 
+        boolean modifiedFlag = false; 
+        
         // ※週間表/月間表の表示切替
         if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
             // 処理タイプ(processType)が予定（PROCESS_TYPE_PLAN）の場合
@@ -493,12 +593,17 @@ public class QS001 extends QS001Event {
                         // 「はい」選択時
                         // 予定データ読込を行なう。
                         doOpenResult();
+                        modifiedFlag = getMonthlyPanel().getScheduleCount()>0;
                     }
                 }
             }
+            
+            // 予防時対応
+            // 週間計画表印刷ボタンを無効にする。
+            setState_RESULT_PRINT_WEEKLY();
         }
 
-        setServiceModify(false);
+        setServiceModify(modifiedFlag);
     }
     
 
@@ -634,12 +739,12 @@ public class QS001 extends QS001Event {
     // 　「QS001031:利用・提供票印刷」画面を生成し、affairで初期化後に表示する。
       int mode;
       if(getProcessType()==QkanConstants.PROCESS_TYPE_PLAN){
-          mode = QkanConstants.SERVICE_DETAIL_GET_PLAN_OF_MONTHLY_ONLY;
+          mode = QkanConstants.SERVICE_DETAIL_GET_PLAN;
       }else{
           mode = QkanConstants.SERVICE_DETAIL_GET_RESULT;
       }
     new QS001031().showModal(getCalcurater(), 
-                getMonthlyPanel().getSchedule(mode),
+                getMonthlyPanel().getSchedule(mode, false),
                 getProcessType());
 
   }
@@ -864,15 +969,60 @@ public class QS001 extends QS001Event {
     protected void patternAddActionPerformed(ActionEvent e) throws Exception {
         // ■サービスパターンの登録
         VRMap service = createServiceData();
+        int emptyNo = -1;
         if (service != null) {
             service = (VRMap)service.clone();
             service.setData("SERVICE_USE_TYPE",
                     QkanConstants.SERVICE_USE_TYPE_PATTERN);
             
+            // 予防時対応（要望対応）
+            // 2006/05 TODO
+            boolean isEmptyNo = false;
+            Object obj = getPatternList().getModelAtBindSource(); 
+            while(obj instanceof VRListModelAdapter){
+                obj = ((VRListModelAdapter)obj).getAdaptee();
+            }
+            if(obj instanceof VRList){                
+                // リストの数ループ処理
+                VRList list = ((VRList)obj);
+                VRMap inMap = new VRHashMap();
+                // リスト内の内部番号をinMapに格納する。
+                for(int k= 0; k<list.size();k++ ){
+                    VRMap map = new VRHashMap();
+                    map = (VRMap)list.getData(k);
+                    if(VRBindPathParser.has(ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),map)){
+                        inMap.put(ACCastUtilities.toString(map.getData(ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH))),"");
+                    }else{
+                        inMap.put(ACCastUtilities.toString(k+1),"");
+                    }
+                }
+                
+                // 採番に使う番号を取得する
+                int count = 0;
+                for(int j = 0;j<list.size()+1;j++){
+                    count++;
+                    if(!VRBindPathParser.has(ACCastUtilities.toString(j+1),inMap)){
+                        // 空き番号
+                        emptyNo = j+1;
+                        break;
+                    }
+                }
+                // 空き番号があるのか
+                if(count <= list.size()){
+                    isEmptyNo = true;
+                }
+                
+                service.setData(ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),new Integer(emptyNo));
+            }
+            
             service.setData("REGULATION_RATE", new Integer(0));
             
             // 設定内容でサービスパターンを追加
-            getNowServicePatterns().add(service);
+            if(isEmptyNo){
+                getNowServicePatterns().add(emptyNo-1,service);
+            }else{
+                getNowServicePatterns().add(service);
+            }
             //ユニークキーの削除
             service.remove("SERVICE_ID");
             getInsertReserveServicePatterns().add(service);
@@ -900,6 +1050,8 @@ public class QS001 extends QS001Event {
         VRMap pattern = (VRMap) getPatternList().getSelectedValue();
         getNowServicePatterns().remove(pattern);
         getDeleteReseveServicePatterns().add(pattern);
+        // 追加対象から削る
+        getInsertReserveServicePatterns().remove(pattern);
         
         // サービスパターンリストを更新する。
         getPatternList().setModel(
@@ -921,12 +1073,16 @@ public class QS001 extends QS001Event {
         // ※選択した事業所情報に応じた、サービス内容の項目の状態設定
         // 　現在設定されている「詳細項目(サービスのパネル)」に対し、選択した事業所に応じた状態設定を行う。(providerSelected)
         if (getServiceOfferEntrepreneur().isSelected()) {
-            if (getSelectedServiceClass() != null) {
-                if (getSelectedServiceClass().isUseProvider()) {
+            QS001Service service =  getSelectedServiceClass();
+            if (service != null) {
+                if (service.isUseProvider()) {
+                    VRMap provider =(VRMap) getServiceOfferEntrepreneur()
+                    .getSelectedModelItem(); 
+                    if(service instanceof QS001ServicePanel){
+                        ((QS001ServicePanel)service).setSelectedProvider(provider);
+                    }
 //                    getSelectedServiceClass().initialize();
-                    getSelectedServiceClass().providerSelected(
-                            (VRMap) getServiceOfferEntrepreneur()
-                                    .getSelectedModelItem());
+                    getSelectedServiceClass().providerSelected(provider);
                 }
             }
         }
@@ -1007,20 +1163,38 @@ public class QS001 extends QS001Event {
                                             .get(
                                                     QkanConstants.SERVICE_SYSTEM_BIND_PATH_SPAN,
                                                     service));
+                } else if (getSelectedServiceListBox() == getPatternList()) {
+                    // 予防時対応（要望対応） 
+                    // 2005/06
+                    data
+                            .setData(
+                                    ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),
+                                    VRBindPathParser
+                                            .get(
+                                                    ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),
+                                                    service));
+                    
                 }
-
+                
+                int selectedIndex=-1;
+                if(getSelectedServiceListBox()!=null){
+                    selectedIndex=getSelectedServiceListBox().getSelectedIndex();
+                }
+                
                 int rate = ACCastUtilities.toInt(
                         service.get("REGULATION_RATE"), 0);
                 Object oldDate = service.get("SERVICE_DATE");
 
+                setServiceListLockFlag(true);
                 service.clear();
                 service.putAll(data);
+                setServiceListLockFlag(false);
                 
                 service.put("SERVICE_DATE", oldDate);
-
+                
                 // 変更後の割引後単位数が自費調整額を超える場合、自費調整額を割引後単位数にする。
                 if (rate > 0) {
-                    // TODO 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象？
+                    // 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象
                     int limit = getCalcurater()
                             .getReductedUnit(
                                     service,
@@ -1035,6 +1209,10 @@ public class QS001 extends QS001Event {
                 }
                 setServiceModify(true);
 
+                if(getSelectedServiceListBox()!=null){
+                    getSelectedServiceListBox().setSelectedIndex(selectedIndex);
+                }
+                
                 if (getWeeklyPanel() != null) {
                     getWeeklyPanel().invalidate();
                     getWeeklyPanel().repaint();
@@ -1110,7 +1288,48 @@ public class QS001 extends QS001Event {
      * @throws Exception 処理例外
      */
     public boolean checkValidInput() throws Exception {
+        VRList list = new VRArrayList();
+        list.addAll(getMonthlyPanel().getSchedule(
+                QkanConstants.SERVICE_DETAIL_GET_RESULT, false));
+        Iterator it = list.iterator();
         // ■入力チェック
+        final String[] SENMONIN_NO_TYPE = new String[] { "1430107", "1730104",
+                "1750104","1460103" };
+        // 予防時対応（要望）
+        // 2005/05/31
+        // ※介護支援専門員番号が未入力の場合の未入力チェック
+        while (it.hasNext()) {
+            VRMap row = (VRMap) it.next();
+            if(CareServiceCommon.isCareManagement(row)||CareServiceCommon.isFacilityVisitMultifunction(row)){
+                // 初期化＋宣言
+                boolean isInputSenmoninNo = false;
+                // 介護支援専門員番号の数だけループ処理
+                for (int i = 0; i < SENMONIN_NO_TYPE.length; i++) {
+                Object obj = VRBindPathParser.get(SENMONIN_NO_TYPE[i], row);
+                    // 介護支援専門員番号テキストの状態を走査
+                    if (!ACTextUtilities.isNullText(obj)) {
+                        isInputSenmoninNo = true;
+                        // 処理を抜ける
+                        break;
+                    }
+                }
+                // 専門員番号が入力されていなかった場合
+                if(!isInputSenmoninNo){
+                    // エラーメッセージを表示する。
+                    if(QkanMessageList.getInstance().QS001_WARNING_OF_SENMONIN_NO()==ACMessageBox.RESULT_OK){
+                        // 1度メッセージを出したらもう出さない
+                        break;
+                    }else{
+                        // OK以外は処理を中止
+                        return false;
+                    }
+
+                }
+            }
+        }
+
+        it = list.iterator();
+
         // ※居宅療養管理指導・回数チェック
         // 居宅療養管理指導サービスのサービス回数をチェックする(月間表)。それぞれの上限回数は下記のとおりとする。
         // 医師・歯科医師 : 2回
@@ -1125,9 +1344,6 @@ public class QS001 extends QS001Event {
 
         final Integer VISITOR_TYPE_PATH = new Integer(1310103);
         final Integer GAN_PATH = new Integer(1310110);
-        VRList list = new VRArrayList();
-        list.addAll(getMonthlyPanel().getSchedule(
-                QkanConstants.SERVICE_DETAIL_GET_RESULT));
 
         final int VISITOR_TYPE_COUNT = 7;
         // [職員区分][第n週]の訪問回数
@@ -1137,7 +1353,6 @@ public class QS001 extends QS001Event {
         // [職員区分]のがん末期フラグ
         int[] ganFlags = new int[VISITOR_TYPE_COUNT];
 
-        Iterator it = list.iterator();
         while (it.hasNext()) {
             VRMap row = (VRMap) it.next();
             // 居宅療養管理指導の職員区分を取得
@@ -1272,6 +1487,24 @@ public class QS001 extends QS001Event {
 
             getMonthlyPanel().setSchedule(schedules);
             getWeeklyPanel().setSchedule(schedules);
+            
+
+            // ※計画単位数を取得
+            VRMap planUnits = new VRHashMap();
+            Iterator it = schedules.iterator();
+            while (it.hasNext()) {
+                // 取得した情報を走査し、システム管理サービスを含むかを調べる。
+                VRMap row = (VRMap) it.next();
+                if (CareServiceCommon.isPlanUnitService(row)) {
+                    // システム管理サービスを発見した場合
+                    Object obj  = VRBindPathParser.get("PROVIDER_ID", row);
+                    if(obj != null){
+                        //事業所番号がnullでない場合
+                        planUnits.setData(obj, row);
+                    }
+                }
+            }
+            getMonthlyPanel().setServicePlanUnits(planUnits);
         }
     }
 
@@ -1310,13 +1543,41 @@ public class QS001 extends QS001Event {
                 // 月間表・週間表からdetailsを取る
                 details.addAll(getWeeklyPanel().getSchedule());
                 details.addAll(getMonthlyPanel().getSchedule(
-                        QkanConstants.SERVICE_DETAIL_GET_PLAN));
+                        QkanConstants.SERVICE_DETAIL_GET_PLAN, true));
             } else if (getProcessType() == QkanConstants.PROCESS_TYPE_RESULT) {
                 insertUseType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
                 // 月間表からdetailsを取る
                 details.addAll(getWeeklyPanel().getSchedule());
                 details.addAll(getMonthlyPanel().getSchedule(
-                        QkanConstants.SERVICE_DETAIL_GET_RESULT));
+                        QkanConstants.SERVICE_DETAIL_GET_RESULT, true));
+                
+                // 計画単位数を保存する。
+                Iterator it = getMonthlyPanel().getServicePlanUnits().values().iterator();
+                while (it.hasNext()) {
+                    VRMap planUnits = (VRMap) it.next();
+                    if ((planUnits != null) && (!planUnits.isEmpty())) {
+                        final Integer zero = new Integer(0);
+                        VRMap systemService = new VRHashMap();
+                        VRBindPathParser
+                                .set(
+                                        "SERVICE_USE_TYPE",
+                                        systemService,
+                                        QkanConstants.SERVICE_USE_TYPE_RESULT_MONTHLY_DAY);
+                        VRBindPathParser.set("PROVIDER_ID", systemService, "");
+                        VRBindPathParser
+                                .set(
+                                        "SYSTEM_SERVICE_KIND_DETAIL",
+                                        systemService,
+                                        QkanConstants.SERVICE_KIND_DETAIL_SYSTEM_SERVICE);
+                        VRBindPathParser.set("SERVICE_DATE", systemService,
+                                getTargetDate());
+                        VRBindPathParser.set("WEEK_DAY", systemService, zero);
+                        VRBindPathParser.set("REGULATION_RATE", systemService,
+                                zero);
+                        systemService.putAll(planUnits);
+                        details.add(systemService);
+                    }
+                }
             }
 
             // 共通パラメタを設定する。
@@ -1436,7 +1697,8 @@ public class QS001 extends QS001Event {
     public void checkServicePatternSelected() throws Exception {
         // ■サービスパターンの選択/未選択チェック
         // 「サービスパターン(patternList)」内の項目が選択されているかどうかをチェックする。
-        if ((!getPatternList().isSelectionEmpty())) {
+        if ((!getPatternList().isSelectionEmpty())
+                && (getSelectedServiceListBox() == getPatternList())) {
             // 選択されている場合
             // 「サービスパターン削除(patternDelete)」を有効にする。
             setState_SERVICE_PATTERN_SELECTED();
@@ -1519,115 +1781,156 @@ public class QS001 extends QS001Event {
         // ※現在選択中の独自サービス種類コード(selectedServiceKind)をもとにサービスパターンクラス(QS001003～)を生成して返す。
         switch (getSelectedServiceKind()) {
         //平成18年4月改正分
-        case 11111:
-            return new QS001101();  //訪問介護
-        case 11211:
-            return new QS001102();  //訪問入浴介護
-        case 11311:
-            return new QS001103();  //訪問看護(介護保険)
-//        case 20101:
-//            return new QS001104();  //訪問看護(医療保険)
-        case 11411:
-            return new QS001105();  //訪問リハビリテーション
-        case 11511:
-            return new QS001107();  //通所介護
-        case 11611:
-            return new QS001108();  //通所リハビリテーション
-        case 11711:
-            return new QS001116();  //福祉用具貸与
-        case 12111:
-            return new QS001109();  //短期入所生活介護
-        case 12211:
-            return new QS001110();  //短期入所療養介護(老健)
-        case 12311:
-            return new QS001111();  //短期入所療養介護(療養病床を有する病院)
-        case 12312:
-            return new QS001112();  //短期入所療養介護(療養病床を有する診療所)
-        case 12313:
-            return new QS001113();  //短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
-        case 12314:
-            return new QS001114();  //短期入所療養介護(基準適合診療所)
-        case 13111:
-            return new QS001106(); // 居宅療養管理指導
-        case 13211:
-            return new QS001126();  //認知症対応型共同生活介護(短期利用以外)
-        case 13311:
-            return new QS001115();  //特定施設入居者生活介護
-        case 13611:
-            return new QS001128();  //地域密着型特定施設入居者生活介護
-        case 13811:
-            return new QS001127();  //認知症対応型共同生活介護(短期利用)
-        case 14311:
-            return new QS001117();  //居宅介護支援
-        case 15111:
-            return new QS001118();  //介護老人福祉施設
-        case 15211:
-            return new QS001119();  //介護老人保健施設
-        case 15311:
-            return new QS001120();  //介護療養型医療施設(療養病床を有する病院)
-        case 15312:
-            return new QS001121();  //介護療養型医療施設(療養病床を有する診療所)
-        case 15313:
-            return new QS001122();  //介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
-        case 15411:
-            return new QS001129();  //地域密着型介護福祉施設
-        case 17111:
-            return new QS001123();  //夜間対応型訪問介護
-        case 17211:
-            return new QS001124();  //認知症対応型通所介護
-        case 17311:
-            return new QS001125();  //小規模多機能型居宅介護
+        case 11111://訪問介護
+            return new QS001101();  
+        case 11211://訪問入浴介護
+            return new QS001102();  
+        case 11311://訪問看護(介護保険)
+            return new QS001103();  
+//        case 20101://訪問看護(医療保険)
+//            return new QS001104();  
+        case 11411://訪問リハビリテーション
+            return new QS001105();  
+        case 11511://通所介護
+            return new QS001107();  
+        case 11611://通所リハビリテーション
+            return new QS001108();  
+        case 11711://福祉用具貸与
+            return new QS001116();  
+        case 12111://短期入所生活介護
+            return new QS001109();  
+        case 12211://短期入所療養介護(老健)
+            return new QS001110();  
+        case 12311://短期入所療養介護(療養病床を有する病院)
+            return new QS001111();  
+        case 12312://短期入所療養介護(療養病床を有する診療所)
+            return new QS001112();  
+        case 12313://短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
+            return new QS001113();  
+        case 12314://短期入所療養介護(基準適合診療所)
+            return new QS001114();  
+        case 13111:// 居宅療養管理指導
+            return new QS001106(); 
+        case 13211://認知症対応型共同生活介護(短期利用以外)
+            return new QS001126();  
+        case 13311://特定施設入居者生活介護
+            return new QS001115();  
+        case 13611://地域密着型特定施設入居者生活介護
+            return new QS001128();  
+        case 13811://認知症対応型共同生活介護(短期利用)
+            return new QS001127();  
+        case 14311://居宅介護支援
+            return new QS001117();  
+        case 15111://介護老人福祉施設
+            return new QS001118();  
+        case 15211://介護老人保健施設
+            return new QS001119();  
+        case 15311://介護療養型医療施設(療養病床を有する病院)
+            return new QS001120();  
+        case 15312://介護療養型医療施設(療養病床を有する診療所)
+            return new QS001121();  
+        case 15313://介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
+            return new QS001122();  
+        case 15411://地域密着型介護福祉施設
+            return new QS001129();  
+        case 17111://夜間対応型訪問介護
+            return new QS001123();  
+        case 17211://認知症対応型通所介護
+            return new QS001124();  
+        case 17311://小規模多機能型居宅介護
+            return new QS001125();  
+        case 90101:// その他
+            return new QS001026(); 
+        case 90201:// 主な日常生活上の活動
+            return new QS001027(); 
+            //平成18年4月予防
+        case 16111: //介護予防訪問介護
+            return new QS001130();
+        case 16211: //介護予防訪問入浴介護
+            return new QS001131();
+        case 16311: //介護予防訪問看護
+            return new QS001132();
+        case 16411: //介護予防訪問リハ
+            return new QS001133();
+        case 16511: //介護予防通所介護
+            return new QS001135();
+        case 16611: //介護予防通所リハ
+            return new QS001136();
+        case 16711: //介護予防福祉用具貸与
+            return new QS001144();
+        case 12411: //介護予防短期入所生活介護
+            return new QS001137();
+        case 12511: //介護予防短期入所療養介護（老健）
+            return new QS001138();
+        case 12611: //介護予防短期入所療養介護（病院）
+            return new QS001139();
+        case 12612: //介護予防短期入所療養介護（診療所）
+            return new QS001140();
+        case 12613: //介護予防短期入所療養介護（認知症疾患型）
+            return new QS001141();
+        case 12614: //介護予防短期入所療養介護（基準適合型診療所）
+            return new QS001142();
+        case 13411: //介護予防居宅療養管理指導
+            return new QS001134();
+        case 13511: //介護予防特定施設入居者生活介護
+            return new QS001143();
+        case 14611: //介護予防支援
+            return new QS001145();
+        case 17411: //介護予防認知症対応型通所介護
+            return new QS001146();
+        case 17511: //介護予防小規模多機能型居宅介護
+            return new QS001147();
+        case 13711: //介護予防認知症対応型共同生活介護（短期利用以外）
+            return new QS001148();
+        case 13911: //介護予防認知症対応型共同生活介護（短期利用）
+            return new QS001149();
             //平成17年10月改正分
-        case 11101:
-            return new QS001003(); // 訪問介護
-        case 11201:
-            return new QS001004(); // 訪問入浴介護
-        case 11301:
-            return new QS001005(); // 訪問看護(介護保険)
-        case 20101:
-            return new QS001006(); // 訪問看護(医療保険)
-        case 11401:
-            return new QS001007(); // 訪問リハビリテーション
-        case 11501:
-            return new QS001008(); // 通所介護
-        case 11601:
-            return new QS001009(); // 通所リハビリテーション
-        case 11701:
-            return new QS001010(); // 福祉用具貸与
-        case 12101:
-            return new QS001011(); // 短期入所生活介護
-        case 12201:
-            return new QS001012(); // 短期入所療養介護(老健)
-        case 12301:
-            return new QS001013(); // 短期入所療養介護(療養病床を有する病院)
-        case 12302:
-            return new QS001014(); // 短期入所療養介護(療養病床を有する診療所)
-        case 12303:
-            return new QS001015(); // 短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
-        case 12304:
-            return new QS001016(); // 短期入所療養介護(基準適合診療所)
-        case 13101:
-            return new QS001017(); // 居宅療養管理指導
-        case 13201:
-            return new QS001018(); // 認知症対応型共同生活介護
-        case 13301:
-            return new QS001019(); // 特定施設入所者生活介護
-        case 14301:
-            return new QS001020(); // 居宅介護支援
-        case 15101:
-            return new QS001021(); // 介護老人福祉施設
-        case 15201:
-            return new QS001022(); // 介護老人保健施設
-        case 15301:
-            return new QS001023(); // 介護療養型医療施設(療養病床を有する病院)
-        case 15302:
-            return new QS001024(); // 介護療養型医療施設(療養病床を有する診療所)
-        case 15303:
-            return new QS001025(); // 介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
-        case 90101:
-            return new QS001026(); // その他
-        case 90201:
-            return new QS001027(); // 主な日常生活上の活動
+        case 11101:// 訪問介護
+            return new QS001003(); 
+        case 11201:// 訪問入浴介護
+            return new QS001004(); 
+        case 11301:// 訪問看護(介護保険)
+            return new QS001005(); 
+        case 20101:// 訪問看護(医療保険)
+            return new QS001006(); 
+        case 11401:// 訪問リハビリテーション
+            return new QS001007(); 
+        case 11501:// 通所介護
+            return new QS001008(); 
+        case 11601:// 通所リハビリテーション
+            return new QS001009(); 
+        case 11701:// 福祉用具貸与
+            return new QS001010(); 
+        case 12101:// 短期入所生活介護
+            return new QS001011(); 
+        case 12201:// 短期入所療養介護(老健)
+            return new QS001012(); 
+        case 12301:// 短期入所療養介護(療養病床を有する病院)
+            return new QS001013(); 
+        case 12302:// 短期入所療養介護(療養病床を有する診療所)
+            return new QS001014(); 
+        case 12303:// 短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
+            return new QS001015(); 
+        case 12304:// 短期入所療養介護(基準適合診療所)
+            return new QS001016(); 
+        case 13101:// 居宅療養管理指導
+            return new QS001017(); 
+        case 13201:// 認知症対応型共同生活介護
+            return new QS001018(); 
+        case 13301:// 特定施設入所者生活介護
+            return new QS001019(); 
+        case 14301:// 居宅介護支援
+            return new QS001020(); 
+        case 15101:// 介護老人福祉施設
+            return new QS001021(); 
+        case 15201:// 介護老人保健施設
+            return new QS001022(); 
+        case 15301:// 介護療養型医療施設(療養病床を有する病院)
+            return new QS001023(); 
+        case 15302:// 介護療養型医療施設(療養病床を有する診療所)
+            return new QS001024(); 
+        case 15303:// 介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
+            return new QS001025(); 
         }
 
         return null;
@@ -1772,6 +2075,10 @@ public class QS001 extends QS001Event {
         if (e.getValueIsAdjusting()) {
             return;
         }
+        if(getServiceListLockFlag()){
+            //多重再帰防止
+            return;
+        }
         QS001DaySchedule oldSelectedList = getSelectedServiceListBox();
         Object lock = oldSelectedList;
         if (lock == null) {
@@ -1779,6 +2086,7 @@ public class QS001 extends QS001Event {
         }
         synchronized (lock) {
             setSelectedServiceListBox((QS001DaySchedule) e.getSource());
+            
             if ((getSelectedServiceListBox() != null)
                     && (getSelectedServiceListBox().isSelected())) {
                 // サービスを選択している場合
@@ -1835,7 +2143,9 @@ public class QS001 extends QS001Event {
                 if (oldSelectedList != getSelectedServiceListBox()) {
                     if (oldSelectedList.isSelected()) {
                         // 過去に選択していたリストの選択を解除する。
+                        setServiceListLockFlag(true);
                         oldSelectedList.clearSelection();
+                        setServiceListLockFlag(false);
                     }
                 }
             }
@@ -1871,10 +2181,18 @@ public class QS001 extends QS001Event {
         if (getSelectedServiceListBox() != null) {
             // サービス選択中のリスト(serviceSelectedListBox)がnullでない場合
             //            サービス選択中のリスト(serviceSelectedListBox)に選択サービスの削除を指示する。
+            Component oldSelectCmp=null;
+            if(getSharedFocusCellRenderer()!=null){
+                oldSelectCmp = getSharedFocusCellRenderer().getSharedFocusedOwner();
+            }
             getSelectedServiceListBox().removeSelectedSchedule();
             //                サービス未選択状態にする。   
             if((!getSelectedServiceListBox().isSelected())||(getSelectedServiceListBox().getSelectedValue()==null)){
                 setState_SERVICE_UNSELECTED();
+            }else{
+                if(oldSelectCmp!=null){
+                    getSharedFocusCellRenderer().setSharedFocusedOwner(oldSelectCmp);
+                }
             }
             setServiceModify(true);
         }
@@ -1970,6 +2288,7 @@ public class QS001 extends QS001Event {
             ((QS001ServicePanel)serviceClass).setDBManager(getDBManager());
             ((QS001ServicePanel)serviceClass).setOldFacilityUser(getOldFacilityUserFlag()==2);
             ((QS001ServicePanel)serviceClass).setPlanMode(getProcessType()==QkanConstants.PROCESS_TYPE_PLAN);
+            ((QS001ServicePanel)serviceClass).setCalculater(getCalcurater());
         }
         // サービス内容設定領域(serviceContentSettings)の子項目を破棄し、生成したサービスパターンクラスを子項目として追加する。
         getServiceContentSettings().removeAll();
@@ -1986,21 +2305,31 @@ public class QS001 extends QS001Event {
             setSelectedServiceClass(null);
         }
 
-//        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
-//            // 処理タイプ(processType)が予定（PROCESS_TYPE_PLAN）の場合
 
-            if (serviceKind == DAYLY_LIFE_SERVICE) {
-                // 取得されたサービスが「主な日常生活上の活動」である場合
-                // 「週間表」の「月」～「日」のチェックボックスを非表示に、「週単位以外のサービス」以下を無効にする。
-                // setDailylifeCheckEnabled(true);
-                getWeeklyPanel().setDailylifeCheckEnabled(true);
-            } else {
-                // 取得されたサービスが「主な日常生活上の活動」以外の場合
-                // 「週間表」の「月」～「日」のチェックボックスを表示し、「週単位以外のサービス」以下を有効にする。
-                // setDailylifeCheckEnabled(false);
-                getWeeklyPanel().setDailylifeCheckEnabled(false);
+        if (serviceKind == DAYLY_LIFE_SERVICE) {
+            // 取得されたサービスが「主な日常生活上の活動」である場合
+            // 「週間表」の「月」～「日」のチェックボックスを非表示に、「週単位以外のサービス」以下を無効にする。
+            // setDailylifeCheckEnabled(true);
+            getWeeklyPanel().setDailylifeCheckEnabled(true);
+        } else {
+            // 取得されたサービスが「主な日常生活上の活動」以外の場合
+            // 「週間表」の「月」～「日」のチェックボックスを表示し、「週単位以外のサービス」以下を有効にする。
+            // setDailylifeCheckEnabled(false);
+            getWeeklyPanel().setDailylifeCheckEnabled(false);
+
+            if(CareServiceCommon.isWelfareEquipment(service)){
+                //福祉用具貸与の場合
+                //期間は常に1日とし、期間コンボを操作不可とする。
+                getWeeklyPanel().getExceptionEndCombo().setSelectedIndex(1);
+                getWeeklyPanel().setState_WELFARE_EQUIPMENT_SELECTED();
+            }else{
+                //福祉用具貸与以外の場合
+                //期間コンボを操作可能とする。
+                getWeeklyPanel().getExceptionEndCombo().setSelectedIndex(0);
+                getWeeklyPanel().setState_WELFARE_EQUIPMENT_UNSELECTED();
             }
-//        }
+        }
+
         // ※登録済みパターンの設定
         // 選択されたサービスの、登録済みパターンを取得・設定する。
         Object patterns = getServicePatternHash().get(

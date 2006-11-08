@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2006/03/31  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2006/06/08  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -180,6 +181,22 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn kaigoInfoTableColumn7;
 
+  private ACPanel kaigoInfoServices;
+
+  private ACGroupBox kaigoInfoService;
+
+  private ACLabel kaigoInfoServiceComment;
+
+  private ACTable kaigoInfoServiceTable;
+
+  private VRTableColumnModel kaigoInfoServiceTableColumnModel;
+
+  private ACTableColumn kaigoInfoServiceTableColumn1;
+
+  private ACTableColumn kaigoInfoServiceTableColumn2;
+
+  private ACTableColumn kaigoInfoServiceTableColumn3;
+
   private ACPanel points2;
 
   private VRLayout iryoLayout;
@@ -253,6 +270,22 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn iryoInfoTableColumn6;
 
   private ACTableColumn iryoInfoTableColumn7;
+
+  private ACPanel iryoInfoServices;
+
+  private ACGroupBox iryoInfoService;
+
+  private ACLabel iryoInfoServiceComment;
+
+  private ACTable iryoInfoServiceTable;
+
+  private VRTableColumnModel iryoInfoServiceTableColumnModel;
+
+  private ACTableColumn iryoInfoServiceTableColumn1;
+
+  private ACTableColumn iryoInfoServiceTableColumn2;
+
+  private ACTableColumn iryoInfoServiceTableColumn3;
 
   private ACPanel points3;
 
@@ -425,7 +458,7 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
 
       patientName.setBindPath("PATIENT_NAME");
 
-      patientName.setColumns(30);
+      patientName.setColumns(35);
 
       addPatientName();
     }
@@ -1213,6 +1246,157 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 介護公費領域・サービスを取得します。
+   * @return 介護公費領域・サービス
+   */
+  public ACPanel getKaigoInfoServices(){
+    if(kaigoInfoServices==null){
+
+      kaigoInfoServices = new ACPanel();
+
+      kaigoInfoServices.setVisible(false);
+
+      addKaigoInfoServices();
+    }
+    return kaigoInfoServices;
+
+  }
+
+  /**
+   * サービス・グループを取得します。
+   * @return サービス・グループ
+   */
+  public ACGroupBox getKaigoInfoService(){
+    if(kaigoInfoService==null){
+
+      kaigoInfoService = new ACGroupBox();
+
+      kaigoInfoService.setText("給付対象サービス");
+
+      kaigoInfoService.setAutoWrap(false);
+
+      addKaigoInfoService();
+    }
+    return kaigoInfoService;
+
+  }
+
+  /**
+   * 説明文ラベル・介護を取得します。
+   * @return 説明文ラベル・介護
+   */
+  public ACLabel getKaigoInfoServiceComment(){
+    if(kaigoInfoServiceComment==null){
+
+      kaigoInfoServiceComment = new ACLabel();
+
+      kaigoInfoServiceComment.setText("公費の対象となるサービスにチェックをつけてください。");
+
+      kaigoInfoServiceComment.setIconPath(ACConstants.ICON_PATH_INFORMATION_16);
+
+      addKaigoInfoServiceComment();
+    }
+    return kaigoInfoServiceComment;
+
+  }
+
+  /**
+   * 公費・使用サービステーブルを取得します。
+   * @return 公費・使用サービステーブル
+   */
+  public ACTable getKaigoInfoServiceTable(){
+    if(kaigoInfoServiceTable==null){
+
+      kaigoInfoServiceTable = new ACTable();
+
+      kaigoInfoServiceTable.setColumns(36);
+
+      kaigoInfoServiceTable.setColumnModel(getKaigoInfoServiceTableColumnModel());
+
+      kaigoInfoServiceTable.setColumnSort(false);
+
+      addKaigoInfoServiceTable();
+    }
+    return kaigoInfoServiceTable;
+
+  }
+
+  /**
+   * 公費・使用サービステーブルカラムモデルを取得します。
+   * @return 公費・使用サービステーブルカラムモデル
+   */
+  protected VRTableColumnModel getKaigoInfoServiceTableColumnModel(){
+    if(kaigoInfoServiceTableColumnModel==null){
+      kaigoInfoServiceTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addKaigoInfoServiceTableColumnModel();
+    }
+    return kaigoInfoServiceTableColumnModel;
+  }
+
+  /**
+   * 列：提供を取得します。
+   * @return 列：提供
+   */
+  public ACTableColumn getKaigoInfoServiceTableColumn1(){
+    if(kaigoInfoServiceTableColumn1==null){
+
+      kaigoInfoServiceTableColumn1 = new ACTableColumn(0);
+
+      kaigoInfoServiceTableColumn1.setHeaderValue("提供");
+
+      kaigoInfoServiceTableColumn1.setEditable(true);
+
+      kaigoInfoServiceTableColumn1.setColumns(3);
+
+      kaigoInfoServiceTableColumn1.setRendererType(VRTableCellViewer.RENDERER_TYPE_CHECK_BOX);
+
+      kaigoInfoServiceTableColumn1.setEditorType(VRTableCellViewer.EDITOR_TYPE_CHECK_BOX);
+
+      addKaigoInfoServiceTableColumn1();
+    }
+    return kaigoInfoServiceTableColumn1;
+
+  }
+
+  /**
+   * 列：サービス種類を取得します。
+   * @return 列：サービス種類
+   */
+  public ACTableColumn getKaigoInfoServiceTableColumn2(){
+    if(kaigoInfoServiceTableColumn2==null){
+
+      kaigoInfoServiceTableColumn2 = new ACTableColumn(1);
+
+      kaigoInfoServiceTableColumn2.setHeaderValue("サービス種類");
+
+      kaigoInfoServiceTableColumn2.setColumns(25);
+
+      addKaigoInfoServiceTableColumn2();
+    }
+    return kaigoInfoServiceTableColumn2;
+
+  }
+
+  /**
+   * 列：帳票種類を取得します。
+   * @return 列：帳票種類
+   */
+  public ACTableColumn getKaigoInfoServiceTableColumn3(){
+    if(kaigoInfoServiceTableColumn3==null){
+
+      kaigoInfoServiceTableColumn3 = new ACTableColumn(2);
+
+      kaigoInfoServiceTableColumn3.setHeaderValue("帳票種類");
+
+      kaigoInfoServiceTableColumn3.setColumns(8);
+
+      addKaigoInfoServiceTableColumn3();
+    }
+    return kaigoInfoServiceTableColumn3;
+
+  }
+
+  /**
    * 医療公費領域を取得します。
    * @return 医療公費領域
    */
@@ -1918,6 +2102,155 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 医療公費領域・サービスを取得します。
+   * @return 医療公費領域・サービス
+   */
+  public ACPanel getIryoInfoServices(){
+    if(iryoInfoServices==null){
+
+      iryoInfoServices = new ACPanel();
+
+      iryoInfoServices.setVisible(false);
+
+      addIryoInfoServices();
+    }
+    return iryoInfoServices;
+
+  }
+
+  /**
+   * サービス・グループを取得します。
+   * @return サービス・グループ
+   */
+  public ACGroupBox getIryoInfoService(){
+    if(iryoInfoService==null){
+
+      iryoInfoService = new ACGroupBox();
+
+      iryoInfoService.setText("給付対象サービス");
+
+      addIryoInfoService();
+    }
+    return iryoInfoService;
+
+  }
+
+  /**
+   * 説明文ラベル・医療を取得します。
+   * @return 説明文ラベル・医療
+   */
+  public ACLabel getIryoInfoServiceComment(){
+    if(iryoInfoServiceComment==null){
+
+      iryoInfoServiceComment = new ACLabel();
+
+      iryoInfoServiceComment.setText("公費の対象となるサービスにチェックをつけてください。");
+
+      iryoInfoServiceComment.setIconPath(ACConstants.ICON_PATH_INFORMATION_16);
+
+      addIryoInfoServiceComment();
+    }
+    return iryoInfoServiceComment;
+
+  }
+
+  /**
+   * 医療公費・使用サービステーブルを取得します。
+   * @return 医療公費・使用サービステーブル
+   */
+  public ACTable getIryoInfoServiceTable(){
+    if(iryoInfoServiceTable==null){
+
+      iryoInfoServiceTable = new ACTable();
+
+      iryoInfoServiceTable.setColumns(25);
+
+      iryoInfoServiceTable.setColumnModel(getIryoInfoServiceTableColumnModel());
+
+      iryoInfoServiceTable.setColumnSort(false);
+
+      addIryoInfoServiceTable();
+    }
+    return iryoInfoServiceTable;
+
+  }
+
+  /**
+   * 医療公費・使用サービステーブルカラムモデルを取得します。
+   * @return 医療公費・使用サービステーブルカラムモデル
+   */
+  protected VRTableColumnModel getIryoInfoServiceTableColumnModel(){
+    if(iryoInfoServiceTableColumnModel==null){
+      iryoInfoServiceTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addIryoInfoServiceTableColumnModel();
+    }
+    return iryoInfoServiceTableColumnModel;
+  }
+
+  /**
+   * 列：提供を取得します。
+   * @return 列：提供
+   */
+  public ACTableColumn getIryoInfoServiceTableColumn1(){
+    if(iryoInfoServiceTableColumn1==null){
+
+      iryoInfoServiceTableColumn1 = new ACTableColumn(0);
+
+      iryoInfoServiceTableColumn1.setHeaderValue("提供");
+
+      iryoInfoServiceTableColumn1.setEditable(true);
+
+      iryoInfoServiceTableColumn1.setColumns(3);
+
+      iryoInfoServiceTableColumn1.setRendererType(VRTableCellViewer.RENDERER_TYPE_CHECK_BOX);
+
+      iryoInfoServiceTableColumn1.setEditorType(VRTableCellViewer.EDITOR_TYPE_CHECK_BOX);
+
+      addIryoInfoServiceTableColumn1();
+    }
+    return iryoInfoServiceTableColumn1;
+
+  }
+
+  /**
+   * 列：サービス種類を取得します。
+   * @return 列：サービス種類
+   */
+  public ACTableColumn getIryoInfoServiceTableColumn2(){
+    if(iryoInfoServiceTableColumn2==null){
+
+      iryoInfoServiceTableColumn2 = new ACTableColumn(1);
+
+      iryoInfoServiceTableColumn2.setHeaderValue("サービス種類");
+
+      iryoInfoServiceTableColumn2.setColumns(10);
+
+      addIryoInfoServiceTableColumn2();
+    }
+    return iryoInfoServiceTableColumn2;
+
+  }
+
+  /**
+   * 列：帳票種類を取得します。
+   * @return 列：帳票種類
+   */
+  public ACTableColumn getIryoInfoServiceTableColumn3(){
+    if(iryoInfoServiceTableColumn3==null){
+
+      iryoInfoServiceTableColumn3 = new ACTableColumn(2);
+
+      iryoInfoServiceTableColumn3.setHeaderValue("帳票種類");
+
+      iryoInfoServiceTableColumn3.setColumns(12);
+
+      addIryoInfoServiceTableColumn3();
+    }
+    return iryoInfoServiceTableColumn3;
+
+  }
+
+  /**
    * 社会福祉軽減領域を取得します。
    * @return 社会福祉軽減領域
    */
@@ -2461,6 +2794,7 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
 
     points1.add(getKaigoInfos(), VRLayout.CLIENT);
 
+    points1.add(getKaigoInfoServices(), VRLayout.EAST);
   }
 
   /**
@@ -2774,12 +3108,81 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 介護公費領域・サービスに内部項目を追加します。
+   */
+  protected void addKaigoInfoServices(){
+
+    kaigoInfoServices.add(getKaigoInfoService(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * サービス・グループに内部項目を追加します。
+   */
+  protected void addKaigoInfoService(){
+
+    kaigoInfoService.add(getKaigoInfoServiceComment(), VRLayout.NORTH);
+
+    kaigoInfoService.add(getKaigoInfoServiceTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 説明文ラベル・介護に内部項目を追加します。
+   */
+  protected void addKaigoInfoServiceComment(){
+
+  }
+
+  /**
+   * 公費・使用サービステーブルに内部項目を追加します。
+   */
+  protected void addKaigoInfoServiceTable(){
+
+  }
+
+  /**
+   * 公費・使用サービステーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addKaigoInfoServiceTableColumnModel(){
+
+    getKaigoInfoServiceTableColumnModel().addColumn(getKaigoInfoServiceTableColumn1());
+
+    getKaigoInfoServiceTableColumnModel().addColumn(getKaigoInfoServiceTableColumn2());
+
+    getKaigoInfoServiceTableColumnModel().addColumn(getKaigoInfoServiceTableColumn3());
+
+  }
+
+  /**
+   * 列：提供に内部項目を追加します。
+   */
+  protected void addKaigoInfoServiceTableColumn1(){
+
+  }
+
+  /**
+   * 列：サービス種類に内部項目を追加します。
+   */
+  protected void addKaigoInfoServiceTableColumn2(){
+
+  }
+
+  /**
+   * 列：帳票種類に内部項目を追加します。
+   */
+  protected void addKaigoInfoServiceTableColumn3(){
+
+  }
+
+  /**
    * 医療公費領域に内部項目を追加します。
    */
   protected void addPoints2(){
 
     points2.add(getIryoInfos(), VRLayout.CLIENT);
 
+    points2.add(getIryoInfoServices(), VRLayout.EAST);
   }
 
   /**
@@ -3066,6 +3469,74 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 医療公費領域・サービスに内部項目を追加します。
+   */
+  protected void addIryoInfoServices(){
+
+    iryoInfoServices.add(getIryoInfoService(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * サービス・グループに内部項目を追加します。
+   */
+  protected void addIryoInfoService(){
+
+    iryoInfoService.add(getIryoInfoServiceComment(), VRLayout.NORTH);
+
+    iryoInfoService.add(getIryoInfoServiceTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 説明文ラベル・医療に内部項目を追加します。
+   */
+  protected void addIryoInfoServiceComment(){
+
+  }
+
+  /**
+   * 医療公費・使用サービステーブルに内部項目を追加します。
+   */
+  protected void addIryoInfoServiceTable(){
+
+  }
+
+  /**
+   * 医療公費・使用サービステーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addIryoInfoServiceTableColumnModel(){
+
+    getIryoInfoServiceTableColumnModel().addColumn(getIryoInfoServiceTableColumn1());
+
+    getIryoInfoServiceTableColumnModel().addColumn(getIryoInfoServiceTableColumn2());
+
+    getIryoInfoServiceTableColumnModel().addColumn(getIryoInfoServiceTableColumn3());
+
+  }
+
+  /**
+   * 列：提供に内部項目を追加します。
+   */
+  protected void addIryoInfoServiceTableColumn1(){
+
+  }
+
+  /**
+   * 列：サービス種類に内部項目を追加します。
+   */
+  protected void addIryoInfoServiceTableColumn2(){
+
+  }
+
+  /**
+   * 列：帳票種類に内部項目を追加します。
+   */
+  protected void addIryoInfoServiceTableColumn3(){
+
+  }
+
+  /**
    * 社会福祉軽減領域に内部項目を追加します。
    */
   protected void addPoints3(){
@@ -3284,7 +3755,6 @@ public class QU004Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QU004Design.class.getName()));
     } catch (Exception e) {

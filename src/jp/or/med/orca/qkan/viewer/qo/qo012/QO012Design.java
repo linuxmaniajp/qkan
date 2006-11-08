@@ -18,12 +18,12 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2006/04/17  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2006/06/02  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム CSVビューア (O)
+ * サブシステム その他機能 (O)
  * プロセス CSVビューア (012)
- * プログラム CSVビューア画面 (QO012)
+ * プログラム CSVビューア (QO012)
  *
  *****************************************************************
  */
@@ -80,7 +80,7 @@ import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
 /**
- * CSVビューア画面画面項目デザイン(QO012) 
+ * CSVビューア画面項目デザイン(QO012) 
  */
 public class QO012Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
@@ -191,6 +191,40 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn csvDataTableColumn28;
 
+  private ACTableColumn csvDataTableColumn29;
+
+  private ACTableColumn csvDataTableColumn30;
+
+  private ACTableColumn csvDataTableColumn31;
+
+  private ACTableColumn csvDataTableColumn32;
+
+  private ACTableColumn csvDataTableColumn33;
+
+  private ACTableColumn csvDataTableColumn34;
+
+  private ACTableColumn csvDataTableColumn35;
+
+  private ACTableColumn csvDataTableColumn36;
+
+  private ACTableColumn csvDataTableColumn37;
+
+  private ACTableColumn csvDataTableColumn38;
+
+  private ACTableColumn csvDataTableColumn39;
+
+  private ACTableColumn csvDataTableColumn40;
+
+  private ACTableColumn csvDataTableColumn41;
+
+  private ACTableColumn csvDataTableColumn42;
+
+  private ACTableColumn csvDataTableColumn43;
+
+  private ACTableColumn csvDataTableColumn44;
+
+  private ACTableColumn csvDataTableColumn45;
+
   //getter
 
   /**
@@ -221,7 +255,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       openButton = new ACAffairButton();
 
-      openButton.setText("開く(C)");
+      openButton.setText("開く(O)");
 
       openButton.setMnemonic('O');
 
@@ -644,7 +678,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTable.setColumnSort(true);
 
-      csvDataTable.setHeaderRows(3);
+      csvDataTable.setHeaderRows(4);
 
       addCsvDataTable();
     }
@@ -781,7 +815,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn5.setEditable(false);
 
-      csvDataTableColumn5.setColumns(3);
+      csvDataTableColumn5.setColumns(4);
 
       csvDataTableColumn5.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -806,7 +840,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn6.setEditable(false);
 
-      csvDataTableColumn6.setColumns(3);
+      csvDataTableColumn6.setColumns(4);
 
       csvDataTableColumn6.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -831,7 +865,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn7.setEditable(false);
 
-      csvDataTableColumn7.setColumns(3);
+      csvDataTableColumn7.setColumns(4);
 
       csvDataTableColumn7.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -856,7 +890,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn8.setEditable(false);
 
-      csvDataTableColumn8.setColumns(3);
+      csvDataTableColumn8.setColumns(4);
 
       csvDataTableColumn8.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -881,7 +915,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn9.setEditable(false);
 
-      csvDataTableColumn9.setColumns(3);
+      csvDataTableColumn9.setColumns(4);
 
       csvDataTableColumn9.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -906,7 +940,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn10.setEditable(false);
 
-      csvDataTableColumn10.setColumns(3);
+      csvDataTableColumn10.setColumns(4);
 
       csvDataTableColumn10.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -931,7 +965,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn11.setEditable(false);
 
-      csvDataTableColumn11.setColumns(3);
+      csvDataTableColumn11.setColumns(4);
 
       csvDataTableColumn11.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -956,7 +990,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn12.setEditable(false);
 
-      csvDataTableColumn12.setColumns(3);
+      csvDataTableColumn12.setColumns(4);
 
       csvDataTableColumn12.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -981,7 +1015,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn13.setEditable(false);
 
-      csvDataTableColumn13.setColumns(3);
+      csvDataTableColumn13.setColumns(4);
 
       csvDataTableColumn13.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1006,7 +1040,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn14.setEditable(false);
 
-      csvDataTableColumn14.setColumns(3);
+      csvDataTableColumn14.setColumns(4);
 
       csvDataTableColumn14.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1031,7 +1065,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn15.setEditable(false);
 
-      csvDataTableColumn15.setColumns(3);
+      csvDataTableColumn15.setColumns(4);
 
       csvDataTableColumn15.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1056,7 +1090,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn16.setEditable(false);
 
-      csvDataTableColumn16.setColumns(3);
+      csvDataTableColumn16.setColumns(4);
 
       csvDataTableColumn16.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1081,7 +1115,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn17.setEditable(false);
 
-      csvDataTableColumn17.setColumns(3);
+      csvDataTableColumn17.setColumns(4);
 
       csvDataTableColumn17.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1106,7 +1140,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn18.setEditable(false);
 
-      csvDataTableColumn18.setColumns(3);
+      csvDataTableColumn18.setColumns(4);
 
       csvDataTableColumn18.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1131,7 +1165,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn19.setEditable(false);
 
-      csvDataTableColumn19.setColumns(3);
+      csvDataTableColumn19.setColumns(4);
 
       csvDataTableColumn19.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1156,7 +1190,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn20.setEditable(false);
 
-      csvDataTableColumn20.setColumns(3);
+      csvDataTableColumn20.setColumns(4);
 
       csvDataTableColumn20.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1181,7 +1215,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn21.setEditable(false);
 
-      csvDataTableColumn21.setColumns(3);
+      csvDataTableColumn21.setColumns(4);
 
       csvDataTableColumn21.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1206,7 +1240,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn22.setEditable(false);
 
-      csvDataTableColumn22.setColumns(3);
+      csvDataTableColumn22.setColumns(4);
 
       csvDataTableColumn22.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1231,7 +1265,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn23.setEditable(false);
 
-      csvDataTableColumn23.setColumns(3);
+      csvDataTableColumn23.setColumns(4);
 
       csvDataTableColumn23.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1256,7 +1290,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn24.setEditable(false);
 
-      csvDataTableColumn24.setColumns(3);
+      csvDataTableColumn24.setColumns(4);
 
       csvDataTableColumn24.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1281,7 +1315,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn25.setEditable(false);
 
-      csvDataTableColumn25.setColumns(3);
+      csvDataTableColumn25.setColumns(4);
 
       csvDataTableColumn25.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1292,8 +1326,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 認通カラムを取得します。
-   * @return 認通カラム
+   * 小規模多機能カラムを取得します。
+   * @return 小規模多機能カラム
    */
   public ACTableColumn getCsvDataTableColumn26(){
     if(csvDataTableColumn26==null){
@@ -1306,7 +1340,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn26.setEditable(false);
 
-      csvDataTableColumn26.setColumns(3);
+      csvDataTableColumn26.setColumns(4);
 
       csvDataTableColumn26.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1331,7 +1365,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn27.setEditable(false);
 
-      csvDataTableColumn27.setColumns(3);
+      csvDataTableColumn27.setColumns(4);
 
       csvDataTableColumn27.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1342,27 +1376,452 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 単位数カラムを取得します。
-   * @return 単位数カラム
+   * 予防介カラムを取得します。
+   * @return 予防介カラム
    */
   public ACTableColumn getCsvDataTableColumn28(){
     if(csvDataTableColumn28==null){
 
       csvDataTableColumn28 = new ACTableColumn();
 
-      csvDataTableColumn28.setHeaderValue("単位数");
+      csvDataTableColumn28.setHeaderValue("<html>予<br>防<br>介</html>");
 
-      csvDataTableColumn28.setColumnName("UNIT_TOTAL");
+      csvDataTableColumn28.setColumnName("61");
 
       csvDataTableColumn28.setEditable(false);
 
-      csvDataTableColumn28.setHorizontalAlignment(SwingConstants.RIGHT);
+      csvDataTableColumn28.setColumns(4);
 
       csvDataTableColumn28.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
       addCsvDataTableColumn28();
     }
     return csvDataTableColumn28;
+
+  }
+
+  /**
+   * 予入浴カラムを取得します。
+   * @return 予入浴カラム
+   */
+  public ACTableColumn getCsvDataTableColumn29(){
+    if(csvDataTableColumn29==null){
+
+      csvDataTableColumn29 = new ACTableColumn();
+
+      csvDataTableColumn29.setHeaderValue("<html>予<br>入<br>浴</html>");
+
+      csvDataTableColumn29.setColumnName("62");
+
+      csvDataTableColumn29.setEditable(false);
+
+      csvDataTableColumn29.setColumns(4);
+
+      csvDataTableColumn29.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn29();
+    }
+    return csvDataTableColumn29;
+
+  }
+
+  /**
+   * 予看介カラムを取得します。
+   * @return 予看介カラム
+   */
+  public ACTableColumn getCsvDataTableColumn30(){
+    if(csvDataTableColumn30==null){
+
+      csvDataTableColumn30 = new ACTableColumn();
+
+      csvDataTableColumn30.setHeaderValue("<html>予<br>看<br>介</html>");
+
+      csvDataTableColumn30.setColumnName("63");
+
+      csvDataTableColumn30.setEditable(false);
+
+      csvDataTableColumn30.setColumns(4);
+
+      csvDataTableColumn30.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn30();
+    }
+    return csvDataTableColumn30;
+
+  }
+
+  /**
+   * 予訪リカラムを取得します。
+   * @return 予訪リカラム
+   */
+  public ACTableColumn getCsvDataTableColumn31(){
+    if(csvDataTableColumn31==null){
+
+      csvDataTableColumn31 = new ACTableColumn();
+
+      csvDataTableColumn31.setHeaderValue("<html>予<br>訪<br>リ</html>");
+
+      csvDataTableColumn31.setColumnName("64");
+
+      csvDataTableColumn31.setEditable(false);
+
+      csvDataTableColumn31.setColumns(4);
+
+      csvDataTableColumn31.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn31();
+    }
+    return csvDataTableColumn31;
+
+  }
+
+  /**
+   * 予通介カラムを取得します。
+   * @return 予通介カラム
+   */
+  public ACTableColumn getCsvDataTableColumn32(){
+    if(csvDataTableColumn32==null){
+
+      csvDataTableColumn32 = new ACTableColumn();
+
+      csvDataTableColumn32.setHeaderValue("<html>予<br>通<br>介</html>");
+
+      csvDataTableColumn32.setColumnName("65");
+
+      csvDataTableColumn32.setEditable(false);
+
+      csvDataTableColumn32.setColumns(4);
+
+      csvDataTableColumn32.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn32();
+    }
+    return csvDataTableColumn32;
+
+  }
+
+  /**
+   * 予通リカラムを取得します。
+   * @return 予通リカラム
+   */
+  public ACTableColumn getCsvDataTableColumn33(){
+    if(csvDataTableColumn33==null){
+
+      csvDataTableColumn33 = new ACTableColumn();
+
+      csvDataTableColumn33.setHeaderValue("<html>予<br>通<br>リ</html>");
+
+      csvDataTableColumn33.setColumnName("66");
+
+      csvDataTableColumn33.setEditable(false);
+
+      csvDataTableColumn33.setColumns(4);
+
+      csvDataTableColumn33.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn33();
+    }
+    return csvDataTableColumn33;
+
+  }
+
+  /**
+   * 予用具カラムを取得します。
+   * @return 予用具カラム
+   */
+  public ACTableColumn getCsvDataTableColumn34(){
+    if(csvDataTableColumn34==null){
+
+      csvDataTableColumn34 = new ACTableColumn();
+
+      csvDataTableColumn34.setHeaderValue("<html>予<br>用<br>具</html>");
+
+      csvDataTableColumn34.setColumnName("67");
+
+      csvDataTableColumn34.setEditable(false);
+
+      csvDataTableColumn34.setColumns(4);
+
+      csvDataTableColumn34.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn34();
+    }
+    return csvDataTableColumn34;
+
+  }
+
+  /**
+   * 予短生カラムを取得します。
+   * @return 予短生カラム
+   */
+  public ACTableColumn getCsvDataTableColumn35(){
+    if(csvDataTableColumn35==null){
+
+      csvDataTableColumn35 = new ACTableColumn();
+
+      csvDataTableColumn35.setHeaderValue("<html>予<br>短<br>生</html>");
+
+      csvDataTableColumn35.setColumnName("24");
+
+      csvDataTableColumn35.setEditable(false);
+
+      csvDataTableColumn35.setColumns(4);
+
+      csvDataTableColumn35.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn35();
+    }
+    return csvDataTableColumn35;
+
+  }
+
+  /**
+   * 予老健カラムを取得します。
+   * @return 予老健カラム
+   */
+  public ACTableColumn getCsvDataTableColumn36(){
+    if(csvDataTableColumn36==null){
+
+      csvDataTableColumn36 = new ACTableColumn();
+
+      csvDataTableColumn36.setHeaderValue("<html>予<br>老<br>健</html>");
+
+      csvDataTableColumn36.setColumnName("25");
+
+      csvDataTableColumn36.setEditable(false);
+
+      csvDataTableColumn36.setColumns(4);
+
+      csvDataTableColumn36.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn36();
+    }
+    return csvDataTableColumn36;
+
+  }
+
+  /**
+   * 予療養カラムを取得します。
+   * @return 予療養カラム
+   */
+  public ACTableColumn getCsvDataTableColumn37(){
+    if(csvDataTableColumn37==null){
+
+      csvDataTableColumn37 = new ACTableColumn();
+
+      csvDataTableColumn37.setHeaderValue("<html>予<br>療<br>養</html>");
+
+      csvDataTableColumn37.setColumnName("26");
+
+      csvDataTableColumn37.setEditable(false);
+
+      csvDataTableColumn37.setColumns(4);
+
+      csvDataTableColumn37.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn37();
+    }
+    return csvDataTableColumn37;
+
+  }
+
+  /**
+   * 予居宅カラムを取得します。
+   * @return 予居宅カラム
+   */
+  public ACTableColumn getCsvDataTableColumn38(){
+    if(csvDataTableColumn38==null){
+
+      csvDataTableColumn38 = new ACTableColumn();
+
+      csvDataTableColumn38.setHeaderValue("<html>予<br>居<br>宅</html>");
+
+      csvDataTableColumn38.setColumnName("34");
+
+      csvDataTableColumn38.setEditable(false);
+
+      csvDataTableColumn38.setColumns(4);
+
+      csvDataTableColumn38.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn38();
+    }
+    return csvDataTableColumn38;
+
+  }
+
+  /**
+   * 予特定カラムを取得します。
+   * @return 予特定カラム
+   */
+  public ACTableColumn getCsvDataTableColumn39(){
+    if(csvDataTableColumn39==null){
+
+      csvDataTableColumn39 = new ACTableColumn();
+
+      csvDataTableColumn39.setHeaderValue("<html>予<br>特<br>定</html>");
+
+      csvDataTableColumn39.setColumnName("35");
+
+      csvDataTableColumn39.setEditable(false);
+
+      csvDataTableColumn39.setColumns(4);
+
+      csvDataTableColumn39.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn39();
+    }
+    return csvDataTableColumn39;
+
+  }
+
+  /**
+   * 予支援カラムを取得します。
+   * @return 予支援カラム
+   */
+  public ACTableColumn getCsvDataTableColumn40(){
+    if(csvDataTableColumn40==null){
+
+      csvDataTableColumn40 = new ACTableColumn();
+
+      csvDataTableColumn40.setHeaderValue("<html>予<br>プ<br>ラ<br>ン</html>");
+
+      csvDataTableColumn40.setColumnName("46");
+
+      csvDataTableColumn40.setEditable(false);
+
+      csvDataTableColumn40.setColumns(4);
+
+      csvDataTableColumn40.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn40();
+    }
+    return csvDataTableColumn40;
+
+  }
+
+  /**
+   * 予認通カラムを取得します。
+   * @return 予認通カラム
+   */
+  public ACTableColumn getCsvDataTableColumn41(){
+    if(csvDataTableColumn41==null){
+
+      csvDataTableColumn41 = new ACTableColumn();
+
+      csvDataTableColumn41.setHeaderValue("<html>予<br>認<br>通</html>");
+
+      csvDataTableColumn41.setColumnName("74");
+
+      csvDataTableColumn41.setEditable(false);
+
+      csvDataTableColumn41.setColumns(4);
+
+      csvDataTableColumn41.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn41();
+    }
+    return csvDataTableColumn41;
+
+  }
+
+  /**
+   * 予居介カラムを取得します。
+   * @return 予居介カラム
+   */
+  public ACTableColumn getCsvDataTableColumn42(){
+    if(csvDataTableColumn42==null){
+
+      csvDataTableColumn42 = new ACTableColumn();
+
+      csvDataTableColumn42.setHeaderValue("<html>予<br>小<br>規<br>模</html>");
+
+      csvDataTableColumn42.setColumnName("75");
+
+      csvDataTableColumn42.setEditable(false);
+
+      csvDataTableColumn42.setColumns(4);
+
+      csvDataTableColumn42.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn42();
+    }
+    return csvDataTableColumn42;
+
+  }
+
+  /**
+   * 予認知カラムを取得します。
+   * @return 予認知カラム
+   */
+  public ACTableColumn getCsvDataTableColumn43(){
+    if(csvDataTableColumn43==null){
+
+      csvDataTableColumn43 = new ACTableColumn();
+
+      csvDataTableColumn43.setHeaderValue("<html>予<br>認<br>知</html>");
+
+      csvDataTableColumn43.setColumnName("37");
+
+      csvDataTableColumn43.setEditable(false);
+
+      csvDataTableColumn43.setColumns(4);
+
+      csvDataTableColumn43.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn43();
+    }
+    return csvDataTableColumn43;
+
+  }
+
+  /**
+   * 予認短カラムを取得します。
+   * @return 予認短カラム
+   */
+  public ACTableColumn getCsvDataTableColumn44(){
+    if(csvDataTableColumn44==null){
+
+      csvDataTableColumn44 = new ACTableColumn();
+
+      csvDataTableColumn44.setHeaderValue("<html>予<br>認<br>短</html>");
+
+      csvDataTableColumn44.setColumnName("39");
+
+      csvDataTableColumn44.setEditable(false);
+
+      csvDataTableColumn44.setColumns(4);
+
+      csvDataTableColumn44.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn44();
+    }
+    return csvDataTableColumn44;
+
+  }
+
+  /**
+   * 単位数カラムを取得します。
+   * @return 単位数カラム
+   */
+  public ACTableColumn getCsvDataTableColumn45(){
+    if(csvDataTableColumn45==null){
+
+      csvDataTableColumn45 = new ACTableColumn();
+
+      csvDataTableColumn45.setHeaderValue("単位数");
+
+      csvDataTableColumn45.setColumnName("UNIT_TOTAL");
+
+      csvDataTableColumn45.setEditable(false);
+
+      csvDataTableColumn45.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      csvDataTableColumn45.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn45();
+    }
+    return csvDataTableColumn45;
 
   }
 
@@ -1666,6 +2125,40 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn28());
 
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn29());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn30());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn31());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn32());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn33());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn34());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn35());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn36());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn37());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn38());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn39());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn40());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn41());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn42());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn43());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn44());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn45());
+
   }
 
   /**
@@ -1844,7 +2337,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 認通カラムに内部項目を追加します。
+   * 小規模多機能カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn26(){
 
@@ -1858,9 +2351,128 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 単位数カラムに内部項目を追加します。
+   * 予防介カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn28(){
+
+  }
+
+  /**
+   * 予入浴カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn29(){
+
+  }
+
+  /**
+   * 予看介カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn30(){
+
+  }
+
+  /**
+   * 予訪リカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn31(){
+
+  }
+
+  /**
+   * 予通介カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn32(){
+
+  }
+
+  /**
+   * 予通リカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn33(){
+
+  }
+
+  /**
+   * 予用具カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn34(){
+
+  }
+
+  /**
+   * 予短生カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn35(){
+
+  }
+
+  /**
+   * 予老健カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn36(){
+
+  }
+
+  /**
+   * 予療養カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn37(){
+
+  }
+
+  /**
+   * 予居宅カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn38(){
+
+  }
+
+  /**
+   * 予特定カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn39(){
+
+  }
+
+  /**
+   * 予支援カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn40(){
+
+  }
+
+  /**
+   * 予認通カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn41(){
+
+  }
+
+  /**
+   * 予居介カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn42(){
+
+  }
+
+  /**
+   * 予認知カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn43(){
+
+  }
+
+  /**
+   * 予認短カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn44(){
+
+  }
+
+  /**
+   * 単位数カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn45(){
 
   }
 
@@ -1886,7 +2498,6 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO012Design.class.getName()));
     } catch (Exception e) {

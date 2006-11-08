@@ -36,6 +36,7 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -1022,14 +1023,20 @@ public class QP005 extends QP005Event {
 		// 公費クエリ格納用テンポラリ
 		VRList kohiData = new VRArrayList();
 		VRMap claimData = new VRHashMap();
-		if (!getTableClaimList1().isEmpty()) {
-			claimData = (VRMap) getTableClaimList1().getData(0);
-		}
+		
 		ArrayList kohiType = new ArrayList();
 
 		// 公費情報の取得
 		// 10701の定数化
-		if (!(getClaimStyleType() == 10701)) {
+		
+		// replace begin 2006/09/14 kamitsukasa
+		if (!(getClaimStyleType() == FORMAT_STYLE7 || getClaimStyleType() == FORMAT_STYLE72)) {
+			if (!getTableClaimList1().isEmpty()) {
+				claimData = (VRMap) getTableClaimList1().getData(0);
+			}
+//		if (!(getClaimStyleType() == 10701)) {
+			// replace end 2006/09/14 kamitsukasa
+			
 			// claimStyleTypeの値が10701以外の場合
 			// tableClaimList1の下記の値を取得し、配列にする。
 			// ・201058（公費1 公費種類）
@@ -1055,8 +1062,16 @@ public class QP005 extends QP005Event {
 				// 公費情報を取得する。
 				kohiData = getDBManager().executeQuery(getSQL_GET_KOHI(param));
 			}
-		} else if (getClaimStyleType() == 10701) {
-			// claimStyleTypeの値が10701の場合
+			
+		// replace begin 2006/09/14 kamitsukasa
+//		} else if (getClaimStyleType() == 10701) {
+		} else {
+			if (!getTableClaimList2().isEmpty()) {
+				claimData = (VRMap) getTableClaimList2().getData(0);
+			}
+			// replace end 2006/09/14 kamitsukasa
+			
+			// claimStyleTypeの値が10711/10712の場合
 			// tableClaimList2の下記の値を取得し、配列にする。
 			// ・1001019（公費 公費種類）
 			if (!ACTextUtilities.isNullText(claimData.getData("1001019"))) {
@@ -1113,65 +1128,115 @@ public class QP005 extends QP005Event {
 	 */
 	public String getClaimStyleName() throws Exception {
 		// 帳票様式名を返す処理。
-		// claimStyleTypeの値が10201の場合
+		// claimStyleTypeの値が10211の場合
 		// "様式第二"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE2) {
 			return "様式第二";
 		}
-		// claimStyleTypeの値が10301の場合
+
+		// claimStyleTypeの値が10212の場合
+		// "様式第二の二"を返す。	
+		if (getClaimStyleType() == FORMAT_STYLE22) {
+			return "様式第二の二";
+		}
+		
+		// claimStyleTypeの値が10311の場合
 		// "様式第三"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE3) {
 			return "様式第三";
 		}
-		// claimStyleTypeの値が10401の場合
+		
+		// claimStyleTypeの値が10312の場合
+		// "様式第三"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE32) {
+			return "様式第三のニ";
+		}
+		
+		// claimStyleTypeの値が10411の場合
 		// "様式第四"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE4) {
 			return "様式第四";
 		}
 
-		// claimStyleTypeの値が10501の場合
+		// claimStyleTypeの値が10412の場合
+		// "様式第四"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE42) {
+			return "様式第四のニ";
+		}
+		
+		// claimStyleTypeの値が10511の場合
 		// "様式第五"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE5) {
 			return "様式第五";
 		}
 
-		// claimStyleTypeの値が10601の場合
+		// claimStyleTypeの値が10512の場合
+		// "様式第五"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE52) {
+			return "様式第五のニ";
+		}
+		
+		// claimStyleTypeの値が10611の場合
 		// "様式第六"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE6) {
 			return "様式第六";
 		}
 
+		// claimStyleTypeの値が10612の場合
+		// "様式第六の三"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE62) {
+			return "様式第六のニ";
+		}
+		
 		// claimStyleTypeの値が10613の場合
 		// "様式第六の三"を返す。
-		if (getClaimStyleType() == FORMAT_STYLE6_3) {
+		if (getClaimStyleType() == FORMAT_STYLE63) {
 			return "様式第六の三";
 		}
 
+		// claimStyleTypeの値が10614の場合
+		// "様式第六の三"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE64) {
+			return "様式第六の四";
+		}
+		
 		// claimStyleTypeの値が10615の場合
 		// "様式第六の五"を返す。
-		if (getClaimStyleType() == FORMAT_STYLE6_5) {
+		if (getClaimStyleType() == FORMAT_STYLE65) {
 			return "様式第六の五";
 		}
 
-		// claimStyleTypeの値が10701の場合
+		// claimStyleTypeの値が10616の場合
+		// "様式第六の五"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE66) {
+			return "様式第六の六";
+		}
+		
+		// claimStyleTypeの値が10711の場合
 		// "様式第七"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE7) {
 			return "様式第七";
 		}
 
-		// claimStyleTypeの値が10801の場合
+		// claimStyleTypeの値が10712の場合
+		// "様式第七"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE72) {
+			return "様式第七のニ";
+		}
+		
+		// claimStyleTypeの値が10811の場合
 		// "様式第八"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE8) {
 			return "様式第八";
 		}
 
-		// claimStyleTypeの値が10901の場合
+		// claimStyleTypeの値が10911の場合
 		// "様式第九"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE9) {
 			return "様式第九";
 		}
 
-		// claimStyleTypeの値が11001の場合
+		// claimStyleTypeの値が11011の場合
 		// "様式第十"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE10) {
 			return "様式第十";
@@ -1189,7 +1254,7 @@ public class QP005 extends QP005Event {
 	public void doControlWindow() throws Exception {
 		// 画面のVisible制御・Enable制御・ラベルのキャプション操作を行う処理。
 
-		// claimStyleTypeの値が10201の場合
+		// claimStyleTypeの値が10211の場合
 		// 様式2
 		if (getClaimStyleType() == FORMAT_STYLE2) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1197,7 +1262,16 @@ public class QP005 extends QP005Event {
 			// 状態ID：TYPE1
 		}
 
-		// claimStyleTypeの値が10301の場合
+		// claimStyleTypeの値が10212の場合
+		// 様式2
+		if (getClaimStyleType() == FORMAT_STYLE22) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE1();
+			// 状態ID：TYPE1
+		}
+		
+		
+		// claimStyleTypeの値が10311の場合
 		// 様式3
 		if (getClaimStyleType() == FORMAT_STYLE3) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1205,7 +1279,15 @@ public class QP005 extends QP005Event {
 			// 状態ID：TYPE2
 		}
 
-		// claimStyleTypeの値が10401の場合
+		// claimStyleTypeの値が10312の場合
+		// 様式3の2
+		if (getClaimStyleType() == FORMAT_STYLE32) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE2();
+			// 状態ID：TYPE2
+		}
+
+		// claimStyleTypeの値が10411の場合
 		// 様式4
 		if (getClaimStyleType() == FORMAT_STYLE4) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1216,7 +1298,18 @@ public class QP005 extends QP005Event {
 			getEtcInfoTabs().setTitleAt(2, "特定治療費");
 		}
 
-		// claimStyleTypeの値が10501の場合
+		// claimStyleTypeの値が10412の場合
+		// 様式4の2
+		if (getClaimStyleType() == FORMAT_STYLE42) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE3();
+			// 状態ID：TYPE3
+			// 以下のコントロールのキャプションを"特定治療費"に設定する。
+			// ・particularInfos
+			getEtcInfoTabs().setTitleAt(2, "特定治療費");
+		}
+
+		// claimStyleTypeの値が10511の場合
 		// 様式5
 		if (getClaimStyleType() == FORMAT_STYLE5) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1231,7 +1324,22 @@ public class QP005 extends QP005Event {
 			getParticularInfoRevision().setText("特定診療費");
 		}
 
-		// claimStyleTypeの値が10601の場合
+		// claimStyleTypeの値が10512の場合
+		// 様式5の2
+		if (getClaimStyleType() == FORMAT_STYLE52) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE4();
+			// 状態ID：TYPE4
+			// 以下のコントロールのキャプションを"特定診療費"に設定する。
+			// ・particularInfos
+			// ・particularInfoLabel
+			// ・particularInfoRevision
+			getEtcInfoTabs().setTitleAt(2, "特定診療費");
+			getParticularInfoLabel().setText("特定診療費");
+			getParticularInfoRevision().setText("特定診療費");
+		}
+
+		// claimStyleTypeの値が10611の場合
 		// 様式6
 		if (getClaimStyleType() == FORMAT_STYLE6) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1239,9 +1347,25 @@ public class QP005 extends QP005Event {
 			// 状態ID：TYPE5
 		}
 
+		// claimStyleTypeの値が10612の場合
+		// 様式6の2
+		if (getClaimStyleType() == FORMAT_STYLE62) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE5();
+			// 状態ID：TYPE5
+		}
+		
 		// claimStyleTypeの値が10613の場合
 		// 様式6の3
-		if (getClaimStyleType() == FORMAT_STYLE6_3) {
+		if (getClaimStyleType() == FORMAT_STYLE63) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE5();
+			// 状態ID：TYPE5
+		}
+		
+		// claimStyleTypeの値が10614の場合
+		// 様式6の3
+		if (getClaimStyleType() == FORMAT_STYLE64) {
 			// 画面のVisible制御・Enable制御を行う。
 			setState_TYPE5();
 			// 状態ID：TYPE5
@@ -1249,13 +1373,22 @@ public class QP005 extends QP005Event {
 
 		// claimStyleTypeの値が10615の場合
 		// 様式6の5
-		if (getClaimStyleType() == FORMAT_STYLE6_5) {
+		if (getClaimStyleType() == FORMAT_STYLE65) {
 			// 画面のVisible制御・Enable制御を行う。
 			setState_TYPE5();
 			// 状態ID：TYPE5
 		}
 
-		// claimStyleTypeの値が10701の場合
+		// claimStyleTypeの値が10616の場合
+		// 様式6の6
+		if (getClaimStyleType() == FORMAT_STYLE66) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE5();
+			// 状態ID：TYPE5
+		}
+
+		
+		// claimStyleTypeの値が10711の場合
 		// 様式7
 		if (getClaimStyleType() == FORMAT_STYLE7) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1263,7 +1396,15 @@ public class QP005 extends QP005Event {
 			// 状態ID：TYPE6
 		}
 
-		// claimStyleTypeの値が10801の場合
+		// claimStyleTypeの値が10712の場合
+		// 様式7
+		if (getClaimStyleType() == FORMAT_STYLE72) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE6();
+			// 状態ID：TYPE6
+		}
+		
+		// claimStyleTypeの値が10811の場合
 		// 様式8
 		if (getClaimStyleType() == FORMAT_STYLE8) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1271,7 +1412,7 @@ public class QP005 extends QP005Event {
 			// 状態ID：TYPE2
 		}
 
-		// claimStyleTypeの値が10901の場合
+		// claimStyleTypeの値が10911の場合
 		// 様式9
 		if (getClaimStyleType() == FORMAT_STYLE9) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1282,7 +1423,7 @@ public class QP005 extends QP005Event {
 			getEtcInfoTabs().setTitleAt(2, "特定治療費");
 		}
 
-		// claimStyleTypeの値が11001の場合
+		// claimStyleTypeの値が11011の場合
 		// 様式10
 		if (getClaimStyleType() == FORMAT_STYLE10) {
 			// 画面のVisible制御・Enable制御を行う。
@@ -1342,7 +1483,7 @@ public class QP005 extends QP005Event {
 			// トランザクションを開始する。
 			getDBManager().beginTransaction();
 
-			VRList claimList = QkanCommon.getClaimDetailCustom(getDBManager(), whereStr);
+			VRList claimList = QkanCommon.getClaimDetailCustom(getDBManager(), getClaimDate(), whereStr);
 			setClaimList(claimList);
 
 			// コミットする
@@ -1370,6 +1511,7 @@ public class QP005 extends QP005Event {
 	 */
 	public void doSetTable() throws Exception {
 		// 画面のテーブルの設定を行う処理。
+		
 		// claimListを順に見ていく。（ループ開始）
 		Iterator claimListIterator = getClaimList().iterator();
 		while (claimListIterator.hasNext()) {
@@ -1378,9 +1520,10 @@ public class QP005 extends QP005Event {
 			// レコードの格納処理、claimDataMapをdoMoveRecordに渡す。
 			doMoveRecord(claimDataMap);
 		}
+		
 		switch (getClaimStyleType()) {
 			case FORMAT_STYLE2:
-				// claimStyleTypeの値が10201の場合
+				// claimStyleTypeの値が10211の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001010（2進数表記）
 				doSetTableModel(202);
@@ -1391,8 +1534,21 @@ public class QP005 extends QP005Event {
 
 				break;
 
+			case FORMAT_STYLE22:
+				// claimStyleTypeの値が10212の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：11001010（2進数表記）
+				doSetTableModel(202);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：11001010（2進数表記）
+				doSetTableRow(202);
+
+				break;
+
+							
 			case FORMAT_STYLE3:
-				// claimStyleTypeの値が10301の場合
+				// claimStyleTypeの値が10311の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001110（2進数表記）
 				doSetTableModel(206);
@@ -1402,8 +1558,20 @@ public class QP005 extends QP005Event {
 				doSetTableRow(206);
 				break;
 
+			case FORMAT_STYLE32:
+				// claimStyleTypeの値が10312の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：11001110（2進数表記）
+				doSetTableModel(206);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：11001110（2進数表記）
+				doSetTableRow(206);
+				break;
+
+				
 			case FORMAT_STYLE4:
-				// claimStyleTypeの値が10401の場合
+				// claimStyleTypeの値が10411の場合
 				// テーブルモデルの設定を行う。
 				doSetTableModel(236);
 				// ・第一引数：11101100（2進数表記）
@@ -1414,8 +1582,21 @@ public class QP005 extends QP005Event {
 
 				break;
 
+			case FORMAT_STYLE42:
+				// claimStyleTypeの値が10412の場合
+				// テーブルモデルの設定を行う。
+				doSetTableModel(236);
+				// ・第一引数：11101100（2進数表記）
+
+				// テーブルの各行の設定を行う。
+				doSetTableRow(236);
+				// ・第一引数：11101100（2進数表記）
+
+				break;
+
+				
 			case FORMAT_STYLE5:
-				// claimStyleTypeの値が10501の場合
+				// claimStyleTypeの値が10511の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11011100（2進数表記）
 				doSetTableModel(220);
@@ -1424,8 +1605,19 @@ public class QP005 extends QP005Event {
 				doSetTableRow(220);
 				break;
 
+			case FORMAT_STYLE52:
+				// claimStyleTypeの値が10512の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：11011100（2進数表記）
+				doSetTableModel(220);
+				// テーブルの各行の設定を行う。
+				// ・第一引数：11011100（2進数表記）
+				doSetTableRow(220);
+				break;
+
+				
 			case FORMAT_STYLE6:
-				// claimStyleTypeの値が10601の場合
+				// claimStyleTypeの値が10611の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001000（2進数表記）
 				doSetTableModel(200);
@@ -1435,7 +1627,19 @@ public class QP005 extends QP005Event {
 				doSetTableRow(200);
 				break;
 
-			case FORMAT_STYLE6_3:
+			case FORMAT_STYLE62:
+				// claimStyleTypeの値が10612の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：11001000（2進数表記）
+				doSetTableModel(200);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：11001000（2進数表記）
+				doSetTableRow(200);
+				break;
+
+				
+			case FORMAT_STYLE63:
 				// claimStyleTypeの値が10613の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001000（2進数表記）
@@ -1446,7 +1650,19 @@ public class QP005 extends QP005Event {
 				doSetTableRow(200);
 				break;
 
-			case FORMAT_STYLE6_5:
+			case FORMAT_STYLE64:
+				// claimStyleTypeの値が10614の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：11001000（2進数表記）
+				doSetTableModel(200);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：11001000（2進数表記）
+				doSetTableRow(200);
+				break;
+
+				
+			case FORMAT_STYLE65:
 				// claimStyleTypeの値が10615の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001000（2進数表記）
@@ -1457,8 +1673,19 @@ public class QP005 extends QP005Event {
 				doSetTableRow(200);
 				break;
 
+			case FORMAT_STYLE66:
+				// claimStyleTypeの値が10616の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：11001000（2進数表記）
+				doSetTableModel(200);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：11001000（2進数表記）
+				doSetTableRow(200);
+				break;
+
 			case FORMAT_STYLE7:
-				// claimStyleTypeの値が10701の場合
+				// claimStyleTypeの値が10711の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：00000001（2進数表記）
 				doSetTableModel(1);
@@ -1468,6 +1695,18 @@ public class QP005 extends QP005Event {
 				doSetTableRow(1);
 				break;
 
+			case FORMAT_STYLE72:
+				// claimStyleTypeの値が10712の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：00000001（2進数表記）
+				doSetTableModel(1);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：00000001（2進数表記）
+				doSetTableRow(1);
+				break;
+
+				
 			case FORMAT_STYLE8:
 				// claimStyleTypeの値が10801の場合
 				// テーブルモデルの設定を行う。
@@ -1505,7 +1744,7 @@ public class QP005 extends QP005Event {
 				break;
 
 		}
-		// }
+		
 		// 請求データをテーブルモデルに設定する。
 		doSetClaimData();
 	}
@@ -2493,12 +2732,12 @@ public class QP005 extends QP005Event {
 						}
 						break;
 					}
-
+					
 					// cellValueのeditorに生成したテキストを設定する。
 					cellValue.setEditor(valueTextField);
 					cellValue.setRenderer(valueLabel);
 				}
-
+				
 				// detailListにレコードを追加する。
 				detailList.add(detailDataMap);
 
@@ -2530,6 +2769,10 @@ public class QP005 extends QP005Event {
 
 		if (!getTableClaimList1().isEmpty()) {
 			// tableClaimList1がnullでない場合
+			// ソートする。
+			// 201017 認定有効期間開始年月日
+			String[] keys = new String[]{"201017"};
+			setTableClaimList1(getSortedData(getTableClaimList1(), keys));
 			// tableClaimList1をtableModelList1に設定する
 			getTableModelList1().setAdaptee(getTableClaimList1());
 			// バインド先のBasicInfoTableの1行目を選択した状態にする。
@@ -2538,6 +2781,18 @@ public class QP005 extends QP005Event {
 
 		if (!getTableClaimList2().isEmpty()) {
 			// tableClaimList2がnullでない場合
+			// ソートする。
+			switch(getClaimStyleType()){
+			case FORMAT_STYLE7:
+			case FORMAT_STYLE72:
+				break;
+			default:
+				// 301007 サービス種類コード + 301008 サービス項目コード
+				String[] keys = new String[]{"301007", "301008", "301009", "301014"};
+				int[] digits = new int[]{0, 0, 4, 6};
+				setTableClaimList2(getSortedData(getTableClaimList2(), keys, digits));
+				break;
+			}
 			// tableClaimList2をtableModelList2に設定する。
 			getTableModelList2().setAdaptee(getTableClaimList2());
 			// バインド先のDetailsInfoTableの1行目を選択した状態にする。
@@ -2547,6 +2802,21 @@ public class QP005 extends QP005Event {
 
 		if (!getTableClaimList3().isEmpty()) {
 			// tableClaimList3がnullでない場合
+			// ソートする。
+			switch(getClaimStyleType()){
+			case FORMAT_STYLE4:
+			case FORMAT_STYLE42:
+			case FORMAT_STYLE9:
+				break;
+			case FORMAT_STYLE5:
+			case FORMAT_STYLE52:
+			case FORMAT_STYLE10:
+				// 501007 特定診療費情報レコード順次番号2桁
+				String[] keys = new String[]{"501007"};
+				int[] digits = new int[]{2};
+				setTableClaimList3(getSortedData(getTableClaimList3(), keys, digits));
+				break;
+			}
 			// tableClaimList3をtableModelList3に設定する。
 			getTableModelList3().setAdaptee(getTableClaimList3());
 			// バインド先のParticularInfoTableの1行目を選択した状態にする。
@@ -2555,7 +2825,11 @@ public class QP005 extends QP005Event {
 		}
 
 		if (!getTableClaimList4().isEmpty()) {
-			// tableClaimList4がnullでない場合
+			// tableClaimList4がnullでない場合 
+			// ソートする。
+			// 701007 サービス種類コード
+			String[] keys = new String[]{"701007"};
+			setTableClaimList4(getSortedData(getTableClaimList4(), keys));
 			// tableClaimList4をtableModelList4に設定する。
 			getTableModelList4().setAdaptee(getTableClaimList4());
 			// バインド先のTotalInfoTableの1行目を選択した状態にする。
@@ -2564,6 +2838,11 @@ public class QP005 extends QP005Event {
 
 		if (!getTableClaimList5().isEmpty()) {
 			// tableClaimList5がnullでない場合
+			// ソートする。
+			// 801007 特定入所者介護サービス費用情報レコード順次番号2桁
+			String[] keys = new String[]{"801007"};
+			int[] digits = new int[]{2};
+			setTableClaimList5(getSortedData(getTableClaimList5(), keys, digits));
 			// tableClaimList5をtableModelList5に設定する。
 			getTableModelList5().setAdaptee(getTableClaimList5());
 			// バインド先のNyushoInfoTableの1行目を選択した状態にする。
@@ -2572,6 +2851,10 @@ public class QP005 extends QP005Event {
 
 		if (!getTableClaimList6().isEmpty()) {
 			// tableClaimList6がnullでない場合
+			// ソートする。
+			// 901008 サービス種類コード2桁
+			String[] keys = new String[]{"901008"};
+			setTableClaimList6(getSortedData(getTableClaimList6(), keys));
 			// tableClaimList6をtableModelList6に設定する。
 			getTableModelList6().setAdaptee(getTableClaimList6());
 			// バインド先のShahukuInfoTableの1行目を選択した状態にする。
@@ -2580,6 +2863,96 @@ public class QP005 extends QP005Event {
 
 	}
 
+	/**
+	 * 「請求データのソート」に関する処理を行います。
+	 * @param list 対象レコード集合
+	 * @param keys ソートキー
+	 * @return ソートされたレコード集合
+	 * @throws Exception
+	 */
+	public VRList getSortedData(VRList list, String[] keys) throws Exception {
+		
+		int num = keys.length;
+		int[] digits = new int[num];
+		
+		for(int i = 0; i < num; i++){
+			digits[i] = 0;
+		}
+		
+		return getSortedData(list, keys, digits);
+		
+	}
+
+	/**
+	 * 「請求データのソート」に関する処理を行います。
+	 * @param list 対象レコード集合
+	 * @param keys ソートキー
+	 * @param digits 指定桁数
+	 * @return ソートされたレコード集合
+	 * @throws Exception
+	 */
+	public VRList getSortedData(VRList list, String[] keys, int[] digits) throws Exception {
+		
+		// VRList resultを生成する。
+		VRList result = new VRArrayList();
+		// TreeMap map を生成する。
+		TreeMap map = new TreeMap();
+		// 渡されたlistをループする。（以下、各要素をrecordとする。）
+		for(int i = 0; i < list.size(); i++){
+			VRMap record = (VRMap)list.get(i);
+			// String newKeyを生成する。
+			String newKey = "";
+			// 渡されたkeysをループする。（以下、各要素をkeyとする。）
+			for(int j = 0; j < keys.length; j++){
+				// recordより、KEY：keyの値を取り出し、Stringに変換する。
+				String temp = ACCastUtilities.toString(VRBindPathParser.get(keys[j], record));
+				// newKeyの末尾に追加する。
+				newKey += getStringOnSpecifiedDigit(temp, digits[j]);
+			}
+			// recordをKEY：newKeyとして、mapに追加する。
+			//del start 2006.6.14 fujihara.shin
+			//map.put(newKey, record);
+			//del end 2006.6.14 fujihara.shin
+			//add start 2006.6.14 fujihara.shin
+			int esc = 0;
+			while(true){
+				if(!map.containsKey(newKey + esc)){
+					map.put(newKey + esc, record);
+					break;
+				}
+				esc++;
+			}
+			//add end 2006.6.14 fujihara.shin
+		}
+		// mapをlistに戻す。
+		result.addAll(map.values());
+		return result;
+		
+	}
+	
+	/**
+	 * 指定桁数まで0埋めする関数
+	 * @param temp 対象文字列
+	 * @param digit 指定桁数
+	 * @return 0埋めされた文字列
+	 */
+	public String getStringOnSpecifiedDigit(String temp, int digit){
+		
+		if(digit <= 0){
+			return temp;
+		}
+		
+		String head = "";
+		int num = digit - temp.length();
+		
+		for(int i = 0; i < num; i++){
+			head += "0";
+		}
+		
+		return head + temp;
+		
+	}
+	
 	/**
 	 * 「詳細テーブル表示用データ作成」に関する処理を行ないます。
 	 * 
@@ -2972,7 +3345,7 @@ public class QP005 extends QP005Event {
 				String whereStr = "(PATIENT_ID = " + getPatientId() + ") AND (INSURED_ID = '" + getInsuredId() + "') AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') AND (PROVIDER_ID = '" + getProviderId() + "') AND (CLAIM_STYLE_TYPE =" + getClaimStyleType() + ")";
 
 				// 請求データ（allList）でDBを更新する。
-				QkanCommon.updateClaimDetailCustom(getDBManager(), allList, whereStr);
+				QkanCommon.updateClaimDetailCustom(getDBManager(), allList, getTargetDate(), whereStr);
 
 				// 更新に成功した場合
 				// コミットする。

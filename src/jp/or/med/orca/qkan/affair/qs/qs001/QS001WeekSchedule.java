@@ -19,6 +19,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionListener;
 
 import jp.nichicom.ac.component.dnd.event.ACDroppableListener;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.util.VRArrayList;
@@ -447,6 +448,10 @@ public class QS001WeekSchedule extends VRPanel {
         Iterator it = schedules.iterator();
         while (it.hasNext()) {
             VRMap row = (VRMap) it.next();
+            if(CareServiceCommon.isPlanUnitService(row)){
+                //システム管理サービスは無視する
+                continue;
+            }
 
             Object type = VRBindPathParser.get("SERVICE_USE_TYPE", row);
             if (QkanConstants.SERVICE_USE_TYPE_PLAN_WEEKLY_DAY.equals(type)||

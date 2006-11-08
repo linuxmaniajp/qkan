@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/04/18  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2006/09/19  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -87,6 +87,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACAffairButtonBar buttons;
 
+  private ACAffairButton open;
+
   private ACAffairButton insert;
 
   private ACAffairButton update;
@@ -113,15 +115,17 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel contentJikohutanArea;
 
+  private ACPanel contentBillTitle;
+
   private ACTextField contentBill;
 
-  private ACPanel contentJikohutans;
-
-  private VRLayout contentJikohutanLayout;
+  private ACPanel contentJikohutanTitle;
 
   private ACTextField contentJikohutanHimokuTitle;
 
   private ACTextField contentJikohutanUseTitle;
+
+  private ACPanel contentJikohutan1;
 
   private ACComboBox contentJikohutanHimoku1;
 
@@ -129,11 +133,15 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentJikohutanUse1;
 
+  private ACPanel contentJikohutan2;
+
   private ACComboBox contentJikohutanHimoku2;
 
   private ACComboBoxModelAdapter contentJikohutanHimoku2Model;
 
   private ACTextField contentJikohutanUse2;
+
+  private ACPanel contentJikohutan3;
 
   private ACComboBox contentJikohutanHimoku3;
 
@@ -143,8 +151,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel contentJikohutanTitleArea;
 
-  private VRLayout contentJikohutanTitleAreaLayout;
-
   private ACTextField contentJikohutanSubtotalTitle;
 
   private ACTextField contentJikohutanSubtotal;
@@ -153,13 +159,13 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel contentEtcs;
 
-  private ACPanel contentEtcArea;
-
-  private VRLayout contentEtcAreaLayout;
+  private ACPanel contentEtcTitle;
 
   private ACTextField contentEtcHimokuTitle;
 
   private ACTextField contentEtcUseTitle;
+
+  private ACPanel contentEtc1;
 
   private ACComboBox contentEtcHimoku1;
 
@@ -167,11 +173,15 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcUse1;
 
+  private ACPanel contentEtc2;
+
   private ACComboBox contentEtcHimoku2;
 
   private ACComboBoxModelAdapter contentEtcHimoku2Model;
 
   private ACTextField contentEtcUse2;
+
+  private ACPanel contentEtc3;
 
   private ACComboBox contentEtcHimoku3;
 
@@ -179,11 +189,15 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcUse3;
 
+  private ACPanel contentEtc4;
+
   private ACComboBox contentEtcHimoku4;
 
   private ACComboBoxModelAdapter contentEtcHimoku4Model;
 
   private ACTextField contentEtcUse4;
+
+  private ACPanel contentEtc5;
 
   private ACComboBox contentEtcHimoku5;
 
@@ -192,8 +206,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField contentEtcUse5;
 
   private ACPanel contentEtcTitleArea;
-
-  private VRLayout contentEtcTitleAreaLayout;
 
   private ACTextField contentEtcSubtotalTitle;
 
@@ -229,6 +241,29 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addButtons();
     }
     return buttons;
+
+  }
+
+  /**
+   * 前回読込み(O)を取得します。
+   * @return 前回読込み(O)
+   */
+  public ACAffairButton getOpen(){
+    if(open==null){
+
+      open = new ACAffairButton();
+
+      open.setText("前回読込(O)");
+
+      open.setToolTipText("過去のデータの中で、最新のデータを引き継ぎます。");
+
+      open.setMnemonic('O');
+
+      open.setIconPath(ACConstants.ICON_PATH_OPEN_24);
+
+      addOpen();
+    }
+    return open;
 
   }
 
@@ -325,11 +360,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentPatientText.setText("利用者");
 
-      contentPatientText.setEnabled(false);
-
-      contentPatientText.setBackground(new Color(230,230,230));
-
-      contentPatientText.setDisabledTextColor(new Color(0,0,0));
+      contentPatientText.setEditable(false);
 
       addContentPatientText();
     }
@@ -403,11 +434,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentProviderText.setText("事業所");
 
-      contentProviderText.setEnabled(false);
-
-      contentProviderText.setBackground(new Color(230,230,230));
-
-      contentProviderText.setDisabledTextColor(new Color(0,0,0));
+      contentProviderText.setEditable(false);
 
       addContentProviderText();
     }
@@ -488,6 +515,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 項目タイトルを取得します。
+   * @return 項目タイトル
+   */
+  public ACPanel getContentBillTitle(){
+    if(contentBillTitle==null){
+
+      contentBillTitle = new ACPanel();
+
+      addContentBillTitle();
+    }
+    return contentBillTitle;
+
+  }
+
+  /**
    * 請求対象年月を取得します。
    * @return 請求対象年月
    */
@@ -500,17 +542,13 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentBill.setBindPath("TARGET_DATE");
 
-      contentBill.setEnabled(false);
+      contentBill.setEditable(false);
 
       contentBill.setColumns(26);
 
       contentBill.setFormat(new ACBorderBlankDateFormat("gggee年MM月"));
 
       contentBill.setHorizontalAlignment(SwingConstants.CENTER);
-
-      contentBill.setBackground(new Color(230,230,230));
-
-      contentBill.setDisabledTextColor(new Color(0,0,0));
 
       addContentBill();
     }
@@ -519,46 +557,19 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 全額自己負担分パネルを取得します。
-   * @return 全額自己負担分パネル
+   * 全額自己負担分タイトルを取得します。
+   * @return 全額自己負担分タイトル
    */
-  public ACPanel getContentJikohutans(){
-    if(contentJikohutans==null){
+  public ACPanel getContentJikohutanTitle(){
+    if(contentJikohutanTitle==null){
 
-      contentJikohutans = new ACPanel();
+      contentJikohutanTitle = new ACPanel();
 
-      contentJikohutans.setLayout(getContentJikohutanLayout());
+      contentJikohutanTitle.setAutoWrap(false);
 
-      addContentJikohutans();
+      addContentJikohutanTitle();
     }
-    return contentJikohutans;
-
-  }
-
-  /**
-   * 全額自己負担分レイアウトを取得します。
-   * @return 全額自己負担分レイアウト
-   */
-  public VRLayout getContentJikohutanLayout(){
-    if(contentJikohutanLayout==null){
-
-      contentJikohutanLayout = new VRLayout();
-
-      contentJikohutanLayout.setAutoWrap(false);
-
-      contentJikohutanLayout.setFitHLast(true);
-
-      contentJikohutanLayout.setFitVLast(true);
-
-      contentJikohutanLayout.setHgap(0);
-
-      contentJikohutanLayout.setLabelMargin(0);
-
-      contentJikohutanLayout.setVgap(0);
-
-      addContentJikohutanLayout();
-    }
-    return contentJikohutanLayout;
+    return contentJikohutanTitle;
 
   }
 
@@ -573,15 +584,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimokuTitle.setText("全額自己負担分　費目");
 
-      contentJikohutanHimokuTitle.setEnabled(false);
+      contentJikohutanHimokuTitle.setEditable(false);
 
       contentJikohutanHimokuTitle.setColumns(26);
 
       contentJikohutanHimokuTitle.setHorizontalAlignment(SwingConstants.CENTER);
-
-      contentJikohutanHimokuTitle.setBackground(new Color(230,230,230));
-
-      contentJikohutanHimokuTitle.setDisabledTextColor(new Color(0,0,0));
 
       addContentJikohutanHimokuTitle();
     }
@@ -600,19 +607,32 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanUseTitle.setText("利用料");
 
-      contentJikohutanUseTitle.setEnabled(false);
+      contentJikohutanUseTitle.setEditable(false);
 
       contentJikohutanUseTitle.setColumns(9);
 
       contentJikohutanUseTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
-      contentJikohutanUseTitle.setBackground(new Color(230,230,230));
-
-      contentJikohutanUseTitle.setDisabledTextColor(new Color(0,0,0));
-
       addContentJikohutanUseTitle();
     }
     return contentJikohutanUseTitle;
+
+  }
+
+  /**
+   * 全額自己負担分１を取得します。
+   * @return 全額自己負担分１
+   */
+  public ACPanel getContentJikohutan1(){
+    if(contentJikohutan1==null){
+
+      contentJikohutan1 = new ACPanel();
+
+      contentJikohutan1.setAutoWrap(false);
+
+      addContentJikohutan1();
+    }
+    return contentJikohutan1;
 
   }
 
@@ -638,6 +658,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentJikohutanHimoku1.setIMEMode(InputSubset.KANJI);
 
       contentJikohutanHimoku1.setMaxLength(75);
+
+      contentJikohutanHimoku1.setMaxColumns(25);
 
       contentJikohutanHimoku1.setModel(getContentJikohutanHimoku1Model());
 
@@ -670,7 +692,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanUse1.setBindPath("SELF_PAY_NO1");
 
-      contentJikohutanUse1.setColumns(8);
+      contentJikohutanUse1.setColumns(9);
 
       contentJikohutanUse1.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -683,6 +705,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentJikohutanUse1();
     }
     return contentJikohutanUse1;
+
+  }
+
+  /**
+   * 全額自己負担分２を取得します。
+   * @return 全額自己負担分２
+   */
+  public ACPanel getContentJikohutan2(){
+    if(contentJikohutan2==null){
+
+      contentJikohutan2 = new ACPanel();
+
+      contentJikohutan2.setAutoWrap(false);
+
+      addContentJikohutan2();
+    }
+    return contentJikohutan2;
 
   }
 
@@ -708,6 +747,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentJikohutanHimoku2.setIMEMode(InputSubset.KANJI);
 
       contentJikohutanHimoku2.setMaxLength(75);
+
+      contentJikohutanHimoku2.setMaxColumns(25);
 
       contentJikohutanHimoku2.setModel(getContentJikohutanHimoku2Model());
 
@@ -740,7 +781,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanUse2.setBindPath("SELF_PAY_NO2");
 
-      contentJikohutanUse2.setColumns(8);
+      contentJikohutanUse2.setColumns(9);
 
       contentJikohutanUse2.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -753,6 +794,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentJikohutanUse2();
     }
     return contentJikohutanUse2;
+
+  }
+
+  /**
+   * 全額自己負担分３を取得します。
+   * @return 全額自己負担分３
+   */
+  public ACPanel getContentJikohutan3(){
+    if(contentJikohutan3==null){
+
+      contentJikohutan3 = new ACPanel();
+
+      contentJikohutan3.setAutoWrap(false);
+
+      addContentJikohutan3();
+    }
+    return contentJikohutan3;
 
   }
 
@@ -778,6 +836,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentJikohutanHimoku3.setIMEMode(InputSubset.KANJI);
 
       contentJikohutanHimoku3.setMaxLength(75);
+
+      contentJikohutanHimoku3.setMaxColumns(25);
 
       contentJikohutanHimoku3.setModel(getContentJikohutanHimoku3Model());
 
@@ -810,7 +870,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanUse3.setBindPath("SELF_PAY_NO3");
 
-      contentJikohutanUse3.setColumns(8);
+      contentJikohutanUse3.setColumns(9);
 
       contentJikohutanUse3.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -827,48 +887,19 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 全額自己負担タイトル領域を取得します。
-   * @return 全額自己負担タイトル領域
+   * 全額自己負担分小計を取得します。
+   * @return 全額自己負担分小計
    */
   public ACPanel getContentJikohutanTitleArea(){
     if(contentJikohutanTitleArea==null){
 
       contentJikohutanTitleArea = new ACPanel();
 
-      contentJikohutanTitleArea.setLayout(getContentJikohutanTitleAreaLayout());
-
       contentJikohutanTitleArea.setAutoWrap(false);
 
       addContentJikohutanTitleArea();
     }
     return contentJikohutanTitleArea;
-
-  }
-
-  /**
-   * 全額自己負担タイトル領域・レイアウトを取得します。
-   * @return 全額自己負担タイトル領域・レイアウト
-   */
-  public VRLayout getContentJikohutanTitleAreaLayout(){
-    if(contentJikohutanTitleAreaLayout==null){
-
-      contentJikohutanTitleAreaLayout = new VRLayout();
-
-      contentJikohutanTitleAreaLayout.setAutoWrap(false);
-
-      contentJikohutanTitleAreaLayout.setFitHLast(true);
-
-      contentJikohutanTitleAreaLayout.setFitVLast(true);
-
-      contentJikohutanTitleAreaLayout.setHgap(0);
-
-      contentJikohutanTitleAreaLayout.setLabelMargin(0);
-
-      contentJikohutanTitleAreaLayout.setVgap(0);
-
-      addContentJikohutanTitleAreaLayout();
-    }
-    return contentJikohutanTitleAreaLayout;
 
   }
 
@@ -883,15 +914,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanSubtotalTitle.setText("小計");
 
-      contentJikohutanSubtotalTitle.setEnabled(false);
+      contentJikohutanSubtotalTitle.setEditable(false);
 
       contentJikohutanSubtotalTitle.setColumns(26);
 
       contentJikohutanSubtotalTitle.setHorizontalAlignment(SwingConstants.CENTER);
-
-      contentJikohutanSubtotalTitle.setBackground(new Color(230,230,230));
-
-      contentJikohutanSubtotalTitle.setDisabledTextColor(new Color(0,0,0));
 
       addContentJikohutanSubtotalTitle();
     }
@@ -908,15 +935,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanSubtotal = new ACTextField();
 
-      contentJikohutanSubtotal.setEnabled(false);
+      contentJikohutanSubtotal.setEditable(false);
 
       contentJikohutanSubtotal.setColumns(9);
 
       contentJikohutanSubtotal.setHorizontalAlignment(SwingConstants.RIGHT);
-
-      contentJikohutanSubtotal.setBackground(new Color(230,230,230));
-
-      contentJikohutanSubtotal.setDisabledTextColor(new Color(0,0,0));
 
       addContentJikohutanSubtotal();
     }
@@ -957,48 +980,19 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * その他領域を取得します。
-   * @return その他領域
+   * その他タイトルを取得します。
+   * @return その他タイトル
    */
-  public ACPanel getContentEtcArea(){
-    if(contentEtcArea==null){
+  public ACPanel getContentEtcTitle(){
+    if(contentEtcTitle==null){
 
-      contentEtcArea = new ACPanel();
+      contentEtcTitle = new ACPanel();
 
-      contentEtcArea.setLayout(getContentEtcAreaLayout());
+      contentEtcTitle.setAutoWrap(false);
 
-      contentEtcArea.setAutoWrap(false);
-
-      addContentEtcArea();
+      addContentEtcTitle();
     }
-    return contentEtcArea;
-
-  }
-
-  /**
-   * レイアウト2を取得します。
-   * @return レイアウト2
-   */
-  public VRLayout getContentEtcAreaLayout(){
-    if(contentEtcAreaLayout==null){
-
-      contentEtcAreaLayout = new VRLayout();
-
-      contentEtcAreaLayout.setAutoWrap(false);
-
-      contentEtcAreaLayout.setFitHLast(true);
-
-      contentEtcAreaLayout.setFitVLast(true);
-
-      contentEtcAreaLayout.setHgap(0);
-
-      contentEtcAreaLayout.setLabelMargin(0);
-
-      contentEtcAreaLayout.setVgap(0);
-
-      addContentEtcAreaLayout();
-    }
-    return contentEtcAreaLayout;
+    return contentEtcTitle;
 
   }
 
@@ -1013,15 +1007,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcHimokuTitle.setText("その他　費目");
 
-      contentEtcHimokuTitle.setEnabled(false);
+      contentEtcHimokuTitle.setEditable(false);
 
       contentEtcHimokuTitle.setColumns(26);
 
       contentEtcHimokuTitle.setHorizontalAlignment(SwingConstants.CENTER);
-
-      contentEtcHimokuTitle.setBackground(new Color(230,230,230));
-
-      contentEtcHimokuTitle.setDisabledTextColor(new Color(0,0,0));
 
       addContentEtcHimokuTitle();
     }
@@ -1040,19 +1030,32 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUseTitle.setText("利用料");
 
-      contentEtcUseTitle.setEnabled(false);
+      contentEtcUseTitle.setEditable(false);
 
       contentEtcUseTitle.setColumns(9);
 
       contentEtcUseTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
-      contentEtcUseTitle.setBackground(new Color(230,230,230));
-
-      contentEtcUseTitle.setDisabledTextColor(new Color(0,0,0));
-
       addContentEtcUseTitle();
     }
     return contentEtcUseTitle;
+
+  }
+
+  /**
+   * その他１を取得します。
+   * @return その他１
+   */
+  public ACPanel getContentEtc1(){
+    if(contentEtc1==null){
+
+      contentEtc1 = new ACPanel();
+
+      contentEtc1.setAutoWrap(false);
+
+      addContentEtc1();
+    }
+    return contentEtc1;
 
   }
 
@@ -1078,6 +1081,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentEtcHimoku1.setIMEMode(InputSubset.KANJI);
 
       contentEtcHimoku1.setMaxLength(75);
+
+      contentEtcHimoku1.setMaxColumns(25);
 
       contentEtcHimoku1.setModel(getContentEtcHimoku1Model());
 
@@ -1110,7 +1115,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUse1.setBindPath("OTHER_PAY_NO1");
 
-      contentEtcUse1.setColumns(8);
+      contentEtcUse1.setColumns(9);
 
       contentEtcUse1.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -1123,6 +1128,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse1();
     }
     return contentEtcUse1;
+
+  }
+
+  /**
+   * その他２を取得します。
+   * @return その他２
+   */
+  public ACPanel getContentEtc2(){
+    if(contentEtc2==null){
+
+      contentEtc2 = new ACPanel();
+
+      contentEtc2.setAutoWrap(false);
+
+      addContentEtc2();
+    }
+    return contentEtc2;
 
   }
 
@@ -1148,6 +1170,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentEtcHimoku2.setIMEMode(InputSubset.KANJI);
 
       contentEtcHimoku2.setMaxLength(75);
+
+      contentEtcHimoku2.setMaxColumns(25);
 
       contentEtcHimoku2.setModel(getContentEtcHimoku2Model());
 
@@ -1180,7 +1204,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUse2.setBindPath("OTHER_PAY_NO2");
 
-      contentEtcUse2.setColumns(8);
+      contentEtcUse2.setColumns(9);
 
       contentEtcUse2.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -1193,6 +1217,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse2();
     }
     return contentEtcUse2;
+
+  }
+
+  /**
+   * その他３を取得します。
+   * @return その他３
+   */
+  public ACPanel getContentEtc3(){
+    if(contentEtc3==null){
+
+      contentEtc3 = new ACPanel();
+
+      contentEtc3.setAutoWrap(false);
+
+      addContentEtc3();
+    }
+    return contentEtc3;
 
   }
 
@@ -1218,6 +1259,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentEtcHimoku3.setIMEMode(InputSubset.KANJI);
 
       contentEtcHimoku3.setMaxLength(75);
+
+      contentEtcHimoku3.setMaxColumns(25);
 
       contentEtcHimoku3.setModel(getContentEtcHimoku3Model());
 
@@ -1250,7 +1293,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUse3.setBindPath("OTHER_PAY_NO3");
 
-      contentEtcUse3.setColumns(8);
+      contentEtcUse3.setColumns(9);
 
       contentEtcUse3.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -1263,6 +1306,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse3();
     }
     return contentEtcUse3;
+
+  }
+
+  /**
+   * その他４を取得します。
+   * @return その他４
+   */
+  public ACPanel getContentEtc4(){
+    if(contentEtc4==null){
+
+      contentEtc4 = new ACPanel();
+
+      contentEtc4.setAutoWrap(false);
+
+      addContentEtc4();
+    }
+    return contentEtc4;
 
   }
 
@@ -1288,6 +1348,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentEtcHimoku4.setIMEMode(InputSubset.KANJI);
 
       contentEtcHimoku4.setMaxLength(75);
+
+      contentEtcHimoku4.setMaxColumns(25);
 
       contentEtcHimoku4.setModel(getContentEtcHimoku4Model());
 
@@ -1320,7 +1382,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUse4.setBindPath("OTHER_PAY_NO4");
 
-      contentEtcUse4.setColumns(8);
+      contentEtcUse4.setColumns(9);
 
       contentEtcUse4.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -1333,6 +1395,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse4();
     }
     return contentEtcUse4;
+
+  }
+
+  /**
+   * その他５を取得します。
+   * @return その他５
+   */
+  public ACPanel getContentEtc5(){
+    if(contentEtc5==null){
+
+      contentEtc5 = new ACPanel();
+
+      contentEtc5.setAutoWrap(false);
+
+      addContentEtc5();
+    }
+    return contentEtc5;
 
   }
 
@@ -1358,6 +1437,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       contentEtcHimoku5.setIMEMode(InputSubset.KANJI);
 
       contentEtcHimoku5.setMaxLength(75);
+
+      contentEtcHimoku5.setMaxColumns(25);
 
       contentEtcHimoku5.setModel(getContentEtcHimoku5Model());
 
@@ -1390,7 +1471,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUse5.setBindPath("OTHER_PAY_NO5");
 
-      contentEtcUse5.setColumns(8);
+      contentEtcUse5.setColumns(9);
 
       contentEtcUse5.setCharType(VRCharType.ONLY_NUMBER);
 
@@ -1407,48 +1488,19 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * その他タイトル領域を取得します。
-   * @return その他タイトル領域
+   * その他小計を取得します。
+   * @return その他小計
    */
   public ACPanel getContentEtcTitleArea(){
     if(contentEtcTitleArea==null){
 
       contentEtcTitleArea = new ACPanel();
 
-      contentEtcTitleArea.setLayout(getContentEtcTitleAreaLayout());
-
       contentEtcTitleArea.setAutoWrap(false);
 
       addContentEtcTitleArea();
     }
     return contentEtcTitleArea;
-
-  }
-
-  /**
-   * レイアウト3を取得します。
-   * @return レイアウト3
-   */
-  public VRLayout getContentEtcTitleAreaLayout(){
-    if(contentEtcTitleAreaLayout==null){
-
-      contentEtcTitleAreaLayout = new VRLayout();
-
-      contentEtcTitleAreaLayout.setAutoWrap(false);
-
-      contentEtcTitleAreaLayout.setFitHLast(true);
-
-      contentEtcTitleAreaLayout.setFitVLast(true);
-
-      contentEtcTitleAreaLayout.setHgap(0);
-
-      contentEtcTitleAreaLayout.setLabelMargin(0);
-
-      contentEtcTitleAreaLayout.setVgap(0);
-
-      addContentEtcTitleAreaLayout();
-    }
-    return contentEtcTitleAreaLayout;
 
   }
 
@@ -1463,15 +1515,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcSubtotalTitle.setText("小計");
 
-      contentEtcSubtotalTitle.setEnabled(false);
+      contentEtcSubtotalTitle.setEditable(false);
 
       contentEtcSubtotalTitle.setColumns(26);
 
       contentEtcSubtotalTitle.setHorizontalAlignment(SwingConstants.CENTER);
-
-      contentEtcSubtotalTitle.setBackground(new Color(230,230,230));
-
-      contentEtcSubtotalTitle.setDisabledTextColor(new Color(0,0,0));
 
       addContentEtcSubtotalTitle();
     }
@@ -1488,15 +1536,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcSubtotal = new ACTextField();
 
-      contentEtcSubtotal.setEnabled(false);
+      contentEtcSubtotal.setEditable(false);
 
       contentEtcSubtotal.setColumns(9);
 
       contentEtcSubtotal.setHorizontalAlignment(SwingConstants.RIGHT);
-
-      contentEtcSubtotal.setBackground(new Color(230,230,230));
-
-      contentEtcSubtotal.setDisabledTextColor(new Color(0,0,0));
 
       addContentEtcSubtotal();
     }
@@ -1673,6 +1717,14 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     buttons.add(getUpdate(), VRLayout.EAST);
     buttons.add(getInsert(), VRLayout.EAST);
+    buttons.add(getOpen(), VRLayout.EAST);
+  }
+
+  /**
+   * 前回読込み(O)に内部項目を追加します。
+   */
+  protected void addOpen(){
+
   }
 
   /**
@@ -1792,11 +1844,26 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentJikohutanArea(){
 
-    contentJikohutanArea.add(getContentBill(), VRLayout.FLOW_RETURN);
+    contentJikohutanArea.add(getContentBillTitle(), VRLayout.FLOW_RETURN);
 
-    contentJikohutanArea.add(getContentJikohutans(), VRLayout.FLOW_RETURN);
+    contentJikohutanArea.add(getContentJikohutanTitle(), VRLayout.FLOW_RETURN);
 
-    contentJikohutanArea.add(getContentJikohutanTitleArea(), VRLayout.FLOW);
+    contentJikohutanArea.add(getContentJikohutan1(), VRLayout.FLOW_RETURN);
+
+    contentJikohutanArea.add(getContentJikohutan2(), VRLayout.FLOW_RETURN);
+
+    contentJikohutanArea.add(getContentJikohutan3(), VRLayout.FLOW_RETURN);
+
+    contentJikohutanArea.add(getContentJikohutanTitleArea(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 項目タイトルに内部項目を追加します。
+   */
+  protected void addContentBillTitle(){
+
+    contentBillTitle.add(getContentBill(), VRLayout.WEST);
 
   }
 
@@ -1808,33 +1875,13 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 全額自己負担分パネルに内部項目を追加します。
+   * 全額自己負担分タイトルに内部項目を追加します。
    */
-  protected void addContentJikohutans(){
+  protected void addContentJikohutanTitle(){
 
-    contentJikohutans.add(getContentJikohutanHimokuTitle(), VRLayout.FLOW);
+    contentJikohutanTitle.add(getContentJikohutanHimokuTitle(), VRLayout.CLIENT);
 
-    contentJikohutans.add(getContentJikohutanUseTitle(), VRLayout.FLOW_RETURN);
-
-    contentJikohutans.add(getContentJikohutanHimoku1(), VRLayout.FLOW);
-
-    contentJikohutans.add(getContentJikohutanUse1(), VRLayout.FLOW_RETURN);
-
-    contentJikohutans.add(getContentJikohutanHimoku2(), VRLayout.FLOW);
-
-    contentJikohutans.add(getContentJikohutanUse2(), VRLayout.FLOW_RETURN);
-
-    contentJikohutans.add(getContentJikohutanHimoku3(), VRLayout.FLOW);
-
-    contentJikohutans.add(getContentJikohutanUse3(), VRLayout.FLOW_RETURN);
-
-  }
-
-  /**
-   * 全額自己負担分レイアウトに内部項目を追加します。
-   */
-  protected void addContentJikohutanLayout(){
-
+    contentJikohutanTitle.add(getContentJikohutanUseTitle(), VRLayout.EAST);
   }
 
   /**
@@ -1849,6 +1896,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentJikohutanUseTitle(){
 
+  }
+
+  /**
+   * 全額自己負担分１に内部項目を追加します。
+   */
+  protected void addContentJikohutan1(){
+
+    contentJikohutan1.add(getContentJikohutanHimoku1(), VRLayout.CLIENT);
+
+    contentJikohutan1.add(getContentJikohutanUse1(), VRLayout.EAST);
   }
 
   /**
@@ -1873,6 +1930,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 全額自己負担分２に内部項目を追加します。
+   */
+  protected void addContentJikohutan2(){
+
+    contentJikohutan2.add(getContentJikohutanHimoku2(), VRLayout.CLIENT);
+
+    contentJikohutan2.add(getContentJikohutanUse2(), VRLayout.EAST);
+  }
+
+  /**
    * 全額自己負担分費目２に内部項目を追加します。
    */
   protected void addContentJikohutanHimoku2(){
@@ -1891,6 +1958,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentJikohutanUse2(){
 
+  }
+
+  /**
+   * 全額自己負担分３に内部項目を追加します。
+   */
+  protected void addContentJikohutan3(){
+
+    contentJikohutan3.add(getContentJikohutanHimoku3(), VRLayout.CLIENT);
+
+    contentJikohutan3.add(getContentJikohutanUse3(), VRLayout.EAST);
   }
 
   /**
@@ -1915,21 +1992,13 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 全額自己負担タイトル領域に内部項目を追加します。
+   * 全額自己負担分小計に内部項目を追加します。
    */
   protected void addContentJikohutanTitleArea(){
 
-    contentJikohutanTitleArea.add(getContentJikohutanSubtotalTitle(), VRLayout.FLOW);
+    contentJikohutanTitleArea.add(getContentJikohutanSubtotalTitle(), VRLayout.CLIENT);
 
-    contentJikohutanTitleArea.add(getContentJikohutanSubtotal(), VRLayout.FLOW_RETURN);
-
-  }
-
-  /**
-   * 全額自己負担タイトル領域・レイアウトに内部項目を追加します。
-   */
-  protected void addContentJikohutanTitleAreaLayout(){
-
+    contentJikohutanTitleArea.add(getContentJikohutanSubtotal(), VRLayout.EAST);
   }
 
   /**
@@ -1958,48 +2027,30 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentEtcs(){
 
-    contentEtcs.add(getContentEtcArea(), VRLayout.FLOW_RETURN);
+    contentEtcs.add(getContentEtcTitle(), VRLayout.FLOW_RETURN);
 
-    contentEtcs.add(getContentEtcTitleArea(), VRLayout.FLOW);
+    contentEtcs.add(getContentEtc1(), VRLayout.FLOW_RETURN);
 
-  }
+    contentEtcs.add(getContentEtc2(), VRLayout.FLOW_RETURN);
 
-  /**
-   * その他領域に内部項目を追加します。
-   */
-  protected void addContentEtcArea(){
+    contentEtcs.add(getContentEtc3(), VRLayout.FLOW_RETURN);
 
-    contentEtcArea.add(getContentEtcHimokuTitle(), VRLayout.FLOW);
+    contentEtcs.add(getContentEtc4(), VRLayout.FLOW_RETURN);
 
-    contentEtcArea.add(getContentEtcUseTitle(), VRLayout.FLOW_RETURN);
+    contentEtcs.add(getContentEtc5(), VRLayout.FLOW_RETURN);
 
-    contentEtcArea.add(getContentEtcHimoku1(), VRLayout.FLOW);
-
-    contentEtcArea.add(getContentEtcUse1(), VRLayout.FLOW_RETURN);
-
-    contentEtcArea.add(getContentEtcHimoku2(), VRLayout.FLOW);
-
-    contentEtcArea.add(getContentEtcUse2(), VRLayout.FLOW_RETURN);
-
-    contentEtcArea.add(getContentEtcHimoku3(), VRLayout.FLOW);
-
-    contentEtcArea.add(getContentEtcUse3(), VRLayout.FLOW_RETURN);
-
-    contentEtcArea.add(getContentEtcHimoku4(), VRLayout.FLOW);
-
-    contentEtcArea.add(getContentEtcUse4(), VRLayout.FLOW_RETURN);
-
-    contentEtcArea.add(getContentEtcHimoku5(), VRLayout.FLOW);
-
-    contentEtcArea.add(getContentEtcUse5(), VRLayout.FLOW_RETURN);
+    contentEtcs.add(getContentEtcTitleArea(), VRLayout.FLOW_RETURN);
 
   }
 
   /**
-   * レイアウト2に内部項目を追加します。
+   * その他タイトルに内部項目を追加します。
    */
-  protected void addContentEtcAreaLayout(){
+  protected void addContentEtcTitle(){
 
+    contentEtcTitle.add(getContentEtcHimokuTitle(), VRLayout.CLIENT);
+
+    contentEtcTitle.add(getContentEtcUseTitle(), VRLayout.EAST);
   }
 
   /**
@@ -2014,6 +2065,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentEtcUseTitle(){
 
+  }
+
+  /**
+   * その他１に内部項目を追加します。
+   */
+  protected void addContentEtc1(){
+
+    contentEtc1.add(getContentEtcHimoku1(), VRLayout.CLIENT);
+
+    contentEtc1.add(getContentEtcUse1(), VRLayout.EAST);
   }
 
   /**
@@ -2038,6 +2099,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他２に内部項目を追加します。
+   */
+  protected void addContentEtc2(){
+
+    contentEtc2.add(getContentEtcHimoku2(), VRLayout.CLIENT);
+
+    contentEtc2.add(getContentEtcUse2(), VRLayout.EAST);
+  }
+
+  /**
    * その他費目２に内部項目を追加します。
    */
   protected void addContentEtcHimoku2(){
@@ -2056,6 +2127,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentEtcUse2(){
 
+  }
+
+  /**
+   * その他３に内部項目を追加します。
+   */
+  protected void addContentEtc3(){
+
+    contentEtc3.add(getContentEtcHimoku3(), VRLayout.CLIENT);
+
+    contentEtc3.add(getContentEtcUse3(), VRLayout.EAST);
   }
 
   /**
@@ -2080,6 +2161,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他４に内部項目を追加します。
+   */
+  protected void addContentEtc4(){
+
+    contentEtc4.add(getContentEtcHimoku4(), VRLayout.CLIENT);
+
+    contentEtc4.add(getContentEtcUse4(), VRLayout.EAST);
+  }
+
+  /**
    * その他費目４に内部項目を追加します。
    */
   protected void addContentEtcHimoku4(){
@@ -2098,6 +2189,16 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentEtcUse4(){
 
+  }
+
+  /**
+   * その他５に内部項目を追加します。
+   */
+  protected void addContentEtc5(){
+
+    contentEtc5.add(getContentEtcHimoku5(), VRLayout.CLIENT);
+
+    contentEtc5.add(getContentEtcUse5(), VRLayout.EAST);
   }
 
   /**
@@ -2122,21 +2223,13 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * その他タイトル領域に内部項目を追加します。
+   * その他小計に内部項目を追加します。
    */
   protected void addContentEtcTitleArea(){
 
-    contentEtcTitleArea.add(getContentEtcSubtotalTitle(), VRLayout.FLOW);
+    contentEtcTitleArea.add(getContentEtcSubtotalTitle(), VRLayout.CLIENT);
 
-    contentEtcTitleArea.add(getContentEtcSubtotal(), VRLayout.FLOW_RETURN);
-
-  }
-
-  /**
-   * レイアウト3に内部項目を追加します。
-   */
-  protected void addContentEtcTitleAreaLayout(){
-
+    contentEtcTitleArea.add(getContentEtcSubtotal(), VRLayout.EAST);
   }
 
   /**
@@ -2234,7 +2327,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QP003Design.class.getName()));
     } catch (Exception e) {

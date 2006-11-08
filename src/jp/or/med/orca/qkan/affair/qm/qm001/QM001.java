@@ -30,13 +30,20 @@
 package jp.or.med.orca.qkan.affair.qm.qm001;
 
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.version.ACVersionAdjuster;
@@ -45,6 +52,8 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACLoggerDBManager;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
@@ -166,8 +175,10 @@ public class QM001 extends QM001Event {
 					} catch (Exception ex) {
 					}
 				}
-				if (("unknown".equals(dbmsVersion))
-						|| (dbmsVersion.indexOf("Firebird 1.0") >= 0)) {
+                String lowerDBMSVer = dbmsVersion.toLowerCase();
+				if (("unknown".equals(lowerDBMSVer))
+						|| (lowerDBMSVer.indexOf("firebird 1.0") >= 0)||
+                        (lowerDBMSVer.indexOf("firebird") < 0)) {
 					errorFlag |= DBMS_VERSION_ERROR;
 					setState_INVALID_DBMS();
 				} else {
@@ -186,10 +197,13 @@ public class QM001 extends QM001Event {
                         "version/update.xml",
                         new QkanVersionAdjustmentListener(getDBManager()));
                     systemVersion = QkanSystemInformation.getInstance().getSystemVersion();
+                    
+                    // マスタ（システムから登録のあるマスタ）補正
+                    new QM001UpdateMasterTask().adjustTask(getDBManager());
+                    
                 }catch(Exception ex){
                     VRLogger.info(ex);
                 }
-                
                 
 				// 給付管理台帳システムバージョン情報取得用のSQL文を取得する。
 				// getSQL_GET_QKAN_VERSION(null);
@@ -300,6 +314,15 @@ public class QM001 extends QM001Event {
 				// 取得したリストの一番上を選択状態にする。
 				getProviderList().setSelectedIndex(0);
 
+				int loginProviderIndex = ACBindUtilities
+                        .getMatchIndexFromValue(providerList, "PROVIDER_ID",
+                                QkanSystemInformation.getInstance()
+                                        .getLoginProviderID());
+                if(loginProviderIndex>=0){
+                    // ログイン事業所を選択済みであれば、再選択する。
+                    getProviderList().setSelectedIndex(loginProviderIndex);
+                }
+                
 				setState_VALID_PROVIDER();
 			} else {
 				// レコード数が0件の場合
@@ -401,8 +424,8 @@ public class QM001 extends QM001Event {
 		getEnvironment().setText(sb.toString());
 
 
-        //画面最大化
-        ACFrame.getInstance().setExtendedState(Frame.MAXIMIZED_BOTH);
+//        //画面最大化
+//        ACFrame.getInstance().setExtendedState(Frame.MAXIMIZED_BOTH);
                 
         try{
             //設定ファイル変更対応
@@ -539,11 +562,216 @@ public class QM001 extends QM001Event {
 				new QkanFrameEventProcesser());
 		// ログイン日付
 		QkanCommon.debugInitialize();
+
+        QkanSystemInformation.getInstance().setLoginProviderID("");
+
 		VRMap param = new VRHashMap();
 		// paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
 		ACFrame
 				.debugStart(new ACAffairInfo(QM001.class.getName(), param, "ログイン画面", true));
+
+        //画面最大化
+        ACFrame.getInstance().setExtendedState(Frame.MAXIMIZED_BOTH);
+
+        
+        if ((args != null) && (args.length > 0)) {
+            //連携処理
+            try {
+                
+                if ("showVersion".equals(args[0])) {
+                    // バージョン情報
+                    if(!canLink()){
+                        return;
+                    }
+                    new QV001().setVisible(true);
+                    System.exit(0);
+                    return;
+                } else if ("showPlan".equals(args[0])) {
+                    // 予定
+                    if(!canLink()){
+                        return;
+                    }
+                    transferPlan(args);
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showPlanPrint".equals(args[0])) {
+                    // 予定から印刷指示画面
+                    if(!canLink()){
+                        return;
+                    }
+                    transferPlan(args);
+                    jp.or.med.orca.qkan.affair.qs.qs001.QS001 affair = (jp.or.med.orca.qkan.affair.qs.qs001.QS001)ACFrame.getInstance().getNowPanel();
+                    //月間表を表示
+                    affair.showMonthly();
+                    ACFrame.getInstance().setVisible(true);
+                    //印刷ボタン押下
+                    buttonActionPerformed(affair.getPrintMonthly());
+                } else if ("showPlanCalc".equals(args[0])) {
+                    // 予定から集計画面
+                    if(!canLink()){
+                        return;
+                    }
+                    transferPlan(args);
+                    jp.or.med.orca.qkan.affair.qs.qs001.QS001 affair = (jp.or.med.orca.qkan.affair.qs.qs001.QS001)ACFrame.getInstance().getNowPanel();
+                    //月間表を表示
+                    affair.showMonthly();
+                    ACFrame.getInstance().setVisible(true);
+                    //集計ボタン押下
+                    buttonActionPerformed(affair.getMonthlyPanel().getDetailsbutton());
+                } else if ("showResultCalc".equals(args[0])) {
+                    // 利用者一覧(実績集計)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, "01");
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showCareKyufuKanri".equals(args[0])) {
+                    // 利用者一覧(給付管理票)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, "02");
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showCareMeisai".equals(args[0])) {
+                    // 利用者一覧(介護給付費明細書)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, "04");
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showCareSeikyu".equals(args[0])) {
+                    // 利用者一覧(介護給付費請求書)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, "08");
+                    ACFrame.getInstance().setVisible(true);
+                }
+            } catch (Throwable ex) {
+                ACMessageBox.showExclamation("連携処理に失敗しました。"
+                        + ACConstants.LINE_SEPARATOR
+                        + "続いて表示されるメッセージを添えて、サポート担当者にご連絡ください。");
+                ACFrame.getInstance().showExceptionMessage(ex);
+                System.exit(0);
+            }
+        }
 	}
+    /**
+     * 連携可能であるかを返します。
+     * @return 連携可能であるか
+     */
+    private static boolean canLink(){
+        if (!((QM001) ACFrame.getInstance().getNowPanel()).getStart()
+                .isEnabled()) {
+            ACMessageBox.showExclamation("連携処理に失敗しました。"
+                    + ACConstants.LINE_SEPARATOR+"給管鳥の設定を見直してください。");
+            System.exit(0);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 予定作成画面へ遷移します。
+     * @param args 引数
+     * @throws Throwable 処理例外
+     */
+    public static void transferPlan(String[] args) throws Throwable{
+        ACFrame.getInstance().setVisible(false);
+
+        //1:ログイン事業所番号
+        QkanSystemInformation.getInstance().setLoginProviderID(args[1]);
+
+        VRMap param = new VRHashMap();
+        //メインメニューに遷移
+        ACFrame.getInstance().next(
+                new ACAffairInfo(
+                        jp.or.med.orca.qkan.affair.qm.qm002.QM002.class
+                                .getName(), param, true));
+
+        //次遷移先
+        param.setData("NEXT_AFFAIR", "QS001");
+        //2:利用者ID
+        param.setData("PATIENT_ID", args[2]);
+        //3:対象年月
+        param.setData("TARGET_DATE", ACCastUtilities.toDate(args[3]));
+        
+        //利用者一覧(予定)に遷移
+        ACFrame
+                .getInstance()
+                .next(
+                        new ACAffairInfo(
+                                jp.or.med.orca.qkan.affair.qu.qu001.QU001.class
+                                        .getName(), param, true));
+        //予定作成ボタン押下
+        buttonActionPerformed(((jp.or.med.orca.qkan.affair.qu.qu001.QU001)ACFrame.getInstance().getNowPanel()).getPlanInsert());
+     }
+
+    /**
+     * 予定作成画面へ遷移します。
+     * @param args 引数
+     * @throws Throwable 処理例外
+     */
+    public static void transferClaim(String[] args, String affairParam) throws Throwable{
+        ACFrame.getInstance().setVisible(false);
+
+        //1:ログイン事業所番号
+        QkanSystemInformation.getInstance().setLoginProviderID(args[1]);
+
+        VRMap param = new VRHashMap();
+        //メインメニューに遷移
+        ACFrame.getInstance().next(
+                new ACAffairInfo(
+                        jp.or.med.orca.qkan.affair.qm.qm002.QM002.class
+                                .getName(), param, true));
+
+        //処理内容
+        param.setData("AFFAIR", affairParam);
+        //2:利用者ID
+        param.setData("PATIENT_ID", args[2]);
+        
+        VRMap initParam = new VRHashMap();
+        //3:対象年月
+        Date d = ACCastUtilities.toDate(args[3]);
+        if("01".equals(affairParam)){
+            //実績集計の場合
+            //対象年月を設定
+            initParam.setData("REST_TARGET_DATE", d);
+            if(ACDateUtilities.getDayOfMonth(d)>10){
+                //10日以降は翌月を請求月とする
+                d = ACDateUtilities.addMonth(d, 1);
+            }
+            initParam.setData("CLAIM_TARGET_DATE", d);
+            initParam.setData("CLAIM_UPDATE_DATE", d);
+            initParam.setData("CLAIM_PRINT_DATE", d);
+        }else{
+            //請求書・明細書の場合
+            //請求年月を設定
+            initParam.setData("CLAIM_TARGET_DATE", d);
+            initParam.setData("CLAIM_UPDATE_DATE", d);
+            initParam.setData("CLAIM_PRINT_DATE", d);
+        }
+        param.setData("QP001_DATA", initParam);
+        
+
+        //利用者一覧(請求)に遷移
+        ACFrame
+                .getInstance()
+                .next(
+                        new ACAffairInfo(
+                                jp.nichicom.ac.lib.care.claim.calculation.QP001.class
+                                        .getName(), param, true));
+     }
+    /**
+     * ボタン押下を擬似実行します。
+     * @param btn ボタン
+     */
+    public static void buttonActionPerformed(JButton btn){
+        ActionEvent e=new ActionEvent (btn, ActionEvent.ACTION_PERFORMED, "" );
+        ActionListener[] listeners=btn.getActionListeners();
+        for(int i=listeners.length-1; i>=0; i--){
+            listeners[i].actionPerformed(e);
+        }
+    }
 
 	/**
 	 * 「設定変更画面遷移」イベントです。

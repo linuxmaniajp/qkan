@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -636,6 +635,10 @@ public abstract class QU004Event extends QU004SQL {
   public static final int CHECK_MODE_INSERT = 1;
   public static final int CHECK_MODE_UPDATE = 2;
   public static final int TYPE_SHAHUKU = 7701;
+  public static final int KAIGO_OTHER_KOHI = 9999;
+  public static final int IRYO_OTHER_KOHI = 9998;
+  public static final Date MAX_DATE = ACCastUtilities.toDate("9999/12/31", null);
+  public static final Date MIN_DATE = ACCastUtilities.toDate("0001/01/01", null);
   private int patientId;
   private int systemDate;
   private int processMode = QkanConstants.PROCESS_MODE_INSERT;

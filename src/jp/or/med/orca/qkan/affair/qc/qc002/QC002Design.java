@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/04/04  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/09/01  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -191,8 +192,6 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel calendarLeftMonthCaption;
 
   private ACPanel calendarLeftDayContainer;
-
-  private GridBagLayout calendarLeftDaysLayout;
 
   private ACComboBox calendarLeftDay01;
 
@@ -348,8 +347,6 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel calendarRightDayContainer;
 
-  private GridBagLayout calendarRightDaysLayout;
-
   private ACComboBox calendarRightDay01;
 
   private ACComboBoxModelAdapter calendarRightDay01Model;
@@ -499,6 +496,8 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
   private ACPanel memos;
 
   private ACLabel memo1;
+
+  private ACLabel memo6;
 
   private ACLabel memo2;
 
@@ -1561,26 +1560,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDayContainer = new ACPanel();
 
-      calendarLeftDayContainer.setLayout(getCalendarLeftDaysLayout());
+      calendarLeftDayContainer.setAutoWrap(false);
+
+      calendarLeftDayContainer.setHgap(0);
+
+      calendarLeftDayContainer.setVgap(0);
 
       addCalendarLeftDayContainer();
     }
     return calendarLeftDayContainer;
-
-  }
-
-  /**
-   * カレンダー(左日付領域レイアウト)を取得します。
-   * @return カレンダー(左日付領域レイアウト)
-   */
-  public GridBagLayout getCalendarLeftDaysLayout(){
-    if(calendarLeftDaysLayout==null){
-
-      calendarLeftDaysLayout = new GridBagLayout();
-
-      addCalendarLeftDaysLayout();
-    }
-    return calendarLeftDaysLayout;
 
   }
 
@@ -1597,11 +1585,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay01.setEditable(false);
 
+      calendarLeftDay01.setColumns(3);
+
       calendarLeftDay01.setModelBindPath("CALENDAR_LEFT1");
 
       calendarLeftDay01.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay01.setBlankable(false);
+
+      calendarLeftDay01.setMaxColumns(3);
 
       calendarLeftDay01.setModel(getCalendarLeftDay01Model());
 
@@ -1636,11 +1628,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay02.setEditable(false);
 
+      calendarLeftDay02.setColumns(3);
+
       calendarLeftDay02.setModelBindPath("CALENDAR_LEFT2");
 
       calendarLeftDay02.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay02.setBlankable(false);
+
+      calendarLeftDay02.setMaxColumns(3);
 
       calendarLeftDay02.setModel(getCalendarLeftDay02Model());
 
@@ -1675,11 +1671,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay03.setEditable(false);
 
+      calendarLeftDay03.setColumns(3);
+
       calendarLeftDay03.setModelBindPath("CALENDAR_LEFT3");
 
       calendarLeftDay03.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay03.setBlankable(false);
+
+      calendarLeftDay03.setMaxColumns(3);
 
       calendarLeftDay03.setModel(getCalendarLeftDay03Model());
 
@@ -1714,11 +1714,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay04.setEditable(false);
 
+      calendarLeftDay04.setColumns(3);
+
       calendarLeftDay04.setModelBindPath("CALENDAR_LEFT4");
 
       calendarLeftDay04.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay04.setBlankable(false);
+
+      calendarLeftDay04.setMaxColumns(3);
 
       calendarLeftDay04.setModel(getCalendarLeftDay04Model());
 
@@ -1753,11 +1757,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay05.setEditable(false);
 
+      calendarLeftDay05.setColumns(3);
+
       calendarLeftDay05.setModelBindPath("CALENDAR_LEFT5");
 
       calendarLeftDay05.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay05.setBlankable(false);
+
+      calendarLeftDay05.setMaxColumns(3);
 
       calendarLeftDay05.setModel(getCalendarLeftDay05Model());
 
@@ -1792,11 +1800,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay06.setEditable(false);
 
+      calendarLeftDay06.setColumns(3);
+
       calendarLeftDay06.setModelBindPath("CALENDAR_LEFT6");
 
       calendarLeftDay06.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay06.setBlankable(false);
+
+      calendarLeftDay06.setMaxColumns(3);
 
       calendarLeftDay06.setModel(getCalendarLeftDay06Model());
 
@@ -1831,11 +1843,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay07.setEditable(false);
 
+      calendarLeftDay07.setColumns(3);
+
       calendarLeftDay07.setModelBindPath("CALENDAR_LEFT7");
 
       calendarLeftDay07.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay07.setBlankable(false);
+
+      calendarLeftDay07.setMaxColumns(3);
 
       calendarLeftDay07.setModel(getCalendarLeftDay07Model());
 
@@ -1870,11 +1886,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay08.setEditable(false);
 
+      calendarLeftDay08.setColumns(3);
+
       calendarLeftDay08.setModelBindPath("CALENDAR_LEFT8");
 
       calendarLeftDay08.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay08.setBlankable(false);
+
+      calendarLeftDay08.setMaxColumns(3);
 
       calendarLeftDay08.setModel(getCalendarLeftDay08Model());
 
@@ -1909,11 +1929,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay09.setEditable(false);
 
+      calendarLeftDay09.setColumns(3);
+
       calendarLeftDay09.setModelBindPath("CALENDAR_LEFT9");
 
       calendarLeftDay09.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay09.setBlankable(false);
+
+      calendarLeftDay09.setMaxColumns(3);
 
       calendarLeftDay09.setModel(getCalendarLeftDay09Model());
 
@@ -1948,11 +1972,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay10.setEditable(false);
 
+      calendarLeftDay10.setColumns(3);
+
       calendarLeftDay10.setModelBindPath("CALENDAR_LEFT10");
 
       calendarLeftDay10.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay10.setBlankable(false);
+
+      calendarLeftDay10.setMaxColumns(3);
 
       calendarLeftDay10.setModel(getCalendarLeftDay10Model());
 
@@ -1987,11 +2015,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay11.setEditable(false);
 
+      calendarLeftDay11.setColumns(3);
+
       calendarLeftDay11.setModelBindPath("CALENDAR_LEFT11");
 
       calendarLeftDay11.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay11.setBlankable(false);
+
+      calendarLeftDay11.setMaxColumns(3);
 
       calendarLeftDay11.setModel(getCalendarLeftDay11Model());
 
@@ -2026,11 +2058,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay12.setEditable(false);
 
+      calendarLeftDay12.setColumns(3);
+
       calendarLeftDay12.setModelBindPath("CALENDAR_LEFT12");
 
       calendarLeftDay12.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay12.setBlankable(false);
+
+      calendarLeftDay12.setMaxColumns(3);
 
       calendarLeftDay12.setModel(getCalendarLeftDay12Model());
 
@@ -2065,11 +2101,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay13.setEditable(false);
 
+      calendarLeftDay13.setColumns(3);
+
       calendarLeftDay13.setModelBindPath("CALENDAR_LEFT13");
 
       calendarLeftDay13.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay13.setBlankable(false);
+
+      calendarLeftDay13.setMaxColumns(3);
 
       calendarLeftDay13.setModel(getCalendarLeftDay13Model());
 
@@ -2104,11 +2144,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay14.setEditable(false);
 
+      calendarLeftDay14.setColumns(3);
+
       calendarLeftDay14.setModelBindPath("CALENDAR_LEFT14");
 
       calendarLeftDay14.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay14.setBlankable(false);
+
+      calendarLeftDay14.setMaxColumns(3);
 
       calendarLeftDay14.setModel(getCalendarLeftDay14Model());
 
@@ -2143,11 +2187,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay15.setEditable(false);
 
+      calendarLeftDay15.setColumns(3);
+
       calendarLeftDay15.setModelBindPath("CALENDAR_LEFT15");
 
       calendarLeftDay15.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay15.setBlankable(false);
+
+      calendarLeftDay15.setMaxColumns(3);
 
       calendarLeftDay15.setModel(getCalendarLeftDay15Model());
 
@@ -2182,11 +2230,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay16.setEditable(false);
 
+      calendarLeftDay16.setColumns(3);
+
       calendarLeftDay16.setModelBindPath("CALENDAR_LEFT16");
 
       calendarLeftDay16.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay16.setBlankable(false);
+
+      calendarLeftDay16.setMaxColumns(3);
 
       calendarLeftDay16.setModel(getCalendarLeftDay16Model());
 
@@ -2221,11 +2273,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay17.setEditable(false);
 
+      calendarLeftDay17.setColumns(3);
+
       calendarLeftDay17.setModelBindPath("CALENDAR_LEFT17");
 
       calendarLeftDay17.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay17.setBlankable(false);
+
+      calendarLeftDay17.setMaxColumns(3);
 
       calendarLeftDay17.setModel(getCalendarLeftDay17Model());
 
@@ -2260,11 +2316,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay18.setEditable(false);
 
+      calendarLeftDay18.setColumns(3);
+
       calendarLeftDay18.setModelBindPath("CALENDAR_LEFT18");
 
       calendarLeftDay18.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay18.setBlankable(false);
+
+      calendarLeftDay18.setMaxColumns(3);
 
       calendarLeftDay18.setModel(getCalendarLeftDay18Model());
 
@@ -2299,11 +2359,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay19.setEditable(false);
 
+      calendarLeftDay19.setColumns(3);
+
       calendarLeftDay19.setModelBindPath("CALENDAR_LEFT19");
 
       calendarLeftDay19.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay19.setBlankable(false);
+
+      calendarLeftDay19.setMaxColumns(3);
 
       calendarLeftDay19.setModel(getCalendarLeftDay19Model());
 
@@ -2338,11 +2402,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay20.setEditable(false);
 
+      calendarLeftDay20.setColumns(3);
+
       calendarLeftDay20.setModelBindPath("CALENDAR_LEFT20");
 
       calendarLeftDay20.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay20.setBlankable(false);
+
+      calendarLeftDay20.setMaxColumns(3);
 
       calendarLeftDay20.setModel(getCalendarLeftDay20Model());
 
@@ -2377,11 +2445,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay21.setEditable(false);
 
+      calendarLeftDay21.setColumns(3);
+
       calendarLeftDay21.setModelBindPath("CALENDAR_LEFT21");
 
       calendarLeftDay21.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay21.setBlankable(false);
+
+      calendarLeftDay21.setMaxColumns(3);
 
       calendarLeftDay21.setModel(getCalendarLeftDay21Model());
 
@@ -2416,11 +2488,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay22.setEditable(false);
 
+      calendarLeftDay22.setColumns(3);
+
       calendarLeftDay22.setModelBindPath("CALENDAR_LEFT22");
 
       calendarLeftDay22.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay22.setBlankable(false);
+
+      calendarLeftDay22.setMaxColumns(3);
 
       calendarLeftDay22.setModel(getCalendarLeftDay22Model());
 
@@ -2455,11 +2531,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay23.setEditable(false);
 
+      calendarLeftDay23.setColumns(3);
+
       calendarLeftDay23.setModelBindPath("CALENDAR_LEFT23");
 
       calendarLeftDay23.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay23.setBlankable(false);
+
+      calendarLeftDay23.setMaxColumns(3);
 
       calendarLeftDay23.setModel(getCalendarLeftDay23Model());
 
@@ -2494,11 +2574,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay24.setEditable(false);
 
+      calendarLeftDay24.setColumns(3);
+
       calendarLeftDay24.setModelBindPath("CALENDAR_LEFT24");
 
       calendarLeftDay24.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay24.setBlankable(false);
+
+      calendarLeftDay24.setMaxColumns(3);
 
       calendarLeftDay24.setModel(getCalendarLeftDay24Model());
 
@@ -2533,11 +2617,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay25.setEditable(false);
 
+      calendarLeftDay25.setColumns(3);
+
       calendarLeftDay25.setModelBindPath("CALENDAR_LEFT25");
 
       calendarLeftDay25.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay25.setBlankable(false);
+
+      calendarLeftDay25.setMaxColumns(3);
 
       calendarLeftDay25.setModel(getCalendarLeftDay25Model());
 
@@ -2572,11 +2660,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay26.setEditable(false);
 
+      calendarLeftDay26.setColumns(3);
+
       calendarLeftDay26.setModelBindPath("CALENDAR_LEFT26");
 
       calendarLeftDay26.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay26.setBlankable(false);
+
+      calendarLeftDay26.setMaxColumns(3);
 
       calendarLeftDay26.setModel(getCalendarLeftDay26Model());
 
@@ -2611,11 +2703,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay27.setEditable(false);
 
+      calendarLeftDay27.setColumns(3);
+
       calendarLeftDay27.setModelBindPath("CALENDAR_LEFT27");
 
       calendarLeftDay27.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay27.setBlankable(false);
+
+      calendarLeftDay27.setMaxColumns(3);
 
       calendarLeftDay27.setModel(getCalendarLeftDay27Model());
 
@@ -2650,11 +2746,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay28.setEditable(false);
 
+      calendarLeftDay28.setColumns(3);
+
       calendarLeftDay28.setModelBindPath("CALENDAR_LEFT28");
 
       calendarLeftDay28.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay28.setBlankable(false);
+
+      calendarLeftDay28.setMaxColumns(3);
 
       calendarLeftDay28.setModel(getCalendarLeftDay28Model());
 
@@ -2727,11 +2827,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay29.setEditable(false);
 
+      calendarLeftDay29.setColumns(3);
+
       calendarLeftDay29.setModelBindPath("CALENDAR_LEFT29");
 
       calendarLeftDay29.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay29.setBlankable(false);
+
+      calendarLeftDay29.setMaxColumns(3);
 
       calendarLeftDay29.setModel(getCalendarLeftDay29Model());
 
@@ -2804,11 +2908,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay30.setEditable(false);
 
+      calendarLeftDay30.setColumns(3);
+
       calendarLeftDay30.setModelBindPath("CALENDAR_LEFT30");
 
       calendarLeftDay30.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay30.setBlankable(false);
+
+      calendarLeftDay30.setMaxColumns(3);
 
       calendarLeftDay30.setModel(getCalendarLeftDay30Model());
 
@@ -2881,11 +2989,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarLeftDay31.setEditable(false);
 
+      calendarLeftDay31.setColumns(3);
+
       calendarLeftDay31.setModelBindPath("CALENDAR_LEFT31");
 
       calendarLeftDay31.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarLeftDay31.setBlankable(false);
+
+      calendarLeftDay31.setMaxColumns(3);
 
       calendarLeftDay31.setModel(getCalendarLeftDay31Model());
 
@@ -3054,26 +3166,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDayContainer = new ACPanel();
 
-      calendarRightDayContainer.setLayout(getCalendarRightDaysLayout());
+      calendarRightDayContainer.setAutoWrap(false);
+
+      calendarRightDayContainer.setHgap(0);
+
+      calendarRightDayContainer.setVgap(0);
 
       addCalendarRightDayContainer();
     }
     return calendarRightDayContainer;
-
-  }
-
-  /**
-   * カレンダー(右日付領域レイアウト)を取得します。
-   * @return カレンダー(右日付領域レイアウト)
-   */
-  public GridBagLayout getCalendarRightDaysLayout(){
-    if(calendarRightDaysLayout==null){
-
-      calendarRightDaysLayout = new GridBagLayout();
-
-      addCalendarRightDaysLayout();
-    }
-    return calendarRightDaysLayout;
 
   }
 
@@ -3090,11 +3191,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay01.setEditable(false);
 
+      calendarRightDay01.setColumns(3);
+
       calendarRightDay01.setModelBindPath("CALENDAR_RIGHT1");
 
       calendarRightDay01.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay01.setBlankable(false);
+
+      calendarRightDay01.setMaxColumns(3);
 
       calendarRightDay01.setModel(getCalendarRightDay01Model());
 
@@ -3129,11 +3234,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay02.setEditable(false);
 
+      calendarRightDay02.setColumns(3);
+
       calendarRightDay02.setModelBindPath("CALENDAR_RIGHT2");
 
       calendarRightDay02.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay02.setBlankable(false);
+
+      calendarRightDay02.setMaxColumns(3);
 
       calendarRightDay02.setModel(getCalendarRightDay02Model());
 
@@ -3168,11 +3277,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay03.setEditable(false);
 
+      calendarRightDay03.setColumns(3);
+
       calendarRightDay03.setModelBindPath("CALENDAR_RIGHT3");
 
       calendarRightDay03.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay03.setBlankable(false);
+
+      calendarRightDay03.setMaxColumns(3);
 
       calendarRightDay03.setModel(getCalendarRightDay03Model());
 
@@ -3207,11 +3320,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay04.setEditable(false);
 
+      calendarRightDay04.setColumns(3);
+
       calendarRightDay04.setModelBindPath("CALENDAR_RIGHT4");
 
       calendarRightDay04.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay04.setBlankable(false);
+
+      calendarRightDay04.setMaxColumns(3);
 
       calendarRightDay04.setModel(getCalendarRightDay04Model());
 
@@ -3246,11 +3363,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay05.setEditable(false);
 
+      calendarRightDay05.setColumns(3);
+
       calendarRightDay05.setModelBindPath("CALENDAR_RIGHT5");
 
       calendarRightDay05.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay05.setBlankable(false);
+
+      calendarRightDay05.setMaxColumns(3);
 
       calendarRightDay05.setModel(getCalendarRightDay05Model());
 
@@ -3285,11 +3406,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay06.setEditable(false);
 
+      calendarRightDay06.setColumns(3);
+
       calendarRightDay06.setModelBindPath("CALENDAR_RIGHT6");
 
       calendarRightDay06.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay06.setBlankable(false);
+
+      calendarRightDay06.setMaxColumns(3);
 
       calendarRightDay06.setModel(getCalendarRightDay06Model());
 
@@ -3324,11 +3449,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay07.setEditable(false);
 
+      calendarRightDay07.setColumns(3);
+
       calendarRightDay07.setModelBindPath("CALENDAR_RIGHT7");
 
       calendarRightDay07.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay07.setBlankable(false);
+
+      calendarRightDay07.setMaxColumns(3);
 
       calendarRightDay07.setModel(getCalendarRightDay07Model());
 
@@ -3363,11 +3492,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay08.setEditable(false);
 
+      calendarRightDay08.setColumns(3);
+
       calendarRightDay08.setModelBindPath("CALENDAR_RIGHT8");
 
       calendarRightDay08.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay08.setBlankable(false);
+
+      calendarRightDay08.setMaxColumns(3);
 
       calendarRightDay08.setModel(getCalendarRightDay08Model());
 
@@ -3402,11 +3535,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay09.setEditable(false);
 
+      calendarRightDay09.setColumns(3);
+
       calendarRightDay09.setModelBindPath("CALENDAR_RIGHT9");
 
       calendarRightDay09.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay09.setBlankable(false);
+
+      calendarRightDay09.setMaxColumns(3);
 
       calendarRightDay09.setModel(getCalendarRightDay09Model());
 
@@ -3441,11 +3578,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay10.setEditable(false);
 
+      calendarRightDay10.setColumns(3);
+
       calendarRightDay10.setModelBindPath("CALENDAR_RIGHT10");
 
       calendarRightDay10.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay10.setBlankable(false);
+
+      calendarRightDay10.setMaxColumns(3);
 
       calendarRightDay10.setModel(getCalendarRightDay10Model());
 
@@ -3480,11 +3621,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay11.setEditable(false);
 
+      calendarRightDay11.setColumns(3);
+
       calendarRightDay11.setModelBindPath("CALENDAR_RIGHT11");
 
       calendarRightDay11.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay11.setBlankable(false);
+
+      calendarRightDay11.setMaxColumns(3);
 
       calendarRightDay11.setModel(getCalendarRightDay11Model());
 
@@ -3519,11 +3664,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay12.setEditable(false);
 
+      calendarRightDay12.setColumns(3);
+
       calendarRightDay12.setModelBindPath("CALENDAR_RIGHT12");
 
       calendarRightDay12.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay12.setBlankable(false);
+
+      calendarRightDay12.setMaxColumns(3);
 
       calendarRightDay12.setModel(getCalendarRightDay12Model());
 
@@ -3558,11 +3707,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay13.setEditable(false);
 
+      calendarRightDay13.setColumns(3);
+
       calendarRightDay13.setModelBindPath("CALENDAR_RIGHT13");
 
       calendarRightDay13.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay13.setBlankable(false);
+
+      calendarRightDay13.setMaxColumns(3);
 
       calendarRightDay13.setModel(getCalendarRightDay13Model());
 
@@ -3597,11 +3750,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay14.setEditable(false);
 
+      calendarRightDay14.setColumns(3);
+
       calendarRightDay14.setModelBindPath("CALENDAR_RIGHT14");
 
       calendarRightDay14.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay14.setBlankable(false);
+
+      calendarRightDay14.setMaxColumns(3);
 
       calendarRightDay14.setModel(getCalendarRightDay14Model());
 
@@ -3636,11 +3793,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay15.setEditable(false);
 
+      calendarRightDay15.setColumns(3);
+
       calendarRightDay15.setModelBindPath("CALENDAR_RIGHT15");
 
       calendarRightDay15.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay15.setBlankable(false);
+
+      calendarRightDay15.setMaxColumns(3);
 
       calendarRightDay15.setModel(getCalendarRightDay15Model());
 
@@ -3675,11 +3836,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay16.setEditable(false);
 
+      calendarRightDay16.setColumns(3);
+
       calendarRightDay16.setModelBindPath("CALENDAR_RIGHT16");
 
       calendarRightDay16.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay16.setBlankable(false);
+
+      calendarRightDay16.setMaxColumns(3);
 
       calendarRightDay16.setModel(getCalendarRightDay16Model());
 
@@ -3714,11 +3879,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay17.setEditable(false);
 
+      calendarRightDay17.setColumns(3);
+
       calendarRightDay17.setModelBindPath("CALENDAR_RIGHT17");
 
       calendarRightDay17.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay17.setBlankable(false);
+
+      calendarRightDay17.setMaxColumns(3);
 
       calendarRightDay17.setModel(getCalendarRightDay17Model());
 
@@ -3753,11 +3922,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay18.setEditable(false);
 
+      calendarRightDay18.setColumns(3);
+
       calendarRightDay18.setModelBindPath("CALENDAR_RIGHT18");
 
       calendarRightDay18.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay18.setBlankable(false);
+
+      calendarRightDay18.setMaxColumns(3);
 
       calendarRightDay18.setModel(getCalendarRightDay18Model());
 
@@ -3792,11 +3965,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay19.setEditable(false);
 
+      calendarRightDay19.setColumns(3);
+
       calendarRightDay19.setModelBindPath("CALENDAR_RIGHT19");
 
       calendarRightDay19.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay19.setBlankable(false);
+
+      calendarRightDay19.setMaxColumns(3);
 
       calendarRightDay19.setModel(getCalendarRightDay19Model());
 
@@ -3831,11 +4008,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay20.setEditable(false);
 
+      calendarRightDay20.setColumns(3);
+
       calendarRightDay20.setModelBindPath("CALENDAR_RIGHT20");
 
       calendarRightDay20.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay20.setBlankable(false);
+
+      calendarRightDay20.setMaxColumns(3);
 
       calendarRightDay20.setModel(getCalendarRightDay20Model());
 
@@ -3870,11 +4051,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay21.setEditable(false);
 
+      calendarRightDay21.setColumns(3);
+
       calendarRightDay21.setModelBindPath("CALENDAR_RIGHT21");
 
       calendarRightDay21.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay21.setBlankable(false);
+
+      calendarRightDay21.setMaxColumns(3);
 
       calendarRightDay21.setModel(getCalendarRightDay21Model());
 
@@ -3909,11 +4094,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay22.setEditable(false);
 
+      calendarRightDay22.setColumns(3);
+
       calendarRightDay22.setModelBindPath("CALENDAR_RIGHT22");
 
       calendarRightDay22.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay22.setBlankable(false);
+
+      calendarRightDay22.setMaxColumns(3);
 
       calendarRightDay22.setModel(getCalendarRightDay22Model());
 
@@ -3948,11 +4137,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay23.setEditable(false);
 
+      calendarRightDay23.setColumns(3);
+
       calendarRightDay23.setModelBindPath("CALENDAR_RIGHT23");
 
       calendarRightDay23.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay23.setBlankable(false);
+
+      calendarRightDay23.setMaxColumns(3);
 
       calendarRightDay23.setModel(getCalendarRightDay23Model());
 
@@ -3987,11 +4180,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay24.setEditable(false);
 
+      calendarRightDay24.setColumns(3);
+
       calendarRightDay24.setModelBindPath("CALENDAR_RIGHT24");
 
       calendarRightDay24.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay24.setBlankable(false);
+
+      calendarRightDay24.setMaxColumns(3);
 
       calendarRightDay24.setModel(getCalendarRightDay24Model());
 
@@ -4026,11 +4223,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay25.setEditable(false);
 
+      calendarRightDay25.setColumns(3);
+
       calendarRightDay25.setModelBindPath("CALENDAR_RIGHT25");
 
       calendarRightDay25.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay25.setBlankable(false);
+
+      calendarRightDay25.setMaxColumns(3);
 
       calendarRightDay25.setModel(getCalendarRightDay25Model());
 
@@ -4065,11 +4266,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay26.setEditable(false);
 
+      calendarRightDay26.setColumns(3);
+
       calendarRightDay26.setModelBindPath("CALENDAR_RIGHT26");
 
       calendarRightDay26.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay26.setBlankable(false);
+
+      calendarRightDay26.setMaxColumns(3);
 
       calendarRightDay26.setModel(getCalendarRightDay26Model());
 
@@ -4104,11 +4309,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay27.setEditable(false);
 
+      calendarRightDay27.setColumns(3);
+
       calendarRightDay27.setModelBindPath("CALENDAR_RIGHT27");
 
       calendarRightDay27.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay27.setBlankable(false);
+
+      calendarRightDay27.setMaxColumns(3);
 
       calendarRightDay27.setModel(getCalendarRightDay27Model());
 
@@ -4143,11 +4352,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay28.setEditable(false);
 
+      calendarRightDay28.setColumns(3);
+
       calendarRightDay28.setModelBindPath("CALENDAR_RIGHT28");
 
       calendarRightDay28.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay28.setBlankable(false);
+
+      calendarRightDay28.setMaxColumns(3);
 
       calendarRightDay28.setModel(getCalendarRightDay28Model());
 
@@ -4214,11 +4427,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay29.setEditable(false);
 
+      calendarRightDay29.setColumns(3);
+
       calendarRightDay29.setModelBindPath("CALENDAR_RIGHT29");
 
       calendarRightDay29.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay29.setBlankable(false);
+
+      calendarRightDay29.setMaxColumns(3);
 
       calendarRightDay29.setModel(getCalendarRightDay29Model());
 
@@ -4285,11 +4502,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay30.setEditable(false);
 
+      calendarRightDay30.setColumns(3);
+
       calendarRightDay30.setModelBindPath("CALENDAR_RIGHT30");
 
       calendarRightDay30.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay30.setBlankable(false);
+
+      calendarRightDay30.setMaxColumns(3);
 
       calendarRightDay30.setModel(getCalendarRightDay30Model());
 
@@ -4356,11 +4577,15 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       calendarRightDay31.setEditable(false);
 
+      calendarRightDay31.setColumns(3);
+
       calendarRightDay31.setModelBindPath("CALENDAR_RIGHT31");
 
       calendarRightDay31.setRenderBindPath("CALENDAR_DATA_STRING");
 
       calendarRightDay31.setBlankable(false);
+
+      calendarRightDay31.setMaxColumns(3);
 
       calendarRightDay31.setModel(getCalendarRightDay31Model());
 
@@ -4485,11 +4710,28 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
       memo1 = new ACLabel();
 
-      memo1.setText("訪問日を○で囲むこと。１日に２回以上訪問した日は◎で囲むこと。");
+      memo1.setText("訪問日を○で囲むこと。１日に２回訪問した日は◎で囲むこと。");
 
       addMemo1();
     }
     return memo1;
+
+  }
+
+  /**
+   * 説明文6(追加）を取得します。
+   * @return 説明文6(追加）
+   */
+  public ACLabel getMemo6(){
+    if(memo6==null){
+
+      memo6 = new ACLabel();
+
+      memo6.setText("１日に３回以上訪問した日は◇で囲むこと。");
+
+      addMemo6();
+    }
+    return memo6;
 
   }
 
@@ -5081,30 +5323,39 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
   protected void addYokaigodoModel(){
 
     getYokaigodoRadio1().setButtonIndex(1);
+
     getYokaigodoModel().add(getYokaigodoRadio1());
 
-    getYokaigodoRadio2().setButtonIndex(2);
+    getYokaigodoRadio2().setButtonIndex(12);
+
     getYokaigodoModel().add(getYokaigodoRadio2());
 
-    getYokaigodoRadio3().setButtonIndex(3);
+    getYokaigodoRadio3().setButtonIndex(13);
+
     getYokaigodoModel().add(getYokaigodoRadio3());
 
-    getYokaigodoRadio4().setButtonIndex(4);
+    getYokaigodoRadio4().setButtonIndex(11);
+
     getYokaigodoModel().add(getYokaigodoRadio4());
 
-    getYokaigodoRadio5().setButtonIndex(5);
+    getYokaigodoRadio5().setButtonIndex(21);
+
     getYokaigodoModel().add(getYokaigodoRadio5());
 
-    getYokaigodoRadio6().setButtonIndex(6);
+    getYokaigodoRadio6().setButtonIndex(22);
+
     getYokaigodoModel().add(getYokaigodoRadio6());
 
-    getYokaigodoRadio7().setButtonIndex(7);
+    getYokaigodoRadio7().setButtonIndex(23);
+
     getYokaigodoModel().add(getYokaigodoRadio7());
 
-    getYokaigodoRadio8().setButtonIndex(8);
+    getYokaigodoRadio8().setButtonIndex(24);
+
     getYokaigodoModel().add(getYokaigodoRadio8());
 
-    getYokaigodoRadio9().setButtonIndex(9);
+    getYokaigodoRadio9().setButtonIndex(25);
+
     getYokaigodoModel().add(getYokaigodoRadio9());
 
   }
@@ -5348,74 +5599,67 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addCalendarLeftDayContainer(){
 
-    calendarLeftDayContainer.add(getCalendarLeftDay01(), new GridBagConstraints(0, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay01(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay02(), new GridBagConstraints(1, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay02(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay03(), new GridBagConstraints(2, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay03(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay04(), new GridBagConstraints(3, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay04(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay05(), new GridBagConstraints(4, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay05(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay06(), new GridBagConstraints(5, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay06(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay07(), new GridBagConstraints(6, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay07(), VRLayout.FLOW_RETURN);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay08(), new GridBagConstraints(0, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay08(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay09(), new GridBagConstraints(1, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay09(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay10(), new GridBagConstraints(2, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay10(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay11(), new GridBagConstraints(3, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay11(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay12(), new GridBagConstraints(4, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay12(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay13(), new GridBagConstraints(5, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay13(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay14(), new GridBagConstraints(6, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay14(), VRLayout.FLOW_RETURN);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay15(), new GridBagConstraints(0, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay15(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay16(), new GridBagConstraints(1, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay16(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay17(), new GridBagConstraints(2, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay17(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay18(), new GridBagConstraints(3, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay18(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay19(), new GridBagConstraints(4, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay19(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay20(), new GridBagConstraints(5, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay20(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay21(), new GridBagConstraints(6, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay21(), VRLayout.FLOW_RETURN);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay22(), new GridBagConstraints(0, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay22(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay23(), new GridBagConstraints(1, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay23(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay24(), new GridBagConstraints(2, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay24(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay25(), new GridBagConstraints(3, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay25(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay26(), new GridBagConstraints(4, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay26(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay27(), new GridBagConstraints(5, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay27(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay28(), new GridBagConstraints(6, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay28(), VRLayout.FLOW_RETURN);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay29Panel(), new GridBagConstraints(0, 4, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay29Panel(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay30Panel(), new GridBagConstraints(1, 4, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarLeftDayContainer.add(getCalendarLeftDay30Panel(), VRLayout.FLOW);
 
-    calendarLeftDayContainer.add(getCalendarLeftDay31Panel(), new GridBagConstraints(2, 4, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-
-  }
-
-  /**
-   * カレンダー(左日付領域レイアウト)に内部項目を追加します。
-   */
-  protected void addCalendarLeftDaysLayout(){
+    calendarLeftDayContainer.add(getCalendarLeftDay31Panel(), VRLayout.FLOW);
 
   }
 
@@ -5982,74 +6226,67 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addCalendarRightDayContainer(){
 
-    calendarRightDayContainer.add(getCalendarRightDay01(), new GridBagConstraints(0, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay01(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay02(), new GridBagConstraints(1, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay02(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay03(), new GridBagConstraints(2, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay03(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay04(), new GridBagConstraints(3, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay04(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay05(), new GridBagConstraints(4, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay05(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay06(), new GridBagConstraints(5, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay06(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay07(), new GridBagConstraints(6, 0, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay07(), VRLayout.FLOW_RETURN);
 
-    calendarRightDayContainer.add(getCalendarRightDay08(), new GridBagConstraints(0, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay08(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay09(), new GridBagConstraints(1, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay09(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay10(), new GridBagConstraints(2, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay10(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay11(), new GridBagConstraints(3, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay11(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay12(), new GridBagConstraints(4, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay12(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay13(), new GridBagConstraints(5, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay13(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay14(), new GridBagConstraints(6, 1, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay14(), VRLayout.FLOW_RETURN);
 
-    calendarRightDayContainer.add(getCalendarRightDay15(), new GridBagConstraints(0, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay15(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay16(), new GridBagConstraints(1, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay16(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay17(), new GridBagConstraints(2, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay17(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay18(), new GridBagConstraints(3, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay18(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay19(), new GridBagConstraints(4, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay19(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay20(), new GridBagConstraints(5, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay20(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay21(), new GridBagConstraints(6, 2, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay21(), VRLayout.FLOW_RETURN);
 
-    calendarRightDayContainer.add(getCalendarRightDay22(), new GridBagConstraints(0, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay22(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay23(), new GridBagConstraints(1, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay23(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay24(), new GridBagConstraints(2, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay24(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay25(), new GridBagConstraints(3, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay25(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay26(), new GridBagConstraints(4, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay26(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay27(), new GridBagConstraints(5, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay27(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay28(), new GridBagConstraints(6, 3, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay28(), VRLayout.FLOW_RETURN);
 
-    calendarRightDayContainer.add(getCalendarRightDay29Panel(), new GridBagConstraints(0, 4, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay29Panel(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay30Panel(), new GridBagConstraints(1, 4, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    calendarRightDayContainer.add(getCalendarRightDay30Panel(), VRLayout.FLOW);
 
-    calendarRightDayContainer.add(getCalendarRightDay31Panel(), new GridBagConstraints(2, 4, 1, 1, 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-
-  }
-
-  /**
-   * カレンダー(右日付領域レイアウト)に内部項目を追加します。
-   */
-  protected void addCalendarRightDaysLayout(){
+    calendarRightDayContainer.add(getCalendarRightDay31Panel(), VRLayout.FLOW);
 
   }
 
@@ -6591,6 +6828,8 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
 
     memos.add(getMemo1(), VRLayout.NORTH);
 
+    memos.add(getMemo6(), VRLayout.NORTH);
+
     memos.add(getMemo2(), VRLayout.NORTH);
 
     memos.add(getMemo3(), VRLayout.NORTH);
@@ -6605,6 +6844,13 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
    * 説明文1に内部項目を追加します。
    */
   protected void addMemo1(){
+
+  }
+
+  /**
+   * 説明文6(追加）に内部項目を追加します。
+   */
+  protected void addMemo6(){
 
   }
 
@@ -6780,7 +7026,6 @@ public class QC002Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QC002Design.class.getName()));
     } catch (Exception e) {

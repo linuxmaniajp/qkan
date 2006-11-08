@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/13  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/06/05  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -142,6 +143,22 @@ public abstract class QS001002Event extends QS001002State {
             }
         }
     });
+    getPlanUnit().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                planUnitActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -167,6 +184,13 @@ public abstract class QS001002Event extends QS001002State {
    */
   protected abstract void calcurateActionPerformed(ActionEvent e) throws Exception;
 
+  /**
+   * 「計画単位数編集」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void planUnitActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
   private QS001 ownerAffair;
@@ -176,6 +200,7 @@ public abstract class QS001002Event extends QS001002State {
   public static final int CALC_MODE_IN_LIMIT_AMOUNT = 1;
   private CareServiceCodeCalcurater calcurater;
   private VRMap patientInsureInfoHeaviest = new VRHashMap();
+  private VRMap planUnits = new VRHashMap();
   //getter/setter
 
   /**
@@ -268,6 +293,21 @@ public abstract class QS001002Event extends QS001002State {
     this.patientInsureInfoHeaviest = patientInsureInfoHeaviest;
   }
 
+  /**
+   * planUnitsを返します。
+   * @return planUnits
+   */
+  protected VRMap getPlanUnits(){
+    return planUnits;
+  }
+  /**
+   * planUnitsを設定します。
+   * @param planUnits planUnits
+   */
+  protected void setPlanUnits(VRMap planUnits){
+    this.planUnits = planUnits;
+  }
+
   //内部関数
 
   /**
@@ -327,10 +367,11 @@ public abstract class QS001002Event extends QS001002State {
    * 「スケジュール全体を取得」に関する処理を行ないます。
    *
    * @param useType int
+   * @param includeFreeday boolean
    * @throws Exception 処理例外
    * @return VRList
    */
-  public abstract VRList getSchedule(int useType) throws Exception;
+  public abstract VRList getSchedule(int useType, boolean includeFreeday) throws Exception;
 
   /**
    * 「リスト選択イベントリスナを追加」に関する処理を行ないます。
@@ -439,5 +480,22 @@ public abstract class QS001002Event extends QS001002State {
    * @return QS001DaySchedule
    */
   public abstract QS001DaySchedule getDayFreeServices() throws Exception;
+
+  /**
+   * 「計画単位数を取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return VRMap
+   */
+  public abstract VRMap getServicePlanUnits() throws Exception;
+
+  /**
+   * 「計画単位数を設定」に関する処理を行ないます。
+   *
+   * @param services VRMap
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void setServicePlanUnits(VRMap services) throws Exception;
 
 }

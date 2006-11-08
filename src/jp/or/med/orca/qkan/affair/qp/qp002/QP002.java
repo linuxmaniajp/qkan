@@ -33,6 +33,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
+import javax.swing.event.ListSelectionEvent;
+
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -59,7 +61,8 @@ import jp.or.med.orca.qkan.text.QkanInsureTypeDivision;
  * 帳票(様式)・事業所選択(QP002)
  */
 public class QP002 extends QP002Event {
-    /**
+
+	/**
      * コンストラクタです。
      */
     public QP002() {
@@ -135,13 +138,14 @@ public class QP002 extends QP002Event {
         // 請求データを取得し、this.claimListに格納する。
         // getSql(GET_CLAIM, param);
         setClaimList(getDBManager().executeQuery(getSQL_GET_CLAIM(param)));
+        
 
         // 取得したデータを画面表示用に編集する。
         editRecord();
 
         ACTableModelAdapter providerTableModel = new ACTableModelAdapter();
         String[] ada = { "TARGET_DATE", "PROVIDER_ID", "PROVIDER_NAME",
-                "INSURED_ID", "CLAIM_STYLE_TYPE" };
+                "INSURED_ID", "CLAIM_STYLE_TYPE","INSURER_ID","UNIT_INSURED_ID" };
 
         getProviderTableColumn6().setFormat(new QkanClaimStyleFormat());
         getProviderTableColumn5().setFormat(new QkanInsureTypeDivision());
@@ -154,34 +158,20 @@ public class QP002 extends QP002Event {
         getProviderTable().setModel(getTableModel());
         // 請求レコード集合（this.claimList）をthis.tableModelに設定する。
         getTableModel().setAdaptee(getClaimList());
-//        // 前画面IDを取得する。 TODO テスト後に戻すこと
-//         ACAffairInfo backAffairInfo = ACFrame.getInstance().getBackAffair();
-//         String backName = "";
-//         if(backAffairInfo != null){
-//             backName = backAffairInfo.getClassName();
-//             
-//         }
 
-//        String backName = String.valueOf(parameters.getData("DEBUG_BACK"));
-
-        // 利用者一覧（請求）（QP001）から遷移してきた場合
-//        if (QP001.class.getName().equals(backName)) {
-//            // 事業所一覧テーブル（providerTable）の一行目を選択した状態にする。
-//            getProviderTable().setSelectedSortedFirstRow();
-//        } else {
-//            // 利用者一覧（請求）（QP001）以外から遷移してきた場合
-//            // 事業所一覧テーブル（providerTable）の遷移前に選択されていた行（this.listIndex）を選択した状態にする。
-//            getProviderTable().setSelectedModelRow(getListIndex());
-//        }
         if (getListIndex() == -1) {
             // 事業所一覧テーブル（providerTable）の一行目を選択した状態にする。
             getProviderTable().setSelectedSortedFirstRow();
+            
         } else {
             // 利用者一覧（請求）（QP001）以外から遷移してきた場合
             // 事業所一覧テーブル（providerTable）の遷移前に選択されていた行（this.listIndex）を選択した状態にする。
             getProviderTable().setSelectedModelRow(getListIndex());
+            getProviderTable().scrollSelectedToVisible();
         }
-//        parameters.clear();
+        
+        // 画面状態制御
+        checkState();
 
     }
 
@@ -227,8 +217,6 @@ public class QP002 extends QP002Event {
             map = (VRMap) getProviderTable().getSelectedModelRowValue();
 
         } else {
-            // TODO
-            ACMessageBox.show("データ不足");
             return;
 
         }
@@ -250,7 +238,7 @@ public class QP002 extends QP002Event {
             }
         }
         param.setData("INSURED_ID", findInsurer);
-        param.setData("INSURED_ID", map.getData("INSURED_ID"));
+//        param.setData("INSURED_ID", map.getData("INSURED_ID"));
 
         ACAffairInfo affair = new ACAffairInfo(QP003.class.getName(), param);
 
@@ -305,93 +293,6 @@ public class QP002 extends QP002Event {
     public void editRecord() throws Exception {
         // 請求レコード集合（this.claimList）を順に見ていく。（ループ開始）
         VRList claimList = getClaimList();
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が10201の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第二"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第二"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が3の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第三"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第三"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が4の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第四"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第四"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が5の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第五"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第五"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が6の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第六"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第六"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が8の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第八"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第八"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が9の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第九"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第九"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が10の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第十"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："介護"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："様式第十"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が20101の場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："社保"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："療養費明細書"
-        // 請求帳票様式（CLAIM_STYLE_TYPE）の値が20102の場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："国保"
-        // ・KEY：CLAIM_STYLE_NAME VALUE："療養費明細書"
-        // 上記以外の場合
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」である場合
-        // レコードに以下のKEY/VALUEで追加する。
-        // ・KEY：INSURE_TYPE VALUE："生保単独"
-        // 被保険者番号（INSURED_ID）の頭1桁が「H」ではない場合
-        // 　　　レコードに以下のKEY/VALUEで追加する。
-        // 　　　　・KEY：INSURE_TYPE　VALUE："介護"
 
 
     }
@@ -408,8 +309,6 @@ public class QP002 extends QP002Event {
                 map = (VRMap) getProviderTable().getSelectedModelRowValue();
 
             } else {
-                // TODO
-                ACMessageBox.show("データ不足");
                 return;
 
             }
@@ -451,10 +350,12 @@ public class QP002 extends QP002Event {
                 // ACAffairInfo affair = new ACAffairInfo(QP004.class.getName(),
                 // param);
 
-                ACAffairInfo affair;
                 
+                // 居宅支援の場合次画面の遷移は基本QP004では無くQP005の詳細編集画面に遷移する
+                // 居宅予防支援の場合次画面の遷移は基本QP004では無くQP005の詳細編集画面に遷移する 
+                ACAffairInfo affair;
                 if(new Integer(10711).equals(map.getData("CLAIM_STYLE_TYPE"))
-                		|| new Integer(10711).equals(map.getData("CLAIM_STYLE_TYPE"))){
+                		|| new Integer(10712).equals(map.getData("CLAIM_STYLE_TYPE"))){
                 	affair = new ACAffairInfo(QP005.class.getName(), param);
                 }else{                
                 	affair = new ACAffairInfo(QP004.class.getName(), param);
@@ -482,6 +383,9 @@ public class QP002 extends QP002Event {
                 param.setData("PROVIDER_ID", map.getData("PROVIDER_ID"));
                 param.setData("CLAIM_STYLE_TYPE", map
                         .getData("CLAIM_STYLE_TYPE"));
+                // TODO 予防時対応
+                // 渡しパラメータ追加
+                param.setData("INSURER_ID",map.getData("INSURER_ID"));
 
                 // ACAffairInfo affair = new ACAffairInfo(QP006.class.getName(),
                 // param);
@@ -494,4 +398,26 @@ public class QP002 extends QP002Event {
         }
     }
 
+    /**
+     * テーブル選択時のイベント
+     */
+    protected void providerTableSelectionChanged(ListSelectionEvent e) throws Exception {
+        //画面状態をチェックする。
+        checkState();
+    }
+
+    /**
+     * 画面状態制御
+     */
+    public void checkState() throws Exception {
+        //テーブルが選択されているかチェックする。
+        if (getProviderTable().getSelectedModelRow() == -1){
+            //選択されていなかった場合
+            setState_AFFAIR_BUTTON_ENABLE_FALSE();
+        }else{
+            //選択されていた場合
+            setState_AFFAIR_BUTTON_ENABLE_TRUE();
+        }
+    }
+    
 }

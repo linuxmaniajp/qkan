@@ -1,16 +1,23 @@
 package jp.or.med.orca.qkan.affair;
 
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.core.ACDBManagerCreatable;
 import jp.nichicom.ac.core.ACDefaultFrameEventProcesser;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.io.ACPropertyXML;
+import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.sql.ACLoggerDBManager;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 
 /** TODO <HEAD_IKENSYO> */
-public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser {
+public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser
+        implements ACDBManagerCreatable {
     /**
      * コンストラクタです。
      */
@@ -112,5 +119,67 @@ public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser {
         ACMessageBox.showExclamation("PDFビューワの設定を取得できません。"+ ACConstants.LINE_SEPARATOR
                 + "[メインメニュー]-[その他の機能]-[設定変更・メンテナンス]から設定してください。");
     }
+    
+    protected void appendException(StringBuffer sb, Throwable ex) {
+        super.appendException(sb, ex);
+        
+        sb.append("Firebird:");
+        try {
+            BridgeFirebirdDBManager dbm= new BridgeFirebirdDBManager();
+            String dbVersion = dbm.getDBMSVersion();
+            if (dbVersion != null) {
+                sb.append(dbVersion);
+            }
+        } catch (Exception ex2) {
+            sb.append("unknown");
+        }
+        sb.append(ACConstants.LINE_SEPARATOR);
+        sb.append("システムversion:");
+        sb.append(QkanSystemInformation.getInstance().getSystemVersion());
+        sb.append(", データversion:");
+        sb.append(QkanSystemInformation.getInstance().getMasterDataVersion());
+        sb.append(", スキーマversion:");
+        sb.append(QkanSystemInformation.getInstance().getSchemeVersion());
+        sb.append(ACConstants.LINE_SEPARATOR);
 
+    }
+    
+    public void showExceptionMessage(Throwable ex) {
+        //2006/06/28 add-begin Tozo TANAKA Firebirdのデッドロック対応のため
+        if(ex instanceof SQLException){
+            if(String.valueOf(((SQLException)ex).getMessage()).indexOf(" deadlock")>=0){
+                try{
+                    QkanMessageList.getInstance().ERROR_OF_PASSIVE_CHECK_ON_UPDATE();
+                    return;
+                }catch(Exception ex2){
+                    ex = ex2;
+                }
+            }
+        }
+        //2006/06/28 add-end Tozo TANAKA Firebirdのデッドロック対応のため
+        
+        super.showExceptionMessage(ex);
+    }
+    
+    public ACDBManager createDBManager() throws Exception{
+        // システム設定ファイルからDBの設定を取得
+        ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
+        if (xml == null) {
+            throw new FileNotFoundException("システム設定ファイルを開けません。");
+        }
+        String server = xml.getValueAt("DBConfig/Server");
+        int port = Integer.parseInt(xml.getValueAt("DBConfig/Port"));
+        String userName = xml.getValueAt("DBConfig/UserName");
+        String pass = xml.getValueAt("DBConfig/Password");
+        String path = xml.getValueAt("DBConfig/Path");
+        int loginTimeout = Integer.parseInt(xml
+                .getValueAt("DBConfig/LoginTimeOut"));
+        int maxPoolSize = Integer.parseInt(xml
+                .getValueAt("DBConfig/MaxPoolSize"));
+
+        String charSet = xml.getValueAt("DBConfig/CharSet");
+        return new ACLoggerDBManager(new BridgeFirebirdDBManager(server, port, userName, pass,
+                path, loginTimeout, maxPoolSize, charSet));
+    }
+    
 }

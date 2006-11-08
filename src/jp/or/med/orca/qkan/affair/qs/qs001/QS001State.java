@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/29  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/05/24  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -123,6 +124,8 @@ public class QS001State extends QS001Design {
 
         getOpenPlan().setEnabled(true);
 
+        getOpenResult().setEnabled(false);
+
   }
 
   /**
@@ -136,6 +139,8 @@ public class QS001State extends QS001Design {
         getPrintMonthly().setVisible(true);
 
         getOpenPlan().setEnabled(false);
+
+        getOpenResult().setEnabled(true);
 
   }
 
@@ -256,6 +261,16 @@ public class QS001State extends QS001Design {
   public void setState_PROVIDE_CARE_MANAGEMENT() throws Exception {
 
         getOpenResult().setVisible(true);
+
+  }
+
+  /**
+   * 「サービス実績・週間計画表印刷無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_RESULT_PRINT_WEEKLY() throws Exception {
+
+        getPrintWeekly().setEnabled(false);
 
   }
 

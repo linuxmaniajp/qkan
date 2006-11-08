@@ -18,18 +18,16 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/22  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/05/09  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
  * プロセス 確認・修正 (002)
- * プログラム 帳票(様式)・事業所選択 (QP002)
+ * プログラム 帳票(様式)選択 (QP002)
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qp.qp002;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -49,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -79,11 +78,11 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
- * 帳票(様式)・事業所選択イベント定義(QP002) 
+ * 帳票(様式)選択イベント定義(QP002) 
  */
 public abstract class QP002Event extends QP002SQL {
   /**
@@ -105,7 +104,7 @@ public abstract class QP002Event extends QP002SQL {
             lockFlag = true;
             try {
                 seikyuActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -121,7 +120,7 @@ public abstract class QP002Event extends QP002SQL {
             lockFlag = true;
             try {
                 selectActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -139,7 +138,23 @@ public abstract class QP002Event extends QP002SQL {
                 if (e.getClickCount() == 2) {
                     providerTableMouseClicked(e);
                 }
-            }catch(Exception ex){
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getProviderTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                providerTableSelectionChanged(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -170,6 +185,13 @@ public abstract class QP002Event extends QP002SQL {
    * @throws Exception 処理例外
    */
   protected abstract void providerTableMouseClicked(MouseEvent e) throws Exception;
+
+  /**
+   * 「業務ボタンEnable制御処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void providerTableSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 
@@ -280,5 +302,13 @@ public abstract class QP002Event extends QP002SQL {
    *
    */
   public abstract void editRecord() throws Exception;
+
+  /**
+   * 「画面状態制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkState() throws Exception;
 
 }
