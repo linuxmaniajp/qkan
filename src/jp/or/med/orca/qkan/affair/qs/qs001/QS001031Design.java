@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/03/14  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2006/06/09  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス作成/変更 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -111,6 +112,8 @@ public class QS001031Design extends QkanAffairDialog {
   private ACRadioButtonItem supportProvider;
 
   private ACRadioButtonItem patent;
+
+  private ACRadioButtonItem preventSupportProvider;
 
   private ACLabelContainer supportProviderContainer;
 
@@ -374,9 +377,9 @@ public class QS001031Design extends QkanAffairDialog {
 
       getPlanManufacturerContainer().setText("居宅計画作成者");
 
-      planManufacturer.setModel(getPlanManufacturerModel());
-
       planManufacturer.setUseClearButton(false);
+
+      planManufacturer.setModel(getPlanManufacturerModel());
 
       addPlanManufacturer();
     }
@@ -449,6 +452,25 @@ public class QS001031Design extends QkanAffairDialog {
   }
 
   /**
+   * 介護予防支援事業所を取得します。
+   * @return 介護予防支援事業所
+   */
+  public ACRadioButtonItem getPreventSupportProvider(){
+    if(preventSupportProvider==null){
+
+      preventSupportProvider = new ACRadioButtonItem();
+
+      preventSupportProvider.setText("介護予防支援事業所");
+
+      preventSupportProvider.setGroup(getPlanManufacturer());
+
+      addPreventSupportProvider();
+    }
+    return preventSupportProvider;
+
+  }
+
+  /**
    * 居宅支援事業者情報コンテナを取得します。
    * @return 居宅支援事業者情報コンテナ
    */
@@ -499,9 +521,11 @@ public class QS001031Design extends QkanAffairDialog {
 
       supportProviderName.setEditable(false);
 
-      supportProviderName.setModel(getSupportProviderNameModel());
-
       supportProviderName.setRenderBindPath("PROVIDER_NAME");
+
+      supportProviderName.setMaxColumns(30);
+
+      supportProviderName.setModel(getSupportProviderNameModel());
 
       addSupportProviderName();
     }
@@ -536,9 +560,11 @@ public class QS001031Design extends QkanAffairDialog {
 
       personInCharge.setEditable(false);
 
-      personInCharge.setModel(getPersonInChargeModel());
-
       personInCharge.setRenderBindPath("STAFF_NAME");
+
+      personInCharge.setMaxColumns(30);
+
+      personInCharge.setModel(getPersonInChargeModel());
 
       addPersonInCharge();
     }
@@ -590,15 +616,15 @@ public class QS001031Design extends QkanAffairDialog {
   }
 
   /**
-   * 作成年月日（枠外/別表）を取得します。
-   * @return 作成年月日（枠外/別表）
+   * 作成年月日（別表）を取得します。
+   * @return 作成年月日（別表）
    */
   public QkanDateTextField getDateOfMakingOutsideFrame(){
     if(dateOfMakingOutsideFrame==null){
 
       dateOfMakingOutsideFrame = new QkanDateTextField();
 
-      getDateOfMakingOutsideFrameContainer().setText("作成年月日（枠外/別表）");
+      getDateOfMakingOutsideFrameContainer().setText("作成年月日（別表）");
 
       dateOfMakingOutsideFrame.setBindPath("CREATE_DATE_OUTER");
 
@@ -609,8 +635,8 @@ public class QS001031Design extends QkanAffairDialog {
   }
 
   /**
-   * 作成年月日（枠外/別表）コンテナを取得します。
-   * @return 作成年月日（枠外/別表）コンテナ
+   * 作成年月日（別表）コンテナを取得します。
+   * @return 作成年月日（別表）コンテナ
    */
   protected ACLabelContainer getDateOfMakingOutsideFrameContainer(){
     if(dateOfMakingOutsideFrameContainer==null){
@@ -1101,9 +1127,9 @@ public class QS001031Design extends QkanAffairDialog {
 
       slitType.setBindPath("SLIT_TYPE");
 
-      slitType.setModel(getSlitTypeModel());
-
       slitType.setUseClearButton(false);
+
+      slitType.setModel(getSlitTypeModel());
 
       addSlitType();
     }
@@ -1189,9 +1215,9 @@ public class QS001031Design extends QkanAffairDialog {
 
       slitKind.setBindPath("SLIT_KIND");
 
-      slitKind.setModel(getSlitKindModel());
-
       slitKind.setUseClearButton(false);
+
+      slitKind.setModel(getSlitKindModel());
 
       addSlitKind();
     }
@@ -1357,7 +1383,12 @@ public class QS001031Design extends QkanAffairDialog {
       setSize(900, 310);
 
       // ウィンドウを中央に配置
-      Point pos = ACFrame.getInstance().getLocationOnScreen();
+      Point pos;
+      try{
+          pos= ACFrame.getInstance().getLocationOnScreen();
+      }catch(Exception ex){
+          pos = new Point(0,0);
+      }
       Dimension screenSize = ACFrame.getInstance().getSize();
       Dimension frameSize = this.getSize();
       if (frameSize.height > screenSize.height) {
@@ -1473,10 +1504,16 @@ public class QS001031Design extends QkanAffairDialog {
   protected void addPlanManufacturerModel(){
 
     getSupportProvider().setButtonIndex(1);
+
     getPlanManufacturerModel().add(getSupportProvider());
 
     getPatent().setButtonIndex(2);
+
     getPlanManufacturerModel().add(getPatent());
+
+    getPreventSupportProvider().setButtonIndex(3);
+
+    getPlanManufacturerModel().add(getPreventSupportProvider());
 
   }
 
@@ -1491,6 +1528,13 @@ public class QS001031Design extends QkanAffairDialog {
    * 被保険者に内部項目を追加します。
    */
   protected void addPatent(){
+
+  }
+
+  /**
+   * 介護予防支援事業所に内部項目を追加します。
+   */
+  protected void addPreventSupportProvider(){
 
   }
 
@@ -1555,7 +1599,7 @@ public class QS001031Design extends QkanAffairDialog {
   }
 
   /**
-   * 作成年月日（枠外/別表）に内部項目を追加します。
+   * 作成年月日（別表）に内部項目を追加します。
    */
   protected void addDateOfMakingOutsideFrame(){
 
@@ -1786,9 +1830,11 @@ public class QS001031Design extends QkanAffairDialog {
   protected void addSlitTypeModel(){
 
     getUseVoteType().setButtonIndex(1);
+
     getSlitTypeModel().add(getUseVoteType());
 
     getOfferVote().setButtonIndex(2);
+
     getSlitTypeModel().add(getOfferVote());
 
   }
@@ -1829,12 +1875,15 @@ public class QS001031Design extends QkanAffairDialog {
   protected void addSlitKindModel(){
 
     getUseVoteAndAttachedTable().setButtonIndex(1);
+
     getSlitKindModel().add(getUseVoteAndAttachedTable());
 
     getUseVoteKind().setButtonIndex(2);
+
     getSlitKindModel().add(getUseVoteKind());
 
     getAttachedTable().setButtonIndex(3);
+
     getSlitKindModel().add(getAttachedTable());
 
   }

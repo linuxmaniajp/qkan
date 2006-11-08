@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * サービスパターン夜間対応型訪問介護状態定義(QS001123) 
  */

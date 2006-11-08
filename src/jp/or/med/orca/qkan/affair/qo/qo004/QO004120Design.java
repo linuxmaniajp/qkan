@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/09  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/07/03  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,58 +28,28 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo004;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
+import java.awt.Component;
+import java.awt.im.InputSubset;
+
+import javax.swing.SwingConstants;
+
+import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACRadioButtonItem;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.container.ACBackLabelContainer;
+import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.util.adapter.ACListModelAdapter;
+import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
 /**
  * 介護療養型医療施設（病院療養型）画面項目デザイン(QO004120) 
  */
@@ -99,6 +69,8 @@ public class QO004120Design extends QS001ServicePanel {
   private ACRadioButtonItem facilitiesDivisionItem1;
 
   private ACRadioButtonItem facilitiesDivisionItem2;
+
+  private ACRadioButtonItem facilitiesDivisionItem3;
 
   private ACClearableRadioButtonGroup staffAssignmentDivision;
 
@@ -339,9 +311,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       facilitiesDivision.setBindPath("1530101");
 
-      facilitiesDivision.setModel(getFacilitiesDivisionModel());
-
       facilitiesDivision.setUseClearButton(false);
+
+      facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
       addFacilitiesDivision();
     }
@@ -388,6 +360,8 @@ public class QO004120Design extends QS001ServicePanel {
 
       facilitiesDivisionItem1.setGroup(getFacilitiesDivision());
 
+      facilitiesDivisionItem1.setConstraints(VRLayout.FLOW);
+
       addFacilitiesDivisionItem1();
     }
     return facilitiesDivisionItem1;
@@ -407,9 +381,32 @@ public class QO004120Design extends QS001ServicePanel {
 
       facilitiesDivisionItem2.setGroup(getFacilitiesDivision());
 
+      facilitiesDivisionItem2.setConstraints(VRLayout.FLOW_RETURN);
+
       addFacilitiesDivisionItem2();
     }
     return facilitiesDivisionItem2;
+
+  }
+
+  /**
+   * 病院経過型を取得します。
+   * @return 病院経過型
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem3(){
+    if(facilitiesDivisionItem3==null){
+
+      facilitiesDivisionItem3 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem3.setText("病院経過型");
+
+      facilitiesDivisionItem3.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem3.setConstraints(VRLayout.FLOW);
+
+      addFacilitiesDivisionItem3();
+    }
+    return facilitiesDivisionItem3;
 
   }
 
@@ -426,9 +423,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       staffAssignmentDivision.setBindPath("1530102");
 
-      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
-
       staffAssignmentDivision.setUseClearButton(false);
+
+      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
 
       addStaffAssignmentDivision();
     }
@@ -532,9 +529,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       nightWorkDivision.setBindPath("1530103");
 
-      nightWorkDivision.setModel(getNightWorkDivisionModel());
-
       nightWorkDivision.setUseClearButton(false);
+
+      nightWorkDivision.setModel(getNightWorkDivisionModel());
 
       addNightWorkDivision();
     }
@@ -676,9 +673,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       staffLack.setBindPath("1530110");
 
-      staffLack.setModel(getStaffLackModel());
-
       staffLack.setUseClearButton(false);
+
+      staffLack.setModel(getStaffLackModel());
 
       addStaffLack();
     }
@@ -830,9 +827,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       unitCareMaintenance.setBindPath("1530119");
 
-      unitCareMaintenance.setModel(getUnitCareMaintenanceModel());
-
       unitCareMaintenance.setUseClearButton(false);
+
+      unitCareMaintenance.setModel(getUnitCareMaintenanceModel());
 
       addUnitCareMaintenance();
     }
@@ -921,9 +918,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       recuperationEnvironmental.setBindPath("1530104");
 
-      recuperationEnvironmental.setModel(getRecuperationEnvironmentalModel());
-
       recuperationEnvironmental.setUseClearButton(false);
+
+      recuperationEnvironmental.setModel(getRecuperationEnvironmentalModel());
 
       addRecuperationEnvironmental();
     }
@@ -1046,9 +1043,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       doctorsAssignment.setBindPath("1530105");
 
-      doctorsAssignment.setModel(getDoctorsAssignmentModel());
-
       doctorsAssignment.setUseClearButton(false);
+
+      doctorsAssignment.setModel(getDoctorsAssignmentModel());
 
       addDoctorsAssignment();
     }
@@ -1133,9 +1130,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       nourishmentControlAdd.setBindPath("1530106");
 
-      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
-
       nourishmentControlAdd.setUseClearButton(false);
+
+      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
 
       addNourishmentControlAdd();
     }
@@ -1245,9 +1242,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       nourishmentManagementAdd.setBindPath("1530107");
 
-      nourishmentManagementAdd.setModel(getNourishmentManagementAddModel());
-
       nourishmentManagementAdd.setUseClearButton(false);
+
+      nourishmentManagementAdd.setModel(getNourishmentManagementAddModel());
 
       addNourishmentManagementAdd();
     }
@@ -1332,9 +1329,9 @@ public class QO004120Design extends QS001ServicePanel {
 
       bodyRestraintAbolition.setBindPath("1530120");
 
-      bodyRestraintAbolition.setModel(getBodyRestraintAbolitionModel());
-
       bodyRestraintAbolition.setUseClearButton(false);
+
+      bodyRestraintAbolition.setModel(getBodyRestraintAbolitionModel());
 
       addBodyRestraintAbolition();
     }
@@ -2285,10 +2282,16 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
+
+    getFacilitiesDivisionItem3().setButtonIndex(3);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem3());
 
   }
 
@@ -2307,6 +2310,13 @@ public class QO004120Design extends QS001ServicePanel {
   }
 
   /**
+   * 病院経過型に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem3(){
+
+  }
+
+  /**
    * 人員配置区分ラジオグループに内部項目を追加します。
    */
   protected void addStaffAssignmentDivision(){
@@ -2319,12 +2329,15 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addStaffAssignmentDivisionModel(){
 
     getStaffAssignmentDivisionItem1().setButtonIndex(1);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem1());
 
     getStaffAssignmentDivisionItem2().setButtonIndex(2);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem2());
 
     getStaffAssignmentDivisionItem3().setButtonIndex(3);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem3());
 
   }
@@ -2363,18 +2376,23 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addNightWorkDivisionModel(){
 
     getNightWorkDivisionItem1().setButtonIndex(1);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem1());
 
     getNightWorkDivisionItem2().setButtonIndex(2);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem2());
 
     getNightWorkDivisionItem3().setButtonIndex(3);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem3());
 
     getNightWorkDivisionItem4().setButtonIndex(4);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem4());
 
     getNightWorkDivisionItem5().setButtonIndex(5);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem5());
 
   }
@@ -2427,18 +2445,23 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addStaffLackModel(){
 
     getStaffLackItem1().setButtonIndex(1);
+
     getStaffLackModel().add(getStaffLackItem1());
 
     getStaffLackItem2().setButtonIndex(2);
+
     getStaffLackModel().add(getStaffLackItem2());
 
     getStaffLackItem3().setButtonIndex(3);
+
     getStaffLackModel().add(getStaffLackItem3());
 
     getStaffLackItem4().setButtonIndex(4);
+
     getStaffLackModel().add(getStaffLackItem4());
 
     getStaffLackItem5().setButtonIndex(5);
+
     getStaffLackModel().add(getStaffLackItem5());
 
   }
@@ -2491,9 +2514,11 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addUnitCareMaintenanceModel(){
 
     getUnitCareMaintenanceItem1().setButtonIndex(1);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem1());
 
     getUnitCareMaintenanceItem2().setButtonIndex(2);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem2());
 
   }
@@ -2525,15 +2550,19 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addRecuperationEnvironmentalModel(){
 
     getRecuperationEnvironmentalItem1().setButtonIndex(1);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem1());
 
     getRecuperationEnvironmentalItem2().setButtonIndex(2);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem2());
 
     getRecuperationEnvironmentalItem3().setButtonIndex(3);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem3());
 
     getRecuperationEnvironmentalItem4().setButtonIndex(4);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem4());
 
   }
@@ -2579,9 +2608,11 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addDoctorsAssignmentModel(){
 
     getDoctorsAssignmentItem1().setButtonIndex(1);
+
     getDoctorsAssignmentModel().add(getDoctorsAssignmentItem1());
 
     getDoctorsAssignmentItem2().setButtonIndex(2);
+
     getDoctorsAssignmentModel().add(getDoctorsAssignmentItem2());
 
   }
@@ -2613,12 +2644,15 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addNourishmentControlAddModel(){
 
     getNourishmentControlAddItem1().setButtonIndex(1);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem1());
 
     getNourishmentControlAddItem2().setButtonIndex(2);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem2());
 
     getNourishmentControlAddItem3().setButtonIndex(3);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem3());
 
   }
@@ -2657,9 +2691,11 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addNourishmentManagementAddModel(){
 
     getNourishmentManagementAddItem1().setButtonIndex(1);
+
     getNourishmentManagementAddModel().add(getNourishmentManagementAddItem1());
 
     getNourishmentManagementAddItem2().setButtonIndex(2);
+
     getNourishmentManagementAddModel().add(getNourishmentManagementAddItem2());
 
   }
@@ -2691,9 +2727,11 @@ public class QO004120Design extends QS001ServicePanel {
   protected void addBodyRestraintAbolitionModel(){
 
     getBodyRestraintAbolitionItem1().setButtonIndex(1);
+
     getBodyRestraintAbolitionModel().add(getBodyRestraintAbolitionItem1());
 
     getBodyRestraintAbolitionItem2().setButtonIndex(2);
+
     getBodyRestraintAbolitionModel().add(getBodyRestraintAbolitionItem2());
 
   }
@@ -3059,7 +3097,6 @@ public class QO004120Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004120Design.class.getName()));
     } catch (Exception e) {

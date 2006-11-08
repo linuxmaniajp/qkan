@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -146,24 +145,8 @@ public abstract class QS001109Event extends QS001109State implements QS001Servic
 
   //変数定義
 
-  private VRMap selectedProvider = new VRHashMap();
   private boolean unitCareFlag;
   //getter/setter
-
-  /**
-   * selectedProviderを返します。
-   * @return selectedProvider
-   */
-  protected VRMap getSelectedProvider(){
-    return selectedProvider;
-  }
-  /**
-   * selectedProviderを設定します。
-   * @param selectedProvider selectedProvider
-   */
-  protected void setSelectedProvider(VRMap selectedProvider){
-    this.selectedProvider = selectedProvider;
-  }
 
   /**
    * unitCareFlagを返します。

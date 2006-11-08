@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 認知症対応型共同生活介護（短期利用）状態定義(QO004127) 
  */

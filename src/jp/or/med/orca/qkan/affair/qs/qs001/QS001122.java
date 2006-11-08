@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -128,6 +127,9 @@ public class QS001122 extends QS001122Event {
             }
             setState_INVALID_HUMAN_TYPE();
             break;
+        case 3:
+        	// 「経過型」の場合
+        	setState_PASSAGE_FORM();
         }
         // 人員配置区分を制御する
         changeState();

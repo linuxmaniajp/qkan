@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/17  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/05/15  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -358,6 +359,18 @@ public class QS001118Design extends QS001ServicePanel {
 
   private ACRadioButtonItem kaigoWelfareFacilityHomeShareAddRadioItem2;
 
+  private ACIntegerCheckBox kaigoWelfareFacilityOldMeasuresPerson;
+
+  private ACClearableRadioButtonGroup kaigoWelfareFacilityCalculationDivisionRadilo;
+
+  private ACLabelContainer kaigoWelfareFacilityCalculationDivisionRadiloContainer;
+
+  private ACListModelAdapter kaigoWelfareFacilityCalculationDivisionRadiloModel;
+
+  private ACRadioButtonItem kaigoWelfareFacilityCalculationDivisionRadiloItem1;
+
+  private ACRadioButtonItem kaigoWelfareFacilityCalculationDivisionRadiloItem2;
+
   //getter
 
   /**
@@ -407,9 +420,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityInstitutionDivisionRadio.setBindPath("1510101");
 
-      kaigoWelfareFacilityInstitutionDivisionRadio.setModel(getKaigoWelfareFacilityInstitutionDivisionRadioModel());
-
       kaigoWelfareFacilityInstitutionDivisionRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityInstitutionDivisionRadio.setModel(getKaigoWelfareFacilityInstitutionDivisionRadioModel());
 
       addKaigoWelfareFacilityInstitutionDivisionRadio();
     }
@@ -557,9 +570,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityHospitalRoomDivisionRadio.setBindPath("1510102");
 
-      kaigoWelfareFacilityHospitalRoomDivisionRadio.setModel(getKaigoWelfareFacilityHospitalRoomDivisionRadioModel());
-
       kaigoWelfareFacilityHospitalRoomDivisionRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityHospitalRoomDivisionRadio.setModel(getKaigoWelfareFacilityHospitalRoomDivisionRadioModel());
 
       addKaigoWelfareFacilityHospitalRoomDivisionRadio();
     }
@@ -632,9 +645,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityUnitHospitalRoomDivisionRadio.setBindPath("1510103");
 
-      kaigoWelfareFacilityUnitHospitalRoomDivisionRadio.setModel(getKaigoWelfareFacilityUnitHospitalRoomDivisionRadioModel());
-
       kaigoWelfareFacilityUnitHospitalRoomDivisionRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityUnitHospitalRoomDivisionRadio.setModel(getKaigoWelfareFacilityUnitHospitalRoomDivisionRadioModel());
 
       addKaigoWelfareFacilityUnitHospitalRoomDivisionRadio();
     }
@@ -709,9 +722,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityUnitCareMaintenanceRadio.setBindPath("1510124");
 
-      kaigoWelfareFacilityUnitCareMaintenanceRadio.setModel(getKaigoWelfareFacilityUnitCareMaintenanceRadioModel());
-
       kaigoWelfareFacilityUnitCareMaintenanceRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityUnitCareMaintenanceRadio.setModel(getKaigoWelfareFacilityUnitCareMaintenanceRadioModel());
 
       addKaigoWelfareFacilityUnitCareMaintenanceRadio();
     }
@@ -800,9 +813,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityJunUnitCareAddRadio.setBindPath("1510125");
 
-      kaigoWelfareFacilityJunUnitCareAddRadio.setModel(getKaigoWelfareFacilityJunUnitCareAddRadioModel());
-
       kaigoWelfareFacilityJunUnitCareAddRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityJunUnitCareAddRadio.setModel(getKaigoWelfareFacilityJunUnitCareAddRadioModel());
 
       addKaigoWelfareFacilityJunUnitCareAddRadio();
     }
@@ -891,9 +904,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityNightShiftSubtractionRadio.setBindPath("1510106");
 
-      kaigoWelfareFacilityNightShiftSubtractionRadio.setModel(getKaigoWelfareFacilityNightShiftSubtractionRadioModel());
-
       kaigoWelfareFacilityNightShiftSubtractionRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityNightShiftSubtractionRadio.setModel(getKaigoWelfareFacilityNightShiftSubtractionRadioModel());
 
       addKaigoWelfareFacilityNightShiftSubtractionRadio();
     }
@@ -982,9 +995,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityFunctionTrainingRadio.setBindPath("1510107");
 
-      kaigoWelfareFacilityFunctionTrainingRadio.setModel(getKaigoWelfareFacilityFunctionTrainingRadioModel());
-
       kaigoWelfareFacilityFunctionTrainingRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityFunctionTrainingRadio.setModel(getKaigoWelfareFacilityFunctionTrainingRadioModel());
 
       addKaigoWelfareFacilityFunctionTrainingRadio();
     }
@@ -1073,9 +1086,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityFacilityFulltimeDoctorRadio.setBindPath("1510108");
 
-      kaigoWelfareFacilityFacilityFulltimeDoctorRadio.setModel(getKaigoWelfareFacilityFacilityFulltimeDoctorRadioModel());
-
       kaigoWelfareFacilityFacilityFulltimeDoctorRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityFacilityFulltimeDoctorRadio.setModel(getKaigoWelfareFacilityFacilityFulltimeDoctorRadioModel());
 
       addKaigoWelfareFacilityFacilityFulltimeDoctorRadio();
     }
@@ -1164,9 +1177,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityPsychiatristRadio.setBindPath("1510109");
 
-      kaigoWelfareFacilityPsychiatristRadio.setModel(getKaigoWelfareFacilityPsychiatristRadioModel());
-
       kaigoWelfareFacilityPsychiatristRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityPsychiatristRadio.setModel(getKaigoWelfareFacilityPsychiatristRadioModel());
 
       addKaigoWelfareFacilityPsychiatristRadio();
     }
@@ -1255,9 +1268,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityHandicappedRadio.setBindPath("1510110");
 
-      kaigoWelfareFacilityHandicappedRadio.setModel(getKaigoWelfareFacilityHandicappedRadioModel());
-
       kaigoWelfareFacilityHandicappedRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityHandicappedRadio.setModel(getKaigoWelfareFacilityHandicappedRadioModel());
 
       addKaigoWelfareFacilityHandicappedRadio();
     }
@@ -1365,9 +1378,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityStayingOutOvernightCostRadio.setBindPath("1510111");
 
-      kaigoWelfareFacilityStayingOutOvernightCostRadio.setModel(getKaigoWelfareFacilityStayingOutOvernightCostRadioModel());
-
       kaigoWelfareFacilityStayingOutOvernightCostRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityStayingOutOvernightCostRadio.setModel(getKaigoWelfareFacilityStayingOutOvernightCostRadioModel());
 
       addKaigoWelfareFacilityStayingOutOvernightCostRadio();
     }
@@ -1456,9 +1469,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityDefaultRadio.setBindPath("1510112");
 
-      kaigoWelfareFacilityDefaultRadio.setModel(getKaigoWelfareFacilityDefaultRadioModel());
-
       kaigoWelfareFacilityDefaultRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityDefaultRadio.setModel(getKaigoWelfareFacilityDefaultRadioModel());
 
       addKaigoWelfareFacilityDefaultRadio();
     }
@@ -1547,9 +1560,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityDieticianManageRadio.setBindPath("1510113");
 
-      kaigoWelfareFacilityDieticianManageRadio.setModel(getKaigoWelfareFacilityDieticianManageRadioModel());
-
       kaigoWelfareFacilityDieticianManageRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityDieticianManageRadio.setModel(getKaigoWelfareFacilityDieticianManageRadioModel());
 
       addKaigoWelfareFacilityDieticianManageRadio();
     }
@@ -1659,9 +1672,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityNutritionRadio.setBindPath("1510114");
 
-      kaigoWelfareFacilityNutritionRadio.setModel(getKaigoWelfareFacilityNutritionRadioModel());
-
       kaigoWelfareFacilityNutritionRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityNutritionRadio.setModel(getKaigoWelfareFacilityNutritionRadioModel());
 
       addKaigoWelfareFacilityNutritionRadio();
     }
@@ -1750,9 +1763,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityOralSwitchRadio.setBindPath("1510115");
 
-      kaigoWelfareFacilityOralSwitchRadio.setModel(getKaigoWelfareFacilityOralSwitchRadioModel());
-
       kaigoWelfareFacilityOralSwitchRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityOralSwitchRadio.setModel(getKaigoWelfareFacilityOralSwitchRadioModel());
 
       addKaigoWelfareFacilityOralSwitchRadio();
     }
@@ -1841,9 +1854,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityJunOralSwitchRadio.setBindPath("1510126");
 
-      kaigoWelfareFacilityJunOralSwitchRadio.setModel(getKaigoWelfareFacilityJunOralSwitchRadioModel());
-
       kaigoWelfareFacilityJunOralSwitchRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityJunOralSwitchRadio.setModel(getKaigoWelfareFacilityJunOralSwitchRadioModel());
 
       addKaigoWelfareFacilityJunOralSwitchRadio();
     }
@@ -1953,9 +1966,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityRecuperateDinnerRadio.setBindPath("1510116");
 
-      kaigoWelfareFacilityRecuperateDinnerRadio.setModel(getKaigoWelfareFacilityRecuperateDinnerRadioModel());
-
       kaigoWelfareFacilityRecuperateDinnerRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityRecuperateDinnerRadio.setModel(getKaigoWelfareFacilityRecuperateDinnerRadioModel());
 
       addKaigoWelfareFacilityRecuperateDinnerRadio();
     }
@@ -2151,9 +2164,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityStaffSubtraction.setBindPath("1510120");
 
-      kaigoWelfareFacilityStaffSubtraction.setModel(getKaigoWelfareFacilityStaffSubtractionModel());
-
       kaigoWelfareFacilityStaffSubtraction.setUseClearButton(false);
+
+      kaigoWelfareFacilityStaffSubtraction.setModel(getKaigoWelfareFacilityStaffSubtractionModel());
 
       addKaigoWelfareFacilityStaffSubtraction();
     }
@@ -2284,9 +2297,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityDinnerOffer.setModelBindPath("1510121");
 
-      kaigoWelfareFacilityDinnerOffer.setModel(getKaigoWelfareFacilityDinnerOfferModel());
-
       kaigoWelfareFacilityDinnerOffer.setRenderBindPath("CONTENT");
+
+      kaigoWelfareFacilityDinnerOffer.setModel(getKaigoWelfareFacilityDinnerOfferModel());
 
       addKaigoWelfareFacilityDinnerOffer();
     }
@@ -2376,9 +2389,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityHeavilyCorrespondenceAddRadio.setBindPath("1510127");
 
-      kaigoWelfareFacilityHeavilyCorrespondenceAddRadio.setModel(getKaigoWelfareFacilityHeavilyCorrespondenceAddRadioModel());
-
       kaigoWelfareFacilityHeavilyCorrespondenceAddRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityHeavilyCorrespondenceAddRadio.setModel(getKaigoWelfareFacilityHeavilyCorrespondenceAddRadioModel());
 
       addKaigoWelfareFacilityHeavilyCorrespondenceAddRadio();
     }
@@ -2467,9 +2480,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityBodyRestraintAbolitionRadio.setBindPath("1510128");
 
-      kaigoWelfareFacilityBodyRestraintAbolitionRadio.setModel(getKaigoWelfareFacilityBodyRestraintAbolitionRadioModel());
-
       kaigoWelfareFacilityBodyRestraintAbolitionRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityBodyRestraintAbolitionRadio.setModel(getKaigoWelfareFacilityBodyRestraintAbolitionRadioModel());
 
       addKaigoWelfareFacilityBodyRestraintAbolitionRadio();
     }
@@ -2558,9 +2571,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityTakingCareNursingAddRadio.setBindPath("1510129");
 
-      kaigoWelfareFacilityTakingCareNursingAddRadio.setModel(getKaigoWelfareFacilityTakingCareNursingAddRadioModel());
-
       kaigoWelfareFacilityTakingCareNursingAddRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityTakingCareNursingAddRadio.setModel(getKaigoWelfareFacilityTakingCareNursingAddRadioModel());
 
       addKaigoWelfareFacilityTakingCareNursingAddRadio();
     }
@@ -2731,9 +2744,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityStayReturnSupportAddRadio.setBindPath("1510130");
 
-      kaigoWelfareFacilityStayReturnSupportAddRadio.setModel(getKaigoWelfareFacilityStayReturnSupportAddRadioModel());
-
       kaigoWelfareFacilityStayReturnSupportAddRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityStayReturnSupportAddRadio.setModel(getKaigoWelfareFacilityStayReturnSupportAddRadioModel());
 
       addKaigoWelfareFacilityStayReturnSupportAddRadio();
     }
@@ -2822,9 +2835,9 @@ public class QS001118Design extends QS001ServicePanel {
 
       kaigoWelfareFacilityHomeShareAddRadio.setBindPath("1510131");
 
-      kaigoWelfareFacilityHomeShareAddRadio.setModel(getKaigoWelfareFacilityHomeShareAddRadioModel());
-
       kaigoWelfareFacilityHomeShareAddRadio.setUseClearButton(false);
+
+      kaigoWelfareFacilityHomeShareAddRadio.setModel(getKaigoWelfareFacilityHomeShareAddRadioModel());
 
       addKaigoWelfareFacilityHomeShareAddRadio();
     }
@@ -2897,6 +2910,120 @@ public class QS001118Design extends QS001ServicePanel {
       addKaigoWelfareFacilityHomeShareAddRadioItem2();
     }
     return kaigoWelfareFacilityHomeShareAddRadioItem2;
+
+  }
+
+  /**
+   * 旧措置入所者チェックを取得します。
+   * @return 旧措置入所者チェック
+   */
+  public ACIntegerCheckBox getKaigoWelfareFacilityOldMeasuresPerson(){
+    if(kaigoWelfareFacilityOldMeasuresPerson==null){
+
+      kaigoWelfareFacilityOldMeasuresPerson = new ACIntegerCheckBox();
+
+      kaigoWelfareFacilityOldMeasuresPerson.setText("旧措置入所者");
+
+      kaigoWelfareFacilityOldMeasuresPerson.setBindPath("8");
+
+      kaigoWelfareFacilityOldMeasuresPerson.setSelectValue(2);
+
+      kaigoWelfareFacilityOldMeasuresPerson.setUnSelectValue(1);
+
+      addKaigoWelfareFacilityOldMeasuresPerson();
+    }
+    return kaigoWelfareFacilityOldMeasuresPerson;
+
+  }
+
+  /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACClearableRadioButtonGroup getKaigoWelfareFacilityCalculationDivisionRadilo(){
+    if(kaigoWelfareFacilityCalculationDivisionRadilo==null){
+
+      kaigoWelfareFacilityCalculationDivisionRadilo = new ACClearableRadioButtonGroup();
+
+      getKaigoWelfareFacilityCalculationDivisionRadiloContainer().setText("算定区分");
+
+      kaigoWelfareFacilityCalculationDivisionRadilo.setBindPath("9");
+
+      kaigoWelfareFacilityCalculationDivisionRadilo.setUseClearButton(false);
+
+      kaigoWelfareFacilityCalculationDivisionRadilo.setModel(getKaigoWelfareFacilityCalculationDivisionRadiloModel());
+
+      addKaigoWelfareFacilityCalculationDivisionRadilo();
+    }
+    return kaigoWelfareFacilityCalculationDivisionRadilo;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getKaigoWelfareFacilityCalculationDivisionRadiloContainer(){
+    if(kaigoWelfareFacilityCalculationDivisionRadiloContainer==null){
+      kaigoWelfareFacilityCalculationDivisionRadiloContainer = new ACLabelContainer();
+      kaigoWelfareFacilityCalculationDivisionRadiloContainer.setFollowChildEnabled(true);
+      kaigoWelfareFacilityCalculationDivisionRadiloContainer.setVAlignment(VRLayout.CENTER);
+      kaigoWelfareFacilityCalculationDivisionRadiloContainer.add(getKaigoWelfareFacilityCalculationDivisionRadilo(), null);
+    }
+    return kaigoWelfareFacilityCalculationDivisionRadiloContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getKaigoWelfareFacilityCalculationDivisionRadiloModel(){
+    if(kaigoWelfareFacilityCalculationDivisionRadiloModel==null){
+      kaigoWelfareFacilityCalculationDivisionRadiloModel = new ACListModelAdapter();
+      addKaigoWelfareFacilityCalculationDivisionRadiloModel();
+    }
+    return kaigoWelfareFacilityCalculationDivisionRadiloModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getKaigoWelfareFacilityCalculationDivisionRadiloItem1(){
+    if(kaigoWelfareFacilityCalculationDivisionRadiloItem1==null){
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem1 = new ACRadioButtonItem();
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem1.setText("通常");
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem1.setGroup(getKaigoWelfareFacilityCalculationDivisionRadilo());
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem1.setConstraints(VRLayout.FLOW);
+
+      addKaigoWelfareFacilityCalculationDivisionRadiloItem1();
+    }
+    return kaigoWelfareFacilityCalculationDivisionRadiloItem1;
+
+  }
+
+  /**
+   * 加算のみを取得します。
+   * @return 加算のみ
+   */
+  public ACRadioButtonItem getKaigoWelfareFacilityCalculationDivisionRadiloItem2(){
+    if(kaigoWelfareFacilityCalculationDivisionRadiloItem2==null){
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem2 = new ACRadioButtonItem();
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem2.setText("加算のみ");
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem2.setGroup(getKaigoWelfareFacilityCalculationDivisionRadilo());
+
+      kaigoWelfareFacilityCalculationDivisionRadiloItem2.setConstraints(VRLayout.FLOW);
+
+      addKaigoWelfareFacilityCalculationDivisionRadiloItem2();
+    }
+    return kaigoWelfareFacilityCalculationDivisionRadiloItem2;
 
   }
 
@@ -3674,6 +3801,10 @@ public class QS001118Design extends QS001ServicePanel {
 
     tab3.add(getKaigoWelfareFacilityHomeShareAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab3.add(getKaigoWelfareFacilityOldMeasuresPerson(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab3.add(getKaigoWelfareFacilityCalculationDivisionRadiloContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
   }
 
   /**
@@ -3958,6 +4089,47 @@ public class QS001118Design extends QS001ServicePanel {
   }
 
   /**
+   * 旧措置入所者チェックに内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityOldMeasuresPerson(){
+
+  }
+
+  /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityCalculationDivisionRadilo(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityCalculationDivisionRadiloModel(){
+
+    getKaigoWelfareFacilityCalculationDivisionRadiloItem1().setButtonIndex(1);
+    getKaigoWelfareFacilityCalculationDivisionRadiloModel().add(getKaigoWelfareFacilityCalculationDivisionRadiloItem1());
+
+    getKaigoWelfareFacilityCalculationDivisionRadiloItem2().setButtonIndex(2);
+    getKaigoWelfareFacilityCalculationDivisionRadiloModel().add(getKaigoWelfareFacilityCalculationDivisionRadiloItem2());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityCalculationDivisionRadiloItem1(){
+
+  }
+
+  /**
+   * 加算のみに内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityCalculationDivisionRadiloItem2(){
+
+  }
+
+  /**
    * コンポーネントを初期化します。
    * @throws Exception 初期化例外
    */
@@ -3979,7 +4151,6 @@ public class QS001118Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QS001118Design.class.getName()));
     } catch (Exception e) {

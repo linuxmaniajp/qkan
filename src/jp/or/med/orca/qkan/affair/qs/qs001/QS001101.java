@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -174,6 +173,8 @@ public class QS001101 extends QS001101Event {
     protected void houmonKaigoServicePatternActionPerformed(ActionEvent e)
             throws Exception {
         // ※「訪問種別」に応じて、選択可能なインスタンスを設定
+        // コンボ候補を設定する。
+        checkComboItem();
         // 訪問種別の値をチェックする。
         switch (getHoumonKaigoServicePattern().getSelectedIndex()) {
         case 0:
@@ -370,15 +371,15 @@ public class QS001101 extends QS001101Event {
                     // nullを返す。
                     return null;
                 }
-                if (getHoumonKaigoInTime().getSelectedIndex() < 1) {
-                    // 提供時間コンボ(homonkaigoTeikyoTime)が30分未満の場合
-                    // 生活援助の提供時間の不備メッセージを表示する。※ID=QS001_ERROR_OF_LIFE_ASSIST_TIME
-                    QkanMessageList.getInstance()
-                            .QS001_ERROR_OF_LIFE_ASSIST_TIME();
-                    getHoumonKaigoInTime().setSelectedIndex(1);
-                    // nullを返す。
-                    return null;
-                }
+//                if (getHoumonKaigoInTime().getSelectedIndex() < 1) {
+//                    // 提供時間コンボ(homonkaigoTeikyoTime)が30分未満の場合
+//                    // 生活援助の提供時間の不備メッセージを表示する。※ID=QS001_ERROR_OF_LIFE_ASSIST_TIME
+//                    QkanMessageList.getInstance()
+//                            .QS001_ERROR_OF_LIFE_ASSIST_TIME();
+//                    getHoumonKaigoInTime().setSelectedIndex(1);
+//                    // nullを返す。
+//                    return null;
+//                }
                 break;
             case 2:
                 // 訪問種別が身体生活の場合
@@ -464,5 +465,52 @@ public class QS001101 extends QS001101Event {
            //級職グループを有効にする
            setState_VALID_KYUSYOKU();
        }
+    }
+
+    /**
+     * コンボ候補設定
+     */
+    public void checkComboItem() throws Exception {
+        //※設定
+        VRMap comboItemMap = new VRHashMap();
+        //サービスコンボの値をチェックする。
+        if(getHoumonKaigoServicePattern().getSelectedIndex() == 1){
+            //値が2（生活援助）だった場合
+            //コードマスタデータよりCODE_ID：269（提供時間・生活援助）を取得する。
+            //取得した値を、comboItemMapの KEY : 1110105 の VALUE として設定する。
+            comboItemMap.setData("1110104", QkanCommon.getArrayFromMasterCode(269,
+            "1110105"));
+        }else{
+            //値が2以外（身体介護、身体生活）だった場合
+            //コードマスタデータよりCODE_ID：26（提供時間・身体介護）を取得する。
+            //取得した値を、comboItemMapの KEY : 1110105 の VALUE として設定する。
+            comboItemMap.setData("1110104", QkanCommon.getArrayFromMasterCode(26,
+            "1110105"));
+        }
+        //※展開
+        // 自身(this)にcomboItemMapに設定する。
+        getThis().setModelSource(comboItemMap);
+        // コンボアイテムを展開する。
+        getThis().bindModelSource();
+        
+    }
+
+    /**
+     * データバインド時の処理
+     */
+    public void binded() throws Exception {
+        // 予防対応時(要望対応)
+        // サービス区分が生活援助だった場合
+        if (getHoumonKaigoServicePattern().getSelectedIndex()==1){
+            // ソースを取得
+            VRBindSource src = getHoumonKaigoInTime().getSource();
+            if(src != null){
+                // 生活援助コンボの値をチェックする。
+                // 要望対応前のデータだった場合
+                if(ACCastUtilities.toInt(src.getData("1110105")) >= 3){
+                    getHoumonKaigoInTime().setSelectedIndex(1);
+                }
+            }
+        }
     }
 }

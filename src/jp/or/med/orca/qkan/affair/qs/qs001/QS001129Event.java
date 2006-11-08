@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/03/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/05/15  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -174,6 +175,22 @@ public abstract class QS001129Event extends QS001129State implements QS001Servic
             }
         }
     });
+    getKaigoWelfareFacilityOldMeasuresPerson().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                kaigoWelfareFacilityOldMeasuresPersonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -213,26 +230,17 @@ public abstract class QS001129Event extends QS001129State implements QS001Servic
    */
   protected abstract void kaigoWelfareFacilityJunOralSwitchRadioSelectionChanged(ListSelectionEvent e) throws Exception;
 
+  /**
+   * 「旧措置入所者チェック」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void kaigoWelfareFacilityOldMeasuresPersonActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
-  private VRMap selectedProvider = new VRHashMap();
   private boolean invalidUnitCareProvider;
   //getter/setter
-
-  /**
-   * selectedProviderを返します。
-   * @return selectedProvider
-   */
-  protected VRMap getSelectedProvider(){
-    return selectedProvider;
-  }
-  /**
-   * selectedProviderを設定します。
-   * @param selectedProvider selectedProvider
-   */
-  protected void setSelectedProvider(VRMap selectedProvider){
-    this.selectedProvider = selectedProvider;
-  }
 
   /**
    * invalidUnitCareProviderを返します。
@@ -308,5 +316,13 @@ public abstract class QS001129Event extends QS001129State implements QS001Servic
    * @return String
    */
   public abstract String getMeatCost(int meatType) throws Exception;
+
+  /**
+   * 「データバインド時の処理」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void binded() throws Exception;
 
 }

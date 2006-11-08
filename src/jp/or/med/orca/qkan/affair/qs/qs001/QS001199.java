@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -630,6 +629,10 @@ public class QS001199 extends QS001199Event {
       // ・12304：短期入所療養介護(基準適合診療所)
       case 12304:
       case 12314:
+      case 12511: //介護予防短期入所療養介護（老健）
+      case 12611: //介護予防短期入所療養介護（病院）
+      case 12612: //介護予防短期入所療養介護（診療所）
+      case 12613: //介護予防短期入所療養介護（認知症疾患型）
           // 「初期入院診療管理・無効」状態にする。
           setState_INVALID_BEGINNIGN_GUIDANCE();
           break;
@@ -643,6 +646,8 @@ public class QS001199 extends QS001199Event {
       case 15303:
       case 15313:
           // ・15303：介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
+      case 12613: //介護予防短期入所療養介護（認知症疾患型）
+          
           // 「老人性認知症疾患療養病棟」状態にする。
           setState_OLD_COGNITIVE_WARD();
           sizeDown = true;
@@ -749,6 +754,9 @@ public class QS001199 extends QS001199Event {
       case 12312:
       case 12304:// 短期入所療養介護(基準適合診療所)
       case 12314:
+      case 12511: //介護予防短期入所療養介護（老健）
+      case 12611: //介護予防短期入所療養介護（病院）
+      case 12612: //介護予防短期入所療養介護（診療所）
           return new String[] { "3010101", "3010102", "3010104", "3010105",
                   "3010106", "3010107", "3010108", 
                   //"3010109",
@@ -762,6 +770,7 @@ public class QS001199 extends QS001199Event {
       // 引数systemServiceKindDetailの値が以下の短期入所療養介護かつ老人性認知症疾患療養病棟サービスの場合
       case 12303:// 短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
       case 12313:
+      case 12613: //介護予防短期入所療養介護（認知症疾患型）
           return new String[] { "3010101", "3010102", "3010104", "3010137",
                   "3010138", };
       // 引数systemServiceKindDetailの値が以下の老人性認知症疾患療養病棟サービスの場合

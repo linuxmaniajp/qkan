@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/03/22  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2006/07/04  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -179,6 +180,8 @@ public class QS001122State extends QS001122Design {
 
         getUnitCareMaintenanceRadio().setEnabled(false);
 
+        getHospitalDivisionRadio().setEnabled(true);
+
   }
 
   /**
@@ -190,6 +193,8 @@ public class QS001122State extends QS001122Design {
         getMedicalFacilityCognitiveHospitalHospitalRoomRadio().setEnabled(false);
 
         getMedicalFacilityCognitiveHospitalUnitHospitalRoomRadio().setEnabled(true);
+
+        getHospitalDivisionRadio().setEnabled(true);
 
   }
 
@@ -404,6 +409,24 @@ public class QS001122State extends QS001122Design {
   public void setState_INVALID_GAIHAKU_ADD() throws Exception {
 
         getMedicalFacilityCognitiveHospitalStayRadio().setEnabled(false);
+
+  }
+
+  /**
+   * 「経過型」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_PASSAGE_FORM() throws Exception {
+
+        getMedicalFacilityCognitiveHospitalHospitalRoomRadio().setEnabled(true);
+
+        getMedicalFacilityCognitiveHospitalUnitHospitalRoomRadio().setEnabled(false);
+
+        getUnitCareMaintenanceRadio().setEnabled(false);
+
+        getMedicalFacilityCognitiveHospitalHospitalDivision().setEnabled(false);
+
+        getHospitalDivisionRadio().setEnabled(false);
 
   }
 

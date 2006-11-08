@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -194,6 +193,7 @@ public abstract class QO004113Event extends QO004113SQL implements iProviderServ
 
   public static final int CODE_STAFF_REDUCE = 173;
   public static final int FACILITY_TYPE_NINCHISHO = 1;
+  public static final int FACILITY_TYPE_UNIT = 2;
   public static final int HOSPITAL_TYPE_UNIVERSITY = 1;
   public static final int STAFF_LACK_KANGO_KAIGO = 2;
   public static final int STAFF_LACK_SEIKAN = 3;

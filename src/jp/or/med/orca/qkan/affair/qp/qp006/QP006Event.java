@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/01/18  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/06/19  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -27,27 +27,59 @@
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qp.qp006;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.util.Date;
-
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.component.ACTimeTextField;
-import jp.nichicom.ac.sql.ACPassiveKey;
-import jp.nichicom.vr.util.VRArrayList;
-import jp.nichicom.vr.util.VRHashMap;
-import jp.nichicom.vr.util.VRList;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.component.QkanDateTextField;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 医療明細書詳細編集イベント定義(QP006) 
@@ -72,7 +104,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 updateActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -88,7 +120,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText1FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -104,7 +136,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText1FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -120,7 +152,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText2FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -136,7 +168,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText3FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -152,7 +184,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText4FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -168,7 +200,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText5FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -184,7 +216,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText2FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -200,7 +232,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText6FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -216,7 +248,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText7FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -232,7 +264,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText8FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -248,7 +280,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText9FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -264,7 +296,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText3FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -280,7 +312,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText10FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -296,7 +328,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText11FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -312,7 +344,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText12FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -328,7 +360,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText13FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -344,7 +376,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText4FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -360,7 +392,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText14FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -376,7 +408,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText15FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -392,7 +424,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText16FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -408,7 +440,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText17FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -424,7 +456,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText5FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -440,7 +472,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText18FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -456,7 +488,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText19FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -472,7 +504,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText20FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -488,7 +520,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText51FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -504,7 +536,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText8FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -520,7 +552,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText52FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -536,7 +568,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText53FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -552,7 +584,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText54FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -568,7 +600,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText21FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -584,7 +616,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText6FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -600,7 +632,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText22FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -616,7 +648,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText23FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -632,7 +664,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText24FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -648,7 +680,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText25FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -664,7 +696,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedTimeText1FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -680,7 +712,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText26FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -696,7 +728,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText27FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -712,7 +744,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText28FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -728,7 +760,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText29FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -744,7 +776,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText29InsertFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -760,7 +792,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedDayText7FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -776,7 +808,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText30FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -792,7 +824,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText31FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -808,7 +840,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText32FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -824,7 +856,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText36FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -840,7 +872,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText37FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -856,7 +888,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText38FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -872,7 +904,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText39FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -888,7 +920,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText40FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -904,7 +936,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText41FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -920,7 +952,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText42FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -936,7 +968,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText43FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -952,7 +984,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText44FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -968,7 +1000,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText45FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -984,7 +1016,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText46FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -1000,7 +1032,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText47FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -1016,7 +1048,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText48FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -1032,7 +1064,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText49FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -1048,7 +1080,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedMoneyText50FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -1064,7 +1096,7 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedExpenseMoneyText1FocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -1080,14 +1112,13 @@ public abstract class QP006Event extends QP006State {
             lockFlag = true;
             try {
                 visitCareDetailedReductionFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
-    
     getVisitCareDetailedReduction().getDocument().addDocumentListener(new DocumentListener(){
         private boolean lockFlag = false;
         public void changedUpdate(DocumentEvent e) {
@@ -1113,144 +1144,8 @@ public abstract class QP006Event extends QP006State {
             }
         }
     });
-    
-    getVisitCareDetailedMoneyText55().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText55FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    
-    getVisitCareDetailedDayText9().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedDayText9FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getVisitCareDetailedMoneyText56().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText56FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getVisitCareDetailedMoneyText57().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText57FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
 
-    getVisitCareDetailedMoneyText58().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText58FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    
-    getVisitCareDetailedMoneyText61().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText61FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-
-    getVisitCareDetailedMoneyText62().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText62FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-
-    getVisitCareDetailedMoneyText63().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-            	visitCareDetailedMoneyText63FocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    
   }
-  
-  
   //コンポーネントイベント
 
   /**
@@ -1274,14 +1169,6 @@ public abstract class QP006Event extends QP006State {
    */
   protected abstract void visitCareDetailedDayText1FocusLost(FocusEvent e) throws Exception;
 
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedDayText9FocusLost(FocusEvent e) throws Exception;
-
-  
   /**
    * 「金額計算処理」イベントです。
    * @param e イベント情報
@@ -1693,58 +1580,8 @@ public abstract class QP006Event extends QP006State {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void visitCareDetailedMoneyText55FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedMoneyText56FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedMoneyText57FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedMoneyText58FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
   protected abstract void visitCareDetailedMoneyText50FocusLost(FocusEvent e) throws Exception;
 
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedMoneyText61FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedMoneyText62FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedMoneyText63FocusLost(FocusEvent e) throws Exception;
-
-  
   /**
    * 「金額計算処理」イベントです。
    * @param e イベント情報
@@ -1766,19 +1603,18 @@ public abstract class QP006Event extends QP006State {
    */
   protected abstract void visitCareDetailedReductionTextChanged(DocumentEvent e) throws Exception;
 
-  
-  // 定数定義
-  public static final Integer Male = new Integer(1);
-  public static final Integer feMale = new Integer(2);
-  
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_KEY;
+  public static final Integer Male = new Integer(1);
+  public static final Integer feMale = new Integer(2);
   private int patientId;
-  private Date targetDate;
   private int listIndex;
-  private String providerId;
   private int claimStyleType;
+  private String providerId;
+  private String InsurerID;
+  private Date targetDate;
+  private Date claimDate;
   private VRMap modelMap = new VRHashMap();
   private VRMap windowMap = new VRHashMap();
   private VRList claimList = new VRArrayList();
@@ -1815,21 +1651,6 @@ public abstract class QP006Event extends QP006State {
   }
 
   /**
-   * targetDateを返します。
-   * @return targetDate
-   */
-  protected Date getTargetDate(){
-    return targetDate;
-  }
-  /**
-   * targetDateを設定します。
-   * @param targetDate targetDate
-   */
-  protected void setTargetDate(Date targetDate){
-    this.targetDate = targetDate;
-  }
-
-  /**
    * listIndexを返します。
    * @return listIndex
    */
@@ -1842,6 +1663,21 @@ public abstract class QP006Event extends QP006State {
    */
   protected void setListIndex(int listIndex){
     this.listIndex = listIndex;
+  }
+
+  /**
+   * claimStyleTypeを返します。
+   * @return claimStyleType
+   */
+  protected int getClaimStyleType(){
+    return claimStyleType;
+  }
+  /**
+   * claimStyleTypeを設定します。
+   * @param claimStyleType claimStyleType
+   */
+  protected void setClaimStyleType(int claimStyleType){
+    this.claimStyleType = claimStyleType;
   }
 
   /**
@@ -1860,18 +1696,48 @@ public abstract class QP006Event extends QP006State {
   }
 
   /**
-   * claimStyleTypeを返します。
-   * @return claimStyleType
+   * InsurerIDを返します。
+   * @return InsurerID
    */
-  protected int getClaimStyleType(){
-    return claimStyleType;
+  protected String getInsurerID(){
+    return InsurerID;
   }
   /**
-   * claimStyleTypeを設定します。
-   * @param claimStyleType claimStyleType
+   * InsurerIDを設定します。
+   * @param InsurerID InsurerID
    */
-  protected void setClaimStyleType(int claimStyleType){
-    this.claimStyleType = claimStyleType;
+  protected void setInsurerID(String InsurerID){
+    this.InsurerID = InsurerID;
+  }
+
+  /**
+   * targetDateを返します。
+   * @return targetDate
+   */
+  protected Date getTargetDate(){
+    return targetDate;
+  }
+  /**
+   * targetDateを設定します。
+   * @param targetDate targetDate
+   */
+  protected void setTargetDate(Date targetDate){
+    this.targetDate = targetDate;
+  }
+
+  /**
+   * claimDateを返します。
+   * @return claimDate
+   */
+  protected Date getClaimDate(){
+    return claimDate;
+  }
+  /**
+   * claimDateを設定します。
+   * @param claimDate claimDate
+   */
+  protected void setClaimDate(Date claimDate){
+    this.claimDate = claimDate;
   }
 
   /**
@@ -1949,7 +1815,7 @@ public abstract class QP006Event extends QP006State {
    * 「保存処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
-   *
+   * @return boolean
    */
   public abstract boolean doSave() throws Exception;
 
@@ -1989,67 +1855,85 @@ public abstract class QP006Event extends QP006State {
    * 「入力チェック」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
-   *
+   * @return boolean
    */
   public abstract boolean isValidInput() throws Exception;
 
   /**
    * 「2つの値の計算」に関する処理を行ないます。
    *
+   * @param firstACTextField ACTextField
+   * @param secondACTextField ACTextField
+   * @param output ACTextField
    * @throws Exception 処理例外
    *
    */
-  public abstract void multiPlication( ACTextField firstACTextField, ACTextField secondACTextField, ACTextField output) throws Exception;
+  public abstract void multiPlication(ACTextField firstACTextField, ACTextField secondACTextField, ACTextField output) throws Exception;
 
   /**
-   * 「2つの値の計算」に関する処理を行ないます。
+   * 「3つの値の計算」に関する処理を行ないます。
    *
+   * @param firstACTextField ACTextField
+   * @param secondACTextField ACTextField
+   * @param thirdACTextField ACTextField
+   * @param output ACTextField
    * @throws Exception 処理例外
    *
    */
-  public abstract void multiPlication( ACTextField firstACTextField, ACTextField secondACTextField, ACTextField thirdACTextField, ACTextField output) throws Exception;
-  
-	/**
-	* 「合計」に関する処理を行ないます。 ACTextFieldのオブジェクト配列の値をすべて合算して、outputTextFieldに返します。
-	* 
-	* @throws Exception
-	*             処理例外
-	*/
-  public abstract void sumMachine( ACTextField sumArray[], ACTextField output, ACTextField oneShare) throws Exception;
+  public abstract void multiPlication(ACTextField firstACTextField, ACTextField secondACTextField, ACTextField thirdACTextField, ACTextField output) throws Exception;
 
-	/**
-	 * 「妥当な日付の入力チェック」に関する処理を行ないます。
-	 * 
-	 * @throws Exception
-	 *             処理例外
-	 */
-	public abstract boolean checkErrorDate(QkanDateTextField dateParam, String errMsg) throws Exception;
+  /**
+   * 「合計」に関する処理を行ないます。
+   *
+   * @param sumArray[] ACTextField
+   * @param output ACTextField
+   * @param oneShare ACTextField
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void sumMachine(ACTextField sumArray[], ACTextField output, ACTextField oneShare) throws Exception;
 
-	/**
-	 * 「妥当な時刻の入力チェック」に関する処理を行ないます。
-	 * 
-	 * @throws Exception
-	 *             処理例外
-	 */
-	public abstract boolean checkErrorTime(ACTimeTextField timeParam, String errMsg) throws Exception;
+  /**
+   * 「妥当な日付の入力チェック」に関する処理を行ないます。
+   *
+   * @param dateParam QkanDateTextField
+   * @param errMsg String
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean checkErrorDate(QkanDateTextField dateParam, String errMsg) throws Exception;
 
-	
-	/**
-	 * 「未来日付の入力チェック」に関する処理を行ないます。
-	 * 
-	 * @throws Exception
-	 *             処理例外
-	 */
-	public abstract boolean checkFutureDate(QkanDateTextField dateParam, String errMsg) throws Exception;
-	
-	/**
-	 * 「日付の開始日と終了日のチェック」に関する処理を行ないます。
-	 * 
-	 * @throws Exception
-	 *             処理例外
-	 */
-	public abstract boolean checkRelationDate(QkanDateTextField firstDateParam, QkanDateTextField secondDateParam,String errMsg1,String errMsg2, String errMsg3 ) throws Exception;
+  /**
+   * 「妥当な時刻の入力チェック」に関する処理を行ないます。
+   *
+   * @param timeParam ACTimeTextField
+   * @param errMsg String
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean checkErrorTime(ACTimeTextField timeParam, String errMsg) throws Exception;
 
-	
+  /**
+   * 「未来日付の入力チェック」に関する処理を行ないます。
+   *
+   * @param dateParam QkanDateTextField
+   * @param errMsg String
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean checkFutureDate(QkanDateTextField dateParam, String errMsg) throws Exception;
+
+  /**
+   * 「日付の開始日と終了日のチェック」に関する処理を行ないます。
+   *
+   * @param firstDateParam QkanDateTextField
+   * @param secondDateParam QkanDateTextField
+   * @param errMsg1 String
+   * @param errMsg2 String
+   * @param errMsg3 String
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean checkRelationDate(QkanDateTextField firstDateParam, QkanDateTextField secondDateParam, String errMsg1, String errMsg2, String errMsg3) throws Exception;
+
 }
-

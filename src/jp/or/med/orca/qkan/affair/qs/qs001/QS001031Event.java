@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/11  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/05/07  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,13 +47,12 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
 import jp.nichicom.ac.io.*;
 import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
 import jp.nichicom.ac.pdf.*;
 import jp.nichicom.ac.sql.*;
 import jp.nichicom.ac.text.*;
@@ -79,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 利用・提供票印刷イベント定義(QS001031) 
@@ -196,6 +195,9 @@ public abstract class QS001031Event extends QS001031SQL {
 
   private int processType;
   private VRList serviceData = new VRArrayList();
+  private VRList supportProviders = new VRArrayList();
+  private VRList preventSupportProviders = new VRArrayList();
+  private VRList supporters = new VRArrayList();
   private CareServiceCodeCalcurater calcurater;
   //getter/setter
 
@@ -230,6 +232,51 @@ public abstract class QS001031Event extends QS001031SQL {
   }
 
   /**
+   * supportProvidersを返します。
+   * @return supportProviders
+   */
+  protected VRList getSupportProviders(){
+    return supportProviders;
+  }
+  /**
+   * supportProvidersを設定します。
+   * @param supportProviders supportProviders
+   */
+  protected void setSupportProviders(VRList supportProviders){
+    this.supportProviders = supportProviders;
+  }
+
+  /**
+   * preventSupportProvidersを返します。
+   * @return preventSupportProviders
+   */
+  protected VRList getPreventSupportProviders(){
+    return preventSupportProviders;
+  }
+  /**
+   * preventSupportProvidersを設定します。
+   * @param preventSupportProviders preventSupportProviders
+   */
+  protected void setPreventSupportProviders(VRList preventSupportProviders){
+    this.preventSupportProviders = preventSupportProviders;
+  }
+
+  /**
+   * supportersを返します。
+   * @return supporters
+   */
+  protected VRList getSupporters(){
+    return supporters;
+  }
+  /**
+   * supportersを設定します。
+   * @param supporters supporters
+   */
+  protected void setSupporters(VRList supporters){
+    this.supporters = supporters;
+  }
+
+  /**
    * calcuraterを返します。
    * @return calcurater
    */
@@ -249,7 +296,7 @@ public abstract class QS001031Event extends QS001031SQL {
   /**
    * 「画面展開時イベント」に関する処理を行ないます。
    *
-   * @param calcurater QS001ServiceCodeCalcurater
+   * @param calcurater CareServiceCodeCalcurater
    * @param serviceData VRList
    * @param processType int
    * @throws Exception 処理例外
@@ -357,7 +404,7 @@ public abstract class QS001031Event extends QS001031SQL {
    * 「印刷」に関する処理を行ないます。
    *
    * @param writer ACChotarouXMLWriter
-   * @param buildParam QS001ServicePrintParameter
+   * @param buildParam CareServicePrintParameter
    * @param printMain, String mainFormat, List mainInsuredPages boolean
    * @param allTexts HashMap
    * @param printSub, String subFormat, List subInsuredPages boolean

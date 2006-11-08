@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/17  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/07/04  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -97,6 +98,8 @@ public class QS001120Design extends QS001ServicePanel {
   private ACRadioButtonItem medicalFacilityHospitalHospitalInstitutionDivisionRadioItem1;
 
   private ACRadioButtonItem medicalFacilityHospitalHospitalInstitutionDivisionRadioItem2;
+
+  private ACRadioButtonItem medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3;
 
   private ACClearableRadioButtonGroup medicalFacilityHospitalHospitalDivision;
 
@@ -320,6 +323,26 @@ public class QS001120Design extends QS001ServicePanel {
 
   private ACRadioButtonItem stayReturnSupportAddRadioItem2;
 
+  private ACClearableRadioButtonGroup trialHijoRadio;
+
+  private ACLabelContainer trialHijoRadioContainer;
+
+  private ACListModelAdapter trialHijoRadioModel;
+
+  private ACRadioButtonItem trialHijoRadioItem1;
+
+  private ACRadioButtonItem trialHijoRadioItem2;
+
+  private ACClearableRadioButtonGroup medicalFacilityHospitalCalculationDivisionRadio;
+
+  private ACLabelContainer medicalFacilityHospitalCalculationDivisionRadioContainer;
+
+  private ACListModelAdapter medicalFacilityHospitalCalculationDivisionRadioModel;
+
+  private ACRadioButtonItem medicalFacilityHospitalCalculationDivisionRadioItem1;
+
+  private ACRadioButtonItem medicalFacilityHospitalCalculationDivisionRadioItem2;
+
   //getter
 
   /**
@@ -367,9 +390,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalInstitutionDivisionRadio.setBindPath("1530101");
 
-      medicalFacilityHospitalInstitutionDivisionRadio.setModel(getMedicalFacilityHospitalInstitutionDivisionRadioModel());
-
       medicalFacilityHospitalInstitutionDivisionRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalInstitutionDivisionRadio.setModel(getMedicalFacilityHospitalInstitutionDivisionRadioModel());
 
       addMedicalFacilityHospitalInstitutionDivisionRadio();
     }
@@ -437,11 +460,32 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalHospitalInstitutionDivisionRadioItem2.setGroup(getMedicalFacilityHospitalInstitutionDivisionRadio());
 
-      medicalFacilityHospitalHospitalInstitutionDivisionRadioItem2.setConstraints(VRLayout.FLOW);
+      medicalFacilityHospitalHospitalInstitutionDivisionRadioItem2.setConstraints(VRLayout.FLOW_RETURN);
 
       addMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem2();
     }
     return medicalFacilityHospitalHospitalInstitutionDivisionRadioItem2;
+
+  }
+
+  /**
+   * 経過型を取得します。
+   * @return 経過型
+   */
+  public ACRadioButtonItem getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem3(){
+    if(medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3==null){
+
+      medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3 = new ACRadioButtonItem();
+
+      medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3.setText("経過型");
+
+      medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3.setGroup(getMedicalFacilityHospitalInstitutionDivisionRadio());
+
+      medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem3();
+    }
+    return medicalFacilityHospitalHospitalInstitutionDivisionRadioItem3;
 
   }
 
@@ -458,9 +502,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalHospitalDivision.setBindPath("1530102");
 
-      medicalFacilityHospitalHospitalDivision.setModel(getMedicalFacilityHospitalHospitalDivisionModel());
-
       medicalFacilityHospitalHospitalDivision.setUseClearButton(false);
+
+      medicalFacilityHospitalHospitalDivision.setModel(getMedicalFacilityHospitalHospitalDivisionModel());
 
       addMedicalFacilityHospitalHospitalDivision();
     }
@@ -585,9 +629,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalHospitalRoomRadio.setBindPath("1530103");
 
-      medicalFacilityHospitalHospitalRoomRadio.setModel(getMedicalFacilityHospitalHospitalRoomRadioModel());
-
       medicalFacilityHospitalHospitalRoomRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalHospitalRoomRadio.setModel(getMedicalFacilityHospitalHospitalRoomRadioModel());
 
       addMedicalFacilityHospitalHospitalRoomRadio();
     }
@@ -660,9 +704,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalUnitHospitalRoomRadio.setBindPath("1530104");
 
-      medicalFacilityHospitalUnitHospitalRoomRadio.setModel(getMedicalFacilityHospitalUnitHospitalRoomRadioModel());
-
       medicalFacilityHospitalUnitHospitalRoomRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalUnitHospitalRoomRadio.setModel(getMedicalFacilityHospitalUnitHospitalRoomRadioModel());
 
       addMedicalFacilityHospitalUnitHospitalRoomRadio();
     }
@@ -737,9 +781,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalNightShiftSubtractionRadio.setBindPath("1530105");
 
-      medicalFacilityHospitalNightShiftSubtractionRadio.setModel(getMedicalFacilityHospitalNightShiftSubtractionRadioModel());
-
       medicalFacilityHospitalNightShiftSubtractionRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalNightShiftSubtractionRadio.setModel(getMedicalFacilityHospitalNightShiftSubtractionRadioModel());
 
       addMedicalFacilityHospitalNightShiftSubtractionRadio();
     }
@@ -891,9 +935,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalEnvironmentalRadio.setBindPath("1530106");
 
-      medicalFacilityHospitalEnvironmentalRadio.setModel(getMedicalFacilityHospitalEnvironmentalRadioModel());
-
       medicalFacilityHospitalEnvironmentalRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalEnvironmentalRadio.setModel(getMedicalFacilityHospitalEnvironmentalRadioModel());
 
       addMedicalFacilityHospitalEnvironmentalRadio();
     }
@@ -1024,9 +1068,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalDoctorArrangeStandardRadio.setBindPath("1530107");
 
-      medicalFacilityHospitalDoctorArrangeStandardRadio.setModel(getMedicalFacilityHospitalDoctorArrangeStandardRadioModel());
-
       medicalFacilityHospitalDoctorArrangeStandardRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalDoctorArrangeStandardRadio.setModel(getMedicalFacilityHospitalDoctorArrangeStandardRadioModel());
 
       addMedicalFacilityHospitalDoctorArrangeStandardRadio();
     }
@@ -1115,9 +1159,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalStayRadio.setBindPath("1530108");
 
-      medicalFacilityHospitalStayRadio.setModel(getMedicalFacilityHospitalStayRadioModel());
-
       medicalFacilityHospitalStayRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalStayRadio.setModel(getMedicalFacilityHospitalStayRadioModel());
 
       addMedicalFacilityHospitalStayRadio();
     }
@@ -1223,9 +1267,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalStandardRadio.setBindPath("1530109");
 
-      medicalFacilityHospitalStandardRadio.setModel(getMedicalFacilityHospitalStandardRadioModel());
-
       medicalFacilityHospitalStandardRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalStandardRadio.setModel(getMedicalFacilityHospitalStandardRadioModel());
 
       addMedicalFacilityHospitalStandardRadio();
     }
@@ -1314,9 +1358,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalMedicalExaminationRadio.setBindPath("1530110");
 
-      medicalFacilityHospitalMedicalExaminationRadio.setModel(getMedicalFacilityHospitalMedicalExaminationRadioModel());
-
       medicalFacilityHospitalMedicalExaminationRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalMedicalExaminationRadio.setModel(getMedicalFacilityHospitalMedicalExaminationRadioModel());
 
       addMedicalFacilityHospitalMedicalExaminationRadio();
     }
@@ -1405,9 +1449,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalNutritionManageRadio.setBindPath("1530111");
 
-      medicalFacilityHospitalNutritionManageRadio.setModel(getMedicalFacilityHospitalNutritionManageRadioModel());
-
       medicalFacilityHospitalNutritionManageRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalNutritionManageRadio.setModel(getMedicalFacilityHospitalNutritionManageRadioModel());
 
       addMedicalFacilityHospitalNutritionManageRadio();
     }
@@ -1517,9 +1561,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalNutritionRadio.setBindPath("1530112");
 
-      medicalFacilityHospitalNutritionRadio.setModel(getMedicalFacilityHospitalNutritionRadioModel());
-
       medicalFacilityHospitalNutritionRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalNutritionRadio.setModel(getMedicalFacilityHospitalNutritionRadioModel());
 
       addMedicalFacilityHospitalNutritionRadio();
     }
@@ -1608,9 +1652,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalOralSwitchRadio.setBindPath("1530113");
 
-      medicalFacilityHospitalOralSwitchRadio.setModel(getMedicalFacilityHospitalOralSwitchRadioModel());
-
       medicalFacilityHospitalOralSwitchRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalOralSwitchRadio.setModel(getMedicalFacilityHospitalOralSwitchRadioModel());
 
       addMedicalFacilityHospitalOralSwitchRadio();
     }
@@ -1699,9 +1743,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       oralMaintenanceRadio.setBindPath("1530115");
 
-      oralMaintenanceRadio.setModel(getOralMaintenanceRadioModel());
-
       oralMaintenanceRadio.setUseClearButton(false);
+
+      oralMaintenanceRadio.setModel(getOralMaintenanceRadioModel());
 
       addOralMaintenanceRadio();
     }
@@ -1811,9 +1855,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalRecuperateDinnerRadio.setBindPath("1530114");
 
-      medicalFacilityHospitalRecuperateDinnerRadio.setModel(getMedicalFacilityHospitalRecuperateDinnerRadioModel());
-
       medicalFacilityHospitalRecuperateDinnerRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalRecuperateDinnerRadio.setModel(getMedicalFacilityHospitalRecuperateDinnerRadioModel());
 
       addMedicalFacilityHospitalRecuperateDinnerRadio();
     }
@@ -2094,9 +2138,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityHospitalSubstraction.setModelBindPath("1530158");
 
-      medicalFacilityHospitalSubstraction.setModel(getMedicalFacilityHospitalSubstractionModel());
-
       medicalFacilityHospitalSubstraction.setRenderBindPath("CONTENT");
+
+      medicalFacilityHospitalSubstraction.setModel(getMedicalFacilityHospitalSubstractionModel());
 
       addMedicalFacilityHospitalSubstraction();
     }
@@ -2162,9 +2206,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       medicalFacilityDinnerOffer.setModelBindPath("1530159");
 
-      medicalFacilityDinnerOffer.setModel(getMedicalFacilityDinnerOfferModel());
-
       medicalFacilityDinnerOffer.setRenderBindPath("CONTENT");
+
+      medicalFacilityDinnerOffer.setModel(getMedicalFacilityDinnerOfferModel());
 
       addMedicalFacilityDinnerOffer();
     }
@@ -2254,9 +2298,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       unitCareMaintenanceRadio.setBindPath("1530116");
 
-      unitCareMaintenanceRadio.setModel(getUnitCareMaintenanceRadioModel());
-
       unitCareMaintenanceRadio.setUseClearButton(false);
+
+      unitCareMaintenanceRadio.setModel(getUnitCareMaintenanceRadioModel());
 
       addUnitCareMaintenanceRadio();
     }
@@ -2345,9 +2389,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       bodyRestraintAbolitionRadio.setBindPath("1530117");
 
-      bodyRestraintAbolitionRadio.setModel(getBodyRestraintAbolitionRadioModel());
-
       bodyRestraintAbolitionRadio.setUseClearButton(false);
+
+      bodyRestraintAbolitionRadio.setModel(getBodyRestraintAbolitionRadioModel());
 
       addBodyRestraintAbolitionRadio();
     }
@@ -2436,9 +2480,9 @@ public class QS001120Design extends QS001ServicePanel {
 
       stayReturnSupportAddRadio.setBindPath("1530118");
 
-      stayReturnSupportAddRadio.setModel(getStayReturnSupportAddRadioModel());
-
       stayReturnSupportAddRadio.setUseClearButton(false);
+
+      stayReturnSupportAddRadio.setModel(getStayReturnSupportAddRadioModel());
 
       addStayReturnSupportAddRadio();
     }
@@ -2511,6 +2555,188 @@ public class QS001120Design extends QS001ServicePanel {
       addStayReturnSupportAddRadioItem2();
     }
     return stayReturnSupportAddRadioItem2;
+
+  }
+
+  /**
+   * 試行的退院サービス費を取得します。
+   * @return 試行的退院サービス費
+   */
+  public ACClearableRadioButtonGroup getTrialHijoRadio(){
+    if(trialHijoRadio==null){
+
+      trialHijoRadio = new ACClearableRadioButtonGroup();
+
+      getTrialHijoRadioContainer().setText("試行的退院サービス費");
+
+      trialHijoRadio.setBindPath("1530119");
+
+      trialHijoRadio.setUseClearButton(false);
+
+      trialHijoRadio.setModel(getTrialHijoRadioModel());
+
+      addTrialHijoRadio();
+    }
+    return trialHijoRadio;
+
+  }
+
+  /**
+   * 試行的退院サービス費コンテナを取得します。
+   * @return 試行的退院サービス費コンテナ
+   */
+  protected ACLabelContainer getTrialHijoRadioContainer(){
+    if(trialHijoRadioContainer==null){
+      trialHijoRadioContainer = new ACLabelContainer();
+      trialHijoRadioContainer.setFollowChildEnabled(true);
+      trialHijoRadioContainer.setVAlignment(VRLayout.CENTER);
+      trialHijoRadioContainer.add(getTrialHijoRadio(), null);
+    }
+    return trialHijoRadioContainer;
+  }
+
+  /**
+   * 試行的退院サービス費モデルを取得します。
+   * @return 試行的退院サービス費モデル
+   */
+  protected ACListModelAdapter getTrialHijoRadioModel(){
+    if(trialHijoRadioModel==null){
+      trialHijoRadioModel = new ACListModelAdapter();
+      addTrialHijoRadioModel();
+    }
+    return trialHijoRadioModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getTrialHijoRadioItem1(){
+    if(trialHijoRadioItem1==null){
+
+      trialHijoRadioItem1 = new ACRadioButtonItem();
+
+      trialHijoRadioItem1.setText("なし");
+
+      trialHijoRadioItem1.setGroup(getTrialHijoRadio());
+
+      trialHijoRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addTrialHijoRadioItem1();
+    }
+    return trialHijoRadioItem1;
+
+  }
+
+  /**
+   * ありを取得します。
+   * @return あり
+   */
+  public ACRadioButtonItem getTrialHijoRadioItem2(){
+    if(trialHijoRadioItem2==null){
+
+      trialHijoRadioItem2 = new ACRadioButtonItem();
+
+      trialHijoRadioItem2.setText("あり");
+
+      trialHijoRadioItem2.setGroup(getTrialHijoRadio());
+
+      trialHijoRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addTrialHijoRadioItem2();
+    }
+    return trialHijoRadioItem2;
+
+  }
+
+  /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACClearableRadioButtonGroup getMedicalFacilityHospitalCalculationDivisionRadio(){
+    if(medicalFacilityHospitalCalculationDivisionRadio==null){
+
+      medicalFacilityHospitalCalculationDivisionRadio = new ACClearableRadioButtonGroup();
+
+      getMedicalFacilityHospitalCalculationDivisionRadioContainer().setText("算定区分");
+
+      medicalFacilityHospitalCalculationDivisionRadio.setBindPath("9");
+
+      medicalFacilityHospitalCalculationDivisionRadio.setUseClearButton(false);
+
+      medicalFacilityHospitalCalculationDivisionRadio.setModel(getMedicalFacilityHospitalCalculationDivisionRadioModel());
+
+      addMedicalFacilityHospitalCalculationDivisionRadio();
+    }
+    return medicalFacilityHospitalCalculationDivisionRadio;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getMedicalFacilityHospitalCalculationDivisionRadioContainer(){
+    if(medicalFacilityHospitalCalculationDivisionRadioContainer==null){
+      medicalFacilityHospitalCalculationDivisionRadioContainer = new ACLabelContainer();
+      medicalFacilityHospitalCalculationDivisionRadioContainer.setFollowChildEnabled(true);
+      medicalFacilityHospitalCalculationDivisionRadioContainer.setVAlignment(VRLayout.CENTER);
+      medicalFacilityHospitalCalculationDivisionRadioContainer.add(getMedicalFacilityHospitalCalculationDivisionRadio(), null);
+    }
+    return medicalFacilityHospitalCalculationDivisionRadioContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getMedicalFacilityHospitalCalculationDivisionRadioModel(){
+    if(medicalFacilityHospitalCalculationDivisionRadioModel==null){
+      medicalFacilityHospitalCalculationDivisionRadioModel = new ACListModelAdapter();
+      addMedicalFacilityHospitalCalculationDivisionRadioModel();
+    }
+    return medicalFacilityHospitalCalculationDivisionRadioModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getMedicalFacilityHospitalCalculationDivisionRadioItem1(){
+    if(medicalFacilityHospitalCalculationDivisionRadioItem1==null){
+
+      medicalFacilityHospitalCalculationDivisionRadioItem1 = new ACRadioButtonItem();
+
+      medicalFacilityHospitalCalculationDivisionRadioItem1.setText("通常");
+
+      medicalFacilityHospitalCalculationDivisionRadioItem1.setGroup(getMedicalFacilityHospitalCalculationDivisionRadio());
+
+      medicalFacilityHospitalCalculationDivisionRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addMedicalFacilityHospitalCalculationDivisionRadioItem1();
+    }
+    return medicalFacilityHospitalCalculationDivisionRadioItem1;
+
+  }
+
+  /**
+   * 加算のみを取得します。
+   * @return 加算のみ
+   */
+  public ACRadioButtonItem getMedicalFacilityHospitalCalculationDivisionRadioItem2(){
+    if(medicalFacilityHospitalCalculationDivisionRadioItem2==null){
+
+      medicalFacilityHospitalCalculationDivisionRadioItem2 = new ACRadioButtonItem();
+
+      medicalFacilityHospitalCalculationDivisionRadioItem2.setText("加算のみ");
+
+      medicalFacilityHospitalCalculationDivisionRadioItem2.setGroup(getMedicalFacilityHospitalCalculationDivisionRadio());
+
+      medicalFacilityHospitalCalculationDivisionRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addMedicalFacilityHospitalCalculationDivisionRadioItem2();
+    }
+    return medicalFacilityHospitalCalculationDivisionRadioItem2;
 
   }
 
@@ -2590,10 +2816,16 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalInstitutionDivisionRadioModel(){
 
     getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalInstitutionDivisionRadioModel().add(getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem1());
 
     getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalInstitutionDivisionRadioModel().add(getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem2());
+
+    getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem3().setButtonIndex(3);
+
+    getMedicalFacilityHospitalInstitutionDivisionRadioModel().add(getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem3());
 
   }
 
@@ -2612,6 +2844,13 @@ public class QS001120Design extends QS001ServicePanel {
   }
 
   /**
+   * 経過型に内部項目を追加します。
+   */
+  protected void addMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem3(){
+
+  }
+
+  /**
    * 人員配置区分に内部項目を追加します。
    */
   protected void addMedicalFacilityHospitalHospitalDivision(){
@@ -2624,12 +2863,15 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalHospitalDivisionModel(){
 
     getMedicalFacilityHospitalDivision1().setButtonIndex(1);
+
     getMedicalFacilityHospitalHospitalDivisionModel().add(getMedicalFacilityHospitalDivision1());
 
     getMedicalFacilityHospitalDivision2().setButtonIndex(2);
+
     getMedicalFacilityHospitalHospitalDivisionModel().add(getMedicalFacilityHospitalDivision2());
 
     getMedicalFacilityHospitalDivision3().setButtonIndex(3);
+
     getMedicalFacilityHospitalHospitalDivisionModel().add(getMedicalFacilityHospitalDivision3());
 
   }
@@ -2679,9 +2921,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalHospitalRoomRadioModel(){
 
     getMedicalFacilityHospitalHospitalRoomRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalHospitalRoomRadioModel().add(getMedicalFacilityHospitalHospitalRoomRadioItem1());
 
     getMedicalFacilityHospitalHospitalRoomRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalHospitalRoomRadioModel().add(getMedicalFacilityHospitalHospitalRoomRadioItem2());
 
   }
@@ -2713,9 +2957,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalUnitHospitalRoomRadioModel(){
 
     getMedicalFacilityHospitalUnitHospitalRoomRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalUnitHospitalRoomRadioModel().add(getMedicalFacilityHospitalUnitHospitalRoomRadioItem1());
 
     getMedicalFacilityHospitalUnitHospitalRoomRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalUnitHospitalRoomRadioModel().add(getMedicalFacilityHospitalUnitHospitalRoomRadioItem2());
 
   }
@@ -2747,18 +2993,23 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalNightShiftSubtractionRadioModel(){
 
     getMedicalFacilityHospitalNightShiftSubtractionRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalNightShiftSubtractionRadioModel().add(getMedicalFacilityHospitalNightShiftSubtractionRadioItem1());
 
     getMedicalFacilityHospitalNightShiftSubtractionRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalNightShiftSubtractionRadioModel().add(getMedicalFacilityHospitalNightShiftSubtractionRadioItem2());
 
     getMedicalFacilityHospitalNightShiftSubtractionRadioItem3().setButtonIndex(3);
+
     getMedicalFacilityHospitalNightShiftSubtractionRadioModel().add(getMedicalFacilityHospitalNightShiftSubtractionRadioItem3());
 
     getMedicalFacilityHospitalNightShiftSubtractionRadioItem4().setButtonIndex(4);
+
     getMedicalFacilityHospitalNightShiftSubtractionRadioModel().add(getMedicalFacilityHospitalNightShiftSubtractionRadioItem4());
 
     getMedicalFacilityHospitalNightShiftSubtractionRadioItem5().setButtonIndex(5);
+
     getMedicalFacilityHospitalNightShiftSubtractionRadioModel().add(getMedicalFacilityHospitalNightShiftSubtractionRadioItem5());
 
   }
@@ -2811,15 +3062,19 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalEnvironmentalRadioModel(){
 
     getMedicalFacilityHospitalEnvironmentalRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalEnvironmentalRadioModel().add(getMedicalFacilityHospitalEnvironmentalRadioItem1());
 
     getMedicalFacilityHospitalEnvironmentalRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalEnvironmentalRadioModel().add(getMedicalFacilityHospitalEnvironmentalRadioItem2());
 
     getMedicalFacilityHospitalEnvironmentalRadioItem3().setButtonIndex(3);
+
     getMedicalFacilityHospitalEnvironmentalRadioModel().add(getMedicalFacilityHospitalEnvironmentalRadioItem3());
 
     getMedicalFacilityHospitalEnvironmentalRadioItem4().setButtonIndex(4);
+
     getMedicalFacilityHospitalEnvironmentalRadioModel().add(getMedicalFacilityHospitalEnvironmentalRadioItem4());
 
   }
@@ -2865,9 +3120,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalDoctorArrangeStandardRadioModel(){
 
     getMedicalFacilityHospitalDoctorArrangeStandardRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalDoctorArrangeStandardRadioModel().add(getMedicalFacilityHospitalDoctorArrangeStandardRadioItem1());
 
     getMedicalFacilityHospitalDoctorArrangeStandardRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalDoctorArrangeStandardRadioModel().add(getMedicalFacilityHospitalDoctorArrangeStandardRadioItem2());
 
   }
@@ -2899,9 +3156,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalStayRadioModel(){
 
     getMedicalFacilityHospitalStayRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalStayRadioModel().add(getMedicalFacilityHospitalStayRadioItem1());
 
     getMedicalFacilityHospitalStayRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalStayRadioModel().add(getMedicalFacilityHospitalStayRadioItem2());
 
   }
@@ -2956,9 +3215,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalStandardRadioModel(){
 
     getMedicalFacilityHospitalStandardRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalStandardRadioModel().add(getMedicalFacilityHospitalStandardRadioItem1());
 
     getMedicalFacilityHospitalStandardRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalStandardRadioModel().add(getMedicalFacilityHospitalStandardRadioItem2());
 
   }
@@ -2990,9 +3251,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalMedicalExaminationRadioModel(){
 
     getMedicalFacilityHospitalMedicalExaminationRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalMedicalExaminationRadioModel().add(getMedicalFacilityHospitalMedicalExaminationRadioItem1());
 
     getMedicalFacilityHospitalMedicalExaminationRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalMedicalExaminationRadioModel().add(getMedicalFacilityHospitalMedicalExaminationRadioItem2());
 
   }
@@ -3024,12 +3287,15 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalNutritionManageRadioModel(){
 
     getMedicalFacilityHospitalNutritionManageRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalNutritionManageRadioModel().add(getMedicalFacilityHospitalNutritionManageRadioItem1());
 
     getMedicalFacilityHospitalNutritionManageRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalNutritionManageRadioModel().add(getMedicalFacilityHospitalNutritionManageRadioItem2());
 
     getMedicalFacilityHospitalNutritionManageRadioItem3().setButtonIndex(3);
+
     getMedicalFacilityHospitalNutritionManageRadioModel().add(getMedicalFacilityHospitalNutritionManageRadioItem3());
 
   }
@@ -3068,9 +3334,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalNutritionRadioModel(){
 
     getMedicalFacilityHospitalNutritionRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalNutritionRadioModel().add(getMedicalFacilityHospitalNutritionRadioItem1());
 
     getMedicalFacilityHospitalNutritionRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalNutritionRadioModel().add(getMedicalFacilityHospitalNutritionRadioItem2());
 
   }
@@ -3102,9 +3370,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalOralSwitchRadioModel(){
 
     getMedicalFacilityHospitalOralSwitchRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalOralSwitchRadioModel().add(getMedicalFacilityHospitalOralSwitchRadioItem1());
 
     getMedicalFacilityHospitalOralSwitchRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalOralSwitchRadioModel().add(getMedicalFacilityHospitalOralSwitchRadioItem2());
 
   }
@@ -3136,12 +3406,15 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addOralMaintenanceRadioModel(){
 
     getOralMaintenanceRadioItem1().setButtonIndex(1);
+
     getOralMaintenanceRadioModel().add(getOralMaintenanceRadioItem1());
 
     getOralMaintenanceRadioItem2().setButtonIndex(2);
+
     getOralMaintenanceRadioModel().add(getOralMaintenanceRadioItem2());
 
     getOralMaintenanceRadioItem3().setButtonIndex(3);
+
     getOralMaintenanceRadioModel().add(getOralMaintenanceRadioItem3());
 
   }
@@ -3180,9 +3453,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addMedicalFacilityHospitalRecuperateDinnerRadioModel(){
 
     getMedicalFacilityHospitalRecuperateDinnerRadioItem1().setButtonIndex(1);
+
     getMedicalFacilityHospitalRecuperateDinnerRadioModel().add(getMedicalFacilityHospitalRecuperateDinnerRadioItem1());
 
     getMedicalFacilityHospitalRecuperateDinnerRadioItem2().setButtonIndex(2);
+
     getMedicalFacilityHospitalRecuperateDinnerRadioModel().add(getMedicalFacilityHospitalRecuperateDinnerRadioItem2());
 
   }
@@ -3272,6 +3547,10 @@ public class QS001120Design extends QS001ServicePanel {
 
     tab3.add(getStayReturnSupportAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab3.add(getTrialHijoRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab3.add(getMedicalFacilityHospitalCalculationDivisionRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
   }
 
   /**
@@ -3347,9 +3626,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addUnitCareMaintenanceRadioModel(){
 
     getUnitCareMaintenanceRadioItem1().setButtonIndex(1);
+
     getUnitCareMaintenanceRadioModel().add(getUnitCareMaintenanceRadioItem1());
 
     getUnitCareMaintenanceRadioItem2().setButtonIndex(2);
+
     getUnitCareMaintenanceRadioModel().add(getUnitCareMaintenanceRadioItem2());
 
   }
@@ -3381,9 +3662,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addBodyRestraintAbolitionRadioModel(){
 
     getBodyRestraintAbolitionRadioItem1().setButtonIndex(1);
+
     getBodyRestraintAbolitionRadioModel().add(getBodyRestraintAbolitionRadioItem1());
 
     getBodyRestraintAbolitionRadioItem2().setButtonIndex(2);
+
     getBodyRestraintAbolitionRadioModel().add(getBodyRestraintAbolitionRadioItem2());
 
   }
@@ -3415,9 +3698,11 @@ public class QS001120Design extends QS001ServicePanel {
   protected void addStayReturnSupportAddRadioModel(){
 
     getStayReturnSupportAddRadioItem1().setButtonIndex(1);
+
     getStayReturnSupportAddRadioModel().add(getStayReturnSupportAddRadioItem1());
 
     getStayReturnSupportAddRadioItem2().setButtonIndex(2);
+
     getStayReturnSupportAddRadioModel().add(getStayReturnSupportAddRadioItem2());
 
   }
@@ -3433,6 +3718,78 @@ public class QS001120Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addStayReturnSupportAddRadioItem2(){
+
+  }
+
+  /**
+   * 試行的退院サービス費に内部項目を追加します。
+   */
+  protected void addTrialHijoRadio(){
+
+  }
+
+  /**
+   * 試行的退院サービス費モデルに内部項目を追加します。
+   */
+  protected void addTrialHijoRadioModel(){
+
+    getTrialHijoRadioItem1().setButtonIndex(1);
+
+    getTrialHijoRadioModel().add(getTrialHijoRadioItem1());
+
+    getTrialHijoRadioItem2().setButtonIndex(2);
+
+    getTrialHijoRadioModel().add(getTrialHijoRadioItem2());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addTrialHijoRadioItem1(){
+
+  }
+
+  /**
+   * ありに内部項目を追加します。
+   */
+  protected void addTrialHijoRadioItem2(){
+
+  }
+
+  /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addMedicalFacilityHospitalCalculationDivisionRadio(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addMedicalFacilityHospitalCalculationDivisionRadioModel(){
+
+    getMedicalFacilityHospitalCalculationDivisionRadioItem1().setButtonIndex(1);
+
+    getMedicalFacilityHospitalCalculationDivisionRadioModel().add(getMedicalFacilityHospitalCalculationDivisionRadioItem1());
+
+    getMedicalFacilityHospitalCalculationDivisionRadioItem2().setButtonIndex(2);
+
+    getMedicalFacilityHospitalCalculationDivisionRadioModel().add(getMedicalFacilityHospitalCalculationDivisionRadioItem2());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addMedicalFacilityHospitalCalculationDivisionRadioItem1(){
+
+  }
+
+  /**
+   * 加算のみに内部項目を追加します。
+   */
+  protected void addMedicalFacilityHospitalCalculationDivisionRadioItem2(){
 
   }
 
@@ -3458,7 +3815,6 @@ public class QS001120Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QS001120Design.class.getName()));
     } catch (Exception e) {

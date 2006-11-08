@@ -78,7 +78,6 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * ‹‘î‰îŒìx‰‡‰æ–Ê€–ÚƒfƒUƒCƒ“(QO004117) 

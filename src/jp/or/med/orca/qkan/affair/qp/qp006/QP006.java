@@ -47,6 +47,7 @@ import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -99,6 +100,10 @@ public class QP006 extends QP006Event {
 			setTargetDate(ACCastUtilities.toDate(parameters.getData("TARGET_DATE")));
 		}
 
+		if (VRBindPathParser.has("CLAIM_DATE", parameters)) {
+			setClaimDate(ACCastUtilities.toDate(parameters.getData("CLAIM_DATE")));
+		}
+
 		if (VRBindPathParser.has("PROVIDER_ID", parameters)) {
 			setProviderId(ACCastUtilities.toString(parameters.getData("PROVIDER_ID")));
 		}
@@ -109,6 +114,10 @@ public class QP006 extends QP006Event {
 
 		if (VRBindPathParser.has("LIST_INDEX", parameters)) {
 			setListIndex(ACCastUtilities.toInt(parameters.getData("LIST_INDEX")));
+		}
+
+		if (VRBindPathParser.has("INSURER_ID", parameters)) {
+			setInsurerID(ACCastUtilities.toString(VRBindPathParser.get("INSURER_ID", parameters)));
 		}
 
 		// パッシブチェックキーをセットする
@@ -138,6 +147,23 @@ public class QP006 extends QP006Event {
 		// スナップショットを撮影する。
 		getSnapshot().snapshot();
 
+        
+        String osName = System.getProperty("os.name");
+        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+            //Macの場合、行数等を調整して画面内に収める
+            getOfferInfoText().setRows(3);
+            getSpecialEtcText().setRows(3);
+            getVisitCareDetailedTotalMoneyStanderdEtcText().setColumns(52);
+            getVisitCareDetailedTotalMoneyStanderdEtcText().setMaxRows(5);
+            getVisitCareDetailedTotalMoneyStanderdEtcText().setRows(6);
+            
+            getVisitCareDetailedExpenseMoneyText1().setColumns(6);
+            getVisitCareDetailedExpenseMoneyText2().setColumns(6);
+            getVisitCareDetailedExpenseMoneyText3().setColumns(6);
+            getVisitCareDetailedOneshareText().setColumns(6);
+            getVisitCareDetailedOneshareTex2().setColumns(6);
+            getVisitCareDetailedOneshareTex3().setColumns(6);
+        }
 	}
 
 	public boolean canBack(VRMap parameters) throws Exception {
@@ -912,27 +938,12 @@ public class QP006 extends QP006Event {
 	 */
 	protected void visitCareDetailedMoneyText29InsertFocusLost(FocusEvent e) throws Exception {
 		// visitCareDetailedDayText7に値が入力されている場合
-		if (ACTextUtilities.isNullText(getVisitCareDetailedDayText7().getText())) {
-			// visitCareDetailedMoneyText29に値が入力されている場合
-			if (ACTextUtilities.isNullText(getVisitCareDetailedMoneyText29().getText())) {
-				// 以下の計算を行う。
-				// （初日の金額） + （2日目以降の金額） × （日数） = （合計金額）
-				// 算出した合計金額をvisitCareDetailedMoneyText30に表示する。
-				// visitCareDetailedMoneyText29に値が入力されていない場合
-				multiPlication(getVisitCareDetailedMoneyText29(), getVisitCareDetailedMoneyText29Insert(), getVisitCareDetailedDayText7(), getVisitCareDetailedMoneyText30());
-			} else {
-				// 以下の計算を行う。
-				// （2日目以降の金額） × （日数） = （2日目以降の合計金額）
-				// 2日目以降の合計金額をvisitCareDetailedMoneyText30に表示する。
-				multiPlication(getVisitCareDetailedMoneyText29Insert(), getVisitCareDetailedDayText7(), getVisitCareDetailedMoneyText30());
-			}
-		} else {
-			// visitCareDetailedDayText7に値が入力されていない場合
-			// visitCareDetailedMoneyText29に値が入力されている場合
-			if (ACTextUtilities.isNullText(getVisitCareDetailedMoneyText29().getText())) {
-				// visitCareDetailedMoneyText29に入力されている値をvisitCareDetailedMoneyText30に表示する。
-				getVisitCareDetailedMoneyText30().setText(ACCastUtilities.toString(getVisitCareDetailedMoneyText29().getText()));
-			}
+		if (!ACTextUtilities.isNullText(getVisitCareDetailedDayText7().getText())) {
+			// 以下の計算を行う。
+			// （初日の金額） + （2日目以降の金額） × （日数） = （合計金額）
+			// 算出した合計金額をvisitCareDetailedMoneyText30に表示する。
+			// visitCareDetailedMoneyText29に値が入力されていない場合
+			multiPlication(getVisitCareDetailedMoneyText29(), getVisitCareDetailedMoneyText29Insert(), getVisitCareDetailedDayText7(), getVisitCareDetailedMoneyText30());
 		}
 	}
 
@@ -1448,11 +1459,11 @@ public class QP006 extends QP006Event {
 		// AND (TARGET_DATE = this.targetDate)
 		// AND (PROVIDER_ID = this.providerId)
 		// AND (CLAIM_STYLE_TYPE = this.claimStyleType)
-		String whereString = "(PATIENT_ID = " + String.valueOf(getPatientId()) + ") AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') AND (PROVIDER_ID = '" + String.valueOf(getProviderId()) + "') AND (CLAIM_STYLE_TYPE = " + String.valueOf(getClaimStyleType()) + ")";
+		String whereString = "(PATIENT_ID = " + String.valueOf(getPatientId()) + ") AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') AND (PROVIDER_ID = '" + String.valueOf(getProviderId()) + "') AND (CLAIM_STYLE_TYPE = " + String.valueOf(getClaimStyleType()) + ")" + " AND (INSURER_ID = '" + getInsurerID() + "')";
 
 		// 請求データを取得し、this.claimListに格納する。
 		// getClaimDetailCustom(String(WHERE句));
-		VRList claimDetailCustomList = QkanCommon.getClaimDetailCustom(getDBManager(), whereString);
+		VRList claimDetailCustomList = QkanCommon.getClaimDetailCustom(getDBManager(), getClaimDate(), whereString);
 		if (!(claimDetailCustomList == null)) {
 			setClaimList(claimDetailCustomList);
 
@@ -1792,7 +1803,7 @@ public class QP006 extends QP006Event {
 			}
 		}
 
-		// 1-高齢９ 2-高齢８
+		// 1-高齢９ 2-高齢８ 3-高齢７
 		if (!ACTextUtilities.isNullText(getWindowMap().getData("1301015"))) {
 			type = ACCastUtilities.toInt(getWindowMap().getData("1301015"), 0);
 			switch (type) {
@@ -1803,6 +1814,10 @@ public class QP006 extends QP006Event {
 				case 2:
 					getWindowMap().setData("INS_TYPE5", "高齢８");
 					break;
+
+                case 3:
+                    getWindowMap().setData("INS_TYPE5", "高齢７");
+                    break;
 
 				default:
 					break;
@@ -1882,7 +1897,7 @@ public class QP006 extends QP006Event {
 				// String(WHERE句));
 				// QkanCommon.updateClaimDetailCustom()
 
-				QkanCommon.updateClaimDetailCustom(getDBManager(), getClaimList(), whereString);
+				QkanCommon.updateClaimDetailCustom(getDBManager(), getClaimList(), getTargetDate(), whereString);
 
 				// 更新に成功した場合
 				// DB処理をコミットする。
@@ -2129,33 +2144,38 @@ public class QP006 extends QP006Event {
 		// 以下の日付が入力されている場合、未来の日付が入力されていないかチェックする。
 		// ・指示期間開始（visitCareDetailedInstructDateText1）
 		// ※エラーの場合、String：msgParamを宣言し、"指示期間開始日に"を代入する。
-		if (checkFutureDate(getVisitCareDetailedInstructDateText1(), "指示期間開始日に")) {
-			return false;
-		}
+		// 未来日のチェックを廃止6月8日
+		// if (checkFutureDate(getVisitCareDetailedInstructDateText1(), "指示期間開始日に")) {
+		// return false;
+		// }
 
 		// ・特別指示期間開始（visitCareDetailedSpecialInstructDateText1）
 		// ※エラーの場合、String：msgParamを宣言し、"特別指示期間開始日に"を代入する。
-		if (checkFutureDate(getVisitCareDetailedSpecialInstructDateText1(), "特別指示期間開始日に")) {
-			return false;
-		}
+		// 未来日のチェックを廃止6月8日
+		// if (checkFutureDate(getVisitCareDetailedSpecialInstructDateText1(), "特別指示期間開始日に")) {
+		// return false;
+		// }
 
 		// ・訪問開始年月日（visitStart）
 		// ※エラーの場合、String：msgParamを宣言し、"訪問開始年月日に"を代入する。
-		if (checkFutureDate(getVisitStart(), "訪問開始年月日に")) {
-			return false;
-		}
+		// 未来日のチェックを廃止6月8日
+		// if (checkFutureDate(getVisitStart(), "訪問開始年月日に")) {
+		// return false;
+		// }
 
 		// ・死亡年月日（dieDate）
 		// ※エラーの場合、String：msgParamを宣言し、"死亡年月日に"を代入する。
-		if (checkFutureDate(getDieDate(), "死亡年月日に")) {
-			return false;
-		}
+		// 未来日のチェックを廃止6月8日
+		// if (checkFutureDate(getDieDate(), "死亡年月日に")) {
+		// return false;
+		// }
 
 		// ・主治医への直近報告年月日（mainDoctorInfoDate）
 		// ※エラーの場合、String：msgParamを宣言し、"主治医への直近報告年月日に"を代入する。
-		if (checkFutureDate(getMainDoctorInfoDate(), "主治医への直近報告年月日に")) {
-			return false;
-		}
+		// 未来日のチェックを廃止6月8日
+		// if (checkFutureDate(getMainDoctorInfoDate(), "主治医への直近報告年月日に")) {
+		// return false;
+		// }
 
 		// 以下の日付が入力されている場合、開始と終了の前後関係をチェックする。
 		// ・指示期間開始（visitCareDetailedInstructDateText1）～指示期間終了（visitCareDetailedInstructDateText2）
@@ -2219,14 +2239,22 @@ public class QP006 extends QP006Event {
 	 *             処理例外
 	 */
 	public void multiPlication(ACTextField first, ACTextField second, ACTextField third, ACTextField output) throws Exception {
+		long total = 0;
 		if (!(ACTextUtilities.isNullText(first.getText()))) {
 			if (!(ACTextUtilities.isNullText(second.getText()))) {
 				if (!(ACTextUtilities.isNullText(third.getText()))) {
-					long total = ACCastUtilities.toLong(second.getText()) * ACCastUtilities.toLong(third.getText()) + ACCastUtilities.toLong(first.getText());
-					output.setText(ACCastUtilities.toString(total));
+					total = ACCastUtilities.toLong(second.getText()) * ACCastUtilities.toLong(third.getText()) + ACCastUtilities.toLong(first.getText());
+				}
+			}
+		} else {
+			// FirstがNULLもしくは空文字の場合はsecond+thirdのみを演算して返却する
+			if (!(ACTextUtilities.isNullText(second.getText()))) {
+				if (!(ACTextUtilities.isNullText(third.getText()))) {
+					total = ACCastUtilities.toLong(second.getText()) * ACCastUtilities.toLong(third.getText());
 				}
 			}
 		}
+		output.setText(ACCastUtilities.toString(total));
 	}
 
 	/**
@@ -2382,4 +2410,64 @@ public class QP006 extends QP006Event {
 		}
 		return false;
 	}
+    
+      protected void addVisitCareDetailedReductionContena() {
+        String osName = System.getProperty("os.name");
+        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+            //Macの場合、段組を調整して画面内に収める
+            getVisitCareDetailedReductionContena().add(
+                    getVisitCareDetailedReductionContainer(),
+                    VRLayout.FLOW_RETURN);
+
+            getVisitCareDetailedReductionContena().add(
+                    getVisitCareDetailedReductionRadioContainer(),
+                    VRLayout.FLOW);
+
+            getVisitCareDetailedReductionContena().add(
+                    getVisitCareDetailedStateRadioContainer(), VRLayout.FLOW);
+        } else {
+            super.addVisitCareDetailedReductionContena();
+        }
+
+    }
+      protected void addVisitCareDetailedContentLeftCenter1() {
+        String osName = System.getProperty("os.name");
+        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+            //Macの場合、段組を調整して画面内に収める
+
+            getVisitCareDetailedContentLeftCenter1().add(
+                    getVisitCareDetailedNameContainer(), VRLayout.FLOW_RETURN);
+
+            getVisitCareDetailedContentLeftCenter1().add(
+                    getVisitCareDetailedSexContenaContainer(),
+                    VRLayout.FLOW_INSETLINE);
+
+            getVisitCareDetailedContentLeftCenter1().add(
+                    getVisitCareDetailedBirthContainer(),
+                    VRLayout.FLOW_INSETLINE_RETURN);
+
+            getVisitCareDetailedContentLeftCenter1().add(
+                    getVisitCareDetailedOfficialReasonContainer(),
+                    VRLayout.FLOW_INSETLINE_RETURN);
+        } else {
+            super.addVisitCareDetailedContentLeftCenter1();
+        }
+
+    }
+      
+//      protected void addRealityDate() {
+//        String osName = System.getProperty("os.name");
+//        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+//            getRealityDate()
+//                    .add(getInsuranceContena(), VRLayout.FLOW_INSETLINE);
+//
+//            getRealityDate().add(getPublicExpenseContena(),
+//                    VRLayout.FLOW_INSETLINE_RETURN);
+//
+//            getRealityDate().add(getPublicExpense2Contena(),
+//                    VRLayout.FLOW_INSETLINE_RETURN);
+//        } else {
+//            super.addRealityDate();
+//        }
+//    }
 }

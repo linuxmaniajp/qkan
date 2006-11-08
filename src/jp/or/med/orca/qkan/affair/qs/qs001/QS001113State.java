@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/04/11  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/07/04  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -389,6 +389,24 @@ public class QS001113State extends QS001113Design {
         getShortStayDementiaRecuperationSickroomDivisionRadio().getParent().setVisible(false);
 
         getShortStayDementiaRecuperationHospitalRoomDivisionContena().setVisible(true);
+
+  }
+
+  /**
+   * 「経過型」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_PASSAGE_FORM() throws Exception {
+
+        getShortStayDementiaRecuperationHospitalRoomRadio().setEnabled(true);
+
+        getShortStayDementiaRecuperationUnitHospitalRoomRadio().setEnabled(false);
+
+        getShortStayDementiaRecuperationHospitalDivisionRadio().setEnabled(false);
+
+        getShortStayDementiaRecuperationDivision().setEnabled(false);
+
+        getShortStayDementiaRecuperationUnitCareMaintenanceRadio().setEnabled(false);
 
   }
 

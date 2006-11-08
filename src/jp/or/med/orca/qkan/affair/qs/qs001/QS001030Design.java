@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/03/14  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/06/05  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -86,8 +87,6 @@ public class QS001030Design extends QkanAffairDialog {
 
   private ACPanel contents;
 
-  private ACGroupBox inLimitAmount;
-
   private ACPanel inLimitAmountInfomation;
 
   private ACLabel inLimitAmountLimitCaption;
@@ -95,6 +94,20 @@ public class QS001030Design extends QkanAffairDialog {
   private ACTextField inLimitAmountLimit;
 
   private ACLabel inLimitAmountLimitUnit;
+
+  private ACLabel inLimitAmountValueCaption;
+
+  private ACTextField inLimitAmountValue;
+
+  private ACLabel inLimitAmountValueUnit;
+
+  private ACLabel aboutCalcCaption;
+
+  private ACTextField aboutCalc;
+
+  private ACLabel aboutCalcUnit;
+
+  private ACGroupBox inLimitAmount;
 
   private ACTable detailsTable;
 
@@ -109,6 +122,14 @@ public class QS001030Design extends QkanAffairDialog {
   private ACTableColumn detailsTableColumn4;
 
   private ACTableColumn detailsTableColumn5;
+
+  private ACPanel outLimitAmountInfomation;
+
+  private ACLabel homeMedicalAdviceCaption;
+
+  private ACTextField homeMedicalAdvice;
+
+  private ACLabel homeMedicalAdviceUnit;
 
   private ACGroupBox outerServices;
 
@@ -156,23 +177,6 @@ public class QS001030Design extends QkanAffairDialog {
   }
 
   /**
-   * 給付管理対象テーブル領域を取得します。
-   * @return 給付管理対象テーブル領域
-   */
-  public ACGroupBox getInLimitAmount(){
-    if(inLimitAmount==null){
-
-      inLimitAmount = new ACGroupBox();
-
-      inLimitAmount.setText("給付管理対象サービス");
-
-      addInLimitAmount();
-    }
-    return inLimitAmount;
-
-  }
-
-  /**
    * 給付管理対象情報を取得します。
    * @return 給付管理対象情報
    */
@@ -180,6 +184,10 @@ public class QS001030Design extends QkanAffairDialog {
     if(inLimitAmountInfomation==null){
 
       inLimitAmountInfomation = new ACPanel();
+
+      inLimitAmountInfomation.setAutoWrap(false);
+
+      inLimitAmountInfomation.setHgap(2);
 
       addInLimitAmountInfomation();
     }
@@ -196,7 +204,7 @@ public class QS001030Design extends QkanAffairDialog {
 
       inLimitAmountLimitCaption = new ACLabel();
 
-      inLimitAmountLimitCaption.setText("支給限度額");
+      inLimitAmountLimitCaption.setText("　支給限度額");
 
       addInLimitAmountLimitCaption();
     }
@@ -241,6 +249,133 @@ public class QS001030Design extends QkanAffairDialog {
       addInLimitAmountLimitUnit();
     }
     return inLimitAmountLimitUnit;
+
+  }
+
+  /**
+   * 限度内単位数キャプションを取得します。
+   * @return 限度内単位数キャプション
+   */
+  public ACLabel getInLimitAmountValueCaption(){
+    if(inLimitAmountValueCaption==null){
+
+      inLimitAmountValueCaption = new ACLabel();
+
+      inLimitAmountValueCaption.setText("　　限度内単位数");
+
+      addInLimitAmountValueCaption();
+    }
+    return inLimitAmountValueCaption;
+
+  }
+
+  /**
+   * 限度内単位数を取得します。
+   * @return 限度内単位数
+   */
+  public ACTextField getInLimitAmountValue(){
+    if(inLimitAmountValue==null){
+
+      inLimitAmountValue = new ACTextField();
+
+      inLimitAmountValue.setEditable(false);
+
+      inLimitAmountValue.setColumns(5);
+
+      inLimitAmountValue.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addInLimitAmountValue();
+    }
+    return inLimitAmountValue;
+
+  }
+
+  /**
+   * 限度内単位数単位を取得します。
+   * @return 限度内単位数単位
+   */
+  public ACLabel getInLimitAmountValueUnit(){
+    if(inLimitAmountValueUnit==null){
+
+      inLimitAmountValueUnit = new ACLabel();
+
+      inLimitAmountValueUnit.setText("単位");
+
+      addInLimitAmountValueUnit();
+    }
+    return inLimitAmountValueUnit;
+
+  }
+
+  /**
+   * 負担額概算キャプションを取得します。
+   * @return 負担額概算キャプション
+   */
+  public ACLabel getAboutCalcCaption(){
+    if(aboutCalcCaption==null){
+
+      aboutCalcCaption = new ACLabel();
+
+      aboutCalcCaption.setText("　　負担額概算");
+
+      addAboutCalcCaption();
+    }
+    return aboutCalcCaption;
+
+  }
+
+  /**
+   * 負担額概算を取得します。
+   * @return 負担額概算
+   */
+  public ACTextField getAboutCalc(){
+    if(aboutCalc==null){
+
+      aboutCalc = new ACTextField();
+
+      aboutCalc.setEditable(false);
+
+      aboutCalc.setColumns(7);
+
+      aboutCalc.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addAboutCalc();
+    }
+    return aboutCalc;
+
+  }
+
+  /**
+   * 負担額概算単位を取得します。
+   * @return 負担額概算単位
+   */
+  public ACLabel getAboutCalcUnit(){
+    if(aboutCalcUnit==null){
+
+      aboutCalcUnit = new ACLabel();
+
+      aboutCalcUnit.setText("円");
+
+      addAboutCalcUnit();
+    }
+    return aboutCalcUnit;
+
+  }
+
+  /**
+   * 給付管理対象テーブル領域を取得します。
+   * @return 給付管理対象テーブル領域
+   */
+  public ACGroupBox getInLimitAmount(){
+    if(inLimitAmount==null){
+
+      inLimitAmount = new ACGroupBox();
+
+      inLimitAmount.setText("給付管理対象サービス");
+
+      addInLimitAmount();
+    }
+    return inLimitAmount;
 
   }
 
@@ -311,9 +446,9 @@ public class QS001030Design extends QkanAffairDialog {
 
       detailsTableColumn2.setColumnName("SYSTEM_SERVICE_KIND_DETAIL");
 
-      detailsTableColumn2.setColumns(20);
+      detailsTableColumn2.setColumns(28);
 
-      detailsTableColumn2.setFormat(QkanServiceFormat.getInstance());
+      detailsTableColumn2.setFormat(QkanServiceAbbreviationFormat.getInstance());
 
       addDetailsTableColumn2();
     }
@@ -368,15 +503,15 @@ public class QS001030Design extends QkanAffairDialog {
   }
 
   /**
-   * 限度額内単位を取得します。
-   * @return 限度額内単位
+   * 調整後単位を取得します。
+   * @return 調整後単位
    */
   public ACTableColumn getDetailsTableColumn5(){
     if(detailsTableColumn5==null){
 
       detailsTableColumn5 = new ACTableColumn();
 
-      detailsTableColumn5.setHeaderValue("限度額内単位");
+      detailsTableColumn5.setHeaderValue("調整後単位");
 
       detailsTableColumn5.setColumnName("RESULT");
 
@@ -387,6 +522,76 @@ public class QS001030Design extends QkanAffairDialog {
       addDetailsTableColumn5();
     }
     return detailsTableColumn5;
+
+  }
+
+  /**
+   * 給付管理対象外情報を取得します。
+   * @return 給付管理対象外情報
+   */
+  public ACPanel getOutLimitAmountInfomation(){
+    if(outLimitAmountInfomation==null){
+
+      outLimitAmountInfomation = new ACPanel();
+
+      addOutLimitAmountInfomation();
+    }
+    return outLimitAmountInfomation;
+
+  }
+
+  /**
+   * 給付管理対象外サービス単位数キャプションを取得します。
+   * @return 給付管理対象外サービス単位数キャプション
+   */
+  public ACLabel getHomeMedicalAdviceCaption(){
+    if(homeMedicalAdviceCaption==null){
+
+      homeMedicalAdviceCaption = new ACLabel();
+
+      homeMedicalAdviceCaption.setText("給付管理対象外サービス");
+
+      addHomeMedicalAdviceCaption();
+    }
+    return homeMedicalAdviceCaption;
+
+  }
+
+  /**
+   * 給付管理対象外サービス単位数を取得します。
+   * @return 給付管理対象外サービス単位数
+   */
+  public ACTextField getHomeMedicalAdvice(){
+    if(homeMedicalAdvice==null){
+
+      homeMedicalAdvice = new ACTextField();
+
+      homeMedicalAdvice.setEditable(false);
+
+      homeMedicalAdvice.setColumns(6);
+
+      homeMedicalAdvice.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addHomeMedicalAdvice();
+    }
+    return homeMedicalAdvice;
+
+  }
+
+  /**
+   * 給付管理対象外サービス単位数単位を取得します。
+   * @return 給付管理対象外サービス単位数単位
+   */
+  public ACLabel getHomeMedicalAdviceUnit(){
+    if(homeMedicalAdviceUnit==null){
+
+      homeMedicalAdviceUnit = new ACLabel();
+
+      homeMedicalAdviceUnit.setText("単位");
+
+      addHomeMedicalAdviceUnit();
+    }
+    return homeMedicalAdviceUnit;
 
   }
 
@@ -548,9 +753,9 @@ public class QS001030Design extends QkanAffairDialog {
 
       outerTableColumn2.setColumnName("SYSTEM_SERVICE_KIND_DETAIL");
 
-      outerTableColumn2.setColumns(20);
+      outerTableColumn2.setColumns(28);
 
-      outerTableColumn2.setFormat(QkanServiceFormat.getInstance());
+      outerTableColumn2.setFormat(QkanServiceAbbreviationFormat.getInstance());
 
       addOuterTableColumn2();
     }
@@ -605,15 +810,15 @@ public class QS001030Design extends QkanAffairDialog {
   }
 
   /**
-   * 上限内単位を取得します。
-   * @return 上限内単位
+   * 調整後単位を取得します。
+   * @return 調整後単位
    */
   public ACTableColumn getOuterTableColumn5(){
     if(outerTableColumn5==null){
 
       outerTableColumn5 = new ACTableColumn();
 
-      outerTableColumn5.setHeaderValue("限度額内単位");
+      outerTableColumn5.setHeaderValue("調整後単位");
 
       outerTableColumn5.setColumnName("RESULT");
 
@@ -673,10 +878,15 @@ public class QS001030Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(520, 360);
+      setSize(600, 420);
 
       // ウィンドウを中央に配置
-      Point pos = ACFrame.getInstance().getLocationOnScreen();
+      Point pos;
+      try{
+          pos= ACFrame.getInstance().getLocationOnScreen();
+      }catch(Exception ex){
+          pos = new Point(0,0);
+      }
       Dimension screenSize = ACFrame.getInstance().getSize();
       Dimension frameSize = this.getSize();
       if (frameSize.height > screenSize.height) {
@@ -714,21 +924,13 @@ public class QS001030Design extends QkanAffairDialog {
    */
   protected void addContents(){
 
+    contents.add(getInLimitAmountInfomation(), VRLayout.NORTH);
+
     contents.add(getInLimitAmount(), VRLayout.CLIENT);
 
     contents.add(getButtons(), VRLayout.SOUTH);
     contents.add(getOuterServices(), VRLayout.SOUTH);
-  }
-
-  /**
-   * 給付管理対象テーブル領域に内部項目を追加します。
-   */
-  protected void addInLimitAmount(){
-
-    inLimitAmount.add(getInLimitAmountInfomation(), VRLayout.NORTH);
-
-    inLimitAmount.add(getDetailsTable(), VRLayout.CLIENT);
-
+    contents.add(getOutLimitAmountInfomation(), VRLayout.SOUTH);
   }
 
   /**
@@ -741,6 +943,18 @@ public class QS001030Design extends QkanAffairDialog {
     inLimitAmountInfomation.add(getInLimitAmountLimit(), VRLayout.FLOW);
 
     inLimitAmountInfomation.add(getInLimitAmountLimitUnit(), VRLayout.FLOW);
+
+    inLimitAmountInfomation.add(getInLimitAmountValueCaption(), VRLayout.FLOW);
+
+    inLimitAmountInfomation.add(getInLimitAmountValue(), VRLayout.FLOW);
+
+    inLimitAmountInfomation.add(getInLimitAmountValueUnit(), VRLayout.FLOW);
+
+    inLimitAmountInfomation.add(getAboutCalcCaption(), VRLayout.FLOW);
+
+    inLimitAmountInfomation.add(getAboutCalc(), VRLayout.FLOW);
+
+    inLimitAmountInfomation.add(getAboutCalcUnit(), VRLayout.FLOW);
 
   }
 
@@ -762,6 +976,57 @@ public class QS001030Design extends QkanAffairDialog {
    * 給付管理対象支給限度額単位に内部項目を追加します。
    */
   protected void addInLimitAmountLimitUnit(){
+
+  }
+
+  /**
+   * 限度内単位数キャプションに内部項目を追加します。
+   */
+  protected void addInLimitAmountValueCaption(){
+
+  }
+
+  /**
+   * 限度内単位数に内部項目を追加します。
+   */
+  protected void addInLimitAmountValue(){
+
+  }
+
+  /**
+   * 限度内単位数単位に内部項目を追加します。
+   */
+  protected void addInLimitAmountValueUnit(){
+
+  }
+
+  /**
+   * 負担額概算キャプションに内部項目を追加します。
+   */
+  protected void addAboutCalcCaption(){
+
+  }
+
+  /**
+   * 負担額概算に内部項目を追加します。
+   */
+  protected void addAboutCalc(){
+
+  }
+
+  /**
+   * 負担額概算単位に内部項目を追加します。
+   */
+  protected void addAboutCalcUnit(){
+
+  }
+
+  /**
+   * 給付管理対象テーブル領域に内部項目を追加します。
+   */
+  protected void addInLimitAmount(){
+
+    inLimitAmount.add(getDetailsTable(), VRLayout.CLIENT);
 
   }
 
@@ -818,9 +1083,43 @@ public class QS001030Design extends QkanAffairDialog {
   }
 
   /**
-   * 限度額内単位に内部項目を追加します。
+   * 調整後単位に内部項目を追加します。
    */
   protected void addDetailsTableColumn5(){
+
+  }
+
+  /**
+   * 給付管理対象外情報に内部項目を追加します。
+   */
+  protected void addOutLimitAmountInfomation(){
+
+    outLimitAmountInfomation.add(getHomeMedicalAdviceCaption(), VRLayout.FLOW);
+
+    outLimitAmountInfomation.add(getHomeMedicalAdvice(), VRLayout.FLOW);
+
+    outLimitAmountInfomation.add(getHomeMedicalAdviceUnit(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 給付管理対象外サービス単位数キャプションに内部項目を追加します。
+   */
+  protected void addHomeMedicalAdviceCaption(){
+
+  }
+
+  /**
+   * 給付管理対象外サービス単位数に内部項目を追加します。
+   */
+  protected void addHomeMedicalAdvice(){
+
+  }
+
+  /**
+   * 給付管理対象外サービス単位数単位に内部項目を追加します。
+   */
+  protected void addHomeMedicalAdviceUnit(){
 
   }
 
@@ -922,7 +1221,7 @@ public class QS001030Design extends QkanAffairDialog {
   }
 
   /**
-   * 上限内単位に内部項目を追加します。
+   * 調整後単位に内部項目を追加します。
    */
   protected void addOuterTableColumn5(){
 

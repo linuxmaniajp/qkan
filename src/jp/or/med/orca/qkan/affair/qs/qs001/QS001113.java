@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -98,47 +97,55 @@ public class QS001113 extends QS001113Event {
    * @throws Exception 処理例外
    */
   protected void shortStayDementiaRecuperationInstitutionDivisionRadioActionPerformed(
-          ActionEvent e) throws Exception {
-      // ※「施設区分」選択時の「病室区分」の状態切替
-      // 「施設区分」の値をチェックする。
-      switch (getShortStayDementiaRecuperationInstitutionDivisionRadio()
-              .getSelectedIndex()) {
-      case 1:
-          //「認知症疾患型」の場合
-          setState_CONVENTIONAL_FORM();
-          //人員減算が設定済みだった場合
-          if(getStaffAssignmentFlag()){
-             setState_INVALID_STAFF_ASSIGNMENT(); 
-          }
-          //日帰りショート専用ラジオグループのVisible制御 //20060411
-          setState_SHORT_STAY_UNSELECT();
-          break;
-      case 2:
-          // ｢ユニット型認知症疾患型｣の場合
-          setState_UNIT_FORM();
-          //ユニットケア体制が無しだった場合
-          if(!getUnitCareFlag()){
-              setState_INVALID_UNIT_CARE();
-          }
-          //日帰りショート専用ラジオグループのVisible制御 //20060411
-          setState_SHORT_STAY_UNSELECT();
-          break;
-      case 3:
-          //｢日帰りショートステイ｣
-          setState_SELECT_SHORT_STAY();
-          //日帰りショート専用ラジオグループのVisible制御 //20060411
-          setState_SHORT_STAY_SELECT();
-          break;
-      }
-      changeState();
+			ActionEvent e) throws Exception {
+		// ※「施設区分」選択時の「病室区分」の状態切替
+		// 「施設区分」の値をチェックする。
+		switch (getShortStayDementiaRecuperationInstitutionDivisionRadio()
+				.getSelectedIndex()) {
+		case 1:
+			// 「認知症疾患型」の場合
+			setState_CONVENTIONAL_FORM();
+			// 人員減算が設定済みだった場合
+			if (getStaffAssignmentFlag()) {
+				setState_INVALID_STAFF_ASSIGNMENT();
+			}
+			// 日帰りショート専用ラジオグループのVisible制御 //20060411
+			setState_SHORT_STAY_UNSELECT();
+			break;
+		case 2:
+			// ｢ユニット型認知症疾患型｣の場合
+			setState_UNIT_FORM();
+			// ユニットケア体制が無しだった場合
+			if (!getUnitCareFlag()) {
+				setState_INVALID_UNIT_CARE();
+			}
+			// 日帰りショート専用ラジオグループのVisible制御 //20060411
+			setState_SHORT_STAY_UNSELECT();
+			break;
+		case 3:
+			// ｢日帰りショートステイ｣
+			setState_SELECT_SHORT_STAY();
+			// 日帰りショート専用ラジオグループのVisible制御 //20060411
+			setState_SHORT_STAY_SELECT();
+			break;
+		case 4:
+			// 「経過型」の場合
+			setState_PASSAGE_FORM();
+			// 日帰りショート専用ラジオグループのVisible制御 //20060411
+			setState_SHORT_STAY_UNSELECT();
+			break;
+		}
+		changeState();
   }
   
   /**
-   * 「特定診療費の設定」イベントです。
-   * 
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
+	 * 「特定診療費の設定」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
   protected void shortStayDementiaRecuperationSpecificConsultationFeeActionPerformed(
           ActionEvent e) throws Exception {
       // ※特定診療費の編集
@@ -290,7 +297,13 @@ public class QS001113 extends QS001113Event {
             // 施設区分
             obj = VRBindPathParser.get("1230301", provider);
             if (obj != null) {
-                defaultMap.setData("1230301", obj);
+            	if(ACCastUtilities.toInt(obj) == 3){
+            		// 「経過型」の場合
+            		defaultMap.setData("1230301", new Integer(4));
+            	}else{
+            		// 「経過型」以外の場合
+            		defaultMap.setData("1230301", obj);
+            	}
             }
             // 人員配置区分
             obj = VRBindPathParser.get("1230302", provider);

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/03/21  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/07/11  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -222,6 +223,22 @@ public abstract class QS001120Event extends QS001120State implements QS001Servic
             }
         }
     });
+    getTrialHijoRadio().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                trialHijoRadioSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -282,28 +299,19 @@ public abstract class QS001120Event extends QS001120State implements QS001Servic
    */
   protected abstract void medicalFacilityHospitalStayRadioSelectionChanged(ListSelectionEvent e) throws Exception;
 
+  /**
+   * 「試行的退院サービス費の有無」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void trialHijoRadioSelectionChanged(ListSelectionEvent e) throws Exception;
+
   //変数定義
 
-  private VRMap selectedProvider = new VRHashMap();
   public static final int SYSTEM_SERVICE_KIND_DETAIL = 15311;
   private boolean unitCareFlag;
   private boolean personSubstraction;
   //getter/setter
-
-  /**
-   * selectedProviderを返します。
-   * @return selectedProvider
-   */
-  protected VRMap getSelectedProvider(){
-    return selectedProvider;
-  }
-  /**
-   * selectedProviderを設定します。
-   * @param selectedProvider selectedProvider
-   */
-  protected void setSelectedProvider(VRMap selectedProvider){
-    this.selectedProvider = selectedProvider;
-  }
 
   /**
    * unitCareFlagを返します。

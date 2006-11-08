@@ -340,7 +340,7 @@ public class QkanMacCSVImport extends ACAffairContainer implements ACAffairable 
                     try {
                         dbm.beginTransaction();
                         QkanCommon.updateServiceDetailCustom(dbm,
-                                new VRArrayList(), "");
+                                new VRArrayList(), null, "");
                         dbm.commitTransaction();
                     } catch (Exception ex) {
                         VRLogger.info(ex);
@@ -357,7 +357,7 @@ public class QkanMacCSVImport extends ACAffairContainer implements ACAffairable 
                     try {
                         dbm.beginTransaction();
                         QkanCommon.updateClaimDetailCustom(dbm,
-                                new VRArrayList(), "");
+                                new VRArrayList(), null, "");
                         dbm.commitTransaction();
                     } catch (Exception ex) {
                         VRLogger.info(ex);

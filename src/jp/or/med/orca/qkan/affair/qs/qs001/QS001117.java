@@ -119,6 +119,30 @@ public class QS001117 extends QS001117Event {
         // ※設定
         // 食事提供
         VRBindPathParser.set("1230406", defaultMap, new Integer(1));
+        
+        // ※経過的要介護判断        
+        // 予防時対応（要望）2005/05/30
+        // 要介護度チェック用
+        boolean isKeikatekiYokaigo = false;
+        VRList list = (VRList)getCalculater().getPatientInsureInfoHistoryList();
+        // 取得した当月の認定履歴分ループ処理
+        for(int i = 0; i<list.size(); i++){
+            VRMap map = (VRMap)list.getData(i);
+            // 経過的要介護と一致なかった場合
+            if(ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE",map))==11){
+                isKeikatekiYokaigo = true;
+            }else{
+                isKeikatekiYokaigo = false;
+                // 経過的要介護以外があった時点でループ処理を抜ける。
+                break;
+            }
+        }
+        
+        if(isKeikatekiYokaigo){
+            // 経過的要介護を選択状態にする。
+            VRBindPathParser.set("1430103",defaultMap,ACCastUtilities.toInteger(4));
+        }
+        
         // ※展開
         // 自身(this)にdefaultMapに設定する。
         getThis().setSource(defaultMap);

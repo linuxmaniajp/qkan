@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2006/04/16  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2006/10/02  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -148,6 +148,8 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   private ACRadioButtonItem medicalInfoOld9AndOld8RadioItem1;
 
   private ACRadioButtonItem medicalInfoOld9AndOld8RadioItem2;
+
+  private ACRadioButtonItem medicalInfoOld9AndOld8RadioItem3;
 
   private ACLabelContainer medicalInfoInsurerNoContena;
 
@@ -478,7 +480,7 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
 
       patientName.setBindPath("PATIENT_NAME");
 
-      patientName.setColumns(30);
+      patientName.setColumns(35);
 
       addPatientName();
     }
@@ -745,7 +747,7 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
 
       medicalInfoPersonAndFamilyRadio.setBindPath("SELF_FLAG");
 
-      medicalInfoPersonAndFamilyRadio.setUseClearButton(false);
+      medicalInfoPersonAndFamilyRadio.setUseClearButton(true);
 
       medicalInfoPersonAndFamilyRadio.setModel(getMedicalInfoPersonAndFamilyRadioModel());
 
@@ -845,8 +847,8 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8を取得します。
-   * @return 高齢9/高齢8
+   * 高齢割合を取得します。
+   * @return 高齢割合
    */
   public ACClearableRadioButtonGroup getMedicalInfoOld9AndOld8Radio(){
     if(medicalInfoOld9AndOld8Radio==null){
@@ -866,8 +868,8 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8コンテナを取得します。
-   * @return 高齢9/高齢8コンテナ
+   * 高齢割合コンテナを取得します。
+   * @return 高齢割合コンテナ
    */
   protected ACLabelContainer getMedicalInfoOld9AndOld8RadioContainer(){
     if(medicalInfoOld9AndOld8RadioContainer==null){
@@ -880,8 +882,8 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8モデルを取得します。
-   * @return 高齢9/高齢8モデル
+   * 高齢割合モデルを取得します。
+   * @return 高齢割合モデル
    */
   protected ACListModelAdapter getMedicalInfoOld9AndOld8RadioModel(){
     if(medicalInfoOld9AndOld8RadioModel==null){
@@ -930,6 +932,27 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
       addMedicalInfoOld9AndOld8RadioItem2();
     }
     return medicalInfoOld9AndOld8RadioItem2;
+
+  }
+
+  /**
+   * 高齢7を取得します。
+   * @return 高齢7
+   */
+  public ACRadioButtonItem getMedicalInfoOld9AndOld8RadioItem3(){
+    if(medicalInfoOld9AndOld8RadioItem3==null){
+
+      medicalInfoOld9AndOld8RadioItem3 = new ACRadioButtonItem();
+
+      medicalInfoOld9AndOld8RadioItem3.setText("高齢7");
+
+      medicalInfoOld9AndOld8RadioItem3.setGroup(getMedicalInfoOld9AndOld8Radio());
+
+      medicalInfoOld9AndOld8RadioItem3.setConstraints(VRLayout.FLOW);
+
+      addMedicalInfoOld9AndOld8RadioItem3();
+    }
+    return medicalInfoOld9AndOld8RadioItem3;
 
   }
 
@@ -2660,6 +2683,8 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
 
       medicalTreatmentInfoOrgan.setBlankable(true);
 
+      medicalTreatmentInfoOrgan.setMaxColumns(43);
+
       medicalTreatmentInfoOrgan.setModel(getMedicalTreatmentInfoOrganModel());
 
       addMedicalTreatmentInfoOrgan();
@@ -3039,12 +3064,15 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   protected void addMedicalInfoInsuranceVarietyRadio1Model(){
 
     getMedicalInfoInsuranceVarietyRadio1Item1().setButtonIndex(1);
+
     getMedicalInfoInsuranceVarietyRadio1Model().add(getMedicalInfoInsuranceVarietyRadio1Item1());
 
     getMedicalInfoInsuranceVarietyRadio1Item2().setButtonIndex(2);
+
     getMedicalInfoInsuranceVarietyRadio1Model().add(getMedicalInfoInsuranceVarietyRadio1Item2());
 
     getMedicalInfoInsuranceVarietyRadio1Item3().setButtonIndex(3);
+
     getMedicalInfoInsuranceVarietyRadio1Model().add(getMedicalInfoInsuranceVarietyRadio1Item3());
 
   }
@@ -3083,9 +3111,11 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   protected void addMedicalInfoInsuranceVarietyRadio2Model(){
 
     getMedicalInfoInsuranceVarietyRadio2Item1().setButtonIndex(1);
+
     getMedicalInfoInsuranceVarietyRadio2Model().add(getMedicalInfoInsuranceVarietyRadio2Item1());
 
     getMedicalInfoInsuranceVarietyRadio2Item2().setButtonIndex(2);
+
     getMedicalInfoInsuranceVarietyRadio2Model().add(getMedicalInfoInsuranceVarietyRadio2Item2());
 
   }
@@ -3117,12 +3147,15 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   protected void addMedicalInfoPersonAndFamilyRadioModel(){
 
     getMedicalInfoPersonAndFamilyRadioItem1().setButtonIndex(1);
+
     getMedicalInfoPersonAndFamilyRadioModel().add(getMedicalInfoPersonAndFamilyRadioItem1());
 
     getMedicalInfoPersonAndFamilyRadioItem2().setButtonIndex(2);
+
     getMedicalInfoPersonAndFamilyRadioModel().add(getMedicalInfoPersonAndFamilyRadioItem2());
 
     getMedicalInfoPersonAndFamilyRadioItem3().setButtonIndex(3);
+
     getMedicalInfoPersonAndFamilyRadioModel().add(getMedicalInfoPersonAndFamilyRadioItem3());
 
   }
@@ -3149,22 +3182,28 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8に内部項目を追加します。
+   * 高齢割合に内部項目を追加します。
    */
   protected void addMedicalInfoOld9AndOld8Radio(){
 
   }
 
   /**
-   * 高齢9/高齢8モデルに内部項目を追加します。
+   * 高齢割合モデルに内部項目を追加します。
    */
   protected void addMedicalInfoOld9AndOld8RadioModel(){
 
     getMedicalInfoOld9AndOld8RadioItem1().setButtonIndex(1);
+
     getMedicalInfoOld9AndOld8RadioModel().add(getMedicalInfoOld9AndOld8RadioItem1());
 
     getMedicalInfoOld9AndOld8RadioItem2().setButtonIndex(2);
+
     getMedicalInfoOld9AndOld8RadioModel().add(getMedicalInfoOld9AndOld8RadioItem2());
+
+    getMedicalInfoOld9AndOld8RadioItem3().setButtonIndex(3);
+
+    getMedicalInfoOld9AndOld8RadioModel().add(getMedicalInfoOld9AndOld8RadioItem3());
 
   }
 
@@ -3179,6 +3218,13 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
    * 高齢8に内部項目を追加します。
    */
   protected void addMedicalInfoOld9AndOld8RadioItem2(){
+
+  }
+
+  /**
+   * 高齢7に内部項目を追加します。
+   */
+  protected void addMedicalInfoOld9AndOld8RadioItem3(){
 
   }
 
@@ -3573,9 +3619,11 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   protected void addCallNurseInsuranceRadioModel(){
 
     getCallNurseInsuranceRadioItem1().setButtonIndex(1);
+
     getCallNurseInsuranceRadioModel().add(getCallNurseInsuranceRadioItem1());
 
     getCallNurseInsuranceRadioItem2().setButtonIndex(2);
+
     getCallNurseInsuranceRadioModel().add(getCallNurseInsuranceRadioItem2());
 
   }
@@ -3614,12 +3662,15 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   protected void addCallNurseOfficialRadioModel(){
 
     getCallNurseOfficialRadioItem1().setButtonIndex(1);
+
     getCallNurseOfficialRadioModel().add(getCallNurseOfficialRadioItem1());
 
     getCallNurseOfficialRadioItem2().setButtonIndex(2);
+
     getCallNurseOfficialRadioModel().add(getCallNurseOfficialRadioItem2());
 
     getCallNurseOfficialRadioItem3().setButtonIndex(3);
+
     getCallNurseOfficialRadioModel().add(getCallNurseOfficialRadioItem3());
 
   }
@@ -3665,9 +3716,11 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   protected void addCallNurseAddParticularRadioModel(){
 
     getCallNurseAddParticularRadioItem1().setButtonIndex(1);
+
     getCallNurseAddParticularRadioModel().add(getCallNurseAddParticularRadioItem1());
 
     getCallNurseAddParticularRadioItem2().setButtonIndex(2);
+
     getCallNurseAddParticularRadioModel().add(getCallNurseAddParticularRadioItem2());
 
   }
@@ -3943,7 +3996,6 @@ public class QU003Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QU003Design.class.getName()));
     } catch (Exception e) {

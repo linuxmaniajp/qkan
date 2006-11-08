@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -183,6 +182,15 @@ public class QS001118 extends QS001118Event {
 		// ※設定
         // 食事提供
         VRBindPathParser.set("1510121",defaultMap,new Integer(1));
+        
+        // 2006/05/15 予防対応(要望）
+        // 旧措置入所者チェックの値を設定
+        if(isOldFacilityUser()){
+            VRBindPathParser.set("8",defaultMap,new Integer(2));
+        } else {
+            VRBindPathParser.set("8",defaultMap,new Integer(1));
+        }
+        
 		// ※展開
 		// 自身(this)にdefaultMapに設定する。
 		getThis().setSource(defaultMap);

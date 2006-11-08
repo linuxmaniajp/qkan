@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -117,9 +116,13 @@ public class QS001120 extends QS001120Event {
                 setState_INVALID_UNIT_CARE();
             }
             break;
+        case 3:
+        	// 「経過型」の場合
+        	setState_PASSAGE_FORM();
+        	break;
         }
         //人員配置区分を制御する
-        changeStaffDivisionState();
+        changeStaffDivisionState();	
         
     }
 
@@ -576,7 +579,7 @@ public class QS001120 extends QS001120Event {
                 setState_INVALID_SUBTRACTION();
             }
             
-        }else {
+        }else if(getMedicalFacilityHospitalHospitalInstitutionDivisionRadioItem2().isSelected()) {
             //ユニット型が選択されていた場合
             setState_UNIT_FORM();
             if(!getUnitCareFlag()){
@@ -618,35 +621,86 @@ public class QS001120 extends QS001120Event {
     /**
      * 他科受信の有無
      */
-    protected void medicalFacilityHospitalMedicalExaminationRadioSelectionChanged(ListSelectionEvent e) throws Exception {
-        //ありだった場合
-       if(getMedicalFacilityHospitalMedicalExaminationRadioItem2().isSelected()){
-           //外泊を無効にする
-           setState_INVALID_GAIHAKU();
-           //外泊のなしを選択状態にする
-           getMedicalFacilityHospitalStayRadioItem1().setSelected(true);
-       }else{
-           //外泊を有効にする
-           setState_VALID_GAIHAKU();
-       }
-        
-        
-    }
+    protected void medicalFacilityHospitalMedicalExaminationRadioSelectionChanged(
+			ListSelectionEvent e) throws Exception {
+		// ありだった場合
+		int facilityDivision = getMedicalFacilityHospitalInstitutionDivisionRadio()
+				.getSelectedIndex();
+
+		if (getMedicalFacilityHospitalMedicalExaminationRadioItem2()
+				.isSelected()) {
+			// 外泊を無効にする
+			setState_INVALID_GAIHAKU();
+			// 外泊のなしを選択状態にする
+			getMedicalFacilityHospitalStayRadioItem1().setSelected(true);
+			// 試行的退院サービス費を無効にする。
+			setState_INVALID_TRIAL_HIJO();
+			// 試行的退院サービス費のなしを選択状態にする。
+			getTrialHijoRadioItem1().setSelected(true);
+		} else {
+			// 外泊を有効にする
+			setState_VALID_GAIHAKU();
+			if (facilityDivision == 3) {
+				// 経過型の場合のみ
+				// 試行的退院サービス費を有効にする。
+				setState_VALID_TRIAL_HIJO();
+			}
+		}
+
+	}
 
     /**
-     * 外泊加算の有無
-     */
+	 * 外泊加算の有無
+	 */
     protected void medicalFacilityHospitalStayRadioSelectionChanged(ListSelectionEvent e) throws Exception {
         //ありだった場合
+    	int facilityDivision = getMedicalFacilityHospitalInstitutionDivisionRadio().getSelectedIndex();
+    	
         if(getMedicalFacilityHospitalStayRadioItem2().isSelected()){
             //他科受信を無効にする
             setState_INVALID_TAKAJYUSIN();
             //他科受信のなしを選択状態にする
             getMedicalFacilityHospitalMedicalExaminationRadioItem1().setSelected(true);
+            // 試行的退院サービス費を無効にする。
+            setState_INVALID_TRIAL_HIJO();
+            // 試行的退院サービス費のなしを選択状態にする。
+            getTrialHijoRadioItem1().setSelected(true);
         }else{
             //他科受信を有効にする
             setState_VALID_TAKAJYUSIN();
+            if(facilityDivision == 3){
+            	// 経過型の場合のみ
+	            //試行的退院サービス費を有効にする。
+	            setState_VALID_TRIAL_HIJO();
+            }
         }
         
     }
+
+    /**
+     * 「試行的退院サービス費の有無」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void trialHijoRadioSelectionChanged(ListSelectionEvent e) throws Exception{
+
+        //ありだった場合
+        if(getTrialHijoRadioItem2().isSelected()){
+            //他科受信を無効にする
+            setState_INVALID_TAKAJYUSIN();
+            //他科受信のなしを選択状態にする
+            getMedicalFacilityHospitalMedicalExaminationRadioItem1().setSelected(true);
+            //外泊を無効にする
+            setState_INVALID_GAIHAKU();
+            //外泊のなしを選択状態にする
+            getMedicalFacilityHospitalStayRadioItem1().setSelected(true);
+        }else{
+            //他科受信を有効にする
+            setState_VALID_TAKAJYUSIN();
+            //外泊を有効にする
+            setState_VALID_GAIHAKU();
+        }
+        
+    }
+
 }

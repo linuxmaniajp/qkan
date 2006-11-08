@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -131,6 +130,12 @@ public class QS001111 extends QS001111Event {
             //日帰りショート専用ラジオグループのVisible制御 //20060411
             setState_SHORT_STAY_SELECT();
             break;
+        case 4:
+        	// 「経過型」の場合
+        	setState_PASSAGE_FORM();
+            //日帰りショート専用ラジオグループのVisible制御 //20060411
+            setState_SHORT_STAY_UNSELECT();
+        	break;
         }
 
     }
@@ -219,7 +224,13 @@ public class QS001111 extends QS001111Event {
             // 施設区分
             obj = VRBindPathParser.get("1230101", provider);
             if (obj != null) {
-                defaultMap.setData("1230101", obj);
+            	if(ACCastUtilities.toInt(obj) == 3){
+            		// 経過型の場合
+            		defaultMap.setData("1230101", new Integer(4));
+            	}else{
+            		// 経過型以外の場合
+            		defaultMap.setData("1230101", obj);
+            	}
             }
             // 人員配置区分
             obj = VRBindPathParser.get("1230102", provider);

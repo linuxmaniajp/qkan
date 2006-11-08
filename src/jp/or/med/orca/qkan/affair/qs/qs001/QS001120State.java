@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/03/21  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2006/07/11  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -181,6 +182,8 @@ public class QS001120State extends QS001120Design {
 
         getMedicalFacilityHospitalHospitalDivision().setEnabled(true);
 
+        getTrialHijoRadio().setEnabled(false);
+
   }
 
   /**
@@ -196,6 +199,8 @@ public class QS001120State extends QS001120Design {
         getUnitCareMaintenanceRadio().setEnabled(true);
 
         getMedicalFacilityHospitalHospitalDivision().setEnabled(false);
+
+        getTrialHijoRadio().setEnabled(false);
 
   }
 
@@ -324,6 +329,44 @@ public class QS001120State extends QS001120Design {
   public void setState_INVALID_GAIHAKU() throws Exception {
 
         getMedicalFacilityHospitalStayRadio().setEnabled(false);
+
+  }
+
+  /**
+   * 「経過型」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_PASSAGE_FORM() throws Exception {
+
+        getMedicalFacilityHospitalHospitalRoomRadio().setEnabled(true);
+
+        getMedicalFacilityHospitalUnitHospitalRoomRadio().setEnabled(false);
+
+        getUnitCareMaintenanceRadio().setEnabled(false);
+
+        getMedicalFacilityHospitalHospitalDivision().setEnabled(false);
+
+        getTrialHijoRadio().setEnabled(true);
+
+  }
+
+  /**
+   * 「試行的退院・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_TRIAL_HIJO() throws Exception {
+
+        getTrialHijoRadio().setEnabled(true);
+
+  }
+
+  /**
+   * 「試行的退院・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_TRIAL_HIJO() throws Exception {
+
+        getTrialHijoRadio().setEnabled(false);
 
   }
 

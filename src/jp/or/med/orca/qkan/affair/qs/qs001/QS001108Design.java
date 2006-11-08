@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/19  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/08/28  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -210,6 +211,16 @@ public class QS001108Design extends QS001ServicePanel {
 
   private ACRadioButtonItem houmonRehabilitationSubtractionLack;
 
+  private ACClearableRadioButtonGroup calculationDivision;
+
+  private ACLabelContainer calculationDivisionContainer;
+
+  private ACListModelAdapter calculationDivisionModel;
+
+  private ACRadioButtonItem calculationDivisionNormal;
+
+  private ACRadioButtonItem calculationDivisionAddOnly;
+
   //getter
 
   /**
@@ -272,9 +283,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationTimeContenaFacilityDivision.setBindPath("1160103");
 
-      houmonRehabilitationTimeContenaFacilityDivision.setModel(getHoumonRehabilitationTimeContenaFacilityDivisionModel());
-
       houmonRehabilitationTimeContenaFacilityDivision.setUseClearButton(false);
+
+      houmonRehabilitationTimeContenaFacilityDivision.setModel(getHoumonRehabilitationTimeContenaFacilityDivisionModel());
 
       addHoumonRehabilitationTimeContenaFacilityDivision();
     }
@@ -397,9 +408,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationTimeDivision.setModelBindPath("1160104");
 
-      houmonRehabilitationTimeDivision.setModel(getHoumonRehabilitationTimeDivisionModel());
-
       houmonRehabilitationTimeDivision.setRenderBindPath("CONTENT");
+
+      houmonRehabilitationTimeDivision.setModel(getHoumonRehabilitationTimeDivisionModel());
 
       addHoumonRehabilitationTimeDivision();
     }
@@ -446,9 +457,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationBathRadio.setBindPath("1160105");
 
-      houmonRehabilitationBathRadio.setModel(getHoumonRehabilitationBathRadioModel());
-
       houmonRehabilitationBathRadio.setUseClearButton(false);
+
+      houmonRehabilitationBathRadio.setModel(getHoumonRehabilitationBathRadioModel());
 
       addHoumonRehabilitationBathRadio();
     }
@@ -537,9 +548,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationAdditionTreatmentPersonRadio.setBindPath("1160107");
 
-      houmonRehabilitationAdditionTreatmentPersonRadio.setModel(getHoumonRehabilitationAdditionTreatmentPersonRadioModel());
-
       houmonRehabilitationAdditionTreatmentPersonRadio.setUseClearButton(false);
+
+      houmonRehabilitationAdditionTreatmentPersonRadio.setModel(getHoumonRehabilitationAdditionTreatmentPersonRadioModel());
 
       addHoumonRehabilitationAdditionTreatmentPersonRadio();
     }
@@ -628,9 +639,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationManagementAddRadio.setBindPath("1160111");
 
-      houmonRehabilitationManagementAddRadio.setModel(getHoumonRehabilitationManagementAddRadioModel());
-
       houmonRehabilitationManagementAddRadio.setUseClearButton(false);
+
+      houmonRehabilitationManagementAddRadio.setModel(getHoumonRehabilitationManagementAddRadioModel());
 
       addHoumonRehabilitationManagementAddRadio();
     }
@@ -719,9 +730,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationShortConcentrationAddRadio.setBindPath("1160112");
 
-      houmonRehabilitationShortConcentrationAddRadio.setModel(getHoumonRehabilitationShortConcentrationAddRadioModel());
-
       houmonRehabilitationShortConcentrationAddRadio.setUseClearButton(false);
+
+      houmonRehabilitationShortConcentrationAddRadio.setModel(getHoumonRehabilitationShortConcentrationAddRadioModel());
 
       addHoumonRehabilitationShortConcentrationAddRadio();
     }
@@ -869,9 +880,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationTimeContenaBeginTime.setModelBindPath("3");
 
-      houmonRehabilitationTimeContenaBeginTime.setModel(getHoumonRehabilitationTimeContenaBeginTimeModel());
-
       houmonRehabilitationTimeContenaBeginTime.setRenderBindPath("CONTENT");
+
+      houmonRehabilitationTimeContenaBeginTime.setModel(getHoumonRehabilitationTimeContenaBeginTimeModel());
 
       addHoumonRehabilitationTimeContenaBeginTime();
     }
@@ -920,9 +931,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationTimeContenaEndTime.setModelBindPath("4");
 
-      houmonRehabilitationTimeContenaEndTime.setModel(getHoumonRehabilitationTimeContenaEndTimeModel());
-
       houmonRehabilitationTimeContenaEndTime.setRenderBindPath("CONTENT");
+
+      houmonRehabilitationTimeContenaEndTime.setModel(getHoumonRehabilitationTimeContenaEndTimeModel());
 
       addHoumonRehabilitationTimeContenaEndTime();
     }
@@ -986,9 +997,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationYouthNinchishoAddRadio.setBindPath("1160113");
 
-      houmonRehabilitationYouthNinchishoAddRadio.setModel(getHoumonRehabilitationYouthNinchishoAddRadioModel());
-
       houmonRehabilitationYouthNinchishoAddRadio.setUseClearButton(false);
+
+      houmonRehabilitationYouthNinchishoAddRadio.setModel(getHoumonRehabilitationYouthNinchishoAddRadioModel());
 
       addHoumonRehabilitationYouthNinchishoAddRadio();
     }
@@ -1077,9 +1088,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationNourishmentManagementAddRadio.setBindPath("1160114");
 
-      houmonRehabilitationNourishmentManagementAddRadio.setModel(getHoumonRehabilitationNourishmentManagementAddRadioModel());
-
       houmonRehabilitationNourishmentManagementAddRadio.setUseClearButton(false);
+
+      houmonRehabilitationNourishmentManagementAddRadio.setModel(getHoumonRehabilitationNourishmentManagementAddRadioModel());
 
       addHoumonRehabilitationNourishmentManagementAddRadio();
     }
@@ -1168,9 +1179,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationMouthFunctionAddRadio.setBindPath("1160115");
 
-      houmonRehabilitationMouthFunctionAddRadio.setModel(getHoumonRehabilitationMouthFunctionAddRadioModel());
-
       houmonRehabilitationMouthFunctionAddRadio.setUseClearButton(false);
+
+      houmonRehabilitationMouthFunctionAddRadio.setModel(getHoumonRehabilitationMouthFunctionAddRadioModel());
 
       addHoumonRehabilitationMouthFunctionAddRadio();
     }
@@ -1259,9 +1270,9 @@ public class QS001108Design extends QS001ServicePanel {
 
       houmonRehabilitationSubtraction.setBindPath("1160109");
 
-      houmonRehabilitationSubtraction.setModel(getHoumonRehabilitationSubtractionModel());
-
       houmonRehabilitationSubtraction.setUseClearButton(false);
+
+      houmonRehabilitationSubtraction.setModel(getHoumonRehabilitationSubtractionModel());
 
       addHoumonRehabilitationSubtraction();
     }
@@ -1359,6 +1370,97 @@ public class QS001108Design extends QS001ServicePanel {
   }
 
   /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACClearableRadioButtonGroup getCalculationDivision(){
+    if(calculationDivision==null){
+
+      calculationDivision = new ACClearableRadioButtonGroup();
+
+      getCalculationDivisionContainer().setText("算定区分");
+
+      calculationDivision.setBindPath("9");
+
+      calculationDivision.setUseClearButton(false);
+
+      calculationDivision.setModel(getCalculationDivisionModel());
+
+      addCalculationDivision();
+    }
+    return calculationDivision;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getCalculationDivisionContainer(){
+    if(calculationDivisionContainer==null){
+      calculationDivisionContainer = new ACLabelContainer();
+      calculationDivisionContainer.setFollowChildEnabled(true);
+      calculationDivisionContainer.setVAlignment(VRLayout.CENTER);
+      calculationDivisionContainer.add(getCalculationDivision(), null);
+    }
+    return calculationDivisionContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getCalculationDivisionModel(){
+    if(calculationDivisionModel==null){
+      calculationDivisionModel = new ACListModelAdapter();
+      addCalculationDivisionModel();
+    }
+    return calculationDivisionModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getCalculationDivisionNormal(){
+    if(calculationDivisionNormal==null){
+
+      calculationDivisionNormal = new ACRadioButtonItem();
+
+      calculationDivisionNormal.setText("通常");
+
+      calculationDivisionNormal.setGroup(getCalculationDivision());
+
+      calculationDivisionNormal.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionNormal();
+    }
+    return calculationDivisionNormal;
+
+  }
+
+  /**
+   * 加算のみを取得します。
+   * @return 加算のみ
+   */
+  public ACRadioButtonItem getCalculationDivisionAddOnly(){
+    if(calculationDivisionAddOnly==null){
+
+      calculationDivisionAddOnly = new ACRadioButtonItem();
+
+      calculationDivisionAddOnly.setText("加算のみ");
+
+      calculationDivisionAddOnly.setGroup(getCalculationDivision());
+
+      calculationDivisionAddOnly.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionAddOnly();
+    }
+    return calculationDivisionAddOnly;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001108Design() {
@@ -1443,12 +1545,15 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationTimeContenaFacilityDivisionModel(){
 
     getHoumonRehabilitationMedicalInstitution().setButtonIndex(1);
+
     getHoumonRehabilitationTimeContenaFacilityDivisionModel().add(getHoumonRehabilitationMedicalInstitution());
 
     getHoumonRehabilitationDouble().setButtonIndex(2);
+
     getHoumonRehabilitationTimeContenaFacilityDivisionModel().add(getHoumonRehabilitationDouble());
 
     getHoumonRehabilitationClinic().setButtonIndex(3);
+
     getHoumonRehabilitationTimeContenaFacilityDivisionModel().add(getHoumonRehabilitationClinic());
 
   }
@@ -1508,9 +1613,11 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationBathRadioModel(){
 
     getHoumonRehabilitationBathRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationBathRadioModel().add(getHoumonRehabilitationBathRadioItem1());
 
     getHoumonRehabilitationBathRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationBathRadioModel().add(getHoumonRehabilitationBathRadioItem2());
 
   }
@@ -1542,9 +1649,11 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationAdditionTreatmentPersonRadioModel(){
 
     getHoumonRehabilitationAdditionTreatmentPersonRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationAdditionTreatmentPersonRadioModel().add(getHoumonRehabilitationAdditionTreatmentPersonRadioItem1());
 
     getHoumonRehabilitationAdditionTreatmentPersonRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationAdditionTreatmentPersonRadioModel().add(getHoumonRehabilitationAdditionTreatmentPersonRadioItem2());
 
   }
@@ -1576,9 +1685,11 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationManagementAddRadioModel(){
 
     getHoumonRehabilitationManagementAddRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationManagementAddRadioModel().add(getHoumonRehabilitationManagementAddRadioItem1());
 
     getHoumonRehabilitationManagementAddRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationManagementAddRadioModel().add(getHoumonRehabilitationManagementAddRadioItem2());
 
   }
@@ -1610,15 +1721,19 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationShortConcentrationAddRadioModel(){
 
     getHoumonRehabilitationShortConcentrationAddRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationShortConcentrationAddRadioModel().add(getHoumonRehabilitationShortConcentrationAddRadioItem1());
 
     getHoumonRehabilitationShortConcentrationAddRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationShortConcentrationAddRadioModel().add(getHoumonRehabilitationShortConcentrationAddRadioItem2());
 
     getHoumonRehabilitationShortConcentrationAddRadioItem3().setButtonIndex(3);
+
     getHoumonRehabilitationShortConcentrationAddRadioModel().add(getHoumonRehabilitationShortConcentrationAddRadioItem3());
 
     getHoumonRehabilitationShortConcentrationAddRadioItem4().setButtonIndex(4);
+
     getHoumonRehabilitationShortConcentrationAddRadioModel().add(getHoumonRehabilitationShortConcentrationAddRadioItem4());
 
   }
@@ -1703,6 +1818,8 @@ public class QS001108Design extends QS001ServicePanel {
 
     tab2.add(getHoumonRehabilitationSubtractionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab2.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
   }
 
   /**
@@ -1718,9 +1835,11 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationYouthNinchishoAddRadioModel(){
 
     getHoumonRehabilitationYouthNinchishoAddRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationYouthNinchishoAddRadioModel().add(getHoumonRehabilitationYouthNinchishoAddRadioItem1());
 
     getHoumonRehabilitationYouthNinchishoAddRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationYouthNinchishoAddRadioModel().add(getHoumonRehabilitationYouthNinchishoAddRadioItem2());
 
   }
@@ -1752,9 +1871,11 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationNourishmentManagementAddRadioModel(){
 
     getHoumonRehabilitationNourishmentManagementAddRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationNourishmentManagementAddRadioModel().add(getHoumonRehabilitationNourishmentManagementAddRadioItem1());
 
     getHoumonRehabilitationNourishmentManagementAddRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationNourishmentManagementAddRadioModel().add(getHoumonRehabilitationNourishmentManagementAddRadioItem2());
 
   }
@@ -1786,9 +1907,11 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationMouthFunctionAddRadioModel(){
 
     getHoumonRehabilitationMouthFunctionAddRadioItem1().setButtonIndex(1);
+
     getHoumonRehabilitationMouthFunctionAddRadioModel().add(getHoumonRehabilitationMouthFunctionAddRadioItem1());
 
     getHoumonRehabilitationMouthFunctionAddRadioItem2().setButtonIndex(2);
+
     getHoumonRehabilitationMouthFunctionAddRadioModel().add(getHoumonRehabilitationMouthFunctionAddRadioItem2());
 
   }
@@ -1820,12 +1943,15 @@ public class QS001108Design extends QS001ServicePanel {
   protected void addHoumonRehabilitationSubtractionModel(){
 
     getHoumonRehabilitationSubtractionNot().setButtonIndex(1);
+
     getHoumonRehabilitationSubtractionModel().add(getHoumonRehabilitationSubtractionNot());
 
     getHoumonRehabilitationSubtractionExcess().setButtonIndex(2);
+
     getHoumonRehabilitationSubtractionModel().add(getHoumonRehabilitationSubtractionExcess());
 
     getHoumonRehabilitationSubtractionLack().setButtonIndex(3);
+
     getHoumonRehabilitationSubtractionModel().add(getHoumonRehabilitationSubtractionLack());
 
   }
@@ -1852,6 +1978,42 @@ public class QS001108Design extends QS001ServicePanel {
   }
 
   /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addCalculationDivision(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addCalculationDivisionModel(){
+
+    getCalculationDivisionNormal().setButtonIndex(1);
+
+    getCalculationDivisionModel().add(getCalculationDivisionNormal());
+
+    getCalculationDivisionAddOnly().setButtonIndex(2);
+
+    getCalculationDivisionModel().add(getCalculationDivisionAddOnly());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addCalculationDivisionNormal(){
+
+  }
+
+  /**
+   * 加算のみに内部項目を追加します。
+   */
+  protected void addCalculationDivisionAddOnly(){
+
+  }
+
+  /**
    * コンポーネントを初期化します。
    * @throws Exception 初期化例外
    */
@@ -1873,7 +2035,6 @@ public class QS001108Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QS001108Design.class.getName()));
     } catch (Exception e) {

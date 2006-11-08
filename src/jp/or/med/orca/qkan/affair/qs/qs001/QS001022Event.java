@@ -104,23 +104,7 @@ public abstract class QS001022Event extends QS001022State implements QS001Servic
 
   //•Ï”’è‹`
 
-  private VRMap selectedProvider = new VRHashMap();
   //getter/setter
-
-  /**
-   * selectedProvider‚ğ•Ô‚µ‚Ü‚·B
-   * @return selectedProvider
-   */
-  protected VRMap getSelectedProvider(){
-    return selectedProvider;
-  }
-  /**
-   * selectedProvider‚ğİ’è‚µ‚Ü‚·B
-   * @param selectedProvider selectedProvider
-   */
-  protected void setSelectedProvider(VRMap selectedProvider){
-    this.selectedProvider = selectedProvider;
-  }
 
   //“à•”ŠÖ”
 

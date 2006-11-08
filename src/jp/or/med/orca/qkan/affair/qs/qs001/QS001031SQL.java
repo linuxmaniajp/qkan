@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: サービス予定
- * 作成日: 2006/03/23  日本コンピューター株式会社 サービス予定 新規作成
+ * 作成日: 2006/05/30  日本コンピューター株式会社 サービス予定 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -107,6 +108,8 @@ public class QS001031SQL extends QS001031State {
     sb.append(" STAFF.PROVIDER_ID");
 
     sb.append(",STAFF.STAFF_ID");
+
+    sb.append(",STAFF.CARE_MANAGER_NO");
 
     sb.append(",STAFF.STAFF_FAMILY_NAME");
 

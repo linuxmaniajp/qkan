@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/03/05  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2006/05/30  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -47,12 +47,12 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
 import jp.nichicom.ac.io.*;
 import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
 import jp.nichicom.ac.pdf.*;
 import jp.nichicom.ac.sql.*;
 import jp.nichicom.ac.text.*;
@@ -78,13 +78,13 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 集計明細画面イベント定義(QS001030) 
  */
-public abstract class QS001030Event extends QS001030Design {
+public abstract class QS001030Event extends QS001030State {
   /**
    * コンストラクタです。
    */
@@ -131,12 +131,24 @@ public abstract class QS001030Event extends QS001030Design {
   /**
    * 「初期設定」に関する処理を行ないます。
    *
-   * @param inLimitAmout QS001ServiceUnitCalcurateResult
-   * @param outerService QS001ServiceUnitCalcurateResult
+   * @param inLimitAmout CareServiceUnitCalcurateResult
    * @param insureInfo VRMap
+   * @param procesType int
+   * @param calcurater, VRList services CareServiceCodeCalcurater
    * @throws Exception 処理例外
    *
    */
-  public abstract void showModal(CareServiceUnitCalcurateResult inLimitAmout, CareServiceUnitCalcurateResult outerService, VRMap insureInfo) throws Exception;
+  public abstract void showModal(CareServiceUnitCalcurateResult inLimitAmout, VRMap insureInfo, int procesType, CareServiceCodeCalcurater calcurater, VRList services) throws Exception;
+
+  /**
+   * 「給付管理対象概算算出」に関する処理を行ないます。
+   *
+   * @param inLimitAmout CareServiceUnitCalcurateResult
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkInLimitAmount(CareServiceCodeCalcurater calcurater,
+          VRList services,CareServiceUnitCalcurateResult inLimitAmout,CareServiceUnitCalcurateResult outLimitAmout) throws Exception;
+
 
 }

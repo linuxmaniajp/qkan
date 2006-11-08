@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/04/11  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/07/03  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -100,6 +100,8 @@ public class QS001113Design extends QS001ServicePanel {
   private ACRadioButtonItem shortStayDementiaRecuperationInstitutionDivisionRadioItem2;
 
   private ACRadioButtonItem shortStayDementiaRecuperationInstitutionDivisionRadioItem3;
+
+  private ACRadioButtonItem shortStayDementiaRecuperationInstitutionDivisionRadioItem4;
 
   private ACClearableRadioButtonGroup shortStayDementiaRecuperationHospitalDivisionRadio;
 
@@ -377,11 +379,32 @@ public class QS001113Design extends QS001ServicePanel {
 
       shortStayDementiaRecuperationInstitutionDivisionRadioItem3.setGroup(getShortStayDementiaRecuperationInstitutionDivisionRadio());
 
-      shortStayDementiaRecuperationInstitutionDivisionRadioItem3.setConstraints(VRLayout.FLOW);
+      shortStayDementiaRecuperationInstitutionDivisionRadioItem3.setConstraints(VRLayout.FLOW_RETURN);
 
       addShortStayDementiaRecuperationInstitutionDivisionRadioItem3();
     }
     return shortStayDementiaRecuperationInstitutionDivisionRadioItem3;
+
+  }
+
+  /**
+   * 経過型を取得します。
+   * @return 経過型
+   */
+  public ACRadioButtonItem getShortStayDementiaRecuperationInstitutionDivisionRadioItem4(){
+    if(shortStayDementiaRecuperationInstitutionDivisionRadioItem4==null){
+
+      shortStayDementiaRecuperationInstitutionDivisionRadioItem4 = new ACRadioButtonItem();
+
+      shortStayDementiaRecuperationInstitutionDivisionRadioItem4.setText("経過型");
+
+      shortStayDementiaRecuperationInstitutionDivisionRadioItem4.setGroup(getShortStayDementiaRecuperationInstitutionDivisionRadio());
+
+      shortStayDementiaRecuperationInstitutionDivisionRadioItem4.setConstraints(VRLayout.FLOW);
+
+      addShortStayDementiaRecuperationInstitutionDivisionRadioItem4();
+    }
+    return shortStayDementiaRecuperationInstitutionDivisionRadioItem4;
 
   }
 
@@ -1746,13 +1769,20 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationInstitutionDivisionRadioModel(){
 
     getShortStayDementiaRecuperationInstitutionDivisionRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationInstitutionDivisionRadioModel().add(getShortStayDementiaRecuperationInstitutionDivisionRadioItem1());
 
     getShortStayDementiaRecuperationInstitutionDivisionRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationInstitutionDivisionRadioModel().add(getShortStayDementiaRecuperationInstitutionDivisionRadioItem2());
 
     getShortStayDementiaRecuperationInstitutionDivisionRadioItem3().setButtonIndex(3);
+
     getShortStayDementiaRecuperationInstitutionDivisionRadioModel().add(getShortStayDementiaRecuperationInstitutionDivisionRadioItem3());
+
+    getShortStayDementiaRecuperationInstitutionDivisionRadioItem4().setButtonIndex(4);
+
+    getShortStayDementiaRecuperationInstitutionDivisionRadioModel().add(getShortStayDementiaRecuperationInstitutionDivisionRadioItem4());
 
   }
 
@@ -1778,6 +1808,13 @@ public class QS001113Design extends QS001ServicePanel {
   }
 
   /**
+   * 経過型に内部項目を追加します。
+   */
+  protected void addShortStayDementiaRecuperationInstitutionDivisionRadioItem4(){
+
+  }
+
+  /**
    * 病院区分に内部項目を追加します。
    */
   protected void addShortStayDementiaRecuperationHospitalDivisionRadio(){
@@ -1790,9 +1827,11 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationHospitalDivisionRadioModel(){
 
     getShortStayDementiaRecuperationHospitalDivisionRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationHospitalDivisionRadioModel().add(getShortStayDementiaRecuperationHospitalDivisionRadioItem1());
 
     getShortStayDementiaRecuperationHospitalDivisionRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationHospitalDivisionRadioModel().add(getShortStayDementiaRecuperationHospitalDivisionRadioItem2());
 
   }
@@ -1824,18 +1863,23 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationDivisionModel(){
 
     getShortStayDementiaRecuperationType1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationDivisionModel().add(getShortStayDementiaRecuperationType1());
 
     getShortStayDementiaRecuperationType2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationDivisionModel().add(getShortStayDementiaRecuperationType2());
 
     getShortStayDementiaRecuperationType3().setButtonIndex(3);
+
     getShortStayDementiaRecuperationDivisionModel().add(getShortStayDementiaRecuperationType3());
 
     getShortStayDementiaRecuperationType4().setButtonIndex(4);
+
     getShortStayDementiaRecuperationDivisionModel().add(getShortStayDementiaRecuperationType4());
 
     getShortStayDementiaRecuperationType5().setButtonIndex(5);
+
     getShortStayDementiaRecuperationDivisionModel().add(getShortStayDementiaRecuperationType5());
 
   }
@@ -1899,9 +1943,11 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationHospitalRoomRadioModel(){
 
     getShortStayDementiaRecuperationHospitalRoomRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationHospitalRoomRadioModel().add(getShortStayDementiaRecuperationHospitalRoomRadioItem1());
 
     getShortStayDementiaRecuperationHospitalRoomRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationHospitalRoomRadioModel().add(getShortStayDementiaRecuperationHospitalRoomRadioItem2());
 
   }
@@ -1933,9 +1979,11 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationUnitHospitalRoomRadioModel(){
 
     getShortStayDementiaRecuperationUnitHospitalRoomRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationUnitHospitalRoomRadioModel().add(getShortStayDementiaRecuperationUnitHospitalRoomRadioItem1());
 
     getShortStayDementiaRecuperationUnitHospitalRoomRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationUnitHospitalRoomRadioModel().add(getShortStayDementiaRecuperationUnitHospitalRoomRadioItem2());
 
   }
@@ -1967,15 +2015,19 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationSickroomDivisionRadioModel(){
 
     getShortStayDementiaRecuperationSickroomDivisionRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationSickroomDivisionRadioModel().add(getShortStayDementiaRecuperationSickroomDivisionRadioItem1());
 
     getShortStayDementiaRecuperationSickroomDivisionRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationSickroomDivisionRadioModel().add(getShortStayDementiaRecuperationSickroomDivisionRadioItem2());
 
     getShortStayDementiaRecuperationSickroomDivisionRadioItem3().setButtonIndex(3);
+
     getShortStayDementiaRecuperationSickroomDivisionRadioModel().add(getShortStayDementiaRecuperationSickroomDivisionRadioItem3());
 
     getShortStayDementiaRecuperationSickroomDivisionRadioItem4().setButtonIndex(4);
+
     getShortStayDementiaRecuperationSickroomDivisionRadioModel().add(getShortStayDementiaRecuperationSickroomDivisionRadioItem4());
 
   }
@@ -2021,12 +2073,15 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationMeetingAndSendingOffModel(){
 
     getShortStayDementiaRecuperationMeetingAndSendingOffNone().setButtonIndex(1);
+
     getShortStayDementiaRecuperationMeetingAndSendingOffModel().add(getShortStayDementiaRecuperationMeetingAndSendingOffNone());
 
     getShortStayDementiaRecuperationMeetingAndSendingOffOneWay().setButtonIndex(2);
+
     getShortStayDementiaRecuperationMeetingAndSendingOffModel().add(getShortStayDementiaRecuperationMeetingAndSendingOffOneWay());
 
     getShortStayDementiaRecuperationMeetingAndSendingOffRoundTrip().setButtonIndex(3);
+
     getShortStayDementiaRecuperationMeetingAndSendingOffModel().add(getShortStayDementiaRecuperationMeetingAndSendingOffRoundTrip());
 
   }
@@ -2065,12 +2120,15 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationDieticianManageRadioModel(){
 
     getShortStayDementiaRecuperationDieticianManageRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationDieticianManageRadioModel().add(getShortStayDementiaRecuperationDieticianManageRadioItem1());
 
     getShortStayDementiaRecuperationDieticianManageRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationDieticianManageRadioModel().add(getShortStayDementiaRecuperationDieticianManageRadioItem2());
 
     getShortStayDementiaRecuperationDieticianManageRadioItem3().setButtonIndex(3);
+
     getShortStayDementiaRecuperationDieticianManageRadioModel().add(getShortStayDementiaRecuperationDieticianManageRadioItem3());
 
   }
@@ -2109,9 +2167,11 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationMedicalExpensesRadioModel(){
 
     getShortStayDementiaRecuperationMedicalExpensesRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationMedicalExpensesRadioModel().add(getShortStayDementiaRecuperationMedicalExpensesRadioItem1());
 
     getShortStayDementiaRecuperationMedicalExpensesRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationMedicalExpensesRadioModel().add(getShortStayDementiaRecuperationMedicalExpensesRadioItem2());
 
   }
@@ -2231,9 +2291,11 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationUnitCareMaintenanceRadioModel(){
 
     getShortStayDementiaRecuperationUnitCareMaintenanceRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationUnitCareMaintenanceRadioModel().add(getShortStayDementiaRecuperationUnitCareMaintenanceRadioItem1());
 
     getShortStayDementiaRecuperationUnitCareMaintenanceRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationUnitCareMaintenanceRadioModel().add(getShortStayDementiaRecuperationUnitCareMaintenanceRadioItem2());
 
   }
@@ -2265,9 +2327,11 @@ public class QS001113Design extends QS001ServicePanel {
   protected void addShortStayDementiaRecuperationEmergencyNetworkAddRadioModel(){
 
     getShortStayDementiaRecuperationEmergencyNetworkAddRadioItem1().setButtonIndex(1);
+
     getShortStayDementiaRecuperationEmergencyNetworkAddRadioModel().add(getShortStayDementiaRecuperationEmergencyNetworkAddRadioItem1());
 
     getShortStayDementiaRecuperationEmergencyNetworkAddRadioItem2().setButtonIndex(2);
+
     getShortStayDementiaRecuperationEmergencyNetworkAddRadioModel().add(getShortStayDementiaRecuperationEmergencyNetworkAddRadioItem2());
 
   }
@@ -2308,7 +2372,6 @@ public class QS001113Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QS001113Design.class.getName()));
     } catch (Exception e) {

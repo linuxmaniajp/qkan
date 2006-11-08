@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -507,13 +506,6 @@ public class QS001115 extends QS001115Event {
               QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
               // nullを返す。
               return null;
-          }
-          //摘要欄が入力されていなかった場合
-          if("".equals(getWelfareTekiyoText().getText())){
-              //内容の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
-              QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-              // nullを返す。
-              return null;              
           }
           
       }
@@ -998,5 +990,19 @@ return true;
         
     }
 
+    protected void addWelfareToolsGroup(){
+        String osName = System.getProperty("os.name");
+        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+            // Macの場合、段組を調整して画面内に収める
+            getWelfareToolsGroup().add(getWelfareToolsComboContainer(),
+                    VRLayout.FLOW);
+            getWelfareToolsGroup().add(getWelfarePointTextContainer(),
+                    VRLayout.FLOW_RETURN);
+            getWelfareToolsGroup().add(getWelfareTekiyoTextContainer(),
+                    VRLayout.FLOW);
+        } else {
+            super.addWelfareToolsGroup();
+        }
+      }
 
 }

@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -197,6 +196,7 @@ public abstract class QO004120Event extends QO004120SQL implements iProviderServ
   public static final int STAFF_LACK_SEIKAN = 4;
   public static final int STAFF_LACK_HEKICHI = 6;
   public static final int FACILITY_TYPE_BYOIN = 1;
+  public static final int FACILITY_TYPE_UNIT = 2;
   public static final String PATH_STAFF_REDUCE = "1530110";
   //getter/setter
 

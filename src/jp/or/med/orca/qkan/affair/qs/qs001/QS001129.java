@@ -78,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -188,6 +187,15 @@ public class QS001129 extends QS001129Event {
         // ※設定
         // 食事提供の「なし」を選択する。
         defaultMap.setData("1540120", new Integer(1));
+        
+        // 2006/05/15 予防対応(要望）
+        // 旧措置入所者チェックの値を設定
+        if(isOldFacilityUser()){
+            VRBindPathParser.set("8",defaultMap,new Integer(2));
+        } else {
+            VRBindPathParser.set("8",defaultMap,new Integer(1));
+        }
+        
         // ※展開
         // 自身(this)にdefaultMapに設定する。
         getThis().setSource(defaultMap);
@@ -221,6 +229,10 @@ public class QS001129 extends QS001129Event {
                 // 経過的地域密着
                 VRBindPathParser.set("1540102", defaultMap, VRBindPathParser.get(
                         "1540102", provider));
+                //旧措置チェックが選択状態だった場合
+                if(getKaigoWelfareFacilityOldMeasuresPerson().isSelected()){
+                    setState_INVALID_PASSAGE_REGION();
+                }
             }
             
             
@@ -704,4 +716,36 @@ public class QS001129 extends QS001129Event {
             setState_INVALID_ORAL_SWITCH();
         }
     }
+
+    /**
+     * 「旧措置入所者チェック」イベントです。
+     */
+    protected void kaigoWelfareFacilityOldMeasuresPersonActionPerformed(ActionEvent e) throws Exception {
+        //旧措置入所者だった場合
+        if(getKaigoWelfareFacilityOldMeasuresPerson().isSelected()){
+        //経過的地域密着型サービスの状態をチェックする。
+            if(getPassageRegionServiceCheck().isEnabled()){
+            //Enableがtrueだった場合
+                //画面の状態を変更する。
+                setState_INVALID_PASSAGE_REGION();
+            }
+        }else{
+            //画面の状態を変更する。
+            setState_VALID_PASSAGE_REGION();
+        }
+    }
+
+    /**
+     * データバインド時の処理
+     */
+    public void binded() throws Exception {
+        //旧措置チェックが選択状態だった場合
+        if(getKaigoWelfareFacilityOldMeasuresPerson().isSelected()){
+            setState_INVALID_PASSAGE_REGION();
+        }else{
+            setState_VALID_PASSAGE_REGION();
+        }
+        
+    }
+        
 }

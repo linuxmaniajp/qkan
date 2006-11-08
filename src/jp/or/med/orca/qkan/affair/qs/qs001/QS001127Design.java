@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/04/13  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/05/04  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -119,13 +119,15 @@ public class QS001127Design extends QS001ServicePanel {
 
   private ACRadioButtonItem medicalCooperationSystemAddRadioItem2;
 
+  private ACIntegerCheckBox shortStayLifeAddition30Orver;
+
   private ACLabel information;
 
   //getter
 
   /**
-   * 認知症対応共同生活介護（短期利用以外）パターン領域を取得します。
-   * @return 認知症対応共同生活介護（短期利用以外）パターン領域
+   * 認知症対応共同生活介護（短期利用）パターン領域を取得します。
+   * @return 認知症対応共同生活介護（短期利用）パターン領域
    */
   public ACPanel getTypeSymbiosisNursingForDementiaPatterns(){
     if(typeSymbiosisNursingForDementiaPatterns==null){
@@ -437,6 +439,29 @@ public class QS001127Design extends QS001ServicePanel {
   }
 
   /**
+   * 30日超を取得します。
+   * @return 30日超
+   */
+  public ACIntegerCheckBox getShortStayLifeAddition30Orver(){
+    if(shortStayLifeAddition30Orver==null){
+
+      shortStayLifeAddition30Orver = new ACIntegerCheckBox();
+
+      shortStayLifeAddition30Orver.setText("30日超");
+
+      shortStayLifeAddition30Orver.setBindPath("5");
+
+      shortStayLifeAddition30Orver.setSelectValue(2);
+
+      shortStayLifeAddition30Orver.setUnSelectValue(1);
+
+      addShortStayLifeAddition30Orver();
+    }
+    return shortStayLifeAddition30Orver;
+
+  }
+
+  /**
    * 補足文を取得します。
    * @return 補足文
    */
@@ -491,7 +516,7 @@ public class QS001127Design extends QS001ServicePanel {
   }
 
   /**
-   * 認知症対応共同生活介護（短期利用以外）パターン領域に内部項目を追加します。
+   * 認知症対応共同生活介護（短期利用）パターン領域に内部項目を追加します。
    */
   protected void addTypeSymbiosisNursingForDementiaPatterns(){
 
@@ -500,6 +525,8 @@ public class QS001127Design extends QS001ServicePanel {
     typeSymbiosisNursingForDementiaPatterns.add(getNightWorkConditionStandardRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     typeSymbiosisNursingForDementiaPatterns.add(getMedicalCooperationSystemAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    typeSymbiosisNursingForDementiaPatterns.add(getShortStayLifeAddition30Orver(), VRLayout.FLOW_INSETLINE_RETURN);
 
     typeSymbiosisNursingForDementiaPatterns.add(getInformation(), VRLayout.SOUTH);
   }
@@ -613,6 +640,13 @@ public class QS001127Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addMedicalCooperationSystemAddRadioItem2(){
+
+  }
+
+  /**
+   * 30日超に内部項目を追加します。
+   */
+  protected void addShortStayLifeAddition30Orver(){
 
   }
 

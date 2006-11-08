@@ -77,7 +77,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -185,7 +184,13 @@ public class QS001108 extends QS001108Event {
         VRBindPathParser.set("1160115", defaultMap, new Integer(1));
         // lˆõŒ¸Z
         VRBindPathParser.set("1160109", defaultMap, new Integer(1));
-
+        
+        // 2006/02/28 add begin kamitsukasa
+        // –K–âŠÅŒì—Ã—{”ï—Ìû‘‘Î‰
+        // Z’è‹æ•ª
+        VRBindPathParser.set("9", defaultMap, new Integer(1));
+        // 2006/02/28 add end kamitsukasa
+        
         // ¦“WŠJ
         // ©g(this)‚ÉdefaultMap‚Éİ’è‚·‚éB
         getThis().setSource(defaultMap);

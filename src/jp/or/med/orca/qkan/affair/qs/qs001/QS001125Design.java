@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/04/11  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/05/01  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -441,7 +441,7 @@ public class QS001125Design extends QS001ServicePanel {
 
       kaigoSupportSpecialMemberName.setRenderBindPath("STAFF_NAME");
 
-      kaigoSupportSpecialMemberName.setMaxLength(10);
+      kaigoSupportSpecialMemberName.setMaxColumns(10);
 
       kaigoSupportSpecialMemberName.setModel(getKaigoSupportSpecialMemberNameModel());
 
@@ -660,7 +660,6 @@ public class QS001125Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QS001125Design.class.getName()));
     } catch (Exception e) {

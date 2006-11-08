@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/23  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/07/04  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 短期入所療養介護（病院療養型）状態定義(QO004111) 
  */
@@ -157,6 +157,20 @@ public class QO004111State extends QO004111Design {
         getStaffAssignmentDivisionItem1().setEnabled(false);
 
         getStaffAssignmentDivisionItem2().setEnabled(false);
+
+  }
+
+  /**
+   * 「経過タイプ」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITY_TYPE_PASSAGE() throws Exception {
+
+        getUnitCareMaintenance().setEnabled(false);
+        getUnitCareMaintenance().getParent().setEnabled(false);
+
+        getStaffAssignmentDivision().setEnabled(false);
+        getStaffAssignmentDivision().getParent().setEnabled(false);
 
   }
 

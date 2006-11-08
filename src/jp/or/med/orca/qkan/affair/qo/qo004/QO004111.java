@@ -79,7 +79,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -562,12 +561,16 @@ public class QO004111 extends QO004111Event {
   public void setStateByFacilitiesDivision() throws Exception {
 
 		// 施設区分の値をチェックする。
-		if (getFacilitiesDivision().getSelectedIndex() == FACILITY_TYPE_BYOIN) {
+		int facilityType = getFacilitiesDivision().getSelectedIndex();
+		if (facilityType == FACILITY_TYPE_BYOIN) {
 			// 「病院」が選択された場合
 			setState_FACILITY_TYPE_NORMAL();
-		} else {
-			// 「病院」以外が選択された場合
+		} else if (facilityType == FACILITY_TYPE_UNIT) {
+			// 「ユニット型病院」が選択された場合
 			setState_FACILITY_TYPE_UNIT();
+		} else {
+			// 「経過型」が選択された場合
+			setState_FACILITY_TYPE_PASSAGE();
 		}
 	}
 

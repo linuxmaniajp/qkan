@@ -238,26 +238,10 @@ public abstract class QS001118Event extends QS001118State implements QS001Servic
 
   //変数定義
 
-  private VRMap selectedProvider = new VRHashMap();
   private boolean unitCareFlag;
   private boolean subUnitCareFlag;
   private boolean functionTrainingFlag;
   //getter/setter
-
-  /**
-   * selectedProviderを返します。
-   * @return selectedProvider
-   */
-  protected VRMap getSelectedProvider(){
-    return selectedProvider;
-  }
-  /**
-   * selectedProviderを設定します。
-   * @param selectedProvider selectedProvider
-   */
-  protected void setSelectedProvider(VRMap selectedProvider){
-    this.selectedProvider = selectedProvider;
-  }
 
   /**
    * unitCareFlagを返します。

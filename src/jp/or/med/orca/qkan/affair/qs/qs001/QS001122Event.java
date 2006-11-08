@@ -307,26 +307,10 @@ public abstract class QS001122Event extends QS001122State implements QS001Servic
 
   //変数定義
 
-  private VRMap selectedProvider = new VRHashMap();
   public static final int SYSTEM_SERVICE_KIND_DETAIL = 15313;
   private boolean invalidUnitCareProvider;
   private boolean useHumanCostDown;
   //getter/setter
-
-  /**
-   * selectedProviderを返します。
-   * @return selectedProvider
-   */
-  protected VRMap getSelectedProvider(){
-    return selectedProvider;
-  }
-  /**
-   * selectedProviderを設定します。
-   * @param selectedProvider selectedProvider
-   */
-  protected void setSelectedProvider(VRMap selectedProvider){
-    this.selectedProvider = selectedProvider;
-  }
 
   /**
    * invalidUnitCareProviderを返します。

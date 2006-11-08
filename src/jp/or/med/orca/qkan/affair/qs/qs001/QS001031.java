@@ -37,7 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
@@ -45,11 +44,14 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSchedulePrintManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.text.ACBorderBlankDateFormat;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
@@ -112,7 +114,8 @@ public class QS001031 extends QS001031Event {
                         .get("STAFF_FAMILY_NAME"), staff
                         .get("STAFF_FIRST_NAME")));
             }
-            getPersonInCharge().setModel(staffs);
+            setSupporters(staffs);
+            getPersonInCharge().setModel(getSupporters());
             // ※担当者コンボの初期選択
             // 選択された事業所で、最優先の担当者を選択する（事業所一覧画面で表示される担当者と同じ）。(設定できない場合は未選択とする)
             if (getPersonInCharge().getItemCount() > 0) {
@@ -121,7 +124,8 @@ public class QS001031 extends QS001031Event {
         } else {
             // 事業所番号を取得できなかった場合、事業所番号は未選択とする)
             getSupportProviderCd().setText("");
-            getPersonInCharge().setModel(new Object[] {});
+            setSupporters(new VRArrayList(java.util.Arrays.asList(new Object[] {})));
+            getPersonInCharge().setModel(getSupporters());
         }
     }
 
@@ -177,7 +181,7 @@ public class QS001031 extends QS001031Event {
         // 追加情報を収集
         getContents().setSource(printParam);
         getContents().applySource();
-        if (getSupportProvider().isSelected()) {
+        if (getSupportProvider().isSelected()||getPreventSupportProvider().isSelected()) {
             // 介護支援専門員がケアプランを作成した場合
             printParam.remove(getDateOfWrittenReport().getBindPath());
         } else {
@@ -297,8 +301,8 @@ public class QS001031 extends QS001031Event {
 
         ACChotarouXMLUtilities.openPDF(writer);
 
-        //TODO 印刷後も閉じない場合はコメントアウト
-        dispose();
+        //印刷後も閉じない場合はコメントアウト
+        //dispose();
     }
     
     /**
@@ -530,21 +534,84 @@ public class QS001031 extends QS001031Event {
         setAffairTitle("QS001031");
         // ※居宅サービス提供者
         // コンボのアイテムとして、居宅介護支援事業者を設定する。
-        VRList providers = QkanCommon.getProviderInfo(getDBManager(), new int[]{14311, 17311});
-        getSupportProviderName().setModel(providers);
+        setSupportProviders(QkanCommon.getProviderInfo(getDBManager(), new int[]{14311, 17311}));
+        setPreventSupportProviders(QkanCommon.getProviderInfo(getDBManager(), new int[]{14611, 17511}));
+        
+        getSupportProviderName().setModel(getSupportProviders());
         // コンボの選択項目として、利用者情報より取得した「居宅サービス提供者」を設定する。
 
         VRMap defaultInsurer = patientInsureInfoLast;
         if (defaultInsurer == null) {
             defaultInsurer = patientInsureInfoFirst;
         }
-
-        int planner = 1;
+        
+        int planner = 2;
         Object defaultProvider = null;
         if (defaultInsurer != null) {
             defaultProvider = defaultInsurer.get("PROVIDER_ID");
-            planner = ACCastUtilities.toInt(defaultInsurer.get("PLANNER"), 1);
+            planner = ACCastUtilities.toInt(defaultInsurer.get("PLANNER"), 2);
+            if(planner<=0){
+                planner = 2; 
+            }
         }
+        
+        //居宅介護支援系サービスを抽出する
+        VRMap careManagementService = null;
+        Object supporterID = null;
+        Iterator it = getServiceData().iterator();
+        while(it.hasNext()){
+            VRMap row = (VRMap)it.next();
+            if(CareServiceCommon.isCareManagement(row)||CareServiceCommon.isFacilityVisitMultifunction(row)){
+                //居宅介護支援サービスを更新する
+                careManagementService = row;
+            }
+        }
+        // 居宅介護支援あり
+        if (careManagementService != null) {
+            defaultProvider = VRBindPathParser.get("PROVIDER_ID",
+                    careManagementService);
+            if (CareServiceCommon.isPreventService(careManagementService)) {
+                // 予防サービスの場合
+                planner = 3;
+                if (CareServiceCommon
+                        .isFacilityVisitMultifunction(careManagementService)) {
+                    // 介護予防小規模多機能型居宅介護
+                    supporterID = VRBindPathParser.get("1750104",
+                            careManagementService);
+                }else{
+                    // 介護予防支援費
+                    if(VRBindPathParser.has("1460103", careManagementService)){
+                        //委託先専門員番号が定義されている場合
+                        supporterID = VRBindPathParser.get("1460103",careManagementService);
+                    }else{
+                      supporterID = VRBindPathParser.get("1430107",careManagementService);
+                    }
+                    if(VRBindPathParser.has("1460102", careManagementService)){
+                        //委託先事業所が定義されている場合
+                        Object provID = VRBindPathParser.get("1460102",
+                                careManagementService);
+                        if (!ACTextUtilities.isNullText(provID)) {
+                            defaultProvider = provID;
+                        }
+                    }
+                }
+            } else {
+                // 予防サービスではない場合
+                planner = 1;
+                if (CareServiceCommon
+                        .isFacilityVisitMultifunction(careManagementService)) {
+                    // 小規模多機能型
+                    supporterID = VRBindPathParser.get("1730104",
+                            careManagementService);
+                } else {
+                    // 居宅介護支援
+                    supporterID = VRBindPathParser.get("1430107",
+                            careManagementService);
+                }
+            }
+        }
+        
+        
         getPlanManufacturer().setSelectedIndex(planner);
         if (getPatent().isSelected()) {
             // 被保険者自身でケアプランを作成した場合
@@ -563,12 +630,32 @@ public class QS001031 extends QS001031Event {
                     getDateOfWrittenReport().setDate(reportDay);
                 }
             }
+            if(getSupportProviderName().getItemCount()>0){
+                getSupportProviderName().setSelectedIndex(0);
+            }
         }
 
         if (defaultProvider != null) {
+            VRList providers;
+            if(getPreventSupportProvider().isSelected()){
+                //予防居宅介護支援
+                providers = getPreventSupportProviders();
+            }else{
+                //居宅介護支援
+                providers = getSupportProviders();
+            }
             int index = ACBindUtilities.getMatchIndexFromValue(providers,
                     "PROVIDER_ID", defaultProvider);
             getSupportProviderName().setSelectedIndex(index);
+            
+            if((supporterID!=null)&&(getSupporters()!=null)){
+                //介護支援専門員番号あり
+                index = ACBindUtilities.getMatchIndexFromValue(getSupporters(),
+                        "CARE_MANAGER_NO", supporterID);
+                if(index>0){
+                    getPersonInCharge().setSelectedIndex(index);
+                }
+            }
         }
 
         // ※居宅介護支援事業者事業所名
@@ -717,7 +804,7 @@ public class QS001031 extends QS001031Event {
         // ■画面の初期状態を設定
         // ※居宅介護支援事業者事業所欄の有効/無効設定
         // 居宅介護支援事業者事業所欄の有効/無効を設定する。
-        setProviderComponentState();
+//        setProviderComponentState();
 
         // ※予定印刷なのか、実績印刷なのかによって、状態を設定
         // processTypeの値をチェックする。
@@ -742,14 +829,36 @@ public class QS001031 extends QS001031Event {
         // ■居宅介護支援事業者事業所欄の有効/無効の切替
         // ※居宅介護支援事業者事業所欄の有効/無効設定
         // planManufacturerの値をチェックする。
-        if (getPlanManufacturer().getSelectedIndex() == 1) {
+        switch(getPlanManufacturer().getSelectedIndex()){
+        case 1:
             // 「居宅介護支援事業者」が選択されている場合
             // 居宅介護支援事業者事業所欄を有効にする。
             setState_PROVIDER_MADE();
-        } else {
+            //居宅介護支援事業者事業所の候補を居宅介護支援を提供している事業所に変更する。
+            getSupportProviderName().setModel(getSupportProviders());
+            if(getSupportProviderName().getItemCount()>0){
+                getSupportProviderName().setSelectedIndex(0);
+            }else{
+                getSupportProviderName().setSelectedIndex(-1);
+            }
+            break;
+        case 3:
+            // 「予防居宅介護支援事業者」が選択されている場合
+            // 居宅介護支援事業者事業所欄を有効にする。
+            setState_PROVIDER_MADE();
+            //居宅介護支援事業者事業所の候補を予防居宅介護支援を提供している事業所に変更する。
+            getSupportProviderName().setModel(getPreventSupportProviders());
+            if(getSupportProviderName().getItemCount()>0){
+                getSupportProviderName().setSelectedIndex(0);
+            }else{
+                getSupportProviderName().setSelectedIndex(-1);
+            }
+            break;
+        default:
             // 「居宅介護支援事業者」が選択されていない場合
             // 居宅介護支援事業者事業所欄を無効にする。
             setState_SELF_MADE();
+        break;
         }
 
     }

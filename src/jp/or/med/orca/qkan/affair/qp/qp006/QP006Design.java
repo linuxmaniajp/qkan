@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/04/13  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/10/02  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -142,6 +142,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField visitCareDetailedPublicTake2;
 
   private ACLabelContainer visitCareDetailedPublicTake2Container;
+
+  private ACPanel visitCareDetailedContentLeftClient;
 
   private ACPanel visitCareDetailedContentLeftCenter1;
 
@@ -701,6 +703,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo1Item5;
 
+  private ACListItem visitCombo1Item6;
+
+  private ACListItem visitCombo1Item7;
+
   private ACComboBox visitCombo2;
 
   private ACComboBoxModelAdapter visitCombo2Model;
@@ -714,6 +720,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo2Item4;
 
   private ACListItem visitCombo2Item5;
+
+  private ACListItem visitCombo2Item6;
+
+  private ACListItem visitCombo2Item7;
 
   private ACComboBox visitCombo3;
 
@@ -729,6 +739,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo3Item5;
 
+  private ACListItem visitCombo3Item6;
+
+  private ACListItem visitCombo3Item7;
+
   private ACComboBox visitCombo4;
 
   private ACComboBoxModelAdapter visitCombo4Model;
@@ -742,6 +756,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo4item4;
 
   private ACListItem visitCombo4item5;
+
+  private ACListItem visitCombo4item6;
+
+  private ACListItem visitCombo4Item7;
 
   private ACComboBox visitCombo5;
 
@@ -757,6 +775,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo5Item5;
 
+  private ACListItem visitCombo5Item6;
+
+  private ACListItem visitCombo5Item7;
+
   private ACComboBox visitCombo6;
 
   private ACComboBoxModelAdapter visitCombo6Model;
@@ -770,6 +792,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo6Item4;
 
   private ACListItem visitCombo6Item5;
+
+  private ACListItem visitCombo6Item6;
+
+  private ACListItem visitCombo6Item7;
 
   private ACComboBox visitCombo7;
 
@@ -785,6 +811,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo7Item5;
 
+  private ACListItem visitCombo7Item6;
+
+  private ACListItem visitCombo7Item7;
+
   private ACComboBox visitCombo8;
 
   private ACComboBoxModelAdapter visitCombo8Model;
@@ -798,6 +828,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo8Item4;
 
   private ACListItem visitCombo8Item5;
+
+  private ACListItem visitCombo8Item6;
+
+  private ACListItem visitCombo8Item7;
 
   private ACComboBox visitCombo9;
 
@@ -813,6 +847,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo9Item5;
 
+  private ACListItem visitCombo9Item6;
+
+  private ACListItem visitCombo9Item7;
+
   private ACComboBox visitCombo10;
 
   private ACComboBoxModelAdapter visitCombo10Model;
@@ -826,6 +864,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo10Item4;
 
   private ACListItem visitCombo10Item5;
+
+  private ACListItem visitCombo10Item6;
+
+  private ACListItem visitCombo10Item7;
 
   private ACComboBox visitCombo11;
 
@@ -841,6 +883,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo11Item5;
 
+  private ACListItem visitCombo11Item6;
+
+  private ACListItem visitCombo11Item7;
+
   private ACComboBox visitCombo12;
 
   private ACComboBoxModelAdapter visitCombo12Model;
@@ -854,6 +900,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo12Item4;
 
   private ACListItem visitCombo12Item5;
+
+  private ACListItem visitCombo12Item6;
+
+  private ACListItem visitCombo12Item7;
 
   private ACComboBox visitCombo13;
 
@@ -869,6 +919,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo13Item5;
 
+  private ACListItem visitCombo13Item6;
+
+  private ACListItem visitCombo13Item7;
+
   private ACComboBox visitCombo14;
 
   private ACComboBoxModelAdapter visitCombo14Model;
@@ -882,6 +936,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo14Item4;
 
   private ACListItem visitCombo14Item5;
+
+  private ACListItem visitCombo14Item6;
+
+  private ACListItem visitCombo14Item7;
 
   private ACComboBox visitCombo15;
 
@@ -897,6 +955,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo15Item5;
 
+  private ACListItem visitCombo15Item6;
+
+  private ACListItem visitCombo15Item7;
+
   private ACComboBox visitCombo16;
 
   private ACComboBoxModelAdapter visitCombo16Model;
@@ -910,6 +972,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo16Item4;
 
   private ACListItem visitCombo16Item5;
+
+  private ACListItem visitCombo16Item6;
+
+  private ACListItem visitCombo16Item7;
 
   private ACComboBox visitCombo17;
 
@@ -925,6 +991,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo17Item5;
 
+  private ACListItem visitCombo17Item6;
+
+  private ACListItem visitCombo17Item7;
+
   private ACComboBox visitCombo18;
 
   private ACComboBoxModelAdapter visitCombo18Model;
@@ -938,6 +1008,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo18Item4;
 
   private ACListItem visitCombo18Item5;
+
+  private ACListItem visitCombo18Item6;
+
+  private ACListItem visitCombo18Item7;
 
   private ACComboBox visitCombo19;
 
@@ -953,6 +1027,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo19Item5;
 
+  private ACListItem visitCombo19Item6;
+
+  private ACListItem visitCombo19Item7;
+
   private ACComboBox visitCombo20;
 
   private ACComboBoxModelAdapter visitCombo20Model;
@@ -966,6 +1044,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo20Item4;
 
   private ACListItem visitCombo20Item5;
+
+  private ACListItem visitCombo20Item6;
+
+  private ACListItem visitCombo20Item7;
 
   private ACComboBox visitCombo21;
 
@@ -981,6 +1063,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo21Item5;
 
+  private ACListItem visitCombo21Item6;
+
+  private ACListItem visitCombo21Item7;
+
   private ACComboBox visitCombo22;
 
   private ACComboBoxModelAdapter visitCombo22Model;
@@ -994,6 +1080,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo22Item4;
 
   private ACListItem visitCombo22Item5;
+
+  private ACListItem visitCombo22Item6;
+
+  private ACListItem visitCombo22Item7;
 
   private ACComboBox visitCombo23;
 
@@ -1009,6 +1099,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo23Item5;
 
+  private ACListItem visitCombo23Item6;
+
+  private ACListItem visitCombo23Item7;
+
   private ACComboBox visitCombo24;
 
   private ACComboBoxModelAdapter visitCombo24Model;
@@ -1022,6 +1116,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo24Item4;
 
   private ACListItem visitCombo24Item5;
+
+  private ACListItem visitCombo24Item6;
+
+  private ACListItem visitCombo24Item7;
 
   private ACComboBox visitCombo25;
 
@@ -1037,6 +1135,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo25Item5;
 
+  private ACListItem visitCombo25Item6;
+
+  private ACListItem visitCombo25Item7;
+
   private ACComboBox visitCombo26;
 
   private ACComboBoxModelAdapter visitCombo26Model;
@@ -1050,6 +1152,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo26Item4;
 
   private ACListItem visitCombo26Item5;
+
+  private ACListItem visitCombo26Item6;
+
+  private ACListItem visitCombo26Item7;
 
   private ACComboBox visitCombo27;
 
@@ -1065,6 +1171,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo27Item5;
 
+  private ACListItem visitCombo27Item6;
+
+  private ACListItem visitCombo27Item7;
+
   private ACComboBox visitCombo28;
 
   private ACComboBoxModelAdapter visitCombo28Model;
@@ -1078,6 +1188,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo28Item4;
 
   private ACListItem visitCombo28Item5;
+
+  private ACListItem visitCombo28Item6;
+
+  private ACListItem visitCombo28Item7;
 
   private ACComboBox visitCombo29;
 
@@ -1093,6 +1207,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo29Item5;
 
+  private ACListItem visitCombo29Item6;
+
+  private ACListItem visitCombo29Item7;
+
   private ACComboBox visitCombo30;
 
   private ACComboBoxModelAdapter visitCombo30Model;
@@ -1107,6 +1225,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
   private ACListItem visitCombo30Item5;
 
+  private ACListItem visitCombo30Item6;
+
+  private ACListItem visitCombo30Item7;
+
   private ACComboBox visitCombo31;
 
   private ACComboBoxModelAdapter visitCombo31Model;
@@ -1120,6 +1242,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACListItem visitCombo31Item4;
 
   private ACListItem visitCombo31Item5;
+
+  private ACListItem visitCombo31Item6;
+
+  private ACListItem visitCombo31Item7;
 
   private ACPanel visitCareDetailedPoints3Panel3;
 
@@ -1258,6 +1384,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   private ACLabelContainer visitCareDetailedStateRadioContainer;
 
   private ACListModelAdapter visitCareDetailedStateRadioModel;
+
+  private VRLayout visitCareDetailedStateRadioLayout;
 
   private ACRadioButtonItem visitCareDetailedStateRadioItem1;
 
@@ -1841,6 +1969,21 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 基本情報領域・下を取得します。
+   * @return 基本情報領域・下
+   */
+  public ACPanel getVisitCareDetailedContentLeftClient(){
+    if(visitCareDetailedContentLeftClient==null){
+
+      visitCareDetailedContentLeftClient = new ACPanel();
+
+      addVisitCareDetailedContentLeftClient();
+    }
+    return visitCareDetailedContentLeftClient;
+
+  }
+
+  /**
    * 基本情報領域・左を取得します。
    * @return 基本情報領域・左
    */
@@ -1948,7 +2091,7 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCareDetailedBirth.setEditable(false);
 
-      visitCareDetailedBirth.setColumns(11);
+      visitCareDetailedBirth.setColumns(10);
 
       visitCareDetailedBirth.setMaxLength(15);
 
@@ -2316,15 +2459,15 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8を取得します。
-   * @return 高齢9/高齢8
+   * 高齢割合を取得します。
+   * @return 高齢割合
    */
   public ACTextField getVisitCareDetailedInsure5(){
     if(visitCareDetailedInsure5==null){
 
       visitCareDetailedInsure5 = new ACTextField();
 
-      getVisitCareDetailedInsure5Container().setText("高齢9/高齢8");
+      getVisitCareDetailedInsure5Container().setText("高齢割合");
 
       visitCareDetailedInsure5.setBindPath("INS_TYPE5");
 
@@ -2339,8 +2482,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8コンテナを取得します。
-   * @return 高齢9/高齢8コンテナ
+   * 高齢割合コンテナを取得します。
+   * @return 高齢割合コンテナ
    */
   protected ACLabelContainer getVisitCareDetailedInsure5Container(){
     if(visitCareDetailedInsure5Container==null){
@@ -2546,7 +2689,7 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCareDetailedNurseCallStation.setBindPath("1301024");
 
-      visitCareDetailedNurseCallStation.setColumns(65);
+      visitCareDetailedNurseCallStation.setColumns(58);
 
       visitCareDetailedNurseCallStation.setRows(5);
 
@@ -6911,6 +7054,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCareDetailedPoints3Homon = new ACPanel();
 
+      visitCareDetailedPoints3Homon.setAutoWrap(false);
+
       addVisitCareDetailedPoints3Homon();
     }
     return visitCareDetailedPoints3Homon;
@@ -7048,6 +7193,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
       visitEndState.setModelBindPath("HOUMON_END_STATE");
 
       visitEndState.setRenderBindPath("CONTENT");
+
+      visitEndState.setBlankable(true);
 
       visitEndState.setModel(getVisitEndStateModel());
 
@@ -7327,11 +7474,11 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitFrameLayout.setAutoWrap(false);
 
-      visitFrameLayout.setHgap(3);
+      visitFrameLayout.setHgap(0);
 
       visitFrameLayout.setLabelMargin(0);
 
-      visitFrameLayout.setVgap(3);
+      visitFrameLayout.setVgap(0);
 
       addVisitFrameLayout();
     }
@@ -7352,11 +7499,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo1.setEditable(false);
 
+      visitCombo1.setColumns(4);
+
       visitCombo1.setRenderBindPath("ITEM");
 
-      visitCombo1.setModel(getVisitCombo1Model());
+      visitCombo1.setMaxColumns(4);
 
-      visitCombo1.setPreferredSize(new Dimension(60,20));
+      visitCombo1.setModel(getVisitCombo1Model());
 
       addVisitCombo1();
     }
@@ -7482,6 +7631,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 1◇を取得します。
+   * @return 1◇
+   */
+  public ACListItem getVisitCombo1Item6(){
+    if(visitCombo1Item6==null){
+
+      visitCombo1Item6 = new ACListItem();
+
+      visitCombo1Item6.setText("1◇");
+
+      visitCombo1Item6.setSimpleValueMode(false);
+      visitCombo1Item6.put(getVisitCombo1().getRenderBindPath(), "1◇");
+      visitCombo1Item6.put(getVisitCombo1().getBindPath(), new Integer(5));
+
+      addVisitCombo1Item6();
+    }
+    return visitCombo1Item6;
+
+  }
+
+  /**
+   * 1△◇を取得します。
+   * @return 1△◇
+   */
+  public ACListItem getVisitCombo1Item7(){
+    if(visitCombo1Item7==null){
+
+      visitCombo1Item7 = new ACListItem();
+
+      visitCombo1Item7.setText("1△◇");
+
+      visitCombo1Item7.setSimpleValueMode(false);
+      visitCombo1Item7.put(getVisitCombo1().getRenderBindPath(), "1△◇");
+      visitCombo1Item7.put(getVisitCombo1().getBindPath(), new Integer(6));
+
+      addVisitCombo1Item7();
+    }
+    return visitCombo1Item7;
+
+  }
+
+  /**
    * 訪問日コンボ2を取得します。
    * @return 訪問日コンボ2
    */
@@ -7494,11 +7685,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo2.setEditable(false);
 
+      visitCombo2.setColumns(4);
+
       visitCombo2.setRenderBindPath("ITEM");
 
-      visitCombo2.setModel(getVisitCombo2Model());
+      visitCombo2.setMaxColumns(4);
 
-      visitCombo2.setPreferredSize(new Dimension(60,20));
+      visitCombo2.setModel(getVisitCombo2Model());
 
       addVisitCombo2();
     }
@@ -7624,6 +7817,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 2◇を取得します。
+   * @return 2◇
+   */
+  public ACListItem getVisitCombo2Item6(){
+    if(visitCombo2Item6==null){
+
+      visitCombo2Item6 = new ACListItem();
+
+      visitCombo2Item6.setText("2◇");
+
+      visitCombo2Item6.setSimpleValueMode(false);
+      visitCombo2Item6.put(getVisitCombo2().getRenderBindPath(), "2◇");
+      visitCombo2Item6.put(getVisitCombo2().getBindPath(), new Integer(5));
+
+      addVisitCombo2Item6();
+    }
+    return visitCombo2Item6;
+
+  }
+
+  /**
+   * 2△◇を取得します。
+   * @return 2△◇
+   */
+  public ACListItem getVisitCombo2Item7(){
+    if(visitCombo2Item7==null){
+
+      visitCombo2Item7 = new ACListItem();
+
+      visitCombo2Item7.setText("2△◇");
+
+      visitCombo2Item7.setSimpleValueMode(false);
+      visitCombo2Item7.put(getVisitCombo2().getRenderBindPath(), "2△◇");
+      visitCombo2Item7.put(getVisitCombo2().getBindPath(), new Integer(6));
+
+      addVisitCombo2Item7();
+    }
+    return visitCombo2Item7;
+
+  }
+
+  /**
    * 訪問日コンボ3を取得します。
    * @return 訪問日コンボ3
    */
@@ -7636,11 +7871,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo3.setEditable(false);
 
+      visitCombo3.setColumns(4);
+
       visitCombo3.setRenderBindPath("ITEM");
 
-      visitCombo3.setModel(getVisitCombo3Model());
+      visitCombo3.setMaxColumns(4);
 
-      visitCombo3.setPreferredSize(new Dimension(60,20));
+      visitCombo3.setModel(getVisitCombo3Model());
 
       addVisitCombo3();
     }
@@ -7766,6 +8003,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 3◇を取得します。
+   * @return 3◇
+   */
+  public ACListItem getVisitCombo3Item6(){
+    if(visitCombo3Item6==null){
+
+      visitCombo3Item6 = new ACListItem();
+
+      visitCombo3Item6.setText("3◇");
+
+      visitCombo3Item6.setSimpleValueMode(false);
+      visitCombo3Item6.put(getVisitCombo3().getRenderBindPath(), "3◇");
+      visitCombo3Item6.put(getVisitCombo3().getBindPath(), new Integer(5));
+
+      addVisitCombo3Item6();
+    }
+    return visitCombo3Item6;
+
+  }
+
+  /**
+   * 3△◇を取得します。
+   * @return 3△◇
+   */
+  public ACListItem getVisitCombo3Item7(){
+    if(visitCombo3Item7==null){
+
+      visitCombo3Item7 = new ACListItem();
+
+      visitCombo3Item7.setText("3△◇");
+
+      visitCombo3Item7.setSimpleValueMode(false);
+      visitCombo3Item7.put(getVisitCombo3().getRenderBindPath(), "3△◇");
+      visitCombo3Item7.put(getVisitCombo3().getBindPath(), new Integer(6));
+
+      addVisitCombo3Item7();
+    }
+    return visitCombo3Item7;
+
+  }
+
+  /**
    * 訪問日コンボ4を取得します。
    * @return 訪問日コンボ4
    */
@@ -7778,11 +8057,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo4.setEditable(false);
 
+      visitCombo4.setColumns(4);
+
       visitCombo4.setRenderBindPath("ITEM");
 
-      visitCombo4.setModel(getVisitCombo4Model());
+      visitCombo4.setMaxColumns(4);
 
-      visitCombo4.setPreferredSize(new Dimension(60,20));
+      visitCombo4.setModel(getVisitCombo4Model());
 
       addVisitCombo4();
     }
@@ -7908,6 +8189,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 4◇を取得します。
+   * @return 4◇
+   */
+  public ACListItem getVisitCombo4item6(){
+    if(visitCombo4item6==null){
+
+      visitCombo4item6 = new ACListItem();
+
+      visitCombo4item6.setText("4◇");
+
+      visitCombo4item6.setSimpleValueMode(false);
+      visitCombo4item6.put(getVisitCombo4().getRenderBindPath(), "4◇");
+      visitCombo4item6.put(getVisitCombo4().getBindPath(), new Integer(5));
+
+      addVisitCombo4item6();
+    }
+    return visitCombo4item6;
+
+  }
+
+  /**
+   * 4△◇を取得します。
+   * @return 4△◇
+   */
+  public ACListItem getVisitCombo4Item7(){
+    if(visitCombo4Item7==null){
+
+      visitCombo4Item7 = new ACListItem();
+
+      visitCombo4Item7.setText("4△◇");
+
+      visitCombo4Item7.setSimpleValueMode(false);
+      visitCombo4Item7.put(getVisitCombo4().getRenderBindPath(), "4△◇");
+      visitCombo4Item7.put(getVisitCombo4().getBindPath(), new Integer(6));
+
+      addVisitCombo4Item7();
+    }
+    return visitCombo4Item7;
+
+  }
+
+  /**
    * 訪問日コンボ5を取得します。
    * @return 訪問日コンボ5
    */
@@ -7920,11 +8243,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo5.setEditable(false);
 
+      visitCombo5.setColumns(4);
+
       visitCombo5.setRenderBindPath("ITEM");
 
-      visitCombo5.setModel(getVisitCombo5Model());
+      visitCombo5.setMaxColumns(4);
 
-      visitCombo5.setPreferredSize(new Dimension(60,20));
+      visitCombo5.setModel(getVisitCombo5Model());
 
       addVisitCombo5();
     }
@@ -8050,6 +8375,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 5◇を取得します。
+   * @return 5◇
+   */
+  public ACListItem getVisitCombo5Item6(){
+    if(visitCombo5Item6==null){
+
+      visitCombo5Item6 = new ACListItem();
+
+      visitCombo5Item6.setText("5◇");
+
+      visitCombo5Item6.setSimpleValueMode(false);
+      visitCombo5Item6.put(getVisitCombo5().getRenderBindPath(), "5◇");
+      visitCombo5Item6.put(getVisitCombo5().getBindPath(), new Integer(5));
+
+      addVisitCombo5Item6();
+    }
+    return visitCombo5Item6;
+
+  }
+
+  /**
+   * 5△◇を取得します。
+   * @return 5△◇
+   */
+  public ACListItem getVisitCombo5Item7(){
+    if(visitCombo5Item7==null){
+
+      visitCombo5Item7 = new ACListItem();
+
+      visitCombo5Item7.setText("5△◇");
+
+      visitCombo5Item7.setSimpleValueMode(false);
+      visitCombo5Item7.put(getVisitCombo5().getRenderBindPath(), "5△◇");
+      visitCombo5Item7.put(getVisitCombo5().getBindPath(), new Integer(6));
+
+      addVisitCombo5Item7();
+    }
+    return visitCombo5Item7;
+
+  }
+
+  /**
    * 訪問日コンボ6を取得します。
    * @return 訪問日コンボ6
    */
@@ -8062,11 +8429,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo6.setEditable(false);
 
+      visitCombo6.setColumns(4);
+
       visitCombo6.setRenderBindPath("ITEM");
 
-      visitCombo6.setModel(getVisitCombo6Model());
+      visitCombo6.setMaxColumns(4);
 
-      visitCombo6.setPreferredSize(new Dimension(60,20));
+      visitCombo6.setModel(getVisitCombo6Model());
 
       addVisitCombo6();
     }
@@ -8192,6 +8561,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 6◇を取得します。
+   * @return 6◇
+   */
+  public ACListItem getVisitCombo6Item6(){
+    if(visitCombo6Item6==null){
+
+      visitCombo6Item6 = new ACListItem();
+
+      visitCombo6Item6.setText("6◇");
+
+      visitCombo6Item6.setSimpleValueMode(false);
+      visitCombo6Item6.put(getVisitCombo6().getRenderBindPath(), "6◇");
+      visitCombo6Item6.put(getVisitCombo6().getBindPath(), new Integer(5));
+
+      addVisitCombo6Item6();
+    }
+    return visitCombo6Item6;
+
+  }
+
+  /**
+   * 6△◇を取得します。
+   * @return 6△◇
+   */
+  public ACListItem getVisitCombo6Item7(){
+    if(visitCombo6Item7==null){
+
+      visitCombo6Item7 = new ACListItem();
+
+      visitCombo6Item7.setText("6△◇");
+
+      visitCombo6Item7.setSimpleValueMode(false);
+      visitCombo6Item7.put(getVisitCombo6().getRenderBindPath(), "6△◇");
+      visitCombo6Item7.put(getVisitCombo6().getBindPath(), new Integer(6));
+
+      addVisitCombo6Item7();
+    }
+    return visitCombo6Item7;
+
+  }
+
+  /**
    * 訪問日コンボ7を取得します。
    * @return 訪問日コンボ7
    */
@@ -8204,11 +8615,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo7.setEditable(false);
 
+      visitCombo7.setColumns(4);
+
       visitCombo7.setRenderBindPath("ITEM");
 
-      visitCombo7.setModel(getVisitCombo7Model());
+      visitCombo7.setMaxColumns(4);
 
-      visitCombo7.setPreferredSize(new Dimension(60,20));
+      visitCombo7.setModel(getVisitCombo7Model());
 
       addVisitCombo7();
     }
@@ -8334,6 +8747,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 7◇を取得します。
+   * @return 7◇
+   */
+  public ACListItem getVisitCombo7Item6(){
+    if(visitCombo7Item6==null){
+
+      visitCombo7Item6 = new ACListItem();
+
+      visitCombo7Item6.setText("7◇");
+
+      visitCombo7Item6.setSimpleValueMode(false);
+      visitCombo7Item6.put(getVisitCombo7().getRenderBindPath(), "7◇");
+      visitCombo7Item6.put(getVisitCombo7().getBindPath(), new Integer(5));
+
+      addVisitCombo7Item6();
+    }
+    return visitCombo7Item6;
+
+  }
+
+  /**
+   * 7△◇を取得します。
+   * @return 7△◇
+   */
+  public ACListItem getVisitCombo7Item7(){
+    if(visitCombo7Item7==null){
+
+      visitCombo7Item7 = new ACListItem();
+
+      visitCombo7Item7.setText("7△◇");
+
+      visitCombo7Item7.setSimpleValueMode(false);
+      visitCombo7Item7.put(getVisitCombo7().getRenderBindPath(), "7△◇");
+      visitCombo7Item7.put(getVisitCombo7().getBindPath(), new Integer(6));
+
+      addVisitCombo7Item7();
+    }
+    return visitCombo7Item7;
+
+  }
+
+  /**
    * 訪問日コンボ8を取得します。
    * @return 訪問日コンボ8
    */
@@ -8346,11 +8801,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo8.setEditable(false);
 
+      visitCombo8.setColumns(4);
+
       visitCombo8.setRenderBindPath("ITEM");
 
-      visitCombo8.setModel(getVisitCombo8Model());
+      visitCombo8.setMaxColumns(4);
 
-      visitCombo8.setPreferredSize(new Dimension(60,20));
+      visitCombo8.setModel(getVisitCombo8Model());
 
       addVisitCombo8();
     }
@@ -8476,6 +8933,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 8◇を取得します。
+   * @return 8◇
+   */
+  public ACListItem getVisitCombo8Item6(){
+    if(visitCombo8Item6==null){
+
+      visitCombo8Item6 = new ACListItem();
+
+      visitCombo8Item6.setText("8◇");
+
+      visitCombo8Item6.setSimpleValueMode(false);
+      visitCombo8Item6.put(getVisitCombo8().getRenderBindPath(), "8◇");
+      visitCombo8Item6.put(getVisitCombo8().getBindPath(), new Integer(5));
+
+      addVisitCombo8Item6();
+    }
+    return visitCombo8Item6;
+
+  }
+
+  /**
+   * 8△◇を取得します。
+   * @return 8△◇
+   */
+  public ACListItem getVisitCombo8Item7(){
+    if(visitCombo8Item7==null){
+
+      visitCombo8Item7 = new ACListItem();
+
+      visitCombo8Item7.setText("8△◇");
+
+      visitCombo8Item7.setSimpleValueMode(false);
+      visitCombo8Item7.put(getVisitCombo8().getRenderBindPath(), "8△◇");
+      visitCombo8Item7.put(getVisitCombo8().getBindPath(), new Integer(6));
+
+      addVisitCombo8Item7();
+    }
+    return visitCombo8Item7;
+
+  }
+
+  /**
    * 訪問日コンボ9を取得します。
    * @return 訪問日コンボ9
    */
@@ -8488,11 +8987,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo9.setEditable(false);
 
+      visitCombo9.setColumns(4);
+
       visitCombo9.setRenderBindPath("ITEM");
 
-      visitCombo9.setModel(getVisitCombo9Model());
+      visitCombo9.setMaxColumns(4);
 
-      visitCombo9.setPreferredSize(new Dimension(60,20));
+      visitCombo9.setModel(getVisitCombo9Model());
 
       addVisitCombo9();
     }
@@ -8618,6 +9119,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 9◇を取得します。
+   * @return 9◇
+   */
+  public ACListItem getVisitCombo9Item6(){
+    if(visitCombo9Item6==null){
+
+      visitCombo9Item6 = new ACListItem();
+
+      visitCombo9Item6.setText("9◇");
+
+      visitCombo9Item6.setSimpleValueMode(false);
+      visitCombo9Item6.put(getVisitCombo9().getRenderBindPath(), "9◇");
+      visitCombo9Item6.put(getVisitCombo9().getBindPath(), new Integer(5));
+
+      addVisitCombo9Item6();
+    }
+    return visitCombo9Item6;
+
+  }
+
+  /**
+   * 9△◇を取得します。
+   * @return 9△◇
+   */
+  public ACListItem getVisitCombo9Item7(){
+    if(visitCombo9Item7==null){
+
+      visitCombo9Item7 = new ACListItem();
+
+      visitCombo9Item7.setText("9△◇");
+
+      visitCombo9Item7.setSimpleValueMode(false);
+      visitCombo9Item7.put(getVisitCombo9().getRenderBindPath(), "9△◇");
+      visitCombo9Item7.put(getVisitCombo9().getBindPath(), new Integer(6));
+
+      addVisitCombo9Item7();
+    }
+    return visitCombo9Item7;
+
+  }
+
+  /**
    * 訪問日コンボ10を取得します。
    * @return 訪問日コンボ10
    */
@@ -8630,11 +9173,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo10.setEditable(false);
 
+      visitCombo10.setColumns(4);
+
       visitCombo10.setRenderBindPath("ITEM");
 
-      visitCombo10.setModel(getVisitCombo10Model());
+      visitCombo10.setMaxColumns(4);
 
-      visitCombo10.setPreferredSize(new Dimension(60,20));
+      visitCombo10.setModel(getVisitCombo10Model());
 
       addVisitCombo10();
     }
@@ -8760,6 +9305,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 10◇を取得します。
+   * @return 10◇
+   */
+  public ACListItem getVisitCombo10Item6(){
+    if(visitCombo10Item6==null){
+
+      visitCombo10Item6 = new ACListItem();
+
+      visitCombo10Item6.setText("10◇");
+
+      visitCombo10Item6.setSimpleValueMode(false);
+      visitCombo10Item6.put(getVisitCombo10().getRenderBindPath(), "10◇");
+      visitCombo10Item6.put(getVisitCombo10().getBindPath(), new Integer(5));
+
+      addVisitCombo10Item6();
+    }
+    return visitCombo10Item6;
+
+  }
+
+  /**
+   * 10△◇を取得します。
+   * @return 10△◇
+   */
+  public ACListItem getVisitCombo10Item7(){
+    if(visitCombo10Item7==null){
+
+      visitCombo10Item7 = new ACListItem();
+
+      visitCombo10Item7.setText("10△◇");
+
+      visitCombo10Item7.setSimpleValueMode(false);
+      visitCombo10Item7.put(getVisitCombo10().getRenderBindPath(), "10△◇");
+      visitCombo10Item7.put(getVisitCombo10().getBindPath(), new Integer(6));
+
+      addVisitCombo10Item7();
+    }
+    return visitCombo10Item7;
+
+  }
+
+  /**
    * 訪問日コンボ11を取得します。
    * @return 訪問日コンボ11
    */
@@ -8772,11 +9359,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo11.setEditable(false);
 
+      visitCombo11.setColumns(4);
+
       visitCombo11.setRenderBindPath("ITEM");
 
-      visitCombo11.setModel(getVisitCombo11Model());
+      visitCombo11.setMaxColumns(4);
 
-      visitCombo11.setPreferredSize(new Dimension(60,20));
+      visitCombo11.setModel(getVisitCombo11Model());
 
       addVisitCombo11();
     }
@@ -8902,6 +9491,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 11◇を取得します。
+   * @return 11◇
+   */
+  public ACListItem getVisitCombo11Item6(){
+    if(visitCombo11Item6==null){
+
+      visitCombo11Item6 = new ACListItem();
+
+      visitCombo11Item6.setText("11◇");
+
+      visitCombo11Item6.setSimpleValueMode(false);
+      visitCombo11Item6.put(getVisitCombo11().getRenderBindPath(), "11◇");
+      visitCombo11Item6.put(getVisitCombo11().getBindPath(), new Integer(5));
+
+      addVisitCombo11Item6();
+    }
+    return visitCombo11Item6;
+
+  }
+
+  /**
+   * 11△◇を取得します。
+   * @return 11△◇
+   */
+  public ACListItem getVisitCombo11Item7(){
+    if(visitCombo11Item7==null){
+
+      visitCombo11Item7 = new ACListItem();
+
+      visitCombo11Item7.setText("11△◇");
+
+      visitCombo11Item7.setSimpleValueMode(false);
+      visitCombo11Item7.put(getVisitCombo11().getRenderBindPath(), "11△◇");
+      visitCombo11Item7.put(getVisitCombo11().getBindPath(), new Integer(6));
+
+      addVisitCombo11Item7();
+    }
+    return visitCombo11Item7;
+
+  }
+
+  /**
    * 訪問日コンボ12を取得します。
    * @return 訪問日コンボ12
    */
@@ -8914,11 +9545,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo12.setEditable(false);
 
+      visitCombo12.setColumns(4);
+
       visitCombo12.setRenderBindPath("ITEM");
 
-      visitCombo12.setModel(getVisitCombo12Model());
+      visitCombo12.setMaxColumns(4);
 
-      visitCombo12.setPreferredSize(new Dimension(60,20));
+      visitCombo12.setModel(getVisitCombo12Model());
 
       addVisitCombo12();
     }
@@ -9044,6 +9677,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 12◇を取得します。
+   * @return 12◇
+   */
+  public ACListItem getVisitCombo12Item6(){
+    if(visitCombo12Item6==null){
+
+      visitCombo12Item6 = new ACListItem();
+
+      visitCombo12Item6.setText("12◇");
+
+      visitCombo12Item6.setSimpleValueMode(false);
+      visitCombo12Item6.put(getVisitCombo12().getRenderBindPath(), "12◇");
+      visitCombo12Item6.put(getVisitCombo12().getBindPath(), new Integer(5));
+
+      addVisitCombo12Item6();
+    }
+    return visitCombo12Item6;
+
+  }
+
+  /**
+   * 12△◇を取得します。
+   * @return 12△◇
+   */
+  public ACListItem getVisitCombo12Item7(){
+    if(visitCombo12Item7==null){
+
+      visitCombo12Item7 = new ACListItem();
+
+      visitCombo12Item7.setText("12△◇");
+
+      visitCombo12Item7.setSimpleValueMode(false);
+      visitCombo12Item7.put(getVisitCombo12().getRenderBindPath(), "12△◇");
+      visitCombo12Item7.put(getVisitCombo12().getBindPath(), new Integer(6));
+
+      addVisitCombo12Item7();
+    }
+    return visitCombo12Item7;
+
+  }
+
+  /**
    * 訪問日コンボ13を取得します。
    * @return 訪問日コンボ13
    */
@@ -9056,11 +9731,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo13.setEditable(false);
 
+      visitCombo13.setColumns(4);
+
       visitCombo13.setRenderBindPath("ITEM");
 
-      visitCombo13.setModel(getVisitCombo13Model());
+      visitCombo13.setMaxColumns(4);
 
-      visitCombo13.setPreferredSize(new Dimension(60,20));
+      visitCombo13.setModel(getVisitCombo13Model());
 
       addVisitCombo13();
     }
@@ -9186,6 +9863,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 13◇を取得します。
+   * @return 13◇
+   */
+  public ACListItem getVisitCombo13Item6(){
+    if(visitCombo13Item6==null){
+
+      visitCombo13Item6 = new ACListItem();
+
+      visitCombo13Item6.setText("13◇");
+
+      visitCombo13Item6.setSimpleValueMode(false);
+      visitCombo13Item6.put(getVisitCombo13().getRenderBindPath(), "13◇");
+      visitCombo13Item6.put(getVisitCombo13().getBindPath(), new Integer(5));
+
+      addVisitCombo13Item6();
+    }
+    return visitCombo13Item6;
+
+  }
+
+  /**
+   * 13△◇を取得します。
+   * @return 13△◇
+   */
+  public ACListItem getVisitCombo13Item7(){
+    if(visitCombo13Item7==null){
+
+      visitCombo13Item7 = new ACListItem();
+
+      visitCombo13Item7.setText("13△◇");
+
+      visitCombo13Item7.setSimpleValueMode(false);
+      visitCombo13Item7.put(getVisitCombo13().getRenderBindPath(), "13△◇");
+      visitCombo13Item7.put(getVisitCombo13().getBindPath(), new Integer(6));
+
+      addVisitCombo13Item7();
+    }
+    return visitCombo13Item7;
+
+  }
+
+  /**
    * 訪問日コンボ14を取得します。
    * @return 訪問日コンボ14
    */
@@ -9198,11 +9917,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo14.setEditable(false);
 
+      visitCombo14.setColumns(4);
+
       visitCombo14.setRenderBindPath("ITEM");
 
-      visitCombo14.setModel(getVisitCombo14Model());
+      visitCombo14.setMaxColumns(4);
 
-      visitCombo14.setPreferredSize(new Dimension(60,20));
+      visitCombo14.setModel(getVisitCombo14Model());
 
       addVisitCombo14();
     }
@@ -9328,6 +10049,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 14◇を取得します。
+   * @return 14◇
+   */
+  public ACListItem getVisitCombo14Item6(){
+    if(visitCombo14Item6==null){
+
+      visitCombo14Item6 = new ACListItem();
+
+      visitCombo14Item6.setText("14◇");
+
+      visitCombo14Item6.setSimpleValueMode(false);
+      visitCombo14Item6.put(getVisitCombo14().getRenderBindPath(), "14◇");
+      visitCombo14Item6.put(getVisitCombo14().getBindPath(), new Integer(5));
+
+      addVisitCombo14Item6();
+    }
+    return visitCombo14Item6;
+
+  }
+
+  /**
+   * 14△◇を取得します。
+   * @return 14△◇
+   */
+  public ACListItem getVisitCombo14Item7(){
+    if(visitCombo14Item7==null){
+
+      visitCombo14Item7 = new ACListItem();
+
+      visitCombo14Item7.setText("14△◇");
+
+      visitCombo14Item7.setSimpleValueMode(false);
+      visitCombo14Item7.put(getVisitCombo14().getRenderBindPath(), "14△◇");
+      visitCombo14Item7.put(getVisitCombo14().getBindPath(), new Integer(6));
+
+      addVisitCombo14Item7();
+    }
+    return visitCombo14Item7;
+
+  }
+
+  /**
    * 訪問日コンボ15を取得します。
    * @return 訪問日コンボ15
    */
@@ -9340,11 +10103,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo15.setEditable(false);
 
+      visitCombo15.setColumns(4);
+
       visitCombo15.setRenderBindPath("ITEM");
 
-      visitCombo15.setModel(getVisitCombo15Model());
+      visitCombo15.setMaxColumns(4);
 
-      visitCombo15.setPreferredSize(new Dimension(60,20));
+      visitCombo15.setModel(getVisitCombo15Model());
 
       addVisitCombo15();
     }
@@ -9470,6 +10235,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 15◇を取得します。
+   * @return 15◇
+   */
+  public ACListItem getVisitCombo15Item6(){
+    if(visitCombo15Item6==null){
+
+      visitCombo15Item6 = new ACListItem();
+
+      visitCombo15Item6.setText("15◇");
+
+      visitCombo15Item6.setSimpleValueMode(false);
+      visitCombo15Item6.put(getVisitCombo15().getRenderBindPath(), "15◇");
+      visitCombo15Item6.put(getVisitCombo15().getBindPath(), new Integer(5));
+
+      addVisitCombo15Item6();
+    }
+    return visitCombo15Item6;
+
+  }
+
+  /**
+   * 15△◇を取得します。
+   * @return 15△◇
+   */
+  public ACListItem getVisitCombo15Item7(){
+    if(visitCombo15Item7==null){
+
+      visitCombo15Item7 = new ACListItem();
+
+      visitCombo15Item7.setText("15△◇");
+
+      visitCombo15Item7.setSimpleValueMode(false);
+      visitCombo15Item7.put(getVisitCombo15().getRenderBindPath(), "15△◇");
+      visitCombo15Item7.put(getVisitCombo15().getBindPath(), new Integer(6));
+
+      addVisitCombo15Item7();
+    }
+    return visitCombo15Item7;
+
+  }
+
+  /**
    * 訪問日コンボ16を取得します。
    * @return 訪問日コンボ16
    */
@@ -9482,11 +10289,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo16.setEditable(false);
 
+      visitCombo16.setColumns(4);
+
       visitCombo16.setRenderBindPath("ITEM");
 
-      visitCombo16.setModel(getVisitCombo16Model());
+      visitCombo16.setMaxColumns(4);
 
-      visitCombo16.setPreferredSize(new Dimension(60,20));
+      visitCombo16.setModel(getVisitCombo16Model());
 
       addVisitCombo16();
     }
@@ -9612,6 +10421,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 16◇を取得します。
+   * @return 16◇
+   */
+  public ACListItem getVisitCombo16Item6(){
+    if(visitCombo16Item6==null){
+
+      visitCombo16Item6 = new ACListItem();
+
+      visitCombo16Item6.setText("16◇");
+
+      visitCombo16Item6.setSimpleValueMode(false);
+      visitCombo16Item6.put(getVisitCombo16().getRenderBindPath(), "16◇");
+      visitCombo16Item6.put(getVisitCombo16().getBindPath(), new Integer(5));
+
+      addVisitCombo16Item6();
+    }
+    return visitCombo16Item6;
+
+  }
+
+  /**
+   * 16△◇を取得します。
+   * @return 16△◇
+   */
+  public ACListItem getVisitCombo16Item7(){
+    if(visitCombo16Item7==null){
+
+      visitCombo16Item7 = new ACListItem();
+
+      visitCombo16Item7.setText("16△◇");
+
+      visitCombo16Item7.setSimpleValueMode(false);
+      visitCombo16Item7.put(getVisitCombo16().getRenderBindPath(), "16△◇");
+      visitCombo16Item7.put(getVisitCombo16().getBindPath(), new Integer(6));
+
+      addVisitCombo16Item7();
+    }
+    return visitCombo16Item7;
+
+  }
+
+  /**
    * 訪問日コンボ17を取得します。
    * @return 訪問日コンボ17
    */
@@ -9624,11 +10475,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo17.setEditable(false);
 
+      visitCombo17.setColumns(4);
+
       visitCombo17.setRenderBindPath("ITEM");
 
-      visitCombo17.setModel(getVisitCombo17Model());
+      visitCombo17.setMaxColumns(4);
 
-      visitCombo17.setPreferredSize(new Dimension(60,20));
+      visitCombo17.setModel(getVisitCombo17Model());
 
       addVisitCombo17();
     }
@@ -9754,6 +10607,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 17◇を取得します。
+   * @return 17◇
+   */
+  public ACListItem getVisitCombo17Item6(){
+    if(visitCombo17Item6==null){
+
+      visitCombo17Item6 = new ACListItem();
+
+      visitCombo17Item6.setText("17◇");
+
+      visitCombo17Item6.setSimpleValueMode(false);
+      visitCombo17Item6.put(getVisitCombo17().getRenderBindPath(), "17◇");
+      visitCombo17Item6.put(getVisitCombo17().getBindPath(), new Integer(5));
+
+      addVisitCombo17Item6();
+    }
+    return visitCombo17Item6;
+
+  }
+
+  /**
+   * 17△◇を取得します。
+   * @return 17△◇
+   */
+  public ACListItem getVisitCombo17Item7(){
+    if(visitCombo17Item7==null){
+
+      visitCombo17Item7 = new ACListItem();
+
+      visitCombo17Item7.setText("17△◇");
+
+      visitCombo17Item7.setSimpleValueMode(false);
+      visitCombo17Item7.put(getVisitCombo17().getRenderBindPath(), "17△◇");
+      visitCombo17Item7.put(getVisitCombo17().getBindPath(), new Integer(6));
+
+      addVisitCombo17Item7();
+    }
+    return visitCombo17Item7;
+
+  }
+
+  /**
    * 訪問日コンボ18を取得します。
    * @return 訪問日コンボ18
    */
@@ -9766,11 +10661,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo18.setEditable(false);
 
+      visitCombo18.setColumns(4);
+
       visitCombo18.setRenderBindPath("ITEM");
 
-      visitCombo18.setModel(getVisitCombo18Model());
+      visitCombo18.setMaxColumns(4);
 
-      visitCombo18.setPreferredSize(new Dimension(60,20));
+      visitCombo18.setModel(getVisitCombo18Model());
 
       addVisitCombo18();
     }
@@ -9896,6 +10793,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 18◇を取得します。
+   * @return 18◇
+   */
+  public ACListItem getVisitCombo18Item6(){
+    if(visitCombo18Item6==null){
+
+      visitCombo18Item6 = new ACListItem();
+
+      visitCombo18Item6.setText("18◇");
+
+      visitCombo18Item6.setSimpleValueMode(false);
+      visitCombo18Item6.put(getVisitCombo18().getRenderBindPath(), "18◇");
+      visitCombo18Item6.put(getVisitCombo18().getBindPath(), new Integer(5));
+
+      addVisitCombo18Item6();
+    }
+    return visitCombo18Item6;
+
+  }
+
+  /**
+   * 18△◇を取得します。
+   * @return 18△◇
+   */
+  public ACListItem getVisitCombo18Item7(){
+    if(visitCombo18Item7==null){
+
+      visitCombo18Item7 = new ACListItem();
+
+      visitCombo18Item7.setText("18△◇");
+
+      visitCombo18Item7.setSimpleValueMode(false);
+      visitCombo18Item7.put(getVisitCombo18().getRenderBindPath(), "18△◇");
+      visitCombo18Item7.put(getVisitCombo18().getBindPath(), new Integer(6));
+
+      addVisitCombo18Item7();
+    }
+    return visitCombo18Item7;
+
+  }
+
+  /**
    * 訪問日コンボ19を取得します。
    * @return 訪問日コンボ19
    */
@@ -9908,11 +10847,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo19.setEditable(false);
 
+      visitCombo19.setColumns(4);
+
       visitCombo19.setRenderBindPath("ITEM");
 
-      visitCombo19.setModel(getVisitCombo19Model());
+      visitCombo19.setMaxColumns(4);
 
-      visitCombo19.setPreferredSize(new Dimension(60,20));
+      visitCombo19.setModel(getVisitCombo19Model());
 
       addVisitCombo19();
     }
@@ -10038,6 +10979,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 19◇を取得します。
+   * @return 19◇
+   */
+  public ACListItem getVisitCombo19Item6(){
+    if(visitCombo19Item6==null){
+
+      visitCombo19Item6 = new ACListItem();
+
+      visitCombo19Item6.setText("19◇");
+
+      visitCombo19Item6.setSimpleValueMode(false);
+      visitCombo19Item6.put(getVisitCombo19().getRenderBindPath(), "19◇");
+      visitCombo19Item6.put(getVisitCombo19().getBindPath(), new Integer(5));
+
+      addVisitCombo19Item6();
+    }
+    return visitCombo19Item6;
+
+  }
+
+  /**
+   * 19△◇を取得します。
+   * @return 19△◇
+   */
+  public ACListItem getVisitCombo19Item7(){
+    if(visitCombo19Item7==null){
+
+      visitCombo19Item7 = new ACListItem();
+
+      visitCombo19Item7.setText("19△◇");
+
+      visitCombo19Item7.setSimpleValueMode(false);
+      visitCombo19Item7.put(getVisitCombo19().getRenderBindPath(), "19△◇");
+      visitCombo19Item7.put(getVisitCombo19().getBindPath(), new Integer(6));
+
+      addVisitCombo19Item7();
+    }
+    return visitCombo19Item7;
+
+  }
+
+  /**
    * 訪問日コンボ20を取得します。
    * @return 訪問日コンボ20
    */
@@ -10050,11 +11033,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo20.setEditable(false);
 
+      visitCombo20.setColumns(4);
+
       visitCombo20.setRenderBindPath("ITEM");
 
-      visitCombo20.setModel(getVisitCombo20Model());
+      visitCombo20.setMaxColumns(4);
 
-      visitCombo20.setPreferredSize(new Dimension(60,20));
+      visitCombo20.setModel(getVisitCombo20Model());
 
       addVisitCombo20();
     }
@@ -10180,6 +11165,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 20◇を取得します。
+   * @return 20◇
+   */
+  public ACListItem getVisitCombo20Item6(){
+    if(visitCombo20Item6==null){
+
+      visitCombo20Item6 = new ACListItem();
+
+      visitCombo20Item6.setText("20◇");
+
+      visitCombo20Item6.setSimpleValueMode(false);
+      visitCombo20Item6.put(getVisitCombo20().getRenderBindPath(), "20◇");
+      visitCombo20Item6.put(getVisitCombo20().getBindPath(), new Integer(5));
+
+      addVisitCombo20Item6();
+    }
+    return visitCombo20Item6;
+
+  }
+
+  /**
+   * 20△◇を取得します。
+   * @return 20△◇
+   */
+  public ACListItem getVisitCombo20Item7(){
+    if(visitCombo20Item7==null){
+
+      visitCombo20Item7 = new ACListItem();
+
+      visitCombo20Item7.setText("20△◇");
+
+      visitCombo20Item7.setSimpleValueMode(false);
+      visitCombo20Item7.put(getVisitCombo20().getRenderBindPath(), "20△◇");
+      visitCombo20Item7.put(getVisitCombo20().getBindPath(), new Integer(6));
+
+      addVisitCombo20Item7();
+    }
+    return visitCombo20Item7;
+
+  }
+
+  /**
    * 訪問日コンボ21を取得します。
    * @return 訪問日コンボ21
    */
@@ -10192,11 +11219,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo21.setEditable(false);
 
+      visitCombo21.setColumns(4);
+
       visitCombo21.setRenderBindPath("ITEM");
 
-      visitCombo21.setModel(getVisitCombo21Model());
+      visitCombo21.setMaxColumns(4);
 
-      visitCombo21.setPreferredSize(new Dimension(60,20));
+      visitCombo21.setModel(getVisitCombo21Model());
 
       addVisitCombo21();
     }
@@ -10322,6 +11351,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 21◇を取得します。
+   * @return 21◇
+   */
+  public ACListItem getVisitCombo21Item6(){
+    if(visitCombo21Item6==null){
+
+      visitCombo21Item6 = new ACListItem();
+
+      visitCombo21Item6.setText("21◇");
+
+      visitCombo21Item6.setSimpleValueMode(false);
+      visitCombo21Item6.put(getVisitCombo21().getRenderBindPath(), "21◇");
+      visitCombo21Item6.put(getVisitCombo21().getBindPath(), new Integer(5));
+
+      addVisitCombo21Item6();
+    }
+    return visitCombo21Item6;
+
+  }
+
+  /**
+   * 21△◇を取得します。
+   * @return 21△◇
+   */
+  public ACListItem getVisitCombo21Item7(){
+    if(visitCombo21Item7==null){
+
+      visitCombo21Item7 = new ACListItem();
+
+      visitCombo21Item7.setText("21△◇");
+
+      visitCombo21Item7.setSimpleValueMode(false);
+      visitCombo21Item7.put(getVisitCombo21().getRenderBindPath(), "21△◇");
+      visitCombo21Item7.put(getVisitCombo21().getBindPath(), new Integer(6));
+
+      addVisitCombo21Item7();
+    }
+    return visitCombo21Item7;
+
+  }
+
+  /**
    * 訪問日コンボ22を取得します。
    * @return 訪問日コンボ22
    */
@@ -10334,11 +11405,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo22.setEditable(false);
 
+      visitCombo22.setColumns(4);
+
       visitCombo22.setRenderBindPath("ITEM");
 
-      visitCombo22.setModel(getVisitCombo22Model());
+      visitCombo22.setMaxColumns(4);
 
-      visitCombo22.setPreferredSize(new Dimension(60,20));
+      visitCombo22.setModel(getVisitCombo22Model());
 
       addVisitCombo22();
     }
@@ -10464,6 +11537,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 22◇を取得します。
+   * @return 22◇
+   */
+  public ACListItem getVisitCombo22Item6(){
+    if(visitCombo22Item6==null){
+
+      visitCombo22Item6 = new ACListItem();
+
+      visitCombo22Item6.setText("22◇");
+
+      visitCombo22Item6.setSimpleValueMode(false);
+      visitCombo22Item6.put(getVisitCombo22().getRenderBindPath(), "22◇");
+      visitCombo22Item6.put(getVisitCombo22().getBindPath(), new Integer(5));
+
+      addVisitCombo22Item6();
+    }
+    return visitCombo22Item6;
+
+  }
+
+  /**
+   * 22△◇を取得します。
+   * @return 22△◇
+   */
+  public ACListItem getVisitCombo22Item7(){
+    if(visitCombo22Item7==null){
+
+      visitCombo22Item7 = new ACListItem();
+
+      visitCombo22Item7.setText("22△◇");
+
+      visitCombo22Item7.setSimpleValueMode(false);
+      visitCombo22Item7.put(getVisitCombo22().getRenderBindPath(), "22△◇");
+      visitCombo22Item7.put(getVisitCombo22().getBindPath(), new Integer(6));
+
+      addVisitCombo22Item7();
+    }
+    return visitCombo22Item7;
+
+  }
+
+  /**
    * 訪問日コンボ23を取得します。
    * @return 訪問日コンボ23
    */
@@ -10476,11 +11591,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo23.setEditable(false);
 
+      visitCombo23.setColumns(4);
+
       visitCombo23.setRenderBindPath("ITEM");
 
-      visitCombo23.setModel(getVisitCombo23Model());
+      visitCombo23.setMaxColumns(4);
 
-      visitCombo23.setPreferredSize(new Dimension(60,20));
+      visitCombo23.setModel(getVisitCombo23Model());
 
       addVisitCombo23();
     }
@@ -10606,6 +11723,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 23◇を取得します。
+   * @return 23◇
+   */
+  public ACListItem getVisitCombo23Item6(){
+    if(visitCombo23Item6==null){
+
+      visitCombo23Item6 = new ACListItem();
+
+      visitCombo23Item6.setText("23◇");
+
+      visitCombo23Item6.setSimpleValueMode(false);
+      visitCombo23Item6.put(getVisitCombo23().getRenderBindPath(), "23◇");
+      visitCombo23Item6.put(getVisitCombo23().getBindPath(), new Integer(5));
+
+      addVisitCombo23Item6();
+    }
+    return visitCombo23Item6;
+
+  }
+
+  /**
+   * 23△◇を取得します。
+   * @return 23△◇
+   */
+  public ACListItem getVisitCombo23Item7(){
+    if(visitCombo23Item7==null){
+
+      visitCombo23Item7 = new ACListItem();
+
+      visitCombo23Item7.setText("23△◇");
+
+      visitCombo23Item7.setSimpleValueMode(false);
+      visitCombo23Item7.put(getVisitCombo23().getRenderBindPath(), "23△◇");
+      visitCombo23Item7.put(getVisitCombo23().getBindPath(), new Integer(6));
+
+      addVisitCombo23Item7();
+    }
+    return visitCombo23Item7;
+
+  }
+
+  /**
    * 訪問日コンボ24を取得します。
    * @return 訪問日コンボ24
    */
@@ -10618,11 +11777,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo24.setEditable(false);
 
+      visitCombo24.setColumns(4);
+
       visitCombo24.setRenderBindPath("ITEM");
 
-      visitCombo24.setModel(getVisitCombo24Model());
+      visitCombo24.setMaxColumns(4);
 
-      visitCombo24.setPreferredSize(new Dimension(60,20));
+      visitCombo24.setModel(getVisitCombo24Model());
 
       addVisitCombo24();
     }
@@ -10748,6 +11909,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 24◇を取得します。
+   * @return 24◇
+   */
+  public ACListItem getVisitCombo24Item6(){
+    if(visitCombo24Item6==null){
+
+      visitCombo24Item6 = new ACListItem();
+
+      visitCombo24Item6.setText("24◇");
+
+      visitCombo24Item6.setSimpleValueMode(false);
+      visitCombo24Item6.put(getVisitCombo24().getRenderBindPath(), "24◇");
+      visitCombo24Item6.put(getVisitCombo24().getBindPath(), new Integer(5));
+
+      addVisitCombo24Item6();
+    }
+    return visitCombo24Item6;
+
+  }
+
+  /**
+   * 24△◇を取得します。
+   * @return 24△◇
+   */
+  public ACListItem getVisitCombo24Item7(){
+    if(visitCombo24Item7==null){
+
+      visitCombo24Item7 = new ACListItem();
+
+      visitCombo24Item7.setText("24△◇");
+
+      visitCombo24Item7.setSimpleValueMode(false);
+      visitCombo24Item7.put(getVisitCombo24().getRenderBindPath(), "24△◇");
+      visitCombo24Item7.put(getVisitCombo24().getBindPath(), new Integer(6));
+
+      addVisitCombo24Item7();
+    }
+    return visitCombo24Item7;
+
+  }
+
+  /**
    * 訪問日コンボ25を取得します。
    * @return 訪問日コンボ25
    */
@@ -10760,11 +11963,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo25.setEditable(false);
 
+      visitCombo25.setColumns(4);
+
       visitCombo25.setRenderBindPath("ITEM");
 
-      visitCombo25.setModel(getVisitCombo25Model());
+      visitCombo25.setMaxColumns(4);
 
-      visitCombo25.setPreferredSize(new Dimension(60,20));
+      visitCombo25.setModel(getVisitCombo25Model());
 
       addVisitCombo25();
     }
@@ -10890,6 +12095,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 25◇を取得します。
+   * @return 25◇
+   */
+  public ACListItem getVisitCombo25Item6(){
+    if(visitCombo25Item6==null){
+
+      visitCombo25Item6 = new ACListItem();
+
+      visitCombo25Item6.setText("25◇");
+
+      visitCombo25Item6.setSimpleValueMode(false);
+      visitCombo25Item6.put(getVisitCombo25().getRenderBindPath(), "25◇");
+      visitCombo25Item6.put(getVisitCombo25().getBindPath(), new Integer(5));
+
+      addVisitCombo25Item6();
+    }
+    return visitCombo25Item6;
+
+  }
+
+  /**
+   * 25△◇を取得します。
+   * @return 25△◇
+   */
+  public ACListItem getVisitCombo25Item7(){
+    if(visitCombo25Item7==null){
+
+      visitCombo25Item7 = new ACListItem();
+
+      visitCombo25Item7.setText("25△◇");
+
+      visitCombo25Item7.setSimpleValueMode(false);
+      visitCombo25Item7.put(getVisitCombo25().getRenderBindPath(), "25△◇");
+      visitCombo25Item7.put(getVisitCombo25().getBindPath(), new Integer(6));
+
+      addVisitCombo25Item7();
+    }
+    return visitCombo25Item7;
+
+  }
+
+  /**
    * 訪問日コンボ26を取得します。
    * @return 訪問日コンボ26
    */
@@ -10902,11 +12149,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo26.setEditable(false);
 
+      visitCombo26.setColumns(4);
+
       visitCombo26.setRenderBindPath("ITEM");
 
-      visitCombo26.setModel(getVisitCombo26Model());
+      visitCombo26.setMaxColumns(4);
 
-      visitCombo26.setPreferredSize(new Dimension(60,20));
+      visitCombo26.setModel(getVisitCombo26Model());
 
       addVisitCombo26();
     }
@@ -11032,6 +12281,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 26◇を取得します。
+   * @return 26◇
+   */
+  public ACListItem getVisitCombo26Item6(){
+    if(visitCombo26Item6==null){
+
+      visitCombo26Item6 = new ACListItem();
+
+      visitCombo26Item6.setText("26◇");
+
+      visitCombo26Item6.setSimpleValueMode(false);
+      visitCombo26Item6.put(getVisitCombo26().getRenderBindPath(), "26◇");
+      visitCombo26Item6.put(getVisitCombo26().getBindPath(), new Integer(5));
+
+      addVisitCombo26Item6();
+    }
+    return visitCombo26Item6;
+
+  }
+
+  /**
+   * 26△◇を取得します。
+   * @return 26△◇
+   */
+  public ACListItem getVisitCombo26Item7(){
+    if(visitCombo26Item7==null){
+
+      visitCombo26Item7 = new ACListItem();
+
+      visitCombo26Item7.setText("26△◇");
+
+      visitCombo26Item7.setSimpleValueMode(false);
+      visitCombo26Item7.put(getVisitCombo26().getRenderBindPath(), "26△◇");
+      visitCombo26Item7.put(getVisitCombo26().getBindPath(), new Integer(6));
+
+      addVisitCombo26Item7();
+    }
+    return visitCombo26Item7;
+
+  }
+
+  /**
    * 訪問日コンボ27を取得します。
    * @return 訪問日コンボ27
    */
@@ -11044,11 +12335,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo27.setEditable(false);
 
+      visitCombo27.setColumns(4);
+
       visitCombo27.setRenderBindPath("ITEM");
 
-      visitCombo27.setModel(getVisitCombo27Model());
+      visitCombo27.setMaxColumns(4);
 
-      visitCombo27.setPreferredSize(new Dimension(60,20));
+      visitCombo27.setModel(getVisitCombo27Model());
 
       addVisitCombo27();
     }
@@ -11174,6 +12467,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 27◇を取得します。
+   * @return 27◇
+   */
+  public ACListItem getVisitCombo27Item6(){
+    if(visitCombo27Item6==null){
+
+      visitCombo27Item6 = new ACListItem();
+
+      visitCombo27Item6.setText("27◇");
+
+      visitCombo27Item6.setSimpleValueMode(false);
+      visitCombo27Item6.put(getVisitCombo27().getRenderBindPath(), "27◇");
+      visitCombo27Item6.put(getVisitCombo27().getBindPath(), new Integer(5));
+
+      addVisitCombo27Item6();
+    }
+    return visitCombo27Item6;
+
+  }
+
+  /**
+   * 27△◇を取得します。
+   * @return 27△◇
+   */
+  public ACListItem getVisitCombo27Item7(){
+    if(visitCombo27Item7==null){
+
+      visitCombo27Item7 = new ACListItem();
+
+      visitCombo27Item7.setText("27△◇");
+
+      visitCombo27Item7.setSimpleValueMode(false);
+      visitCombo27Item7.put(getVisitCombo27().getRenderBindPath(), "27△◇");
+      visitCombo27Item7.put(getVisitCombo27().getBindPath(), new Integer(6));
+
+      addVisitCombo27Item7();
+    }
+    return visitCombo27Item7;
+
+  }
+
+  /**
    * 訪問日コンボ28を取得します。
    * @return 訪問日コンボ28
    */
@@ -11186,11 +12521,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo28.setEditable(false);
 
+      visitCombo28.setColumns(4);
+
       visitCombo28.setRenderBindPath("ITEM");
 
-      visitCombo28.setModel(getVisitCombo28Model());
+      visitCombo28.setMaxColumns(4);
 
-      visitCombo28.setPreferredSize(new Dimension(60,20));
+      visitCombo28.setModel(getVisitCombo28Model());
 
       addVisitCombo28();
     }
@@ -11316,6 +12653,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 28◇を取得します。
+   * @return 28◇
+   */
+  public ACListItem getVisitCombo28Item6(){
+    if(visitCombo28Item6==null){
+
+      visitCombo28Item6 = new ACListItem();
+
+      visitCombo28Item6.setText("28◇");
+
+      visitCombo28Item6.setSimpleValueMode(false);
+      visitCombo28Item6.put(getVisitCombo28().getRenderBindPath(), "28◇");
+      visitCombo28Item6.put(getVisitCombo28().getBindPath(), new Integer(5));
+
+      addVisitCombo28Item6();
+    }
+    return visitCombo28Item6;
+
+  }
+
+  /**
+   * 28△◇を取得します。
+   * @return 28△◇
+   */
+  public ACListItem getVisitCombo28Item7(){
+    if(visitCombo28Item7==null){
+
+      visitCombo28Item7 = new ACListItem();
+
+      visitCombo28Item7.setText("28△◇");
+
+      visitCombo28Item7.setSimpleValueMode(false);
+      visitCombo28Item7.put(getVisitCombo28().getRenderBindPath(), "28△◇");
+      visitCombo28Item7.put(getVisitCombo28().getBindPath(), new Integer(6));
+
+      addVisitCombo28Item7();
+    }
+    return visitCombo28Item7;
+
+  }
+
+  /**
    * 訪問日コンボ29を取得します。
    * @return 訪問日コンボ29
    */
@@ -11328,11 +12707,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo29.setEditable(false);
 
+      visitCombo29.setColumns(4);
+
       visitCombo29.setRenderBindPath("ITEM");
 
-      visitCombo29.setModel(getVisitCombo29Model());
+      visitCombo29.setMaxColumns(4);
 
-      visitCombo29.setPreferredSize(new Dimension(60,20));
+      visitCombo29.setModel(getVisitCombo29Model());
 
       addVisitCombo29();
     }
@@ -11458,6 +12839,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 29◇を取得します。
+   * @return 29◇
+   */
+  public ACListItem getVisitCombo29Item6(){
+    if(visitCombo29Item6==null){
+
+      visitCombo29Item6 = new ACListItem();
+
+      visitCombo29Item6.setText("29◇");
+
+      visitCombo29Item6.setSimpleValueMode(false);
+      visitCombo29Item6.put(getVisitCombo29().getRenderBindPath(), "29◇");
+      visitCombo29Item6.put(getVisitCombo29().getBindPath(), new Integer(5));
+
+      addVisitCombo29Item6();
+    }
+    return visitCombo29Item6;
+
+  }
+
+  /**
+   * 29△◇を取得します。
+   * @return 29△◇
+   */
+  public ACListItem getVisitCombo29Item7(){
+    if(visitCombo29Item7==null){
+
+      visitCombo29Item7 = new ACListItem();
+
+      visitCombo29Item7.setText("29△◇");
+
+      visitCombo29Item7.setSimpleValueMode(false);
+      visitCombo29Item7.put(getVisitCombo29().getRenderBindPath(), "29△◇");
+      visitCombo29Item7.put(getVisitCombo29().getBindPath(), new Integer(6));
+
+      addVisitCombo29Item7();
+    }
+    return visitCombo29Item7;
+
+  }
+
+  /**
    * 訪問日コンボ30を取得します。
    * @return 訪問日コンボ30
    */
@@ -11470,11 +12893,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo30.setEditable(false);
 
+      visitCombo30.setColumns(4);
+
       visitCombo30.setRenderBindPath("ITEM");
 
-      visitCombo30.setModel(getVisitCombo30Model());
+      visitCombo30.setMaxColumns(4);
 
-      visitCombo30.setPreferredSize(new Dimension(60,20));
+      visitCombo30.setModel(getVisitCombo30Model());
 
       addVisitCombo30();
     }
@@ -11600,6 +13025,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 30◇を取得します。
+   * @return 30◇
+   */
+  public ACListItem getVisitCombo30Item6(){
+    if(visitCombo30Item6==null){
+
+      visitCombo30Item6 = new ACListItem();
+
+      visitCombo30Item6.setText("30◇");
+
+      visitCombo30Item6.setSimpleValueMode(false);
+      visitCombo30Item6.put(getVisitCombo30().getRenderBindPath(), "30◇");
+      visitCombo30Item6.put(getVisitCombo30().getBindPath(), new Integer(5));
+
+      addVisitCombo30Item6();
+    }
+    return visitCombo30Item6;
+
+  }
+
+  /**
+   * 30△◇を取得します。
+   * @return 30△◇
+   */
+  public ACListItem getVisitCombo30Item7(){
+    if(visitCombo30Item7==null){
+
+      visitCombo30Item7 = new ACListItem();
+
+      visitCombo30Item7.setText("30△◇");
+
+      visitCombo30Item7.setSimpleValueMode(false);
+      visitCombo30Item7.put(getVisitCombo30().getRenderBindPath(), "30△◇");
+      visitCombo30Item7.put(getVisitCombo30().getBindPath(), new Integer(6));
+
+      addVisitCombo30Item7();
+    }
+    return visitCombo30Item7;
+
+  }
+
+  /**
    * 訪問日コンボ31を取得します。
    * @return 訪問日コンボ31
    */
@@ -11612,11 +13079,13 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCombo31.setEditable(false);
 
+      visitCombo31.setColumns(4);
+
       visitCombo31.setRenderBindPath("ITEM");
 
-      visitCombo31.setModel(getVisitCombo31Model());
+      visitCombo31.setMaxColumns(4);
 
-      visitCombo31.setPreferredSize(new Dimension(60,20));
+      visitCombo31.setModel(getVisitCombo31Model());
 
       addVisitCombo31();
     }
@@ -11738,6 +13207,48 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
       addVisitCombo31Item5();
     }
     return visitCombo31Item5;
+
+  }
+
+  /**
+   * 31◇を取得します。
+   * @return 31◇
+   */
+  public ACListItem getVisitCombo31Item6(){
+    if(visitCombo31Item6==null){
+
+      visitCombo31Item6 = new ACListItem();
+
+      visitCombo31Item6.setText("31◇");
+
+      visitCombo31Item6.setSimpleValueMode(false);
+      visitCombo31Item6.put(getVisitCombo31().getRenderBindPath(), "31◇");
+      visitCombo31Item6.put(getVisitCombo31().getBindPath(), new Integer(5));
+
+      addVisitCombo31Item6();
+    }
+    return visitCombo31Item6;
+
+  }
+
+  /**
+   * 31△◇を取得します。
+   * @return 31△◇
+   */
+  public ACListItem getVisitCombo31Item7(){
+    if(visitCombo31Item7==null){
+
+      visitCombo31Item7 = new ACListItem();
+
+      visitCombo31Item7.setText("31△◇");
+
+      visitCombo31Item7.setSimpleValueMode(false);
+      visitCombo31Item7.put(getVisitCombo31().getRenderBindPath(), "31△◇");
+      visitCombo31Item7.put(getVisitCombo31().getBindPath(), new Integer(6));
+
+      addVisitCombo31Item7();
+    }
+    return visitCombo31Item7;
 
   }
 
@@ -11961,8 +13472,6 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       publicExpenseText2.setBindPath("1301149");
 
-      publicExpenseText2.setEditable(false);
-      
       publicExpenseText2.setColumns(8);
 
       publicExpenseText2.setIMEMode(InputSubset.KANJI);
@@ -12063,8 +13572,6 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
       publicExpense2Text2.setBindPath("1301150");
 
       publicExpense2Text2.setColumns(8);
-      
-      publicExpense2Text2.setEditable(false);
 
       publicExpense2Text2.setIMEMode(InputSubset.KANJI);
 
@@ -12864,6 +14371,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCareDetailedReductionGroup.setAutoWrap(false);
 
+      visitCareDetailedReductionGroup.setHgap(0);
+
       addVisitCareDetailedReductionGroup();
     }
     return visitCareDetailedReductionGroup;
@@ -13053,6 +14562,8 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCareDetailedStateRadio.setBindPath("1301143");
 
+      visitCareDetailedStateRadio.setLayout(getVisitCareDetailedStateRadioLayout());
+
       visitCareDetailedStateRadio.setUseClearButton(false);
 
       visitCareDetailedStateRadio.setModel(getVisitCareDetailedStateRadioModel());
@@ -13087,6 +14598,29 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
       addVisitCareDetailedStateRadioModel();
     }
     return visitCareDetailedStateRadioModel;
+  }
+
+  /**
+   * 状態ラジオグループ・レイアウトを取得します。
+   * @return 状態ラジオグループ・レイアウト
+   */
+  public VRLayout getVisitCareDetailedStateRadioLayout(){
+    if(visitCareDetailedStateRadioLayout==null){
+
+      visitCareDetailedStateRadioLayout = new VRLayout();
+
+      visitCareDetailedStateRadioLayout.setAutoWrap(false);
+
+      visitCareDetailedStateRadioLayout.setHgap(0);
+
+      visitCareDetailedStateRadioLayout.setLabelMargin(0);
+
+      visitCareDetailedStateRadioLayout.setVgap(0);
+
+      addVisitCareDetailedStateRadioLayout();
+    }
+    return visitCareDetailedStateRadioLayout;
+
   }
 
   /**
@@ -13184,15 +14718,15 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
       visitCareDetailedTotalMoneyStanderdEtcText.setBindPath("1301148");
 
-      visitCareDetailedTotalMoneyStanderdEtcText.setColumns(65);
+      visitCareDetailedTotalMoneyStanderdEtcText.setColumns(64);
 
-      visitCareDetailedTotalMoneyStanderdEtcText.setRows(4);
+      visitCareDetailedTotalMoneyStanderdEtcText.setRows(5);
 
       visitCareDetailedTotalMoneyStanderdEtcText.setMaxRows(4);
 
       visitCareDetailedTotalMoneyStanderdEtcText.setIMEMode(InputSubset.KANJI);
 
-      visitCareDetailedTotalMoneyStanderdEtcText.setMaxLength(300);
+      visitCareDetailedTotalMoneyStanderdEtcText.setMaxLength(128);
 
       visitCareDetailedTotalMoneyStanderdEtcText.setLineWrap(true);
 
@@ -13307,9 +14841,7 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
     visitCareDetailedBasicInfo.add(getVisitCareDetailedContentLeftUp(), VRLayout.NORTH);
 
-    visitCareDetailedBasicInfo.add(getVisitCareDetailedContentLeftCenter1(), VRLayout.CLIENT);
-
-    visitCareDetailedBasicInfo.add(getVisitCareDetailedSpecialWrites(), VRLayout.CLIENT);
+    visitCareDetailedBasicInfo.add(getVisitCareDetailedContentLeftClient(), VRLayout.CLIENT);
 
   }
 
@@ -13431,6 +14963,16 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addVisitCareDetailedPublicTake2(){
 
+  }
+
+  /**
+   * 基本情報領域・下に内部項目を追加します。
+   */
+  protected void addVisitCareDetailedContentLeftClient(){
+
+    visitCareDetailedContentLeftClient.add(getVisitCareDetailedContentLeftCenter1(), VRLayout.CLIENT);
+
+    visitCareDetailedContentLeftClient.add(getVisitCareDetailedSpecialWrites(), VRLayout.EAST);
   }
 
   /**
@@ -13576,7 +15118,7 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 高齢9/高齢8に内部項目を追加します。
+   * 高齢割合に内部項目を追加します。
    */
   protected void addVisitCareDetailedInsure5(){
 
@@ -15625,6 +17167,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
 
     getVisitCombo1Model().add(getVisitCombo1Item5());
 
+    getVisitCombo1Model().add(getVisitCombo1Item6());
+
+    getVisitCombo1Model().add(getVisitCombo1Item7());
+
   }
 
   /**
@@ -15663,6 +17209,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 1◇に内部項目を追加します。
+   */
+  protected void addVisitCombo1Item6(){
+
+  }
+
+  /**
+   * 1△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo1Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ2に内部項目を追加します。
    */
   protected void addVisitCombo2(){
@@ -15683,6 +17243,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo2Model().add(getVisitCombo2Item4());
 
     getVisitCombo2Model().add(getVisitCombo2Item5());
+
+    getVisitCombo2Model().add(getVisitCombo2Item6());
+
+    getVisitCombo2Model().add(getVisitCombo2Item7());
 
   }
 
@@ -15722,6 +17286,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 2◇に内部項目を追加します。
+   */
+  protected void addVisitCombo2Item6(){
+
+  }
+
+  /**
+   * 2△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo2Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ3に内部項目を追加します。
    */
   protected void addVisitCombo3(){
@@ -15742,6 +17320,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo3Model().add(getVisitCombo3Item4());
 
     getVisitCombo3Model().add(getVisitCombo3Item5());
+
+    getVisitCombo3Model().add(getVisitCombo3Item6());
+
+    getVisitCombo3Model().add(getVisitCombo3Item7());
 
   }
 
@@ -15781,6 +17363,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 3◇に内部項目を追加します。
+   */
+  protected void addVisitCombo3Item6(){
+
+  }
+
+  /**
+   * 3△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo3Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ4に内部項目を追加します。
    */
   protected void addVisitCombo4(){
@@ -15801,6 +17397,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo4Model().add(getVisitCombo4item4());
 
     getVisitCombo4Model().add(getVisitCombo4item5());
+
+    getVisitCombo4Model().add(getVisitCombo4item6());
+
+    getVisitCombo4Model().add(getVisitCombo4Item7());
 
   }
 
@@ -15840,6 +17440,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 4◇に内部項目を追加します。
+   */
+  protected void addVisitCombo4item6(){
+
+  }
+
+  /**
+   * 4△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo4Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ5に内部項目を追加します。
    */
   protected void addVisitCombo5(){
@@ -15860,6 +17474,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo5Model().add(getVisitCombo5Item4());
 
     getVisitCombo5Model().add(getVisitCombo5Item5());
+
+    getVisitCombo5Model().add(getVisitCombo5Item6());
+
+    getVisitCombo5Model().add(getVisitCombo5Item7());
 
   }
 
@@ -15899,6 +17517,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 5◇に内部項目を追加します。
+   */
+  protected void addVisitCombo5Item6(){
+
+  }
+
+  /**
+   * 5△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo5Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ6に内部項目を追加します。
    */
   protected void addVisitCombo6(){
@@ -15919,6 +17551,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo6Model().add(getVisitCombo6Item4());
 
     getVisitCombo6Model().add(getVisitCombo6Item5());
+
+    getVisitCombo6Model().add(getVisitCombo6Item6());
+
+    getVisitCombo6Model().add(getVisitCombo6Item7());
 
   }
 
@@ -15958,6 +17594,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 6◇に内部項目を追加します。
+   */
+  protected void addVisitCombo6Item6(){
+
+  }
+
+  /**
+   * 6△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo6Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ7に内部項目を追加します。
    */
   protected void addVisitCombo7(){
@@ -15978,6 +17628,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo7Model().add(getVisitCombo7Item4());
 
     getVisitCombo7Model().add(getVisitCombo7Item5());
+
+    getVisitCombo7Model().add(getVisitCombo7Item6());
+
+    getVisitCombo7Model().add(getVisitCombo7Item7());
 
   }
 
@@ -16017,6 +17671,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 7◇に内部項目を追加します。
+   */
+  protected void addVisitCombo7Item6(){
+
+  }
+
+  /**
+   * 7△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo7Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ8に内部項目を追加します。
    */
   protected void addVisitCombo8(){
@@ -16037,6 +17705,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo8Model().add(getVisitCombo8Item4());
 
     getVisitCombo8Model().add(getVisitCombo8Item5());
+
+    getVisitCombo8Model().add(getVisitCombo8Item6());
+
+    getVisitCombo8Model().add(getVisitCombo8Item7());
 
   }
 
@@ -16076,6 +17748,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 8◇に内部項目を追加します。
+   */
+  protected void addVisitCombo8Item6(){
+
+  }
+
+  /**
+   * 8△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo8Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ9に内部項目を追加します。
    */
   protected void addVisitCombo9(){
@@ -16096,6 +17782,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo9Model().add(getVisitCombo9Item4());
 
     getVisitCombo9Model().add(getVisitCombo9Item5());
+
+    getVisitCombo9Model().add(getVisitCombo9Item6());
+
+    getVisitCombo9Model().add(getVisitCombo9Item7());
 
   }
 
@@ -16135,6 +17825,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 9◇に内部項目を追加します。
+   */
+  protected void addVisitCombo9Item6(){
+
+  }
+
+  /**
+   * 9△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo9Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ10に内部項目を追加します。
    */
   protected void addVisitCombo10(){
@@ -16155,6 +17859,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo10Model().add(getVisitCombo10Item4());
 
     getVisitCombo10Model().add(getVisitCombo10Item5());
+
+    getVisitCombo10Model().add(getVisitCombo10Item6());
+
+    getVisitCombo10Model().add(getVisitCombo10Item7());
 
   }
 
@@ -16194,6 +17902,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 10◇に内部項目を追加します。
+   */
+  protected void addVisitCombo10Item6(){
+
+  }
+
+  /**
+   * 10△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo10Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ11に内部項目を追加します。
    */
   protected void addVisitCombo11(){
@@ -16214,6 +17936,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo11Model().add(getVisitCombo11Item4());
 
     getVisitCombo11Model().add(getVisitCombo11Item5());
+
+    getVisitCombo11Model().add(getVisitCombo11Item6());
+
+    getVisitCombo11Model().add(getVisitCombo11Item7());
 
   }
 
@@ -16253,6 +17979,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 11◇に内部項目を追加します。
+   */
+  protected void addVisitCombo11Item6(){
+
+  }
+
+  /**
+   * 11△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo11Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ12に内部項目を追加します。
    */
   protected void addVisitCombo12(){
@@ -16273,6 +18013,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo12Model().add(getVisitCombo12Item4());
 
     getVisitCombo12Model().add(getVisitCombo12Item5());
+
+    getVisitCombo12Model().add(getVisitCombo12Item6());
+
+    getVisitCombo12Model().add(getVisitCombo12Item7());
 
   }
 
@@ -16312,6 +18056,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 12◇に内部項目を追加します。
+   */
+  protected void addVisitCombo12Item6(){
+
+  }
+
+  /**
+   * 12△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo12Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ13に内部項目を追加します。
    */
   protected void addVisitCombo13(){
@@ -16332,6 +18090,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo13Model().add(getVisitCombo13Item4());
 
     getVisitCombo13Model().add(getVisitCombo13Item5());
+
+    getVisitCombo13Model().add(getVisitCombo13Item6());
+
+    getVisitCombo13Model().add(getVisitCombo13Item7());
 
   }
 
@@ -16371,6 +18133,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 13◇に内部項目を追加します。
+   */
+  protected void addVisitCombo13Item6(){
+
+  }
+
+  /**
+   * 13△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo13Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ14に内部項目を追加します。
    */
   protected void addVisitCombo14(){
@@ -16391,6 +18167,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo14Model().add(getVisitCombo14Item4());
 
     getVisitCombo14Model().add(getVisitCombo14Item5());
+
+    getVisitCombo14Model().add(getVisitCombo14Item6());
+
+    getVisitCombo14Model().add(getVisitCombo14Item7());
 
   }
 
@@ -16430,6 +18210,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 14◇に内部項目を追加します。
+   */
+  protected void addVisitCombo14Item6(){
+
+  }
+
+  /**
+   * 14△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo14Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ15に内部項目を追加します。
    */
   protected void addVisitCombo15(){
@@ -16450,6 +18244,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo15Model().add(getVisitCombo15Item4());
 
     getVisitCombo15Model().add(getVisitCombo15Item5());
+
+    getVisitCombo15Model().add(getVisitCombo15Item6());
+
+    getVisitCombo15Model().add(getVisitCombo15Item7());
 
   }
 
@@ -16489,6 +18287,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 15◇に内部項目を追加します。
+   */
+  protected void addVisitCombo15Item6(){
+
+  }
+
+  /**
+   * 15△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo15Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ16に内部項目を追加します。
    */
   protected void addVisitCombo16(){
@@ -16509,6 +18321,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo16Model().add(getVisitCombo16Item4());
 
     getVisitCombo16Model().add(getVisitCombo16Item5());
+
+    getVisitCombo16Model().add(getVisitCombo16Item6());
+
+    getVisitCombo16Model().add(getVisitCombo16Item7());
 
   }
 
@@ -16548,6 +18364,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 16◇に内部項目を追加します。
+   */
+  protected void addVisitCombo16Item6(){
+
+  }
+
+  /**
+   * 16△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo16Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ17に内部項目を追加します。
    */
   protected void addVisitCombo17(){
@@ -16568,6 +18398,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo17Model().add(getVisitCombo17Item4());
 
     getVisitCombo17Model().add(getVisitCombo17Item5());
+
+    getVisitCombo17Model().add(getVisitCombo17Item6());
+
+    getVisitCombo17Model().add(getVisitCombo17Item7());
 
   }
 
@@ -16607,6 +18441,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 17◇に内部項目を追加します。
+   */
+  protected void addVisitCombo17Item6(){
+
+  }
+
+  /**
+   * 17△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo17Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ18に内部項目を追加します。
    */
   protected void addVisitCombo18(){
@@ -16627,6 +18475,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo18Model().add(getVisitCombo18Item4());
 
     getVisitCombo18Model().add(getVisitCombo18Item5());
+
+    getVisitCombo18Model().add(getVisitCombo18Item6());
+
+    getVisitCombo18Model().add(getVisitCombo18Item7());
 
   }
 
@@ -16666,6 +18518,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 18◇に内部項目を追加します。
+   */
+  protected void addVisitCombo18Item6(){
+
+  }
+
+  /**
+   * 18△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo18Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ19に内部項目を追加します。
    */
   protected void addVisitCombo19(){
@@ -16686,6 +18552,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo19Model().add(getVisitCombo19Item4());
 
     getVisitCombo19Model().add(getVisitCombo19Item5());
+
+    getVisitCombo19Model().add(getVisitCombo19Item6());
+
+    getVisitCombo19Model().add(getVisitCombo19Item7());
 
   }
 
@@ -16725,6 +18595,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 19◇に内部項目を追加します。
+   */
+  protected void addVisitCombo19Item6(){
+
+  }
+
+  /**
+   * 19△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo19Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ20に内部項目を追加します。
    */
   protected void addVisitCombo20(){
@@ -16745,6 +18629,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo20Model().add(getVisitCombo20Item4());
 
     getVisitCombo20Model().add(getVisitCombo20Item5());
+
+    getVisitCombo20Model().add(getVisitCombo20Item6());
+
+    getVisitCombo20Model().add(getVisitCombo20Item7());
 
   }
 
@@ -16784,6 +18672,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 20◇に内部項目を追加します。
+   */
+  protected void addVisitCombo20Item6(){
+
+  }
+
+  /**
+   * 20△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo20Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ21に内部項目を追加します。
    */
   protected void addVisitCombo21(){
@@ -16804,6 +18706,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo21Model().add(getVisitCombo21Item4());
 
     getVisitCombo21Model().add(getVisitCombo21Item5());
+
+    getVisitCombo21Model().add(getVisitCombo21Item6());
+
+    getVisitCombo21Model().add(getVisitCombo21Item7());
 
   }
 
@@ -16843,6 +18749,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 21◇に内部項目を追加します。
+   */
+  protected void addVisitCombo21Item6(){
+
+  }
+
+  /**
+   * 21△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo21Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ22に内部項目を追加します。
    */
   protected void addVisitCombo22(){
@@ -16863,6 +18783,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo22Model().add(getVisitCombo22Item4());
 
     getVisitCombo22Model().add(getVisitCombo22Item5());
+
+    getVisitCombo22Model().add(getVisitCombo22Item6());
+
+    getVisitCombo22Model().add(getVisitCombo22Item7());
 
   }
 
@@ -16902,6 +18826,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 22◇に内部項目を追加します。
+   */
+  protected void addVisitCombo22Item6(){
+
+  }
+
+  /**
+   * 22△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo22Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ23に内部項目を追加します。
    */
   protected void addVisitCombo23(){
@@ -16922,6 +18860,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo23Model().add(getVisitCombo23Item4());
 
     getVisitCombo23Model().add(getVisitCombo23Item5());
+
+    getVisitCombo23Model().add(getVisitCombo23Item6());
+
+    getVisitCombo23Model().add(getVisitCombo23Item7());
 
   }
 
@@ -16961,6 +18903,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 23◇に内部項目を追加します。
+   */
+  protected void addVisitCombo23Item6(){
+
+  }
+
+  /**
+   * 23△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo23Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ24に内部項目を追加します。
    */
   protected void addVisitCombo24(){
@@ -16981,6 +18937,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo24Model().add(getVisitCombo24Item4());
 
     getVisitCombo24Model().add(getVisitCombo24Item5());
+
+    getVisitCombo24Model().add(getVisitCombo24Item6());
+
+    getVisitCombo24Model().add(getVisitCombo24Item7());
 
   }
 
@@ -17020,6 +18980,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 24◇に内部項目を追加します。
+   */
+  protected void addVisitCombo24Item6(){
+
+  }
+
+  /**
+   * 24△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo24Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ25に内部項目を追加します。
    */
   protected void addVisitCombo25(){
@@ -17040,6 +19014,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo25Model().add(getVisitCombo25Item4());
 
     getVisitCombo25Model().add(getVisitCombo25Item5());
+
+    getVisitCombo25Model().add(getVisitCombo25Item6());
+
+    getVisitCombo25Model().add(getVisitCombo25Item7());
 
   }
 
@@ -17079,6 +19057,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 25◇に内部項目を追加します。
+   */
+  protected void addVisitCombo25Item6(){
+
+  }
+
+  /**
+   * 25△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo25Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ26に内部項目を追加します。
    */
   protected void addVisitCombo26(){
@@ -17099,6 +19091,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo26Model().add(getVisitCombo26Item4());
 
     getVisitCombo26Model().add(getVisitCombo26Item5());
+
+    getVisitCombo26Model().add(getVisitCombo26Item6());
+
+    getVisitCombo26Model().add(getVisitCombo26Item7());
 
   }
 
@@ -17138,6 +19134,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 26◇に内部項目を追加します。
+   */
+  protected void addVisitCombo26Item6(){
+
+  }
+
+  /**
+   * 26△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo26Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ27に内部項目を追加します。
    */
   protected void addVisitCombo27(){
@@ -17158,6 +19168,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo27Model().add(getVisitCombo27Item4());
 
     getVisitCombo27Model().add(getVisitCombo27Item5());
+
+    getVisitCombo27Model().add(getVisitCombo27Item6());
+
+    getVisitCombo27Model().add(getVisitCombo27Item7());
 
   }
 
@@ -17197,6 +19211,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 27◇に内部項目を追加します。
+   */
+  protected void addVisitCombo27Item6(){
+
+  }
+
+  /**
+   * 27△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo27Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ28に内部項目を追加します。
    */
   protected void addVisitCombo28(){
@@ -17217,6 +19245,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo28Model().add(getVisitCombo28Item4());
 
     getVisitCombo28Model().add(getVisitCombo28Item5());
+
+    getVisitCombo28Model().add(getVisitCombo28Item6());
+
+    getVisitCombo28Model().add(getVisitCombo28Item7());
 
   }
 
@@ -17256,6 +19288,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 28◇に内部項目を追加します。
+   */
+  protected void addVisitCombo28Item6(){
+
+  }
+
+  /**
+   * 28△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo28Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ29に内部項目を追加します。
    */
   protected void addVisitCombo29(){
@@ -17276,6 +19322,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo29Model().add(getVisitCombo29Item4());
 
     getVisitCombo29Model().add(getVisitCombo29Item5());
+
+    getVisitCombo29Model().add(getVisitCombo29Item6());
+
+    getVisitCombo29Model().add(getVisitCombo29Item7());
 
   }
 
@@ -17315,6 +19365,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 29◇に内部項目を追加します。
+   */
+  protected void addVisitCombo29Item6(){
+
+  }
+
+  /**
+   * 29△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo29Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ30に内部項目を追加します。
    */
   protected void addVisitCombo30(){
@@ -17335,6 +19399,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo30Model().add(getVisitCombo30Item4());
 
     getVisitCombo30Model().add(getVisitCombo30Item5());
+
+    getVisitCombo30Model().add(getVisitCombo30Item6());
+
+    getVisitCombo30Model().add(getVisitCombo30Item7());
 
   }
 
@@ -17374,6 +19442,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 30◇に内部項目を追加します。
+   */
+  protected void addVisitCombo30Item6(){
+
+  }
+
+  /**
+   * 30△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo30Item7(){
+
+  }
+
+  /**
    * 訪問日コンボ31に内部項目を追加します。
    */
   protected void addVisitCombo31(){
@@ -17394,6 +19476,10 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
     getVisitCombo31Model().add(getVisitCombo31Item4());
 
     getVisitCombo31Model().add(getVisitCombo31Item5());
+
+    getVisitCombo31Model().add(getVisitCombo31Item6());
+
+    getVisitCombo31Model().add(getVisitCombo31Item7());
 
   }
 
@@ -17429,6 +19515,20 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
    * 31△◎に内部項目を追加します。
    */
   protected void addVisitCombo31Item5(){
+
+  }
+
+  /**
+   * 31◇に内部項目を追加します。
+   */
+  protected void addVisitCombo31Item6(){
+
+  }
+
+  /**
+   * 31△◇に内部項目を追加します。
+   */
+  protected void addVisitCombo31Item7(){
 
   }
 
@@ -17928,9 +20028,11 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   protected void addVisitCareDetailedReductionRadioModel(){
 
     getVisitCareDetailedReductionRadioItem1().setButtonIndex(1);
+
     getVisitCareDetailedReductionRadioModel().add(getVisitCareDetailedReductionRadioItem1());
 
     getVisitCareDetailedReductionRadioItem2().setButtonIndex(2);
+
     getVisitCareDetailedReductionRadioModel().add(getVisitCareDetailedReductionRadioItem2());
 
   }
@@ -17969,10 +20071,19 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   protected void addVisitCareDetailedStateRadioModel(){
 
     getVisitCareDetailedStateRadioItem1().setButtonIndex(1);
+
     getVisitCareDetailedStateRadioModel().add(getVisitCareDetailedStateRadioItem1());
 
     getVisitCareDetailedStateRadioItem2().setButtonIndex(2);
+
     getVisitCareDetailedStateRadioModel().add(getVisitCareDetailedStateRadioItem2());
+
+  }
+
+  /**
+   * 状態ラジオグループ・レイアウトに内部項目を追加します。
+   */
+  protected void addVisitCareDetailedStateRadioLayout(){
 
   }
 
@@ -18035,7 +20146,6 @@ public class QP006Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QP006Design.class.getName()));
     } catch (Exception e) {
