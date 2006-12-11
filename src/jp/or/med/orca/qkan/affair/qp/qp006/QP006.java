@@ -1348,22 +1348,6 @@ public class QP006 extends QP006Event {
 	}
 
 	/**
-	 * 「金額計算処理」イベントです。
-	 * 
-	 * @param e
-	 *            イベント情報
-	 * @throws Exception
-	 *             処理例外
-	 */
-	protected void visitCareDetailedExpenseMoneyText1FocusLost(FocusEvent e) throws Exception {
-		// 負担金額を計算する。
-		// 画面上の以下のデータを取得する。
-		// ・給付割合
-		// ・保険請求円
-		doCalcTotal();
-	}
-
-	/**
 	 * 「Enable制御処理」イベントです。
 	 * 
 	 * @param e

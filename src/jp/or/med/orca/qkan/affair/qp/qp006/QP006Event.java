@@ -1087,22 +1087,6 @@ public abstract class QP006Event extends QP006State {
             }
         }
     });
-    getVisitCareDetailedExpenseMoneyText1().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                visitCareDetailedExpenseMoneyText1FocusLost(e);
-            }catch(Throwable ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
     getVisitCareDetailedReduction().addFocusListener(new FocusAdapter(){
         private boolean lockFlag = false;
         public void focusLost(FocusEvent e) {
@@ -1581,13 +1565,6 @@ public abstract class QP006Event extends QP006State {
    * @throws Exception 処理例外
    */
   protected abstract void visitCareDetailedMoneyText50FocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「金額計算処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void visitCareDetailedExpenseMoneyText1FocusLost(FocusEvent e) throws Exception;
 
   /**
    * 「Enable制御処理」イベントです。
