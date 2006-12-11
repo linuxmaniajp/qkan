@@ -23,10 +23,19 @@ public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser
      */
     public QkanFrameEventProcesser() {
     }
-
+    private String propertyXMLPath ="properity.xml"; 
     protected String getPropertyXMLPath() {
-        return "properity.xml";
+        return propertyXMLPath;
     }
+    
+    /**
+     * 設定ファイルのパスを設定します。
+     * @param propertyXMLPath 設定ファイルのパス
+     */
+    public void setPropertyXMLPath(String propertyXMLPath) {
+        this.propertyXMLPath = propertyXMLPath;
+    }
+    
     protected String getDebuggerXMLPath() {
         return "debugger.xml";
     }

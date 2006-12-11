@@ -2,6 +2,7 @@ package jp.or.med.orca.qkan;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,6 @@ import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
 import jp.nichicom.ac.text.ACSQLSafeNullToZeroIntegerFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
-import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.bridge.sql.BridgeFirebirdSeparateTable;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindable;
@@ -4021,13 +4021,16 @@ public class QkanCommon {
     }
 
     /**
-     * 外部連携用に初期化を行います。
+     * 外部連携用にプロパティファイルフォルダを設定して初期化します。
+     * @param propertyXMLDir プロパティファイルフォルダ
      */
-    public static void initializeForBackgroundCall(){
-        ACFrame.getInstance().setFrameEventProcesser(
-                new QkanFrameEventProcesser());
+    public static void initializeForBackgroundCall(String propertyXMLDir){
+        QkanFrameEventProcesser fp = new QkanFrameEventProcesser();
+        fp.setPropertyXMLPath(propertyXMLDir+ "properity.xml");
+        ACFrame.getInstance().setFrameEventProcesser(fp);
         QkanCommon.debugInitialize();
     }
+
     /**
      * 外部連携用のDBマネージャを返します。
      * @return DBマネージャ

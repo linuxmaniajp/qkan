@@ -631,12 +631,26 @@ public class QM001 extends QM001Event {
                     }
                     transferClaim(args, "02");
                     ACFrame.getInstance().setVisible(true);
+                } else if ("showCareMeisai7".equals(args[0])) {
+                    // 利用者一覧(介護給付費明細書7)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, "03");
+                    ACFrame.getInstance().setVisible(true);
                 } else if ("showCareMeisai".equals(args[0])) {
                     // 利用者一覧(介護給付費明細書)
                     if(!canLink()){
                         return;
                     }
                     transferClaim(args, "04");
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showCarePatientClaim".equals(args[0])) {
+                    // 利用者一覧(利用者向け印刷)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, "07");
                     ACFrame.getInstance().setVisible(true);
                 } else if ("showCareSeikyu".equals(args[0])) {
                     // 利用者一覧(介護給付費請求書)
@@ -645,6 +659,56 @@ public class QM001 extends QM001Event {
                     }
                     transferClaim(args, "08");
                     ACFrame.getInstance().setVisible(true);
+                } else if ("showClaim".equals(args[0])) {
+                    // 利用者一覧(請求系)
+                    if(!canLink()){
+                        return;
+                    }
+                    transferClaim(args, args[4]);
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showResult".equals(args[0])) {
+                    // 実績
+                    if(!canLink()){
+                        return;
+                    }
+                    transferResult(args);
+                    ACFrame.getInstance().setVisible(true);
+                } else if ("showResultPrint".equals(args[0])) {
+                    // 実績から印刷指示画面
+                    if(!canLink()){
+                        return;
+                    }
+                    transferResult(args);
+                    jp.or.med.orca.qkan.affair.qs.qs001.QS001 affair = (jp.or.med.orca.qkan.affair.qs.qs001.QS001)ACFrame.getInstance().getNowPanel();
+                    //月間表を表示
+                    affair.showMonthly();
+                    ACFrame.getInstance().setVisible(true);
+                    //印刷ボタン押下
+                    buttonActionPerformed(affair.getPrintMonthly());
+                } else if ("showResultCalc".equals(args[0])) {
+                    // 実績から集計画面
+                    if(!canLink()){
+                        return;
+                    }
+                    transferResult(args);
+                    jp.or.med.orca.qkan.affair.qs.qs001.QS001 affair = (jp.or.med.orca.qkan.affair.qs.qs001.QS001)ACFrame.getInstance().getNowPanel();
+                    //月間表を表示
+                    affair.showMonthly();
+                    ACFrame.getInstance().setVisible(true);
+                    //集計ボタン押下
+                    buttonActionPerformed(affair.getMonthlyPanel().getDetailsbutton());
+                } else if ("showResultPlanUnit".equals(args[0])) {
+                    // 実績から計画単位数画面
+                    if(!canLink()){
+                        return;
+                    }
+                    transferResult(args);
+                    jp.or.med.orca.qkan.affair.qs.qs001.QS001 affair = (jp.or.med.orca.qkan.affair.qs.qs001.QS001)ACFrame.getInstance().getNowPanel();
+                    //月間表を表示
+                    affair.showMonthly();
+                    ACFrame.getInstance().setVisible(true);
+                    //集計ボタン押下
+                    buttonActionPerformed(affair.getMonthlyPanel().getPlanUnit());
                 }
             } catch (Throwable ex) {
                 ACMessageBox.showExclamation("連携処理に失敗しました。"
@@ -675,7 +739,31 @@ public class QM001 extends QM001Event {
      * @param args 引数
      * @throws Throwable 処理例外
      */
-    public static void transferPlan(String[] args) throws Throwable{
+    private static void transferPlan(String[] args) throws Throwable{
+        //利用者一覧(予定)に遷移
+        transferPlanOrResult(args, "QS001");
+        //予定作成ボタン押下
+        buttonActionPerformed(((jp.or.med.orca.qkan.affair.qu.qu001.QU001)ACFrame.getInstance().getNowPanel()).getPlanInsert());
+     }
+
+    /**
+     * 予定作成画面へ遷移します。
+     * @param args 引数
+     * @throws Throwable 処理例外
+     */
+    private static void transferResult(String[] args) throws Throwable{
+        //利用者一覧(実績)に遷移
+        transferPlanOrResult(args, "QR001");
+        //実績作成ボタン押下
+        buttonActionPerformed(((jp.or.med.orca.qkan.affair.qu.qu001.QU001)ACFrame.getInstance().getNowPanel()).getResultInsert());
+     }
+
+    /**
+     * 予定作成画面へ遷移します。
+     * @param args 引数
+     * @throws Throwable 処理例外
+     */
+    private static void transferPlanOrResult(String[] args, String nextAffair) throws Throwable{
         ACFrame.getInstance().setVisible(false);
 
         //1:ログイン事業所番号
@@ -689,29 +777,27 @@ public class QM001 extends QM001Event {
                                 .getName(), param, true));
 
         //次遷移先
-        param.setData("NEXT_AFFAIR", "QS001");
+        param.setData("NEXT_AFFAIR", nextAffair);
         //2:利用者ID
         param.setData("PATIENT_ID", args[2]);
         //3:対象年月
         param.setData("TARGET_DATE", ACCastUtilities.toDate(args[3]));
         
-        //利用者一覧(予定)に遷移
+        //利用者一覧に遷移
         ACFrame
                 .getInstance()
                 .next(
                         new ACAffairInfo(
                                 jp.or.med.orca.qkan.affair.qu.qu001.QU001.class
                                         .getName(), param, true));
-        //予定作成ボタン押下
-        buttonActionPerformed(((jp.or.med.orca.qkan.affair.qu.qu001.QU001)ACFrame.getInstance().getNowPanel()).getPlanInsert());
      }
-
+    
     /**
-     * 予定作成画面へ遷移します。
+     * 利用者一覧(請求)画面へ遷移します。
      * @param args 引数
      * @throws Throwable 処理例外
      */
-    public static void transferClaim(String[] args, String affairParam) throws Throwable{
+    private static void transferClaim(String[] args, String affairParam) throws Throwable{
         ACFrame.getInstance().setVisible(false);
 
         //1:ログイン事業所番号
@@ -765,7 +851,7 @@ public class QM001 extends QM001Event {
      * ボタン押下を擬似実行します。
      * @param btn ボタン
      */
-    public static void buttonActionPerformed(JButton btn){
+    private static void buttonActionPerformed(JButton btn){
         ActionEvent e=new ActionEvent (btn, ActionEvent.ACTION_PERFORMED, "" );
         ActionListener[] listeners=btn.getActionListeners();
         for(int i=listeners.length-1; i>=0; i--){
