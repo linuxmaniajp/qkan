@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/14  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2006/12/25  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -126,6 +127,16 @@ public class QS001123Design extends QS001ServicePanel {
 
   private ACRadioButtonItem classEmploymentRadioItem2;
 
+  private ACValueArrayRadioButtonGroup calculationDivision;
+
+  private ACLabelContainer calculationDivisionContainer;
+
+  private ACListModelAdapter calculationDivisionModel;
+
+  private ACRadioButtonItem calculationDivisionNormal;
+
+  private ACRadioButtonItem calculationDivisionBasicOnly;
+
   private ACIntegerCheckBox crackOnDayCheck;
 
   //getter
@@ -162,9 +173,9 @@ public class QS001123Design extends QS001ServicePanel {
 
       providerDivisionRadio.setBindPath("1710101");
 
-      providerDivisionRadio.setModel(getProviderDivisionRadioModel());
-
       providerDivisionRadio.setUseClearButton(false);
+
+      providerDivisionRadio.setModel(getProviderDivisionRadioModel());
 
       addProviderDivisionRadio();
     }
@@ -253,9 +264,9 @@ public class QS001123Design extends QS001ServicePanel {
 
       serviceDivisionRadio.setBindPath("1710102");
 
-      serviceDivisionRadio.setModel(getServiceDivisionRadioModel());
-
       serviceDivisionRadio.setUseClearButton(false);
+
+      serviceDivisionRadio.setModel(getServiceDivisionRadioModel());
 
       addServiceDivisionRadio();
     }
@@ -344,9 +355,9 @@ public class QS001123Design extends QS001ServicePanel {
 
       anytimeCorrespondenceTypeRadio.setBindPath("1710104");
 
-      anytimeCorrespondenceTypeRadio.setModel(getAnytimeCorrespondenceTypeRadioModel());
-
       anytimeCorrespondenceTypeRadio.setUseClearButton(false);
+
+      anytimeCorrespondenceTypeRadio.setModel(getAnytimeCorrespondenceTypeRadioModel());
 
       addAnytimeCorrespondenceTypeRadio();
     }
@@ -435,9 +446,9 @@ public class QS001123Design extends QS001ServicePanel {
 
       classEmploymentRadio.setBindPath("1710105");
 
-      classEmploymentRadio.setModel(getClassEmploymentRadioModel());
-
       classEmploymentRadio.setUseClearButton(false);
+
+      classEmploymentRadio.setModel(getClassEmploymentRadioModel());
 
       addClassEmploymentRadio();
     }
@@ -514,6 +525,99 @@ public class QS001123Design extends QS001ServicePanel {
   }
 
   /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACValueArrayRadioButtonGroup getCalculationDivision(){
+    if(calculationDivision==null){
+
+      calculationDivision = new ACValueArrayRadioButtonGroup();
+
+      getCalculationDivisionContainer().setText("算定区分");
+
+      calculationDivision.setBindPath("9");
+
+      calculationDivision.setUseClearButton(false);
+
+      calculationDivision.setModel(getCalculationDivisionModel());
+
+      calculationDivision.setValues(new int[]{1,3});
+
+      addCalculationDivision();
+    }
+    return calculationDivision;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getCalculationDivisionContainer(){
+    if(calculationDivisionContainer==null){
+      calculationDivisionContainer = new ACLabelContainer();
+      calculationDivisionContainer.setFollowChildEnabled(true);
+      calculationDivisionContainer.setVAlignment(VRLayout.CENTER);
+      calculationDivisionContainer.add(getCalculationDivision(), null);
+    }
+    return calculationDivisionContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getCalculationDivisionModel(){
+    if(calculationDivisionModel==null){
+      calculationDivisionModel = new ACListModelAdapter();
+      addCalculationDivisionModel();
+    }
+    return calculationDivisionModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getCalculationDivisionNormal(){
+    if(calculationDivisionNormal==null){
+
+      calculationDivisionNormal = new ACRadioButtonItem();
+
+      calculationDivisionNormal.setText("通常");
+
+      calculationDivisionNormal.setGroup(getCalculationDivision());
+
+      calculationDivisionNormal.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionNormal();
+    }
+    return calculationDivisionNormal;
+
+  }
+
+  /**
+   * 基本のみを取得します。
+   * @return 基本のみ
+   */
+  public ACRadioButtonItem getCalculationDivisionBasicOnly(){
+    if(calculationDivisionBasicOnly==null){
+
+      calculationDivisionBasicOnly = new ACRadioButtonItem();
+
+      calculationDivisionBasicOnly.setText("基本のみ");
+
+      calculationDivisionBasicOnly.setGroup(getCalculationDivision());
+
+      calculationDivisionBasicOnly.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionBasicOnly();
+    }
+    return calculationDivisionBasicOnly;
+
+  }
+
+  /**
    * 日割を取得します。
    * @return 日割
    */
@@ -578,6 +682,8 @@ public class QS001123Design extends QS001ServicePanel {
 
     nightTypeVisitCarePatterns.add(getClassEmploymentRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    nightTypeVisitCarePatterns.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     nightTypeVisitCarePatterns.add(getCrackOnDayCheck(), VRLayout.FLOW);
 
   }
@@ -595,9 +701,11 @@ public class QS001123Design extends QS001ServicePanel {
   protected void addProviderDivisionRadioModel(){
 
     getProviderDivisionRadioItem1().setButtonIndex(1);
+
     getProviderDivisionRadioModel().add(getProviderDivisionRadioItem1());
 
     getProviderDivisionRadioItem2().setButtonIndex(2);
+
     getProviderDivisionRadioModel().add(getProviderDivisionRadioItem2());
 
   }
@@ -629,9 +737,11 @@ public class QS001123Design extends QS001ServicePanel {
   protected void addServiceDivisionRadioModel(){
 
     getServiceDivisionRadioItem1().setButtonIndex(1);
+
     getServiceDivisionRadioModel().add(getServiceDivisionRadioItem1());
 
     getServiceDivisionRadioItem2().setButtonIndex(2);
+
     getServiceDivisionRadioModel().add(getServiceDivisionRadioItem2());
 
   }
@@ -663,9 +773,11 @@ public class QS001123Design extends QS001ServicePanel {
   protected void addAnytimeCorrespondenceTypeRadioModel(){
 
     getAnytimeCorrespondenceTypeRadioItem1().setButtonIndex(1);
+
     getAnytimeCorrespondenceTypeRadioModel().add(getAnytimeCorrespondenceTypeRadioItem1());
 
     getAnytimeCorrespondenceTypeRadioItem2().setButtonIndex(2);
+
     getAnytimeCorrespondenceTypeRadioModel().add(getAnytimeCorrespondenceTypeRadioItem2());
 
   }
@@ -697,9 +809,11 @@ public class QS001123Design extends QS001ServicePanel {
   protected void addClassEmploymentRadioModel(){
 
     getClassEmploymentRadioItem1().setButtonIndex(1);
+
     getClassEmploymentRadioModel().add(getClassEmploymentRadioItem1());
 
     getClassEmploymentRadioItem2().setButtonIndex(2);
+
     getClassEmploymentRadioModel().add(getClassEmploymentRadioItem2());
 
   }
@@ -715,6 +829,42 @@ public class QS001123Design extends QS001ServicePanel {
    * 3級に内部項目を追加します。
    */
   protected void addClassEmploymentRadioItem2(){
+
+  }
+
+  /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addCalculationDivision(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addCalculationDivisionModel(){
+
+    getCalculationDivisionNormal().setButtonIndex(1);
+
+    getCalculationDivisionModel().add(getCalculationDivisionNormal());
+
+    getCalculationDivisionBasicOnly().setButtonIndex(3);
+
+    getCalculationDivisionModel().add(getCalculationDivisionBasicOnly());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addCalculationDivisionNormal(){
+
+  }
+
+  /**
+   * 基本のみに内部項目を追加します。
+   */
+  protected void addCalculationDivisionBasicOnly(){
 
   }
 
@@ -747,7 +897,6 @@ public class QS001123Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QS001123Design.class.getName()));
     } catch (Exception e) {
