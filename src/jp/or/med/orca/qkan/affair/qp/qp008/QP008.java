@@ -29,17 +29,17 @@
 
 package jp.or.med.orca.qkan.affair.qp.qp008;
 
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
 
-import org.omg.CORBA.Environment;
-
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.filechooser.ACFileChooser;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.vr.util.*;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 import jp.or.med.orca.qkan.affair.qp.qp009.QP009;
 
@@ -239,6 +239,7 @@ public class QP008 extends QP008Event {
                         
                         
                     }
+                    saveProperty();
                 }                
                 
             }

@@ -1024,17 +1024,20 @@ public class QO013 extends QO013Event {
                 // 分割した文字列1つ目が5文字以上かチェックする。
                 if (tels[0].length() > 6) {
                     String[] telSrc;
-                    telSrc = new String[3];
-
-                    // １つ設定
-                    telSrc[0] = tels[0].substring(0, 6);
                     if (tels[0].length() > 10) {
                         // 9文字より多いので2、3と設定
+                        telSrc = new String[3];
+                        // １つ設定
+                        telSrc[0] = tels[0].substring(0, 6);
                         telSrc[1] = tels[0].substring(6, 10);
                         telSrc[2] = tels[0].substring(10, Math.min(14,tels[0].length()));
                     } else {
                         // 9文字未満は2つめまで
+                        telSrc = new String[2];
+                        // １つ設定
+                        telSrc[0] = tels[0].substring(0, 6);
                         telSrc[1] = tels[0].substring(6, tels[0].length());
+                         
                     }
                     tels = telSrc;
                 }

@@ -115,6 +115,9 @@ public class QkanAffairContainer extends ACAffairContainer {
 
     /**
      * プロパティファイルに値を書き込みます。
+     * <p>
+     * [@link #saveProperty()] を呼び出すまで、実ファイルへの書き込みは行われません。
+     * </p>
      * 
      * @param path キー
      * @param value キーに対応する値
@@ -123,9 +126,21 @@ public class QkanAffairContainer extends ACAffairContainer {
     protected void setProperty(String path, String value) throws Exception {
         ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
         xml.setForceValueAt(path, value);
-        xml.write();
+        //xml.write();
     }
-
+    
+    /**
+     * プロパティファイルに値を書き込みます。
+     * <p>
+     * {@link #setProperty(String, String)}で予約した変更値を書き出します。
+     * </p>
+     * 
+     * @throws Exception 処理例外
+     */
+    protected void saveProperty() throws Exception {
+        ACFrame.getInstance().getPropertyXML().write();
+    }
+    
     /**
      * DBから現在の業務ID/モードに対応したウィンドウタイトル・業務ボタンバーを取得して設定します。
      * 

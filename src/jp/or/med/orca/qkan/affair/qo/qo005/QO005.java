@@ -909,17 +909,19 @@ public class QO005 extends QO005Event {
 			// PRIVATE_EXPENSES のVALUEを設定する。
 			setProperty("PrintConfig/PrivateExpenses", String.valueOf(params.getData("PRIVATE_EXPENSES")));
 
+            saveProperty();
+            
 			return true;
 		}
 		return false;
 	}
 
+
 	/**
-	 * 「画面初期値の設定」に関する処理を行ないます。
-	 * 
-	 * @throws Exception
-	 *             処理例外
-	 */
+     * 「画面初期値の設定」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
 	public void setInitValue() throws Exception {
 		// ※ウィンドウタイトルの設定
 		// 業務情報レコードを取得する。

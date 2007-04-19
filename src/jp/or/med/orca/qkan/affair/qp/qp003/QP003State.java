@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/02/17  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2007/02/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -108,6 +109,18 @@ public class QP003State extends QP003Design {
         getInsert().setVisible(false);
 
         getUpdate().setVisible(true);
+
+  }
+
+  /**
+   * 「内税非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVISIBLE_INNER_TAX() throws Exception {
+
+        getContentInnerTaxLabel().setVisible(false);
+
+        getContentInnerTaxText().setVisible(false);
 
   }
 

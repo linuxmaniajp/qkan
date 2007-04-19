@@ -204,6 +204,8 @@ public class QP007 extends QP007Event {
         // 設定ファイルのClaim-StyleCheckに1を設定する。
         setProperty("Claim/StyleCheck", String.valueOf(settings.getData("STYLE_CHECK")));
         
+        saveProperty();
+        
         // 当ダイアログ呼び出し元に、「印刷対象」「請求書日付」「領収書日付」「合計・小計を印刷する」「請求書に振込先の枠を印刷する」
         // 「医療費控除対応版で出力」に設定された値を返し、ダイアログを閉じる。
         

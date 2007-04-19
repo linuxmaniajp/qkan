@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2006/06/02  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2007/03/08  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -99,8 +99,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_COMBO_DETAIL(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -145,8 +145,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_COUNT_SELF_PAY(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -209,8 +209,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_NEW_CONTENT_KEY(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -261,8 +261,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_NEW_CONTENT_SORT(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -313,8 +313,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_INSERT_FIXED_FORM(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -373,8 +373,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_CLAIM_PATIENT_DETAIL(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -416,6 +416,8 @@ public class QP003SQL extends QP003State {
     sb.append(",CLAIM_PATIENT_DETAIL.OTHER_PAY_NO5");
 
     sb.append(",CLAIM_PATIENT_DETAIL.KOJO_TARGET");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.INNER_TAX");
 
     sb.append(",CLAIM_PATIENT_DETAIL.LAST_TIME");
 
@@ -523,8 +525,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_INSERT_CLAIM_PATIENT_DETAIL(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -568,6 +570,8 @@ public class QP003SQL extends QP003State {
     sb.append(",OTHER_PAY_NO5");
 
     sb.append(",KOJO_TARGET");
+
+    sb.append(",INNER_TAX");
 
     sb.append(",LAST_TIME");
 
@@ -645,6 +649,10 @@ public class QP003SQL extends QP003State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("INNER_TAX", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CURRENT_TIMESTAMP");
 
     sb.append(")");
@@ -661,8 +669,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_INSERT_CLAIM(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -751,8 +759,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_UPDATE_CLAIM_PATIENT_DETAIL(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");
@@ -905,6 +913,14 @@ public class QP003SQL extends QP003State {
 
     sb.append(",");
 
+    sb.append(" INNER_TAX");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("INNER_TAX", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" LAST_TIME");
 
     sb.append(" =");
@@ -935,8 +951,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_NEW_CLAIM_PATIENT_DETAIL(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1031,8 +1047,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_LAST_CLAIM_NO(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1185,8 +1201,8 @@ public class QP003SQL extends QP003State {
   public String getSQL_GET_LAST_CLAIM_PATIENT(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");

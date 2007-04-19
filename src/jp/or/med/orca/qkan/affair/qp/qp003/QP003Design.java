@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/09/19  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2007/03/16  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -220,6 +220,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel contentTotalLabel;
 
   private ACTextField contentTotalText;
+
+  private ACLabel contentInnerTaxLabel;
+
+  private ACTextField contentInnerTaxText;
 
   private ACLabel contentKoujyoLabel;
 
@@ -1028,7 +1032,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcUseTitle = new ACTextField();
 
-      contentEtcUseTitle.setText("利用料");
+      contentEtcUseTitle.setText("利用料(税込)");
 
       contentEtcUseTitle.setEditable(false);
 
@@ -1623,7 +1627,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentTotalText.setBindPath("SUM");
 
-      contentTotalText.setEnabled(false);
+      contentTotalText.setEditable(false);
 
       contentTotalText.setColumns(10);
 
@@ -1632,6 +1636,50 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentTotalText();
     }
     return contentTotalText;
+
+  }
+
+  /**
+   * うち消費税ラベルを取得します。
+   * @return うち消費税ラベル
+   */
+  public ACLabel getContentInnerTaxLabel(){
+    if(contentInnerTaxLabel==null){
+
+      contentInnerTaxLabel = new ACLabel();
+
+      contentInnerTaxLabel.setText("うち消費税");
+
+      addContentInnerTaxLabel();
+    }
+    return contentInnerTaxLabel;
+
+  }
+
+  /**
+   * うち消費税を取得します。
+   * @return うち消費税
+   */
+  public ACTextField getContentInnerTaxText(){
+    if(contentInnerTaxText==null){
+
+      contentInnerTaxText = new ACTextField();
+
+      contentInnerTaxText.setBindPath("INNER_TAX");
+
+      contentInnerTaxText.setColumns(10);
+
+      contentInnerTaxText.setCharType(VRCharType.ONLY_DIGIT);
+
+      contentInnerTaxText.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentInnerTaxText.setIMEMode(InputSubset.LATIN);
+
+      contentInnerTaxText.setMaxLength(8);
+
+      addContentInnerTaxText();
+    }
+    return contentInnerTaxText;
 
   }
 
@@ -2271,6 +2319,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentTotals.add(getContentTotalText(), VRLayout.FLOW_RETURN);
 
+    contentTotals.add(getContentInnerTaxLabel(), VRLayout.FLOW_RETURN);
+
+    contentTotals.add(getContentInnerTaxText(), VRLayout.FLOW);
+
     contentTotals.add(getContentKoujyoLabel(), VRLayout.FLOW_RETURN);
 
     contentTotals.add(getContentKoujyoText(), VRLayout.FLOW);
@@ -2288,6 +2340,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * 合計額に内部項目を追加します。
    */
   protected void addContentTotalText(){
+
+  }
+
+  /**
+   * うち消費税ラベルに内部項目を追加します。
+   */
+  protected void addContentInnerTaxLabel(){
+
+  }
+
+  /**
+   * うち消費税に内部項目を追加します。
+   */
+  protected void addContentInnerTaxText(){
 
   }
 

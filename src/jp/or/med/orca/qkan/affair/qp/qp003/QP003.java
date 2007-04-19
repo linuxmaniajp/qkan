@@ -83,6 +83,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -146,6 +147,21 @@ public class QP003 extends QP003Event {
         // コンボ候補の設定
         comboInitialize();
 
+        // [V5.3.4対応 利用者向け領収書] kamitsukasa.kazuyoshi add start
+        if(
+                ACDateUtilities.compareOnDay(DATE_20070401, getClaimDate()) > 0){
+        	// 平成19年4月1日より過去の日付の場合
+        	// 内税ラベル、テキストを非表示に設定する。
+        	setState_INVISIBLE_INNER_TAX();
+        	getContentEtcUseTitle().setText("利用料");
+        }else{
+        	// 請求年月(claimDate)が「平成19年4月」以降の場合	
+        	// うち消費税テキストに初期値：0を表示する。
+        	getContentInnerTaxText().setText("0");
+        }
+        
+        // [V5.3.4対応 利用者向け領収書] kamitsukasa.kazuyoshi add end
+        
         // 業務情報マスタより、データを取得する。
         setAffairTitle("QP003", getButtons());
         // 取得したデータのウィンドウタイトル（WINDOW_TITLE）をウィンドウに設定する。

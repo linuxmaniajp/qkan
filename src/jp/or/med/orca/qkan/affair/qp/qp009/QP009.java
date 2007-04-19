@@ -60,6 +60,8 @@ public class QP009 extends QP009Event {
         } else {
             setProperty("Claim/Info","0");
         }
+        saveProperty();
+        
         dispose();
     }
 

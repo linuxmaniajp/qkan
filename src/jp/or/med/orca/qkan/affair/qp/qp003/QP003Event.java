@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/06/02  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2007/02/27  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -357,6 +357,7 @@ public abstract class QP003Event extends QP003SQL {
   private ACPassiveKey PASSIVE_CHECK_KEY;
   public static final int STYLE_TYPE_CLAIM_FOR_PATIENT = 30101;
   public static final int CATEGORY_NO_CLAIM_FOR_PATIENT = 16;
+  public static final Date DATE_20070401 = ACCastUtilities.toDate("2007/04/01", null);
   private int patientId;
   private int listIndex;
   private int sum;

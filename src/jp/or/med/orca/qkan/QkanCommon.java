@@ -2472,6 +2472,31 @@ public class QkanCommon {
         } else {
             where = appendFrontWhere(where);
         }
+        
+        
+        //2007/03/19 tozo TANAKA begin move-to 年度またぎ対応のため
+        // 親情報特定のためのSQL文
+        sb = new StringBuffer();
+        sb.append("SELECT");
+        sb.append(" CLAIM.CLAIM_ID");
+        sb.append(" FROM");
+        sb.append(" CLAIM");
+        sb.append(where);
+        VRList ids = dbm.executeQuery(sb.toString());
+        
+        int end = ids.size();
+        if (end > 0) {
+            // 既存の親IDをIN句として連結
+            sb = new StringBuffer();
+            sb.append(".CLAIM_ID IN (");
+            sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
+            for (int i = 1; i < end; i++) {
+                sb.append(",");
+                sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
+            }
+            sb.append(")");
+            String parentIDSQL = sb.toString();
+            //2007/03/19 tozo TANAKA end move-to 年度またぎ対応のため
 
         // 親情報特定のためのSQL文
         sb = new StringBuffer();
@@ -2502,27 +2527,27 @@ public class QkanCommon {
 
 
             // 一括削除 開始 ====================================================
-            // 親情報特定のためのSQL文
-            sb = new StringBuffer();
-            sb.append("SELECT");
-            sb.append(" CLAIM.CLAIM_ID");
-            sb.append(" FROM");
-            sb.append(" CLAIM");
-            sb.append(where);
-            VRList ids = dbm.executeQuery(sb.toString());
-
-            int end = ids.size();
-            if (end > 0) {
-                // 既存の親IDをIN句として連結
-                sb = new StringBuffer();
-                sb.append(".CLAIM_ID IN (");
-                sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
-                for (int i = 1; i < end; i++) {
-                    sb.append(",");
-                    sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
-                }
-                sb.append(")");
-                String parentIDSQL = sb.toString();
+//            // 親情報特定のためのSQL文
+//            sb = new StringBuffer();
+//            sb.append("SELECT");
+//            sb.append(" CLAIM.CLAIM_ID");
+//            sb.append(" FROM");
+//            sb.append(" CLAIM");
+//            sb.append(where);
+//            VRList ids = dbm.executeQuery(sb.toString());
+//
+//            int end = ids.size();
+//            if (end > 0) {
+//                // 既存の親IDをIN句として連結
+//                sb = new StringBuffer();
+//                sb.append(".CLAIM_ID IN (");
+//                sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
+//                for (int i = 1; i < end; i++) {
+//                    sb.append(",");
+//                    sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
+//                }
+//                sb.append(")");
+//                String parentIDSQL = sb.toString();
 
                 // 詳細文字列/数値/日付情報
                 String[] tableNames = new String[] { "CLAIM_DETAIL_TEXT",
@@ -2538,19 +2563,34 @@ public class QkanCommon {
                     dbm.executeUpdate(sb.toString());
                 }
 
-                // 親情報
-                sb = new StringBuffer();
-                sb.append("DELETE FROM");
-                sb.append(" CLAIM");
-                sb.append(" WHERE ");
-                sb.append(" CLAIM");
-                sb.append(parentIDSQL);
-                //add sta 2006.05.25 fujihara.shin
-                //再集計時、利用者向け請求の情報を消さないよう修整
-                sb.append(" AND CLAIM.CATEGORY_NO <> 16");
-                //add end 2006.05.25 fujihara.shin
-                dbm.executeUpdate(sb.toString());
-            }            
+//                // 親情報
+//                sb = new StringBuffer();
+//                sb.append("DELETE FROM");
+//                sb.append(" CLAIM");
+//                sb.append(" WHERE ");
+//                sb.append(" CLAIM");
+//                sb.append(parentIDSQL);
+//                //add sta 2006.05.25 fujihara.shin
+//                //再集計時、利用者向け請求の情報を消さないよう修整
+//                sb.append(" AND CLAIM.CATEGORY_NO <> 16");
+//                //add end 2006.05.25 fujihara.shin
+//                dbm.executeUpdate(sb.toString());
+//            }            
+        }
+        //2007/03/19 tozo TANAKA begin move-to 年度またぎ対応のため
+        // 親情報
+        sb = new StringBuffer();
+        sb.append("DELETE FROM");
+        sb.append(" CLAIM");
+        sb.append(" WHERE ");
+        sb.append(" CLAIM");
+        sb.append(parentIDSQL);
+        //add sta 2006.05.25 fujihara.shin
+        //再集計時、利用者向け請求の情報を消さないよう修整
+        sb.append(" AND CLAIM.CATEGORY_NO <> 16");
+        //add end 2006.05.25 fujihara.shin
+        dbm.executeUpdate(sb.toString());
+        //2007/03/19 tozo TANAKA end move-to 年度またぎ対応のため
         }
         // 一括削除 終了 ====================================================
         //2006/06/06 tozo TANAKA end edit 請求テーブルの年度別生成対応のため
@@ -2587,7 +2627,7 @@ public class QkanCommon {
             //2006/06/06 tozo TANAKA end add 請求テーブルの年度別生成対応のため
 
             
-            it = details.iterator();
+            Iterator it = details.iterator();
             while (it.hasNext()) {
                 VRMap row = (VRMap) it.next();
                 // 主キーの存在確認
