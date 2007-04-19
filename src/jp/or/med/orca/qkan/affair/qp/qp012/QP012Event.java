@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/09/14  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2007/03/10  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -1519,6 +1519,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget1().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget1ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax1().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -1608,6 +1624,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum2FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget2().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget2ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -1711,6 +1743,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget3().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget3ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax3().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -1800,6 +1848,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum4FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget4().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget4ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -1903,6 +1967,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget5().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget5ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax5().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -1992,6 +2072,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum6FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget6().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget6ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -2095,6 +2191,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget7().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget7ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax7().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -2184,6 +2296,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum8FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget8().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget8ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -2287,6 +2415,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget9().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget9ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax9().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -2376,6 +2520,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum10FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget10().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget10ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -2479,6 +2639,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget11().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget11ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax11().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -2568,6 +2744,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum12FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget12().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget12ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -2671,6 +2863,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget13().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget13ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax13().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -2760,6 +2968,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum14FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget14().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget14ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -2863,6 +3087,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget15().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget15ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax15().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -2952,6 +3192,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum16FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget16().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget16ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -3055,6 +3311,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget17().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget17ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax17().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -3144,6 +3416,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum18FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget18().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget18ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -3247,6 +3535,22 @@ public abstract class QP012Event extends QP012SQL {
             }
         }
     });
+    getByPatientTaxTarget19().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget19ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getByPatientUseTax19().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -3336,6 +3640,22 @@ public abstract class QP012Event extends QP012SQL {
             lockFlag = true;
             try {
                 byPatientSum20FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getByPatientTaxTarget20().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                byPatientTaxTarget20ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -4007,6 +4327,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax1ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4043,6 +4370,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum2FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget2ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4091,6 +4425,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget3ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax3ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4127,6 +4468,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum4FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget4ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4175,6 +4523,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget5ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax5ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4211,6 +4566,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum6FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget6ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4259,6 +4621,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget7ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax7ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4295,6 +4664,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum8FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget8ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4343,6 +4719,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget9ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax9ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4379,6 +4762,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum10FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget10ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4427,6 +4817,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget11ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax11ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4463,6 +4860,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum12FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget12ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4511,6 +4915,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget13ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax13ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4547,6 +4958,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum14FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget14ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4595,6 +5013,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget15ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax15ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4631,6 +5056,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum16FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget16ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4679,6 +5111,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget17ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax17ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4715,6 +5154,13 @@ public abstract class QP012Event extends QP012SQL {
    * @throws Exception 処理例外
    */
   protected abstract void byPatientSum18FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void byPatientTaxTarget18ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「再計算」イベントです。
@@ -4763,6 +5209,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget19ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax19ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4805,6 +5258,13 @@ public abstract class QP012Event extends QP012SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
+  protected abstract void byPatientTaxTarget20ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「再計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
   protected abstract void byPatientUseTax20ActionPerformed(ActionEvent e) throws Exception;
 
   /**
@@ -4821,6 +5281,7 @@ public abstract class QP012Event extends QP012SQL {
   private int patientID;
   private int processMode;
   private int byPatientRateValue;
+  private boolean innerTaxH1904Mode;
   private Date billStart;
   private Date billEnd;
   private VRMap byPatientSumCache = new VRHashMap();
@@ -4901,6 +5362,21 @@ public abstract class QP012Event extends QP012SQL {
    */
   protected void setByPatientRateValue(int byPatientRateValue){
     this.byPatientRateValue = byPatientRateValue;
+  }
+
+  /**
+   * innerTaxH1904Modeを返します。
+   * @return innerTaxH1904Mode
+   */
+  protected boolean getInnerTaxH1904Mode(){
+    return innerTaxH1904Mode;
+  }
+  /**
+   * innerTaxH1904Modeを設定します。
+   * @param innerTaxH1904Mode innerTaxH1904Mode
+   */
+  protected void setInnerTaxH1904Mode(boolean innerTaxH1904Mode){
+    this.innerTaxH1904Mode = innerTaxH1904Mode;
   }
 
   /**
@@ -5019,17 +5495,17 @@ public abstract class QP012Event extends QP012SQL {
   public abstract void doCalcSum(ACTextField price, ACTextField number, ACTextField sum) throws Exception;
 
   /**
-   * 「税チェック変更」に関する処理を行ないます。
+   * 「外税チェック変更」に関する処理を行ないます。
    *
    * @param price ACTextField
    * @param number ACTextField
    * @param sum ACTextField
-   * @param useTax ACCheckBox
-   * @param tax ACTextField
+   * @param taxTarget, ACCheckBox useTax ACCheckBox
+   * @param tax, boolean mustCalcTax ACTextField
    * @throws Exception 処理例外
    *
    */
-  public abstract void doCheckTax(ACTextField price, ACTextField number, ACTextField sum, ACCheckBox useTax, ACTextField tax) throws Exception;
+  public abstract void doCheckTax(ACTextField price, ACTextField number, ACTextField sum, ACCheckBox taxTarget, ACCheckBox useTax, ACTextField tax, boolean mustCalcTax) throws Exception;
 
   /**
    * 「保険外負担の金額再計算」に関する処理を行ないます。
@@ -5037,23 +5513,23 @@ public abstract class QP012Event extends QP012SQL {
    * @param price ACTextField
    * @param number ACTextField
    * @param sum ACTextField
-   * @param useTax ACCheckBox
-   * @param tax ACTextField
+   * @param taxTarget, ACCheckBox useTax ACCheckBox
+   * @param tax, boolean mustCalcSum ACTextField
    * @throws Exception 処理例外
    *
    */
-  public abstract void doCalcSum(ACTextField price, ACTextField number, ACTextField sum, ACCheckBox useTax, ACTextField tax) throws Exception;
+  public abstract void doCalcSum(ACTextField price, ACTextField number, ACTextField sum, ACCheckBox taxTarget, ACCheckBox useTax, ACTextField tax, boolean mustCalcSum) throws Exception;
 
   /**
    * 「保険外負担の税再計算」に関する処理を行ないます。
    *
    * @param sum ACTextField
-   * @param useTax ACCheckBox
+   * @param taxTarget, ACCheckBox useTax ACCheckBox
    * @param tax ACTextField
    * @throws Exception 処理例外
    *
    */
-  public abstract void doCalcSum(ACTextField sum, ACCheckBox useTax, ACTextField tax) throws Exception;
+  public abstract void doCalcSum(ACTextField sum, ACCheckBox taxTarget, ACCheckBox useTax, ACTextField tax) throws Exception;
 
   /**
    * 「合計欄の再計算」に関する処理を行ないます。
@@ -5107,6 +5583,22 @@ public abstract class QP012Event extends QP012SQL {
   public abstract ACComboBox[] getByInsurerNamesAndPatientNames() throws Exception;
 
   /**
+   * 「利用者負担の単価配列を取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return ACTextField[]
+   */
+  public abstract ACTextField[] getByPatientPrices() throws Exception;
+
+  /**
+   * 「利用者負担の個数配列を取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return ACTextField[]
+   */
+  public abstract ACTextField[] getByPatientNumbers() throws Exception;
+
+  /**
    * 「利用者負担の金額配列を取得」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
@@ -5129,5 +5621,21 @@ public abstract class QP012Event extends QP012SQL {
    * @return ACTextField[]
    */
   public abstract ACTextField[] getByPatientTaxs() throws Exception;
+
+  /**
+   * 「利用者負担の課税対象配列を取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return ACIntegerCheckBox[]
+   */
+  public abstract ACIntegerCheckBox[] getByPatientTaxTargets() throws Exception;
+
+  /**
+   * 「平成19年4月改定チェック」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkInnerTaxModeH1804() throws Exception;
 
 }

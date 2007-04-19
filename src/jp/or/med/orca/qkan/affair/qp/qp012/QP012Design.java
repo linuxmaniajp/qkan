@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/09/27  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2007/03/18  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -381,6 +381,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSumTitle;
 
+  private ACTextField byPatientTaxTargetTitle;
+
   private ACTextField byPatientUseTaxTitle;
 
   private ACTextField byPatientTaxTitle;
@@ -396,6 +398,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber1;
 
   private ACTextField byPatientSum1;
+
+  private ACIntegerCheckBox byPatientTaxTarget1;
 
   private ACIntegerCheckBox byPatientUseTax1;
 
@@ -413,6 +417,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum2;
 
+  private ACIntegerCheckBox byPatientTaxTarget2;
+
   private ACIntegerCheckBox byPatientUseTax2;
 
   private ACTextField byPatientTax2;
@@ -428,6 +434,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber3;
 
   private ACTextField byPatientSum3;
+
+  private ACIntegerCheckBox byPatientTaxTarget3;
 
   private ACIntegerCheckBox byPatientUseTax3;
 
@@ -445,6 +453,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum4;
 
+  private ACIntegerCheckBox byPatientTaxTarget4;
+
   private ACIntegerCheckBox byPatientUseTax4;
 
   private ACTextField byPatientTax4;
@@ -460,6 +470,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber5;
 
   private ACTextField byPatientSum5;
+
+  private ACIntegerCheckBox byPatientTaxTarget5;
 
   private ACIntegerCheckBox byPatientUseTax5;
 
@@ -477,6 +489,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum6;
 
+  private ACIntegerCheckBox byPatientTaxTarget6;
+
   private ACIntegerCheckBox byPatientUseTax6;
 
   private ACTextField byPatientTax6;
@@ -492,6 +506,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber7;
 
   private ACTextField byPatientSum7;
+
+  private ACIntegerCheckBox byPatientTaxTarget7;
 
   private ACIntegerCheckBox byPatientUseTax7;
 
@@ -509,6 +525,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum8;
 
+  private ACIntegerCheckBox byPatientTaxTarget8;
+
   private ACIntegerCheckBox byPatientUseTax8;
 
   private ACTextField byPatientTax8;
@@ -524,6 +542,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber9;
 
   private ACTextField byPatientSum9;
+
+  private ACIntegerCheckBox byPatientTaxTarget9;
 
   private ACIntegerCheckBox byPatientUseTax9;
 
@@ -541,6 +561,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum10;
 
+  private ACIntegerCheckBox byPatientTaxTarget10;
+
   private ACIntegerCheckBox byPatientUseTax10;
 
   private ACTextField byPatientTax10;
@@ -556,6 +578,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber11;
 
   private ACTextField byPatientSum11;
+
+  private ACIntegerCheckBox byPatientTaxTarget11;
 
   private ACIntegerCheckBox byPatientUseTax11;
 
@@ -573,6 +597,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum12;
 
+  private ACIntegerCheckBox byPatientTaxTarget12;
+
   private ACIntegerCheckBox byPatientUseTax12;
 
   private ACTextField byPatientTax12;
@@ -588,6 +614,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber13;
 
   private ACTextField byPatientSum13;
+
+  private ACIntegerCheckBox byPatientTaxTarget13;
 
   private ACIntegerCheckBox byPatientUseTax13;
 
@@ -605,6 +633,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum14;
 
+  private ACIntegerCheckBox byPatientTaxTarget14;
+
   private ACIntegerCheckBox byPatientUseTax14;
 
   private ACTextField byPatientTax14;
@@ -620,6 +650,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber15;
 
   private ACTextField byPatientSum15;
+
+  private ACIntegerCheckBox byPatientTaxTarget15;
 
   private ACIntegerCheckBox byPatientUseTax15;
 
@@ -637,6 +669,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum16;
 
+  private ACIntegerCheckBox byPatientTaxTarget16;
+
   private ACIntegerCheckBox byPatientUseTax16;
 
   private ACTextField byPatientTax16;
@@ -652,6 +686,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber17;
 
   private ACTextField byPatientSum17;
+
+  private ACIntegerCheckBox byPatientTaxTarget17;
 
   private ACIntegerCheckBox byPatientUseTax17;
 
@@ -669,6 +705,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum18;
 
+  private ACIntegerCheckBox byPatientTaxTarget18;
+
   private ACIntegerCheckBox byPatientUseTax18;
 
   private ACTextField byPatientTax18;
@@ -685,6 +723,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField byPatientSum19;
 
+  private ACIntegerCheckBox byPatientTaxTarget19;
+
   private ACIntegerCheckBox byPatientUseTax19;
 
   private ACTextField byPatientTax19;
@@ -700,6 +740,8 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField byPatientNumber20;
 
   private ACTextField byPatientSum20;
+
+  private ACIntegerCheckBox byPatientTaxTarget20;
 
   private ACIntegerCheckBox byPatientUseTax20;
 
@@ -4747,8 +4789,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税タイトルを取得します。
-   * @return 保険外負担分税タイトル
+   * 保険外負担分課税タイトルを取得します。
+   * @return 保険外負担分課税タイトル
+   */
+  public ACTextField getByPatientTaxTargetTitle(){
+    if(byPatientTaxTargetTitle==null){
+
+      byPatientTaxTargetTitle = new ACTextField();
+
+      byPatientTaxTargetTitle.setText("課税");
+
+      byPatientTaxTargetTitle.setEditable(false);
+
+      addByPatientTaxTargetTitle();
+    }
+    return byPatientTaxTargetTitle;
+
+  }
+
+  /**
+   * 保険外負担分外税タイトルを取得します。
+   * @return 保険外負担分外税タイトル
    */
   public ACTextField getByPatientUseTaxTitle(){
     if(byPatientUseTaxTitle==null){
@@ -4930,8 +4991,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税1行目を取得します。
-   * @return 保険外負担分税1行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget1(){
+    if(byPatientTaxTarget1==null){
+
+      byPatientTaxTarget1 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget1.setText("　");
+
+      byPatientTaxTarget1.setBindPath("BY_PATIENT_TAX_TARGET1");
+
+      addByPatientTaxTarget1();
+    }
+    return byPatientTaxTarget1;
+
+  }
+
+  /**
+   * 保険外負担分外税1行目を取得します。
+   * @return 保険外負担分外税1行目
    */
   public ACIntegerCheckBox getByPatientUseTax1(){
     if(byPatientUseTax1==null){
@@ -5117,8 +5197,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税2行目を取得します。
-   * @return 保険外負担分税2行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget2(){
+    if(byPatientTaxTarget2==null){
+
+      byPatientTaxTarget2 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget2.setText("　");
+
+      byPatientTaxTarget2.setBindPath("BY_PATIENT_TAX_TARGET2");
+
+      addByPatientTaxTarget2();
+    }
+    return byPatientTaxTarget2;
+
+  }
+
+  /**
+   * 保険外負担分外税2行目を取得します。
+   * @return 保険外負担分外税2行目
    */
   public ACIntegerCheckBox getByPatientUseTax2(){
     if(byPatientUseTax2==null){
@@ -5304,8 +5403,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税3行目を取得します。
-   * @return 保険外負担分税3行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget3(){
+    if(byPatientTaxTarget3==null){
+
+      byPatientTaxTarget3 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget3.setText("　");
+
+      byPatientTaxTarget3.setBindPath("BY_PATIENT_TAX_TARGET3");
+
+      addByPatientTaxTarget3();
+    }
+    return byPatientTaxTarget3;
+
+  }
+
+  /**
+   * 保険外負担分外税3行目を取得します。
+   * @return 保険外負担分外税3行目
    */
   public ACIntegerCheckBox getByPatientUseTax3(){
     if(byPatientUseTax3==null){
@@ -5491,8 +5609,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税4行目を取得します。
-   * @return 保険外負担分税4行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget4(){
+    if(byPatientTaxTarget4==null){
+
+      byPatientTaxTarget4 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget4.setText("　");
+
+      byPatientTaxTarget4.setBindPath("BY_PATIENT_TAX_TARGET4");
+
+      addByPatientTaxTarget4();
+    }
+    return byPatientTaxTarget4;
+
+  }
+
+  /**
+   * 保険外負担分外税4行目を取得します。
+   * @return 保険外負担分外税4行目
    */
   public ACIntegerCheckBox getByPatientUseTax4(){
     if(byPatientUseTax4==null){
@@ -5678,8 +5815,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税5行目を取得します。
-   * @return 保険外負担分税5行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget5(){
+    if(byPatientTaxTarget5==null){
+
+      byPatientTaxTarget5 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget5.setText("　");
+
+      byPatientTaxTarget5.setBindPath("BY_PATIENT_TAX_TARGET5");
+
+      addByPatientTaxTarget5();
+    }
+    return byPatientTaxTarget5;
+
+  }
+
+  /**
+   * 保険外負担分外税5行目を取得します。
+   * @return 保険外負担分外税5行目
    */
   public ACIntegerCheckBox getByPatientUseTax5(){
     if(byPatientUseTax5==null){
@@ -5865,8 +6021,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税6行目を取得します。
-   * @return 保険外負担分税6行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget6(){
+    if(byPatientTaxTarget6==null){
+
+      byPatientTaxTarget6 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget6.setText("　");
+
+      byPatientTaxTarget6.setBindPath("BY_PATIENT_TAX_TARGET6");
+
+      addByPatientTaxTarget6();
+    }
+    return byPatientTaxTarget6;
+
+  }
+
+  /**
+   * 保険外負担分外税6行目を取得します。
+   * @return 保険外負担分外税6行目
    */
   public ACIntegerCheckBox getByPatientUseTax6(){
     if(byPatientUseTax6==null){
@@ -6052,8 +6227,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税7行目を取得します。
-   * @return 保険外負担分税7行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget7(){
+    if(byPatientTaxTarget7==null){
+
+      byPatientTaxTarget7 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget7.setText("　");
+
+      byPatientTaxTarget7.setBindPath("BY_PATIENT_TAX_TARGET7");
+
+      addByPatientTaxTarget7();
+    }
+    return byPatientTaxTarget7;
+
+  }
+
+  /**
+   * 保険外負担分外税7行目を取得します。
+   * @return 保険外負担分外税7行目
    */
   public ACIntegerCheckBox getByPatientUseTax7(){
     if(byPatientUseTax7==null){
@@ -6239,8 +6433,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税8行目を取得します。
-   * @return 保険外負担分税8行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget8(){
+    if(byPatientTaxTarget8==null){
+
+      byPatientTaxTarget8 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget8.setText("　");
+
+      byPatientTaxTarget8.setBindPath("BY_PATIENT_TAX_TARGET8");
+
+      addByPatientTaxTarget8();
+    }
+    return byPatientTaxTarget8;
+
+  }
+
+  /**
+   * 保険外負担分外税8行目を取得します。
+   * @return 保険外負担分外税8行目
    */
   public ACIntegerCheckBox getByPatientUseTax8(){
     if(byPatientUseTax8==null){
@@ -6426,8 +6639,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税9行目を取得します。
-   * @return 保険外負担分税9行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget9(){
+    if(byPatientTaxTarget9==null){
+
+      byPatientTaxTarget9 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget9.setText("　");
+
+      byPatientTaxTarget9.setBindPath("BY_PATIENT_TAX_TARGET9");
+
+      addByPatientTaxTarget9();
+    }
+    return byPatientTaxTarget9;
+
+  }
+
+  /**
+   * 保険外負担分外税9行目を取得します。
+   * @return 保険外負担分外税9行目
    */
   public ACIntegerCheckBox getByPatientUseTax9(){
     if(byPatientUseTax9==null){
@@ -6613,8 +6845,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税10行目を取得します。
-   * @return 保険外負担分税10行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget10(){
+    if(byPatientTaxTarget10==null){
+
+      byPatientTaxTarget10 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget10.setText("　");
+
+      byPatientTaxTarget10.setBindPath("BY_PATIENT_TAX_TARGET10");
+
+      addByPatientTaxTarget10();
+    }
+    return byPatientTaxTarget10;
+
+  }
+
+  /**
+   * 保険外負担分外税10行目を取得します。
+   * @return 保険外負担分外税10行目
    */
   public ACIntegerCheckBox getByPatientUseTax10(){
     if(byPatientUseTax10==null){
@@ -6800,8 +7051,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税11行目を取得します。
-   * @return 保険外負担分税11行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget11(){
+    if(byPatientTaxTarget11==null){
+
+      byPatientTaxTarget11 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget11.setText("　");
+
+      byPatientTaxTarget11.setBindPath("BY_PATIENT_TAX_TARGET11");
+
+      addByPatientTaxTarget11();
+    }
+    return byPatientTaxTarget11;
+
+  }
+
+  /**
+   * 保険外負担分外税11行目を取得します。
+   * @return 保険外負担分外税11行目
    */
   public ACIntegerCheckBox getByPatientUseTax11(){
     if(byPatientUseTax11==null){
@@ -6987,8 +7257,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税12行目を取得します。
-   * @return 保険外負担分税12行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget12(){
+    if(byPatientTaxTarget12==null){
+
+      byPatientTaxTarget12 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget12.setText("　");
+
+      byPatientTaxTarget12.setBindPath("BY_PATIENT_TAX_TARGET12");
+
+      addByPatientTaxTarget12();
+    }
+    return byPatientTaxTarget12;
+
+  }
+
+  /**
+   * 保険外負担分外税12行目を取得します。
+   * @return 保険外負担分外税12行目
    */
   public ACIntegerCheckBox getByPatientUseTax12(){
     if(byPatientUseTax12==null){
@@ -7174,8 +7463,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税13行目を取得します。
-   * @return 保険外負担分税13行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget13(){
+    if(byPatientTaxTarget13==null){
+
+      byPatientTaxTarget13 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget13.setText("　");
+
+      byPatientTaxTarget13.setBindPath("BY_PATIENT_TAX_TARGET13");
+
+      addByPatientTaxTarget13();
+    }
+    return byPatientTaxTarget13;
+
+  }
+
+  /**
+   * 保険外負担分外税13行目を取得します。
+   * @return 保険外負担分外税13行目
    */
   public ACIntegerCheckBox getByPatientUseTax13(){
     if(byPatientUseTax13==null){
@@ -7361,8 +7669,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税14行目を取得します。
-   * @return 保険外負担分税14行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget14(){
+    if(byPatientTaxTarget14==null){
+
+      byPatientTaxTarget14 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget14.setText("　");
+
+      byPatientTaxTarget14.setBindPath("BY_PATIENT_TAX_TARGET14");
+
+      addByPatientTaxTarget14();
+    }
+    return byPatientTaxTarget14;
+
+  }
+
+  /**
+   * 保険外負担分外税14行目を取得します。
+   * @return 保険外負担分外税14行目
    */
   public ACIntegerCheckBox getByPatientUseTax14(){
     if(byPatientUseTax14==null){
@@ -7548,8 +7875,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税15行目を取得します。
-   * @return 保険外負担分税15行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget15(){
+    if(byPatientTaxTarget15==null){
+
+      byPatientTaxTarget15 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget15.setText("　");
+
+      byPatientTaxTarget15.setBindPath("BY_PATIENT_TAX_TARGET15");
+
+      addByPatientTaxTarget15();
+    }
+    return byPatientTaxTarget15;
+
+  }
+
+  /**
+   * 保険外負担分外税15行目を取得します。
+   * @return 保険外負担分外税15行目
    */
   public ACIntegerCheckBox getByPatientUseTax15(){
     if(byPatientUseTax15==null){
@@ -7731,6 +8077,25 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
       addByPatientSum16();
     }
     return byPatientSum16;
+
+  }
+
+  /**
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget16(){
+    if(byPatientTaxTarget16==null){
+
+      byPatientTaxTarget16 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget16.setText("　");
+
+      byPatientTaxTarget16.setBindPath("BY_PATIENT_TAX_TARGET16");
+
+      addByPatientTaxTarget16();
+    }
+    return byPatientTaxTarget16;
 
   }
 
@@ -7922,8 +8287,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税17行目を取得します。
-   * @return 保険外負担分税17行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget17(){
+    if(byPatientTaxTarget17==null){
+
+      byPatientTaxTarget17 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget17.setText("　");
+
+      byPatientTaxTarget17.setBindPath("BY_PATIENT_TAX_TARGET17");
+
+      addByPatientTaxTarget17();
+    }
+    return byPatientTaxTarget17;
+
+  }
+
+  /**
+   * 保険外負担分外税17行目を取得します。
+   * @return 保険外負担分外税17行目
    */
   public ACIntegerCheckBox getByPatientUseTax17(){
     if(byPatientUseTax17==null){
@@ -8109,8 +8493,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税18行目を取得します。
-   * @return 保険外負担分税18行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget18(){
+    if(byPatientTaxTarget18==null){
+
+      byPatientTaxTarget18 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget18.setText("　");
+
+      byPatientTaxTarget18.setBindPath("BY_PATIENT_TAX_TARGET18");
+
+      addByPatientTaxTarget18();
+    }
+    return byPatientTaxTarget18;
+
+  }
+
+  /**
+   * 保険外負担分外税18行目を取得します。
+   * @return 保険外負担分外税18行目
    */
   public ACIntegerCheckBox getByPatientUseTax18(){
     if(byPatientUseTax18==null){
@@ -8296,8 +8699,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税19行目を取得します。
-   * @return 保険外負担分税19行目
+   * 保険外負担分課税1行目を取得します。
+   * @return 保険外負担分課税1行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget19(){
+    if(byPatientTaxTarget19==null){
+
+      byPatientTaxTarget19 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget19.setText("　");
+
+      byPatientTaxTarget19.setBindPath("BY_PATIENT_TAX_TARGET19");
+
+      addByPatientTaxTarget19();
+    }
+    return byPatientTaxTarget19;
+
+  }
+
+  /**
+   * 保険外負担分外税19行目を取得します。
+   * @return 保険外負担分外税19行目
    */
   public ACIntegerCheckBox getByPatientUseTax19(){
     if(byPatientUseTax19==null){
@@ -8483,8 +8905,27 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税20行目を取得します。
-   * @return 保険外負担分税20行目
+   * 保険外負担分課税20行目を取得します。
+   * @return 保険外負担分課税20行目
+   */
+  public ACIntegerCheckBox getByPatientTaxTarget20(){
+    if(byPatientTaxTarget20==null){
+
+      byPatientTaxTarget20 = new ACIntegerCheckBox();
+
+      byPatientTaxTarget20.setText("　");
+
+      byPatientTaxTarget20.setBindPath("BY_PATIENT_TAX_TARGET20");
+
+      addByPatientTaxTarget20();
+    }
+    return byPatientTaxTarget20;
+
+  }
+
+  /**
+   * 保険外負担分外税20行目を取得します。
+   * @return 保険外負担分外税20行目
    */
   public ACIntegerCheckBox getByPatientUseTax20(){
     if(byPatientUseTax20==null){
@@ -8535,7 +8976,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
       useTaxInfomation = new ACLabel();
 
-      useTaxInfomation.setText("「税」列にチェックをつけると、外税として消費税等列に全額が" + ACConstants.LINE_SEPARATOR + "自動入力されます。チェックを外すと、内税となります。");
+      useTaxInfomation.setText("「税」列にチェックをつけると、外税として消費税等列に税額が" + ACConstants.LINE_SEPARATOR + "自動入力されます。チェックを外すと、内税となります。");
 
       useTaxInfomation.setIconPath(ACConstants.ICON_PATH_INFORMATION_16);
 
@@ -14787,7 +15228,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
       totalSpace.setEditable(false);
 
-      totalSpace.setColumns(6);
+      totalSpace.setColumns(7);
 
       addTotalSpace();
     }
@@ -14871,7 +15312,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
       totalNoTaxTitle.setEditable(false);
 
-      totalNoTaxTitle.setColumns(6);
+      totalNoTaxTitle.setColumns(7);
 
       addTotalNoTaxTitle();
     }
@@ -14959,7 +15400,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
       totalInTaxTitle.setEditable(false);
 
-      totalInTaxTitle.setColumns(6);
+      totalInTaxTitle.setColumns(7);
 
       addTotalInTaxTitle();
     }
@@ -15041,7 +15482,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
       totalFullTitle.setEditable(false);
 
-      totalFullTitle.setColumns(6);
+      totalFullTitle.setColumns(7);
 
       addTotalFullTitle();
     }
@@ -16306,6 +16747,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatientTitle.add(getByPatientTaxTitle(), VRLayout.EAST);
     byPatientTitle.add(getByPatientUseTaxTitle(), VRLayout.EAST);
+    byPatientTitle.add(getByPatientTaxTargetTitle(), VRLayout.EAST);
     byPatientTitle.add(getByPatientSumTitle(), VRLayout.EAST);
     byPatientTitle.add(getByPatientNumberTitle(), VRLayout.EAST);
     byPatientTitle.add(getByPatientPriceTitle(), VRLayout.EAST);
@@ -16340,7 +16782,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税タイトルに内部項目を追加します。
+   * 保険外負担分課税タイトルに内部項目を追加します。
+   */
+  protected void addByPatientTaxTargetTitle(){
+
+  }
+
+  /**
+   * 保険外負担分外税タイトルに内部項目を追加します。
    */
   protected void addByPatientUseTaxTitle(){
 
@@ -16362,6 +16811,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient1.add(getByPatientTax1(), VRLayout.EAST);
     byPatient1.add(getByPatientUseTax1(), VRLayout.EAST);
+    byPatient1.add(getByPatientTaxTarget1(), VRLayout.EAST);
     byPatient1.add(getByPatientSum1(), VRLayout.EAST);
     byPatient1.add(getByPatientNumber1(), VRLayout.EAST);
     byPatient1.add(getByPatientPrice1(), VRLayout.EAST);
@@ -16403,7 +16853,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税1行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget1(){
+
+  }
+
+  /**
+   * 保険外負担分外税1行目に内部項目を追加します。
    */
   protected void addByPatientUseTax1(){
 
@@ -16425,6 +16882,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient2.add(getByPatientTax2(), VRLayout.EAST);
     byPatient2.add(getByPatientUseTax2(), VRLayout.EAST);
+    byPatient2.add(getByPatientTaxTarget2(), VRLayout.EAST);
     byPatient2.add(getByPatientSum2(), VRLayout.EAST);
     byPatient2.add(getByPatientNumber2(), VRLayout.EAST);
     byPatient2.add(getByPatientPrice2(), VRLayout.EAST);
@@ -16466,7 +16924,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税2行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget2(){
+
+  }
+
+  /**
+   * 保険外負担分外税2行目に内部項目を追加します。
    */
   protected void addByPatientUseTax2(){
 
@@ -16488,6 +16953,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient3.add(getByPatientTax3(), VRLayout.EAST);
     byPatient3.add(getByPatientUseTax3(), VRLayout.EAST);
+    byPatient3.add(getByPatientTaxTarget3(), VRLayout.EAST);
     byPatient3.add(getByPatientSum3(), VRLayout.EAST);
     byPatient3.add(getByPatientNumber3(), VRLayout.EAST);
     byPatient3.add(getByPatientPrice3(), VRLayout.EAST);
@@ -16529,7 +16995,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税3行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget3(){
+
+  }
+
+  /**
+   * 保険外負担分外税3行目に内部項目を追加します。
    */
   protected void addByPatientUseTax3(){
 
@@ -16551,6 +17024,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient4.add(getByPatientTax4(), VRLayout.EAST);
     byPatient4.add(getByPatientUseTax4(), VRLayout.EAST);
+    byPatient4.add(getByPatientTaxTarget4(), VRLayout.EAST);
     byPatient4.add(getByPatientSum4(), VRLayout.EAST);
     byPatient4.add(getByPatientNumber4(), VRLayout.EAST);
     byPatient4.add(getByPatientPrice4(), VRLayout.EAST);
@@ -16592,7 +17066,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税4行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget4(){
+
+  }
+
+  /**
+   * 保険外負担分外税4行目に内部項目を追加します。
    */
   protected void addByPatientUseTax4(){
 
@@ -16614,6 +17095,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient5.add(getByPatientTax5(), VRLayout.EAST);
     byPatient5.add(getByPatientUseTax5(), VRLayout.EAST);
+    byPatient5.add(getByPatientTaxTarget5(), VRLayout.EAST);
     byPatient5.add(getByPatientSum5(), VRLayout.EAST);
     byPatient5.add(getByPatientNumber5(), VRLayout.EAST);
     byPatient5.add(getByPatientPrice5(), VRLayout.EAST);
@@ -16655,7 +17137,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税5行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget5(){
+
+  }
+
+  /**
+   * 保険外負担分外税5行目に内部項目を追加します。
    */
   protected void addByPatientUseTax5(){
 
@@ -16677,6 +17166,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient6.add(getByPatientTax6(), VRLayout.EAST);
     byPatient6.add(getByPatientUseTax6(), VRLayout.EAST);
+    byPatient6.add(getByPatientTaxTarget6(), VRLayout.EAST);
     byPatient6.add(getByPatientSum6(), VRLayout.EAST);
     byPatient6.add(getByPatientNumber6(), VRLayout.EAST);
     byPatient6.add(getByPatientPrice6(), VRLayout.EAST);
@@ -16718,7 +17208,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税6行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget6(){
+
+  }
+
+  /**
+   * 保険外負担分外税6行目に内部項目を追加します。
    */
   protected void addByPatientUseTax6(){
 
@@ -16740,6 +17237,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient7.add(getByPatientTax7(), VRLayout.EAST);
     byPatient7.add(getByPatientUseTax7(), VRLayout.EAST);
+    byPatient7.add(getByPatientTaxTarget7(), VRLayout.EAST);
     byPatient7.add(getByPatientSum7(), VRLayout.EAST);
     byPatient7.add(getByPatientNumber7(), VRLayout.EAST);
     byPatient7.add(getByPatientPrice7(), VRLayout.EAST);
@@ -16781,7 +17279,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税7行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget7(){
+
+  }
+
+  /**
+   * 保険外負担分外税7行目に内部項目を追加します。
    */
   protected void addByPatientUseTax7(){
 
@@ -16803,6 +17308,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient8.add(getByPatientTax8(), VRLayout.EAST);
     byPatient8.add(getByPatientUseTax8(), VRLayout.EAST);
+    byPatient8.add(getByPatientTaxTarget8(), VRLayout.EAST);
     byPatient8.add(getByPatientSum8(), VRLayout.EAST);
     byPatient8.add(getByPatientNumber8(), VRLayout.EAST);
     byPatient8.add(getByPatientPrice8(), VRLayout.EAST);
@@ -16844,7 +17350,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税8行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget8(){
+
+  }
+
+  /**
+   * 保険外負担分外税8行目に内部項目を追加します。
    */
   protected void addByPatientUseTax8(){
 
@@ -16866,6 +17379,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient9.add(getByPatientTax9(), VRLayout.EAST);
     byPatient9.add(getByPatientUseTax9(), VRLayout.EAST);
+    byPatient9.add(getByPatientTaxTarget9(), VRLayout.EAST);
     byPatient9.add(getByPatientSum9(), VRLayout.EAST);
     byPatient9.add(getByPatientNumber9(), VRLayout.EAST);
     byPatient9.add(getByPatientPrice9(), VRLayout.EAST);
@@ -16907,7 +17421,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税9行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget9(){
+
+  }
+
+  /**
+   * 保険外負担分外税9行目に内部項目を追加します。
    */
   protected void addByPatientUseTax9(){
 
@@ -16929,6 +17450,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient10.add(getByPatientTax10(), VRLayout.EAST);
     byPatient10.add(getByPatientUseTax10(), VRLayout.EAST);
+    byPatient10.add(getByPatientTaxTarget10(), VRLayout.EAST);
     byPatient10.add(getByPatientSum10(), VRLayout.EAST);
     byPatient10.add(getByPatientNumber10(), VRLayout.EAST);
     byPatient10.add(getByPatientPrice10(), VRLayout.EAST);
@@ -16970,7 +17492,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税10行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget10(){
+
+  }
+
+  /**
+   * 保険外負担分外税10行目に内部項目を追加します。
    */
   protected void addByPatientUseTax10(){
 
@@ -16992,6 +17521,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient11.add(getByPatientTax11(), VRLayout.EAST);
     byPatient11.add(getByPatientUseTax11(), VRLayout.EAST);
+    byPatient11.add(getByPatientTaxTarget11(), VRLayout.EAST);
     byPatient11.add(getByPatientSum11(), VRLayout.EAST);
     byPatient11.add(getByPatientNumber11(), VRLayout.EAST);
     byPatient11.add(getByPatientPrice11(), VRLayout.EAST);
@@ -17033,7 +17563,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税11行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget11(){
+
+  }
+
+  /**
+   * 保険外負担分外税11行目に内部項目を追加します。
    */
   protected void addByPatientUseTax11(){
 
@@ -17055,6 +17592,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient12.add(getByPatientTax12(), VRLayout.EAST);
     byPatient12.add(getByPatientUseTax12(), VRLayout.EAST);
+    byPatient12.add(getByPatientTaxTarget12(), VRLayout.EAST);
     byPatient12.add(getByPatientSum12(), VRLayout.EAST);
     byPatient12.add(getByPatientNumber12(), VRLayout.EAST);
     byPatient12.add(getByPatientPrice12(), VRLayout.EAST);
@@ -17096,7 +17634,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税12行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget12(){
+
+  }
+
+  /**
+   * 保険外負担分外税12行目に内部項目を追加します。
    */
   protected void addByPatientUseTax12(){
 
@@ -17118,6 +17663,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient13.add(getByPatientTax13(), VRLayout.EAST);
     byPatient13.add(getByPatientUseTax13(), VRLayout.EAST);
+    byPatient13.add(getByPatientTaxTarget13(), VRLayout.EAST);
     byPatient13.add(getByPatientSum13(), VRLayout.EAST);
     byPatient13.add(getByPatientNumber13(), VRLayout.EAST);
     byPatient13.add(getByPatientPrice13(), VRLayout.EAST);
@@ -17159,7 +17705,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税13行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget13(){
+
+  }
+
+  /**
+   * 保険外負担分外税13行目に内部項目を追加します。
    */
   protected void addByPatientUseTax13(){
 
@@ -17181,6 +17734,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient14.add(getByPatientTax14(), VRLayout.EAST);
     byPatient14.add(getByPatientUseTax14(), VRLayout.EAST);
+    byPatient14.add(getByPatientTaxTarget14(), VRLayout.EAST);
     byPatient14.add(getByPatientSum14(), VRLayout.EAST);
     byPatient14.add(getByPatientNumber14(), VRLayout.EAST);
     byPatient14.add(getByPatientPrice14(), VRLayout.EAST);
@@ -17222,7 +17776,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税14行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget14(){
+
+  }
+
+  /**
+   * 保険外負担分外税14行目に内部項目を追加します。
    */
   protected void addByPatientUseTax14(){
 
@@ -17244,6 +17805,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient15.add(getByPatientTax15(), VRLayout.EAST);
     byPatient15.add(getByPatientUseTax15(), VRLayout.EAST);
+    byPatient15.add(getByPatientTaxTarget15(), VRLayout.EAST);
     byPatient15.add(getByPatientSum15(), VRLayout.EAST);
     byPatient15.add(getByPatientNumber15(), VRLayout.EAST);
     byPatient15.add(getByPatientPrice15(), VRLayout.EAST);
@@ -17285,7 +17847,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税15行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget15(){
+
+  }
+
+  /**
+   * 保険外負担分外税15行目に内部項目を追加します。
    */
   protected void addByPatientUseTax15(){
 
@@ -17307,6 +17876,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient16.add(getByPatientTax16(), VRLayout.EAST);
     byPatient16.add(getByPatientUseTax16(), VRLayout.EAST);
+    byPatient16.add(getByPatientTaxTarget16(), VRLayout.EAST);
     byPatient16.add(getByPatientSum16(), VRLayout.EAST);
     byPatient16.add(getByPatientNumber16(), VRLayout.EAST);
     byPatient16.add(getByPatientPrice16(), VRLayout.EAST);
@@ -17348,6 +17918,13 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget16(){
+
+  }
+
+  /**
    * 保険外負担分税16行目に内部項目を追加します。
    */
   protected void addByPatientUseTax16(){
@@ -17370,6 +17947,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient17.add(getByPatientTax17(), VRLayout.EAST);
     byPatient17.add(getByPatientUseTax17(), VRLayout.EAST);
+    byPatient17.add(getByPatientTaxTarget17(), VRLayout.EAST);
     byPatient17.add(getByPatientSum17(), VRLayout.EAST);
     byPatient17.add(getByPatientNumber17(), VRLayout.EAST);
     byPatient17.add(getByPatientPrice17(), VRLayout.EAST);
@@ -17411,7 +17989,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税17行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget17(){
+
+  }
+
+  /**
+   * 保険外負担分外税17行目に内部項目を追加します。
    */
   protected void addByPatientUseTax17(){
 
@@ -17433,6 +18018,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient18.add(getByPatientTax18(), VRLayout.EAST);
     byPatient18.add(getByPatientUseTax18(), VRLayout.EAST);
+    byPatient18.add(getByPatientTaxTarget18(), VRLayout.EAST);
     byPatient18.add(getByPatientSum18(), VRLayout.EAST);
     byPatient18.add(getByPatientNumber18(), VRLayout.EAST);
     byPatient18.add(getByPatientPrice18(), VRLayout.EAST);
@@ -17474,7 +18060,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税18行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget18(){
+
+  }
+
+  /**
+   * 保険外負担分外税18行目に内部項目を追加します。
    */
   protected void addByPatientUseTax18(){
 
@@ -17496,6 +18089,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient19.add(getByPatientTax19(), VRLayout.EAST);
     byPatient19.add(getByPatientUseTax19(), VRLayout.EAST);
+    byPatient19.add(getByPatientTaxTarget19(), VRLayout.EAST);
     byPatient19.add(getByPatientSum19(), VRLayout.EAST);
     byPatient19.add(getByPatientNumber19(), VRLayout.EAST);
     byPatient19.add(getByPatientPrice19(), VRLayout.EAST);
@@ -17537,7 +18131,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税19行目に内部項目を追加します。
+   * 保険外負担分課税1行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget19(){
+
+  }
+
+  /**
+   * 保険外負担分外税19行目に内部項目を追加します。
    */
   protected void addByPatientUseTax19(){
 
@@ -17559,6 +18160,7 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
 
     byPatient20.add(getByPatientTax20(), VRLayout.EAST);
     byPatient20.add(getByPatientUseTax20(), VRLayout.EAST);
+    byPatient20.add(getByPatientTaxTarget20(), VRLayout.EAST);
     byPatient20.add(getByPatientSum20(), VRLayout.EAST);
     byPatient20.add(getByPatientNumber20(), VRLayout.EAST);
     byPatient20.add(getByPatientPrice20(), VRLayout.EAST);
@@ -17600,7 +18202,14 @@ public class QP012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険外負担分税20行目に内部項目を追加します。
+   * 保険外負担分課税20行目に内部項目を追加します。
+   */
+  protected void addByPatientTaxTarget20(){
+
+  }
+
+  /**
+   * 保険外負担分外税20行目に内部項目を追加します。
    */
   protected void addByPatientUseTax20(){
 

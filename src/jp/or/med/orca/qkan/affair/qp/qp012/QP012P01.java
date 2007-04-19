@@ -101,6 +101,16 @@ public class QP012P01 extends QP012P01Event {
     public boolean doPrint(ACChotarouXMLWriter writer, VRMap printParam)
             throws Exception {
 
+        //帳票定義体名をあらわす文字列変数formatNameを定義し「QP012P01.xml」で初期化する。
+        String formatName = "QP012P01.xml";
+        
+        if(ACCastUtilities.toBoolean(printParam.getData("InnerTaxH1904Mode"), false)){
+            //引数printParamのキー「InnerTaxH1904Mode」で真偽時を取得し、値が真(true)の場合
+            //formatNameに「QP012P02.xml」を代入する。
+            formatName = "QP012P02.xml";
+        }
+        
+        
         // 2006/09/26
         // 金額欄表示変更に伴いフォーマッタを追加
         // Addition - begin [Masahiko Higuchi]
@@ -115,7 +125,7 @@ public class QP012P01 extends QP012P01Event {
 
             // 必要であれば帳票IDを書き換えること。
             ACChotarouXMLUtilities
-                    .addFormat(writer, "QP012P01", "QP012P01.xml");
+                    .addFormat(writer, "QP012P01", formatName);
             // ページ開始
             writer.beginPageEdit("QP012P01");
             // ※印刷処理を行なう。
@@ -255,7 +265,14 @@ public class QP012P01 extends QP012P01Event {
             // 内部メソッド(convertTax)に下記の値を引数として渡し印刷用データに変換する。
             // VRMap printParam String BY_PATIENT_USE_TAX20
             for (int k = 1; k <= 20; k++) {
-                convertTax(printParam, "BY_PATIENT_USE_TAX" + k);
+                //replace-begin 2007/03/10 Tozo Tanaka
+                //convertTax(printParam, "BY_PATIENT_USE_TAX" + k);
+                if (ACCastUtilities.toInt(VRBindPathParser.get(
+                        "BY_PATIENT_TAX_TARGET" + k, printParam), 0) != 0) {
+                    //課税対象の場合のみ税区分を印字
+                    convertTax(printParam, "BY_PATIENT_USE_TAX" + k);
+                }
+                //replace-end 2007/03/10 Tozo Tanaka
             }
 
             // 渡りパラメーター printParam

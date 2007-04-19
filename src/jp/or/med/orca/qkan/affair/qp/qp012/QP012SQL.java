@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 訪問看護療養費領収書編集
- * 作成日: 2006/10/25  日本コンピューター株式会社 訪問看護療養費領収書編集 新規作成
+ * 作成日: 2007/02/15  日本コンピューター株式会社 訪問看護療養費領収書編集 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -299,6 +299,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM1");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET1");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX1");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX1");
@@ -310,6 +312,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER2");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM2");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET2");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX2");
 
@@ -323,6 +327,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM3");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET3");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX3");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX3");
@@ -334,6 +340,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER4");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM4");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET4");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX4");
 
@@ -347,6 +355,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM5");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET5");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX5");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX5");
@@ -358,6 +368,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER6");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM6");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET6");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX6");
 
@@ -371,6 +383,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM7");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET7");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX7");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX7");
@@ -382,6 +396,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER8");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM8");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET8");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX8");
 
@@ -395,6 +411,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM9");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET9");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX9");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX9");
@@ -406,6 +424,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER10");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM10");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET10");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX10");
 
@@ -419,6 +439,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM11");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET11");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX11");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX11");
@@ -430,6 +452,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER12");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM12");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET12");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX12");
 
@@ -443,6 +467,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM13");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET13");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX13");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX13");
@@ -454,6 +480,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER14");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM14");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET14");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX14");
 
@@ -467,6 +495,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM15");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET15");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX15");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX15");
@@ -478,6 +508,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER16");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM16");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET16");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX16");
 
@@ -491,6 +523,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM17");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET17");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX17");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX17");
@@ -502,6 +536,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER18");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM18");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET18");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX18");
 
@@ -515,6 +551,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM19");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET19");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX19");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX19");
@@ -526,6 +564,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER20");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM20");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET20");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX20");
 
@@ -649,6 +689,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM1");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET1");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX1");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX1");
@@ -660,6 +702,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER2");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM2");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET2");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX2");
 
@@ -673,6 +717,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM3");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET3");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX3");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX3");
@@ -684,6 +730,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER4");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM4");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET4");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX4");
 
@@ -697,6 +745,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM5");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET5");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX5");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX5");
@@ -708,6 +758,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER6");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM6");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET6");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX6");
 
@@ -721,6 +773,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM7");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET7");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX7");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX7");
@@ -732,6 +786,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER8");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM8");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET8");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX8");
 
@@ -745,6 +801,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM9");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET9");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX9");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX9");
@@ -756,6 +814,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER10");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM10");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET10");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX10");
 
@@ -769,6 +829,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM11");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET11");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX11");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX11");
@@ -780,6 +842,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER12");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM12");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET12");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX12");
 
@@ -793,6 +857,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM13");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET13");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX13");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX13");
@@ -804,6 +870,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER14");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM14");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET14");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX14");
 
@@ -817,6 +885,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM15");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET15");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX15");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX15");
@@ -828,6 +898,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER16");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM16");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET16");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX16");
 
@@ -841,6 +913,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM17");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET17");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX17");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX17");
@@ -852,6 +926,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER18");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM18");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET18");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX18");
 
@@ -865,6 +941,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM19");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET19");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX19");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX19");
@@ -876,6 +954,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER20");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM20");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET20");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX20");
 
@@ -1115,6 +1195,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM1");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET1");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX1");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX1");
@@ -1126,6 +1208,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER2");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM2");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET2");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX2");
 
@@ -1139,6 +1223,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM3");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET3");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX3");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX3");
@@ -1150,6 +1236,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER4");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM4");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET4");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX4");
 
@@ -1163,6 +1251,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM5");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET5");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX5");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX5");
@@ -1174,6 +1264,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER6");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM6");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET6");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX6");
 
@@ -1187,6 +1279,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM7");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET7");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX7");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX7");
@@ -1198,6 +1292,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER8");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM8");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET8");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX8");
 
@@ -1211,6 +1307,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM9");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET9");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX9");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX9");
@@ -1222,6 +1320,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER10");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM10");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET10");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX10");
 
@@ -1235,6 +1335,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM11");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET11");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX11");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX11");
@@ -1246,6 +1348,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER12");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM12");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET12");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX12");
 
@@ -1259,6 +1363,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM13");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET13");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX13");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX13");
@@ -1270,6 +1376,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER14");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM14");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET14");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX14");
 
@@ -1283,6 +1391,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM15");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET15");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX15");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX15");
@@ -1294,6 +1404,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER16");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM16");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET16");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX16");
 
@@ -1307,6 +1419,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM17");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET17");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX17");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX17");
@@ -1318,6 +1432,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER18");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM18");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET18");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX18");
 
@@ -1331,6 +1447,8 @@ public class QP012SQL extends QP012State {
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM19");
 
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET19");
+
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX19");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX19");
@@ -1342,6 +1460,8 @@ public class QP012SQL extends QP012State {
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_NUMBER20");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_SUM20");
+
+    sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET20");
 
     sb.append(",CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX20");
 
@@ -1867,6 +1987,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET1", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX1", sqlParam)));
 
     sb.append(",");
@@ -1888,6 +2012,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET2", sqlParam)));
 
     sb.append(",");
 
@@ -1915,6 +2043,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET3", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX3", sqlParam)));
 
     sb.append(",");
@@ -1936,6 +2068,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM4", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET4", sqlParam)));
 
     sb.append(",");
 
@@ -1963,6 +2099,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET5", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX5", sqlParam)));
 
     sb.append(",");
@@ -1984,6 +2124,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET6", sqlParam)));
 
     sb.append(",");
 
@@ -2011,6 +2155,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET7", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX7", sqlParam)));
 
     sb.append(",");
@@ -2032,6 +2180,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM8", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET8", sqlParam)));
 
     sb.append(",");
 
@@ -2059,6 +2211,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET9", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX9", sqlParam)));
 
     sb.append(",");
@@ -2080,6 +2236,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM10", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET10", sqlParam)));
 
     sb.append(",");
 
@@ -2107,6 +2267,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET11", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX11", sqlParam)));
 
     sb.append(",");
@@ -2128,6 +2292,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM12", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET12", sqlParam)));
 
     sb.append(",");
 
@@ -2155,6 +2323,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET13", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX13", sqlParam)));
 
     sb.append(",");
@@ -2176,6 +2348,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM14", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET14", sqlParam)));
 
     sb.append(",");
 
@@ -2203,6 +2379,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET15", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX15", sqlParam)));
 
     sb.append(",");
@@ -2224,6 +2404,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM16", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET16", sqlParam)));
 
     sb.append(",");
 
@@ -2251,6 +2435,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET17", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX17", sqlParam)));
 
     sb.append(",");
@@ -2272,6 +2460,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM18", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET18", sqlParam)));
 
     sb.append(",");
 
@@ -2299,6 +2491,10 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET19", sqlParam)));
+
+    sb.append(",");
+
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_USE_TAX19", sqlParam)));
 
     sb.append(",");
@@ -2320,6 +2516,10 @@ public class QP012SQL extends QP012State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM20", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET20", sqlParam)));
 
     sb.append(",");
 
@@ -3319,6 +3519,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET1");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET1", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX1");
 
     sb.append(" =");
@@ -3364,6 +3572,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET2");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET2", sqlParam)));
 
     sb.append(",");
 
@@ -3415,6 +3631,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET3");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET3", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX3");
 
     sb.append(" =");
@@ -3460,6 +3684,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM4", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET4");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET4", sqlParam)));
 
     sb.append(",");
 
@@ -3511,6 +3743,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET5");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET5", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX5");
 
     sb.append(" =");
@@ -3556,6 +3796,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET6");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET6", sqlParam)));
 
     sb.append(",");
 
@@ -3607,6 +3855,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET7");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET7", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX7");
 
     sb.append(" =");
@@ -3652,6 +3908,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM8", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET8");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET8", sqlParam)));
 
     sb.append(",");
 
@@ -3703,6 +3967,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET9");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET9", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX9");
 
     sb.append(" =");
@@ -3748,6 +4020,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM10", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET10");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET10", sqlParam)));
 
     sb.append(",");
 
@@ -3799,6 +4079,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET11");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET11", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX11");
 
     sb.append(" =");
@@ -3844,6 +4132,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM12", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET12");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET12", sqlParam)));
 
     sb.append(",");
 
@@ -3895,6 +4191,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET13");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET13", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX13");
 
     sb.append(" =");
@@ -3940,6 +4244,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM14", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET14");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET14", sqlParam)));
 
     sb.append(",");
 
@@ -3991,6 +4303,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET15");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET15", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX15");
 
     sb.append(" =");
@@ -4036,6 +4356,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM16", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET16");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET16", sqlParam)));
 
     sb.append(",");
 
@@ -4087,6 +4415,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET17");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET17", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX17");
 
     sb.append(" =");
@@ -4132,6 +4468,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM18", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET18");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET18", sqlParam)));
 
     sb.append(",");
 
@@ -4183,6 +4527,14 @@ public class QP012SQL extends QP012State {
 
     sb.append(",");
 
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET19");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET19", sqlParam)));
+
+    sb.append(",");
+
     sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_USE_TAX19");
 
     sb.append(" =");
@@ -4228,6 +4580,14 @@ public class QP012SQL extends QP012State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_SUM20", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CLAIM_PATIENT_MEDICAL.BY_PATIENT_TAX_TARGET20");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("BY_PATIENT_TAX_TARGET20", sqlParam)));
 
     sb.append(",");
 

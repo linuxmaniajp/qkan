@@ -118,11 +118,11 @@ public class QP012 extends QP012Event {
                 new String[] { "CLAIM_PATIENT_MEDICAL_ID" }, "LAST_TIME",
                 "LAST_TIME"));
         setByInsurerAndPatientNameCache(new HashSet());
-        //スナップショットの対象にクライアント領域(contents)、除外対象に合計領域(totalContents)を設定する。
+        // スナップショットの対象にクライアント領域(contents)、除外対象に合計領域(totalContents)を設定する。
         getSnapshot().setRootContainer(getContents(),
                 new Component[] { getTotalContents() });
         getSnapshot().snapshot();
-        
+
         // ※定型文コンボの読み込み
         // 画面展開用のレコードinfoを定義・生成する。
         VRMap info = new VRHashMap();
@@ -193,20 +193,28 @@ public class QP012 extends QP012Event {
             // 内部変数byPatientRateValueに検索結果のキー「BY_PATIENT_RATE」の値を退避する。
             setByPatientRateValue(ACCastUtilities.toInt(VRBindPathParser.get(
                     "BY_PATIENT_RATE", bill), 0));
+
+            // 平成19年4月改定(基本内税)対応をすべきか判定する。
+            checkInnerTaxModeH1804();
+
             // 検索結果を画面に割り当て・展開する。
             getContents().setSource(bill);
             getContents().bindSource();
-            
 
-            // 税チェックが付いていない行の消費税等欄を無効にする。
+            // 外税チェックおよび消費税等テキストの有効状態を設定する。
+            ACTextField[] prices = getByPatientPrices();
+            ACTextField[] numbers = getByPatientNumbers();
+            ACTextField[] sums = getByPatientSums();
+            ACIntegerCheckBox[] taxTargets = getByPatientTaxTargets();
             ACIntegerCheckBox[] useTaxs = getByPatientUseTaxs();
             ACTextField[] taxs = getByPatientTaxs();
             int taxEnd = useTaxs.length;
             for (int i = 0; i < taxEnd; i++) {
-                taxs[i].setEnabled(useTaxs[i].isSelected());
+                getByPatientSumCache().put(sums[i], sums[i].getText());
+                doCheckTax(prices[i], numbers[i], sums[i], taxTargets[i],
+                        useTaxs[i], taxs[i], false);
             }
 
-            
             // 検索結果をパッシブデータとして登録する。
             getPassiveChecker().reservedPassive(getBILL_PASSIVE_CHECK_KEY(),
                     bills);
@@ -236,6 +244,7 @@ public class QP012 extends QP012Event {
                 QkanCommon.toFullName(VRBindPathParser.get(
                         "PATIENT_FAMILY_NAME", patient), VRBindPathParser.get(
                         "PATIENT_FIRST_NAME", patient)));
+
         if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
             // プロセスモードが「登録」の場合
             // ※画面の初期設定
@@ -260,12 +269,16 @@ public class QP012 extends QP012Event {
             setBillStart(start);
             // 内部変数billEndに遷移パラメタのキー「BILL_SPAN_END」の値を退避する。
             setBillEnd(end);
-            // 保険外負担の税チェックをすべて付ける。
+            // 保険外負担の外税チェックをすべて付ける。
             ACIntegerCheckBox[] useTaxs = getByPatientUseTaxs();
             int taxEnd = useTaxs.length;
             for (int i = 0; i < taxEnd; i++) {
                 useTaxs[i].setSelected(true);
             }
+
+            // 平成19年4月改定(基本内税)対応をすべきか判定する。
+            checkInnerTaxModeH1804();
+
             // 患者番号(patientCode)に利用者コードを設定する。
             getPatientCode().setText(
                     ACCastUtilities.toString(VRBindPathParser.get(
@@ -291,7 +304,7 @@ public class QP012 extends QP012Event {
                     getContents().setSource((VRMap) bills.getData());
                     getContents().bindSource();
 
-                    //税チェックが付いていれば、消費税等欄を有効にする。
+                    // 外税チェックが付いていれば、消費税等欄を有効にする。
                     ACTextField[] taxs = getByPatientTaxs();
                     for (int i = 0; i < taxEnd; i++) {
                         taxs[i].setEnabled(useTaxs[i].isSelected());
@@ -551,6 +564,9 @@ public class QP012 extends QP012Event {
 
         // レコードparamにキー「DBM」でDBManagerを設定する。
         VRBindPathParser.set("DBM", param, getDBManager());
+        // レコードparamにキー「InnerTaxH1904Mode」でInnerTaxH1904Modeを設定する。
+        VRBindPathParser.set("InnerTaxH1904Mode", param, new Boolean(
+                getInnerTaxH1904Mode()));
 
         ACChotarouXMLWriter writer = new ACChotarouXMLWriter();
         writer.beginPrintEdit();
@@ -982,7 +998,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice1FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice1(), getByPatientNumber1(),
-                getByPatientSum1(), getByPatientUseTax1(), getByPatientTax1());
+                getByPatientSum1(), getByPatientTaxTarget1(),
+                getByPatientUseTax1(), getByPatientTax1(), true);
 
     }
 
@@ -995,7 +1012,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber1FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice1(), getByPatientNumber1(),
-                getByPatientSum1(), getByPatientUseTax1(), getByPatientTax1());
+                getByPatientSum1(), getByPatientTaxTarget1(),
+                getByPatientUseTax1(), getByPatientTax1(), true);
 
     }
 
@@ -1007,7 +1025,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum1FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum1(), getByPatientUseTax1(), getByPatientTax1());
+        doCalcSum(getByPatientSum1(), getByPatientTaxTarget1(),
+                getByPatientUseTax1(), getByPatientTax1());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget1ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice1(), getByPatientNumber1(),
+                getByPatientSum1(), getByPatientTaxTarget1(),
+                getByPatientUseTax1(), getByPatientTax1(), false);
 
     }
 
@@ -1021,7 +1055,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice1(), getByPatientNumber1(),
-                getByPatientSum1(), getByPatientUseTax1(), getByPatientTax1());
+                getByPatientSum1(), getByPatientTaxTarget1(),
+                getByPatientUseTax1(), getByPatientTax1(), true);
 
     }
 
@@ -1046,7 +1081,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice2FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice2(), getByPatientNumber2(),
-                getByPatientSum2(), getByPatientUseTax2(), getByPatientTax2());
+                getByPatientSum2(), getByPatientTaxTarget2(),
+                getByPatientUseTax2(), getByPatientTax2(), true);
 
     }
 
@@ -1059,7 +1095,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber2FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice2(), getByPatientNumber2(),
-                getByPatientSum2(), getByPatientUseTax2(), getByPatientTax2());
+                getByPatientSum2(), getByPatientTaxTarget2(),
+                getByPatientUseTax2(), getByPatientTax2(), true);
 
     }
 
@@ -1071,7 +1108,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum2FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum2(), getByPatientUseTax2(), getByPatientTax2());
+        doCalcSum(getByPatientSum2(), getByPatientTaxTarget2(),
+                getByPatientUseTax2(), getByPatientTax2());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget2ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice2(), getByPatientNumber2(),
+                getByPatientSum2(), getByPatientTaxTarget2(),
+                getByPatientUseTax2(), getByPatientTax2(), false);
 
     }
 
@@ -1085,7 +1138,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice2(), getByPatientNumber2(),
-                getByPatientSum2(), getByPatientUseTax2(), getByPatientTax2());
+                getByPatientSum2(), getByPatientTaxTarget2(),
+                getByPatientUseTax2(), getByPatientTax2(), true);
 
     }
 
@@ -1110,7 +1164,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice3FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice3(), getByPatientNumber3(),
-                getByPatientSum3(), getByPatientUseTax3(), getByPatientTax3());
+                getByPatientSum3(), getByPatientTaxTarget3(),
+                getByPatientUseTax3(), getByPatientTax3(), true);
 
     }
 
@@ -1123,7 +1178,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber3FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice3(), getByPatientNumber3(),
-                getByPatientSum3(), getByPatientUseTax3(), getByPatientTax3());
+                getByPatientSum3(), getByPatientTaxTarget3(),
+                getByPatientUseTax3(), getByPatientTax3(), true);
 
     }
 
@@ -1135,7 +1191,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum3FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum3(), getByPatientUseTax3(), getByPatientTax3());
+        doCalcSum(getByPatientSum3(), getByPatientTaxTarget3(),
+                getByPatientUseTax3(), getByPatientTax3());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget3ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice3(), getByPatientNumber3(),
+                getByPatientSum3(), getByPatientTaxTarget3(),
+                getByPatientUseTax3(), getByPatientTax3(), false);
 
     }
 
@@ -1149,7 +1221,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice3(), getByPatientNumber3(),
-                getByPatientSum3(), getByPatientUseTax3(), getByPatientTax3());
+                getByPatientSum3(), getByPatientTaxTarget3(),
+                getByPatientUseTax3(), getByPatientTax3(), true);
 
     }
 
@@ -1174,7 +1247,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice4FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice4(), getByPatientNumber4(),
-                getByPatientSum4(), getByPatientUseTax4(), getByPatientTax4());
+                getByPatientSum4(), getByPatientTaxTarget4(),
+                getByPatientUseTax4(), getByPatientTax4(), true);
 
     }
 
@@ -1187,7 +1261,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber4FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice4(), getByPatientNumber4(),
-                getByPatientSum4(), getByPatientUseTax4(), getByPatientTax4());
+                getByPatientSum4(), getByPatientTaxTarget4(),
+                getByPatientUseTax4(), getByPatientTax4(), true);
 
     }
 
@@ -1199,7 +1274,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum4FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum4(), getByPatientUseTax4(), getByPatientTax4());
+        doCalcSum(getByPatientSum4(), getByPatientTaxTarget4(),
+                getByPatientUseTax4(), getByPatientTax4());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget4ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice4(), getByPatientNumber4(),
+                getByPatientSum4(), getByPatientTaxTarget4(),
+                getByPatientUseTax4(), getByPatientTax4(), false);
 
     }
 
@@ -1213,7 +1304,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice4(), getByPatientNumber4(),
-                getByPatientSum4(), getByPatientUseTax4(), getByPatientTax4());
+                getByPatientSum4(), getByPatientTaxTarget4(),
+                getByPatientUseTax4(), getByPatientTax4(), true);
 
     }
 
@@ -1238,7 +1330,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice5FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice5(), getByPatientNumber5(),
-                getByPatientSum5(), getByPatientUseTax5(), getByPatientTax5());
+                getByPatientSum5(), getByPatientTaxTarget5(),
+                getByPatientUseTax5(), getByPatientTax5(), true);
 
     }
 
@@ -1251,7 +1344,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber5FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice5(), getByPatientNumber5(),
-                getByPatientSum5(), getByPatientUseTax5(), getByPatientTax5());
+                getByPatientSum5(), getByPatientTaxTarget5(),
+                getByPatientUseTax5(), getByPatientTax5(), true);
 
     }
 
@@ -1263,7 +1357,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum5FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum5(), getByPatientUseTax5(), getByPatientTax5());
+        doCalcSum(getByPatientSum5(), getByPatientTaxTarget5(),
+                getByPatientUseTax5(), getByPatientTax5());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget5ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice5(), getByPatientNumber5(),
+                getByPatientSum5(), getByPatientTaxTarget5(),
+                getByPatientUseTax5(), getByPatientTax5(), false);
 
     }
 
@@ -1277,7 +1387,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice5(), getByPatientNumber5(),
-                getByPatientSum5(), getByPatientUseTax5(), getByPatientTax5());
+                getByPatientSum5(), getByPatientTaxTarget5(),
+                getByPatientUseTax5(), getByPatientTax5(), true);
 
     }
 
@@ -1302,7 +1413,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice6FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice6(), getByPatientNumber6(),
-                getByPatientSum6(), getByPatientUseTax6(), getByPatientTax6());
+                getByPatientSum6(), getByPatientTaxTarget6(),
+                getByPatientUseTax6(), getByPatientTax6(), true);
 
     }
 
@@ -1315,7 +1427,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber6FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice6(), getByPatientNumber6(),
-                getByPatientSum6(), getByPatientUseTax6(), getByPatientTax6());
+                getByPatientSum6(), getByPatientTaxTarget6(),
+                getByPatientUseTax6(), getByPatientTax6(), true);
 
     }
 
@@ -1327,7 +1440,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum6FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum6(), getByPatientUseTax6(), getByPatientTax6());
+        doCalcSum(getByPatientSum6(), getByPatientTaxTarget6(),
+                getByPatientUseTax6(), getByPatientTax6());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget6ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice6(), getByPatientNumber6(),
+                getByPatientSum6(), getByPatientTaxTarget6(),
+                getByPatientUseTax6(), getByPatientTax6(), false);
 
     }
 
@@ -1341,7 +1470,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice6(), getByPatientNumber6(),
-                getByPatientSum6(), getByPatientUseTax6(), getByPatientTax6());
+                getByPatientSum6(), getByPatientTaxTarget6(),
+                getByPatientUseTax6(), getByPatientTax6(), true);
 
     }
 
@@ -1366,7 +1496,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice7FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice7(), getByPatientNumber7(),
-                getByPatientSum7(), getByPatientUseTax7(), getByPatientTax7());
+                getByPatientSum7(), getByPatientTaxTarget7(),
+                getByPatientUseTax7(), getByPatientTax7(), true);
 
     }
 
@@ -1379,7 +1510,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber7FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice7(), getByPatientNumber7(),
-                getByPatientSum7(), getByPatientUseTax7(), getByPatientTax7());
+                getByPatientSum7(), getByPatientTaxTarget7(),
+                getByPatientUseTax7(), getByPatientTax7(), true);
 
     }
 
@@ -1391,7 +1523,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum7FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum7(), getByPatientUseTax7(), getByPatientTax7());
+        doCalcSum(getByPatientSum7(), getByPatientTaxTarget7(),
+                getByPatientUseTax7(), getByPatientTax7());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget7ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice7(), getByPatientNumber7(),
+                getByPatientSum7(), getByPatientTaxTarget7(),
+                getByPatientUseTax7(), getByPatientTax7(), false);
 
     }
 
@@ -1405,7 +1553,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice7(), getByPatientNumber7(),
-                getByPatientSum7(), getByPatientUseTax7(), getByPatientTax7());
+                getByPatientSum7(), getByPatientTaxTarget7(),
+                getByPatientUseTax7(), getByPatientTax7(), true);
 
     }
 
@@ -1430,7 +1579,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice8FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice8(), getByPatientNumber8(),
-                getByPatientSum8(), getByPatientUseTax8(), getByPatientTax8());
+                getByPatientSum8(), getByPatientTaxTarget8(),
+                getByPatientUseTax8(), getByPatientTax8(), true);
 
     }
 
@@ -1443,7 +1593,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber8FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice8(), getByPatientNumber8(),
-                getByPatientSum8(), getByPatientUseTax8(), getByPatientTax8());
+                getByPatientSum8(), getByPatientTaxTarget8(),
+                getByPatientUseTax8(), getByPatientTax8(), true);
 
     }
 
@@ -1455,7 +1606,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum8FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum8(), getByPatientUseTax8(), getByPatientTax8());
+        doCalcSum(getByPatientSum8(), getByPatientTaxTarget8(),
+                getByPatientUseTax8(), getByPatientTax8());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget8ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice8(), getByPatientNumber8(),
+                getByPatientSum8(), getByPatientTaxTarget8(),
+                getByPatientUseTax8(), getByPatientTax8(), false);
 
     }
 
@@ -1469,7 +1636,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice8(), getByPatientNumber8(),
-                getByPatientSum8(), getByPatientUseTax8(), getByPatientTax8());
+                getByPatientSum8(), getByPatientTaxTarget8(),
+                getByPatientUseTax8(), getByPatientTax8(), true);
 
     }
 
@@ -1494,7 +1662,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice9FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice9(), getByPatientNumber9(),
-                getByPatientSum9(), getByPatientUseTax9(), getByPatientTax9());
+                getByPatientSum9(), getByPatientTaxTarget9(),
+                getByPatientUseTax9(), getByPatientTax9(), true);
 
     }
 
@@ -1507,7 +1676,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber9FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice9(), getByPatientNumber9(),
-                getByPatientSum9(), getByPatientUseTax9(), getByPatientTax9());
+                getByPatientSum9(), getByPatientTaxTarget9(),
+                getByPatientUseTax9(), getByPatientTax9(), true);
 
     }
 
@@ -1519,7 +1689,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum9FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum9(), getByPatientUseTax9(), getByPatientTax9());
+        doCalcSum(getByPatientSum9(), getByPatientTaxTarget9(),
+                getByPatientUseTax9(), getByPatientTax9());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget9ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice9(), getByPatientNumber9(),
+                getByPatientSum9(), getByPatientTaxTarget9(),
+                getByPatientUseTax9(), getByPatientTax9(), false);
 
     }
 
@@ -1533,7 +1719,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice9(), getByPatientNumber9(),
-                getByPatientSum9(), getByPatientUseTax9(), getByPatientTax9());
+                getByPatientSum9(), getByPatientTaxTarget9(),
+                getByPatientUseTax9(), getByPatientTax9(), true);
 
     }
 
@@ -1558,8 +1745,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice10FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice10(), getByPatientNumber10(),
-                getByPatientSum10(), getByPatientUseTax10(),
-                getByPatientTax10());
+                getByPatientSum10(), getByPatientTaxTarget10(),
+                getByPatientUseTax10(), getByPatientTax10(), true);
 
     }
 
@@ -1572,8 +1759,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber10FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice10(), getByPatientNumber10(),
-                getByPatientSum10(), getByPatientUseTax10(),
-                getByPatientTax10());
+                getByPatientSum10(), getByPatientTaxTarget10(),
+                getByPatientUseTax10(), getByPatientTax10(), true);
 
     }
 
@@ -1585,8 +1772,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum10FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum10(), getByPatientUseTax10(),
-                getByPatientTax10());
+        doCalcSum(getByPatientSum10(), getByPatientTaxTarget10(),
+                getByPatientUseTax10(), getByPatientTax10());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget10ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice10(), getByPatientNumber10(),
+                getByPatientSum10(), getByPatientTaxTarget10(),
+                getByPatientUseTax10(), getByPatientTax10(), false);
 
     }
 
@@ -1600,8 +1802,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice10(), getByPatientNumber10(),
-                getByPatientSum10(), getByPatientUseTax10(),
-                getByPatientTax10());
+                getByPatientSum10(), getByPatientTaxTarget10(),
+                getByPatientUseTax10(), getByPatientTax10(), true);
 
     }
 
@@ -2226,8 +2428,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice11FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice11(), getByPatientNumber11(),
-                getByPatientSum11(), getByPatientUseTax11(),
-                getByPatientTax11());
+                getByPatientSum11(), getByPatientTaxTarget11(),
+                getByPatientUseTax11(), getByPatientTax11(), true);
 
     }
 
@@ -2240,8 +2442,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber11FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice11(), getByPatientNumber11(),
-                getByPatientSum11(), getByPatientUseTax11(),
-                getByPatientTax11());
+                getByPatientSum11(), getByPatientTaxTarget11(),
+                getByPatientUseTax11(), getByPatientTax11(), true);
 
     }
 
@@ -2253,8 +2455,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum11FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum11(), getByPatientUseTax11(),
-                getByPatientTax11());
+        doCalcSum(getByPatientSum11(), getByPatientTaxTarget11(),
+                getByPatientUseTax11(), getByPatientTax11());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget11ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice11(), getByPatientNumber11(),
+                getByPatientSum11(), getByPatientTaxTarget11(),
+                getByPatientUseTax11(), getByPatientTax11(), false);
 
     }
 
@@ -2268,8 +2485,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice11(), getByPatientNumber11(),
-                getByPatientSum11(), getByPatientUseTax11(),
-                getByPatientTax11());
+                getByPatientSum11(), getByPatientTaxTarget11(),
+                getByPatientUseTax11(), getByPatientTax11(), true);
 
     }
 
@@ -2294,8 +2511,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice12FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice12(), getByPatientNumber12(),
-                getByPatientSum12(), getByPatientUseTax12(),
-                getByPatientTax12());
+                getByPatientSum12(), getByPatientTaxTarget12(),
+                getByPatientUseTax12(), getByPatientTax12(), true);
 
     }
 
@@ -2308,8 +2525,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber12FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice12(), getByPatientNumber12(),
-                getByPatientSum12(), getByPatientUseTax12(),
-                getByPatientTax12());
+                getByPatientSum12(), getByPatientTaxTarget12(),
+                getByPatientUseTax12(), getByPatientTax12(), true);
 
     }
 
@@ -2321,8 +2538,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum12FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum12(), getByPatientUseTax12(),
-                getByPatientTax12());
+        doCalcSum(getByPatientSum12(), getByPatientTaxTarget12(),
+                getByPatientUseTax12(), getByPatientTax12());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget12ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice12(), getByPatientNumber12(),
+                getByPatientSum12(), getByPatientTaxTarget12(),
+                getByPatientUseTax12(), getByPatientTax12(), false);
 
     }
 
@@ -2336,8 +2568,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice12(), getByPatientNumber12(),
-                getByPatientSum12(), getByPatientUseTax12(),
-                getByPatientTax12());
+                getByPatientSum12(), getByPatientTaxTarget12(),
+                getByPatientUseTax12(), getByPatientTax12(), true);
 
     }
 
@@ -2362,8 +2594,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice13FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice13(), getByPatientNumber13(),
-                getByPatientSum13(), getByPatientUseTax13(),
-                getByPatientTax13());
+                getByPatientSum13(), getByPatientTaxTarget13(),
+                getByPatientUseTax13(), getByPatientTax13(), true);
 
     }
 
@@ -2376,8 +2608,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber13FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice13(), getByPatientNumber13(),
-                getByPatientSum13(), getByPatientUseTax13(),
-                getByPatientTax13());
+                getByPatientSum13(), getByPatientTaxTarget13(),
+                getByPatientUseTax13(), getByPatientTax13(), true);
 
     }
 
@@ -2389,8 +2621,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum13FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum13(), getByPatientUseTax13(),
-                getByPatientTax13());
+        doCalcSum(getByPatientSum13(), getByPatientTaxTarget13(),
+                getByPatientUseTax13(), getByPatientTax13());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget13ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice13(), getByPatientNumber13(),
+                getByPatientSum13(), getByPatientTaxTarget13(),
+                getByPatientUseTax13(), getByPatientTax13(), false);
 
     }
 
@@ -2404,8 +2651,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice13(), getByPatientNumber13(),
-                getByPatientSum13(), getByPatientUseTax13(),
-                getByPatientTax13());
+                getByPatientSum13(), getByPatientTaxTarget13(),
+                getByPatientUseTax13(), getByPatientTax13(), true);
 
     }
 
@@ -2430,8 +2677,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice14FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice14(), getByPatientNumber14(),
-                getByPatientSum14(), getByPatientUseTax14(),
-                getByPatientTax14());
+                getByPatientSum14(), getByPatientTaxTarget14(),
+                getByPatientUseTax14(), getByPatientTax14(), true);
 
     }
 
@@ -2444,8 +2691,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber14FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice14(), getByPatientNumber14(),
-                getByPatientSum14(), getByPatientUseTax14(),
-                getByPatientTax14());
+                getByPatientSum14(), getByPatientTaxTarget14(),
+                getByPatientUseTax14(), getByPatientTax14(), true);
 
     }
 
@@ -2457,8 +2704,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum14FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum14(), getByPatientUseTax14(),
-                getByPatientTax14());
+        doCalcSum(getByPatientSum14(), getByPatientTaxTarget14(),
+                getByPatientUseTax14(), getByPatientTax14());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget14ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice14(), getByPatientNumber14(),
+                getByPatientSum14(), getByPatientTaxTarget14(),
+                getByPatientUseTax14(), getByPatientTax14(), false);
 
     }
 
@@ -2472,8 +2734,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice14(), getByPatientNumber14(),
-                getByPatientSum14(), getByPatientUseTax14(),
-                getByPatientTax14());
+                getByPatientSum14(), getByPatientTaxTarget14(),
+                getByPatientUseTax14(), getByPatientTax14(), true);
 
     }
 
@@ -2498,8 +2760,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice15FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice15(), getByPatientNumber15(),
-                getByPatientSum15(), getByPatientUseTax15(),
-                getByPatientTax15());
+                getByPatientSum15(), getByPatientTaxTarget15(),
+                getByPatientUseTax15(), getByPatientTax15(), true);
 
     }
 
@@ -2512,8 +2774,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber15FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice15(), getByPatientNumber15(),
-                getByPatientSum15(), getByPatientUseTax15(),
-                getByPatientTax15());
+                getByPatientSum15(), getByPatientTaxTarget15(),
+                getByPatientUseTax15(), getByPatientTax15(), true);
 
     }
 
@@ -2525,8 +2787,8 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum15FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum15(), getByPatientUseTax15(),
-                getByPatientTax15());
+        doCalcSum(getByPatientSum15(), getByPatientTaxTarget15(),
+                getByPatientUseTax15(), getByPatientTax15());
 
     }
 
@@ -2540,8 +2802,23 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice15(), getByPatientNumber15(),
-                getByPatientSum15(), getByPatientUseTax15(),
-                getByPatientTax15());
+                getByPatientSum15(), getByPatientTaxTarget15(),
+                getByPatientUseTax15(), getByPatientTax15(), true);
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget15ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice15(), getByPatientNumber15(),
+                getByPatientSum15(), getByPatientTaxTarget15(),
+                getByPatientUseTax15(), getByPatientTax15(), false);
 
     }
 
@@ -2566,8 +2843,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice16FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice16(), getByPatientNumber16(),
-                getByPatientSum16(), getByPatientUseTax16(),
-                getByPatientTax16());
+                getByPatientSum16(), getByPatientTaxTarget16(),
+                getByPatientUseTax16(), getByPatientTax16(), true);
 
     }
 
@@ -2580,8 +2857,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber16FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice16(), getByPatientNumber16(),
-                getByPatientSum16(), getByPatientUseTax16(),
-                getByPatientTax16());
+                getByPatientSum16(), getByPatientTaxTarget16(),
+                getByPatientUseTax16(), getByPatientTax16(), true);
 
     }
 
@@ -2593,8 +2870,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum16FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum16(), getByPatientUseTax16(),
-                getByPatientTax16());
+        doCalcSum(getByPatientSum16(), getByPatientTaxTarget16(),
+                getByPatientUseTax16(), getByPatientTax16());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget16ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice16(), getByPatientNumber16(),
+                getByPatientSum16(), getByPatientTaxTarget16(),
+                getByPatientUseTax16(), getByPatientTax16(), false);
 
     }
 
@@ -2608,8 +2900,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice16(), getByPatientNumber16(),
-                getByPatientSum16(), getByPatientUseTax16(),
-                getByPatientTax16());
+                getByPatientSum16(), getByPatientTaxTarget16(),
+                getByPatientUseTax16(), getByPatientTax16(), true);
 
     }
 
@@ -2634,8 +2926,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice17FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice17(), getByPatientNumber17(),
-                getByPatientSum17(), getByPatientUseTax17(),
-                getByPatientTax17());
+                getByPatientSum17(), getByPatientTaxTarget17(),
+                getByPatientUseTax17(), getByPatientTax17(), true);
 
     }
 
@@ -2648,8 +2940,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber17FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice17(), getByPatientNumber17(),
-                getByPatientSum17(), getByPatientUseTax17(),
-                getByPatientTax17());
+                getByPatientSum17(), getByPatientTaxTarget17(),
+                getByPatientUseTax17(), getByPatientTax17(), true);
 
     }
 
@@ -2661,8 +2953,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum17FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum17(), getByPatientUseTax17(),
-                getByPatientTax17());
+        doCalcSum(getByPatientSum17(), getByPatientTaxTarget17(),
+                getByPatientUseTax17(), getByPatientTax17());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget17ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice17(), getByPatientNumber17(),
+                getByPatientSum17(), getByPatientTaxTarget17(),
+                getByPatientUseTax17(), getByPatientTax17(), false);
 
     }
 
@@ -2676,8 +2983,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice17(), getByPatientNumber17(),
-                getByPatientSum17(), getByPatientUseTax17(),
-                getByPatientTax17());
+                getByPatientSum17(), getByPatientTaxTarget17(),
+                getByPatientUseTax17(), getByPatientTax17(), true);
 
     }
 
@@ -2702,8 +3009,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice18FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice18(), getByPatientNumber18(),
-                getByPatientSum18(), getByPatientUseTax18(),
-                getByPatientTax18());
+                getByPatientSum18(), getByPatientTaxTarget18(),
+                getByPatientUseTax18(), getByPatientTax18(), true);
 
     }
 
@@ -2716,8 +3023,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber18FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice18(), getByPatientNumber18(),
-                getByPatientSum18(), getByPatientUseTax18(),
-                getByPatientTax18());
+                getByPatientSum18(), getByPatientTaxTarget18(),
+                getByPatientUseTax18(), getByPatientTax18(), true);
 
     }
 
@@ -2729,8 +3036,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum18FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum18(), getByPatientUseTax18(),
-                getByPatientTax18());
+        doCalcSum(getByPatientSum18(), getByPatientTaxTarget18(),
+                getByPatientUseTax18(), getByPatientTax18());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget18ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice18(), getByPatientNumber18(),
+                getByPatientSum18(), getByPatientTaxTarget18(),
+                getByPatientUseTax18(), getByPatientTax18(), false);
 
     }
 
@@ -2744,8 +3066,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice18(), getByPatientNumber18(),
-                getByPatientSum18(), getByPatientUseTax18(),
-                getByPatientTax18());
+                getByPatientSum18(), getByPatientTaxTarget18(),
+                getByPatientUseTax18(), getByPatientTax18(), true);
 
     }
 
@@ -2770,8 +3092,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice19FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice19(), getByPatientNumber19(),
-                getByPatientSum19(), getByPatientUseTax19(),
-                getByPatientTax19());
+                getByPatientSum19(), getByPatientTaxTarget19(),
+                getByPatientUseTax19(), getByPatientTax19(), true);
 
     }
 
@@ -2784,8 +3106,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber19FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice19(), getByPatientNumber19(),
-                getByPatientSum19(), getByPatientUseTax19(),
-                getByPatientTax19());
+                getByPatientSum19(), getByPatientTaxTarget19(),
+                getByPatientUseTax19(), getByPatientTax19(), true);
 
     }
 
@@ -2797,8 +3119,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum19FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum19(), getByPatientUseTax19(),
-                getByPatientTax19());
+        doCalcSum(getByPatientSum19(), getByPatientTaxTarget19(),
+                getByPatientUseTax19(), getByPatientTax19());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget19ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice19(), getByPatientNumber19(),
+                getByPatientSum19(), getByPatientTaxTarget19(),
+                getByPatientUseTax19(), getByPatientTax19(), false);
 
     }
 
@@ -2812,8 +3149,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice19(), getByPatientNumber19(),
-                getByPatientSum19(), getByPatientUseTax19(),
-                getByPatientTax19());
+                getByPatientSum19(), getByPatientTaxTarget19(),
+                getByPatientUseTax19(), getByPatientTax19(), true);
 
     }
 
@@ -2838,8 +3175,8 @@ public class QP012 extends QP012Event {
     protected void byPatientPrice20FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice20(), getByPatientNumber20(),
-                getByPatientSum20(), getByPatientUseTax20(),
-                getByPatientTax20());
+                getByPatientSum20(), getByPatientTaxTarget20(),
+                getByPatientUseTax20(), getByPatientTax20(), true);
 
     }
 
@@ -2852,8 +3189,8 @@ public class QP012 extends QP012Event {
     protected void byPatientNumber20FocusLost(FocusEvent e) throws Exception {
         // 同行の金額列の再計算と合計欄の再計算を行う。
         doCalcSum(getByPatientPrice20(), getByPatientNumber20(),
-                getByPatientSum20(), getByPatientUseTax20(),
-                getByPatientTax20());
+                getByPatientSum20(), getByPatientTaxTarget20(),
+                getByPatientUseTax20(), getByPatientTax20(), true);
 
     }
 
@@ -2865,8 +3202,23 @@ public class QP012 extends QP012Event {
      */
     protected void byPatientSum20FocusLost(FocusEvent e) throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
-        doCalcSum(getByPatientSum20(), getByPatientUseTax20(),
-                getByPatientTax20());
+        doCalcSum(getByPatientSum20(), getByPatientTaxTarget20(),
+                getByPatientUseTax20(), getByPatientTax20());
+
+    }
+
+    /**
+     * 「再計算」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void byPatientTaxTarget20ActionPerformed(ActionEvent e)
+            throws Exception {
+        // 同行の税の再計算と合計欄の再計算を行う。
+        doCheckTax(getByPatientPrice20(), getByPatientNumber20(),
+                getByPatientSum20(), getByPatientTaxTarget20(),
+                getByPatientUseTax20(), getByPatientTax20(), false);
 
     }
 
@@ -2880,8 +3232,8 @@ public class QP012 extends QP012Event {
             throws Exception {
         // 同行の税の再計算と合計欄の再計算を行う。
         doCheckTax(getByPatientPrice20(), getByPatientNumber20(),
-                getByPatientSum20(), getByPatientUseTax20(),
-                getByPatientTax20());
+                getByPatientSum20(), getByPatientTaxTarget20(),
+                getByPatientUseTax20(), getByPatientTax20(), true);
 
     }
 
@@ -3123,6 +3475,11 @@ public class QP012 extends QP012Event {
                 new QkanFrameEventProcesser());
         QkanCommon.debugInitialize();
         VRMap param = new VRHashMap();
+        param.setData("PATIENT_ID", new Integer(7));
+        param
+                .setData("BILL_SPAN_START", ACDateUtilities.createDate(2007, 4,
+                        1));
+        param.setData("BILL_SPAN_END", ACDateUtilities.createDate(2007, 4, 31));
         // paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
         ACFrame.debugStart(new ACAffairInfo(QP012.class.getName(), param));
     }
@@ -3161,7 +3518,7 @@ public class QP012 extends QP012Event {
             }
             // 全額利用者負担とする。
             fullPatientRate = true;
-        }else if (insures.size() > 1) {
+        } else if (insures.size() > 1) {
             // 2つの保険情報をまたがる請求期間が設定されている場合
             // メッセージを表示する。※メッセージID = QP012_ERROR_OF_MULTIPLE_INSURE_SPAN
             QkanMessageList.getInstance().QP012_ERROR_OF_MULTIPLE_INSURE_SPAN();
@@ -3169,11 +3526,10 @@ public class QP012 extends QP012Event {
             return false;
         }
 
-        //スプラッシュを表示する。
+        // スプラッシュを表示する。
         ACSplashable splash = ACFrame.getInstance().getFrameEventProcesser()
                 .createSplash("実績");
-        
-        
+
         // 画面展開用のレコードinfoを定義・生成する。
         VRMap info = new VRHashMap();
         // ※負担割合
@@ -3233,29 +3589,44 @@ public class QP012 extends QP012Event {
         // クライアント領域(contents)にレコードinfoを割り当て・展開する。
         getContents().setSource(info);
         getContents().bindSource();
-        
-        
+
         if (VRBindPathParser.has("BY_PATIENT_NAME1", info)) {
-            //保険外負担のキーが存在する場合
+            // 保険外負担のキーが存在する場合
             ACCheckBox[] useTaxs = getByPatientUseTaxs();
             ACTextField[] taxs = getByPatientTaxs();
+            ACCheckBox[] taxTargets = getByPatientTaxTargets();
             int end = useTaxs.length;
-            for (int i = 0; i < end; i++) {
-                //保険外負担の税チェックをすべて付け直す。
-                useTaxs[i].setSelected(true);
-                taxs[i].setEnabled(true);
+            // ※平成19年4月改定(基本内税)対応をすべきか判定する
+            if (getInnerTaxH1904Mode()) {
+                // innerTaxH1904Modeがtrueの場合
+
+                // 保険外負担の課税チェックをすべて付け直す。
+                // 保険外負担の外税チェックをすべて外し直す。
+                for (int i = 0; i < end; i++) {
+                    useTaxs[i].setSelected(false);
+                    taxs[i].setEnabled(true);
+                    taxTargets[i].setSelected(true);
+                }
+            } else {
+                // innerTaxH1904Modeがfalseの場合
+                // 保険外負担の外税チェックをすべて付け直す。
+                for (int i = 0; i < end; i++) {
+                    useTaxs[i].setSelected(true);
+                    taxs[i].setEnabled(true);
+                    taxTargets[i].setSelected(true);
+                }
             }
         }
-        
-        //税分と合計欄の再計算を行う
+
+        // 税分と合計欄の再計算を行う
         doCalcTax();
-        
-        //スプラッシュを消す。
-        if(splash!=null){
+
+        // スプラッシュを消す。
+        if (splash != null) {
             splash.close();
             splash = null;
         }
-        
+
         return true;
     }
 
@@ -3485,23 +3856,43 @@ public class QP012 extends QP012Event {
     }
 
     /**
-     * 「税チェック変更」に関する処理を行ないます。
+     * 「外税チェック変更」に関する処理を行ないます。
      * 
      * @throws Exception 処理例外
      */
     public void doCheckTax(ACTextField price, ACTextField number,
-            ACTextField sum, ACCheckBox useTax, ACTextField tax)
-            throws Exception {
-        // 税チェックを切り替える。
-        if (useTax.isSelected()) {
-            // 引数useTaxのチェックが付いている場合：引数taxを有効にする。
-            tax.setEnabled(true);
+            ACTextField sum, ACCheckBox taxTarget, ACCheckBox useTax,
+            ACTextField tax, boolean mustCalcTax) throws Exception {
+        // 外税チェックを切り替える。
+        if (taxTarget.isSelected()) {
+            // 引数taxTargetにチェックが付いている場合
+            // 引数useTaxを有効にする。
+            useTax.setEnabled(true);
+            if (getInnerTaxH1904Mode() || useTax.isSelected()) {
+                // innerTaxH1904Modeがtrueか引数useTaxのチェックが付いている場合
+                // 引数taxを有効にする。
+                tax.setEnabled(true);
+            } else {
+                // innerTaxH1904Modeがfalseかつ引数useTaxのチェックが付いていない場合
+                // 引数taxを無効にする。
+                tax.setEnabled(false);
+            }
         } else {
-            // 引数useTaxのチェックが付いていない場合：引数taxを無効にする。
+            // 引数taxTargetにチェックが付いていない場合
+            // 引数taxを無効にする。
             tax.setEnabled(false);
+            // 引数useTaxを無効にする。
+            useTax.setEnabled(false);
         }
+
+        if (getInnerTaxH1904Mode() && mustCalcTax) {
+            // innerTaxH1904Modeがtrueかつ引数calcTaxがtrueの場合
+            // 消費税等の再計算を行う。
+            getByPatientSumCache().remove(sum);
+        }
+
         // 保険外負担の金額を再計算する。
-        doCalcSum(price, number, sum, useTax, tax);
+        doCalcSum(price, number, sum, taxTarget, useTax, tax, false);
 
     }
 
@@ -3511,8 +3902,8 @@ public class QP012 extends QP012Event {
      * @throws Exception 処理例外
      */
     public void doCalcSum(ACTextField price, ACTextField number,
-            ACTextField sum, ACCheckBox useTax, ACTextField tax)
-            throws Exception {
+            ACTextField sum, ACCheckBox taxTarget, ACCheckBox useTax,
+            ACTextField tax, boolean mustCalcSum) throws Exception {
         // 保険外負担の金額を再計算する。
         // 引数priceかnumberのいずれかが空欄の場合
         if (ACTextUtilities.isNullText(price)
@@ -3520,12 +3911,15 @@ public class QP012 extends QP012Event {
             // 処理を中断する。
             return;
         }
-        // 「引数priceの値」×「引数numberの値」を引数sumに設定する。
-        sum.setText(ACCastUtilities.toString(ACCastUtilities.toInt(price
-                .getText())
-                * ACCastUtilities.toInt(number.getText())));
+        if (mustCalcSum) {
+            // 「引数mustCalcSum」がtrueの場合
+            // 「引数priceの値」×「引数numberの値」を引数sumに設定する。
+            sum.setText(ACCastUtilities.toString(ACCastUtilities.toInt(price
+                    .getText())
+                    * ACCastUtilities.toInt(number.getText())));
+        }
         // 保険外負担の税金を再計算する。
-        doCalcSum(sum, useTax, tax);
+        doCalcSum(sum, taxTarget, useTax, tax);
 
     }
 
@@ -3534,11 +3928,12 @@ public class QP012 extends QP012Event {
      * 
      * @throws Exception 処理例外
      */
-    public void doCalcSum(ACTextField sum, ACCheckBox useTax, ACTextField tax)
-            throws Exception {
+    public void doCalcSum(ACTextField sum, ACCheckBox taxTarget,
+            ACCheckBox useTax, ACTextField tax) throws Exception {
         // 保険外負担の税金を再計算する。
-        if (useTax.isSelected()) {
-            // 引数useTaxにチェックが付いている場合
+        if (taxTarget.isSelected()
+                && (getInnerTaxH1904Mode() || useTax.isSelected())) {
+            // 引数taxTargetにチェックが付いており、かつinnerTaxH1904Modeがtrueか引数useTaxにチェックが付いている場合
             String val = sum.getText();
             if (!val.equals(getByPatientSumCache().get(sum))) {
                 // byPatientSumCacheのキーにsumが含まれないか、キーに対応する値が現在のsumの値と異なる場合
@@ -3550,11 +3945,30 @@ public class QP012 extends QP012Event {
                     tax.setText("");
                 } else {
                     // 引数sumが空欄ではない場合
-                    // 「引数sumの値」×「消費税率(tax)の値」を小数点以下切捨てで引数taxに設定する。
-                    tax.setText(ACCastUtilities.toString((int) Math
-                            .ceil(ACCastUtilities.toInt(val, 0)
-                                    * ACCastUtilities.toDouble(getTax()
-                                            .getText(), 0)) / 100));
+                    if (getInnerTaxH1904Mode() && !useTax.isSelected()) {
+                        // innerTaxH1904Modeがtrueかつ引数useTaxにチェックが付いていない場合
+                        // 内税として消費税を算出する。
+                        // ※
+                        // 「引数sumの値」－「引数sumの値」÷(100.0＋「消費税率(tax)の値」）×100.0を小数点以下切捨てで引数taxに設定する。
+                        int sumVal = ACCastUtilities.toInt(val, 0);
+                        tax
+                                .setText(ACCastUtilities.toString((int) Math
+                                        .floor(sumVal
+                                                - sumVal
+                                                / (100d + ACCastUtilities
+                                                        .toDouble(getTax()
+                                                                .getText(), 0))
+                                                * 100d)));
+
+                    } else {
+                        // innerTaxH1904Modeがfalseまたは引数useTaxにチェックが付いている場合
+                        // 外税として消費税を算出する。
+                        // ※「引数sumの値」×「消費税率(tax)の値」を小数点以下切捨てで引数taxに設定する。
+                        tax.setText(ACCastUtilities.toString((int) Math
+                                .ceil(ACCastUtilities.toInt(val, 0)
+                                        * ACCastUtilities.toDouble(getTax()
+                                                .getText(), 0)) / 100));
+                    }
                 }
             }
         }
@@ -3585,7 +3999,8 @@ public class QP012 extends QP012Event {
         }
         noTaxByInsurer = Math.round(noTaxByInsurer / 100.0
                 * getByPatientRateValue()) * 10;
-        VRBindPathParser.set("BILL_NO_TAX_BY_INSURER", info, new Long(noTaxByInsurer));
+        VRBindPathParser.set("BILL_NO_TAX_BY_INSURER", info, new Long(
+                noTaxByInsurer));
         // 保険外負担の金額(byPatientSum～)の合計額をレコードinfoのキー「BILL_NO_TAX_BY_PATIENT」で設定する。
         long noTaxByPatient = 0;
         for (int i = 1; i <= ROWS_OF_ITEM; i++) {
@@ -3594,6 +4009,7 @@ public class QP012 extends QP012Event {
         }
         VRBindPathParser.set("BILL_NO_TAX_BY_PATIENT", info, new Long(
                 noTaxByPatient));
+
         // 保険外負担の消費税等(byPatientTax～)の合計額をレコードinfoのキー「BILL_IN_TAX_BY_PATIENT」で設定する。
         int inTaxByPatient = 0;
         for (int i = 1; i <= ROWS_OF_ITEM; i++) {
@@ -3604,7 +4020,24 @@ public class QP012 extends QP012Event {
                 .toInteger(inTaxByPatient));
         // 上記3件の合計額をレコードinfoのキー「BILL_FULL_TOTAL」で設定する。
         VRBindPathParser.set("BILL_FULL_TOTAL", info, new Long(noTaxByInsurer
-                + noTaxByPatient + inTaxByPatient));
+                + noTaxByPatient + inTaxByPatient
+                             - ACCastUtilities.toInt(VRBindPathParser.get(
+                        "BY_PATIENT_TOTAL_INNER_TAX", data), 0)
+        
+        ));
+        
+        if(getInnerTaxH1904Mode()){
+            //平成19年4月改定(基本内税)対応版の場合
+            // 明細合計には消費税も含んだ値を印字すべきとの仕様から、
+            // 保険外負担の金額(byPatientSum～)の合計額であるレコードinfoのキー「BILL_NO_TAX_BY_PATIENT」の値に、
+            // 領収額合計から保険の明細合計額を引いた値を再設定する。
+            VRBindPathParser.set("BILL_NO_TAX_BY_PATIENT", info, new Long(
+                    noTaxByPatient
+                            + inTaxByPatient
+                            - ACCastUtilities.toInt(VRBindPathParser.get(
+                                    "BY_PATIENT_TOTAL_INNER_TAX", data), 0)));
+        }
+
         // 合計領域(totalContents)にレコードinfoを割り当て・展開する。
         getTotalContents().setSource(info);
         getTotalContents().bindSource();
@@ -3619,11 +4052,12 @@ public class QP012 extends QP012Event {
         // 保険外負担分項目の税分の再計算と、合計欄の再計算を行う。
         getByPatientSumCache().clear();
         ACTextField[] sums = getByPatientSums();
+        ACCheckBox[] taxTargets = getByPatientTaxTargets();
         ACCheckBox[] useTaxs = getByPatientUseTaxs();
         ACTextField[] taxs = getByPatientTaxs();
         int end = sums.length;
         for (int i = 0; i < end; i++) {
-            doCalcSum(sums[i], useTaxs[i], taxs[i]);
+            doCalcSum(sums[i], taxTargets[i], useTaxs[i], taxs[i]);
         }
     }
 
@@ -3635,6 +4069,10 @@ public class QP012 extends QP012Event {
      */
     public void filterBindPath(VRMap data) throws Exception {
         // データ中のバインドパスをフィルタリングする。
+
+      // 内税の合計を表す変数totalInnerTaxを定義し0で初期化する。
+      long totalInnerTax = 0;
+
         for (int i = 1; i <= ROWS_OF_ITEM; i++) {
             // 保険負担分の項目名の値が空欄ならば「項目名」「単価」「数量」「金額」のバインドパスを削除する。
             if (ACTextUtilities.isNullText(VRBindPathParser.get(
@@ -3651,16 +4089,49 @@ public class QP012 extends QP012Event {
                 data.remove("BY_PATIENT_PRICE" + i);
                 data.remove("BY_PATIENT_NUMBER" + i);
                 data.remove("BY_PATIENT_SUM" + i);
-                // また、「税」の値を1とし、チェックが付く状態にする。
-                VRBindPathParser.set("BY_PATIENT_USE_TAX" + i, data,
+                if (getInnerTaxH1904Mode()) {
+                    // innerTaxH1904Mode が true の場合
+                    // 「外税」のバインドパスを削除する。
+                    data.remove("BY_PATIENT_USE_TAX" + i);
+                } else {
+                    // innerTaxH1904Mode が false の場合
+                    // 「外税」の値を1とし、チェックが付く状態にする。
+                    VRBindPathParser.set("BY_PATIENT_USE_TAX" + i, data,
+                            ACCastUtilities.toInteger(1));
+                }
+                data.remove("BY_PATIENT_TAX" + i);
+                // 「課税」の値を1とし、チェックが付く状態にする。
+                VRBindPathParser.set("BY_PATIENT_TAX_TARGET" + i, data,
                         ACCastUtilities.toInteger(1));
+            } else if (ACCastUtilities.toInt(VRBindPathParser.get(
+                    "BY_PATIENT_TAX_TARGET" + i, data), -1) == 0) {
+                // 保険外負担分の項目名が入力済みでも、「課税」の値が0(チェックなし)の場合は「消費税等」のバインドパスを削除する。
                 data.remove("BY_PATIENT_TAX" + i);
             } else if (ACCastUtilities.toInt(VRBindPathParser.get(
                     "BY_PATIENT_USE_TAX" + i, data), -1) == 0) {
-                // 保険外負担分の項目名が入力済みでも、「税」の値が0(チェックなし)の場合は「消費税等」のバインドパスを削除する。
-                data.remove("BY_PATIENT_TAX" + i);
+                // 保険外負担分の項目名が入力済みでも、「税」の値が0(チェックなし)の場合
+
+                // replace-begin 2007/03/10 Tozo Tanaka
+                // // 「消費税等」のバインドパスを削除する。
+                // data.remove("BY_PATIENT_TAX" + i);
+
+                if (getInnerTaxH1904Mode()) {
+                    // innerTaxH1904Mode が true の場合
+
+                    // 「金額」×「消費税率(tax)の値」を小数点以下切捨てて内税の合計(totalInnerTax)に加算する。
+                    totalInnerTax += ACCastUtilities.toInt(VRBindPathParser
+                            .get("BY_PATIENT_TAX" + i, data), 0);
+                } else {
+                    // innerTaxH1904Mode が false の場合
+                    // 「消費税等」のバインドパスを削除する。
+                    data.remove("BY_PATIENT_TAX" + i);
+
+                }
+                // replace-end 2007/03/10 Tozo Tanaka
             }
         }
+      // 引数「data」にキー「BY_PATIENT_TOTAL_INNER_TAX」で内税の合計(totalInnerTax)を設定する。
+      data.put("BY_PATIENT_TOTAL_INNER_TAX", new Long(totalInnerTax));
     }
 
     /**
@@ -3777,10 +4248,12 @@ public class QP012 extends QP012Event {
             break;
         case 8:
             // 保険者番号が8桁の場合は、保険(公費)短縮制度名フォーマットの変換結果を連結する。
-            //replace-begin 2006-10-25 Tozo TANAKA
-            //mainInsure = QkanMedicalInsureTypeFormat.getInstance().format(ACCastUtilities.toInteger(insurerID.substring(0,2),0));
-            mainInsure = QkanMedicalInsureTypeFormat.getInstance().format(insurerID);
-            //replace-end 2006-10-25 Tozo TANAKA
+            // replace-begin 2006-10-25 Tozo TANAKA
+            // mainInsure =
+            // QkanMedicalInsureTypeFormat.getInstance().format(ACCastUtilities.toInteger(insurerID.substring(0,2),0));
+            mainInsure = QkanMedicalInsureTypeFormat.getInstance().format(
+                    insurerID);
+            // replace-end 2006-10-25 Tozo TANAKA
             break;
         default:
             // いずれの桁数にも該当しない場合は保険種別(INSURE_TYPE)の変換結果を連結する。
@@ -3800,7 +4273,7 @@ public class QP012 extends QP012Event {
             if (!"老人".equals(mainInsure)) {
                 // 主保険として老人が指定されていない場合
                 // 「 老人」を連結する。
-                if(sb.length()!=0){
+                if (sb.length() != 0) {
                     sb.append("　");
                 }
                 sb.append("老人");
@@ -3848,16 +4321,17 @@ public class QP012 extends QP012Event {
         while (it.hasNext()) {
             VRMap row = (VRMap) it.next();
             // 公費の法別番号(KOHI_LAW_NO)を保険(公費)短縮制度名フォーマットで変換する。
-            //replace-begin 2006-10-25 Tozo TANAKA
-//            String kohiName = QkanMedicalInsureTypeFormat.getInstance().format(
-//                    ACCastUtilities.toInteger(VRBindPathParser.get(
-//                            "KOHI_LAW_NO", row),0));
+            // replace-begin 2006-10-25 Tozo TANAKA
+            // String kohiName =
+            // QkanMedicalInsureTypeFormat.getInstance().format(
+            // ACCastUtilities.toInteger(VRBindPathParser.get(
+            // "KOHI_LAW_NO", row),0));
             String kohiName = QkanMedicalInsureTypeFormat.getInstance().format(
                     ACCastUtilities.toString(VRBindPathParser.get(
                             "KOHI_LAW_NO", row))
                             + ACCastUtilities.toString(VRBindPathParser.get(
                                     "INSURER_ID", row)));
-            //replace-end 2006-10-25 Tozo TANAKA
+            // replace-end 2006-10-25 Tozo TANAKA
             if ((!ACTextUtilities.isNullText(kohiName))
                     && (!insureSet.contains(kohiName))) {
                 // 変換結果が空文字でなく新出の公費名の場合
@@ -3869,9 +4343,9 @@ public class QP012 extends QP012Event {
                 }
                 // 変換した公費の短縮制度名を連結する。
                 sb.append(kohiName);
-                //add-begin 2006-10-25 Tozo TANAKA
+                // add-begin 2006-10-25 Tozo TANAKA
                 insureSet.add(kohiName);
-                //add-end 2006-10-25 Tozo TANAKA
+                // add-end 2006-10-25 Tozo TANAKA
             }
         }
 
@@ -3881,15 +4355,15 @@ public class QP012 extends QP012Event {
 
     /**
      * 「項目名配列を取得」に関する処理を行ないます。
-     *
+     * 
      * @throws Exception 処理例外
      * @return ACComboBox[]
      */
     public ACComboBox[] getByInsurerNamesAndPatientNames() throws Exception {
-        return new ACComboBox[] { getByInsurerName1(),
-                getByInsurerName2(), getByInsurerName3(), getByInsurerName4(),
-                getByInsurerName5(), getByInsurerName6(), getByInsurerName7(),
-                getByInsurerName8(), getByInsurerName9(), getByInsurerName10(),
+        return new ACComboBox[] { getByInsurerName1(), getByInsurerName2(),
+                getByInsurerName3(), getByInsurerName4(), getByInsurerName5(),
+                getByInsurerName6(), getByInsurerName7(), getByInsurerName8(),
+                getByInsurerName9(), getByInsurerName10(),
                 getByInsurerName11(), getByInsurerName12(),
                 getByInsurerName13(), getByInsurerName14(),
                 getByInsurerName15(), getByInsurerName16(),
@@ -3907,60 +4381,176 @@ public class QP012 extends QP012Event {
     }
 
     /**
+     * 「利用者負担の単価配列を取得」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     * @return ACTextField[]
+     */
+    public ACTextField[] getByPatientPrices() throws Exception {
+        return new ACTextField[] { getByPatientPrice1(), getByPatientPrice2(),
+                getByPatientPrice3(), getByPatientPrice4(),
+                getByPatientPrice5(), getByPatientPrice6(),
+                getByPatientPrice7(), getByPatientPrice8(),
+                getByPatientPrice9(), getByPatientPrice10(),
+                getByPatientPrice11(), getByPatientPrice12(),
+                getByPatientPrice13(), getByPatientPrice14(),
+                getByPatientPrice15(), getByPatientPrice16(),
+                getByPatientPrice17(), getByPatientPrice18(),
+                getByPatientPrice19(), getByPatientPrice20(), };
+    }
+
+    /**
+     * 「利用者負担の個数配列を取得」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     * @return ACTextField[]
+     */
+    public ACTextField[] getByPatientNumbers() throws Exception {
+        return new ACTextField[] { getByPatientNumber1(),
+                getByPatientNumber2(), getByPatientNumber3(),
+                getByPatientNumber4(), getByPatientNumber5(),
+                getByPatientNumber6(), getByPatientNumber7(),
+                getByPatientNumber8(), getByPatientNumber9(),
+                getByPatientNumber10(), getByPatientNumber11(),
+                getByPatientNumber12(), getByPatientNumber13(),
+                getByPatientNumber14(), getByPatientNumber15(),
+                getByPatientNumber16(), getByPatientNumber17(),
+                getByPatientNumber18(), getByPatientNumber19(),
+                getByPatientNumber20(), };
+    }
+
+    /**
      * 「利用者負担の金額配列を取得」に関する処理を行ないます。
-     *
+     * 
      * @throws Exception 処理例外
      * @return ACTextField[]
      */
     public ACTextField[] getByPatientSums() throws Exception {
-        return new ACTextField[] { getByPatientSum1(),
-                getByPatientSum2(), getByPatientSum3(), getByPatientSum4(),
-                getByPatientSum5(), getByPatientSum6(), getByPatientSum7(),
-                getByPatientSum8(), getByPatientSum9(), getByPatientSum10(),
-                getByPatientSum11(), getByPatientSum12(), getByPatientSum13(),
-                getByPatientSum14(), getByPatientSum15(), getByPatientSum16(),
-                getByPatientSum17(), getByPatientSum18(), getByPatientSum19(),
-                getByPatientSum20(), };
+        return new ACTextField[] { getByPatientSum1(), getByPatientSum2(),
+                getByPatientSum3(), getByPatientSum4(), getByPatientSum5(),
+                getByPatientSum6(), getByPatientSum7(), getByPatientSum8(),
+                getByPatientSum9(), getByPatientSum10(), getByPatientSum11(),
+                getByPatientSum12(), getByPatientSum13(), getByPatientSum14(),
+                getByPatientSum15(), getByPatientSum16(), getByPatientSum17(),
+                getByPatientSum18(), getByPatientSum19(), getByPatientSum20(), };
     }
 
     /**
      * 「利用者負担の税配列を取得」に関する処理を行ないます。
-     *
+     * 
      * @throws Exception 処理例外
      * @return ACIntegerCheckBox[]
      */
     public ACIntegerCheckBox[] getByPatientUseTaxs() throws Exception {
-        return new ACIntegerCheckBox[] {
-                getByPatientUseTax1(), getByPatientUseTax2(),
-                getByPatientUseTax3(), getByPatientUseTax4(),
-                getByPatientUseTax5(), getByPatientUseTax6(),
-                getByPatientUseTax7(), getByPatientUseTax8(),
-                getByPatientUseTax9(), getByPatientUseTax10(),
-                getByPatientUseTax11(), getByPatientUseTax12(),
-                getByPatientUseTax13(), getByPatientUseTax14(),
-                getByPatientUseTax15(), getByPatientUseTax16(),
-                getByPatientUseTax17(), getByPatientUseTax18(),
-                getByPatientUseTax19(), getByPatientUseTax20(), };
+        return new ACIntegerCheckBox[] { getByPatientUseTax1(),
+                getByPatientUseTax2(), getByPatientUseTax3(),
+                getByPatientUseTax4(), getByPatientUseTax5(),
+                getByPatientUseTax6(), getByPatientUseTax7(),
+                getByPatientUseTax8(), getByPatientUseTax9(),
+                getByPatientUseTax10(), getByPatientUseTax11(),
+                getByPatientUseTax12(), getByPatientUseTax13(),
+                getByPatientUseTax14(), getByPatientUseTax15(),
+                getByPatientUseTax16(), getByPatientUseTax17(),
+                getByPatientUseTax18(), getByPatientUseTax19(),
+                getByPatientUseTax20(), };
     }
 
     /**
      * 「利用者負担の消費税等配列を取得」に関する処理を行ないます。
-     *
+     * 
      * @throws Exception 処理例外
      * @return ACTextField[]
      */
     public ACTextField[] getByPatientTaxs() throws Exception {
-        return new ACTextField[] {
-                getByPatientTax1(), getByPatientTax2(),
-                getByPatientTax3(), getByPatientTax4(),
-                getByPatientTax5(), getByPatientTax6(),
-                getByPatientTax7(), getByPatientTax8(),
-                getByPatientTax9(), getByPatientTax10(),
-                getByPatientTax11(), getByPatientTax12(),
-                getByPatientTax13(), getByPatientTax14(),
-                getByPatientTax15(), getByPatientTax16(),
-                getByPatientTax17(), getByPatientTax18(),
-                getByPatientTax19(), getByPatientTax20(), };
+        return new ACTextField[] { getByPatientTax1(), getByPatientTax2(),
+                getByPatientTax3(), getByPatientTax4(), getByPatientTax5(),
+                getByPatientTax6(), getByPatientTax7(), getByPatientTax8(),
+                getByPatientTax9(), getByPatientTax10(), getByPatientTax11(),
+                getByPatientTax12(), getByPatientTax13(), getByPatientTax14(),
+                getByPatientTax15(), getByPatientTax16(), getByPatientTax17(),
+                getByPatientTax18(), getByPatientTax19(), getByPatientTax20(), };
+    }
+
+    /**
+     * 「利用者負担の課税対象配列を取得」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     * @return ACIntegerCheckBox[]
+     */
+    public ACIntegerCheckBox[] getByPatientTaxTargets() throws Exception {
+        return new ACIntegerCheckBox[] { getByPatientTaxTarget1(),
+                getByPatientTaxTarget2(), getByPatientTaxTarget3(),
+                getByPatientTaxTarget4(), getByPatientTaxTarget5(),
+                getByPatientTaxTarget6(), getByPatientTaxTarget7(),
+                getByPatientTaxTarget8(), getByPatientTaxTarget9(),
+                getByPatientTaxTarget10(), getByPatientTaxTarget11(),
+                getByPatientTaxTarget12(), getByPatientTaxTarget13(),
+                getByPatientTaxTarget14(), getByPatientTaxTarget15(),
+                getByPatientTaxTarget16(), getByPatientTaxTarget17(),
+                getByPatientTaxTarget18(), getByPatientTaxTarget19(),
+                getByPatientTaxTarget20(), };
+    }
+
+    /**
+     * 「平成19年4月改定チェック」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public void checkInnerTaxModeH1804() throws Exception {
+        // ※平成19年4月改定(基本内税)対応をすべきか判定する
+        if (
+                ACDateUtilities.compareOnDay(getBillStart(), ACDateUtilities
+                .createDate(2007, 4, 1)) >= 0) {
+            // 請求期間の開始が平成19年4月1日以降の場合
+            // innerTaxH1904Mode に true を代入する。
+            setInnerTaxH1904Mode(true);
+            // 画面状態を基本内税対応あり(VALID_INNER_TAX_H1804)にする。
+            setState_VALID_INNER_TAX_H1804();
+            // 課税対象額(totalInTaxTitle)のテキストを「(うち消費税額)」にする。
+            getTotalInTaxTitle().setText("(うち消費税額)");
+            // 保険外負担分外税タイトル(byPatientUseTaxTitle)のテキストを「外税」にする。
+            getByPatientUseTaxTitle().setText("外税");
+
+            // 税説明(useTaxInfomation)のテキストを以下とする。
+            // 「課税」列にチェックをつけると、課税対象の項目として内税/外税の選択が可能になります。
+            // 「外税」列にチェックをつけると、外税として消費税等列に全額が自動入力されます。
+            // チェックを外すと、内税となります。
+            getUseTaxInfomation()
+                    .setText(
+                            "「課税」列にチェックをつけると、課税対象の項目として内税/外税の選択が"
+                                    + ACConstants.LINE_SEPARATOR
+                                    + "　可能になります。チェックを外すと、非課税として扱います。"
+                                    + ACConstants.LINE_SEPARATOR
+                                    +"「外税」列にチェックをつけると、消費税等列に外税額が自動入力されます。"
+                                    + ACConstants.LINE_SEPARATOR
+                                    + "　チェックをはずすと、消費税等列に内税額が自動入力されます。");
+
+            // 保険外負担分外税の各チェックのテキストを半角空白( )にする。
+            // 保険外負担の外税チェックをすべて外す。
+            // 保険外負担の課税チェックをすべてつける。
+            ACIntegerCheckBox[] useTaxs = getByPatientUseTaxs();
+            ACIntegerCheckBox[] taxTargets = getByPatientTaxTargets();
+            int end = useTaxs.length;
+            for (int i = 0; i < end; i++) {
+                useTaxs[i].setText(" ");
+                useTaxs[i].setSelected(false);
+                taxTargets[i].setSelected(true);
+            }
+
+        } else {
+            // 請求期間の開始が平成19年4月1日より前の場合
+            // innerTaxH1904Mode に false を代入する。
+            setInnerTaxH1904Mode(false);
+            // 画面状態を基本内税対応なし(INVALID_INNER_TAX_H1804)にする。
+            setState_INVALID_INNER_TAX_H1804();
+
+            // 保険外負担の課税チェックをすべてつける。
+            ACIntegerCheckBox[] taxTargets = getByPatientTaxTargets();
+            int end = taxTargets.length;
+            for (int i = 0; i < end; i++) {
+                taxTargets[i].setSelected(true);
+            }
+        }
     }
 
 }

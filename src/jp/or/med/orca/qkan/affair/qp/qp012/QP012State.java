@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/08/22  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2007/02/22  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -165,6 +165,106 @@ public class QP012State extends QP012Design {
         getProvideDay30().setVisible(true);
 
         getProvideDay31().setVisible(true);
+
+  }
+
+  /**
+   * 「基本内税対応なし」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_INNER_TAX_H1804() throws Exception {
+
+        getByPatientTaxTargetTitle().setVisible(false);
+
+        getByPatientTaxTarget1().setVisible(false);
+
+        getByPatientTaxTarget2().setVisible(false);
+
+        getByPatientTaxTarget3().setVisible(false);
+
+        getByPatientTaxTarget4().setVisible(false);
+
+        getByPatientTaxTarget5().setVisible(false);
+
+        getByPatientTaxTarget6().setVisible(false);
+
+        getByPatientTaxTarget7().setVisible(false);
+
+        getByPatientTaxTarget8().setVisible(false);
+
+        getByPatientTaxTarget9().setVisible(false);
+
+        getByPatientTaxTarget10().setVisible(false);
+
+        getByPatientTaxTarget11().setVisible(false);
+
+        getByPatientTaxTarget12().setVisible(false);
+
+        getByPatientTaxTarget13().setVisible(false);
+
+        getByPatientTaxTarget14().setVisible(false);
+
+        getByPatientTaxTarget15().setVisible(false);
+
+        getByPatientTaxTarget16().setVisible(false);
+
+        getByPatientTaxTarget17().setVisible(false);
+
+        getByPatientTaxTarget18().setVisible(false);
+
+        getByPatientTaxTarget19().setVisible(false);
+
+        getByPatientTaxTarget20().setVisible(false);
+
+  }
+
+  /**
+   * 「基本内税対応あり」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_INNER_TAX_H1804() throws Exception {
+
+        getByPatientTaxTargetTitle().setVisible(true);
+
+        getByPatientTaxTarget1().setVisible(true);
+
+        getByPatientTaxTarget2().setVisible(true);
+
+        getByPatientTaxTarget3().setVisible(true);
+
+        getByPatientTaxTarget4().setVisible(true);
+
+        getByPatientTaxTarget5().setVisible(true);
+
+        getByPatientTaxTarget6().setVisible(true);
+
+        getByPatientTaxTarget7().setVisible(true);
+
+        getByPatientTaxTarget8().setVisible(true);
+
+        getByPatientTaxTarget9().setVisible(true);
+
+        getByPatientTaxTarget10().setVisible(true);
+
+        getByPatientTaxTarget11().setVisible(true);
+
+        getByPatientTaxTarget12().setVisible(true);
+
+        getByPatientTaxTarget13().setVisible(true);
+
+        getByPatientTaxTarget14().setVisible(true);
+
+        getByPatientTaxTarget15().setVisible(true);
+
+        getByPatientTaxTarget16().setVisible(true);
+
+        getByPatientTaxTarget17().setVisible(true);
+
+        getByPatientTaxTarget18().setVisible(true);
+
+        getByPatientTaxTarget19().setVisible(true);
+
+        getByPatientTaxTarget20().setVisible(true);
 
   }
 
