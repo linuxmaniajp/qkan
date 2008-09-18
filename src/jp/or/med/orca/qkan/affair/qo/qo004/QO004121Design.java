@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/09  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2008/03/19  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -130,6 +131,16 @@ public class QO004121Design extends QS001ServicePanel {
   private ACRadioButtonItem recuperationEnvironmentalItem2;
 
   private ACRadioButtonItem recuperationEnvironmentalItem3;
+
+  private ACClearableRadioButtonGroup EquipmentStandard;
+
+  private ACLabelContainer EquipmentStandardContainer;
+
+  private ACListModelAdapter EquipmentStandardModel;
+
+  private ACRadioButtonItem EquipmentStandardItem1;
+
+  private ACRadioButtonItem EquipmentStandardItem2;
 
   private ACClearableRadioButtonGroup nourishmentControlAdd;
 
@@ -292,9 +303,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       facilitiesDivision.setBindPath("1530201");
 
-      facilitiesDivision.setModel(getFacilitiesDivisionModel());
-
       facilitiesDivision.setUseClearButton(false);
+
+      facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
       addFacilitiesDivision();
     }
@@ -379,9 +390,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       staffAssignmentDivision.setBindPath("1530202");
 
-      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
-
       staffAssignmentDivision.setUseClearButton(false);
+
+      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
 
       addStaffAssignmentDivision();
     }
@@ -466,9 +477,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       unitCareMaintenance.setBindPath("1530217");
 
-      unitCareMaintenance.setModel(getUnitCareMaintenanceModel());
-
       unitCareMaintenance.setUseClearButton(false);
+
+      unitCareMaintenance.setModel(getUnitCareMaintenanceModel());
 
       addUnitCareMaintenance();
     }
@@ -557,9 +568,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       recuperationEnvironmental.setBindPath("1530203");
 
-      recuperationEnvironmental.setModel(getRecuperationEnvironmentalModel());
-
       recuperationEnvironmental.setUseClearButton(false);
+
+      recuperationEnvironmental.setModel(getRecuperationEnvironmentalModel());
 
       addRecuperationEnvironmental();
     }
@@ -651,6 +662,93 @@ public class QO004121Design extends QS001ServicePanel {
   }
 
   /**
+   * 設備基準ラジオグループを取得します。
+   * @return 設備基準ラジオグループ
+   */
+  public ACClearableRadioButtonGroup getEquipmentStandard(){
+    if(EquipmentStandard==null){
+
+      EquipmentStandard = new ACClearableRadioButtonGroup();
+
+      getEquipmentStandardContainer().setText("設備基準");
+
+      EquipmentStandard.setBindPath("1530219");
+
+      EquipmentStandard.setUseClearButton(false);
+
+      EquipmentStandard.setModel(getEquipmentStandardModel());
+
+      addEquipmentStandard();
+    }
+    return EquipmentStandard;
+
+  }
+
+  /**
+   * 設備基準ラジオグループコンテナを取得します。
+   * @return 設備基準ラジオグループコンテナ
+   */
+  protected ACLabelContainer getEquipmentStandardContainer(){
+    if(EquipmentStandardContainer==null){
+      EquipmentStandardContainer = new ACLabelContainer();
+      EquipmentStandardContainer.setFollowChildEnabled(true);
+      EquipmentStandardContainer.setVAlignment(VRLayout.CENTER);
+      EquipmentStandardContainer.add(getEquipmentStandard(), null);
+    }
+    return EquipmentStandardContainer;
+  }
+
+  /**
+   * 設備基準ラジオグループモデルを取得します。
+   * @return 設備基準ラジオグループモデル
+   */
+  protected ACListModelAdapter getEquipmentStandardModel(){
+    if(EquipmentStandardModel==null){
+      EquipmentStandardModel = new ACListModelAdapter();
+      addEquipmentStandardModel();
+    }
+    return EquipmentStandardModel;
+  }
+
+  /**
+   * 基準型を取得します。
+   * @return 基準型
+   */
+  public ACRadioButtonItem getEquipmentStandardItem1(){
+    if(EquipmentStandardItem1==null){
+
+      EquipmentStandardItem1 = new ACRadioButtonItem();
+
+      EquipmentStandardItem1.setText("基準型");
+
+      EquipmentStandardItem1.setGroup(getEquipmentStandard());
+
+      addEquipmentStandardItem1();
+    }
+    return EquipmentStandardItem1;
+
+  }
+
+  /**
+   * 減算型を取得します。
+   * @return 減算型
+   */
+  public ACRadioButtonItem getEquipmentStandardItem2(){
+    if(EquipmentStandardItem2==null){
+
+      EquipmentStandardItem2 = new ACRadioButtonItem();
+
+      EquipmentStandardItem2.setText("減算型");
+
+      EquipmentStandardItem2.setGroup(getEquipmentStandard());
+
+      addEquipmentStandardItem2();
+    }
+    return EquipmentStandardItem2;
+
+  }
+
+  /**
    * 栄養管理の評価ラジオグループを取得します。
    * @return 栄養管理の評価ラジオグループ
    */
@@ -663,9 +761,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       nourishmentControlAdd.setBindPath("1530204");
 
-      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
-
       nourishmentControlAdd.setUseClearButton(false);
+
+      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
 
       addNourishmentControlAdd();
     }
@@ -775,9 +873,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       nourishmentManagementAdd.setBindPath("1530205");
 
-      nourishmentManagementAdd.setModel(getNourishmentManagementAddModel());
-
       nourishmentManagementAdd.setUseClearButton(false);
+
+      nourishmentManagementAdd.setModel(getNourishmentManagementAddModel());
 
       addNourishmentManagementAdd();
     }
@@ -862,9 +960,9 @@ public class QO004121Design extends QS001ServicePanel {
 
       bodyRestraintAbolition.setBindPath("1530218");
 
-      bodyRestraintAbolition.setModel(getBodyRestraintAbolitionModel());
-
       bodyRestraintAbolition.setUseClearButton(false);
+
+      bodyRestraintAbolition.setModel(getBodyRestraintAbolitionModel());
 
       addBodyRestraintAbolition();
     }
@@ -1784,6 +1882,8 @@ public class QO004121Design extends QS001ServicePanel {
 
     calculationDetails.add(getRecuperationEnvironmentalContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    calculationDetails.add(getEquipmentStandardContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     calculationDetails.add(getNourishmentControlAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     calculationDetails.add(getNourishmentManagementAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -1809,9 +1909,11 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
   }
@@ -1843,9 +1945,11 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addStaffAssignmentDivisionModel(){
 
     getStaffAssignmentDivisionItem1().setButtonIndex(1);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem1());
 
     getStaffAssignmentDivisionItem2().setButtonIndex(2);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem2());
 
   }
@@ -1877,9 +1981,11 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addUnitCareMaintenanceModel(){
 
     getUnitCareMaintenanceItem1().setButtonIndex(1);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem1());
 
     getUnitCareMaintenanceItem2().setButtonIndex(2);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem2());
 
   }
@@ -1911,12 +2017,15 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addRecuperationEnvironmentalModel(){
 
     getRecuperationEnvironmentalItem1().setButtonIndex(1);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem1());
 
     getRecuperationEnvironmentalItem2().setButtonIndex(2);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem2());
 
     getRecuperationEnvironmentalItem3().setButtonIndex(3);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem3());
 
   }
@@ -1943,6 +2052,42 @@ public class QO004121Design extends QS001ServicePanel {
   }
 
   /**
+   * 設備基準ラジオグループに内部項目を追加します。
+   */
+  protected void addEquipmentStandard(){
+
+  }
+
+  /**
+   * 設備基準ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addEquipmentStandardModel(){
+
+    getEquipmentStandardItem1().setButtonIndex(1);
+
+    getEquipmentStandardModel().add(getEquipmentStandardItem1());
+
+    getEquipmentStandardItem2().setButtonIndex(2);
+
+    getEquipmentStandardModel().add(getEquipmentStandardItem2());
+
+  }
+
+  /**
+   * 基準型に内部項目を追加します。
+   */
+  protected void addEquipmentStandardItem1(){
+
+  }
+
+  /**
+   * 減算型に内部項目を追加します。
+   */
+  protected void addEquipmentStandardItem2(){
+
+  }
+
+  /**
    * 栄養管理の評価ラジオグループに内部項目を追加します。
    */
   protected void addNourishmentControlAdd(){
@@ -1955,12 +2100,15 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addNourishmentControlAddModel(){
 
     getNourishmentControlAddItem1().setButtonIndex(1);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem1());
 
     getNourishmentControlAddItem2().setButtonIndex(2);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem2());
 
     getNourishmentControlAddItem3().setButtonIndex(3);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem3());
 
   }
@@ -1999,9 +2147,11 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addNourishmentManagementAddModel(){
 
     getNourishmentManagementAddItem1().setButtonIndex(1);
+
     getNourishmentManagementAddModel().add(getNourishmentManagementAddItem1());
 
     getNourishmentManagementAddItem2().setButtonIndex(2);
+
     getNourishmentManagementAddModel().add(getNourishmentManagementAddItem2());
 
   }
@@ -2033,9 +2183,11 @@ public class QO004121Design extends QS001ServicePanel {
   protected void addBodyRestraintAbolitionModel(){
 
     getBodyRestraintAbolitionItem1().setButtonIndex(1);
+
     getBodyRestraintAbolitionModel().add(getBodyRestraintAbolitionItem1());
 
     getBodyRestraintAbolitionItem2().setButtonIndex(2);
+
     getBodyRestraintAbolitionModel().add(getBodyRestraintAbolitionItem2());
 
   }
@@ -2401,7 +2553,6 @@ public class QO004121Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004121Design.class.getName()));
     } catch (Exception e) {

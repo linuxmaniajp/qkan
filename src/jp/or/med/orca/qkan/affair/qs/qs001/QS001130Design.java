@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/05/09  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2008/06/24  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -125,6 +125,10 @@ public class QS001130Design extends QS001ServicePanel {
 
   private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
 
+  private ACGroupBox infoGroup;
+
+  private ACLabel infoLabel;
+
   //getter
 
   /**
@@ -204,7 +208,7 @@ public class QS001130Design extends QS001ServicePanel {
 
       visitCareExpenseAddRadioItem1 = new ACRadioButtonItem();
 
-      visitCareExpenseAddRadioItem1.setText("Ⅰ型");
+      visitCareExpenseAddRadioItem1.setText("I型");
 
       visitCareExpenseAddRadioItem1.setGroup(getVisitCareExpenseAddRadio());
 
@@ -225,7 +229,7 @@ public class QS001130Design extends QS001ServicePanel {
 
       visitCareExpenseAddRadioItem2 = new ACRadioButtonItem();
 
-      visitCareExpenseAddRadioItem2.setText("Ⅱ型");
+      visitCareExpenseAddRadioItem2.setText("II型");
 
       visitCareExpenseAddRadioItem2.setGroup(getVisitCareExpenseAddRadio());
 
@@ -246,7 +250,7 @@ public class QS001130Design extends QS001ServicePanel {
 
       visitCareExpenseAddRadioItem3 = new ACRadioButtonItem();
 
-      visitCareExpenseAddRadioItem3.setText("Ⅲ型");
+      visitCareExpenseAddRadioItem3.setText("III型");
 
       visitCareExpenseAddRadioItem3.setGroup(getVisitCareExpenseAddRadio());
 
@@ -490,6 +494,44 @@ public class QS001130Design extends QS001ServicePanel {
   }
 
   /**
+   * 注意書きグループを取得します。
+   * @return 注意書きグループ
+   */
+  public ACGroupBox getInfoGroup(){
+    if(infoGroup==null){
+
+      infoGroup = new ACGroupBox();
+
+      infoGroup.setHgap(0);
+
+      infoGroup.setLabelMargin(0);
+
+      infoGroup.setVgap(0);
+
+      addInfoGroup();
+    }
+    return infoGroup;
+
+  }
+
+  /**
+   * 注意書きラベルを取得します。
+   * @return 注意書きラベル
+   */
+  public ACLabel getInfoLabel(){
+    if(infoLabel==null){
+
+      infoLabel = new ACLabel();
+
+      infoLabel.setText("月途中で要支援1⇔要支援2の変更となる場合は、" + ACConstants.LINE_SEPARATOR + "各日割りサービスをすべての日数に貼り付けて、" + ACConstants.LINE_SEPARATOR + "集計後、編集画面で実日数の修正を行ってください。");
+
+      addInfoLabel();
+    }
+    return infoLabel;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001130Design() {
@@ -531,6 +573,8 @@ public class QS001130Design extends QS001ServicePanel {
 
     preventiveVisitCareMultiPatterns.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
 
+    preventiveVisitCareMultiPatterns.add(getInfoGroup(), VRLayout.FLOW);
+
   }
 
   /**
@@ -546,12 +590,15 @@ public class QS001130Design extends QS001ServicePanel {
   protected void addVisitCareExpenseAddRadioModel(){
 
     getVisitCareExpenseAddRadioItem1().setButtonIndex(1);
+
     getVisitCareExpenseAddRadioModel().add(getVisitCareExpenseAddRadioItem1());
 
     getVisitCareExpenseAddRadioItem2().setButtonIndex(2);
+
     getVisitCareExpenseAddRadioModel().add(getVisitCareExpenseAddRadioItem2());
 
     getVisitCareExpenseAddRadioItem3().setButtonIndex(3);
+
     getVisitCareExpenseAddRadioModel().add(getVisitCareExpenseAddRadioItem3());
 
   }
@@ -590,9 +637,11 @@ public class QS001130Design extends QS001ServicePanel {
   protected void addClassEmploymentAddRadioModel(){
 
     getClassEmploymentAddRadioItem1().setButtonIndex(1);
+
     getClassEmploymentAddRadioModel().add(getClassEmploymentAddRadioItem1());
 
     getClassEmploymentAddRadioItem2().setButtonIndex(2);
+
     getClassEmploymentAddRadioModel().add(getClassEmploymentAddRadioItem2());
 
   }
@@ -625,7 +674,7 @@ public class QS001130Design extends QS001ServicePanel {
 
     houmonKaigoTimeContainer.add(getHoumonKaigoBeginTimeContainer(), VRLayout.FLOW);
 
-    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW);
+    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -654,6 +703,22 @@ public class QS001130Design extends QS001ServicePanel {
    * 終了時刻コンボモデルに内部項目を追加します。
    */
   protected void addHoumonKaigoEndTimeModel(){
+
+  }
+
+  /**
+   * 注意書きグループに内部項目を追加します。
+   */
+  protected void addInfoGroup(){
+
+    infoGroup.add(getInfoLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 注意書きラベルに内部項目を追加します。
+   */
+  protected void addInfoLabel(){
 
   }
 

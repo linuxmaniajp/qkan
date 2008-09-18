@@ -79,6 +79,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -361,6 +362,36 @@ public class QO004119 extends QO004119Event {
     	return false;
     }
     
+    //	2008/4/16 H.Tanaka Add Sta H2005転換型老健対応
+    //  ・staffAssignmentDivision（施設等の区分（体制）ラジオグループ）
+    // ※ errMsg = 施設区分
+    if(!getStaffAssignmentDivision().isSelected()){
+    	errMsg = "施設区分";
+    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+    	getStaffAssignmentDivision().requestFocus();
+    	return false;
+    }
+    
+    //　・terminalCare（ターミナルケア体制ラジオグループ）
+    //  ※ errMsg = ターミナルケア
+    if(!getTerminalCare().isSelected()){
+    	errMsg = "ターミナルケア体制";
+    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+    	getTerminalCare().requestFocus();
+    	return false;
+    }
+    
+    //  ・MedicalSystemUpkeep（療養体制維持特別加算ラジオグループ）
+    // ※ errMsg = 療養体制維持特別加算
+    if(!getMedicalSystemUpkeep().isSelected()){
+    	errMsg = "療養体制維持特別加算";
+    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+    	getMedicalSystemUpkeep().requestFocus();
+    	return false;
+    }  
+    //  2008/4/16 H.Tanaka Add End
+    
+    
 //    // ・dinnerMorning（食費基準額・朝テキスト）※ errMsg = 食費基準額
 //    if(ACTextUtilities.isNullText(getDinnerMorning().getText())){
 //    	errMsg = "食費基準額";
@@ -513,16 +544,32 @@ public class QO004119 extends QO004119Event {
    * @throws Exception 処理例外
    */
   public void setStateByFacilitiesDivision() throws Exception {
-
+	  
 		// 施設区分の値をチェックする。
 		if (getFacilitiesDivision().getSelectedIndex() == FACILITY_TYPE_HOKEN
 				|| getFacilitiesDivision().getSelectedIndex() == FACILITY_TYPE_SHOKIBO_HOKEN) {
 			// 「介護老人保健施設」「小規模介護老人保健施設」が選択された場合
 			setState_FACILITY_TYPE_NORMAL();
+			
 		} else {
 			// 「介護老人保健施設」「小規模介護老人保健施設」以外が選択された場合
 			setState_FACILITY_TYPE_UNIT();
+	
 		}
+		
+		  //2008/4/16 H.Tanaka Add Sta H2005転換型老健対応 
+	    if(getFacilitiesDivision().getSelectedIndex() ==FACILITY_TYPE_SHOKIBO_HOKEN
+	    		|| getFacilitiesDivision().getSelectedIndex() == FACILITY_TYPE_SHOKIBOYUNIT_HOKEN){
+	    	//「小規模介護老人保健施設」「ユニット型小規模介護保健施設」が選択された場合
+	    	setState_FACILITIES_DIVISION_SHOUKIBO();
+	    	
+	    }else{
+	    	//「小規模介護老人保健施設」「ユニット型小規模介護保健施設」以外が選択された場合
+	    	setState_FACILITIES_DIVISION_NORMAL();
+	    	
+	    }
+	    //	2008/4/16 H.Tanaka Add End	  
+
 	}
 
 }

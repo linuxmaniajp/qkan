@@ -78,6 +78,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 
 /**
  * 特定施設入所者介護イベント定義(QO004015) 

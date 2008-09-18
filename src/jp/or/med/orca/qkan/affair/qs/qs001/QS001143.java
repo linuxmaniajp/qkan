@@ -632,9 +632,11 @@ public class QS001143 extends QS001143Event {
 			// null以外だった場合
             // 特定施設入居者の場合 ※個別機能訓練加算の値連動のため
             if(valOfFacilityDivision == 1){
+                // 2008/01/07 [Masahiko Higuchi] edit - begin 障害対応
     			// 個別機能訓練体制（事業所パネル）KEY：1350104の値をチェックする。
     			int valOnProvider = ACCastUtilities.toInt(VRBindPathParser.get(
-    					"1350104", providerInfoMap));
+    					"1350104", providerInfoMap),1);
+                // 2008/01/07 [Masahiko Higuchi] edit - end
     			switch (valOnProvider) {
     			case 1:
     				// 値が1（なし）だった場合

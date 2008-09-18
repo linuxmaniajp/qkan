@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/05/09  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2008/06/25  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -164,6 +164,10 @@ public class QS001135Design extends QS001ServicePanel {
   private ACLabelContainer houmonKaigoEndTimeContainer;
 
   private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
+
+  private ACGroupBox infoGroup;
+
+  private ACLabel infoLabel;
 
   //getter
 
@@ -894,6 +898,44 @@ public class QS001135Design extends QS001ServicePanel {
   }
 
   /**
+   * 注意書きグループを取得します。
+   * @return 注意書きグループ
+   */
+  public ACGroupBox getInfoGroup(){
+    if(infoGroup==null){
+
+      infoGroup = new ACGroupBox();
+
+      infoGroup.setHgap(0);
+
+      infoGroup.setLabelMargin(0);
+
+      infoGroup.setVgap(0);
+
+      addInfoGroup();
+    }
+    return infoGroup;
+
+  }
+
+  /**
+   * 注意書きラベルを取得します。
+   * @return 注意書きラベル
+   */
+  public ACLabel getInfoLabel(){
+    if(infoLabel==null){
+
+      infoLabel = new ACLabel();
+
+      infoLabel.setText("月途中で要支援1⇔要支援2の変更となる場合は、" + ACConstants.LINE_SEPARATOR + "各日割りサービスをすべての日数に貼り付けて、" + ACConstants.LINE_SEPARATOR + "集計後、編集画面で実日数の修正を行ってください。");
+
+      addInfoLabel();
+    }
+    return infoLabel;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001135Design() {
@@ -943,6 +985,8 @@ public class QS001135Design extends QS001ServicePanel {
 
     preventiveExpertPlaceCareMultiPatterns.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
 
+    preventiveExpertPlaceCareMultiPatterns.add(getInfoGroup(), VRLayout.FLOW);
+
   }
 
   /**
@@ -958,12 +1002,15 @@ public class QS001135Design extends QS001ServicePanel {
   protected void addStaffSubtractionRadioModel(){
 
     getStaffSubtractionRadioItem1().setButtonIndex(1);
+
     getStaffSubtractionRadioModel().add(getStaffSubtractionRadioItem1());
 
     getStaffSubtractionRadioItem2().setButtonIndex(2);
+
     getStaffSubtractionRadioModel().add(getStaffSubtractionRadioItem2());
 
     getStaffSubtractionRadioItem3().setButtonIndex(3);
+
     getStaffSubtractionRadioModel().add(getStaffSubtractionRadioItem3());
 
   }
@@ -1009,9 +1056,11 @@ public class QS001135Design extends QS001ServicePanel {
   protected void addActivityAddRadioModel(){
 
     getActivityAddRadioItem1().setButtonIndex(1);
+
     getActivityAddRadioModel().add(getActivityAddRadioItem1());
 
     getActivityAddRadioItem2().setButtonIndex(2);
+
     getActivityAddRadioModel().add(getActivityAddRadioItem2());
 
   }
@@ -1043,9 +1092,11 @@ public class QS001135Design extends QS001ServicePanel {
   protected void addMoveFunctionImprovementAddRadioModel(){
 
     getMoveFunctionImprovementAddRadioItem1().setButtonIndex(1);
+
     getMoveFunctionImprovementAddRadioModel().add(getMoveFunctionImprovementAddRadioItem1());
 
     getMoveFunctionImprovementAddRadioItem2().setButtonIndex(2);
+
     getMoveFunctionImprovementAddRadioModel().add(getMoveFunctionImprovementAddRadioItem2());
 
   }
@@ -1077,9 +1128,11 @@ public class QS001135Design extends QS001ServicePanel {
   protected void addNourishmentImprovementAddRadioModel(){
 
     getNourishmentImprovementAddRadioItem1().setButtonIndex(1);
+
     getNourishmentImprovementAddRadioModel().add(getNourishmentImprovementAddRadioItem1());
 
     getNourishmentImprovementAddRadioItem2().setButtonIndex(2);
+
     getNourishmentImprovementAddRadioModel().add(getNourishmentImprovementAddRadioItem2());
 
   }
@@ -1111,9 +1164,11 @@ public class QS001135Design extends QS001ServicePanel {
   protected void addMouthFunctionImprovementAddRadioModel(){
 
     getMouthFunctionImprovementAddRadioItem1().setButtonIndex(1);
+
     getMouthFunctionImprovementAddRadioModel().add(getMouthFunctionImprovementAddRadioItem1());
 
     getMouthFunctionImprovementAddRadioItem2().setButtonIndex(2);
+
     getMouthFunctionImprovementAddRadioModel().add(getMouthFunctionImprovementAddRadioItem2());
 
   }
@@ -1145,9 +1200,11 @@ public class QS001135Design extends QS001ServicePanel {
   protected void addOfficeEvaluationAddRadioModel(){
 
     getOfficeEvaluationAddRadioItem1().setButtonIndex(1);
+
     getOfficeEvaluationAddRadioModel().add(getOfficeEvaluationAddRadioItem1());
 
     getOfficeEvaluationAddRadioItem2().setButtonIndex(2);
+
     getOfficeEvaluationAddRadioModel().add(getOfficeEvaluationAddRadioItem2());
 
   }
@@ -1173,7 +1230,7 @@ public class QS001135Design extends QS001ServicePanel {
 
     houmonKaigoTimeContainer.add(getHoumonKaigoBeginTimeContainer(), VRLayout.FLOW);
 
-    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW);
+    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -1202,6 +1259,22 @@ public class QS001135Design extends QS001ServicePanel {
    * 終了時刻コンボモデルに内部項目を追加します。
    */
   protected void addHoumonKaigoEndTimeModel(){
+
+  }
+
+  /**
+   * 注意書きグループに内部項目を追加します。
+   */
+  protected void addInfoGroup(){
+
+    infoGroup.add(getInfoLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 注意書きラベルに内部項目を追加します。
+   */
+  protected void addInfoLabel(){
 
   }
 

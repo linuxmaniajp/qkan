@@ -77,6 +77,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -298,8 +299,16 @@ public class QS001101 extends QS001101Event {
             addMinute+= (getHomonkaigoTeikyoTime().getSelectedIndex() + 1) * 30;
         }
         if (getHoumonKaigoInTime().isEnabled()&& getHoumonKaigoInTime().isSelected()) {
-            // (選択番号+1)×30を返す。
-            addMinute+= (getHoumonKaigoInTime().getSelectedIndex() + 1) * 30;
+            if(getHoumonKaigoServicePattern().getSelectedIndex()==1){
+                //生活援助の場合
+                //(選択番号+2)×30を返す。
+                addMinute+= (getHoumonKaigoInTime().getSelectedIndex() + 2) * 30;
+            }else{
+                //生活援助以外の場合
+                // (選択番号+1)×30を返す。
+                addMinute+= (getHoumonKaigoInTime().getSelectedIndex() + 1) * 30;
+                
+            }
         }
         return addMinute;
     }

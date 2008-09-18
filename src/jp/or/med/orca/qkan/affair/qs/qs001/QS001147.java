@@ -148,6 +148,10 @@ public class QS001147 extends QS001147Event {
         // 初期選択設定用のレコード defaultMap を生成する。
         VRMap defaultMap = new VRHashMap();
         // ※設定
+        // 2008/06/12 [Masahiko Higuchi] add - begin 2007年度対応（摘要欄設定機能）　　　　　　
+        // バージョンアップ後一発目はバンドパスが存在しないため値を初期化する。
+        getTekiyouText().setText("");
+        // 2008/06/12 [Masahiko Higuchi] add - end
         // 画面のラジオの初期値を設定する。（selectFirstRadioItem）
         QkanCommon.selectFirstRadioItem(getThis());
         // ※展開
@@ -233,6 +237,17 @@ public class QS001147 extends QS001147Event {
      */
     public VRMap getValidData() throws Exception {
         // ※入力内容に不備がないかをチェックし、サービスデータを返す。
+        // 2007/06/24 [Masahiko Higuchi] add - begin 摘要欄印字対応
+        // 摘要欄の入力チェック
+        if(!"".equals(getTekiyouText().getText())){
+            String val = getTekiyouText().getText();
+            // 6桁以外の場合
+            if(val != null && val.length() != 6){
+                QkanMessageList.getInstance().QS001_ERROR_OF_TEKIYOU_INPUT();
+                return null;
+            }
+        }
+        // 2007/06/24 [Masahiko Higuchi] add -end
         // ※返却用のレコード(data)を生成
         VRMap data = new VRHashMap();
         // 自身(this)のソースとして生成レコードを設定する。

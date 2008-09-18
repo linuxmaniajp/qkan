@@ -79,6 +79,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -218,6 +219,11 @@ public class QO004110 extends QO004110Event {
 //    getRecuperatDinner().setSelectedIndex(1);
     getStaffLack().setSelectedIndex(1);
     getDementiaCare().setSelectedIndex(1);
+    
+    //	2008/4/16 H.Tanaka Add Sta H2005転換型老健対応
+	getStaffAssignmentDivision().setSelectedIndex(1);
+	getMedicalSystemUpkeep().setSelectedIndex(1);
+	//	2008/4/16 H.Tanaka Add End
 
 	// 食費・居住費の取得と表示
 	VRMap param = new VRHashMap();
@@ -354,6 +360,26 @@ public class QO004110 extends QO004110Event {
     	getStaffLack().requestFocus();
     	return false;
     }
+    
+    //	2008/4/16 H.Tanaka Add Sta H2005転換型老健対応
+    // ・staffAssignmentDivision（施設等の区分（体制）ラジオグループ）
+    // ※ errMsg = 施設区分
+    if(!getStaffAssignmentDivision().isSelected()){
+    	errMsg = "施設区分";
+    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+    	getStaffAssignmentDivision().requestFocus();
+    	return false;
+    }
+    // ・MedicalSystemUpkeep（療養体制維持特別加算ラジオグループ）
+    // ※ errMsg = 療養体制維持特別加算
+    if(!getMedicalSystemUpkeep().isSelected()){
+    	errMsg = "療養体制維持特別加算";
+    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+    	getMedicalSystemUpkeep().requestFocus();
+    	return false;
+    }
+    //	2008/4/16 H.Tanaka Add End
+   
 //    
 //    // ・dinnerMorning（食費基準額・朝テキスト）※ errMsg = 食費基準額
 //    if(ACTextUtilities.isNullText(getDinnerMorning().getText())){

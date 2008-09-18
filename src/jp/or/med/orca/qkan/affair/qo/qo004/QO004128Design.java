@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/08  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2008/04/17  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -100,6 +101,14 @@ public class QO004128Design extends QS001ServicePanel {
   private ACRadioButtonItem facilitiesDivisionItem3;
 
   private ACRadioButtonItem facilitiesDivisionItem4;
+
+  private ACRadioButtonItem facilitiesDivisionItem5;
+
+  private ACRadioButtonItem facilitiesDivisionItem6;
+
+  private ACRadioButtonItem facilitiesDivisionItem7;
+
+  private ACRadioButtonItem facilitiesDivisionItem8;
 
   private ACClearableRadioButtonGroup staffLack;
 
@@ -175,9 +184,9 @@ public class QO004128Design extends QS001ServicePanel {
 
       facilitiesDivision.setBindPath("1360104");
 
-      facilitiesDivision.setModel(getFacilitiesDivisionModel());
-
       facilitiesDivision.setUseClearButton(false);
+
+      facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
       addFacilitiesDivision();
     }
@@ -287,11 +296,95 @@ public class QO004128Design extends QS001ServicePanel {
 
       facilitiesDivisionItem4.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem4.setConstraints(VRLayout.FLOW);
+      facilitiesDivisionItem4.setConstraints(VRLayout.FLOW_RETURN);
 
       addFacilitiesDivisionItem4();
     }
     return facilitiesDivisionItem4;
+
+  }
+
+  /**
+   * サテライト型有料老人ホームを取得します。
+   * @return サテライト型有料老人ホーム
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem5(){
+    if(facilitiesDivisionItem5==null){
+
+      facilitiesDivisionItem5 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem5.setText("サテライト型有料老人ホーム");
+
+      facilitiesDivisionItem5.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem5.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem5();
+    }
+    return facilitiesDivisionItem5;
+
+  }
+
+  /**
+   * サテライト型軽費老人ホームを取得します。
+   * @return サテライト型軽費老人ホーム
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem6(){
+    if(facilitiesDivisionItem6==null){
+
+      facilitiesDivisionItem6 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem6.setText("サテライト型軽費老人ホーム");
+
+      facilitiesDivisionItem6.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem6.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem6();
+    }
+    return facilitiesDivisionItem6;
+
+  }
+
+  /**
+   * サテライト型養護老人ホームを取得します。
+   * @return サテライト型養護老人ホーム
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem7(){
+    if(facilitiesDivisionItem7==null){
+
+      facilitiesDivisionItem7 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem7.setText("サテライト型養護老人ホーム");
+
+      facilitiesDivisionItem7.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem7.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem7();
+    }
+    return facilitiesDivisionItem7;
+
+  }
+
+  /**
+   * サテライト型高齢者専用賃貸住宅を取得します。
+   * @return サテライト型高齢者専用賃貸住宅
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem8(){
+    if(facilitiesDivisionItem8==null){
+
+      facilitiesDivisionItem8 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem8.setText("サテライト型高齢者専用賃貸住宅");
+
+      facilitiesDivisionItem8.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem8.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem8();
+    }
+    return facilitiesDivisionItem8;
 
   }
 
@@ -308,9 +401,9 @@ public class QO004128Design extends QS001ServicePanel {
 
       staffLack.setBindPath("1360102");
 
-      staffLack.setModel(getStaffLackModel());
-
       staffLack.setUseClearButton(false);
+
+      staffLack.setModel(getStaffLackModel());
 
       addStaffLack();
     }
@@ -420,9 +513,9 @@ public class QO004128Design extends QS001ServicePanel {
 
       functionTrainingGuidanceSystem.setBindPath("1360101");
 
-      functionTrainingGuidanceSystem.setModel(getFunctionTrainingGuidanceSystemModel());
-
       functionTrainingGuidanceSystem.setUseClearButton(false);
+
+      functionTrainingGuidanceSystem.setModel(getFunctionTrainingGuidanceSystemModel());
 
       addFunctionTrainingGuidanceSystem();
     }
@@ -511,9 +604,9 @@ public class QO004128Design extends QS001ServicePanel {
 
       nightNursingSystemAdd.setBindPath("1360103");
 
-      nightNursingSystemAdd.setModel(getNightNursingSystemAddModel());
-
       nightNursingSystemAdd.setUseClearButton(false);
+
+      nightNursingSystemAdd.setModel(getNightNursingSystemAddModel());
 
       addNightNursingSystemAdd();
     }
@@ -711,16 +804,36 @@ public class QO004128Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
     getFacilitiesDivisionItem3().setButtonIndex(3);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem3());
 
     getFacilitiesDivisionItem4().setButtonIndex(4);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem4());
+
+    getFacilitiesDivisionItem5().setButtonIndex(5);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem5());
+
+    getFacilitiesDivisionItem6().setButtonIndex(6);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem6());
+
+    getFacilitiesDivisionItem7().setButtonIndex(7);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem7());
+
+    getFacilitiesDivisionItem8().setButtonIndex(8);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem8());
 
   }
 
@@ -753,6 +866,34 @@ public class QO004128Design extends QS001ServicePanel {
   }
 
   /**
+   * サテライト型有料老人ホームに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem5(){
+
+  }
+
+  /**
+   * サテライト型軽費老人ホームに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem6(){
+
+  }
+
+  /**
+   * サテライト型養護老人ホームに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem7(){
+
+  }
+
+  /**
+   * サテライト型高齢者専用賃貸住宅に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem8(){
+
+  }
+
+  /**
    * 職員の欠員による減算の状況ラジオグループに内部項目を追加します。
    */
   protected void addStaffLack(){
@@ -765,12 +906,15 @@ public class QO004128Design extends QS001ServicePanel {
   protected void addStaffLackModel(){
 
     getStaffLackItem1().setButtonIndex(1);
+
     getStaffLackModel().add(getStaffLackItem1());
 
     getStaffLackItem2().setButtonIndex(2);
+
     getStaffLackModel().add(getStaffLackItem2());
 
     getStaffLackItem3().setButtonIndex(3);
+
     getStaffLackModel().add(getStaffLackItem3());
 
   }
@@ -809,9 +953,11 @@ public class QO004128Design extends QS001ServicePanel {
   protected void addFunctionTrainingGuidanceSystemModel(){
 
     getFunctionTrainingGuidanceSystemItem1().setButtonIndex(1);
+
     getFunctionTrainingGuidanceSystemModel().add(getFunctionTrainingGuidanceSystemItem1());
 
     getFunctionTrainingGuidanceSystemItem2().setButtonIndex(2);
+
     getFunctionTrainingGuidanceSystemModel().add(getFunctionTrainingGuidanceSystemItem2());
 
   }
@@ -843,9 +989,11 @@ public class QO004128Design extends QS001ServicePanel {
   protected void addNightNursingSystemAddModel(){
 
     getNightNursingSystemAddItem1().setButtonIndex(1);
+
     getNightNursingSystemAddModel().add(getNightNursingSystemAddItem1());
 
     getNightNursingSystemAddItem2().setButtonIndex(2);
+
     getNightNursingSystemAddModel().add(getNightNursingSystemAddItem2());
 
   }
@@ -911,7 +1059,6 @@ public class QO004128Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004128Design.class.getName()));
     } catch (Exception e) {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/23  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2008/04/16  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -126,6 +127,46 @@ public class QO004119State extends QO004119Design {
 
         getUnitCareMaintenance().setEnabled(false);
         getUnitCareMaintenance().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「施設等区分小規模タイプ」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITIES_DIVISION_SHOUKIBO() throws Exception {
+
+        getTerminalCare().setEnabled(false);
+        getTerminalCare().getParent().setEnabled(false);
+
+        getMedicalSystemUpkeep().setEnabled(false);
+        getMedicalSystemUpkeep().getParent().setEnabled(false);
+
+        getSpecialMedicalDetailsContainer().setEnabled(false);
+
+        getRehabilitationDetailsContainer().setEnabled(false);
+
+        getTypeContainer().setEnabled(false);
+
+  }
+
+  /**
+   * 「施設等区分ノーマルタイプ」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITIES_DIVISION_NORMAL() throws Exception {
+
+        getTerminalCare().setEnabled(true);
+        getTerminalCare().getParent().setEnabled(true);
+
+        getMedicalSystemUpkeep().setEnabled(true);
+        getMedicalSystemUpkeep().getParent().setEnabled(true);
+
+        getSpecialMedicalDetailsContainer().setEnabled(true);
+
+        getRehabilitationDetailsContainer().setEnabled(true);
+
+        getTypeContainer().setEnabled(true);
 
   }
 

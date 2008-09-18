@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/25  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2008/04/16  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -78,6 +79,7 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 介護老人保健施設イベント定義(QO004119) 
@@ -102,7 +104,7 @@ public abstract class QO004119Event extends QO004119SQL implements iProviderServ
             lockFlag = true;
             try {
                 facilitiesDivisionSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -118,7 +120,7 @@ public abstract class QO004119Event extends QO004119SQL implements iProviderServ
             lockFlag = true;
             try {
                 dinnerMorningFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -134,7 +136,7 @@ public abstract class QO004119Event extends QO004119SQL implements iProviderServ
             lockFlag = true;
             try {
                 dinnerNoonFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -150,7 +152,7 @@ public abstract class QO004119Event extends QO004119SQL implements iProviderServ
             lockFlag = true;
             try {
                 dinnerNightFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -193,6 +195,8 @@ public abstract class QO004119Event extends QO004119SQL implements iProviderServ
 
   public static final int FACILITY_TYPE_HOKEN = 1;
   public static final int FACILITY_TYPE_SHOKIBO_HOKEN = 2;
+  public static final int FACILITY_TYPE_YUNIT_HOKEN = 3;
+  public static final int FACILITY_TYPE_SHOKIBOYUNIT_HOKEN = 4;
   //getter/setter
 
   //内部関数

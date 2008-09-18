@@ -79,6 +79,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -208,16 +209,24 @@ public class QO004112 extends QO004112Event {
 	// 人員減算の初期値として「なし」を選択する。
 
 	getReduceRate().setText("0");
-	getFacilitiesDivision().setSelectedIndex(1);
-	getStaffAssignmentDivision().setSelectedIndex(1);
-	getRecuperationEnvironmental().setSelectedIndex(1);
-	getMeetingAndSendingOffSystem().setSelectedIndex(1);
-	getNourishmentControlAdd().setSelectedIndex(1);
+	
+	//	2008/3/19 H.Tanaka Del Sta H2004設備基準対応
+//	getFacilitiesDivision().setSelectedIndex(1);
+//	getStaffAssignmentDivision().setSelectedIndex(1);
+//	getRecuperationEnvironmental().setSelectedIndex(1);
+//	getMeetingAndSendingOffSystem().setSelectedIndex(1);
+//	getNourishmentControlAdd().setSelectedIndex(1);
 //	getRecuperatDinner().setSelectedIndex(1);
-	getUnitCareMaintenance().setSelectedIndex(1);
-	getEmergencyNetworkAdd().setSelectedIndex(1);
+//	getUnitCareMaintenance().setSelectedIndex(1);
+//	getEmergencyNetworkAdd().setSelectedIndex(1);
 //	getStaffLack().setSelectedIndex(1);
-
+	//	2008/3/19 H.Tanaka Del End 
+	
+	//	2008/3/19 H.Tanaka Add Sta H2004設備基準対応
+	QkanCommon.selectFirstRadioItem(getMainGroup());
+	//2008/3/19 H.Tanaka Add End 
+	
+	
 	// 食費・居住費の取得と表示
 	VRMap param = new VRHashMap();
 	VRBindPathParser.set("SYSTEM_DATE", param, QkanSystemInformation

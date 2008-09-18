@@ -77,6 +77,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * –‹ÆÒ“o˜^(’ZŠú“üŠ—Ã—{‰îŒì”F’mÇ¾Š³Œ^)‰æ–Ê€–ÚƒfƒUƒCƒ“(QO004012) 

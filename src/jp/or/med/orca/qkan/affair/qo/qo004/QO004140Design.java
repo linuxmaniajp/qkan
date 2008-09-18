@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2006/05/02  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2008/03/19  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,28 +28,58 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo004;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACBackLabelContainer;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 介護予防短期入所療養介護(診療所療養型)画面項目デザイン(QO004140) 
  */
@@ -101,6 +131,16 @@ public class QO004140Design extends QS001ServicePanel {
   private ACRadioButtonItem recuperationEnvironmentalItem2;
 
   private ACRadioButtonItem recuperationEnvironmentalItem3;
+
+  private ACClearableRadioButtonGroup EquipmentStandard;
+
+  private ACLabelContainer EquipmentStandardContainer;
+
+  private ACListModelAdapter EquipmentStandardModel;
+
+  private ACRadioButtonItem EquipmentStandardItem1;
+
+  private ACRadioButtonItem EquipmentStandardItem2;
 
   private ACClearableRadioButtonGroup meetingAndSendingOffSystem;
 
@@ -608,6 +648,93 @@ public class QO004140Design extends QS001ServicePanel {
       addRecuperationEnvironmentalItem3();
     }
     return recuperationEnvironmentalItem3;
+
+  }
+
+  /**
+   * 設備基準ラジオグループを取得します。
+   * @return 設備基準ラジオグループ
+   */
+  public ACClearableRadioButtonGroup getEquipmentStandard(){
+    if(EquipmentStandard==null){
+
+      EquipmentStandard = new ACClearableRadioButtonGroup();
+
+      getEquipmentStandardContainer().setText("設備基準");
+
+      EquipmentStandard.setBindPath("1260215");
+
+      EquipmentStandard.setUseClearButton(false);
+
+      EquipmentStandard.setModel(getEquipmentStandardModel());
+
+      addEquipmentStandard();
+    }
+    return EquipmentStandard;
+
+  }
+
+  /**
+   * 設備基準ラジオグループコンテナを取得します。
+   * @return 設備基準ラジオグループコンテナ
+   */
+  protected ACLabelContainer getEquipmentStandardContainer(){
+    if(EquipmentStandardContainer==null){
+      EquipmentStandardContainer = new ACLabelContainer();
+      EquipmentStandardContainer.setFollowChildEnabled(true);
+      EquipmentStandardContainer.setVAlignment(VRLayout.CENTER);
+      EquipmentStandardContainer.add(getEquipmentStandard(), null);
+    }
+    return EquipmentStandardContainer;
+  }
+
+  /**
+   * 設備基準ラジオグループモデルを取得します。
+   * @return 設備基準ラジオグループモデル
+   */
+  protected ACListModelAdapter getEquipmentStandardModel(){
+    if(EquipmentStandardModel==null){
+      EquipmentStandardModel = new ACListModelAdapter();
+      addEquipmentStandardModel();
+    }
+    return EquipmentStandardModel;
+  }
+
+  /**
+   * 基準型を取得します。
+   * @return 基準型
+   */
+  public ACRadioButtonItem getEquipmentStandardItem1(){
+    if(EquipmentStandardItem1==null){
+
+      EquipmentStandardItem1 = new ACRadioButtonItem();
+
+      EquipmentStandardItem1.setText("基準型");
+
+      EquipmentStandardItem1.setGroup(getEquipmentStandard());
+
+      addEquipmentStandardItem1();
+    }
+    return EquipmentStandardItem1;
+
+  }
+
+  /**
+   * 減算型を取得します。
+   * @return 減算型
+   */
+  public ACRadioButtonItem getEquipmentStandardItem2(){
+    if(EquipmentStandardItem2==null){
+
+      EquipmentStandardItem2 = new ACRadioButtonItem();
+
+      EquipmentStandardItem2.setText("減算型");
+
+      EquipmentStandardItem2.setGroup(getEquipmentStandard());
+
+      addEquipmentStandardItem2();
+    }
+    return EquipmentStandardItem2;
 
   }
 
@@ -1648,6 +1775,8 @@ public class QO004140Design extends QS001ServicePanel {
 
     calculationDetails.add(getRecuperationEnvironmentalContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    calculationDetails.add(getEquipmentStandardContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     calculationDetails.add(getMeetingAndSendingOffSystemContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     calculationDetails.add(getNourishmentControlAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -1671,9 +1800,11 @@ public class QO004140Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
   }
@@ -1705,9 +1836,11 @@ public class QO004140Design extends QS001ServicePanel {
   protected void addStaffAssignmentDivisionModel(){
 
     getStaffAssignmentDivisionItem1().setButtonIndex(1);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem1());
 
     getStaffAssignmentDivisionItem2().setButtonIndex(2);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem2());
 
   }
@@ -1739,9 +1872,11 @@ public class QO004140Design extends QS001ServicePanel {
   protected void addUnitCareMaintenanceModel(){
 
     getUnitCareMaintenanceItem1().setButtonIndex(1);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem1());
 
     getUnitCareMaintenanceItem2().setButtonIndex(2);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem2());
 
   }
@@ -1773,12 +1908,15 @@ public class QO004140Design extends QS001ServicePanel {
   protected void addRecuperationEnvironmentalModel(){
 
     getRecuperationEnvironmentalItem1().setButtonIndex(1);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem1());
 
     getRecuperationEnvironmentalItem2().setButtonIndex(2);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem2());
 
     getRecuperationEnvironmentalItem3().setButtonIndex(3);
+
     getRecuperationEnvironmentalModel().add(getRecuperationEnvironmentalItem3());
 
   }
@@ -1805,6 +1943,42 @@ public class QO004140Design extends QS001ServicePanel {
   }
 
   /**
+   * 設備基準ラジオグループに内部項目を追加します。
+   */
+  protected void addEquipmentStandard(){
+
+  }
+
+  /**
+   * 設備基準ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addEquipmentStandardModel(){
+
+    getEquipmentStandardItem1().setButtonIndex(1);
+
+    getEquipmentStandardModel().add(getEquipmentStandardItem1());
+
+    getEquipmentStandardItem2().setButtonIndex(2);
+
+    getEquipmentStandardModel().add(getEquipmentStandardItem2());
+
+  }
+
+  /**
+   * 基準型に内部項目を追加します。
+   */
+  protected void addEquipmentStandardItem1(){
+
+  }
+
+  /**
+   * 減算型に内部項目を追加します。
+   */
+  protected void addEquipmentStandardItem2(){
+
+  }
+
+  /**
    * 送迎体制ラジオグループに内部項目を追加します。
    */
   protected void addMeetingAndSendingOffSystem(){
@@ -1817,9 +1991,11 @@ public class QO004140Design extends QS001ServicePanel {
   protected void addMeetingAndSendingOffSystemModel(){
 
     getMeetingAndSendingOffSystemItem1().setButtonIndex(1);
+
     getMeetingAndSendingOffSystemModel().add(getMeetingAndSendingOffSystemItem1());
 
     getMeetingAndSendingOffSystemItem2().setButtonIndex(2);
+
     getMeetingAndSendingOffSystemModel().add(getMeetingAndSendingOffSystemItem2());
 
   }
@@ -1851,12 +2027,15 @@ public class QO004140Design extends QS001ServicePanel {
   protected void addNourishmentControlAddModel(){
 
     getNourishmentControlAddItem1().setButtonIndex(1);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem1());
 
     getNourishmentControlAddItem2().setButtonIndex(2);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem2());
 
     getNourishmentControlAddItem3().setButtonIndex(3);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem3());
 
   }

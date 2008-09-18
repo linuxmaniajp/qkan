@@ -206,12 +206,17 @@ public class QS001146 extends QS001146Event {
             switch (ACCastUtilities.toInt(VRBindPathParser.get("1740101",
                     provider),0)) {
             case 1:
-            case 3:
+            // 2008/06/06 [Masahiko Higuchi] del - begin 仕様障害対応（介護と動作に違いがあったため統一）
+            //case 3:
+            // 2008/06/06 [Masahiko Higuchi] del - end
                 // 値が1（単独型）だった場合
                 // defaultMapに KEY：1740101 VALUE：1（なし）を設定する。
                 VRBindPathParser.set("1740101", defaultMap, new Integer(1));
                 break;
             case 2:
+            // 2008/06/06 [Masahiko Higuchi] add - begin 仕様障害対応（介護と動作に違いがあったため統一）
+            case 3:
+            // 2008/06/06 [Masahiko Higuchi] add - end
                 // 値が2（併設型）だった場合
                 // defaultMapに KEY：1740101 VALUE：2（あり）を設定する。
                 VRBindPathParser.set("1740101", defaultMap, new Integer(2));

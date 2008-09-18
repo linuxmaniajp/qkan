@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/09  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2008/04/24  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -87,11 +88,17 @@ public class QO004119Design extends QS001ServicePanel {
 
   private ACGroupBox mainGroup;
 
-  private ACPanel calculationDetails;
+  private JTabbedPane tab;
 
-  private ACClearableRadioButtonGroup facilitiesDivision;
+  private ACPanel panel1;
+
+  private ACPanel calculationDetails1;
 
   private ACLabelContainer facilitiesDivisionContainer;
+
+  private ACBackLabelContainer facilitiesContainer;
+
+  private ACClearableRadioButtonGroup facilitiesDivision;
 
   private ACListModelAdapter facilitiesDivisionModel;
 
@@ -102,6 +109,18 @@ public class QO004119Design extends QS001ServicePanel {
   private ACRadioButtonItem facilitiesDivisionItem3;
 
   private ACRadioButtonItem facilitiesDivisionItem4;
+
+  private ACBackLabelContainer typeContainer;
+
+  private ACClearableRadioButtonGroup staffAssignmentDivision;
+
+  private ACListModelAdapter staffAssignmentDivisionModel;
+
+  private ACRadioButtonItem staffAssignmentDivisionItem1;
+
+  private ACRadioButtonItem staffAssignmentDivisionItem2;
+
+  private ACRadioButtonItem staffAssignmentDivisionItem3;
 
   private ACClearableRadioButtonGroup nightWorkDivision;
 
@@ -185,6 +204,44 @@ public class QO004119Design extends QS001ServicePanel {
 
   private ACRadioButtonItem bodyRestraintAbolitionItem2;
 
+  private ACClearableRadioButtonGroup terminalCare;
+
+  private ACLabelContainer terminalCareContainer;
+
+  private ACListModelAdapter terminalCareModel;
+
+  private ACRadioButtonItem terminalCareItem1;
+
+  private ACRadioButtonItem terminalCareItem2;
+
+  private ACLabelContainer specialMedicalDetailsContainer;
+
+  private ACIntegerCheckBox specialMedicalDetailsItem1;
+
+  private ACIntegerCheckBox specialMedicalDetailsItem2;
+
+  private ACLabelContainer rehabilitationDetailsContainer;
+
+  private ACIntegerCheckBox rehabilitationDetailsItem1;
+
+  private ACIntegerCheckBox rehabilitationDetailsItem2;
+
+  private ACIntegerCheckBox rehabilitationDetailsItem3;
+
+  private ACIntegerCheckBox rehabilitationDetailsItem4;
+
+  private ACClearableRadioButtonGroup MedicalSystemUpkeep;
+
+  private ACLabelContainer MedicalSystemUpkeepContainer;
+
+  private ACListModelAdapter MedicalSystemUpkeepModel;
+
+  private ACRadioButtonItem MedicalSystemUpkeeItem1;
+
+  private ACRadioButtonItem MedicalSystemUpkeeItem2;
+
+  private ACPanel panel2;
+
   private ACGroupBox standardMoneyGroup;
 
   private ACLabelContainer dinnerContainer;
@@ -263,21 +320,103 @@ public class QO004119Design extends QS001ServicePanel {
   }
 
   /**
+   * タブを取得します。
+   * @return タブ
+   */
+  public JTabbedPane getTab(){
+    if(tab==null){
+
+      tab = new JTabbedPane();
+
+      addTab();
+    }
+    return tab;
+
+  }
+
+  /**
+   * パネル1を取得します。
+   * @return パネル1
+   */
+  public ACPanel getPanel1(){
+    if(panel1==null){
+
+      panel1 = new ACPanel();
+
+      panel1.setFollowChildEnabled(true);
+
+      panel1.setHgrid(200);
+
+      addPanel1();
+    }
+    return panel1;
+
+  }
+
+  /**
    * 算定項目領域を取得します。
    * @return 算定項目領域
    */
-  public ACPanel getCalculationDetails(){
-    if(calculationDetails==null){
+  public ACPanel getCalculationDetails1(){
+    if(calculationDetails1==null){
 
-      calculationDetails = new ACPanel();
+      calculationDetails1 = new ACPanel();
 
-      calculationDetails.setFollowChildEnabled(true);
+      calculationDetails1.setFollowChildEnabled(true);
 
-      calculationDetails.setHgrid(200);
+      calculationDetails1.setHgrid(200);
 
-      addCalculationDetails();
+      addCalculationDetails1();
     }
-    return calculationDetails;
+    return calculationDetails1;
+
+  }
+
+  /**
+   * 施設区分・コンテナを取得します。
+   * @return 施設区分・コンテナ
+   */
+  public ACLabelContainer getFacilitiesDivisionContainer(){
+    if(facilitiesDivisionContainer==null){
+
+      facilitiesDivisionContainer = new ACLabelContainer();
+
+      facilitiesDivisionContainer.setText("施設等の区分");
+
+      facilitiesDivisionContainer.setFollowChildEnabled(true);
+
+      facilitiesDivisionContainer.setHgap(0);
+
+      facilitiesDivisionContainer.setLabelMargin(0);
+
+      facilitiesDivisionContainer.setVgap(0);
+
+      addFacilitiesDivisionContainer();
+    }
+    return facilitiesDivisionContainer;
+
+  }
+
+  /**
+   * 施設区分・施設・コンテナを取得します。
+   * @return 施設区分・施設・コンテナ
+   */
+  public ACBackLabelContainer getFacilitiesContainer(){
+    if(facilitiesContainer==null){
+
+      facilitiesContainer = new ACBackLabelContainer();
+
+      facilitiesContainer.setFollowChildEnabled(true);
+
+      facilitiesContainer.setHgap(0);
+
+      facilitiesContainer.setLabelMargin(0);
+
+      facilitiesContainer.setVgap(0);
+
+      addFacilitiesContainer();
+    }
+    return facilitiesContainer;
 
   }
 
@@ -290,32 +429,16 @@ public class QO004119Design extends QS001ServicePanel {
 
       facilitiesDivision = new ACClearableRadioButtonGroup();
 
-      getFacilitiesDivisionContainer().setText("施設等の区分");
-
       facilitiesDivision.setBindPath("1520101");
 
-      facilitiesDivision.setModel(getFacilitiesDivisionModel());
-
       facilitiesDivision.setUseClearButton(false);
+
+      facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
       addFacilitiesDivision();
     }
     return facilitiesDivision;
 
-  }
-
-  /**
-   * 施設区分ラジオグループコンテナを取得します。
-   * @return 施設区分ラジオグループコンテナ
-   */
-  protected ACLabelContainer getFacilitiesDivisionContainer(){
-    if(facilitiesDivisionContainer==null){
-      facilitiesDivisionContainer = new ACLabelContainer();
-      facilitiesDivisionContainer.setFollowChildEnabled(true);
-      facilitiesDivisionContainer.setVAlignment(VRLayout.CENTER);
-      facilitiesDivisionContainer.add(getFacilitiesDivision(), null);
-    }
-    return facilitiesDivisionContainer;
   }
 
   /**
@@ -342,8 +465,6 @@ public class QO004119Design extends QS001ServicePanel {
       facilitiesDivisionItem1.setText("介護保健施設");
 
       facilitiesDivisionItem1.setGroup(getFacilitiesDivision());
-
-      facilitiesDivisionItem1.setConstraints(VRLayout.FLOW);
 
       addFacilitiesDivisionItem1();
     }
@@ -385,8 +506,6 @@ public class QO004119Design extends QS001ServicePanel {
 
       facilitiesDivisionItem3.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem3.setConstraints(VRLayout.FLOW_RETURN);
-
       addFacilitiesDivisionItem3();
     }
     return facilitiesDivisionItem3;
@@ -406,11 +525,122 @@ public class QO004119Design extends QS001ServicePanel {
 
       facilitiesDivisionItem4.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem4.setConstraints(VRLayout.FLOW);
-
       addFacilitiesDivisionItem4();
     }
     return facilitiesDivisionItem4;
+
+  }
+
+  /**
+   * 施設区分・型・コンテナを取得します。
+   * @return 施設区分・型・コンテナ
+   */
+  public ACBackLabelContainer getTypeContainer(){
+    if(typeContainer==null){
+
+      typeContainer = new ACBackLabelContainer();
+
+      typeContainer.setFollowChildEnabled(true);
+
+      typeContainer.setHgap(0);
+
+      typeContainer.setLabelMargin(0);
+
+      typeContainer.setVgap(0);
+
+      addTypeContainer();
+    }
+    return typeContainer;
+
+  }
+
+  /**
+   * 施設等の区分（体制）ラジオグループを取得します。
+   * @return 施設等の区分（体制）ラジオグループ
+   */
+  public ACClearableRadioButtonGroup getStaffAssignmentDivision(){
+    if(staffAssignmentDivision==null){
+
+      staffAssignmentDivision = new ACClearableRadioButtonGroup();
+
+      staffAssignmentDivision.setBindPath("1520122");
+
+      staffAssignmentDivision.setUseClearButton(false);
+
+      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
+
+      addStaffAssignmentDivision();
+    }
+    return staffAssignmentDivision;
+
+  }
+
+  /**
+   * 施設等の区分（体制）ラジオグループモデルを取得します。
+   * @return 施設等の区分（体制）ラジオグループモデル
+   */
+  protected ACListModelAdapter getStaffAssignmentDivisionModel(){
+    if(staffAssignmentDivisionModel==null){
+      staffAssignmentDivisionModel = new ACListModelAdapter();
+      addStaffAssignmentDivisionModel();
+    }
+    return staffAssignmentDivisionModel;
+  }
+
+  /**
+   * Ⅰ型を取得します。
+   * @return Ⅰ型
+   */
+  public ACRadioButtonItem getStaffAssignmentDivisionItem1(){
+    if(staffAssignmentDivisionItem1==null){
+
+      staffAssignmentDivisionItem1 = new ACRadioButtonItem();
+
+      staffAssignmentDivisionItem1.setText("I 型");
+
+      staffAssignmentDivisionItem1.setGroup(getStaffAssignmentDivision());
+
+      addStaffAssignmentDivisionItem1();
+    }
+    return staffAssignmentDivisionItem1;
+
+  }
+
+  /**
+   * II型を取得します。
+   * @return II型
+   */
+  public ACRadioButtonItem getStaffAssignmentDivisionItem2(){
+    if(staffAssignmentDivisionItem2==null){
+
+      staffAssignmentDivisionItem2 = new ACRadioButtonItem();
+
+      staffAssignmentDivisionItem2.setText("II 型");
+
+      staffAssignmentDivisionItem2.setGroup(getStaffAssignmentDivision());
+
+      addStaffAssignmentDivisionItem2();
+    }
+    return staffAssignmentDivisionItem2;
+
+  }
+
+  /**
+   * III型を取得します。
+   * @return III型
+   */
+  public ACRadioButtonItem getStaffAssignmentDivisionItem3(){
+    if(staffAssignmentDivisionItem3==null){
+
+      staffAssignmentDivisionItem3 = new ACRadioButtonItem();
+
+      staffAssignmentDivisionItem3.setText("III 型");
+
+      staffAssignmentDivisionItem3.setGroup(getStaffAssignmentDivision());
+
+      addStaffAssignmentDivisionItem3();
+    }
+    return staffAssignmentDivisionItem3;
 
   }
 
@@ -425,11 +655,11 @@ public class QO004119Design extends QS001ServicePanel {
 
       getNightWorkDivisionContainer().setText("夜間勤務条件基準");
 
-      nightWorkDivision.setBindPath("1520102");
-
-      nightWorkDivision.setModel(getNightWorkDivisionModel());
+      nightWorkDivision.setBindPath("1510102");
 
       nightWorkDivision.setUseClearButton(false);
+
+      nightWorkDivision.setModel(getNightWorkDivisionModel());
 
       addNightWorkDivision();
     }
@@ -514,9 +744,9 @@ public class QO004119Design extends QS001ServicePanel {
 
       staffLack.setBindPath("1520109");
 
-      staffLack.setModel(getStaffLackModel());
-
       staffLack.setUseClearButton(false);
+
+      staffLack.setModel(getStaffLackModel());
 
       addStaffLack();
     }
@@ -710,9 +940,9 @@ public class QO004119Design extends QS001ServicePanel {
 
       unitCareMaintenance.setBindPath("1520119");
 
-      unitCareMaintenance.setModel(getUnitCareMaintenanceModel());
-
       unitCareMaintenance.setUseClearButton(false);
+
+      unitCareMaintenance.setModel(getUnitCareMaintenanceModel());
 
       addUnitCareMaintenance();
     }
@@ -801,9 +1031,9 @@ public class QO004119Design extends QS001ServicePanel {
 
       nourishmentControlAdd.setBindPath("1520105");
 
-      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
-
       nourishmentControlAdd.setUseClearButton(false);
+
+      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
 
       addNourishmentControlAdd();
     }
@@ -913,9 +1143,9 @@ public class QO004119Design extends QS001ServicePanel {
 
       nourishmentManagementAdd.setBindPath("1520106");
 
-      nourishmentManagementAdd.setModel(getNourishmentManagementAddModel());
-
       nourishmentManagementAdd.setUseClearButton(false);
+
+      nourishmentManagementAdd.setModel(getNourishmentManagementAddModel());
 
       addNourishmentManagementAdd();
     }
@@ -1000,9 +1230,9 @@ public class QO004119Design extends QS001ServicePanel {
 
       dementiaCare.setBindPath("1520121");
 
-      dementiaCare.setModel(getDementiaCareModel());
-
       dementiaCare.setUseClearButton(false);
+
+      dementiaCare.setModel(getDementiaCareModel());
 
       addDementiaCare();
     }
@@ -1091,9 +1321,9 @@ public class QO004119Design extends QS001ServicePanel {
 
       bodyRestraintAbolition.setBindPath("1520120");
 
-      bodyRestraintAbolition.setModel(getBodyRestraintAbolitionModel());
-
       bodyRestraintAbolition.setUseClearButton(false);
+
+      bodyRestraintAbolition.setModel(getBodyRestraintAbolitionModel());
 
       addBodyRestraintAbolition();
     }
@@ -1166,6 +1396,379 @@ public class QO004119Design extends QS001ServicePanel {
       addBodyRestraintAbolitionItem2();
     }
     return bodyRestraintAbolitionItem2;
+
+  }
+
+  /**
+   * ターミナルケア体制ラジオグループを取得します。
+   * @return ターミナルケア体制ラジオグループ
+   */
+  public ACClearableRadioButtonGroup getTerminalCare(){
+    if(terminalCare==null){
+
+      terminalCare = new ACClearableRadioButtonGroup();
+
+      getTerminalCareContainer().setText("ターミナルケア体制");
+
+      terminalCare.setBindPath("1520123");
+
+      terminalCare.setUseClearButton(false);
+
+      terminalCare.setModel(getTerminalCareModel());
+
+      addTerminalCare();
+    }
+    return terminalCare;
+
+  }
+
+  /**
+   * ターミナルケア体制ラジオグループコンテナを取得します。
+   * @return ターミナルケア体制ラジオグループコンテナ
+   */
+  protected ACLabelContainer getTerminalCareContainer(){
+    if(terminalCareContainer==null){
+      terminalCareContainer = new ACLabelContainer();
+      terminalCareContainer.setFollowChildEnabled(true);
+      terminalCareContainer.setVAlignment(VRLayout.CENTER);
+      terminalCareContainer.add(getTerminalCare(), null);
+    }
+    return terminalCareContainer;
+  }
+
+  /**
+   * ターミナルケア体制ラジオグループモデルを取得します。
+   * @return ターミナルケア体制ラジオグループモデル
+   */
+  protected ACListModelAdapter getTerminalCareModel(){
+    if(terminalCareModel==null){
+      terminalCareModel = new ACListModelAdapter();
+      addTerminalCareModel();
+    }
+    return terminalCareModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getTerminalCareItem1(){
+    if(terminalCareItem1==null){
+
+      terminalCareItem1 = new ACRadioButtonItem();
+
+      terminalCareItem1.setText("なし");
+
+      terminalCareItem1.setGroup(getTerminalCare());
+
+      addTerminalCareItem1();
+    }
+    return terminalCareItem1;
+
+  }
+
+  /**
+   * ありを取得します。
+   * @return あり
+   */
+  public ACRadioButtonItem getTerminalCareItem2(){
+    if(terminalCareItem2==null){
+
+      terminalCareItem2 = new ACRadioButtonItem();
+
+      terminalCareItem2.setText("あり");
+
+      terminalCareItem2.setGroup(getTerminalCare());
+
+      addTerminalCareItem2();
+    }
+    return terminalCareItem2;
+
+  }
+
+  /**
+   * 特別療養費項目コンテナを取得します。
+   * @return 特別療養費項目コンテナ
+   */
+  public ACLabelContainer getSpecialMedicalDetailsContainer(){
+    if(specialMedicalDetailsContainer==null){
+
+      specialMedicalDetailsContainer = new ACLabelContainer();
+
+      specialMedicalDetailsContainer.setText("特別療養費加算項目");
+
+      specialMedicalDetailsContainer.setFollowChildEnabled(true);
+
+      addSpecialMedicalDetailsContainer();
+    }
+    return specialMedicalDetailsContainer;
+
+  }
+
+  /**
+   * 重症皮膚潰瘍指導管理チェックを取得します。
+   * @return 重症皮膚潰瘍指導管理チェック
+   */
+  public ACIntegerCheckBox getSpecialMedicalDetailsItem1(){
+    if(specialMedicalDetailsItem1==null){
+
+      specialMedicalDetailsItem1 = new ACIntegerCheckBox();
+
+      specialMedicalDetailsItem1.setText("重症皮膚潰瘍指導管理");
+
+      specialMedicalDetailsItem1.setBindPath("3010109");
+
+      specialMedicalDetailsItem1.setSelectValue(2);
+
+      specialMedicalDetailsItem1.setUnSelectValue(1);
+
+      addSpecialMedicalDetailsItem1();
+    }
+    return specialMedicalDetailsItem1;
+
+  }
+
+  /**
+   * 薬剤管理指導チェックを取得します。
+   * @return 薬剤管理指導チェック
+   */
+  public ACIntegerCheckBox getSpecialMedicalDetailsItem2(){
+    if(specialMedicalDetailsItem2==null){
+
+      specialMedicalDetailsItem2 = new ACIntegerCheckBox();
+
+      specialMedicalDetailsItem2.setText("薬剤管理指導");
+
+      specialMedicalDetailsItem2.setBindPath("3010110");
+
+      specialMedicalDetailsItem2.setSelectValue(2);
+
+      specialMedicalDetailsItem2.setUnSelectValue(1);
+
+      addSpecialMedicalDetailsItem2();
+    }
+    return specialMedicalDetailsItem2;
+
+  }
+
+  /**
+   * リハビリ提供体制コンテナを取得します。
+   * @return リハビリ提供体制コンテナ
+   */
+  public ACLabelContainer getRehabilitationDetailsContainer(){
+    if(rehabilitationDetailsContainer==null){
+
+      rehabilitationDetailsContainer = new ACLabelContainer();
+
+      rehabilitationDetailsContainer.setText("リハビリ提供体制");
+
+      rehabilitationDetailsContainer.setFollowChildEnabled(true);
+
+      addRehabilitationDetailsContainer();
+    }
+    return rehabilitationDetailsContainer;
+
+  }
+
+  /**
+   * リハビリテーション指導管理を取得します。
+   * @return リハビリテーション指導管理
+   */
+  public ACIntegerCheckBox getRehabilitationDetailsItem1(){
+    if(rehabilitationDetailsItem1==null){
+
+      rehabilitationDetailsItem1 = new ACIntegerCheckBox();
+
+      rehabilitationDetailsItem1.setText("リハビリテーション指導管理");
+
+      rehabilitationDetailsItem1.setBindPath("3010111");
+
+      rehabilitationDetailsItem1.setSelectValue(2);
+
+      rehabilitationDetailsItem1.setUnSelectValue(1);
+
+      addRehabilitationDetailsItem1();
+    }
+    return rehabilitationDetailsItem1;
+
+  }
+
+  /**
+   * 言語聴覚療法チェックを取得します。
+   * @return 言語聴覚療法チェック
+   */
+  public ACIntegerCheckBox getRehabilitationDetailsItem2(){
+    if(rehabilitationDetailsItem2==null){
+
+      rehabilitationDetailsItem2 = new ACIntegerCheckBox();
+
+      rehabilitationDetailsItem2.setText("言語聴覚療法");
+
+      rehabilitationDetailsItem2.setBindPath("3010106");
+
+      rehabilitationDetailsItem2.setSelectValue(2);
+
+      rehabilitationDetailsItem2.setUnSelectValue(1);
+
+      addRehabilitationDetailsItem2();
+    }
+    return rehabilitationDetailsItem2;
+
+  }
+
+  /**
+   * 精神科作業療法チェックを取得します。
+   * @return 精神科作業療法チェック
+   */
+  public ACIntegerCheckBox getRehabilitationDetailsItem3(){
+    if(rehabilitationDetailsItem3==null){
+
+      rehabilitationDetailsItem3 = new ACIntegerCheckBox();
+
+      rehabilitationDetailsItem3.setText("精神科作業療法");
+
+      rehabilitationDetailsItem3.setBindPath("3010107");
+
+      rehabilitationDetailsItem3.setSelectValue(2);
+
+      rehabilitationDetailsItem3.setUnSelectValue(1);
+
+      addRehabilitationDetailsItem3();
+    }
+    return rehabilitationDetailsItem3;
+
+  }
+
+  /**
+   * その他チェックを取得します。
+   * @return その他チェック
+   */
+  public ACIntegerCheckBox getRehabilitationDetailsItem4(){
+    if(rehabilitationDetailsItem4==null){
+
+      rehabilitationDetailsItem4 = new ACIntegerCheckBox();
+
+      rehabilitationDetailsItem4.setText("その他");
+
+      rehabilitationDetailsItem4.setBindPath("3010108");
+
+      rehabilitationDetailsItem4.setSelectValue(2);
+
+      rehabilitationDetailsItem4.setUnSelectValue(1);
+
+      addRehabilitationDetailsItem4();
+    }
+    return rehabilitationDetailsItem4;
+
+  }
+
+  /**
+   * 療養体制維持特別加算ラジオグループを取得します。
+   * @return 療養体制維持特別加算ラジオグループ
+   */
+  public ACClearableRadioButtonGroup getMedicalSystemUpkeep(){
+    if(MedicalSystemUpkeep==null){
+
+      MedicalSystemUpkeep = new ACClearableRadioButtonGroup();
+
+      getMedicalSystemUpkeepContainer().setText("療養体制維持特別加算");
+
+      MedicalSystemUpkeep.setBindPath("1520124");
+
+      MedicalSystemUpkeep.setUseClearButton(false);
+
+      MedicalSystemUpkeep.setModel(getMedicalSystemUpkeepModel());
+
+      addMedicalSystemUpkeep();
+    }
+    return MedicalSystemUpkeep;
+
+  }
+
+  /**
+   * 療養体制維持特別加算ラジオグループコンテナを取得します。
+   * @return 療養体制維持特別加算ラジオグループコンテナ
+   */
+  protected ACLabelContainer getMedicalSystemUpkeepContainer(){
+    if(MedicalSystemUpkeepContainer==null){
+      MedicalSystemUpkeepContainer = new ACLabelContainer();
+      MedicalSystemUpkeepContainer.setFollowChildEnabled(true);
+      MedicalSystemUpkeepContainer.setVAlignment(VRLayout.CENTER);
+      MedicalSystemUpkeepContainer.add(getMedicalSystemUpkeep(), null);
+    }
+    return MedicalSystemUpkeepContainer;
+  }
+
+  /**
+   * 療養体制維持特別加算ラジオグループモデルを取得します。
+   * @return 療養体制維持特別加算ラジオグループモデル
+   */
+  protected ACListModelAdapter getMedicalSystemUpkeepModel(){
+    if(MedicalSystemUpkeepModel==null){
+      MedicalSystemUpkeepModel = new ACListModelAdapter();
+      addMedicalSystemUpkeepModel();
+    }
+    return MedicalSystemUpkeepModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getMedicalSystemUpkeeItem1(){
+    if(MedicalSystemUpkeeItem1==null){
+
+      MedicalSystemUpkeeItem1 = new ACRadioButtonItem();
+
+      MedicalSystemUpkeeItem1.setText("なし");
+
+      MedicalSystemUpkeeItem1.setGroup(getMedicalSystemUpkeep());
+
+      MedicalSystemUpkeeItem1.setConstraints(VRLayout.FLOW);
+
+      addMedicalSystemUpkeeItem1();
+    }
+    return MedicalSystemUpkeeItem1;
+
+  }
+
+  /**
+   * ありを取得します。
+   * @return あり
+   */
+  public ACRadioButtonItem getMedicalSystemUpkeeItem2(){
+    if(MedicalSystemUpkeeItem2==null){
+
+      MedicalSystemUpkeeItem2 = new ACRadioButtonItem();
+
+      MedicalSystemUpkeeItem2.setText("あり");
+
+      MedicalSystemUpkeeItem2.setGroup(getMedicalSystemUpkeep());
+
+      MedicalSystemUpkeeItem2.setConstraints(VRLayout.FLOW);
+
+      addMedicalSystemUpkeeItem2();
+    }
+    return MedicalSystemUpkeeItem2;
+
+  }
+
+  /**
+   * パネル2を取得します。
+   * @return パネル2
+   */
+  public ACPanel getPanel2(){
+    if(panel2==null){
+
+      panel2 = new ACPanel();
+
+      panel2.setFollowChildEnabled(true);
+
+      panel2.setHgrid(200);
+
+      addPanel2();
+    }
+    return panel2;
 
   }
 
@@ -1770,34 +2373,78 @@ public class QO004119Design extends QS001ServicePanel {
    */
   protected void addMainGroup(){
 
-    mainGroup.add(getCalculationDetails(), VRLayout.NORTH);
+    mainGroup.add(getTab(), VRLayout.CLIENT);
 
-    mainGroup.add(getStandardMoneyGroup(), VRLayout.NORTH);
+  }
 
-    mainGroup.add(getCalculationDetails2(), VRLayout.NORTH);
+  /**
+   * タブに内部項目を追加します。
+   */
+  protected void addTab(){
+
+    tab.addTab("1", getPanel1());
+
+    tab.addTab("2", getPanel2());
+
+  }
+
+  /**
+   * パネル1に内部項目を追加します。
+   */
+  protected void addPanel1(){
+
+    panel1.add(getCalculationDetails1(), VRLayout.NORTH);
 
   }
 
   /**
    * 算定項目領域に内部項目を追加します。
    */
-  protected void addCalculationDetails(){
+  protected void addCalculationDetails1(){
 
-    calculationDetails.add(getFacilitiesDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getFacilitiesDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getNightWorkDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getNightWorkDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getStaffLackContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getStaffLackContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getUnitCareMaintenanceContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getUnitCareMaintenanceContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getNourishmentControlAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getNourishmentControlAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getNourishmentManagementAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getNourishmentManagementAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getDementiaCareContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getDementiaCareContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    calculationDetails.add(getBodyRestraintAbolitionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails1.add(getBodyRestraintAbolitionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails1.add(getTerminalCareContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails1.add(getSpecialMedicalDetailsContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails1.add(getRehabilitationDetailsContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails1.add(getMedicalSystemUpkeepContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+  }
+
+  /**
+   * 施設区分・コンテナに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionContainer(){
+
+    facilitiesDivisionContainer.add(getFacilitiesContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    facilitiesDivisionContainer.add(getTypeContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+  }
+
+  /**
+   * 施設区分・施設・コンテナに内部項目を追加します。
+   */
+  protected void addFacilitiesContainer(){
+
+    facilitiesContainer.add(getFacilitiesDivision(), VRLayout.FLOW_INSETLINE);
 
   }
 
@@ -1814,15 +2461,19 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
     getFacilitiesDivisionItem3().setButtonIndex(3);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem3());
 
     getFacilitiesDivisionItem4().setButtonIndex(4);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem4());
 
   }
@@ -1856,6 +2507,62 @@ public class QO004119Design extends QS001ServicePanel {
   }
 
   /**
+   * 施設区分・型・コンテナに内部項目を追加します。
+   */
+  protected void addTypeContainer(){
+
+    typeContainer.add(getStaffAssignmentDivision(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * 施設等の区分（体制）ラジオグループに内部項目を追加します。
+   */
+  protected void addStaffAssignmentDivision(){
+
+  }
+
+  /**
+   * 施設等の区分（体制）ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addStaffAssignmentDivisionModel(){
+
+    getStaffAssignmentDivisionItem1().setButtonIndex(1);
+
+    getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem1());
+
+    getStaffAssignmentDivisionItem2().setButtonIndex(2);
+
+    getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem2());
+
+    getStaffAssignmentDivisionItem3().setButtonIndex(3);
+
+    getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem3());
+
+  }
+
+  /**
+   * Ⅰ型に内部項目を追加します。
+   */
+  protected void addStaffAssignmentDivisionItem1(){
+
+  }
+
+  /**
+   * II型に内部項目を追加します。
+   */
+  protected void addStaffAssignmentDivisionItem2(){
+
+  }
+
+  /**
+   * III型に内部項目を追加します。
+   */
+  protected void addStaffAssignmentDivisionItem3(){
+
+  }
+
+  /**
    * 夜間勤務条件基準ラジオグループに内部項目を追加します。
    */
   protected void addNightWorkDivision(){
@@ -1868,9 +2575,11 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addNightWorkDivisionModel(){
 
     getNightWorkDivisionItem1().setButtonIndex(1);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem1());
 
     getNightWorkDivisionItem2().setButtonIndex(2);
+
     getNightWorkDivisionModel().add(getNightWorkDivisionItem2());
 
   }
@@ -1902,24 +2611,31 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addStaffLackModel(){
 
     getStaffLackItem1().setButtonIndex(1);
+
     getStaffLackModel().add(getStaffLackItem1());
 
     getStaffLackItem2().setButtonIndex(2);
+
     getStaffLackModel().add(getStaffLackItem2());
 
     getStaffLackItem3().setButtonIndex(3);
+
     getStaffLackModel().add(getStaffLackItem3());
 
     getStaffLackItem4().setButtonIndex(4);
+
     getStaffLackModel().add(getStaffLackItem4());
 
     getStaffLackItem5().setButtonIndex(5);
+
     getStaffLackModel().add(getStaffLackItem5());
 
     getStaffLackItem6().setButtonIndex(6);
+
     getStaffLackModel().add(getStaffLackItem6());
 
     getStaffLackItem7().setButtonIndex(7);
+
     getStaffLackModel().add(getStaffLackItem7());
 
   }
@@ -1986,9 +2702,11 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addUnitCareMaintenanceModel(){
 
     getUnitCareMaintenanceItem1().setButtonIndex(1);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem1());
 
     getUnitCareMaintenanceItem2().setButtonIndex(2);
+
     getUnitCareMaintenanceModel().add(getUnitCareMaintenanceItem2());
 
   }
@@ -2020,12 +2738,15 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addNourishmentControlAddModel(){
 
     getNourishmentControlAddItem1().setButtonIndex(1);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem1());
 
     getNourishmentControlAddItem2().setButtonIndex(2);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem2());
 
     getNourishmentControlAddItem3().setButtonIndex(3);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem3());
 
   }
@@ -2064,9 +2785,11 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addNourishmentManagementAddModel(){
 
     getNourishmentManagementAddItem1().setButtonIndex(1);
+
     getNourishmentManagementAddModel().add(getNourishmentManagementAddItem1());
 
     getNourishmentManagementAddItem2().setButtonIndex(2);
+
     getNourishmentManagementAddModel().add(getNourishmentManagementAddItem2());
 
   }
@@ -2098,9 +2821,11 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addDementiaCareModel(){
 
     getDementiaCareItem1().setButtonIndex(1);
+
     getDementiaCareModel().add(getDementiaCareItem1());
 
     getDementiaCareItem2().setButtonIndex(2);
+
     getDementiaCareModel().add(getDementiaCareItem2());
 
   }
@@ -2132,9 +2857,11 @@ public class QO004119Design extends QS001ServicePanel {
   protected void addBodyRestraintAbolitionModel(){
 
     getBodyRestraintAbolitionItem1().setButtonIndex(1);
+
     getBodyRestraintAbolitionModel().add(getBodyRestraintAbolitionItem1());
 
     getBodyRestraintAbolitionItem2().setButtonIndex(2);
+
     getBodyRestraintAbolitionModel().add(getBodyRestraintAbolitionItem2());
 
   }
@@ -2150,6 +2877,157 @@ public class QO004119Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addBodyRestraintAbolitionItem2(){
+
+  }
+
+  /**
+   * ターミナルケア体制ラジオグループに内部項目を追加します。
+   */
+  protected void addTerminalCare(){
+
+  }
+
+  /**
+   * ターミナルケア体制ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addTerminalCareModel(){
+
+    getTerminalCareItem1().setButtonIndex(1);
+
+    getTerminalCareModel().add(getTerminalCareItem1());
+
+    getTerminalCareItem2().setButtonIndex(2);
+
+    getTerminalCareModel().add(getTerminalCareItem2());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addTerminalCareItem1(){
+
+  }
+
+  /**
+   * ありに内部項目を追加します。
+   */
+  protected void addTerminalCareItem2(){
+
+  }
+
+  /**
+   * 特別療養費項目コンテナに内部項目を追加します。
+   */
+  protected void addSpecialMedicalDetailsContainer(){
+
+    specialMedicalDetailsContainer.add(getSpecialMedicalDetailsItem1(), VRLayout.FLOW);
+
+    specialMedicalDetailsContainer.add(getSpecialMedicalDetailsItem2(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 重症皮膚潰瘍指導管理チェックに内部項目を追加します。
+   */
+  protected void addSpecialMedicalDetailsItem1(){
+
+  }
+
+  /**
+   * 薬剤管理指導チェックに内部項目を追加します。
+   */
+  protected void addSpecialMedicalDetailsItem2(){
+
+  }
+
+  /**
+   * リハビリ提供体制コンテナに内部項目を追加します。
+   */
+  protected void addRehabilitationDetailsContainer(){
+
+    rehabilitationDetailsContainer.add(getRehabilitationDetailsItem1(), VRLayout.FLOW);
+
+    rehabilitationDetailsContainer.add(getRehabilitationDetailsItem2(), VRLayout.FLOW_RETURN);
+
+    rehabilitationDetailsContainer.add(getRehabilitationDetailsItem3(), VRLayout.FLOW);
+
+    rehabilitationDetailsContainer.add(getRehabilitationDetailsItem4(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * リハビリテーション指導管理に内部項目を追加します。
+   */
+  protected void addRehabilitationDetailsItem1(){
+
+  }
+
+  /**
+   * 言語聴覚療法チェックに内部項目を追加します。
+   */
+  protected void addRehabilitationDetailsItem2(){
+
+  }
+
+  /**
+   * 精神科作業療法チェックに内部項目を追加します。
+   */
+  protected void addRehabilitationDetailsItem3(){
+
+  }
+
+  /**
+   * その他チェックに内部項目を追加します。
+   */
+  protected void addRehabilitationDetailsItem4(){
+
+  }
+
+  /**
+   * 療養体制維持特別加算ラジオグループに内部項目を追加します。
+   */
+  protected void addMedicalSystemUpkeep(){
+
+  }
+
+  /**
+   * 療養体制維持特別加算ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addMedicalSystemUpkeepModel(){
+
+    getMedicalSystemUpkeeItem1().setButtonIndex(1);
+
+    getMedicalSystemUpkeepModel().add(getMedicalSystemUpkeeItem1());
+
+    getMedicalSystemUpkeeItem2().setButtonIndex(2);
+
+    getMedicalSystemUpkeepModel().add(getMedicalSystemUpkeeItem2());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addMedicalSystemUpkeeItem1(){
+
+  }
+
+  /**
+   * ありに内部項目を追加します。
+   */
+  protected void addMedicalSystemUpkeeItem2(){
+
+  }
+
+  /**
+   * パネル2に内部項目を追加します。
+   */
+  protected void addPanel2(){
+
+    panel2.add(getStandardMoneyGroup(), VRLayout.NORTH);
+
+    panel2.add(getCalculationDetails2(), VRLayout.NORTH);
 
   }
 
@@ -2414,7 +3292,6 @@ public class QO004119Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004119Design.class.getName()));
     } catch (Exception e) {

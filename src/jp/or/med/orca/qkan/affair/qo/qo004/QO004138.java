@@ -242,6 +242,23 @@ public class QO004138 extends QO004138Event {
 			return false;
 
 		}
+		
+		//	2008/4/16 H.Tanaka Add Sta H2005転換型老健対応 
+	    // ・staffAssignmentDivision（施設等の区分（体制）ラジオグループ）※ errMsg = 施設区分
+		if(!getStaffAssignmentDivision().isSelected()){
+	    	errMsg = "施設区分";
+	    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+	    	getStaffAssignmentDivision().requestFocus();
+	    	return false;
+	    }
+	    // ・MedicalSystemUpkeep（療養体制維持特別加算ラジオグループ）		
+		if(!getMedicalSystemUpkeep().isSelected()){
+	    	errMsg = "療養体制維持特別加算";
+	    	QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+	    	getMedicalSystemUpkeep().requestFocus();
+	    	return false;
+	    }
+		//	2008/4/16 H.Tanaka Add End
 
 		// 下記のテキストフィールドに対して入力チェックを行う。未入力だった場合は errMsg にメッセージを格納する。
 		// ・reduceRate（割引率テキスト）※ errMsg = 割引率

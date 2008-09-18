@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/05/16  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2008/06/25  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -122,6 +122,18 @@ public class QS001147Design extends QS001ServicePanel {
   private ACLabelContainer kaigoSupportSpecialMemberNameContainer;
 
   private ACComboBoxModelAdapter kaigoSupportSpecialMemberNameModel;
+
+  private ACGroupBox tekiyouGroup;
+
+  private ACTextField tekiyouText;
+
+  private ACLabelContainer tekiyouTextContainer;
+
+  private ACLabel tekiyouCommentTitle;
+
+  private ACGroupBox infoGroup;
+
+  private ACLabel infoLabel;
 
   //getter
 
@@ -480,6 +492,141 @@ public class QS001147Design extends QS001ServicePanel {
   }
 
   /**
+   * 摘要欄説明グループを取得します。
+   * @return 摘要欄説明グループ
+   */
+  public ACGroupBox getTekiyouGroup(){
+    if(tekiyouGroup==null){
+
+      tekiyouGroup = new ACGroupBox();
+
+      tekiyouGroup.setText("摘要欄");
+
+      tekiyouGroup.setVisible(true);
+
+      tekiyouGroup.setEnabled(true);
+
+      tekiyouGroup.setHgap(0);
+
+      tekiyouGroup.setLabelMargin(0);
+
+      tekiyouGroup.setVgap(0);
+
+      addTekiyouGroup();
+    }
+    return tekiyouGroup;
+
+  }
+
+  /**
+   * 摘要欄テキストを取得します。
+   * @return 摘要欄テキスト
+   */
+  public ACTextField getTekiyouText(){
+    if(tekiyouText==null){
+
+      tekiyouText = new ACTextField();
+
+      getTekiyouTextContainer().setText("摘要欄");
+
+      tekiyouText.setBindPath("1750105");
+
+      tekiyouText.setVisible(true);
+
+      tekiyouText.setEnabled(true);
+
+      tekiyouText.setEditable(true);
+
+      tekiyouText.setColumns(5);
+
+      tekiyouText.setCharType(VRCharType.ONLY_DIGIT);
+
+      tekiyouText.setHorizontalAlignment(SwingConstants.LEFT);
+
+      tekiyouText.setIMEMode(InputSubset.LATIN);
+
+      tekiyouText.setMaxLength(6);
+
+      addTekiyouText();
+    }
+    return tekiyouText;
+
+  }
+
+  /**
+   * 摘要欄テキストコンテナを取得します。
+   * @return 摘要欄テキストコンテナ
+   */
+  protected ACLabelContainer getTekiyouTextContainer(){
+    if(tekiyouTextContainer==null){
+      tekiyouTextContainer = new ACLabelContainer();
+      tekiyouTextContainer.setFollowChildEnabled(true);
+      tekiyouTextContainer.setVAlignment(VRLayout.CENTER);
+      tekiyouTextContainer.add(getTekiyouText(), null);
+    }
+    return tekiyouTextContainer;
+  }
+
+  /**
+   * 摘要欄説明ラベルを取得します。
+   * @return 摘要欄説明ラベル
+   */
+  public ACLabel getTekiyouCommentTitle(){
+    if(tekiyouCommentTitle==null){
+
+      tekiyouCommentTitle = new ACLabel();
+
+      tekiyouCommentTitle.setText("月の一番最初の利用日に記入してください。");
+
+      tekiyouCommentTitle.setIconPath(ACConstants.ICON_PATH_EXCLAMATION_16);
+
+      tekiyouCommentTitle.setAutoWrap(true);
+
+      addTekiyouCommentTitle();
+    }
+    return tekiyouCommentTitle;
+
+  }
+
+  /**
+   * 注意書きグループを取得します。
+   * @return 注意書きグループ
+   */
+  public ACGroupBox getInfoGroup(){
+    if(infoGroup==null){
+
+      infoGroup = new ACGroupBox();
+
+      infoGroup.setHgap(0);
+
+      infoGroup.setLabelMargin(0);
+
+      infoGroup.setVgap(0);
+
+      addInfoGroup();
+    }
+    return infoGroup;
+
+  }
+
+  /**
+   * 注意書きラベルを取得します。
+   * @return 注意書きラベル
+   */
+  public ACLabel getInfoLabel(){
+    if(infoLabel==null){
+
+      infoLabel = new ACLabel();
+
+      infoLabel.setText("月途中で要介護状態区分が変更になる場合は、" + ACConstants.LINE_SEPARATOR + "各日割りサービスをすべての日数に貼り付けて、" + ACConstants.LINE_SEPARATOR + "集計後、編集画面で実日数の修正を行ってください。");
+
+      addInfoLabel();
+    }
+    return infoLabel;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001147Design() {
@@ -519,7 +666,11 @@ public class QS001147Design extends QS001ServicePanel {
 
     regionSmallscaleMultiPatterns.add(getCrackOnDayCheck(), VRLayout.FLOW_RETURN);
 
-    regionSmallscaleMultiPatterns.add(getKaigoSupportSpecialMemberContainer(), VRLayout.FLOW);
+    regionSmallscaleMultiPatterns.add(getKaigoSupportSpecialMemberContainer(), VRLayout.FLOW_RETURN);
+
+    regionSmallscaleMultiPatterns.add(getTekiyouGroup(), VRLayout.FLOW_RETURN);
+
+    regionSmallscaleMultiPatterns.add(getInfoGroup(), VRLayout.FLOW);
 
   }
 
@@ -536,9 +687,11 @@ public class QS001147Design extends QS001ServicePanel {
   protected void addInitialAddRadioModel(){
 
     getInitialAddRadioItem1().setButtonIndex(1);
+
     getInitialAddRadioModel().add(getInitialAddRadioItem1());
 
     getInitialAddRadioItem2().setButtonIndex(2);
+
     getInitialAddRadioModel().add(getInitialAddRadioItem2());
 
   }
@@ -570,12 +723,15 @@ public class QS001147Design extends QS001ServicePanel {
   protected void addStaffSubtractionRadioModel(){
 
     getStaffSubtractionRadioItem1().setButtonIndex(1);
+
     getStaffSubtractionRadioModel().add(getStaffSubtractionRadioItem1());
 
     getStaffSubtractionRadioItem2().setButtonIndex(2);
+
     getStaffSubtractionRadioModel().add(getStaffSubtractionRadioItem2());
 
     getStaffSubtractionRadioItem3().setButtonIndex(3);
+
     getStaffSubtractionRadioModel().add(getStaffSubtractionRadioItem3());
 
   }
@@ -637,6 +793,47 @@ public class QS001147Design extends QS001ServicePanel {
    * 介護支援専門員氏名モデルに内部項目を追加します。
    */
   protected void addKaigoSupportSpecialMemberNameModel(){
+
+  }
+
+  /**
+   * 摘要欄説明グループに内部項目を追加します。
+   */
+  protected void addTekiyouGroup(){
+
+    tekiyouGroup.add(getTekiyouTextContainer(), VRLayout.FLOW_RETURN);
+
+    tekiyouGroup.add(getTekiyouCommentTitle(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 摘要欄テキストに内部項目を追加します。
+   */
+  protected void addTekiyouText(){
+
+  }
+
+  /**
+   * 摘要欄説明ラベルに内部項目を追加します。
+   */
+  protected void addTekiyouCommentTitle(){
+
+  }
+
+  /**
+   * 注意書きグループに内部項目を追加します。
+   */
+  protected void addInfoGroup(){
+
+    infoGroup.add(getInfoLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 注意書きラベルに内部項目を追加します。
+   */
+  protected void addInfoLabel(){
 
   }
 
