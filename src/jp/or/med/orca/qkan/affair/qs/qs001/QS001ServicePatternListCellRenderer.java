@@ -178,9 +178,20 @@ public class QS001ServicePatternListCellRenderer extends
                             ACCastUtilities.toInteger(serviceKind, 0));
                     if (service instanceof Map) {
                         if (parent == getPatternList()) {
-                            // サービス名に置換
-                            serviceKind = String.valueOf(((Map) service)
+                            // 2008/01/07 [Masahiko Higuchi] add - begin サービスパターン名称変更
+                            // 変更後の名称が設定されている場合
+                            if(((Map)value).containsKey("11")){
+                                serviceKind = ACCastUtilities.toString(((Map) value)
+                                        .get("11"),"");
+                                
+                            }else{
+                            // 2008/01/07 [Masahiko Higuchi] add - end
+                                // サービス名に置換
+                                serviceKind = String.valueOf(((Map) service)
                                     .get("SERVICE_ABBREVIATION"));
+                            // 2008/01/07 [Masahiko Higuchi] add - begin サービスパターン名称変更
+                            }
+                            // 2008/01/07 [Masahiko Higuchi] add - end
                         } else {
                             // サービスの略称名に置換
                             serviceKind = String.valueOf(((Map) service)

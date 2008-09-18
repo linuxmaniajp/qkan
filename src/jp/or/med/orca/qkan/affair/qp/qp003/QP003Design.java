@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2007/03/16  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2008/06/09  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -163,6 +163,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcHimokuTitle;
 
+  private ACTextField contentEtcUnit;
+
+  private ACTextField contentEtcCount;
+
   private ACTextField contentEtcUseTitle;
 
   private ACPanel contentEtc1;
@@ -170,6 +174,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACComboBox contentEtcHimoku1;
 
   private ACComboBoxModelAdapter contentEtcHimoku1Model;
+
+  private ACTextField contentEtcUnit1;
+
+  private ACTextField contentEtcCount1;
 
   private ACTextField contentEtcUse1;
 
@@ -179,6 +187,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACComboBoxModelAdapter contentEtcHimoku2Model;
 
+  private ACTextField contentEtcUnit2;
+
+  private ACTextField contentEtcCount2;
+
   private ACTextField contentEtcUse2;
 
   private ACPanel contentEtc3;
@@ -186,6 +198,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACComboBox contentEtcHimoku3;
 
   private ACComboBoxModelAdapter contentEtcHimoku3Model;
+
+  private ACTextField contentEtcUnit3;
+
+  private ACTextField contentEtcCount3;
 
   private ACTextField contentEtcUse3;
 
@@ -195,6 +211,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACComboBoxModelAdapter contentEtcHimoku4Model;
 
+  private ACTextField contentEtcUnit4;
+
+  private ACTextField contentEtcCount4;
+
   private ACTextField contentEtcUse4;
 
   private ACPanel contentEtc5;
@@ -203,7 +223,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACComboBoxModelAdapter contentEtcHimoku5Model;
 
+  private ACTextField contentEtcUnit5;
+
+  private ACTextField contentEtcCount5;
+
   private ACTextField contentEtcUse5;
+
+  private ACPanel contentEtc6;
+
+  private ACComboBox contentEtcHimoku6;
+
+  private ACComboBoxModelAdapter contentEtcHimoku6Model;
+
+  private ACTextField contentEtcUnit6;
+
+  private ACTextField contentEtcCount6;
+
+  private ACTextField contentEtcUse6;
 
   private ACPanel contentEtcTitleArea;
 
@@ -1024,6 +1060,52 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他単位数タイトルを取得します。
+   * @return その他単位数タイトル
+   */
+  public ACTextField getContentEtcUnit(){
+    if(contentEtcUnit==null){
+
+      contentEtcUnit = new ACTextField();
+
+      contentEtcUnit.setText("単価");
+
+      contentEtcUnit.setEditable(false);
+
+      contentEtcUnit.setColumns(4);
+
+      contentEtcUnit.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentEtcUnit();
+    }
+    return contentEtcUnit;
+
+  }
+
+  /**
+   * その他回数タイトルを取得します。
+   * @return その他回数タイトル
+   */
+  public ACTextField getContentEtcCount(){
+    if(contentEtcCount==null){
+
+      contentEtcCount = new ACTextField();
+
+      contentEtcCount.setText("数量");
+
+      contentEtcCount.setEditable(false);
+
+      contentEtcCount.setColumns(3);
+
+      contentEtcCount.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentEtcCount();
+    }
+    return contentEtcCount;
+
+  }
+
+  /**
    * その他利用料タイトルを取得します。
    * @return その他利用料タイトル
    */
@@ -1106,6 +1188,64 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcHimoku1Model();
     }
     return contentEtcHimoku1Model;
+  }
+
+  /**
+   * その他単位数１を取得します。
+   * @return その他単位数１
+   */
+  public ACTextField getContentEtcUnit1(){
+    if(contentEtcUnit1==null){
+
+      contentEtcUnit1 = new ACTextField();
+
+      contentEtcUnit1.setBindPath("OTHER_UNIT_NO1");
+
+      contentEtcUnit1.setEditable(true);
+
+      contentEtcUnit1.setColumns(4);
+
+      contentEtcUnit1.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUnit1.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUnit1.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUnit1.setMaxLength(6);
+
+      addContentEtcUnit1();
+    }
+    return contentEtcUnit1;
+
+  }
+
+  /**
+   * その他回数１を取得します。
+   * @return その他回数１
+   */
+  public ACTextField getContentEtcCount1(){
+    if(contentEtcCount1==null){
+
+      contentEtcCount1 = new ACTextField();
+
+      contentEtcCount1.setBindPath("OTHER_COUNT_NO1");
+
+      contentEtcCount1.setEditable(true);
+
+      contentEtcCount1.setColumns(3);
+
+      contentEtcCount1.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcCount1.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcCount1.setIMEMode(InputSubset.LATIN);
+
+      contentEtcCount1.setMaxLength(2);
+
+      addContentEtcCount1();
+    }
+    return contentEtcCount1;
+
   }
 
   /**
@@ -1198,6 +1338,64 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他単位数２を取得します。
+   * @return その他単位数２
+   */
+  public ACTextField getContentEtcUnit2(){
+    if(contentEtcUnit2==null){
+
+      contentEtcUnit2 = new ACTextField();
+
+      contentEtcUnit2.setBindPath("OTHER_UNIT_NO2");
+
+      contentEtcUnit2.setEditable(true);
+
+      contentEtcUnit2.setColumns(4);
+
+      contentEtcUnit2.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUnit2.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUnit2.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUnit2.setMaxLength(6);
+
+      addContentEtcUnit2();
+    }
+    return contentEtcUnit2;
+
+  }
+
+  /**
+   * その他回数２を取得します。
+   * @return その他回数２
+   */
+  public ACTextField getContentEtcCount2(){
+    if(contentEtcCount2==null){
+
+      contentEtcCount2 = new ACTextField();
+
+      contentEtcCount2.setBindPath("OTHER_COUNT_NO2");
+
+      contentEtcCount2.setEditable(true);
+
+      contentEtcCount2.setColumns(3);
+
+      contentEtcCount2.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcCount2.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcCount2.setIMEMode(InputSubset.LATIN);
+
+      contentEtcCount2.setMaxLength(2);
+
+      addContentEtcCount2();
+    }
+    return contentEtcCount2;
+
+  }
+
+  /**
    * その他利用料２を取得します。
    * @return その他利用料２
    */
@@ -1284,6 +1482,64 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcHimoku3Model();
     }
     return contentEtcHimoku3Model;
+  }
+
+  /**
+   * その他単位数３を取得します。
+   * @return その他単位数３
+   */
+  public ACTextField getContentEtcUnit3(){
+    if(contentEtcUnit3==null){
+
+      contentEtcUnit3 = new ACTextField();
+
+      contentEtcUnit3.setBindPath("OTHER_UNIT_NO3");
+
+      contentEtcUnit3.setEditable(true);
+
+      contentEtcUnit3.setColumns(4);
+
+      contentEtcUnit3.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUnit3.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUnit3.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUnit3.setMaxLength(6);
+
+      addContentEtcUnit3();
+    }
+    return contentEtcUnit3;
+
+  }
+
+  /**
+   * その他回数３を取得します。
+   * @return その他回数３
+   */
+  public ACTextField getContentEtcCount3(){
+    if(contentEtcCount3==null){
+
+      contentEtcCount3 = new ACTextField();
+
+      contentEtcCount3.setBindPath("OTHER_COUNT_NO3");
+
+      contentEtcCount3.setEditable(true);
+
+      contentEtcCount3.setColumns(3);
+
+      contentEtcCount3.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcCount3.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcCount3.setIMEMode(InputSubset.LATIN);
+
+      contentEtcCount3.setMaxLength(2);
+
+      addContentEtcCount3();
+    }
+    return contentEtcCount3;
+
   }
 
   /**
@@ -1376,6 +1632,64 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他単位数４を取得します。
+   * @return その他単位数４
+   */
+  public ACTextField getContentEtcUnit4(){
+    if(contentEtcUnit4==null){
+
+      contentEtcUnit4 = new ACTextField();
+
+      contentEtcUnit4.setBindPath("OTHER_UNIT_NO4");
+
+      contentEtcUnit4.setEditable(true);
+
+      contentEtcUnit4.setColumns(4);
+
+      contentEtcUnit4.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUnit4.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUnit4.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUnit4.setMaxLength(6);
+
+      addContentEtcUnit4();
+    }
+    return contentEtcUnit4;
+
+  }
+
+  /**
+   * その他回数４を取得します。
+   * @return その他回数４
+   */
+  public ACTextField getContentEtcCount4(){
+    if(contentEtcCount4==null){
+
+      contentEtcCount4 = new ACTextField();
+
+      contentEtcCount4.setBindPath("OTHER_COUNT_NO4");
+
+      contentEtcCount4.setEditable(true);
+
+      contentEtcCount4.setColumns(3);
+
+      contentEtcCount4.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcCount4.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcCount4.setIMEMode(InputSubset.LATIN);
+
+      contentEtcCount4.setMaxLength(2);
+
+      addContentEtcCount4();
+    }
+    return contentEtcCount4;
+
+  }
+
+  /**
    * その他利用料４を取得します。
    * @return その他利用料４
    */
@@ -1465,6 +1779,64 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他単位数５を取得します。
+   * @return その他単位数５
+   */
+  public ACTextField getContentEtcUnit5(){
+    if(contentEtcUnit5==null){
+
+      contentEtcUnit5 = new ACTextField();
+
+      contentEtcUnit5.setBindPath("OTHER_UNIT_NO5");
+
+      contentEtcUnit5.setEditable(true);
+
+      contentEtcUnit5.setColumns(4);
+
+      contentEtcUnit5.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUnit5.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUnit5.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUnit5.setMaxLength(6);
+
+      addContentEtcUnit5();
+    }
+    return contentEtcUnit5;
+
+  }
+
+  /**
+   * その他回数５を取得します。
+   * @return その他回数５
+   */
+  public ACTextField getContentEtcCount5(){
+    if(contentEtcCount5==null){
+
+      contentEtcCount5 = new ACTextField();
+
+      contentEtcCount5.setBindPath("OTHER_COUNT_NO5");
+
+      contentEtcCount5.setEditable(true);
+
+      contentEtcCount5.setColumns(3);
+
+      contentEtcCount5.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcCount5.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcCount5.setIMEMode(InputSubset.LATIN);
+
+      contentEtcCount5.setMaxLength(2);
+
+      addContentEtcCount5();
+    }
+    return contentEtcCount5;
+
+  }
+
+  /**
    * その他利用料５を取得します。
    * @return その他利用料５
    */
@@ -1488,6 +1860,153 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse5();
     }
     return contentEtcUse5;
+
+  }
+
+  /**
+   * その他６を取得します。
+   * @return その他６
+   */
+  public ACPanel getContentEtc6(){
+    if(contentEtc6==null){
+
+      contentEtc6 = new ACPanel();
+
+      contentEtc6.setAutoWrap(false);
+
+      addContentEtc6();
+    }
+    return contentEtc6;
+
+  }
+
+  /**
+   * その他費目６を取得します。
+   * @return その他費目６
+   */
+  public ACComboBox getContentEtcHimoku6(){
+    if(contentEtcHimoku6==null){
+
+      contentEtcHimoku6 = new ACComboBox();
+
+      contentEtcHimoku6.setBindPath("OTHER_HIMOKU_NO6");
+
+      contentEtcHimoku6.setEditable(true);
+
+      contentEtcHimoku6.setColumns(25);
+
+      contentEtcHimoku6.setModelBindPath("OTHER");
+
+      contentEtcHimoku6.setBlankable(false);
+
+      contentEtcHimoku6.setIMEMode(InputSubset.KANJI);
+
+      contentEtcHimoku6.setMaxLength(75);
+
+      contentEtcHimoku6.setMaxColumns(25);
+
+      contentEtcHimoku6.setModel(getContentEtcHimoku6Model());
+
+      addContentEtcHimoku6();
+    }
+    return contentEtcHimoku6;
+
+  }
+
+  /**
+   * その他費目６モデルを取得します。
+   * @return その他費目６モデル
+   */
+  protected ACComboBoxModelAdapter getContentEtcHimoku6Model(){
+    if(contentEtcHimoku6Model==null){
+      contentEtcHimoku6Model = new ACComboBoxModelAdapter();
+      addContentEtcHimoku6Model();
+    }
+    return contentEtcHimoku6Model;
+  }
+
+  /**
+   * その他単位数６を取得します。
+   * @return その他単位数６
+   */
+  public ACTextField getContentEtcUnit6(){
+    if(contentEtcUnit6==null){
+
+      contentEtcUnit6 = new ACTextField();
+
+      contentEtcUnit6.setBindPath("OTHER_UNIT_NO6");
+
+      contentEtcUnit6.setEditable(true);
+
+      contentEtcUnit6.setColumns(4);
+
+      contentEtcUnit6.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUnit6.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUnit6.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUnit6.setMaxLength(6);
+
+      addContentEtcUnit6();
+    }
+    return contentEtcUnit6;
+
+  }
+
+  /**
+   * その他回数６を取得します。
+   * @return その他回数６
+   */
+  public ACTextField getContentEtcCount6(){
+    if(contentEtcCount6==null){
+
+      contentEtcCount6 = new ACTextField();
+
+      contentEtcCount6.setBindPath("OTHER_COUNT_NO6");
+
+      contentEtcCount6.setEditable(true);
+
+      contentEtcCount6.setColumns(3);
+
+      contentEtcCount6.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcCount6.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcCount6.setIMEMode(InputSubset.LATIN);
+
+      contentEtcCount6.setMaxLength(2);
+
+      addContentEtcCount6();
+    }
+    return contentEtcCount6;
+
+  }
+
+  /**
+   * その他利用料６を取得します。
+   * @return その他利用料６
+   */
+  public ACTextField getContentEtcUse6(){
+    if(contentEtcUse6==null){
+
+      contentEtcUse6 = new ACTextField();
+
+      contentEtcUse6.setBindPath("OTHER_PAY_NO6");
+
+      contentEtcUse6.setColumns(9);
+
+      contentEtcUse6.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentEtcUse6.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentEtcUse6.setIMEMode(InputSubset.LATIN);
+
+      contentEtcUse6.setMaxLength(8);
+
+      addContentEtcUse6();
+    }
+    return contentEtcUse6;
 
   }
 
@@ -1521,7 +2040,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentEtcSubtotalTitle.setEditable(false);
 
-      contentEtcSubtotalTitle.setColumns(26);
+      contentEtcSubtotalTitle.setColumns(34);
 
       contentEtcSubtotalTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -2087,6 +2606,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentEtcs.add(getContentEtc5(), VRLayout.FLOW_RETURN);
 
+    contentEtcs.add(getContentEtc6(), VRLayout.FLOW_RETURN);
+
     contentEtcs.add(getContentEtcTitleArea(), VRLayout.FLOW_RETURN);
 
   }
@@ -2099,12 +2620,28 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentEtcTitle.add(getContentEtcHimokuTitle(), VRLayout.CLIENT);
 
     contentEtcTitle.add(getContentEtcUseTitle(), VRLayout.EAST);
+    contentEtcTitle.add(getContentEtcCount(), VRLayout.EAST);
+    contentEtcTitle.add(getContentEtcUnit(), VRLayout.EAST);
   }
 
   /**
    * その他費目タイトルに内部項目を追加します。
    */
   protected void addContentEtcHimokuTitle(){
+
+  }
+
+  /**
+   * その他単位数タイトルに内部項目を追加します。
+   */
+  protected void addContentEtcUnit(){
+
+  }
+
+  /**
+   * その他回数タイトルに内部項目を追加します。
+   */
+  protected void addContentEtcCount(){
 
   }
 
@@ -2123,6 +2660,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentEtc1.add(getContentEtcHimoku1(), VRLayout.CLIENT);
 
     contentEtc1.add(getContentEtcUse1(), VRLayout.EAST);
+    contentEtc1.add(getContentEtcCount1(), VRLayout.EAST);
+    contentEtc1.add(getContentEtcUnit1(), VRLayout.EAST);
   }
 
   /**
@@ -2136,6 +2675,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * その他費目１モデルに内部項目を追加します。
    */
   protected void addContentEtcHimoku1Model(){
+
+  }
+
+  /**
+   * その他単位数１に内部項目を追加します。
+   */
+  protected void addContentEtcUnit1(){
+
+  }
+
+  /**
+   * その他回数１に内部項目を追加します。
+   */
+  protected void addContentEtcCount1(){
 
   }
 
@@ -2154,6 +2707,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentEtc2.add(getContentEtcHimoku2(), VRLayout.CLIENT);
 
     contentEtc2.add(getContentEtcUse2(), VRLayout.EAST);
+    contentEtc2.add(getContentEtcCount2(), VRLayout.EAST);
+    contentEtc2.add(getContentEtcUnit2(), VRLayout.EAST);
   }
 
   /**
@@ -2167,6 +2722,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * その他費目２モデルに内部項目を追加します。
    */
   protected void addContentEtcHimoku2Model(){
+
+  }
+
+  /**
+   * その他単位数２に内部項目を追加します。
+   */
+  protected void addContentEtcUnit2(){
+
+  }
+
+  /**
+   * その他回数２に内部項目を追加します。
+   */
+  protected void addContentEtcCount2(){
 
   }
 
@@ -2185,6 +2754,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentEtc3.add(getContentEtcHimoku3(), VRLayout.CLIENT);
 
     contentEtc3.add(getContentEtcUse3(), VRLayout.EAST);
+    contentEtc3.add(getContentEtcCount3(), VRLayout.EAST);
+    contentEtc3.add(getContentEtcUnit3(), VRLayout.EAST);
   }
 
   /**
@@ -2198,6 +2769,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * その他費目３モデルに内部項目を追加します。
    */
   protected void addContentEtcHimoku3Model(){
+
+  }
+
+  /**
+   * その他単位数３に内部項目を追加します。
+   */
+  protected void addContentEtcUnit3(){
+
+  }
+
+  /**
+   * その他回数３に内部項目を追加します。
+   */
+  protected void addContentEtcCount3(){
 
   }
 
@@ -2216,6 +2801,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentEtc4.add(getContentEtcHimoku4(), VRLayout.CLIENT);
 
     contentEtc4.add(getContentEtcUse4(), VRLayout.EAST);
+    contentEtc4.add(getContentEtcCount4(), VRLayout.EAST);
+    contentEtc4.add(getContentEtcUnit4(), VRLayout.EAST);
   }
 
   /**
@@ -2229,6 +2816,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * その他費目４モデルに内部項目を追加します。
    */
   protected void addContentEtcHimoku4Model(){
+
+  }
+
+  /**
+   * その他単位数４に内部項目を追加します。
+   */
+  protected void addContentEtcUnit4(){
+
+  }
+
+  /**
+   * その他回数４に内部項目を追加します。
+   */
+  protected void addContentEtcCount4(){
 
   }
 
@@ -2247,6 +2848,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentEtc5.add(getContentEtcHimoku5(), VRLayout.CLIENT);
 
     contentEtc5.add(getContentEtcUse5(), VRLayout.EAST);
+    contentEtc5.add(getContentEtcCount5(), VRLayout.EAST);
+    contentEtc5.add(getContentEtcUnit5(), VRLayout.EAST);
   }
 
   /**
@@ -2264,9 +2867,70 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * その他単位数５に内部項目を追加します。
+   */
+  protected void addContentEtcUnit5(){
+
+  }
+
+  /**
+   * その他回数５に内部項目を追加します。
+   */
+  protected void addContentEtcCount5(){
+
+  }
+
+  /**
    * その他利用料５に内部項目を追加します。
    */
   protected void addContentEtcUse5(){
+
+  }
+
+  /**
+   * その他６に内部項目を追加します。
+   */
+  protected void addContentEtc6(){
+
+    contentEtc6.add(getContentEtcHimoku6(), VRLayout.CLIENT);
+
+    contentEtc6.add(getContentEtcUse6(), VRLayout.EAST);
+    contentEtc6.add(getContentEtcCount6(), VRLayout.EAST);
+    contentEtc6.add(getContentEtcUnit6(), VRLayout.EAST);
+  }
+
+  /**
+   * その他費目６に内部項目を追加します。
+   */
+  protected void addContentEtcHimoku6(){
+
+  }
+
+  /**
+   * その他費目６モデルに内部項目を追加します。
+   */
+  protected void addContentEtcHimoku6Model(){
+
+  }
+
+  /**
+   * その他単位数６に内部項目を追加します。
+   */
+  protected void addContentEtcUnit6(){
+
+  }
+
+  /**
+   * その他回数６に内部項目を追加します。
+   */
+  protected void addContentEtcCount6(){
+
+  }
+
+  /**
+   * その他利用料６に内部項目を追加します。
+   */
+  protected void addContentEtcUse6(){
 
   }
 

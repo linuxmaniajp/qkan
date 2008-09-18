@@ -399,13 +399,17 @@ public class QO012 extends QO012Event {
 					// パーサを実行して、解析に問題が有った場合はスキップする
 					continue;
 				}
-			} else if (exchangeType.equals("7153")) {
-				// 7153 様式第5
+			// 2008/03/27 [Masahiko_Higuchi] edit - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+			} else if (exchangeType.equals("7153")||exchangeType.equals("7155")) {
+				// 7153 様式第4
+            // 2008/03/27 [Masahiko_Higuchi] edit - end
 				if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
 					// パーサを実行して、解析に問題が有った場合はスキップする
 					continue;
 				}
-			} else if (exchangeType.equals("7154")) {
+            // 2008/03/27 [Masahiko_Higuchi] edit - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+			} else if (exchangeType.equals("7154")||exchangeType.equals("7156")) {
+            // 2008/03/27 [Masahiko_Higuchi] edit - end
 				// 7154 様式第4-2
 				if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
 					// パーサを実行して、解析に問題が有った場合はスキップする
@@ -465,7 +469,9 @@ public class QO012 extends QO012Event {
 					// パーサを実行して、解析に問題が有った場合はスキップする
 					continue;
 				}
-			} else if (exchangeType.equals("7193")) {
+            // 2008/03/27 [Masahiko_Higuchi] edit - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+			} else if (exchangeType.equals("7193")||exchangeType.equals("7194")) {
+            // 2008/03/27 [Masahiko_Higuchi] edit - end
 				// 7193 様式第9
 				if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
 					// パーサを実行して、解析に問題が有った場合はスキップする

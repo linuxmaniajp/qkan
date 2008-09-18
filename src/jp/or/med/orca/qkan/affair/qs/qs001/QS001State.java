@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/05/24  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2007/12/13  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -154,6 +154,8 @@ public class QS001State extends QS001Design {
 
         getServiceDelete().setEnabled(false);
 
+        getPatternNameChange().setEnabled(true);
+
   }
 
   /**
@@ -163,6 +165,8 @@ public class QS001State extends QS001Design {
   public void setState_SERVICE_PATTERN_UNSELECTED() throws Exception {
 
         getPatternDelete().setEnabled(false);
+
+        getPatternNameChange().setEnabled(false);
 
   }
 

@@ -285,6 +285,17 @@ public class QO013 extends QO013Event {
         getPatients().setModel(getReceiptTableModel());
         // ウィンドウタイトルに、取得レコードのKEY : WINDOW_TITLEのVALUEを設定する。
         // 業務ボタンバーのテキストに、取得レコードのKEY : AFFAIR_TITLEのVALUEを設定する。
+        
+        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
+        // コンボの値を設定する。
+        VRList versionComboList = new VRArrayList();
+        // コードマスタから選択肢の取得
+        versionComboList = QkanCommon.getArrayFromMasterCode(
+                CODE_RECEIPT_VERSION, "RECEIPT_VERSION_CONTENT");
+        // 値の設定
+        getReceiptVersionCombo().setModel(versionComboList);
+        // 2008/01/15 [Masahiko Higuchi] add - end        
+        
         // 通信の設定情報を読込む
         readProperty();
         // 設定復元
@@ -379,6 +390,19 @@ public class QO013 extends QO013Event {
         } else {
             setToHiraganaConvert("");
         }
+        
+        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
+        // 設定ファイルが読込めるかチェックする。
+        if (ACFrame.getInstance().hasProperty("ReceiptAccess/ReceiptSoftVersion")) {
+            // 読込めた場合
+            // パスワードを読込み receiptVersion に格納する。
+            setReceiptVersion(ACFrame.getInstance().getProperty(
+                    "ReceiptAccess/ReceiptSoftVersion"));
+        } else {
+            setReceiptVersion(ACCastUtilities.toString(DEFAULT_RECEIPT_VERSION_INDEX));
+        }        
+        // 2008/01/15 [Masahiko Higuchi] add - end
+
     }
 
     /**
@@ -394,7 +418,11 @@ public class QO013 extends QO013Event {
         setUser(getUserName().getText());
         setPass(getPassword().getText());
         setDbsVer(getDbsVersion().getText());
-
+        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
+        setReceiptVersion(ACCastUtilities.toString(getReceiptVersionCombo()
+				.getSelectedIndex()));
+        // 2008/01/15 [Masahiko Higuchi] add - end
+        
         ACFrame.getInstance().getPropertyXML().setForceValueAt(
                 "ReceiptAccess/IP", getIp());
         ACFrame.getInstance().getPropertyXML().setForceValueAt(
@@ -406,6 +434,11 @@ public class QO013 extends QO013Event {
         ACFrame.getInstance().getPropertyXML().setForceValueAt(
                 "ReceiptAccess/Password", getPass());
 
+        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
+        ACFrame.getInstance().getPropertyXML().setForceValueAt(
+                "ReceiptAccess/ReceiptSoftVersion", getReceiptVersion());
+        // 2008/01/15 [Masahiko Higuchi] add - end
+        
         // ひらがな変換がチェックされているか。
         if (getToHiragana().isSelected()) {
             // チェックされている場合
@@ -581,6 +614,19 @@ public class QO013 extends QO013Event {
         // 通信設定読込み
         readProperty();
 
+        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
+        // パスがnullでないか念のためチェックする
+        if(getPass() != null){
+            // 空白がパスワードに設定されている場合
+            if(getPass().indexOf(" ") != -1 || getPass().indexOf("　") != -1 ){
+                QkanMessageList.getInstance().QO013_ERROR_OF_BLANK_IN_PASSWORD();
+                // 処理終了
+                getPassword().requestFocus();
+                return;
+            }
+        }
+        // 2008/01/15 [Masahiko Higuchi] add - end        
+        
         QkanReceiptSoftDBManager dbm;
         ACSplashable splash = null;
 
@@ -597,6 +643,7 @@ public class QO013 extends QO013Event {
 
         int count = 0;
         try {
+            
             // 患者取り込みを行うのかチェックする。
             if (QkanMessageList.getInstance().QO013_QUESTION_OF_FIND() == ACMessageBox.RESULT_OK) {
                 // OK選択時
@@ -623,20 +670,58 @@ public class QO013 extends QO013Event {
                     if (!((ACSplash) splash).isVisible()) {
                         ((ACSplash) splash).showModaless("データ通信");
                     }
-                    // ストアドプロシージャ引数 今回はnull
-                    VRMap param = null;
-                    // opassから結果を取得
-                    count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
-                            "all", param, splash);
-
+                    
+                    
+                    // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
+                    // 日医標準レセプトソフトのバージョンを判定する
+                    if(getReceiptVersionCombo().getSelectedIndex() != DEFAULT_RECEIPT_VERSION_INDEX){
+                    // 2008/01/15 [Masahiko Higuchi] add - end
+                        // ストアドプロシージャ引数 今回はnull
+                        VRMap param = null;
+                        // opassから結果を取得
+                        count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
+                                "all", param, splash);
+                        
+                    // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
+                    }else{
+                        // HOSPNUM取得用の関数情報定義
+                        String key = "key";
+                        VRMap initialParam = new VRHashMap();
+                        HashMap hospNumResult = new HashMap();
+                        initialParam.put("tbl_sysuser.USERID",getUser());
+                        // 通信準備
+                        dbm.executeSetUp();
+                        
+                        // 一旦HOSPNUMを取得する。
+                        hospNumResult = dbm.executeQueryData("tbl_sysuser",key,initialParam);
+                        
+                        // COMMIT
+                        dbm.commitTransaction();
+                        
+                        // 患者情報取得用の関数情報定義                    
+                        key = "all";
+                        // 変数準備
+                        VRMap findParam = new VRHashMap();
+                        // HOSPNUMの取得
+                        Integer hospNum = ACCastUtilities.toInteger(hospNumResult.get("tbl_sysuser.HOSPNUM"),0);
+                        // 検索キー設定
+                        findParam.put("tbl_ptinf.HOSPNUM",hospNum);
+                        // 患者情報取得
+                        count = dbm.executeQuery(getDBManager(),"tbl_ptinf", key, findParam, splash);
+                        // 終了処理
+                        dbm.close();
+                        
+                    }
+                    // 2008/01/15 [Masahiko Higuchi] add - end
+    
                 }
-
+                
             } else {
                 // キャンセル選択時
                 // 処理終了
                 return;
             }
-
+                
         } catch (Exception ex) {
             splash = closeSplash(splash);
             Throwable cause = ex.getCause();
@@ -668,13 +753,28 @@ public class QO013 extends QO013Event {
                 QkanMessageList.getInstance().QO013_ERROR_OF_CONECT_CUSTOM(
                         "認証", "ユーザー名およびパスワードが不正です。");
                 return;
-
+                
+            // 2008/01/15 [Masahiko_Higuchi] add - begin 日レセ連携 version 3.0.5
+            }else if("Connection reset".equals(ex.getMessage())){
+                // 日レセのバージョン選択にミスの可能性有り
+                QkanMessageList
+                        .getInstance()
+                        .QO013_ERROR_OF_CONECT_CUSTOM(
+                                "接続",
+                                ACConstants.LINE_SEPARATOR
+                                        + "通信の切断、もしくは日医標準レセプトソフトのバージョンが異なる可能性があります。"
+                                        + ACConstants.LINE_SEPARATOR
+                                        + "接続設定を確認してください。");
+                return;
+                // 2008/01/15 [Masahiko_Higuchi] add - end
+                
             }else if (cause == null){
                 // エラーメッセージ
                 // エラーメッセージ表示
                 QkanMessageList.getInstance().QO013_ERROR_OF_CONECT_CUSTOM(
                         "接続", "通信を切断された可能性あります。再度試行してください。");
                 return;
+
             }
             throw ex;
         }
@@ -1085,6 +1185,12 @@ public class QO013 extends QO013Event {
         getPortNo().setText(getPort());
         getUserName().setText(getUser());
         getPassword().setText(getPass());
+        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
+        // 日医標準レセプトソフトバージョン情報コンボを設定する。
+        getReceiptVersionCombo().setSelectedIndex(
+                ACCastUtilities.toInt(getReceiptVersion(),
+                        DEFAULT_RECEIPT_VERSION_INDEX));
+        // 2008/01/15 [Masahiko Higuchi] add - end
         // チェックの状態を復元
         if ("true".equals(getToHiraganaConvert())) {
             getToHiragana().setSelected(true);

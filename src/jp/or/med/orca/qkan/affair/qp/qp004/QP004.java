@@ -388,14 +388,14 @@ public class QP004 extends QP004Event {
 		VRMap param = new VRHashMap();
 
 		// paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
-		param.setData("PATIENT_ID", new Integer(9));
-		param.setData("CLAIM_DATE", ACDateUtilities.createDate(2006, 5, 1));
-		param.setData("INSURED_ID", "5486489498");
-		param.setData("PROVIDER_ID", "9999999999");
+		param.setData("PATIENT_ID", new Integer(8));
+		param.setData("CLAIM_DATE", ACDateUtilities.createDate(2008, 6, 1));
+		param.setData("INSURED_ID", "8888888888");
+		param.setData("PROVIDER_ID", "2000000000");
 		param.setData("LIST_INDEX", new Integer(0));
-		param.setData("TARGET_DATE", ACDateUtilities.createDate(2006, 4, 1));
-		param.setData("INSURER_ID", "369852");
-		param.setData("CLAIM_STYLE_TYPE", new Integer(10511));
+		param.setData("TARGET_DATE", ACDateUtilities.createDate(2008, 5, 1));
+		param.setData("INSURER_ID", "111111");
+		param.setData("CLAIM_STYLE_TYPE", new Integer(10411));
 		ACFrame.debugStart(new ACAffairInfo(QP004.class.getName(), param));
 	}
 
@@ -569,6 +569,16 @@ public class QP004 extends QP004Event {
 				VRMap param = new VRHashMap();
 				param.setData("SPECIAL_CLINIC_TYPE", claimDataMap.getData(SPECIAL_CLINIC_FLAG_CODE));
 				param.setData("TARGET_DATE", getTargetDate());
+				//[H20.5 法改正対応] fujihara add start
+				param.setData("RECORD_TYPE", "1");
+				switch (getClaimStyleType()){
+					case CLAIM_STYLE_TYPE41:
+					case CLAIM_STYLE_TYPE42:
+					case CLAIM_STYLE_TYPE9:
+						param.setData("RECORD_TYPE", "2");
+						break;
+				}
+				//[H20.5 法改正対応] fujihara add end
 
 				// DBより特定診療費名、摘要欄説明、クラス種類、コードIDを取得する。
 				VRList serviceCodeMaster = getDBManager().executeQuery(getSQL_GET_SPECIAL_CLINIC_NAME(param));
@@ -618,6 +628,7 @@ public class QP004 extends QP004Event {
 	 *             処理例外
 	 */
 	public void doControlState() throws Exception {
+		
 		// 画面の状態設定
 		// 帳票様式第2の場合（claimStyleType = 2）
 		// 画面のVisible制御を行う。
@@ -681,6 +692,26 @@ public class QP004 extends QP004Event {
 			setState_STATE_TYPE_10();
 			// ・状態ID：STATE_TYPE_10
 		}
+		
+		//[H20.5 法改正対応] fujihara add start
+		//H20.5以前であれば、特定療養費タブを消去する。
+		boolean isShinryos = false;
+		
+		switch (getClaimStyleType()){
+			case CLAIM_STYLE_TYPE41:
+			case CLAIM_STYLE_TYPE42:
+			case CLAIM_STYLE_TYPE9:
+				int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
+				isShinryos = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
+				break;
+		}
+		
+		if (isShinryos){
+			getShinryos().setVisible(true);
+			getShinryos().setText("特別療養費");
+		}
+		//[H20.5 法改正対応] fujihara add end
+		
 	}
 
 	/**

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/31  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2008/03/05  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -103,6 +104,10 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel informationTitle;
 
   private ACLabel information;
+
+  private ACPanel versionContents;
+
+  private ACEditorPane editor;
 
   private ACPanel buttons;
 
@@ -201,7 +206,7 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
 
       menuTree = new ACFilterableMainMenuTree();
 
-      menuTree.setPreferredSize(new Dimension(200,360));
+      menuTree.setPreferredSize(new Dimension(200,560));
 
       menuTree.setCellRenderer(new ACMainMenuTreeRenderer());
 
@@ -282,6 +287,48 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * バージョンアップ領域を取得します。
+   * @return バージョンアップ領域
+   */
+  public ACPanel getVersionContents(){
+    if(versionContents==null){
+
+      versionContents = new ACPanel();
+
+      versionContents.setVisible(true);
+
+      versionContents.setAutoWrap(false);
+
+      addVersionContents();
+    }
+    return versionContents;
+
+  }
+
+  /**
+   * バージョンアップお知らせ領域を取得します。
+   * @return バージョンアップお知らせ領域
+   */
+  public ACEditorPane getEditor(){
+    if(editor==null){
+
+      editor = new ACEditorPane();
+
+      editor.setVisible(true);
+
+      editor.setEnabled(false);
+
+      editor.setEditable(false);
+
+      editor.setPreferredSize(new Dimension(0,180));
+
+      addEditor();
+    }
+    return editor;
+
+  }
+
+  /**
    * ボタン領域を取得します。
    * @return ボタン領域
    */
@@ -289,6 +336,8 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
     if(buttons==null){
 
       buttons = new ACPanel();
+
+      buttons.setAutoWrap(false);
 
       addButtons();
     }
@@ -380,6 +429,7 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
 
     contents.add(getMenus(), VRLayout.CLIENT);
 
+    contents.add(getVersionContents(), VRLayout.SOUTH);
   }
 
   /**
@@ -405,7 +455,6 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
 
     menus.add(getMenuMains(), VRLayout.CLIENT);
 
-    menus.add(getButtons(), VRLayout.SOUTH);
     menus.add(getInfomations(), VRLayout.SOUTH);
   }
 
@@ -460,6 +509,23 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * バージョンアップ領域に内部項目を追加します。
+   */
+  protected void addVersionContents(){
+
+    versionContents.add(getEditor(), VRLayout.CLIENT);
+
+    versionContents.add(getButtons(), VRLayout.SOUTH);
+  }
+
+  /**
+   * バージョンアップお知らせ領域に内部項目を追加します。
+   */
+  protected void addEditor(){
+
+  }
+
+  /**
    * ボタン領域に内部項目を追加します。
    */
   protected void addButtons(){
@@ -504,7 +570,6 @@ public class QM002Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QM002Design.class.getName()));
     } catch (Exception e) {

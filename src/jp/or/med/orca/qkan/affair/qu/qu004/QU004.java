@@ -59,6 +59,7 @@ import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
+import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 import jp.or.med.orca.qkan.text.QkanClaimStyleFormat;
@@ -73,6 +74,10 @@ public class QU004 extends QU004Event {
 	public final static int RESULT_FALSE = 1;
 
 	public final static int RESULT_CHANGEABLE = 2;
+
+	public final static int NOT_SHOW_KOHI= 0;
+	public final static int SHOW_KOHI = 1;
+	
 
 	/**
 	 * コンストラクタです。
@@ -3681,11 +3686,27 @@ public class QU004 extends QU004Event {
 		// ArrayList masterIryoKohiListを生成する。
 		VRList masterIryoKohiList = new VRArrayList();
 
+		
+		/* 2007-04-05 結核予防法対応 change start kamitsukasa */
+		/* 設定・変更メンテナンスで設定された値（ScreenConfig/ShowOldKohi）により
+		 * システム日付において無効な公費の表示（1）・非表示（0）を切り替える */
+		
+		// ScreenConfig/ShowOldKohiの取得(デフォルト：0)
+		int showOldKohi = 0;
+		if(ACFrame.getInstance().hasProperty("ScreenConfig/ShowOldKohi")){
+			showOldKohi = ACCastUtilities.toInt(getProperty("ScreenConfig/ShowOldKohi"), 0);
+		}
+		// システム日付の取得
+		Date systemDate = QkanSystemInformation.getInstance().getSystemDate();
+		
 		// masterKohiListの件数分ループする。
 		for (int i = 0; i < getMasterKohiList().size(); i++) {
 
 			VRMap temp = (VRMap) getMasterKohiList().get(i);
-
+			if(!canShowKohi(temp, systemDate, showOldKohi)){
+				// 表示可能ではない公費である場合
+				continue;
+			}
 			if (ACCastUtilities
 					.toInt(VRBindPathParser.get("INSURE_TYPE", temp)) == INSURE_TYPE_KAIGO) {
 				// INSURE_TYPEの値がINSURE_TYPE_KAIGOの場合
@@ -3699,6 +3720,9 @@ public class QU004 extends QU004Event {
 			}
 		}
 
+		/* 2007-04-05 結核予防法対応 change end kamitsukasa */
+
+		
 		// masterKaigokohiListをmapにKEY：KAIGO_KOHIで設定する。
 		// masterIryoKohiListをmapにKEY：IRYO_KOHIで設定する。
 		VRBindPathParser.set("KAIGO_KOHI", map, masterKaigokohiList);
@@ -4369,4 +4393,33 @@ public class QU004 extends QU004Event {
 		return getKaigoInfoPublicExpense();
 	}
 
+	/* 2007-04-05 結核予防法対応 change start kamitsukasa */
+	/**
+	 * 公費の表示・非表示を判定します。
+	 * @param kohi			公費レコード
+	 * @param aimDate		基準となる日付
+	 * @param showOldKohi	過去の公費を表示するかどうか
+	 */
+	public boolean canShowKohi(VRMap kohi, Date aimDate, int showOldKohi)
+			throws Exception {
+
+		if (showOldKohi == SHOW_KOHI) {
+			// 過去の公費も表示する設定となっている場合
+			return true;
+		}
+
+		Date start = ACCastUtilities.toDate(VRBindPathParser.get(
+				"KOHI_VALID_START", kohi));
+		Date end = ACCastUtilities.toDate(VRBindPathParser.get(
+				"KOHI_VALID_END", kohi));
+
+		if (ACDateUtilities.compareOnDay(aimDate, start) >= 0
+				&& ACDateUtilities.compareOnDay(aimDate, end) <= 0) {
+			// 基準日付が有効期間内にある場合
+			return true;
+		}
+
+		return false;
+	}
+	/* 2007-04-05 結核予防法対応 change end kamitsukasa */
 }

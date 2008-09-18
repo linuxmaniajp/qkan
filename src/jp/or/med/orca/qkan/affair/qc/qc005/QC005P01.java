@@ -193,6 +193,11 @@ public class QC005P01 extends QC005P01Event {
     
     ACChotarouXMLUtilities.setValue(writer,"renrakusaki",medicalTel);
 
+    //利用社名を設定する。
+    ACChotarouXMLUtilities.setValue(writer, printParam, "PATIENT_NAME", "patientName");
+    
+    
+    
     //ページ終了
     writer.endPageEdit();
     //TODO 印刷を実行したならばtrueを返す。

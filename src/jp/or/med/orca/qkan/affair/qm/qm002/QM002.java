@@ -29,20 +29,26 @@
 
 package jp.or.med.orca.qkan.affair.qm.qm002;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import jp.nichicom.ac.component.ACEditorPane;
 import jp.nichicom.ac.component.mainmenu.ACFilterableMainMenuTree;
 import jp.nichicom.ac.component.mainmenu.ACFilterableMainMenuTreeNode;
 import jp.nichicom.ac.component.mainmenu.ACMainMenuTreeNodePanel;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRHashMap;
@@ -51,10 +57,7 @@ import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.affair.QkanMessageList;
-import jp.or.med.orca.qkan.affair.qo.qo002.QO002;
 import jp.or.med.orca.qkan.affair.qo.qo008.QO008;
-import jp.or.med.orca.qkan.affair.qu.qu002.QU002;
 import jp.or.med.orca.qkan.affair.qv.qv001.QV001;
 
 /**
@@ -89,6 +92,12 @@ public class QM002 extends QM002Event {
         getMenuTree().setTransfer(this);
         //TODO メニューの有効項目を制限する場合、コメントアウトを外す
         //getMenuList().setFactoryAssistant(this);
+        
+        //  2008/01/07 [Masahiko Higuchi] add - begin バージョンアップお知らせ機能
+        QM002HtmlPageReader reader = new QM002HtmlPageReader();
+        // 別スレッドで読込み開始
+        reader.start(getEditor());
+        //  2008/01/07 [Masahiko Higuchi] add - end
         
         // ※メニューの展開
         // システムの「メニューツリー」を取得する。
@@ -156,7 +165,7 @@ public class QM002 extends QM002Event {
             }
             // 何もしない。
         }
-
+        
         // ※ウィンドウタイトル・業務ボタンバーの設定
         // 業務情報レコードを取得する。
         // ウィンドウタイトルに、取得レコードのKEY : WINDOW_TITLEのVALUEを設定する。
@@ -201,7 +210,7 @@ public class QM002 extends QM002Event {
             getMenuTree().setSelectionPath(path);
             ACFrame.getInstance().removeNowAffairParameter("TREE_HISTORY");
         }
-
+        
         ACAffairInfo nowAffair = ACFrame.getInstance().getNowAffair();
         if (nowAffair != null) {
             // 初回起動だけはスプラッシュを表示させるため、自分自身のスプラッシュを切る
@@ -216,6 +225,17 @@ public class QM002 extends QM002Event {
             //getMenuTree().setRowHeight(48);
         }
 
+        
+        if(!getEditor().isVisible()){
+        	getMenuTree().setPreferredSize(null);
+        }
+        
+    	getContents().revalidate();
+    	getContents().repaint();
+    	getContents().paintImmediately(getContents().getX(),
+				getContents().getY(), getContents().getWidth(),
+				getContents().getHeight());
+        
     }
     
 
@@ -347,5 +367,5 @@ public class QM002 extends QM002Event {
             }
         }
     }
-
+    
 }

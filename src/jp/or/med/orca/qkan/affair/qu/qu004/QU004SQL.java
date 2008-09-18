@@ -17,13 +17,13 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 公費・減免情報
- * 作成日: 2006/02/22  日本コンピューター株式会社 公費・減免情報 新規作成
+ * 開発者: 公費・社福軽減情報
+ * 作成日: 2007/04/05  日本コンピューター株式会社 公費・社福軽減情報 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
- * プロセス 公費・減免情報 (004)
- * プログラム 公費・減免情報 (QU004)
+ * プロセス 公費・社福軽減情報 (004)
+ * プログラム 公費・社福軽減情報 (QU004)
  *
  *****************************************************************
  */
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -79,7 +80,7 @@ import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 
 /**
- * 公費・減免情報SQL定義(QU004) 
+ * 公費・社福軽減情報SQL定義(QU004) 
  */
 public class QU004SQL extends QU004State {
   private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
@@ -98,8 +99,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_GET_MASTER_KOHI_SERVICE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -126,8 +127,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_GET_PATIENT_KOHI(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -190,8 +191,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_GET_PATIENT_KOHI_SERVICE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -232,8 +233,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_DELETE_PATIENT_KOHI(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("DELETE FROM");
@@ -264,8 +265,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_INSERT_PATIENT_KOHI(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -360,8 +361,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_DELETE_PATIENT_KOHI_SERVICE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("DELETE FROM");
@@ -392,8 +393,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_INSERT_PATIENT_KOHI_SERVICE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -440,8 +441,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_GET_MASTER_KOHI(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -463,6 +464,10 @@ public class QU004SQL extends QU004State {
     sb.append(",KOHI_SORT");
 
     sb.append(",LAST_TIME");
+
+    sb.append(",KOHI_VALID_START");
+
+    sb.append(",KOHI_VALID_END");
 
     sb.append(" FROM");
 
@@ -486,8 +491,8 @@ public class QU004SQL extends QU004State {
   public String getSQL_UPDATE_PATIENT_LAST_TIME(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");

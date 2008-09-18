@@ -119,6 +119,19 @@ public class QP007 extends QP007Event {
             settings.put("STYLE_CHECK",new Integer(0));
         }
         
+        // [利用者向け請求書・領収書　詳細版対応] fujihara add start
+        if (ACFrame.getInstance().hasProperty("Claim/DetailsCheck")) {
+			//設定ファイルのClaim-DetailsCheckが0の場合	
+			//「詳細版で印刷する(patientBillSetupDetailsPrintOn)」のチェックをはずす。
+			//設定ファイルのClaim-DetailsCheckが0の場合	
+			//「詳細版で印刷する(patientBillSetupDetailsPrintOn)」のチェックを付ける。
+            settings.put("DETAILS_CHECK",getProperty("Claim/DetailsCheck"));
+        } else {
+            settings.put("DETAILS_CHECK",new Integer(0));
+        }
+        // [利用者向け請求書・領収書　詳細版対応] fujihara add end
+        
+        
         // 「請求書日付(patientBillSetupBillDate)」にログイン日付を設定する。
         settings.put("TARGET_DATE",QkanSystemInformation.getInstance().getSystemDate());
         // 「領収書日付(patientBillSetupReceiptDate)」にログイン日付を設定する。
@@ -203,6 +216,14 @@ public class QP007 extends QP007Event {
         // 「医療費控除対応版で出力する(patientBillSetupMedicalTreatmentOn)」がチェックされている場合。
         // 設定ファイルのClaim-StyleCheckに1を設定する。
         setProperty("Claim/StyleCheck", String.valueOf(settings.getData("STYLE_CHECK")));
+        
+        // [利用者向け請求書・領収書　詳細版対応] fujihara add start
+        //「詳細版で印刷する(patientBillSetupDetailsPrintOn)」がチェックされていない場合。	
+        //設定ファイルのClaim-DetailsCheckを0に設定する。
+        //「詳細版で印刷する(patientBillSetupDetailsPrintOn)」がチェックされている場合。	
+        //設定ファイルのClaim-DetailsCheckを1に設定する。
+        setProperty("Claim/DetailsCheck", String.valueOf(settings.getData("DETAILS_CHECK")));
+        // [利用者向け請求書・領収書　詳細版対応] fujihara add end
         
         saveProperty();
         

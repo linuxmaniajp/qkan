@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/03/16  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2008/04/18  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績データ作成 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -238,6 +239,22 @@ public abstract class QP005Event extends QP005SQL {
             }
         }
     });
+    getRecuperationInfoTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                recuperationInfoTableSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getBasicInfoRevisionCheck().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -327,6 +344,22 @@ public abstract class QP005Event extends QP005SQL {
             lockFlag = true;
             try {
                 shahukuInfoRevisionCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getRecuperationInfoRevisionCheck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                recuperationInfoRevisionCheckActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -534,6 +567,13 @@ public abstract class QP005Event extends QP005SQL {
   protected abstract void shahukuInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
 
   /**
+   * 「データ表示処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void recuperationInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
    * 「データ切り替え処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -574,6 +614,13 @@ public abstract class QP005Event extends QP005SQL {
    * @throws Exception 処理例外
    */
   protected abstract void shahukuInfoRevisionCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「データ切り替え処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void recuperationInfoRevisionCheckActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「データ変更時処理」イベントです。
@@ -670,12 +717,14 @@ public abstract class QP005Event extends QP005SQL {
   private VRList tableClaimList4 = new VRArrayList();
   private VRList tableClaimList5 = new VRArrayList();
   private VRList tableClaimList6 = new VRArrayList();
+  private VRList tableClaimList7 = new VRArrayList();
   private VRList detailList1 = new VRArrayList();
   private VRList detailList2 = new VRArrayList();
   private VRList detailList3 = new VRArrayList();
   private VRList detailList4 = new VRArrayList();
   private VRList detailList5 = new VRArrayList();
   private VRList detailList6 = new VRArrayList();
+  private VRList detailList7 = new VRArrayList();
   private VRList columnList1Name = new VRArrayList();
   private VRList columnList1Value = new VRArrayList();
   private VRList columnList1Comment = new VRArrayList();
@@ -694,6 +743,9 @@ public abstract class QP005Event extends QP005SQL {
   private VRList columnList6Name = new VRArrayList();
   private VRList columnList6Value = new VRArrayList();
   private VRList columnList6Comment = new VRArrayList();
+  private VRList columnList7Name = new VRArrayList();
+  private VRList columnList7Value = new VRArrayList();
+  private VRList columnList7Comment = new VRArrayList();
   private VRList columnList1NameSimple = new VRArrayList();
   private VRList columnList1ValueSimple = new VRArrayList();
   private VRList columnList1CommentSimple = new VRArrayList();
@@ -712,18 +764,23 @@ public abstract class QP005Event extends QP005SQL {
   private VRList columnList6NameSimple = new VRArrayList();
   private VRList columnList6ValueSimple = new VRArrayList();
   private VRList columnList6CommentSimple = new VRArrayList();
+  private VRList columnList7NameSimple = new VRArrayList();
+  private VRList columnList7ValueSimple = new VRArrayList();
+  private VRList columnList7CommentSimple = new VRArrayList();
   private ACTableModelAdapter tableModelList1;
   private ACTableModelAdapter tableModelList2;
   private ACTableModelAdapter tableModelList3;
   private ACTableModelAdapter tableModelList4;
   private ACTableModelAdapter tableModelList5;
   private ACTableModelAdapter tableModelList6;
+  private ACTableModelAdapter tableModelList7;
   private ACTableModelAdapter tableModelDetail1;
   private ACTableModelAdapter tableModelDetail2;
   private ACTableModelAdapter tableModelDetail3;
   private ACTableModelAdapter tableModelDetail4;
   private ACTableModelAdapter tableModelDetail5;
   private ACTableModelAdapter tableModelDetail6;
+  private ACTableModelAdapter tableModelDetail7;
   //getter/setter
 
   /**
@@ -1010,6 +1067,21 @@ public abstract class QP005Event extends QP005SQL {
   protected void setTableClaimList6(VRList tableClaimList6){
     this.tableClaimList6 = tableClaimList6;
   }
+  
+  /**
+   * tableClaimList7を返します。
+   * @return tableClaimList7
+   */
+  protected VRList getTableClaimList7(){
+    return tableClaimList7;
+  }
+  /**
+   * tableClaimList6を設定します。
+   * @param tableClaimList7 tableClaimList7
+   */
+  protected void setTableClaimList7(VRList tableClaimList7){
+    this.tableClaimList7 = tableClaimList7;
+  }
 
   /**
    * detailList1を返します。
@@ -1099,6 +1171,21 @@ public abstract class QP005Event extends QP005SQL {
    */
   protected void setDetailList6(VRList detailList6){
     this.detailList6 = detailList6;
+  }
+
+  /**
+   * detailList7を返します。
+   * @return detailList7
+   */
+  protected VRList getDetailList7(){
+    return detailList7;
+  }
+  /**
+   * detailList7を設定します。
+   * @param detailList7 detailList7
+   */
+  protected void setDetailList7(VRList detailList7){
+    this.detailList7 = detailList7;
   }
 
   /**
@@ -1372,6 +1459,51 @@ public abstract class QP005Event extends QP005SQL {
   }
 
   /**
+   * columnList7Nameを返します。
+   * @return columnList7Name
+   */
+  protected VRList getColumnList7Name(){
+    return columnList7Name;
+  }
+  /**
+   * columnList7Nameを設定します。
+   * @param columnList7Name columnList7Name
+   */
+  protected void setColumnList7Name(VRList columnList7Name){
+    this.columnList7Name = columnList7Name;
+  }
+
+  /**
+   * columnList7Valueを返します。
+   * @return columnList7Value
+   */
+  protected VRList getColumnList7Value(){
+    return columnList7Value;
+  }
+  /**
+   * columnList7Valueを設定します。
+   * @param columnList7Value columnList7Value
+   */
+  protected void setColumnList7Value(VRList columnList7Value){
+    this.columnList7Value = columnList7Value;
+  }
+
+  /**
+   * columnList7Commentを返します。
+   * @return columnList7Comment
+   */
+  protected VRList getColumnList7Comment(){
+    return columnList7Comment;
+  }
+  /**
+   * columnList7Commentを設定します。
+   * @param columnList7Comment columnList7Comment
+   */
+  protected void setColumnList7Comment(VRList columnList7Comment){
+    this.columnList7Comment = columnList7Comment;
+  }
+
+  /**
    * columnList1NameSimpleを返します。
    * @return columnList1NameSimple
    */
@@ -1642,6 +1774,51 @@ public abstract class QP005Event extends QP005SQL {
   }
 
   /**
+   * columnList7NameSimpleを返します。
+   * @return columnList7NameSimple
+   */
+  protected VRList getColumnList7NameSimple(){
+    return columnList7NameSimple;
+  }
+  /**
+   * columnList7NameSimpleを設定します。
+   * @param columnList7NameSimple columnList7NameSimple
+   */
+  protected void setColumnList7NameSimple(VRList columnList7NameSimple){
+    this.columnList7NameSimple = columnList7NameSimple;
+  }
+
+  /**
+   * columnList7ValueSimpleを返します。
+   * @return columnList7ValueSimple
+   */
+  protected VRList getColumnList7ValueSimple(){
+    return columnList7ValueSimple;
+  }
+  /**
+   * columnList7ValueSimpleを設定します。
+   * @param columnList7ValueSimple columnList7ValueSimple
+   */
+  protected void setColumnList7ValueSimple(VRList columnList7ValueSimple){
+    this.columnList7ValueSimple = columnList7ValueSimple;
+  }
+
+  /**
+   * columnList7CommentSimpleを返します。
+   * @return columnList7CommentSimple
+   */
+  protected VRList getColumnList7CommentSimple(){
+    return columnList7CommentSimple;
+  }
+  /**
+   * columnList7CommentSimpleを設定します。
+   * @param columnList7CommentSimple columnList7CommentSimple
+   */
+  protected void setColumnList7CommentSimple(VRList columnList7CommentSimple){
+    this.columnList7CommentSimple = columnList7CommentSimple;
+  }
+
+  /**
    * tableModelList1を返します。
    * @return tableModelList1
    */
@@ -1732,6 +1909,21 @@ public abstract class QP005Event extends QP005SQL {
   }
 
   /**
+   * tableModelList7を返します。
+   * @return tableModelList7
+   */
+  protected ACTableModelAdapter getTableModelList7(){
+    return tableModelList7;
+  }
+  /**
+   * tableModelList7を設定します。
+   * @param tableModelList7 tableModelList7
+   */
+  protected void setTableModelList7(ACTableModelAdapter tableModelList7){
+    this.tableModelList7 = tableModelList7;
+  }
+
+  /**
    * tableModelDetail1を返します。
    * @return tableModelDetail1
    */
@@ -1819,6 +2011,21 @@ public abstract class QP005Event extends QP005SQL {
    */
   protected void setTableModelDetail6(ACTableModelAdapter tableModelDetail6){
     this.tableModelDetail6 = tableModelDetail6;
+  }
+
+  /**
+   * tableModelDetail7を返します。
+   * @return tableModelDetail7
+   */
+  protected ACTableModelAdapter getTableModelDetail7(){
+    return tableModelDetail7;
+  }
+  /**
+   * tableModelDetail7を設定します。
+   * @param tableModelDetail7 tableModelDetail7
+   */
+  protected void setTableModelDetail7(ACTableModelAdapter tableModelDetail7){
+    this.tableModelDetail7 = tableModelDetail7;
   }
 
   //内部関数
@@ -1920,24 +2127,26 @@ public abstract class QP005Event extends QP005SQL {
   public abstract void doSetClaimData() throws Exception;
 
   /**
-   * 「請求データのソート」に関する処理を行います。
-   * @param list 対象レコード集合
-   * @param keys ソートキー
-   * @return ソートされたレコード集合
-   * @throws Exception
+   * 「請求データのソート」に関する処理を行ないます。
+   *
+   * @param list VRList
+   * @param keys String[]
+   * @throws Exception 処理例外
+   * @return VRList
    */
   public abstract VRList getSortedData(VRList list, String[] keys) throws Exception;
 
   /**
-   * 「請求データのソート」に関する処理を行います。
-   * @param list 対象レコード集合
-   * @param keys ソートキー
-   * @param digits 指定桁数
-   * @return ソートされたレコード集合
-   * @throws Exception
+   * 「請求データのソート」に関する処理を行ないます。
+   *
+   * @param list VRList
+   * @param keys String[]
+   * @param digits int
+   * @throws Exception 処理例外
+   *
    */
   public abstract VRList getSortedData(VRList list, String[] keys, int[] digits) throws Exception;
-		
+
   /**
    * 「詳細テーブル表示用データ作成」に関する処理を行ないます。
    *

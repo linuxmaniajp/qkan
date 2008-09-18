@@ -18,11 +18,12 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2005/12/29  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2007/12/19  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
  * プロセス 利用者一覧 (001)
+ * プログラム  (QU001)
  *
  *****************************************************************
  */
@@ -30,21 +31,28 @@ package jp.or.med.orca.qkan.affair.qu.qu001;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
 import java.text.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import jp.nichicom.ac.*;
 import jp.nichicom.ac.bind.*;
 import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
 import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
 import jp.nichicom.ac.pdf.*;
 import jp.nichicom.ac.sql.*;
 import jp.nichicom.ac.text.*;
@@ -84,7 +92,7 @@ public class QU001State extends QU001Design {
    * 「利用者登録」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_PATIENT() throws Exception {
+  public void setState_INIT_PATIENT() throws Exception {
 
         getFind().setVisible(true);
 
@@ -102,13 +110,23 @@ public class QU001State extends QU001Design {
 
         getTargetDate().getParent().setVisible(false);
 
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
+
   }
 
   /**
    * 「サービス予定」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_SERVICE_PLAN() throws Exception {
+  public void setState_INIT_SERVICE_PLAN() throws Exception {
 
         getFind().setVisible(true);
 
@@ -126,13 +144,23 @@ public class QU001State extends QU001Design {
 
         getTargetDate().setVisible(true);
 
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
+
   }
 
   /**
    * 「サービス実績」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_SERVICE_RESULT() throws Exception {
+  public void setState_INIT_SERVICE_RESULT() throws Exception {
 
         getFind().setVisible(true);
 
@@ -150,13 +178,23 @@ public class QU001State extends QU001Design {
 
         getTargetDate().setVisible(true);
 
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
+
   }
 
   /**
    * 「訪問看護計画書」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_HOMONKANGO_PLAN() throws Exception {
+  public void setState_INIT_HOMONKANGO_PLAN() throws Exception {
 
         getFind().setVisible(true);
 
@@ -173,6 +211,16 @@ public class QU001State extends QU001Design {
         getResultInsert().setVisible(false);
 
         getTargetDate().setVisible(true);
+
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
 
   }
 
@@ -180,7 +228,7 @@ public class QU001State extends QU001Design {
    * 「訪問看護報告書」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_HOMONKANGO_RESULT() throws Exception {
+  public void setState_INIT_HOMONKANGO_RESULT() throws Exception {
 
         getFind().setVisible(true);
 
@@ -197,6 +245,16 @@ public class QU001State extends QU001Design {
         getResultInsert().setVisible(false);
 
         getTargetDate().setVisible(true);
+
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
 
   }
 
@@ -204,7 +262,7 @@ public class QU001State extends QU001Design {
    * 「訪問看護情報提供書」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_HOMONKANGO_JOHO_TEIKYOSHO() throws Exception {
+  public void setState_INIT_HOMONKANGO_JOHO_TEIKYOSHO() throws Exception {
 
         getFind().setVisible(true);
 
@@ -221,6 +279,16 @@ public class QU001State extends QU001Design {
         getResultInsert().setVisible(false);
 
         getTargetDate().setVisible(true);
+
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
 
   }
 
@@ -228,7 +296,7 @@ public class QU001State extends QU001Design {
    * 「訪問看護記録書Ⅰ」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_HOMONKANGO_KIROKUSHO() throws Exception {
+  public void setState_INIT_HOMONKANGO_KIROKUSHO() throws Exception {
 
         getFind().setVisible(true);
 
@@ -245,6 +313,16 @@ public class QU001State extends QU001Design {
         getResultInsert().setVisible(false);
 
         getTargetDate().setVisible(true);
+
+        getPatientFinishFlagColumn().setVisible(false);
+
+        getPatientChoiseColumn().setVisible(false);
+
+        getPatientReportColumn().setVisible(false);
+
+        getPrintReport().setVisible(false);
+
+        getProviderFindContents().setVisible(false);
 
   }
 
@@ -252,7 +330,7 @@ public class QU001State extends QU001Design {
    * 「居宅訪問看護」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_KYOTAKU() throws Exception {
+  public void setState_INIT_KYOTAKU() throws Exception {
 
         getFind().setVisible(true);
 
@@ -270,13 +348,23 @@ public class QU001State extends QU001Design {
 
         getTargetDate().setVisible(true);
 
+        getPatientFinishFlagColumn().setVisible(true);
+
+        getPatientChoiseColumn().setVisible(true);
+
+        getPatientReportColumn().setVisible(true);
+
+        getPrintReport().setVisible(true);
+
+        getProviderFindContents().setVisible(true);
+
   }
 
   /**
    * 「テーブル行選択状態」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_SELECTED() throws Exception {
+  public void setState_SELECTED() throws Exception {
 
         getDetail().setEnabled(true);
 
@@ -288,13 +376,15 @@ public class QU001State extends QU001Design {
 
         getResultInsert().setEnabled(true);
 
+        getPrintReport().setEnabled(true);
+
   }
 
   /**
    * 「テーブル行未選択状態」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_UNSELECTED() throws Exception {
+  public void setState_UNSELECTED() throws Exception {
 
         getDetail().setEnabled(false);
 

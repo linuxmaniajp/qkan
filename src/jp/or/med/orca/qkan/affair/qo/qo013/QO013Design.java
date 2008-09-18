@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/06/08  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2008/01/15  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その多機能 (O)
@@ -112,6 +112,12 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField password;
 
   private ACLabelContainer passwordContainer;
+
+  private ACComboBox receiptVersionCombo;
+
+  private ACLabelContainer receiptVersionComboContainer;
+
+  private ACComboBoxModelAdapter receiptVersionComboModel;
 
   private ACGroupBox importSettings;
 
@@ -432,6 +438,67 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
       passwordContainer.add(getPassword(), null);
     }
     return passwordContainer;
+  }
+
+  /**
+   * 日医標準レセプトソフトバージョンを取得します。
+   * @return 日医標準レセプトソフトバージョン
+   */
+  public ACComboBox getReceiptVersionCombo(){
+    if(receiptVersionCombo==null){
+
+      receiptVersionCombo = new ACComboBox();
+
+      getReceiptVersionComboContainer().setText("日医標準レセプトソフトバージョン");
+
+      receiptVersionCombo.setBindPath("RECEIPT_VERSION_CONTENT");
+
+      receiptVersionCombo.setVisible(true);
+
+      receiptVersionCombo.setEnabled(true);
+
+      receiptVersionCombo.setEditable(false);
+
+      receiptVersionCombo.setColumns(12);
+
+      receiptVersionCombo.setModelBindPath("RECEIPT_VERSION_CONTENT");
+
+      receiptVersionCombo.setRenderBindPath("CONTENT");
+
+      receiptVersionCombo.setBlankable(false);
+
+      receiptVersionCombo.setModel(getReceiptVersionComboModel());
+
+      addReceiptVersionCombo();
+    }
+    return receiptVersionCombo;
+
+  }
+
+  /**
+   * 日医標準レセプトソフトバージョンコンテナを取得します。
+   * @return 日医標準レセプトソフトバージョンコンテナ
+   */
+  protected ACLabelContainer getReceiptVersionComboContainer(){
+    if(receiptVersionComboContainer==null){
+      receiptVersionComboContainer = new ACLabelContainer();
+      receiptVersionComboContainer.setFollowChildEnabled(true);
+      receiptVersionComboContainer.setVAlignment(VRLayout.CENTER);
+      receiptVersionComboContainer.add(getReceiptVersionCombo(), null);
+    }
+    return receiptVersionComboContainer;
+  }
+
+  /**
+   * 日医標準レセプトソフトバージョンモデルを取得します。
+   * @return 日医標準レセプトソフトバージョンモデル
+   */
+  protected ACComboBoxModelAdapter getReceiptVersionComboModel(){
+    if(receiptVersionComboModel==null){
+      receiptVersionComboModel = new ACComboBoxModelAdapter();
+      addReceiptVersionComboModel();
+    }
+    return receiptVersionComboModel;
   }
 
   /**
@@ -959,7 +1026,9 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
 
     connectSettings.add(getUserNameContainer(), VRLayout.FLOW_INSETLINE);
 
-    connectSettings.add(getPasswordContainer(), VRLayout.FLOW_INSETLINE);
+    connectSettings.add(getPasswordContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    connectSettings.add(getReceiptVersionComboContainer(), VRLayout.FLOW_INSETLINE);
 
   }
 
@@ -995,6 +1064,20 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
    * パスワードに内部項目を追加します。
    */
   protected void addPassword(){
+
+  }
+
+  /**
+   * 日医標準レセプトソフトバージョンに内部項目を追加します。
+   */
+  protected void addReceiptVersionCombo(){
+
+  }
+
+  /**
+   * 日医標準レセプトソフトバージョンモデルに内部項目を追加します。
+   */
+  protected void addReceiptVersionComboModel(){
 
   }
 

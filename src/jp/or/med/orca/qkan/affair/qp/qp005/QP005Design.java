@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/03/28  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2008/04/18  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -551,6 +552,62 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn shahukuInfoRevisionTablecolumn2;
 
   private ACTableColumn shahukuInfoRevisionTablecolumn3;
+
+  private ACPanel recuperationInfos;
+
+  private ACPanel recuperationInfoPanel;
+
+  private ACLabel recuperationInfoLabel;
+
+  private ACTable recuperationInfoTable;
+
+  private VRTableColumnModel recuperationInfoTableColumnModel;
+
+  private ACTableColumn recuperationInfoTablecolumn0;
+
+  private ACTableColumn recuperationInfoTablecolumn1;
+
+  private ACTableColumn recuperationInfoTablecolumn2;
+
+  private ACTableColumn recuperationInfoTablecolumn3;
+
+  private ACTableColumn recuperationInfoTablecolumn4;
+
+  private ACTableColumn recuperationInfoTablecolumn5;
+
+  private ACTableColumn recuperationInfoTablecolumn6;
+
+  private ACTableColumn recuperationInfoTablecolumn7;
+
+  private ACTableColumn recuperationInfoTablecolumn8;
+
+  private ACTableColumn recuperationInfoTablecolumn9;
+
+  private ACTableColumn recuperationInfoTablecolumn10;
+
+  private ACTableColumn recuperationInfoTablecolumn11;
+
+  private ACTableColumn recuperationInfoTablecolumn12;
+
+  private ACPanel recuperationInfoRevisionPanel;
+
+  private ACLabel recuperationInfoRevisionLabel;
+
+  private ACLabel recuperationInfoRevision;
+
+  private ACIntegerCheckBox recuperationInfoRevisionCheck;
+
+  private ACTable recuperationInfoRevisionTable;
+
+  private VRTableColumnModel recuperationInfoRevisionTableColumnModel;
+
+  private ACTableColumn recuperationInfoRevisionTablecolumn0;
+
+  private ACTableColumn recuperationInfoRevisionTablecolumn1;
+
+  private ACTableColumn recuperationInfoRevisionTablecolumn2;
+
+  private ACTableColumn recuperationInfoRevisionTablecolumn3;
 
   //getter
 
@@ -4581,6 +4638,488 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定療養費情報領域を取得します。
+   * @return 特定療養費情報領域
+   */
+  public ACPanel getRecuperationInfos(){
+    if(recuperationInfos==null){
+
+      recuperationInfos = new ACPanel();
+
+      addRecuperationInfos();
+    }
+    return recuperationInfos;
+
+  }
+
+  /**
+   * 特定療養費情報パネルを取得します。
+   * @return 特定療養費情報パネル
+   */
+  public ACPanel getRecuperationInfoPanel(){
+    if(recuperationInfoPanel==null){
+
+      recuperationInfoPanel = new ACPanel();
+
+      addRecuperationInfoPanel();
+    }
+    return recuperationInfoPanel;
+
+  }
+
+  /**
+   * 特定療養費情報ラベルを取得します。
+   * @return 特定療養費情報ラベル
+   */
+  public ACLabel getRecuperationInfoLabel(){
+    if(recuperationInfoLabel==null){
+
+      recuperationInfoLabel = new ACLabel();
+
+      recuperationInfoLabel.setText("特別療養費情報");
+
+      addRecuperationInfoLabel();
+    }
+    return recuperationInfoLabel;
+
+  }
+
+  /**
+   * 特定療養費情報テーブルを取得します。
+   * @return 特定療養費情報テーブル
+   */
+  public ACTable getRecuperationInfoTable(){
+    if(recuperationInfoTable==null){
+
+      recuperationInfoTable = new ACTable();
+
+      recuperationInfoTable.setColumnModel(getRecuperationInfoTableColumnModel());
+
+      recuperationInfoTable.setColumnSort(false);
+
+      addRecuperationInfoTable();
+    }
+    return recuperationInfoTable;
+
+  }
+
+  /**
+   * 特定療養費情報テーブルカラムモデルを取得します。
+   * @return 特定療養費情報テーブルカラムモデル
+   */
+  protected VRTableColumnModel getRecuperationInfoTableColumnModel(){
+    if(recuperationInfoTableColumnModel==null){
+      recuperationInfoTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addRecuperationInfoTableColumnModel();
+    }
+    return recuperationInfoTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn0(){
+    if(recuperationInfoTablecolumn0==null){
+
+      recuperationInfoTablecolumn0 = new ACTableColumn(0, 30);
+
+      recuperationInfoTablecolumn0.setHeaderValue("　");
+
+      recuperationInfoTablecolumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      recuperationInfoTablecolumn0.setSortable(false);
+
+      addRecuperationInfoTablecolumn0();
+    }
+    return recuperationInfoTablecolumn0;
+
+  }
+
+  /**
+   * 事業所番号を取得します。
+   * @return 事業所番号
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn1(){
+    if(recuperationInfoTablecolumn1==null){
+
+      recuperationInfoTablecolumn1 = new ACTableColumn(0, 75);
+
+      recuperationInfoTablecolumn1.setHeaderValue("事業所番号");
+
+      addRecuperationInfoTablecolumn1();
+    }
+    return recuperationInfoTablecolumn1;
+
+  }
+
+  /**
+   * レコード順次番号を取得します。
+   * @return レコード順次番号
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn2(){
+    if(recuperationInfoTablecolumn2==null){
+
+      recuperationInfoTablecolumn2 = new ACTableColumn(1, 100);
+
+      recuperationInfoTablecolumn2.setHeaderValue("レコード順次番号");
+
+      addRecuperationInfoTablecolumn2();
+    }
+    return recuperationInfoTablecolumn2;
+
+  }
+
+  /**
+   * 傷病名を取得します。
+   * @return 傷病名
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn3(){
+    if(recuperationInfoTablecolumn3==null){
+
+      recuperationInfoTablecolumn3 = new ACTableColumn(2, 100);
+
+      recuperationInfoTablecolumn3.setHeaderValue("傷病名");
+
+      addRecuperationInfoTablecolumn3();
+    }
+    return recuperationInfoTablecolumn3;
+
+  }
+
+  /**
+   * 識別番号を取得します。
+   * @return 識別番号
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn4(){
+    if(recuperationInfoTablecolumn4==null){
+
+      recuperationInfoTablecolumn4 = new ACTableColumn(3, 100);
+
+      recuperationInfoTablecolumn4.setHeaderValue("識別番号");
+
+      addRecuperationInfoTablecolumn4();
+    }
+    return recuperationInfoTablecolumn4;
+
+  }
+
+  /**
+   * 単位数を取得します。
+   * @return 単位数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn5(){
+    if(recuperationInfoTablecolumn5==null){
+
+      recuperationInfoTablecolumn5 = new ACTableColumn(4, 150);
+
+      recuperationInfoTablecolumn5.setHeaderValue("単位数");
+
+      addRecuperationInfoTablecolumn5();
+    }
+    return recuperationInfoTablecolumn5;
+
+  }
+
+  /**
+   * 保険回数を取得します。
+   * @return 保険回数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn6(){
+    if(recuperationInfoTablecolumn6==null){
+
+      recuperationInfoTablecolumn6 = new ACTableColumn(5, 150);
+
+      recuperationInfoTablecolumn6.setHeaderValue("保険回数");
+
+      addRecuperationInfoTablecolumn6();
+    }
+    return recuperationInfoTablecolumn6;
+
+  }
+
+  /**
+   * 保険サービス単位数を取得します。
+   * @return 保険サービス単位数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn7(){
+    if(recuperationInfoTablecolumn7==null){
+
+      recuperationInfoTablecolumn7 = new ACTableColumn(6, 150);
+
+      recuperationInfoTablecolumn7.setHeaderValue("保険サービス単位数");
+
+      addRecuperationInfoTablecolumn7();
+    }
+    return recuperationInfoTablecolumn7;
+
+  }
+
+  /**
+   * 保険合計単位数を取得します。
+   * @return 保険合計単位数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn8(){
+    if(recuperationInfoTablecolumn8==null){
+
+      recuperationInfoTablecolumn8 = new ACTableColumn(7, 70);
+
+      recuperationInfoTablecolumn8.setHeaderValue("保険合計単位数");
+
+      addRecuperationInfoTablecolumn8();
+    }
+    return recuperationInfoTablecolumn8;
+
+  }
+
+  /**
+   * 公費1回数を取得します。
+   * @return 公費1回数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn9(){
+    if(recuperationInfoTablecolumn9==null){
+
+      recuperationInfoTablecolumn9 = new ACTableColumn(8, 105);
+
+      recuperationInfoTablecolumn9.setHeaderValue("公費1回数");
+
+      addRecuperationInfoTablecolumn9();
+    }
+    return recuperationInfoTablecolumn9;
+
+  }
+
+  /**
+   * 公費2回数を取得します。
+   * @return 公費2回数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn10(){
+    if(recuperationInfoTablecolumn10==null){
+
+      recuperationInfoTablecolumn10 = new ACTableColumn(9, 70);
+
+      recuperationInfoTablecolumn10.setHeaderValue("公費2回数");
+
+      addRecuperationInfoTablecolumn10();
+    }
+    return recuperationInfoTablecolumn10;
+
+  }
+
+  /**
+   * 公費3回数を取得します。
+   * @return 公費3回数
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn11(){
+    if(recuperationInfoTablecolumn11==null){
+
+      recuperationInfoTablecolumn11 = new ACTableColumn(10, 105);
+
+      recuperationInfoTablecolumn11.setHeaderValue("公費3回数");
+
+      addRecuperationInfoTablecolumn11();
+    }
+    return recuperationInfoTablecolumn11;
+
+  }
+
+  /**
+   * 摘要を取得します。
+   * @return 摘要
+   */
+  public ACTableColumn getRecuperationInfoTablecolumn12(){
+    if(recuperationInfoTablecolumn12==null){
+
+      recuperationInfoTablecolumn12 = new ACTableColumn(11, 140);
+
+      recuperationInfoTablecolumn12.setHeaderValue("摘要");
+
+      addRecuperationInfoTablecolumn12();
+    }
+    return recuperationInfoTablecolumn12;
+
+  }
+
+  /**
+   * 特定療養費情報設定内容修正パネルを取得します。
+   * @return 特定療養費情報設定内容修正パネル
+   */
+  public ACPanel getRecuperationInfoRevisionPanel(){
+    if(recuperationInfoRevisionPanel==null){
+
+      recuperationInfoRevisionPanel = new ACPanel();
+
+      addRecuperationInfoRevisionPanel();
+    }
+    return recuperationInfoRevisionPanel;
+
+  }
+
+  /**
+   * 特定療養費情報設定内容修正欄ラベルを取得します。
+   * @return 特定療養費情報設定内容修正欄ラベル
+   */
+  public ACLabel getRecuperationInfoRevisionLabel(){
+    if(recuperationInfoRevisionLabel==null){
+
+      recuperationInfoRevisionLabel = new ACLabel();
+
+      recuperationInfoRevisionLabel.setText("設定内容修正欄");
+
+      addRecuperationInfoRevisionLabel();
+    }
+    return recuperationInfoRevisionLabel;
+
+  }
+
+  /**
+   * 特定療養費情報情報を取得します。
+   * @return 特定療養費情報情報
+   */
+  public ACLabel getRecuperationInfoRevision(){
+    if(recuperationInfoRevision==null){
+
+      recuperationInfoRevision = new ACLabel();
+
+      recuperationInfoRevision.setText("特別療養費情報");
+
+      addRecuperationInfoRevision();
+    }
+    return recuperationInfoRevision;
+
+  }
+
+  /**
+   * 全ての情報を表示を取得します。
+   * @return 全ての情報を表示
+   */
+  public ACIntegerCheckBox getRecuperationInfoRevisionCheck(){
+    if(recuperationInfoRevisionCheck==null){
+
+      recuperationInfoRevisionCheck = new ACIntegerCheckBox();
+
+      recuperationInfoRevisionCheck.setText("すべての情報を表示（A）");
+
+      recuperationInfoRevisionCheck.setMnemonic('A');
+
+      addRecuperationInfoRevisionCheck();
+    }
+    return recuperationInfoRevisionCheck;
+
+  }
+
+  /**
+   * 特定療養費情報情報詳細テーブルを取得します。
+   * @return 特定療養費情報情報詳細テーブル
+   */
+  public ACTable getRecuperationInfoRevisionTable(){
+    if(recuperationInfoRevisionTable==null){
+
+      recuperationInfoRevisionTable = new ACTable();
+
+      recuperationInfoRevisionTable.setColumnModel(getRecuperationInfoRevisionTableColumnModel());
+
+      recuperationInfoRevisionTable.setColumnSort(false);
+
+      addRecuperationInfoRevisionTable();
+    }
+    return recuperationInfoRevisionTable;
+
+  }
+
+  /**
+   * 特定療養費情報情報詳細テーブルカラムモデルを取得します。
+   * @return 特定療養費情報情報詳細テーブルカラムモデル
+   */
+  protected VRTableColumnModel getRecuperationInfoRevisionTableColumnModel(){
+    if(recuperationInfoRevisionTableColumnModel==null){
+      recuperationInfoRevisionTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addRecuperationInfoRevisionTableColumnModel();
+    }
+    return recuperationInfoRevisionTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getRecuperationInfoRevisionTablecolumn0(){
+    if(recuperationInfoRevisionTablecolumn0==null){
+
+      recuperationInfoRevisionTablecolumn0 = new ACTableColumn(0, 30);
+
+      recuperationInfoRevisionTablecolumn0.setHeaderValue("　");
+
+      recuperationInfoRevisionTablecolumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      recuperationInfoRevisionTablecolumn0.setSortable(false);
+
+      addRecuperationInfoRevisionTablecolumn0();
+    }
+    return recuperationInfoRevisionTablecolumn0;
+
+  }
+
+  /**
+   * 項目名を取得します。
+   * @return 項目名
+   */
+  public ACTableColumn getRecuperationInfoRevisionTablecolumn1(){
+    if(recuperationInfoRevisionTablecolumn1==null){
+
+      recuperationInfoRevisionTablecolumn1 = new ACTableColumn(0, 55);
+
+      recuperationInfoRevisionTablecolumn1.setHeaderValue("項目名");
+
+      recuperationInfoRevisionTablecolumn1.setColumns(15);
+
+      addRecuperationInfoRevisionTablecolumn1();
+    }
+    return recuperationInfoRevisionTablecolumn1;
+
+  }
+
+  /**
+   * 設定値を取得します。
+   * @return 設定値
+   */
+  public ACTableColumn getRecuperationInfoRevisionTablecolumn2(){
+    if(recuperationInfoRevisionTablecolumn2==null){
+
+      recuperationInfoRevisionTablecolumn2 = new ACTableColumn(1, 55);
+
+      recuperationInfoRevisionTablecolumn2.setHeaderValue("設定値");
+
+      recuperationInfoRevisionTablecolumn2.setEditable(true);
+
+      recuperationInfoRevisionTablecolumn2.setColumns(8);
+
+      addRecuperationInfoRevisionTablecolumn2();
+    }
+    return recuperationInfoRevisionTablecolumn2;
+
+  }
+
+  /**
+   * コメントを取得します。
+   * @return コメント
+   */
+  public ACTableColumn getRecuperationInfoRevisionTablecolumn3(){
+    if(recuperationInfoRevisionTablecolumn3==null){
+
+      recuperationInfoRevisionTablecolumn3 = new ACTableColumn(2, 55);
+
+      recuperationInfoRevisionTablecolumn3.setHeaderValue("コメント");
+
+      recuperationInfoRevisionTablecolumn3.setColumns(30);
+
+      addRecuperationInfoRevisionTablecolumn3();
+    }
+    return recuperationInfoRevisionTablecolumn3;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QP005Design() {
@@ -4717,12 +5256,14 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
     etcInfoTabs.addTab("明細情報", getDetailsInfos());
 
     etcInfoTabs.addTab("特定治療・特定診療情報", getParticularInfos());
-
+    
     etcInfoTabs.addTab("集計情報", getTotalInfos());
 
     etcInfoTabs.addTab("特定入所者介護費情報", getNyushoInfos());
 
     etcInfoTabs.addTab("社会福祉法人軽減情報", getShahukuInfos());
+    
+    etcInfoTabs.addTab("特別療養費情報", getRecuperationInfos());
 
   }
 
@@ -6685,6 +7226,252 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定療養費情報領域に内部項目を追加します。
+   */
+  protected void addRecuperationInfos(){
+
+    recuperationInfos.add(getRecuperationInfoPanel(), VRLayout.NORTH);
+
+    recuperationInfos.add(getRecuperationInfoTable(), VRLayout.NORTH);
+
+    recuperationInfos.add(getRecuperationInfoRevisionPanel(), VRLayout.NORTH);
+
+    recuperationInfos.add(getRecuperationInfoRevisionTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 特定療養費情報パネルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoPanel(){
+
+    recuperationInfoPanel.add(getRecuperationInfoLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 特定療養費情報ラベルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoLabel(){
+
+  }
+
+  /**
+   * 特定療養費情報テーブルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoTable(){
+
+  }
+
+  /**
+   * 特定療養費情報テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoTableColumnModel(){
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn0());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn1());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn2());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn3());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn4());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn5());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn6());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn7());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn8());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn9());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn10());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn11());
+
+    getRecuperationInfoTableColumnModel().addColumn(getRecuperationInfoTablecolumn12());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn0(){
+
+  }
+
+  /**
+   * 事業所番号に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn1(){
+
+  }
+
+  /**
+   * レコード順次番号に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn2(){
+
+  }
+
+  /**
+   * 傷病名に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn3(){
+
+  }
+
+  /**
+   * 識別番号に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn4(){
+
+  }
+
+  /**
+   * 単位数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn5(){
+
+  }
+
+  /**
+   * 保険回数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn6(){
+
+  }
+
+  /**
+   * 保険サービス単位数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn7(){
+
+  }
+
+  /**
+   * 保険合計単位数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn8(){
+
+  }
+
+  /**
+   * 公費1回数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn9(){
+
+  }
+
+  /**
+   * 公費2回数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn10(){
+
+  }
+
+  /**
+   * 公費3回数に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn11(){
+
+  }
+
+  /**
+   * 摘要に内部項目を追加します。
+   */
+  protected void addRecuperationInfoTablecolumn12(){
+
+  }
+
+  /**
+   * 特定療養費情報設定内容修正パネルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionPanel(){
+
+    recuperationInfoRevisionPanel.add(getRecuperationInfoRevisionLabel(), null);
+
+    recuperationInfoRevisionPanel.add(getRecuperationInfoRevision(), null);
+
+    recuperationInfoRevisionPanel.add(getRecuperationInfoRevisionCheck(), null);
+
+  }
+
+  /**
+   * 特定療養費情報設定内容修正欄ラベルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionLabel(){
+
+  }
+
+  /**
+   * 特定療養費情報情報に内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevision(){
+
+  }
+
+  /**
+   * 全ての情報を表示に内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionCheck(){
+
+  }
+
+  /**
+   * 特定療養費情報情報詳細テーブルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionTable(){
+
+  }
+
+  /**
+   * 特定療養費情報情報詳細テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionTableColumnModel(){
+
+    getRecuperationInfoRevisionTableColumnModel().addColumn(getRecuperationInfoRevisionTablecolumn0());
+
+    getRecuperationInfoRevisionTableColumnModel().addColumn(getRecuperationInfoRevisionTablecolumn1());
+
+    getRecuperationInfoRevisionTableColumnModel().addColumn(getRecuperationInfoRevisionTablecolumn2());
+
+    getRecuperationInfoRevisionTableColumnModel().addColumn(getRecuperationInfoRevisionTablecolumn3());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionTablecolumn0(){
+
+  }
+
+  /**
+   * 項目名に内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionTablecolumn1(){
+
+  }
+
+  /**
+   * 設定値に内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionTablecolumn2(){
+
+  }
+
+  /**
+   * コメントに内部項目を追加します。
+   */
+  protected void addRecuperationInfoRevisionTablecolumn3(){
+
+  }
+
+  /**
    * コンポーネントを初期化します。
    * @throws Exception 初期化例外
    */
@@ -6706,7 +7493,6 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QP005Design.class.getName()));
     } catch (Exception e) {

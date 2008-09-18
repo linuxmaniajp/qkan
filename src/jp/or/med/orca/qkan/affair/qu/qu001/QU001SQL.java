@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者一覧
- * 作成日: 2006/04/17  日本コンピューター株式会社 利用者一覧 新規作成
+ * 作成日: 2007/12/04  日本コンピューター株式会社 利用者一覧 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -99,8 +99,8 @@ public class QU001SQL extends QU001State {
   public String getSQL_GET_PATIENT(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -169,7 +169,7 @@ public class QU001SQL extends QU001State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -196,7 +196,7 @@ public class QU001SQL extends QU001State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -223,7 +223,7 @@ public class QU001SQL extends QU001State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -248,7 +248,7 @@ public class QU001SQL extends QU001State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -288,8 +288,8 @@ public class QU001SQL extends QU001State {
   public String getSQL_DELETE_PATIENT(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");
@@ -328,8 +328,8 @@ public class QU001SQL extends QU001State {
   public String getSQL_GET_NINTEI_NOW(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -400,8 +400,8 @@ public class QU001SQL extends QU001State {
   public String getSQL_GET_NINTEI_FUTURE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -494,8 +494,8 @@ public class QU001SQL extends QU001State {
   public String getSQL_GET_NINTEI_PAST(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -575,6 +575,421 @@ public class QU001SQL extends QU001State {
     sb.append(" JOTAI_CODE");
 
     sb.append(" DESC");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「居宅療養管理指導のデータを取得します。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_KYOTAKU_RYOYO_PATIENT(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT.PATIENT_ID");
+
+    sb.append(",PATIENT.PATIENT_CODE");
+
+    sb.append(",PATIENT.PATIENT_FAMILY_NAME");
+
+    sb.append(",PATIENT.PATIENT_FIRST_NAME");
+
+    sb.append(",PATIENT.PATIENT_FAMILY_KANA");
+
+    sb.append(",PATIENT.PATIENT_FIRST_KANA");
+
+    sb.append(",PATIENT.PATIENT_SEX");
+
+    sb.append(",PATIENT.PATIENT_BIRTHDAY");
+
+    sb.append(",PATIENT.PATIENT_TEL_FIRST");
+
+    sb.append(",PATIENT.PATIENT_TEL_SECOND");
+
+    sb.append(",PATIENT.PATIENT_TEL_THIRD");
+
+    sb.append(",PATIENT.PATIENT_ZIP_FIRST");
+
+    sb.append(",PATIENT.PATIENT_ZIP_SECOND");
+
+    sb.append(",PATIENT.PATIENT_ADDRESS");
+
+    sb.append(",PATIENT.SHOW_FLAG");
+
+    sb.append(",PATIENT.BELONG_TYPE");
+
+    sb.append(",PATIENT.AREA_TYPE");
+
+    sb.append(",PATIENT.DELETE_FLAG");
+
+    sb.append(",PATIENT.LAST_TIME");
+
+    sb.append(",KYOTAKU_RYOYO.TARGET_DATE");
+
+    sb.append(",KYOTAKU_RYOYO.JOTAI_CODE");
+
+    sb.append(",KYOTAKU_RYOYO.SHOGAI_JIRITSUDO");
+
+    sb.append(",KYOTAKU_RYOYO.NINCHISHO_JIRITSUDO");
+
+    sb.append(",KYOTAKU_RYOYO.PATIENT_ADDRESS AS KYOTAKU_PATIENT_ADDRESS");
+
+    sb.append(",KYOTAKU_RYOYO.PATIENT_TEL_FIRST AS KYOTAKU_PATIENT_TEL_FIRST");
+
+    sb.append(",KYOTAKU_RYOYO.PATIENT_TEL_SECOND AS KYOTAKU_PATIENT_TEL_SECOND");
+
+    sb.append(",KYOTAKU_RYOYO.PATIENT_TEL_THIRD AS KYOTAKU_PATIENT_TEL_THIRD");
+
+    sb.append(",KYOTAKU_RYOYO.CREATE_DATE_ZAITAKU");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_THIS_MONTH_NO1");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_THIS_MONTH_NO2");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_THIS_MONTH_NO3");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_THIS_MONTH_NO4");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_THIS_MONTH_NO5");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_THIS_MONTH_NO6");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_NEXT_MONTH_NO1");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_NEXT_MONTH_NO2");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_NEXT_MONTH_NO3");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_NEXT_MONTH_NO4");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_NEXT_MONTH_NO5");
+
+    sb.append(",KYOTAKU_RYOYO.VISIT_NEXT_MONTH_NO6");
+
+    sb.append(",KYOTAKU_RYOYO.ADVICE_MONTH");
+
+    sb.append(",KYOTAKU_RYOYO.ADVICE");
+
+    sb.append(",KYOTAKU_RYOYO.MEDICAL_FACILITY_NAME");
+
+    sb.append(",KYOTAKU_RYOYO.DOCTOR_NAME");
+
+    sb.append(",KYOTAKU_RYOYO.MEDICAL_FACILITY_ADDRESS");
+
+    sb.append(",KYOTAKU_RYOYO.MEDICAL_FACILITY_TEL_FIRST");
+
+    sb.append(",KYOTAKU_RYOYO.MEDICAL_FACILITY_TEL_SECOND");
+
+    sb.append(",KYOTAKU_RYOYO.MEDICAL_FACILITY_TEL_THIRD");
+
+    sb.append(",KYOTAKU_RYOYO.SENMONIN");
+
+    sb.append(",KYOTAKU_RYOYO.PROVIDER_NAME");
+
+    sb.append(",KYOTAKU_RYOYO.CREATE_DATE_KYOTAKU");
+
+    sb.append(",KYOTAKU_RYOYO.CONDITION");
+
+    sb.append(",KYOTAKU_RYOYO.CONDITION_PASSAGE");
+
+    sb.append(",KYOTAKU_RYOYO.NOTE_OF_KAIGO_SERVICE");
+
+    sb.append(",KYOTAKU_RYOYO.NOTE_OF_DAILY_LIFE");
+
+    sb.append(",KYOTAKU_RYOYO.REMARKS");
+
+    sb.append(",KYOTAKU_RYOYO.LAST_TIME");
+
+    sb.append(",KYOTAKU_RYOYO.FINISH_FLAG");
+
+    sb.append(" FROM");
+
+    sb.append(" PATIENT");
+
+    sb.append(" INNER JOIN");
+
+    sb.append(" KYOTAKU_RYOYO");
+
+    conditionStack.push(new Boolean(firstCondition));
+    firstCondition = true;
+
+      if(firstCondition){
+        sb.append(" ON");
+        firstCondition = false;
+
+      }
+
+    sb.append("(");
+
+    sb.append(" PATIENT.PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(" KYOTAKU_RYOYO.PATIENT_ID");
+
+    sb.append(")");
+
+      if(firstCondition){
+        sb.append(" ON");
+        firstCondition = false;
+
+      }else{
+        sb.append(" AND");
+
+      }
+
+    sb.append("(");
+
+    sb.append(" KYOTAKU_RYOYO.TARGET_DATE");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+      if(firstCondition){
+        sb.append(" ON");
+        firstCondition = false;
+
+      }else{
+        sb.append(" AND");
+
+      }
+
+    sb.append("(");
+
+    sb.append(" KYOTAKU_RYOYO.TARGET_DATE");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("DATE_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    if(
+      VRBindPathParser.has("PROVIDER_NAME", sqlParam)
+    ){
+
+      if(firstCondition){
+        sb.append(" ON");
+        firstCondition = false;
+
+      }else{
+        sb.append(" AND");
+
+      }
+
+    sb.append("(");
+
+    sb.append(" KYOTAKU_RYOYO.PROVIDER_NAME");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_NAME", sqlParam)));
+
+    sb.append(")");
+
+    }
+
+    if(
+      VRBindPathParser.has("SENMONIN_NAME", sqlParam)
+    ){
+
+      if(firstCondition){
+        sb.append(" ON");
+        firstCondition = false;
+
+      }else{
+        sb.append(" AND");
+
+      }
+
+    sb.append("(");
+
+    sb.append(" KYOTAKU_RYOYO.SENMONIN");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SENMONIN_NAME", sqlParam)));
+
+    sb.append(")");
+
+    }
+
+    firstCondition = ((Boolean)conditionStack.pop()).booleanValue();
+
+    return sb.toString();
+  }
+
+  /**
+   * 「介護支援専門員情報の取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_CARE_MANAGER(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" STAFF.PROVIDER_ID");
+
+    sb.append(",STAFF.STAFF_ID");
+
+    sb.append(",STAFF.CARE_MANAGER_NO");
+
+    sb.append(",STAFF.STAFF_FAMILY_NAME");
+
+    sb.append(",STAFF.STAFF_FIRST_NAME");
+
+    sb.append(" FROM");
+
+    sb.append(" STAFF");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" STAFF.PROVIDER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" STAFF.STAFF_ID");
+
+    sb.append(" ASC");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「居宅療養管理指導書対象者」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_KYOTAKU_RYOYO_TARGET_PATIENT(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",TARGET_DATE");
+
+    sb.append(" FROM");
+
+    sb.append(" KYOTAKU_RYOYO");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("DATE_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「居宅療養管理指導書の印刷状態を更新」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_KYOTAKU_RYOYO_FINISH_FLAG(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" KYOTAKU_RYOYO");
+
+    sb.append(" SET");
+
+    sb.append(" FINISH_FLAG");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("FINISH_FLAG", sqlParam)));
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" =");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
 
     return sb.toString();
   }

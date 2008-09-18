@@ -83,7 +83,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -559,17 +559,23 @@ public class QP003 extends QP003Event {
         // 下記のフィールドのいずれかに値が表示されている場合、フィールドの値の合計を計算する。
         // ・全額自己負担分利用料１（contentJikohutanUse1）
         if (!"".equals(getContentJikohutanUse1().getText())) {
-            sum += ACCastUtilities.toInt(getContentJikohutanUse1().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            sum += ACCastUtilities.toInt(getContentJikohutanUse1().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // ・全額自己負担分利用料２（contentJikohutanUse2）
         if (!"".equals(getContentJikohutanUse2().getText())) {
-            sum += ACCastUtilities.toInt(getContentJikohutanUse2().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            sum += ACCastUtilities.toInt(getContentJikohutanUse2().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // ・全額自己負担分利用料３（contentJikohutanUse3）
         if (!"".equals(getContentJikohutanUse3().getText())) {
-            sum += ACCastUtilities.toInt(getContentJikohutanUse3().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            sum += ACCastUtilities.toInt(getContentJikohutanUse3().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // 計算結果を全額自己負担小計フィールド（contentJikohutanSubtotal）に表示する。
@@ -578,29 +584,48 @@ public class QP003 extends QP003Event {
         int etcSum = 0;
         // ・その他利用料１（contentEtcUse1）
         if (!"".equals(getContentEtcUse1().getText())) {
-            etcSum += ACCastUtilities.toInt(getContentEtcUse1().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            etcSum += ACCastUtilities.toInt(getContentEtcUse1().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // ・その他利用料２（contentEtcUse2）
         if (!"".equals(getContentEtcUse2().getText())) {
-            etcSum += ACCastUtilities.toInt(getContentEtcUse2().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            etcSum += ACCastUtilities.toInt(getContentEtcUse2().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // ・その他利用料３（contentEtcUse3）
         if (!"".equals(getContentEtcUse3().getText())) {
-            etcSum += ACCastUtilities.toInt(getContentEtcUse3().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            etcSum += ACCastUtilities.toInt(getContentEtcUse3().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // ・その他利用料４（contentEtcUse4）
         if (!"".equals(getContentEtcUse4().getText())) {
-            etcSum += ACCastUtilities.toInt(getContentEtcUse4().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            etcSum += ACCastUtilities.toInt(getContentEtcUse4().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
         // ・その他利用料５（contentEtcUse5）
         if (!"".equals(getContentEtcUse5().getText())) {
-            etcSum += ACCastUtilities.toInt(getContentEtcUse5().getText());
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            etcSum += ACCastUtilities.toInt(getContentEtcUse5().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
         }
 
+        // 2007/11/30 [Masahiko Higuchi] add - begin Ver 5.4.1 利用者向け請求書対応
+        // ・その他利用料６（contentEtcUse5）
+        if (!"".equals(getContentEtcUse6().getText())) {
+            // 2008/06/09 [Masahiko Higuchi] edit - begin V5.4.1 初期値対応
+            etcSum += ACCastUtilities.toInt(getContentEtcUse6().getText(),0);
+            // 2008/06/09 [Masahiko Higuchi] edit - end
+        }        
+        // 2007/11/30 [Masahiko Higuchi] add - end
+        
         // 計算結果をその他費用小計フィールド（contentEtcSubtotal）に表示する。
         getContentEtcSubtotal().setText(ACCastUtilities.toString(etcSum));
         // 下記のフィールドの値とsumを合計し、合計額（contentTotalText）に表示する。
@@ -636,7 +661,9 @@ public class QP003 extends QP003Event {
             	VRBindPathParser.set("CLAIM_STYLE_TYPE", param, new Integer(STYLE_TYPE_CLAIM_FOR_PATIENT));
             	VRBindPathParser.set("CATEGORY_NO", param, new Integer(CATEGORY_NO_CLAIM_FOR_PATIENT));
             	VRList list = getDBManager().executeQuery(getSQL_GET_NEW_CLAIM_PATIENT_DETAIL(param));
-            	if(!list.isEmpty()){
+                // [Masahiko Higuchi] edit - begin 2007年度対応 実績集計にて全額自己負担作成時にデータ作成の可能性があるためチェック
+            	if(!list.isEmpty()&&getDataFlg()==0){
+                // [Masahiko Higuchi] edit - end
                     //テーブルロック解除のためロールバック
                     getDBManager().rollbackTransaction();
                     // エラーメッセージを表示する。
@@ -754,6 +781,9 @@ public class QP003 extends QP003Event {
             otherList.add(param.getData("OTHER_HIMOKU_NO3"));
             otherList.add(param.getData("OTHER_HIMOKU_NO4"));
             otherList.add(param.getData("OTHER_HIMOKU_NO5"));
+            // 2007/11/30 [Masahiko Higuchi] add - begin Ver 5.4.1 利用者向け請求書対応
+            otherList.add(param.getData("OTHER_HIMOKU_NO6"));
+            // 2007/11/30 [Masahiko Higuchi] add - end
 
             // SQL文取得用のHashMap paramを生成する。
             VRMap params = new VRHashMap();
@@ -907,8 +937,11 @@ public class QP003 extends QP003Event {
         // 全額自己負担分費目１（contentJikohutanHimoku1）が空文字でない場合
         // 全額自己負担分利用料１（contentJikohutanUse1）が空文字の場合
         // 全額自己負担分費目１（contentJikohutanHimoku1）を空文字を代入する。
-        checkValue(getContentJikohutanHimoku1(), getContentJikohutanUse1());
-
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentJikohutanHimoku1(), getContentJikohutanUse1(),
+                null, null);
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // 全額自己負担2列目
         // 全額自己負担分費目２（contentJikohutanHimoku2）が空文字の場合
         // 全額自己負担分利用料２（contentJikohutanUse2）が空文字でない場合
@@ -916,8 +949,11 @@ public class QP003 extends QP003Event {
         // 全額自己負担分費目２（contentJikohutanHimoku2）が空文字でない場合
         // 全額自己負担分利用料２（contentJikohutanUse2）が空文字の場合
         // 全額自己負担分費目２（contentJikohutanHimoku2）を空文字を代入する。
-        checkValue(getContentJikohutanHimoku2(), getContentJikohutanUse2());
-
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentJikohutanHimoku2(), getContentJikohutanUse2(),
+                null, null);
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // 全額自己負担3列目
         // 全額自己負担分費目３（contentJikohutanHimoku3）が空文字の場合
         // 全額自己負担分利用料３（contentJikohutanUse3）が空文字でない場合
@@ -925,8 +961,11 @@ public class QP003 extends QP003Event {
         // 全額自己負担分費目３（contentJikohutanHimoku3）が空文字でない場合
         // 全額自己負担分利用料３（contentJikohutanUse3）が空文字の場合
         // 全額自己負担分費目３（contentJikohutanHimoku3）を空文字を代入する。
-        checkValue(getContentJikohutanHimoku3(), getContentJikohutanUse3());
-
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentJikohutanHimoku3(), getContentJikohutanUse3(),
+                null, null);
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // その他費目1列目
         // その他費目１（contentEtcHimoku1）が空文字の場合
         // その他利用料１（contentEtcUse1）が空文字でない場合
@@ -934,7 +973,11 @@ public class QP003 extends QP003Event {
         // その他費目１（contentEtcHimoku1）が空文字でない場合
         // その他利用料１（contentEtcUse1）が空文字の場合
         // その他費目１（contentEtcHimoku1）を空文字を代入する。
-        checkValue(getContentEtcHimoku1(), getContentEtcUse1());
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentEtcHimoku1(), getContentEtcUse1(),
+                getContentEtcUnit1(), getContentEtcCount1());
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // その他費目2列目
         // その他費目２（contentEtcHimoku2）が空文字の場合
         // その他利用料２（contentEtcUse2）が空文字でない場合
@@ -942,7 +985,11 @@ public class QP003 extends QP003Event {
         // その他費目２（contentEtcHimoku2）が空文字でない場合
         // その他利用料２（contentEtcUse2）が空文字の場合
         // その他費目２（contentEtcHimoku2）を空文字を代入する。
-        checkValue(getContentEtcHimoku2(), getContentEtcUse2());
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentEtcHimoku2(), getContentEtcUse2(),
+                getContentEtcUnit2(), getContentEtcCount2());
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // その他費目3列目
         // その他費目３（contentEtcHimoku3）が空文字の場合
         // その他利用料３（contentEtcUse3）が空文字でない場合
@@ -950,7 +997,11 @@ public class QP003 extends QP003Event {
         // その他費目３（contentEtcHimoku3）が空文字でない場合
         // その他利用料３（contentEtcUse3）が空文字の場合
         // その他費目３（contentEtcHimoku3）を空文字を代入する。
-        checkValue(getContentEtcHimoku3(), getContentEtcUse3());
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentEtcHimoku3(), getContentEtcUse3(),
+                getContentEtcUnit3(), getContentEtcCount3());
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // その他費目4列目
         // その他費目４（contentEtcHimoku4）が空文字の場合
         // その他利用料４（contentEtcUse4）が空文字でない場合
@@ -958,7 +1009,11 @@ public class QP003 extends QP003Event {
         // その他費目４（contentEtcHimoku4）が空文字でない場合
         // その他利用料４（contentEtcUse4）が空文字の場合
         // その他費目４（contentEtcHimoku4）を空文字を代入する。
-        checkValue(getContentEtcHimoku4(), getContentEtcUse4());
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentEtcHimoku4(), getContentEtcUse4(),
+                getContentEtcUnit4(), getContentEtcCount4());
+        // 2007/11/26 [Masahiko Higuchi] edit - end
+        
         // その他費目5列目
         // その他費目５（contentEtcHimoku5）が空文字の場合
         // その他利用料５（contentEtcUse5）が空文字でない場合
@@ -966,8 +1021,17 @@ public class QP003 extends QP003Event {
         // その他費目５（contentEtcHimoku5）が空文字でない場合
         // その他利用料５（contentEtcUse5）が空文字の場合
         // その他費目５（contentEtcHimoku5）を空文字を代入する。
-        checkValue(getContentEtcHimoku5(), getContentEtcUse5());
+        // 2007/11/26 [Masahiko Higuchi] edit - begin V5.4.1 利用者向け請求書 簡易版版対応
+        checkValue(getContentEtcHimoku5(), getContentEtcUse5(),
+                getContentEtcUnit5(), getContentEtcCount5());
+        // 2007/11/26 [Masahiko Higuchi] edit - end
 
+        // 2007/11/30 [Masahiko Higuchi] add - begin V5.4.1 利用者向け請求書 簡易版版対応
+        // その他　6列目
+        checkValue(getContentEtcHimoku6(), getContentEtcUse6(),
+                getContentEtcUnit6(), getContentEtcCount6());        
+        // 2007/11/30 [Masahiko Higuchi] add - end
+        
         calcSum();
 
     }
@@ -978,26 +1042,77 @@ public class QP003 extends QP003Event {
      * @param himokuCombo
      * @param jikohutanText
      * @throws Exception
+     * @version V5.4.1 2007/11/26 [Masahiko Higuchi] edit - begin 利用者向け請求書 簡易版版対応
      */
-    public void checkValue(ACComboBox himokuCombo, ACTextField jikohutanText)
+    public void checkValue(ACComboBox himokuCombo, ACTextField jikohutanText,ACTextField unitText,ACTextField countText)
             throws Exception {
-        // 全額自己負担
-        // 全額自己負担分費目(himokuCombo)が空文字の場合
-        if ("".equals(himokuCombo.getText())) {
-            // 全額自己負担分利用料（jikohutanText）が空文字でない場合
-            if (!"".equals(jikohutanText.getText())) {
-                // 全額自己負担分利用料１（jikohutanText）に0を代入する。
+        
+        // 2008/06/09 [Masahiko Higuchi] add - begin V5.4.1 利用者向け請求書対応
+        // 単位数と回数が存在しないチェックの場合（全額自己負担用）
+        if(unitText == null || countText == null){
+            // 数値の不正エラー対策
+            if("-".equals(jikohutanText.getText())){
+                // "-"のみは許可しない
                 jikohutanText.setText("");
             }
-        }
-        // 全額自己負担分費目（himokuCombo）が空文字でない場合
-        if (!"".equals(himokuCombo.getText())) {
-            // 全額自己負担分利用料（jikohutanText）が空文字の場合
-            if ("".equals(jikohutanText.getText())) {
-                // 全額自己負担分費目１（himokuCombo）を空文字を代入する。
-                himokuCombo.setText("");
+            // 2008/06/09 [Masahiko Higuchi] add - end
+            // 全額自己負担分費目(himokuCombo)が空文字の場合
+            if ("".equals(himokuCombo.getText())) {
+                // 全額自己負担分利用料（jikohutanText）が空文字でない場合
+                if (!"".equals(jikohutanText.getText())) {
+                    // 全額自己負担分利用料１（jikohutanText）に0を代入する。
+                    jikohutanText.setText("");
+                }
+            }
+            // 全額自己負担分費目（himokuCombo）が空文字でない場合
+            if (!"".equals(himokuCombo.getText())) {
+                // 全額自己負担分利用料（jikohutanText）が空文字の場合
+                if ("".equals(jikohutanText.getText())) {
+                    // 全額自己負担分費目１（himokuCombo）を空文字を代入する。
+                    himokuCombo.setText("");
+                }
+            }
+            
+        // 2008/06/09 [Masahiko Higuchi] add - begin V5.4.1 利用者向け請求書対応
+        }else{
+            // "-"のみは許可しない
+            if("-".equals(jikohutanText.getText())){
+                // 利用者負担
+                jikohutanText.setText("");
+            }
+            if("-".equals(unitText.getText())){
+                // 単位数
+                unitText.setText("");
+            }
+            if("-".equals(countText.getText())){
+                // 回数
+                countText.setText("");
+            }
+            // その他利用料のチェック
+            if ("".equals(himokuCombo.getText())) {
+                // 全額自己負担分利用料（jikohutanText）が空文字でない場合
+                if (!"".equals(jikohutanText.getText())
+                        || !"".equals(unitText.getText())
+                        || !"".equals(countText.getText())) {
+                    // 全額自己負担分利用料１（jikohutanText）に0を代入する。
+                    jikohutanText.setText("");
+                    unitText.setText("");
+                    countText.setText("");
+                }
+            }
+            // 全額自己負担分費目（himokuCombo）が空文字でない場合
+            if (!"".equals(himokuCombo.getText())) {
+                // 全額自己負担分利用料（jikohutanText）が空文字の場合
+                // 金額部分が全て空白の場合は項目名をクリアする
+                if ("".equals(jikohutanText.getText())
+                        && "".equals(unitText.getText())
+                        && "".equals(countText.getText())) {
+                    // 全額自己負担分費目１（himokuCombo）を空文字を代入する。
+                    himokuCombo.setText("");
+                }
             }
         }
+        // 2008/06/09 [Masahiko Higuchi] add - end
 
     }
 
@@ -1114,6 +1229,158 @@ public class QP003 extends QP003Event {
             // 処理を終了する。（何も行わない）
             return;
         }
+        
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcUnit1FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit1(), getContentEtcCount1(),
+                getContentEtcUse1());
+        // 合計額の計算処理
+        calcSum();
+        
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcCount1FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit1(), getContentEtcCount1(),
+                getContentEtcUse1());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcUnit2FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit2(), getContentEtcCount2(),
+                getContentEtcUse2());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcCount2FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit2(), getContentEtcCount2(),
+                getContentEtcUse2());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcUnit3FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit3(), getContentEtcCount3(),
+                getContentEtcUse3());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcCount3FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit3(), getContentEtcCount3(),
+                getContentEtcUse3());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcUnit4FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit4(), getContentEtcCount4(),
+                getContentEtcUse4());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcCount4FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit4(), getContentEtcCount4(),
+                getContentEtcUse4());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcUnit5FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit5(), getContentEtcCount5(),
+                getContentEtcUse5());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcCount5FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit5(), getContentEtcCount5(),
+                getContentEtcUse5());
+        // 合計額の計算処理
+        calcSum();
+    }
+    /**
+     * 単価と数量による計算処理を行います。
+     * 
+     * @param 単位数テキスト
+     * @param 数量（回数）テキスト
+     * @param 計算結果格納先テキスト
+     * @since V5.3.8
+     * @author Masahiko Higuchi
+     */
+    public void doCalcUnitPrice(ACTextField unit, ACTextField count,
+            ACTextField price) throws Exception {
+        if (ACTextUtilities.isNullText(unit)
+                || ACTextUtilities.isNullText(count)) {
+            // nullもしくは空白の場合は処理を中断
+            return;
+        }
+        // 計算結果を設定する。
+        price.setText(ACCastUtilities.toString(ACCastUtilities.toInt(unit
+                .getText(),0)
+                * ACCastUtilities.toInt(count.getText(),0), ""));
+
+    }
+    /**
+     * 合計額計算処理
+     */
+    protected void contentEtcUse6FocusLost(FocusEvent e) throws Exception {
+        // TODO 自動生成されたメソッド・スタブ
+        calcSum();
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcUnit6FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit6(), getContentEtcCount6(),
+                getContentEtcUse6());
+        // 合計額の計算処理
+        calcSum();
+        
+    }
+    /**
+     * 項目毎の計算処理です。
+     */
+    protected void contentEtcCount6FocusLost(FocusEvent e) throws Exception {
+        // 金額計算処理
+        doCalcUnitPrice(getContentEtcUnit6(), getContentEtcCount6(),
+                getContentEtcUse6());
+        // 合計額の計算処理
+        calcSum();
         
     }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2006/05/10  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2007/11/05  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -1853,7 +1853,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       kaigoInfoKyotakuServiceContenaLayout = new VRLayout();
 
-      kaigoInfoKyotakuServiceContenaLayout.setAutoWrap(false);
+      kaigoInfoKyotakuServiceContenaLayout.setAutoWrap(true);
 
       addKaigoInfoKyotakuServiceContenaLayout();
     }
@@ -1970,13 +1970,13 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       kaigoInfoKyotakuServicePlanCombo.setEditable(false);
 
-      kaigoInfoKyotakuServicePlanCombo.setColumns(10);
+      kaigoInfoKyotakuServicePlanCombo.setColumns(18);
 
       kaigoInfoKyotakuServicePlanCombo.setModelBindPath("PROVIDER");
 
       kaigoInfoKyotakuServicePlanCombo.setRenderBindPath("PROVIDER_NAME");
 
-      kaigoInfoKyotakuServicePlanCombo.setMaxColumns(20);
+      kaigoInfoKyotakuServicePlanCombo.setMaxColumns(64);
 
       kaigoInfoKyotakuServicePlanCombo.setModel(getKaigoInfoKyotakuServicePlanComboModel());
 
@@ -4493,9 +4493,11 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   protected void addBasicInfoSexsModel(){
 
     getBasicInfoMan().setButtonIndex(1);
+
     getBasicInfoSexsModel().add(getBasicInfoMan());
 
     getBasicInfoWoman().setButtonIndex(2);
+
     getBasicInfoSexsModel().add(getBasicInfoWoman());
 
   }
@@ -4950,12 +4952,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   protected void addKaigoInfoKyotakuServiceRadioModel(){
 
     getKaigoInfoKyotakuServiceRadioItem1().setButtonIndex(1);
+
     getKaigoInfoKyotakuServiceRadioModel().add(getKaigoInfoKyotakuServiceRadioItem1());
 
     getKaigoInfoKyotakuServiceRadioItem2().setButtonIndex(2);
+
     getKaigoInfoKyotakuServiceRadioModel().add(getKaigoInfoKyotakuServiceRadioItem2());
 
     getKaigoInfoKyotakuServiceRadioItem3().setButtonIndex(3);
+
     getKaigoInfoKyotakuServiceRadioModel().add(getKaigoInfoKyotakuServiceRadioItem3());
 
   }
@@ -5026,12 +5031,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   protected void addKaigoInfoRequestDivisionRadioModel(){
 
     getKaigoInfoRequestDivisionRadioItem1().setButtonIndex(1);
+
     getKaigoInfoRequestDivisionRadioModel().add(getKaigoInfoRequestDivisionRadioItem1());
 
     getKaigoInfoRequestDivisionRadioItem2().setButtonIndex(2);
+
     getKaigoInfoRequestDivisionRadioModel().add(getKaigoInfoRequestDivisionRadioItem2());
 
     getKaigoInfoRequestDivisionRadioItem3().setButtonIndex(3);
+
     getKaigoInfoRequestDivisionRadioModel().add(getKaigoInfoRequestDivisionRadioItem3());
 
   }
@@ -5220,12 +5228,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   protected void addKaigoInfoInterruptionReasonRadioModel(){
 
     getKaigoInfoInterruptionReasonRadioItem1().setButtonIndex(1);
+
     getKaigoInfoInterruptionReasonRadioModel().add(getKaigoInfoInterruptionReasonRadioItem1());
 
     getKaigoInfoInterruptionReasonRadioItem2().setButtonIndex(2);
+
     getKaigoInfoInterruptionReasonRadioModel().add(getKaigoInfoInterruptionReasonRadioItem2());
 
     getKaigoInfoInterruptionReasonRadioItem3().setButtonIndex(3);
+
     getKaigoInfoInterruptionReasonRadioModel().add(getKaigoInfoInterruptionReasonRadioItem3());
 
   }

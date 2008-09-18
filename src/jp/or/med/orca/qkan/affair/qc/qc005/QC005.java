@@ -204,6 +204,18 @@ public class QC005 extends QC005Event {
 			return false;
 		}
 
+        
+		// 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応 TODO
+        // 印刷対象のものを確認する
+        if(isPrintFinish()){
+            msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
+            // 更新しない場合
+            if(msgID != ACMessageBox.RESULT_YES){
+                return false;
+            }
+        }
+        // 2007/12/25 [Masahiko Higuchi] add - end        
+        
 		// エラーがない場合
 		// 処理を継続する。
 		// ※保存処理
@@ -296,7 +308,11 @@ public class QC005 extends QC005Event {
 				return;
 			// 処理を中断する。
 			}
-
+        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応 TODO
+        }
+        boolean isPrinted = isPrintFinish();
+        // 2007/12/25 [Masahiko Higuchi] add - end
+        
 			// ※入力チェック
 			// 入力チェックを行う。
 			if (!checkValidInput()) {
@@ -304,7 +320,7 @@ public class QC005 extends QC005Event {
 				// 処理を中断する。
 				return;
 			}
-
+      
 			// エラーがない場合
 			// 処理を継続する。
 			// ※保存処理
@@ -322,7 +338,10 @@ public class QC005 extends QC005Event {
 				// 処理を中断する。
 				return;
 			}
-		}
+            
+        // 2007/12/25 [Masahiko Higuchi] del - begin Ver 5.4.1対応 TODO
+		//}
+        // 2007/12/25 [Masahiko Higuchi] del - end            
 
 		// ※印刷処理
 		// kyotakuDataに、画面から抽出した情報を格納する。
@@ -427,6 +446,39 @@ public class QC005 extends QC005Event {
 			// 生成されなかった場合
 			return;
 		}
+        
+        
+		//  2008/01/07 [Masahiko Higuchi] add - begin 居宅療養管理指導書一括印刷
+        int msgID = ACMessageBox.RESULT_YES;
+        // 登録時に印刷済みフラグの値がクリアされるので退避した設定値でチェックする。
+        if(!isPrinted){
+            // 印刷履歴の確定有無を確認
+            msgID = QkanMessageList.getInstance().QP001_PRINT_COMMIT();
+        }
+        // 『はい』以外は処理終了
+        if(msgID != ACMessageBox.RESULT_YES){
+            return;
+        }
+        
+        try{
+            // トランザクションの開始
+            getDBManager().beginTransaction();
+            // パラメーターの設定
+            VRMap sqlParam = new VRHashMap();
+            sqlParam.setData("PATIENT_ID",ACCastUtilities.toInteger(getPatientID()));
+            sqlParam.setData("TARGET_DATE",getTargetDate());
+            sqlParam.setData("FINISH_FLAG",new Integer(1));
+            // 印刷履歴の確定
+            getDBManager().executeUpdate(getSQL_UPDATE_FINISH_FLAG(sqlParam));
+            // コミット
+            getDBManager().commitTransaction();
+        }catch(Exception ex){
+            ex.printStackTrace();
+            // エラーの場合はロールバック
+            getDBManager().rollbackTransaction();
+            throw ex;
+        }
+        		//  2008/01/07 [Masahiko Higuchi] add - end
 	}
 
 	/**
@@ -642,6 +694,18 @@ public class QC005 extends QC005Event {
 			// 処理を中断する。
 			return;
 		}
+        
+        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応 TODO
+        // 印刷対象のものを確認する
+        if(isPrintFinish()){
+            int msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
+            // 更新しない場合
+            if(msgID != ACMessageBox.RESULT_YES){
+                return;
+            }
+        }
+        // 2007/12/25 [Masahiko Higuchi] add - end
+        
 		// エラーがない場合
 		// 処理を継続する。
 		// ※更新処理
@@ -1651,6 +1715,33 @@ public class QC005 extends QC005Event {
             getSenmonin().bindModelSource();
         }
         
+    }
+    /**
+     * データの印刷済みの有無をチェックして返します。
+     * 
+     * @return True：印刷済み
+     * @author Masahiko Higuchi
+     * @since Ver 5.4.1  
+     */
+    public boolean isPrintFinish() throws Exception {
+        // パラメーターの設定
+        VRMap sqlParam = new VRHashMap();
+        VRBindPathParser.set("PATIENT_ID",sqlParam,ACCastUtilities.toInteger(getPatientID()));
+        VRBindPathParser.set("TARGET_DATE",sqlParam,getTargetDate());
+        // SQL発行
+        VRList resultList = getDBManager().executeQuery(getSQL_GET_FINISH_FLAG(sqlParam));
+        
+        if(resultList != null && !resultList.isEmpty()){
+            VRMap result = (VRMap)resultList.getData(0);
+            // 取得する。
+            int index = ACCastUtilities.toInt(result.getData("FINISH_FLAG"),0);
+            // 印刷済みの場合
+            if(index == 1){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

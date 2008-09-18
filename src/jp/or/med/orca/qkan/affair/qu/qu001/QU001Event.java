@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/02/23  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2008/06/02  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -78,6 +79,7 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 利用者一覧イベント定義(QU001) 
@@ -102,7 +104,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 findActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -118,7 +120,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 detailActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -134,7 +136,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 insertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -150,7 +152,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 planInsertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -166,7 +168,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 resultInsertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -182,7 +184,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 deleteActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -198,7 +200,23 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 printActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getPrintReport().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                printReportActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -214,7 +232,7 @@ public abstract class QU001Event extends QU001SQL {
             lockFlag = true;
             try {
                 patientsSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -232,7 +250,71 @@ public abstract class QU001Event extends QU001SQL {
                 if (e.getClickCount() == 2) {
                     patientsMouseClicked(e);
                 }
-            }catch(Exception ex){
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    if(getPatientChoiseColumn().getHeaderPopupMenu() instanceof ACCheckBoxTableColumnPopupMenu){      ((ACCheckBoxTableColumnPopupMenu)getPatientChoiseColumn().getHeaderPopupMenu()).addPopupMenuListener(new ACCheckBoxTableColumnPopupMenuAdapter(){
+          private boolean lockFlag = false;
+          public void allCheckMenuActionPerformed(ActionEvent e) {
+              if (lockFlag) {
+                  return;
+              }
+              lockFlag = true;
+              try {
+                  patientChoiseColumnCheckMenuActionPerformed(e);
+              }catch(Throwable ex){
+                  ACCommon.getInstance().showExceptionMessage(ex);
+              }finally{
+                  lockFlag = false;
+              }
+          }
+       });
+      ((ACCheckBoxTableColumnPopupMenu)getPatientChoiseColumn().getHeaderPopupMenu()).addPopupMenuListener(new ACCheckBoxTableColumnPopupMenuAdapter(){
+          private boolean lockFlag = false;
+          public void allUncheckMenuActionPerformed(ActionEvent e) {
+              if (lockFlag) {
+                  return;
+              }
+              lockFlag = true;
+              try {
+                  patientChoiseColumnCheckMenuActionPerformed(e);
+              }catch(Throwable ex){
+                  ACCommon.getInstance().showExceptionMessage(ex);
+              }finally{
+                  lockFlag = false;
+              }
+          }
+       });
+      ((ACCheckBoxTableColumnPopupMenu)getPatientChoiseColumn().getHeaderPopupMenu()).addPopupMenuListener(new ACCheckBoxTableColumnPopupMenuAdapter(){
+          private boolean lockFlag = false;
+          public void reverseCheckMenuActionPerformed(ActionEvent e) {
+              if (lockFlag) {
+                  return;
+              }
+              lockFlag = true;
+              try {
+                  patientChoiseColumnCheckMenuActionPerformed(e);
+              }catch(Throwable ex){
+                  ACCommon.getInstance().showExceptionMessage(ex);
+              }finally{
+                  lockFlag = false;
+              }
+          }
+       });
+    }    getProviderName().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                providerNameActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -293,6 +375,13 @@ public abstract class QU001Event extends QU001SQL {
   protected abstract void printActionPerformed(ActionEvent e) throws Exception;
 
   /**
+   * 「帳票印刷」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void printReportActionPerformed(ActionEvent e) throws Exception;
+
+  /**
    * 「画面制御」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -306,15 +395,34 @@ public abstract class QU001Event extends QU001SQL {
    */
   protected abstract void patientsMouseClicked(MouseEvent e) throws Exception;
 
+  /**
+   * 「選択操作メニュークリック」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void patientChoiseColumnCheckMenuActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「事業所選択処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void providerNameActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_KEY;
   public static final String AFFAIR_ID = "QU001";
   public static final Date TARGET_DATE_20060401 = ACCastUtilities.toDate("2006/04/01", null);
+  public static final int PRINT_NORMAL = 0;
+  public static final int PRINT_NO_SELECT = 1;
+  public static final int PRINT_EMPTY_AND_TARGET = 2;
+  public static final int PRINT_ERROR = 99;
   private int patientId;
   private String nextAffair;
   private Date findTargetDate;
   private VRList patientData = new VRArrayList();
+  private VRList kyotakuData = new VRArrayList();
   private ACTableModelAdapter patientTableModel;
   //getter/setter
 
@@ -394,6 +502,21 @@ public abstract class QU001Event extends QU001SQL {
   }
 
   /**
+   * kyotakuDataを返します。
+   * @return kyotakuData
+   */
+  protected VRList getKyotakuData(){
+    return kyotakuData;
+  }
+  /**
+   * kyotakuDataを設定します。
+   * @param kyotakuData kyotakuData
+   */
+  protected void setKyotakuData(VRList kyotakuData){
+    this.kyotakuData = kyotakuData;
+  }
+
+  /**
    * patientTableModelを返します。
    * @return patientTableModel
    */
@@ -451,5 +574,72 @@ public abstract class QU001Event extends QU001SQL {
    * @return boolean
    */
   public abstract boolean checkInsureInfo(int patientId) throws Exception;
+
+  /**
+   * 「居宅療養管理指導初期化処理」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void doInitializeQC005() throws Exception;
+
+  /**
+   * 「居宅療養管理指導用の検索処理」に関する処理を行ないます。
+   *
+   * @param patientData VRList
+   * @param sqlParam VRMap
+   * @throws Exception 処理例外
+   * @return VRList
+   */
+  public abstract VRList doFindQC005(VRList patientData, VRMap sqlParam) throws Exception;
+
+  /**
+   * 「手動検索処理」に関する処理を行ないます。
+   *
+   * @param targetList VRList
+   * @param findParam VRMap
+   * @param keys String[]
+   * @throws Exception 処理例外
+   * @return VRList 
+   */
+  public abstract VRList  doMultiFind(VRList targetList, VRMap findParam, String[] keys) throws Exception;
+
+  /**
+   * 「検索処理」に関する処理を行ないます。
+   *
+   * @param targetList VRList
+   * @param findParam VRMap
+   * @param filterKey String
+   * @throws Exception 処理例外
+   * @return VRList
+   */
+  public abstract VRList filterData(VRList targetList, VRMap findParam, String filterKey) throws Exception;
+
+  /**
+   * 「印刷メイン処理」に関する処理を行ないます。
+   *
+   * @param printData VRList
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean doPrintQC005(VRList printData) throws Exception;
+
+  /**
+   * 「印刷対象データをチェックします」に関する処理を行ないます。
+   *
+   * @param patientData VRList
+   * @throws Exception 処理例外
+   * @return int
+   */
+  public abstract int checkPrintData(VRList patientData) throws Exception;
+
+  /**
+   * 「データ変換処理」に関する処理を行ないます。
+   *
+   * @param printParam VRMap
+   * @throws Exception 処理例外
+   * @return VRMap
+   */
+  public abstract VRMap parseQC005PrintData(VRMap printParam) throws Exception;
 
 }

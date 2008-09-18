@@ -47,6 +47,8 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
@@ -233,6 +235,25 @@ public class QS001002 extends QS001002Event {
             int managementTotal = 0;
             Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
             VRList list = getSchedule(useType, false);
+            
+            // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
+            // 再集計処理もパース処理を通してみる
+            QkanValidServiceCommon parser = new QkanValidServiceCommon();
+            VRList cloneServices = new VRArrayList();
+            // データのクローンを作成する。
+            cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+            list = new VRArrayList();
+            if(cloneServices != null && !cloneServices.isEmpty()){
+                VRMap patientMap = getCalcurater().getPatientInfo();
+                // 対象日付
+                Date targetDate = getCalcurater().getTargetDate();
+                list = parser.createValidService(QkanValidServiceManager
+                        .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
+                        cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
+            }
+            // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
+            
+            
             Iterator it = list.iterator();
             while (it.hasNext()) {
                 // サービスコードデータを取得
@@ -449,6 +470,25 @@ public class QS001002 extends QS001002Event {
         // 調整分(サービス毎に設定した自費・調整単位の合計)
         
         VRList list = getSchedule(useType, false);
+        
+        // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
+        // 集計明細もパース処理を通してみる
+        QkanValidServiceCommon parser = new QkanValidServiceCommon();
+        VRList cloneServices = new VRArrayList();
+        // データのクローンを作成する。
+        cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+        list = new VRArrayList();
+        if(cloneServices != null && !cloneServices.isEmpty()){
+            VRMap patientMap = getCalcurater().getPatientInfo();
+            // 対象日付
+            Date targetDate = getCalcurater().getTargetDate();
+            list = parser.createValidService(QkanValidServiceManager
+                    .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
+                    cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
+        }
+        // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
+
+        
         CareServiceUnitCalcurateResult inLimitAmout = getCalcurater()
                 .getServiceUnitCalcurateResult(list,
                         CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT);

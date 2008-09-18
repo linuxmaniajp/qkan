@@ -78,6 +78,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -203,6 +204,21 @@ public class QS001P01 extends QS001P01Event {
                 if (obj instanceof Map) {
                     serviceName = ACCastUtilities.toString(((Map) obj)
                             .get("SERVICE_CALENDAR_ABBREVIATION"));
+                    
+                    // 2008/01/07 [Masahiko Higuchi] add - begin その他・主な日常生活上の活動週間計画票印字対応
+                    if (service != null){
+                        // その他
+                        if(service.containsKey("9010101")) {
+                            // 選択している値が存在する場合は採用する
+                            serviceName = ACCastUtilities.toString(service.get("9010101"));
+                        }else if(service.containsKey("9020101")) {
+                            // 主な日常生活上の活動
+                            // 選択している値が存在する場合は採用する
+                            serviceName = ACCastUtilities.toString(service.get("9020101"));
+                        }
+                    }
+                    // 2008/01/07 [Masahiko Higuchi] add - end
+                    
                 } else {
                     serviceName = "？";
                 }

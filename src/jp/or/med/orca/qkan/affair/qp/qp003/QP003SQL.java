@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2007/03/08  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2008/06/09  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -421,6 +421,34 @@ public class QP003SQL extends QP003State {
 
     sb.append(",CLAIM_PATIENT_DETAIL.LAST_TIME");
 
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_UNIT_NO1");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO1");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_UNIT_NO2");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO2");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_UNIT_NO3");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO3");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_UNIT_NO4");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO4");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_UNIT_NO5");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO5");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_HIMOKU_NO6");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_UNIT_NO6");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO6");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.OTHER_PAY_NO6");
+
     sb.append(" FROM");
 
     sb.append(" CLAIM");
@@ -575,6 +603,34 @@ public class QP003SQL extends QP003State {
 
     sb.append(",LAST_TIME");
 
+    sb.append(",OTHER_UNIT_NO1");
+
+    sb.append(",OTHER_COUNT_NO1");
+
+    sb.append(",OTHER_UNIT_NO2");
+
+    sb.append(",OTHER_COUNT_NO2");
+
+    sb.append(",OTHER_UNIT_NO3");
+
+    sb.append(",OTHER_COUNT_NO3");
+
+    sb.append(",OTHER_UNIT_NO4");
+
+    sb.append(",OTHER_COUNT_NO4");
+
+    sb.append(",OTHER_UNIT_NO5");
+
+    sb.append(",OTHER_COUNT_NO5");
+
+    sb.append(",OTHER_HIMOKU_NO6");
+
+    sb.append(",OTHER_UNIT_NO6");
+
+    sb.append(",OTHER_COUNT_NO6");
+
+    sb.append(",OTHER_PAY_NO6");
+
     sb.append(")VALUES(");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
@@ -654,6 +710,62 @@ public class QP003SQL extends QP003State {
     sb.append(",");
 
     sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO4", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO4", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO5", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO5", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("OTHER_HIMOKU_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_PAY_NO6", sqlParam)));
 
     sb.append(")");
 
@@ -926,6 +1038,118 @@ public class QP003SQL extends QP003State {
     sb.append(" =");
 
     sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(",");
+
+    sb.append(" OTHER_UNIT_NO1");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_COUNT_NO1");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_UNIT_NO2");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_COUNT_NO2");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_UNIT_NO3");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_COUNT_NO3");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_UNIT_NO4");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO4", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_COUNT_NO4");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO4", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_UNIT_NO5");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO5", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_COUNT_NO5");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO5", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_HIMOKU_NO6");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("OTHER_HIMOKU_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_UNIT_NO6");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_UNIT_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_COUNT_NO6");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_COUNT_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" OTHER_PAY_NO6");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_PAY_NO6", sqlParam)));
 
     sb.append(" WHERE");
 
@@ -1244,6 +1468,238 @@ public class QP003SQL extends QP003State {
     sb.append(",KOJO_TARGET");
 
     sb.append(",LAST_TIME");
+
+    sb.append(",OTHER_UNIT_NO1");
+
+    sb.append(",OTHER_COUNT_NO1");
+
+    sb.append(",OTHER_UNIT_NO2");
+
+    sb.append(",OTHER_COUNT_NO2");
+
+    sb.append(",OTHER_UNIT_NO3");
+
+    sb.append(",OTHER_COUNT_NO3");
+
+    sb.append(",OTHER_UNIT_NO4");
+
+    sb.append(",OTHER_COUNT_NO4");
+
+    sb.append(",OTHER_UNIT_NO5");
+
+    sb.append(",OTHER_COUNT_NO5");
+
+    sb.append(",OTHER_HIMOKU_NO6");
+
+    sb.append(",OTHER_UNIT_NO6");
+
+    sb.append(",OTHER_COUNT_NO6");
+
+    sb.append(",OTHER_PAY_NO6");
+
+    sb.append(" FROM");
+
+    sb.append(" CLAIM_PATIENT_DETAIL");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「全額自己負担項目のみ更新用SQL」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_CLAIM_PATIENT_DETAIL_ONLY_SELF(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" CLAIM_PATIENT_DETAIL");
+
+    sb.append(" SET");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" SELF_SERVICE_NO1");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SELF_SERVICE_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" SELF_PAY_NO1");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SELF_PAY_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" SELF_SERVICE_NO2");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SELF_SERVICE_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" SELF_PAY_NO2");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SELF_PAY_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" SELF_SERVICE_NO3");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SELF_SERVICE_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" SELF_PAY_NO3");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SELF_PAY_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" LAST_TIME");
+
+    sb.append(" =");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「全額自己負担項目のみ登録用SQL」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_INSERT_CLAIM_PATIENT_DETAIL_ONLY_SELF(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("INSERT INTO");
+
+    sb.append(" CLAIM_PATIENT_DETAIL");
+
+    sb.append("(");
+
+    sb.append(" CLAIM_ID");
+
+    sb.append(",SELF_SERVICE_NO1");
+
+    sb.append(",SELF_PAY_NO1");
+
+    sb.append(",SELF_SERVICE_NO2");
+
+    sb.append(",SELF_PAY_NO2");
+
+    sb.append(",SELF_SERVICE_NO3");
+
+    sb.append(",SELF_PAY_NO3");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(")VALUES(");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SELF_SERVICE_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SELF_PAY_NO1", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SELF_SERVICE_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SELF_PAY_NO2", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SELF_SERVICE_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SELF_PAY_NO3", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「利用者向け請求書データが存在しているかチェックします。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_CLAIM_PATIENT_TARGET_DATA_COUNT(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" CLAIM_ID");
 
     sb.append(" FROM");
 

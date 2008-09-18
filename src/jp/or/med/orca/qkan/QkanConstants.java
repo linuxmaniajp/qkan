@@ -2,10 +2,14 @@
 package jp.or.med.orca.qkan;
 
 import java.awt.Color;
+import java.util.Calendar;
+import java.util.Date;
 
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACHashMapFormat;
 import jp.nichicom.ac.text.ACNowAgeFormat;
 import jp.nichicom.ac.text.ACOneDecimalDoubleFormat;
+import jp.nichicom.ac.util.ACDateUtilities;
 
 /**
  * システム共通定義です。
@@ -587,4 +591,19 @@ public interface QkanConstants {
      */
     public static final int CALENADR_DROP_DAILY_LIFE = 4;
 
+    // 2008/03/18 [Masahiko_Higuchi] add - begin 平成20年度法改正対応
+    /**
+     * 平成19年4月1日の定数です。
+     */
+    public static final Date H1904 = ACDateUtilities.createDate(2007,4,1);
+    /**
+     * 平成20年4月1日の定数です。
+     */
+    public static final Date H2004 = ACDateUtilities.createDate(2008,4,1);
+    /**
+     * 平成20年5月1日の定数です。
+     */
+    public static final Date H2005 = ACDateUtilities.createDate(2008,5,1);
+    // 2008/03/18 [Masahiko_Higuchi] add - end 平成20年度法改正対応
+    
 }

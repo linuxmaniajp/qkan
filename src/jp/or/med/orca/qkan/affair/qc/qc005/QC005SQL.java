@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 在宅療養生活のポイント
- * 作成日: 2006/04/27  日本コンピューター株式会社 在宅療養生活のポイント 新規作成
+ * 作成日: 2007/12/26  日本コンピューター株式会社 在宅療養生活のポイント 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -99,8 +99,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_GET_KYOTAKU_RYOYO(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -223,8 +223,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_GET_LAST_KYOTAKU_RYOYO(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -381,8 +381,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_INSERT_KYOTAKU_RYOYO(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -468,6 +468,8 @@ public class QC005SQL extends QC005State {
     sb.append(",REMARKS");
 
     sb.append(",LAST_TIME");
+
+    sb.append(",FINISH_FLAG");
 
     sb.append(")VALUES(");
 
@@ -625,6 +627,10 @@ public class QC005SQL extends QC005State {
 
     sb.append(" CURRENT_TIMESTAMP");
 
+    sb.append(",");
+
+    sb.append(" 0");
+
     sb.append(")");
 
     return sb.toString();
@@ -639,8 +645,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_UPDATE_KYOTAKU_RYOYO(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");
@@ -959,6 +965,14 @@ public class QC005SQL extends QC005State {
 
     sb.append(" CURRENT_TIMESTAMP");
 
+    sb.append(",");
+
+    sb.append(" FINISH_FLAG");
+
+    sb.append(" =");
+
+    sb.append(" 0");
+
     sb.append(" WHERE");
 
     sb.append("(");
@@ -995,8 +1009,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_GET_MEDICAL_PROVIDER(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1069,8 +1083,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_GET_PATIENT_STATION_HISTORY(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1119,8 +1133,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_GET_MEDICAL_FACIRITY(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1165,8 +1179,8 @@ public class QC005SQL extends QC005State {
   public String getSQL_GET_CARE_MANAGER(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1202,6 +1216,106 @@ public class QC005SQL extends QC005State {
     sb.append(" STAFF.STAFF_ID");
 
     sb.append(" ASC");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「印刷済みフラグの取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_FINISH_FLAG(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" FINISH_FLAG");
+
+    sb.append(" FROM");
+
+    sb.append(" KYOTAKU_RYOYO");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" =");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「印刷済みフラグの更新処理」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_FINISH_FLAG(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" KYOTAKU_RYOYO");
+
+    sb.append(" SET");
+
+    sb.append(" FINISH_FLAG");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("FINISH_FLAG", sqlParam)));
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" =");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
 
     return sb.toString();
   }

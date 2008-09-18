@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/09/19  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2007/12/13  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -287,6 +287,22 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
             }
         }
     });
+    getPatternNameChange().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                patternNameChangeActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getServiceOfferEntrepreneur().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -438,6 +454,13 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
    * @throws Exception 処理例外
    */
   protected abstract void patternDeleteActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「サービスパターン名称変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void patternNameChangeActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「サービス内容の設定」イベントです。
@@ -981,10 +1004,11 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
   /**
    * 「サービスクラスの生成」に関する処理を行ないます。
    *
+   * @param targetDate Date
    * @throws Exception 処理例外
    * @return ACPanel
    */
-  public abstract ACPanel createServicePatternClass() throws Exception;
+  public abstract ACPanel createServicePatternClass(Date targetDate) throws Exception;
 
   /**
    * 「サービスパネルのデータ取得」に関する処理を行ないます。
@@ -1068,5 +1092,15 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
    * @return boolean
    */
   public abstract boolean doUpdateImpl(boolean isInsert) throws Exception;
+
+  /**
+   * 「データが存在しているかチェックします」に関する処理を行ないます。
+   *
+   * @param bindPaths String[]
+   * @param service VRMap
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean checkValidSysteBindPath(String[] bindPaths, VRMap service) throws Exception;
 
 }

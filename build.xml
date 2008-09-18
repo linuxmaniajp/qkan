@@ -5,6 +5,7 @@
 	<property name="JarNameOfMain" value="Qkan.jar" />
 	<property name="JarNameOfConvert" value="convert_csv.jar" />
 	<property name="JarNameOfCSVViewer" value="csv_viewer.jar" />
+	<property name="JarNameOfCopayCheck" value="copaycheck.jar" />
 	<!-- コンパイルに必要なクラスパス -->
 	<path id="BuildClasspath">
 		<pathelement path="lib/firebirdsql-full.jar" />
@@ -16,7 +17,7 @@
 		<!-- コンパイル -->
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
+		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<include name="jp/or/med/orca/qkan/*" />
 			<include name="jp/or/med/orca/qkan/lib/**/*" />
 			<include name="jp/or/med/orca/qkan/text/**/*" />
@@ -27,13 +28,13 @@
 			<include name="jp/or/med/orca/qkan/affair/qc/**/*" />
 			<include name="jp/or/med/orca/qkan/affair/qm/**/*" />
 		</javac>
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
+		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<include name="jp/or/med/orca/qkan/affair/qo/**/*" />
 			<include name="jp/or/med/orca/qkan/affair/qp/**/*" />
 			<include name="jp/or/med/orca/qkan/affair/qu/**/*" />
 			<include name="jp/or/med/orca/qkan/affair/qv/**/*" />
 		</javac>
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
+		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<include name="jp/or/med/orca/qkan/affair/qs/**/*" />
 		</javac>
 		<!-- リソース複写 -->
@@ -82,6 +83,18 @@
 			<exclude name="**/*.java" />
 			<manifest>
 				<attribute name="Main-Class" value="jp.nichicom.update.MainFrame" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
+			</manifest>
+		</jar>
+	</target>
+	<target name="copaychecker">
+		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/copaychecker/**/*" />
+		<delete file="copaycheck.jar" />
+		<jar jarfile="copaycheck.jar" basedir="${ClassDir}">
+			<include name="jp/nichicom/copaychecker/**/*" />
+			<exclude name="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.nichicom.copaychecker.MainFrame" />
 				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
 			</manifest>
 		</jar>

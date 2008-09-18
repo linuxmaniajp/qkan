@@ -76,6 +76,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 
 /**
  * 明細書基本情報編集SQL定義(QP004) 
@@ -210,6 +211,20 @@ public class QP004SQL extends QP004State {
     sb.append(")");
 
     sb.append("AND");
+    
+    //[H20.5 法改正対応] fujihara add start
+    sb.append("(");
+
+    sb.append(" RECORD_TYPE");
+
+    sb.append(" =");
+
+    sb.append(VRBindPathParser.get("RECORD_TYPE", sqlParam));
+
+    sb.append(")");
+
+    sb.append("AND");
+    //[H20.5 法改正対応] fujihara add end
 
     sb.append("(");
 

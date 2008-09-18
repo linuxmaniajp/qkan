@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 安武　徳夫
- * 作成日: 2006/04/17  日本コンピューター株式会社 安武　徳夫 新規作成
+ * 作成日: 2007/12/19  日本コンピューター株式会社 安武　徳夫 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -97,6 +97,8 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
 
   private ACAffairButton print;
 
+  private ACAffairButton printReport;
+
   private ACAffairButton planInsert;
 
   private ACAffairButton resultInsert;
@@ -125,6 +127,20 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabelContainer birthdayContainer;
 
+  private ACGroupBox providerFindContents;
+
+  private ACComboBox providerName;
+
+  private ACLabelContainer providerNameContainer;
+
+  private ACComboBoxModelAdapter providerNameModel;
+
+  private ACComboBox senmonin;
+
+  private ACLabelContainer senmoninContainer;
+
+  private ACComboBoxModelAdapter senmoninModel;
+
   private ACTable patients;
 
   private VRTableColumnModel patientsColumnModel;
@@ -132,6 +148,12 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn patientNoColumn;
 
   private ACTableColumn patientEnabledColumn;
+
+  private ACTableColumn patientReportColumn;
+
+  private ACTableColumn patientFinishFlagColumn;
+
+  private ACTableColumn patientChoiseColumn;
 
   private ACTableColumn patientCodeColumn;
 
@@ -280,6 +302,29 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
       addPrint();
     }
     return print;
+
+  }
+
+  /**
+   * 印刷(P)を取得します。
+   * @return 印刷(P)
+   */
+  public ACAffairButton getPrintReport(){
+    if(printReport==null){
+
+      printReport = new ACAffairButton();
+
+      printReport.setText("印刷(P)");
+
+      printReport.setToolTipText("選択された帳票の印刷を行います。");
+
+      printReport.setMnemonic('P');
+
+      printReport.setIconPath(ACConstants.ICON_PATH_PRINT_24);
+
+      addPrintReport();
+    }
+    return printReport;
 
   }
 
@@ -554,6 +599,149 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 事業所情報検索領域を取得します。
+   * @return 事業所情報検索領域
+   */
+  public ACGroupBox getProviderFindContents(){
+    if(providerFindContents==null){
+
+      providerFindContents = new ACGroupBox();
+
+      providerFindContents.setText("事業所情報");
+
+      addProviderFindContents();
+    }
+    return providerFindContents;
+
+  }
+
+  /**
+   * 事業所名を取得します。
+   * @return 事業所名
+   */
+  public ACComboBox getProviderName(){
+    if(providerName==null){
+
+      providerName = new ACComboBox();
+
+      getProviderNameContainer().setText("事業所等名");
+
+      providerName.setBindPath("PROVIDER_NAME");
+
+      providerName.setEditable(false);
+
+      providerName.setColumns(18);
+
+      providerName.setModelBindPath("PROVIDER_NAMES");
+
+      providerName.setRenderBindPath("PROVIDER_NAME");
+
+      providerName.setBlankable(true);
+
+      providerName.setIMEMode(InputSubset.KANJI);
+
+      providerName.setMaxLength(60);
+
+      providerName.setMaxColumns(30);
+
+      providerName.setModel(getProviderNameModel());
+
+      addProviderName();
+    }
+    return providerName;
+
+  }
+
+  /**
+   * 事業所名コンテナを取得します。
+   * @return 事業所名コンテナ
+   */
+  protected ACLabelContainer getProviderNameContainer(){
+    if(providerNameContainer==null){
+      providerNameContainer = new ACLabelContainer();
+      providerNameContainer.setFollowChildEnabled(true);
+      providerNameContainer.setVAlignment(VRLayout.CENTER);
+      providerNameContainer.add(getProviderName(), null);
+    }
+    return providerNameContainer;
+  }
+
+  /**
+   * 事業所名モデルを取得します。
+   * @return 事業所名モデル
+   */
+  protected ACComboBoxModelAdapter getProviderNameModel(){
+    if(providerNameModel==null){
+      providerNameModel = new ACComboBoxModelAdapter();
+      addProviderNameModel();
+    }
+    return providerNameModel;
+  }
+
+  /**
+   * 介護支援専門員を取得します。
+   * @return 介護支援専門員
+   */
+  public ACComboBox getSenmonin(){
+    if(senmonin==null){
+
+      senmonin = new ACComboBox();
+
+      getSenmoninContainer().setText("介護支援専門員等氏名");
+
+      senmonin.setBindPath("SENMONIN");
+
+      senmonin.setEditable(false);
+
+      senmonin.setColumns(8);
+
+      senmonin.setModelBindPath("SENMONIN");
+
+      senmonin.setRenderBindPath("STAFF_NAME");
+
+      senmonin.setBlankable(true);
+
+      senmonin.setIMEMode(InputSubset.KANJI);
+
+      senmonin.setMaxLength(32);
+
+      senmonin.setMaxColumns(20);
+
+      senmonin.setModel(getSenmoninModel());
+
+      addSenmonin();
+    }
+    return senmonin;
+
+  }
+
+  /**
+   * 介護支援専門員コンテナを取得します。
+   * @return 介護支援専門員コンテナ
+   */
+  protected ACLabelContainer getSenmoninContainer(){
+    if(senmoninContainer==null){
+      senmoninContainer = new ACLabelContainer();
+      senmoninContainer.setFollowChildEnabled(true);
+      senmoninContainer.setVAlignment(VRLayout.CENTER);
+      senmoninContainer.add(getSenmonin(), null);
+    }
+    return senmoninContainer;
+  }
+
+  /**
+   * 介護支援専門員モデルを取得します。
+   * @return 介護支援専門員モデル
+   */
+  protected ACComboBoxModelAdapter getSenmoninModel(){
+    if(senmoninModel==null){
+      senmoninModel = new ACComboBoxModelAdapter();
+      addSenmoninModel();
+    }
+    return senmoninModel;
+  }
+
+  /**
    * 利用者一覧を取得します。
    * @return 利用者一覧
    */
@@ -589,9 +777,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientNoColumn(){
     if(patientNoColumn==null){
 
-      patientNoColumn = new ACTableColumn(0);
+      patientNoColumn = new ACTableColumn();
 
       patientNoColumn.setHeaderValue("No.");
+
+      patientNoColumn.setColumnName("SHOW_FLAG");
 
       patientNoColumn.setColumns(3);
 
@@ -612,9 +802,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientEnabledColumn(){
     if(patientEnabledColumn==null){
 
-      patientEnabledColumn = new ACTableColumn(0);
+      patientEnabledColumn = new ACTableColumn();
 
       patientEnabledColumn.setHeaderValue("有効");
+
+      patientEnabledColumn.setColumnName("SHOW_FLAG");
 
       patientEnabledColumn.setColumns(3);
 
@@ -631,15 +823,100 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 利用者一覧：有無を取得します。
+   * @return 利用者一覧：有無
+   */
+  public ACTableColumn getPatientReportColumn(){
+    if(patientReportColumn==null){
+
+      patientReportColumn = new ACTableColumn();
+
+      patientReportColumn.setHeaderValue("有無");
+
+      patientReportColumn.setColumnName("REPORT");
+
+      patientReportColumn.setColumns(3);
+
+      patientReportColumn.setHorizontalAlignment(SwingConstants.CENTER);
+
+      patientReportColumn.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
+
+      patientReportColumn.setSortable(false);
+
+      addPatientReportColumn();
+    }
+    return patientReportColumn;
+
+  }
+
+  /**
+   * 利用者一覧：有無を取得します。
+   * @return 利用者一覧：有無
+   */
+  public ACTableColumn getPatientFinishFlagColumn(){
+    if(patientFinishFlagColumn==null){
+
+      patientFinishFlagColumn = new ACTableColumn();
+
+      patientFinishFlagColumn.setHeaderValue("印刷");
+
+      patientFinishFlagColumn.setColumnName("FINISH_FLAG");
+
+      patientFinishFlagColumn.setColumns(3);
+
+      patientFinishFlagColumn.setHorizontalAlignment(SwingConstants.LEFT);
+
+      patientFinishFlagColumn.setSortable(true);
+
+      addPatientFinishFlagColumn();
+    }
+    return patientFinishFlagColumn;
+
+  }
+
+  /**
+   * 利用者一覧：選択を取得します。
+   * @return 利用者一覧：選択
+   */
+  public ACTableColumn getPatientChoiseColumn(){
+    if(patientChoiseColumn==null){
+
+      patientChoiseColumn = new ACTableColumn();
+
+      patientChoiseColumn.setHeaderValue("選択");
+
+      patientChoiseColumn.setColumnName("CHOISE");
+
+      patientChoiseColumn.setEditable(true);
+
+      patientChoiseColumn.setColumns(3);
+
+      patientChoiseColumn.setHorizontalAlignment(SwingConstants.CENTER);
+
+      patientChoiseColumn.setRendererType(VRTableCellViewer.RENDERER_TYPE_CHECK_BOX);
+
+      patientChoiseColumn.setEditorType(VRTableCellViewer.EDITOR_TYPE_CHECK_BOX);
+
+      patientChoiseColumn.setHeaderPopupMenu( new ACCheckBoxTableColumnPopupMenu(getPatients(), "CHOISE", new Boolean(true), new Boolean(false)) );
+
+      addPatientChoiseColumn();
+    }
+    return patientChoiseColumn;
+
+  }
+
+  /**
    * 利用者一覧：利用者コードを取得します。
    * @return 利用者一覧：利用者コード
    */
   public ACTableColumn getPatientCodeColumn(){
     if(patientCodeColumn==null){
 
-      patientCodeColumn = new ACTableColumn(1);
+      patientCodeColumn = new ACTableColumn();
 
       patientCodeColumn.setHeaderValue("利用者コード");
+
+      patientCodeColumn.setColumnName("PATIENT_CODE");
 
       patientCodeColumn.setColumns(8);
 
@@ -656,9 +933,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientNameColumn(){
     if(patientNameColumn==null){
 
-      patientNameColumn = new ACTableColumn(2);
+      patientNameColumn = new ACTableColumn();
 
       patientNameColumn.setHeaderValue("氏名");
+
+      patientNameColumn.setColumnName("PATIENT_FAMILY_NAME+'　'+PATIENT_FIRST_NAME");
 
       patientNameColumn.setColumns(10);
 
@@ -669,15 +948,17 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 利用者覧：ふりがなを取得します。
-   * @return 利用者覧：ふりがな
+   * 利用者一覧：ふりがなを取得します。
+   * @return 利用者一覧：ふりがな
    */
   public ACTableColumn getPatientKanaColumn(){
     if(patientKanaColumn==null){
 
-      patientKanaColumn = new ACTableColumn(3);
+      patientKanaColumn = new ACTableColumn();
 
       patientKanaColumn.setHeaderValue("ふりがな");
+
+      patientKanaColumn.setColumnName("PATIENT_FAMILY_KANA+'　'+PATIENT_FIRST_KANA");
 
       patientKanaColumn.setColumns(15);
 
@@ -694,9 +975,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientSexColumn(){
     if(patientSexColumn==null){
 
-      patientSexColumn = new ACTableColumn(4);
+      patientSexColumn = new ACTableColumn();
 
       patientSexColumn.setHeaderValue("性別");
+
+      patientSexColumn.setColumnName("PATIENT_SEX");
 
       patientSexColumn.setColumns(3);
 
@@ -715,9 +998,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientBirthColumn(){
     if(patientBirthColumn==null){
 
-      patientBirthColumn = new ACTableColumn(5);
+      patientBirthColumn = new ACTableColumn();
 
       patientBirthColumn.setHeaderValue("生年月日");
+
+      patientBirthColumn.setColumnName("PATIENT_BIRTHDAY");
 
       patientBirthColumn.setColumns(10);
 
@@ -736,9 +1021,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientZipColumn(){
     if(patientZipColumn==null){
 
-      patientZipColumn = new ACTableColumn(6);
+      patientZipColumn = new ACTableColumn();
 
       patientZipColumn.setHeaderValue("郵便番号");
+
+      patientZipColumn.setColumnName("PATIENT_ZIP_FIRST+'-'+PATIENT_ZIP_SECOND");
 
       patientZipColumn.setColumns(6);
 
@@ -755,9 +1042,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientAddressColumn(){
     if(patientAddressColumn==null){
 
-      patientAddressColumn = new ACTableColumn(7);
+      patientAddressColumn = new ACTableColumn();
 
       patientAddressColumn.setHeaderValue("住所");
+
+      patientAddressColumn.setColumnName("PATIENT_ADDRESS");
 
       patientAddressColumn.setColumns(20);
 
@@ -774,9 +1063,11 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPatientTelColumn(){
     if(patientTelColumn==null){
 
-      patientTelColumn = new ACTableColumn(8);
+      patientTelColumn = new ACTableColumn();
 
       patientTelColumn.setHeaderValue("電話番号");
+
+      patientTelColumn.setColumnName("PATIENT_TEL_FIRST+'-'+PATIENT_TEL_SECOND+'-'+PATIENT_TEL_THIRD");
 
       patientTelColumn.setColumns(20);
 
@@ -824,6 +1115,7 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
 
     buttons.add(getResultInsert(), VRLayout.EAST);
     buttons.add(getPlanInsert(), VRLayout.EAST);
+    buttons.add(getPrintReport(), VRLayout.EAST);
     buttons.add(getPrint(), VRLayout.EAST);
     buttons.add(getDelete(), VRLayout.EAST);
     buttons.add(getInsert(), VRLayout.EAST);
@@ -867,6 +1159,13 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 印刷(P)に内部項目を追加します。
+   */
+  protected void addPrintReport(){
+
+  }
+
+  /**
    * 予定登録(E)に内部項目を追加します。
    */
   protected void addPlanInsert(){
@@ -886,6 +1185,8 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   protected void addContents(){
 
     contents.add(getFindConditions(), VRLayout.NORTH);
+
+    contents.add(getProviderFindContents(), VRLayout.NORTH);
 
     contents.add(getPatients(), VRLayout.CLIENT);
 
@@ -953,6 +1254,45 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 事業所情報検索領域に内部項目を追加します。
+   */
+  protected void addProviderFindContents(){
+
+    providerFindContents.add(getProviderNameContainer(), VRLayout.FLOW);
+
+    providerFindContents.add(getSenmoninContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 事業所名に内部項目を追加します。
+   */
+  protected void addProviderName(){
+
+  }
+
+  /**
+   * 事業所名モデルに内部項目を追加します。
+   */
+  protected void addProviderNameModel(){
+
+  }
+
+  /**
+   * 介護支援専門員に内部項目を追加します。
+   */
+  protected void addSenmonin(){
+
+  }
+
+  /**
+   * 介護支援専門員モデルに内部項目を追加します。
+   */
+  protected void addSenmoninModel(){
+
+  }
+
+  /**
    * 利用者一覧に内部項目を追加します。
    */
   protected void addPatients(){
@@ -967,6 +1307,12 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
     getPatientsColumnModel().addColumn(getPatientNoColumn());
 
     getPatientsColumnModel().addColumn(getPatientEnabledColumn());
+
+    getPatientsColumnModel().addColumn(getPatientReportColumn());
+
+    getPatientsColumnModel().addColumn(getPatientFinishFlagColumn());
+
+    getPatientsColumnModel().addColumn(getPatientChoiseColumn());
 
     getPatientsColumnModel().addColumn(getPatientCodeColumn());
 
@@ -1001,6 +1347,27 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 利用者一覧：有無に内部項目を追加します。
+   */
+  protected void addPatientReportColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：有無に内部項目を追加します。
+   */
+  protected void addPatientFinishFlagColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：選択に内部項目を追加します。
+   */
+  protected void addPatientChoiseColumn(){
+
+  }
+
+  /**
    * 利用者一覧：利用者コードに内部項目を追加します。
    */
   protected void addPatientCodeColumn(){
@@ -1015,7 +1382,7 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 利用者覧：ふりがなに内部項目を追加します。
+   * 利用者一覧：ふりがなに内部項目を追加します。
    */
   protected void addPatientKanaColumn(){
 
@@ -1078,7 +1445,6 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QU001Design.class.getName()));
     } catch (Exception e) {

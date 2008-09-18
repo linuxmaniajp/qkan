@@ -123,6 +123,24 @@ public class QP005 extends QP005Event {
 		if (VRBindPathParser.has("INSURED_ID", parameters)) {
 			setInsuredId(ACCastUtilities.toString(parameters.getData("INSURED_ID")));
 		}
+		
+		//[H20.5 法改正対応] fujihara add start
+		//H20.5以前であれば、特定療養費タブを消去する。
+		boolean isShowTab = false;
+		
+		switch (getClaimStyleType()){
+			case FORMAT_STYLE4:
+			case FORMAT_STYLE42:
+			case FORMAT_STYLE9:
+				int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
+				isShowTab = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
+				break;
+		}
+		
+		if (!isShowTab){
+			getEtcInfoTabs().remove(getRecuperationInfos());
+		}
+		//[H20.5 法改正対応] fujihara add end
 
 		// パッシブチェックのキーを定義する。
 		// TABLE：CLAIM
@@ -386,6 +404,24 @@ public class QP005 extends QP005Event {
 		// ・第一引数："SHAHUKU"
 	}
 
+	//[H20.5 法改正対応] fujihara add start
+	/**
+	 * 「データ表示処理」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+    protected void recuperationInfoTableSelectionChanged(ListSelectionEvent e) throws Exception {
+		// 特定療養費情報テーブルで選択されている行のレコードを詳細テーブルに表示する。
+		// ・第一引数："RYOYO"
+		if (getRecuperationInfoTable().isSelected()) {
+			doShowClaimDetail("RYOYO");
+		}
+    }
+    //[H20.5 法改正対応] fujihara add end/
+	
 	/**
 	 * 「データ切り替え処理」イベントです。
 	 * 
@@ -789,6 +825,74 @@ public class QP005 extends QP005Event {
 		getShahukuInfoTable().validate();
 		getShahukuInfoTable().repaint();
 	}
+	
+	//[H20.5 法改正対応] fujihara add start
+	/**
+	 * 「データ切り替え処理」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+    protected void recuperationInfoRevisionCheckActionPerformed(ActionEvent e) throws Exception {
+    	
+		if (getRecuperationInfoRevisionCheck().isSelected()) {
+			// 特定療養費情報領域（particularInfos）のEnableがtrueの場合
+			if (getRecuperationInfos().isEnabled()) {
+				// ※項目名列の設定
+				// columnList7NameをparticularInfoRevisionTablecolumn1に設定する。
+				getRecuperationInfoRevisionTablecolumn1().setCustomCells(getColumnList7Name());
+
+				// ※設定値列の設定
+				// columnList7ValueをparticularInfoRevisionTablecolumn2に設定する。
+				getRecuperationInfoRevisionTablecolumn2().setCustomCells(getColumnList7Value());
+				// ※コメント列の設定
+				// columnList7CommentをparticularInfoRevisionTablecolumn3に設定する。
+				getRecuperationInfoRevisionTablecolumn3().setCustomCells(getColumnList7Comment());
+
+				// 特定療養費情報テーブルでレコードが選択されている場合
+				if (getRecuperationInfoTable().isSelected()) {
+					// 特定療養費情報テーブルで選択されているレコードを特定療養費情報詳細テーブルに表示する。
+					// ・第一引数："RYOYO"
+					doShowClaimDetail("RYOYO");
+				}
+			}
+			getRecuperationInfoRevisionCheck().setSelected(true);
+
+			// チェックボックスがオフの場合
+		} else {
+			// 特定療養費情報領域（particularInfos）のEnableがtrueの場合
+			if (getRecuperationInfos().isEnabled()) {
+				// ※項目名列の設定
+				// columnList7NameよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をparticularInfoRevisionTablecolumn1に設定する。
+				getRecuperationInfoRevisionTablecolumn1().setCustomCells(getColumnList7NameSimple());
+
+				// ※設定値列の設定
+				// columnList7ValueよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をparticularInfoRevisionTablecolumn2に設定する。
+				getRecuperationInfoRevisionTablecolumn2().setCustomCells(getColumnList7ValueSimple());
+
+				// ※コメント列の設定
+				// columnList7CommentよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をparticularInfoRevisionTablecolumn3に設定する。
+				getRecuperationInfoRevisionTablecolumn3().setCustomCells(getColumnList7CommentSimple());
+
+				// 特定療養費情報テーブルでレコードが選択されている場合
+				if (getRecuperationInfoTable().isSelected()) {
+					// 特定療養費情報テーブルで選択されているレコードを特定療養費情報詳細テーブルに表示する。
+					// ・第一引数："RYOYO"
+					doShowClaimDetail("RYOYO");
+				}
+			}
+			getRecuperationInfoRevisionCheck().setSelected(false);
+		}
+		getRecuperationInfoTable().validate();
+		getRecuperationInfoTable().repaint();
+        
+    }
+    //[H20.5 法改正対応] fujihara add end
 
 	/**
 	 * 「データ変更時処理」イベントです。
@@ -909,14 +1013,17 @@ public class QP005 extends QP005Event {
 		ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
 		QkanCommon.debugInitialize();
 		VRMap param = new VRHashMap();
-		// param.setData("PATIENT_ID", new Integer(8));
-		// param.setData("INSURED_ID", "1589865164");
-		// param.setData("PROVIDER_ID", "9999999999");
-		// param.setData("LIST_INDEX", new Integer(0));
-		// param.setData("INSURER_ID", "369852");
-		// param.setData("CLAIM_STYLE_TYPE", new Integer(10211));
-		// param.setData("CLAIM_DATE", ACDateUtilities.createDate(2006, 5, 1));
-		// param.setData("TARGET_DATE", ACDateUtilities.createDate(2006, 4, 1));
+		
+		
+		param.setData("PATIENT_ID", new Integer(8));
+		param.setData("INSURED_ID", "8888888888");
+		param.setData("PROVIDER_ID", "2000000000");
+		param.setData("LIST_INDEX", new Integer(0));
+		param.setData("INSURER_ID", "111111");
+		param.setData("CLAIM_STYLE_TYPE", new Integer(10411));
+		param.setData("CLAIM_DATE", jp.nichicom.ac.util.ACDateUtilities.createDate(2008, 6, 1));
+		param.setData("TARGET_DATE", jp.nichicom.ac.util.ACDateUtilities.createDate(2008, 5, 1));
+		
 
 		// paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
 		ACFrame.debugStart(new ACAffairInfo(QP005.class.getName(), param));
@@ -1573,24 +1680,33 @@ public class QP005 extends QP005Event {
 			case FORMAT_STYLE4:
 				// claimStyleTypeの値が10411の場合
 				// テーブルモデルの設定を行う。
-				doSetTableModel(236);
+				
+				//[H20.5 法改正対応] fujihara edit start
+				//doSetTableModel(236);
+				doSetTableModel(492);
 				// ・第一引数：11101100（2進数表記）
 
 				// テーブルの各行の設定を行う。
-				doSetTableRow(236);
+				//doSetTableRow(236);
+				doSetTableRow(492);
 				// ・第一引数：11101100（2進数表記）
+				//[H20.5 法改正対応] fujihara edit end
 
 				break;
 
 			case FORMAT_STYLE42:
 				// claimStyleTypeの値が10412の場合
 				// テーブルモデルの設定を行う。
-				doSetTableModel(236);
+				//[H20.5 法改正対応] fujihara edit start
+				//doSetTableModel(236);
+				doSetTableModel(492);
 				// ・第一引数：11101100（2進数表記）
 
 				// テーブルの各行の設定を行う。
-				doSetTableRow(236);
+				//doSetTableRow(236);
+				doSetTableRow(492);
 				// ・第一引数：11101100（2進数表記）
+				//[H20.5 法改正対応] fujihara edit end
 
 				break;
 
@@ -1722,11 +1838,15 @@ public class QP005 extends QP005Event {
 				// claimStyleTypeの値が10901の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11101100（2進数表記）
-				doSetTableModel(236);
+				//[H20.5 法改正対応] fujihara edit start
+				//doSetTableModel(236);
+				doSetTableModel(492);
 
 				// テーブルの各行の設定を行う。
 				// ・第一引数：11101100（2進数表記）
-				doSetTableRow(236);
+				//doSetTableRow(236);
+				doSetTableRow(492);
+				//[H20.5 法改正対応] fujihara edit end
 				break;
 
 			case FORMAT_STYLE10:
@@ -1783,7 +1903,21 @@ public class QP005 extends QP005Event {
 			case 5:
 				// categoryNoの値が5の場合
 				// tableClaimList3にrecordを追加する。
-				getTableClaimList3().addData(claimDataMap);
+				
+				//[H20.5 法改正対応] fujihara edit start
+				//様式第四、第四の二、第九の場合は、tableClaimList7に設定する
+				switch (getClaimStyleType()){
+					case FORMAT_STYLE4:
+					case FORMAT_STYLE42:
+					case FORMAT_STYLE9:
+						getTableClaimList7().addData(claimDataMap);
+						break;
+					default:
+						getTableClaimList3().addData(claimDataMap);
+						break;
+				
+				}
+				//[H20.5 法改正対応] fujihara edit start
 				break;
 
 			case 7:
@@ -2252,6 +2386,51 @@ public class QP005 extends QP005Event {
 			getDetailsInfoRevision().setText("明細情報");
 
 		}
+		
+		//[H20.5 法改正対応] fujihara add start
+		//TODO
+		// 第一引数と100000000（2進数表記）の論理積の値が0でない場合
+		if (!((firstArg & 256) == 0)) {
+			// ※特定診療費情報テーブルと特定治療費・特定診療費情報詳細テーブルのテーブルモデルの設定。
+			// tableModelList7を以下のフィールドで設定する。
+
+			String[] tableModelList7 = new String[12];
+			tableModelList7[0] = "501004"; // "501004（事業所番号）"
+			tableModelList7[1] = "501007"; // "501007（レコード順次番号）"
+			tableModelList7[2] = "501008"; // "501008（傷病名）"
+			tableModelList7[3] = "501009"; // "501009（識別番号）"
+			tableModelList7[4] = "501010"; // "501010（単位数）"
+			tableModelList7[5] = "501011"; // "501011（保険回数）"
+			tableModelList7[6] = "501012"; // "501012（保険サービス単位数）"
+			tableModelList7[7] = "501013"; // "501013（保険合計単位数）"
+			tableModelList7[8] = "501014"; // "501014（公費1回数）"
+			tableModelList7[9] = "501017"; // "501017（公費2回数）"
+			tableModelList7[10] = "501020"; // "501020（公費3回数）"
+			tableModelList7[11] = "501023"; // "501023（摘要）"
+
+			// 格納
+			setTableModelList7(new ACTableModelAdapter());
+			getTableModelList7().setColumns(tableModelList7);
+
+			// tableModelList7を特定療養費情報テーブル（recuperationInfoTable）に設定する。
+			getRecuperationInfoTable().setModel(getTableModelList7());
+
+			// tableModelDetail3を以下のフィールドで設定する。
+			// "DETAIL_NAME" "DETAIL_VALUE" "COMMENT"
+			String[] tableModelDetail7 = new String[3];
+			tableModelDetail7[0] = "DETAIL_NAME";
+			tableModelDetail7[1] = "DETAIL_VALUE";
+			tableModelDetail7[2] = "COMMENT";
+
+			// 格納
+			setTableModelDetail7(new ACTableModelAdapter());
+			getTableModelDetail7().setColumns(tableModelDetail7);
+
+			// tableModelDetail7を特定療養費情報詳細テーブル（recuperationInfoRevisionTable）に設定する。
+			getRecuperationInfoRevisionTable().setModel(getTableModelDetail7());
+
+		}
+		//[H20.5 法改正対応] fujihara add end
 
 	}
 
@@ -2550,6 +2729,46 @@ public class QP005 extends QP005Event {
 			// 取得したレコード集合をdetailsInfoRevisionTablecolumn3に設定する。
 			getDetailsInfoRevisionTablecolumn3().setCustomCells(getColumnList2CommentSimple());
 		}
+		
+		
+		//[H20.5 法改正対応] fujihara add start
+		// 第一引数と100000000（2進数表記）の論理積の値が0でない場合
+		if (!((firstArg & 256) == 0)) {
+			// ※特定治療費・特定診療費情報詳細テーブルの各行の設定。
+			// 各行のコンポーネントを生成し、引数のArrayListに格納する。
+			// doMakeComponent();
+			// ・第一引数：5
+			// ・第二引数：detailList7
+			// ・第三引数：columnList7Name
+			// ・第四引数：columnList7Value
+			// ・第五引数：columnList7Comment
+			setDetailList7(new VRArrayList());
+			setColumnList7Name(new VRArrayList());
+			setColumnList7Value(new VRArrayList());
+			setColumnList7Comment(new VRArrayList());
+			setColumnList7NameSimple(new VRArrayList());
+			setColumnList7ValueSimple(new VRArrayList());
+			setColumnList7CommentSimple(new VRArrayList());
+
+			doMakeComponent(CATEGORY_NO5, getDetailList7(), getColumnList7Name(), getColumnList7Value(), getColumnList7Comment(), getColumnList7NameSimple(), getColumnList7ValueSimple(), getColumnList7CommentSimple());
+
+			// ※項目名列の設定
+			// columnList7NameよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をrecuperationInfoRevisionTablecolumn1に設定する。
+			getRecuperationInfoRevisionTablecolumn1().setCustomCells(getColumnList7NameSimple());
+
+			// ※設定値列の設定
+			// columnList7ValueよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をparticularInfoRevisionTablecolumn2に設定する。
+			getRecuperationInfoRevisionTablecolumn2().setCustomCells(getColumnList7ValueSimple());
+
+			// ※コメント列の設定
+			// columnList3CommentよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をparticularInfoRevisionTablecolumn3に設定する。
+			getRecuperationInfoRevisionTablecolumn3().setCustomCells(getColumnList7CommentSimple());
+		}
+		//[H20.5 法改正対応] fujihara add end
+		
 	}
 
 	/**
@@ -2860,6 +3079,23 @@ public class QP005 extends QP005Event {
 			// バインド先のShahukuInfoTableの1行目を選択した状態にする。
 			getShahukuInfoTable().setSelectedSortedFirstRow();
 		}
+		
+		//[H20.5 法改正対応] fujihara add start
+		if (!getTableClaimList7().isEmpty()) {
+			// tableClaimList7がnullでない場合
+			// ソートする。
+			// 501007 特定療養費情報レコード順次番号2桁
+			String[] keys = new String[]{"501007"};
+			int[] digits = new int[]{2};
+			setTableClaimList7(getSortedData(getTableClaimList7(), keys, digits));
+			
+			// tableClaimList7をtableModelList7に設定する。
+			getTableModelList7().setAdaptee(getTableClaimList7());
+			// バインド先のParticularInfoTableの1行目を選択した状態にする。
+			getParticularInfoTable().setSelectedSortedFirstRow();
+			getRecuperationInfoRevisionTable().setSelectedSortedFirstRow();
+		}
+		//[H20.5 法改正対応] fujihara add end
 
 	}
 
@@ -3307,6 +3543,38 @@ public class QP005 extends QP005Event {
 				}
 			}
 		}
+		
+		//[H20.5 法改正対応] fujihara add start
+		// 渡された引数の値が"RYOYO"の場合
+		if (recordDataType.equals("RYOYO")) {
+			// 特定療養費情報テーブルで選択されている行のレコード（以下、選択レコード）を取得する。
+			if (getRecuperationInfoRevisionCheck().isSelected()) {
+				// 全ての情報を表示チェックボックス（recuperationInfoRevisionCheck）がオンになっている場合
+				// 詳細テーブルに表示するために、詳細テーブル表示用のデータを作成する。
+				if (!(getDetailList7().isEmpty())) {
+					doMakeDetailTableList((VRMap) getRecuperationInfoTable().getSelectedModelRowValue(), getDetailList7());
+					// ・第一引数：選択レコード
+					// ・第二引数：detailList7
+
+					// detailList7をテーブルモデル（tableModelDetail7）に設定する。
+					getTableModelDetail7().setAdaptee(getDetailList7());
+				}
+			} else {
+				// 全ての情報を表示チェックボックス（recuperationInfoRevisionCheck）がオフになっている場合
+				// detailList1よりKEY：SHOW_FLAGの値が1のレコードを取得する。（以下、tempList）
+				if (!(getDetailList7().isEmpty())) {
+					VRList tempList = (VRList) ACBindUtilities.getMatchListFromValue(getDetailList7(), "SHOW_FLAG", ACCastUtilities.toInteger(ON));
+					// 詳細テーブルに表示するために、詳細テーブル表示用のデータを作成する。
+					doMakeDetailTableList((VRMap) getRecuperationInfoTable().getSelectedModelRowValue(), tempList);
+					// ・第一引数：選択レコード
+					// ・第二引数：tempList
+
+					// tempListをテーブルモデル（tableModelDetail7）に設定する。
+					getTableModelDetail7().setAdaptee(tempList);
+				}
+			}
+		}
+		//[H20.5 法改正対応] fujihara add end
 
 	}
 
@@ -3339,6 +3607,9 @@ public class QP005 extends QP005Event {
 				allList.addAll(getTableClaimList4());
 				allList.addAll(getTableClaimList5());
 				allList.addAll(getTableClaimList6());
+				//[H20.5 法改正対応] fujihara add start
+				allList.addAll(getTableClaimList7());
+				//[H20.5 法改正対応] fujihara add end
 
 				// DBを更新するためのWHERE句を作成する。
 				// WHERE句
@@ -3378,4 +3649,7 @@ public class QP005 extends QP005Event {
 			throw ex;
 		}
 	}
+
+    
+
 }

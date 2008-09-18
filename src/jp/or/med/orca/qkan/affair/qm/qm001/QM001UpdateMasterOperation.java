@@ -520,5 +520,167 @@ public class QM001UpdateMasterOperation {
 
 		return sb.toString();
 	}
+    
+      /**
+       * 「指定サービスの事業所サービス番号を取得します。」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Masahiko_Higuchi
+       * @since V540
+       */
+      public String getSQL_GET_PROVIDER_SERVICE_ID(VRMap sqlParam) throws Exception{
+        StringBuffer sb = new StringBuffer();
+        Object[] inValues;
+        Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+        boolean firstCondition = true, firstConditionOfFrom = true;
+        Object obj;
 
+        sb.append("SELECT");
+
+        sb.append(" PROVIDER_SERVICE_ID");
+
+        sb.append(" FROM");
+
+        sb.append(" PROVIDER_SERVICE");
+
+        sb.append(" WHERE");
+
+        sb.append("(");
+
+        sb.append(" SYSTEM_SERVICE_KIND_DETAIL");
+
+        sb.append(" =");
+
+        sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", sqlParam)));
+
+        sb.append(")");
+
+        return sb.toString();
+      }
+
+      /**
+       * 「事業所の情報を更新します。」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Masahiko_Higuchi
+       * @since V540
+       */
+      public String getSQL_INSERT_PROVIDER_SERVICE_DETAIL_INTEGER(VRMap sqlParam) throws Exception{
+        StringBuffer sb = new StringBuffer();
+        Object[] inValues;
+        Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+        boolean firstCondition = true, firstConditionOfFrom = true;
+        Object obj;
+
+        sb.append("INSERT INTO");
+
+        sb.append(" PROVIDER_SERVICE_DETAIL_INTEGER");
+
+        sb.append("(");
+
+        sb.append(" PROVIDER_SERVICE_ID");
+
+        sb.append(",SYSTEM_BIND_PATH");
+
+        sb.append(",DETAIL_VALUE");
+
+        sb.append(",LAST_TIME");
+
+        sb.append(")VALUES(");
+
+        sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PROVIDER_SERVICE_ID", sqlParam)));
+
+        sb.append(",");
+
+        sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SYSTEM_BIND_PATH", sqlParam)));
+
+        sb.append(",");
+
+        sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("DETAIL_VALUE", sqlParam)));
+
+        sb.append(",");
+
+        sb.append(" CURRENT_TIMESTAMP");
+
+        sb.append(")");
+
+        return sb.toString();
+      }
+      /**
+       * 「アップデート対象確認」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Masahiko_Higuchi
+       * @since V540
+       */
+      public String getSQL_GET_PROVIDER_SERVICE_ROUKEN(VRMap sqlParam) throws Exception{
+        StringBuffer sb = new StringBuffer();
+        Object[] inValues;
+        Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+        boolean firstCondition = true, firstConditionOfFrom = true;
+        Object obj;
+
+        sb.append("SELECT");
+
+        sb.append(" COUNT(*)");
+
+        sb.append(" FROM");
+
+        sb.append("  PROVIDER_SERVICE_DETAIL_INTEGER");
+
+        sb.append(" WHERE");
+
+        sb.append("(");
+
+        sb.append(" PROVIDER_SERVICE_ID");
+
+        sb.append("  IN");
+
+        sb.append(" (");
+
+        sb.append("SELECT");
+
+        sb.append(" PROVIDER_SERVICE_ID");
+
+        sb.append(" FROM");
+
+        sb.append(" PROVIDER_SERVICE");
+
+        sb.append(" WHERE");
+
+        sb.append("(");
+
+        sb.append(" SYSTEM_SERVICE_KIND_DETAIL");
+
+        sb.append(" IN");
+
+        sb.append(" ('12211','15211','12511')");
+
+        sb.append(")");
+
+        sb.append(")");
+
+        sb.append(")");
+
+        sb.append("AND");
+
+        sb.append("(");
+
+        sb.append(" SYSTEM_BIND_PATH");
+
+        sb.append(" IN");
+
+        sb.append(" ('1220120','1220121','1520122','1520123','1520124','1250116','1250117')");
+
+        sb.append(")");
+
+        return sb.toString();
+      }
+      
 }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/06/08  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2008/01/15  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その多機能 (O)
@@ -200,7 +200,10 @@ public abstract class QO013Event extends QO013SQL {
   private String pass;
   private String dbsVer;
   private String toHiraganaConvert;
+  private String receiptVersion;
   public static final int PAGE_COUNT = 100;
+  public static final int CODE_RECEIPT_VERSION = 271;
+  public static final int DEFAULT_RECEIPT_VERSION_INDEX = 1;
   private int nowPage;
   private ACTableModelAdapter receiptTableModel;
   private VRList receiptDataList = new VRArrayList();
@@ -297,6 +300,21 @@ public abstract class QO013Event extends QO013SQL {
   }
 
   /**
+   * receiptVersionを返します。
+   * @return receiptVersion
+   */
+  protected String getReceiptVersion(){
+    return receiptVersion;
+  }
+  /**
+   * receiptVersionを設定します。
+   * @param receiptVersion receiptVersion
+   */
+  protected void setReceiptVersion(String receiptVersion){
+    this.receiptVersion = receiptVersion;
+  }
+
+  /**
    * nowPageを返します。
    * @return nowPage
    */
@@ -350,14 +368,6 @@ public abstract class QO013Event extends QO013SQL {
    *
    */
   public abstract void initialize() throws Exception;
-
-  /**
-   * 「接続用情報不正チェック」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean checkConectInfo() throws Exception;
 
   /**
    * 「通信設定読込み」に関する処理を行ないます。

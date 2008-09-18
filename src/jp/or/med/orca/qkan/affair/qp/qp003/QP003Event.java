@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2007/02/27  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2008/06/09  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -271,6 +271,214 @@ public abstract class QP003Event extends QP003SQL {
             }
         }
     });
+    getContentEtcUse6().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUse6FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcUnit1().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUnit1FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcCount1().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcCount1FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcUnit2().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUnit2FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcCount2().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcCount2FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcUnit3().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUnit3FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcCount3().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcCount3FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcUnit4().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUnit4FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcCount4().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcCount4FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcUnit5().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUnit5FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcCount5().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcCount5FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcUnit6().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcUnit6FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcCount6().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcCount6FocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -351,6 +559,97 @@ public abstract class QP003Event extends QP003SQL {
    * @throws Exception 処理例外
    */
   protected abstract void contentEtcUse5FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「合計金額の計算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUse6FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUnit1FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcCount1FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUnit2FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcCount2FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUnit3FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcCount3FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUnit4FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcCount4FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUnit5FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcCount5FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcUnit6FocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcCount6FocusLost(FocusEvent e) throws Exception;
 
   //変数定義
 
@@ -678,10 +977,12 @@ public abstract class QP003Event extends QP003SQL {
    *
    * @param himokuCombo ACComboBox
    * @param jikohutanText ACTextField
+   * @param unitText ACTextField
+   * @param countText ACTextField
    * @throws Exception 処理例外
    *
    */
-  public abstract void checkValue(ACComboBox himokuCombo, ACTextField jikohutanText) throws Exception;
+  public abstract void checkValue(ACComboBox himokuCombo, ACTextField jikohutanText, ACTextField unitText, ACTextField countText) throws Exception;
 
   /**
    * 「コンボ候補を設定する。」に関する処理を行ないます。
@@ -690,5 +991,16 @@ public abstract class QP003Event extends QP003SQL {
    *
    */
   public abstract void comboInitialize() throws Exception;
+
+  /**
+   * 「項目単位の計算処理」に関する処理を行ないます。
+   *
+   * @param unit ACTextField
+   * @param count ACTextField
+   * @param price ACTextField
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void doCalcUnitPrice(ACTextField unit, ACTextField count, ACTextField price) throws Exception;
 
 }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/05/01  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2007/12/13  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -122,6 +122,8 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
   private ACButton patternAdd;
 
   private ACButton patternDelete;
+
+  private ACButton patternNameChange;
 
   private ACGroupBox servuceDetails;
 
@@ -536,6 +538,23 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
       addPatternDelete();
     }
     return patternDelete;
+
+  }
+
+  /**
+   * パターン-変更を取得します。
+   * @return パターン-変更
+   */
+  public ACButton getPatternNameChange(){
+    if(patternNameChange==null){
+
+      patternNameChange = new ACButton();
+
+      patternNameChange.setText("名称");
+
+      addPatternNameChange();
+    }
+    return patternNameChange;
 
   }
 
@@ -1115,6 +1134,8 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
 
     patternListButtons.add(getPatternDelete(), VRLayout.FLOW_RETURN);
 
+    patternListButtons.add(getPatternNameChange(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -1128,6 +1149,13 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
    * パターン-削除に内部項目を追加します。
    */
   protected void addPatternDelete(){
+
+  }
+
+  /**
+   * パターン-変更に内部項目を追加します。
+   */
+  protected void addPatternNameChange(){
 
   }
 

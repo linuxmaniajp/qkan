@@ -49,6 +49,8 @@ import java.util.TreeMap;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.lowagie.text.pdf.hyphenation.TernaryTree;
+
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
@@ -62,6 +64,7 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
@@ -98,7 +101,11 @@ public class QS001 extends QS001Event {
      */
     public QS001() {
     }
-
+    
+    // 2008/01/24 [Masahiko_Higuchi] add - begin サービスパターン設定ボタン操作実行時エラー対応
+    private int correctKey = 0;
+    // 2008/01/24 [Masahiko_Higuchi] add - end
+    
     public void initAffair(ACAffairInfo affair) throws Exception {
         super.initAffair(affair);
         initAction(affair);
@@ -1025,6 +1032,12 @@ public class QS001 extends QS001Event {
             }
             //ユニークキーの削除
             service.remove("SERVICE_ID");
+            
+            // 2008/01/24 [Masahiko_Higuchi] add - begin version 5.3.8
+            service.remove("CORRECT_KEY");
+            service.setData("CORRECT_KEY",new Integer(correctKey));
+            correctKey++;
+            // 2008/01/24 [Masahiko_Higuchi] add - end
             getInsertReserveServicePatterns().add(service);
 
             // サービスパターンリストを更新する。
@@ -1052,6 +1065,29 @@ public class QS001 extends QS001Event {
         getDeleteReseveServicePatterns().add(pattern);
         // 追加対象から削る
         getInsertReserveServicePatterns().remove(pattern);
+        
+        // 2008/01/24 [Masahiko_Higuchi] add - begin サービスパターン設定ボタン操作実行時エラー対応
+        if(pattern.containsKey("CORRECT_KEY")){
+        	// メインのキー
+        	String mainKey = ACCastUtilities.toString(pattern.getData("CORRECT_KEY"),"");
+        	
+        	for(int i=getInsertReserveServicePatterns().size(); i>0;i--){
+        		// チェック用のキー情報
+        		Map checkMap = (Map)getInsertReserveServicePatterns().getData(i-1);
+        		
+        		if(checkMap.containsKey("CORRECT_KEY")){
+        			// パターン追加で増やした情報を削るためのキー
+        			String delKey = ACCastUtilities.toString(checkMap.get("CORRECT_KEY"),"-1");
+        			
+        			if(delKey.equals(mainKey)){
+        				// 一致した場合は登録用のデータ集合がから削る
+        				getInsertReserveServicePatterns().remove(i-1);
+        				
+        			}
+        		}        		
+        	}
+        }
+        // 2008/01/24 [Masahiko_Higuchi] add - end
         
         // サービスパターンリストを更新する。
         getPatternList().setModel(
@@ -1174,6 +1210,67 @@ public class QS001 extends QS001Event {
                                                     ACCastUtilities.toString(QkanConstants.INTERNAL_SERVICE_PATTERN_NO_BIND_PATH),
                                                     service));
                     
+                    // 2008/01/25 [Masahiko_Higuchi] add - begin サービスパターン設定ボタン操作実行時エラー対応
+                    if(service.containsKey("SERVICE_USE_TYPE")){
+                        Integer useType = ACCastUtilities.toInteger(service.getData("SERVICE_USE_TYPE"),-1);
+                        // サービスパターンの区分は保持する
+                       if(!new Integer(-1).equals(useType)){
+                    	   data.setData("SERVICE_USE_TYPE",useType);
+                       }
+                       // サービスIDが消し去られるので保持する
+                       if(service.containsKey("SERVICE_ID")){
+                    	   data.setData("SERVICE_ID",service.getData("SERVICE_ID"));
+                           
+                    	   // 比較用のサービスIDを取得する
+                           String mainServiceID = ACCastUtilities.toString(service.getData("SERVICE_ID"),"");
+                           // サービスパターン追加用のデータ集合を全てチェックする。
+                           for (int i = getInsertReserveServicePatterns().size(); i > 0; i--) {
+                        	   Map serviceIDCheckMap = (Map)getInsertReserveServicePatterns().get(i-1);
+                        	   // 格納されているキーを取得する
+                        	   int idCheckKey = ACCastUtilities.toInt(serviceIDCheckMap.get("SERVICE_ID"),-2);
+                        	   
+                        	   String checkKey = ACCastUtilities.toString(idCheckKey);
+                               // KEYが既に登録されている場合
+                               if(checkKey.equals(mainServiceID)){
+                            	   // クリアする
+                            	   getInsertReserveServicePatterns().remove(i-1);
+                               }                        	   
+                           }
+                       }
+                       
+                       // 追加したサービスパターン変更に備え内部で振ったKEYを元に登録データの重複を防ぐ
+                       if(service.containsKey("CORRECT_KEY")){
+                    	   
+	                       data.setData("CORRECT_KEY",service.getData("CORRECT_KEY"));
+	                       // 削除して追加対称にする
+	                       String serviceInKey = ACCastUtilities.toString(service.getData("CORRECT_KEY"),""); 
+	
+	                       for(int j=getInsertReserveServicePatterns().size();j>0;j--){
+	                    	   Map maps = (Map)getInsertReserveServicePatterns().getData(j-1);
+	                    	   // キーを取り出す
+	                           int checkKey = ACCastUtilities.toInt(maps.get("CORRECT_KEY"),-1);
+	                           
+	                           String strKey = ACCastUtilities.toString(checkKey);
+	                           // KEYが既に登録されている場合
+	                           if(strKey.equals(serviceInKey)){
+	                        	   // クリアする
+	                        	   getInsertReserveServicePatterns().remove(j-1);
+	                           }
+	                       }
+                       }
+                       
+                       getDeleteReseveServicePatterns().add(service);
+                	   // 再追加
+                	   getInsertReserveServicePatterns().add(service);
+                    } 
+                    // サービスパターンの再設定処理
+                    if(service.containsKey("11")){
+                        String patternName = ACCastUtilities.toString(service.getData("11"),"");
+                        if(!"".equals(patternName)){
+                            data.setData("11",patternName);
+                        }
+                    }
+                    // 2008/01/25 [Masahiko_Higuchi] add - End
                 }
                 
                 int selectedIndex=-1;
@@ -1207,10 +1304,17 @@ public class QS001 extends QS001Event {
                         service.put("REGULATION_RATE", new Integer(rate));
                     }
                 }
-                setServiceModify(true);
-
+                // 2008/01/25 [Masahiko_Higuchi] del - begin サービスパターン設定ボタン操作実行時エラー対応
+                //setServiceModify(true);
+                // 2008/01/25 [Masahiko_Higuchi] del - end
+                
                 if(getSelectedServiceListBox()!=null){
                     getSelectedServiceListBox().setSelectedIndex(selectedIndex);
+                    // 2008/01/25 [Masahiko_Higuchi] add - begin サービスパターン設定ボタン操作実行時エラー対応
+                    if(getSelectedServiceListBox() != getPatternList()){
+                    	setServiceModify(true);
+                    }
+                    // 2008/01/25 [Masahiko_Higuchi] add - end
                 }
                 
                 if (getWeeklyPanel() != null) {
@@ -1292,6 +1396,32 @@ public class QS001 extends QS001Event {
         list.addAll(getMonthlyPanel().getSchedule(
                 QkanConstants.SERVICE_DETAIL_GET_RESULT, false));
         Iterator it = list.iterator();
+        
+        // 2008/03/21 [Masahiko_Higuchi] add - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+        // 療養環境減算バインドパス郡
+        final String[] RYOYO_TYPE = new String[] {"1230205","1260205","1530205"};
+        // 設備基準バインドバス郡
+        final String[] SETUBI_BASE_TYPE = new String[] {"1230252","1260212","1530260"};
+        // H20年4月以降が対象年月の処理であるか
+        boolean isH2004 = false;
+        if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004,
+                getCalcurater().getTargetDate()) < 1) {
+            isH2004 = true;
+        }
+        // 2008/03/21 [Masahiko_Higuchi] add - end
+        
+        // 2008/04/21 [Masahiko_Higuchi] add - begin 平成20年度5月法改正対応（介護療養型老人保健施設）
+        boolean isH2005 = false;
+        if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005,
+                getCalcurater().getTargetDate()) < 1) {
+            isH2005 = true;
+        }
+        final String[] SHISETUKUBUN_TAISEI = new String[] {"1220120","1520132","1250113"};
+        final String[] RYOYOTAISEIIJI = new String[] {"1220121","1520134","1250114"};
+        final String[] TERMINAlCARE = new String[] {"1520133"};
+        // 2008/04/21 [Masahiko_Higuchi] add - end
+        
+        
         // ■入力チェック
         final String[] SENMONIN_NO_TYPE = new String[] { "1430107", "1730104",
                 "1750104","1460103" };
@@ -1326,6 +1456,94 @@ public class QS001 extends QS001Event {
 
                 }
             }
+            
+            // 2008/03/21 [Masahiko_Higuchi] add - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+            // 過去データからの不正データを残さないようにチェックする
+            if(isH2004){
+                // 療養病床を有する診療所のサービスであるか
+                if(CareServiceCommon.isPracticeToHealthFacilityServices(row)){
+                    // 療養環境減算が存在するか。
+                    boolean isRyoyoGensan = false;
+                    boolean isSetubiGensan = false;
+                    for(int j=0; j< RYOYO_TYPE.length; j++){
+                        // 療養環境減算が設定されているか。
+                        Object obj = VRBindPathParser.get(RYOYO_TYPE[j], row);
+                        // 未設定、減算型Ⅰ以外の場合は正常
+                        if (obj != null && ACCastUtilities.toInt(obj) != 2
+                                && ACCastUtilities.toInt(obj) != 0) {
+                            isRyoyoGensan = true;
+                            break;
+                        }
+                    }
+                    // 設備基準減算が存在するか。
+                    for(int k=0; k< SETUBI_BASE_TYPE.length; k++){
+                        // 設備基準減算が設定されているか。
+                        Object obj = VRBindPathParser.get(SETUBI_BASE_TYPE[k], row);
+                        // 設備基準に値が設定されている場合は
+                        if(ACCastUtilities.toInt(obj,0) != 0){
+                            isSetubiGensan = true;
+                            break;                            
+                        }
+                    }
+                    // どちらか一方でも不正データである場合
+                    if(!(isRyoyoGensan && isSetubiGensan)){
+                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                        return false;
+                    }
+                }
+            }
+            // 2008/03/21 [Masahiko_Higuchi] add - end
+            // 2008/04/21 [Masahiko_Higuchi] add - begin 平成20年度5月法改正対応（介護療養型老人保健施設）
+            if(isH2005){
+                // 老健施設のサービスである場合
+                if(CareServiceCommon.isElderlyToHealthFacilityServices(row)){
+                    boolean isShisetuTaisei = false;
+                    boolean isRyoyoTaisei = false;
+                    isRyoyoTaisei = checkValidSysteBindPath(RYOYOTAISEIIJI, row);
+                    // 日帰りショートステイ選択時は施設等の区分のチェックはスルー
+                    if(row != null && ACCastUtilities.toInt(row.getData("1220101"),0) == 3){
+                        isShisetuTaisei = true;
+                    }else{
+                        // 施設等の区分（体制）のチェック処理
+                        isShisetuTaisei = checkValidSysteBindPath(SHISETUKUBUN_TAISEI, row);
+                    }
+                    // エラーメッセージ
+                    if(!isShisetuTaisei && !isRyoyoTaisei){
+                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                        return false;
+                    }
+                    
+                }
+                // 個別に取り出す
+                int code = -1;
+                if(row==null){
+                    code = -1;
+                }else{
+                    code = ACCastUtilities.toInt(row.get("SYSTEM_SERVICE_KIND_DETAIL"),-1);
+                }
+                // 介護老人保健施設であるか
+                switch(code){
+                case 15211:
+                    boolean isTerminalAdd = false;
+                    isTerminalAdd = checkValidSysteBindPath(TERMINAlCARE, row);
+                    // ターミナルケア加算のみ個別チェック
+                    if(!isTerminalAdd){
+                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                        return false;
+                    }
+                    
+                    int index = ACCastUtilities.toInt(row.getData("1520101"), 0);
+                    if (index != 1 && index != 3) {
+                        // 施設等の区分で小規模のデータ登録を行おうとした場合
+                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                        return false;
+                    }
+                    break;
+                }
+                
+            }
+            // 2008/04/21 [Masahiko_Higuchi] add - end            
+            
         }
 
         it = list.iterator();
@@ -1612,6 +1830,22 @@ public class QS001 extends QS001Event {
                     dbm.rollbackTransaction();
                     return false;
                 }
+                
+                // 2007/12/25 [Masahiko_Higuchi] add - begin Version 5.3.8　2007年度対応
+                for(int i=0;i<details.size();i++){
+                    VRMap delMap = (VRMap)details.getData(i);
+                    // 2008/06/24 [Masahiko.Higuchi] V5.4.1 edit - begin 同期例外が発生することがあるようなので対応
+                    try{
+                        // 解析用のキーは消す
+                        delMap.remove("ANALYZE");
+                        delMap.remove("CORRECT_KEY");
+                    }catch(java.util.ConcurrentModificationException ex){
+                        //同期例外は無視                        
+                    }
+                    // 2008/06/24 [Masahiko.Higuchi] edit - end
+                }
+                // 2007/12/25 [Masahiko_Higuchi] add - End
+                
                 QkanCommon.updateServiceDetail(dbm, details, getPatientID(),
                         getTargetDate(), insertUseType);
                 // パッシブチェック用テーブルに処理対象の利用者・年月のレコードを登録する。※SQL
@@ -1776,7 +2010,9 @@ public class QS001 extends QS001Event {
      * @throws Exception 処理例外
      * @return ACPanel
      */
-    public ACPanel createServicePatternClass() throws Exception {
+    // 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年度診療報酬単価変更対応
+    public ACPanel createServicePatternClass(Date targetDate) throws Exception {
+    // 2008/03/18 [Masahiko_Higuchi] edit - end
         // ■現在選択中の独自サービス種類コードに対応するサービスパターンクラスを生成
         // ※現在選択中の独自サービス種類コード(selectedServiceKind)をもとにサービスパターンクラス(QS001003～)を生成して返す。
         switch (getSelectedServiceKind()) {
@@ -1800,11 +2036,25 @@ public class QS001 extends QS001Event {
         case 12111://短期入所生活介護
             return new QS001109();  
         case 12211://短期入所療養介護(老健)
-            return new QS001110();  
+            // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+                return new QS001110_H2005();
+            }else{
+                return new QS001110();
+            }
+            // 2008/04/14 [Masahiko_Higuchi] edit - end
+            
         case 12311://短期入所療養介護(療養病床を有する病院)
             return new QS001111();  
         case 12312://短期入所療養介護(療養病床を有する診療所)
-            return new QS001112();  
+        	// 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
+        	// 平成20年4月以降は生成先を変更する
+        	if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+        		return new QS001112_H2004();
+        	}else{
+        		return new QS001112();
+        	}
+        	// 2008/03/18 [Masahiko_Higuchi] edit - end        	
         case 12313://短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
             return new QS001113();  
         case 12314://短期入所療養介護(基準適合診療所)
@@ -1824,11 +2074,25 @@ public class QS001 extends QS001Event {
         case 15111://介護老人福祉施設
             return new QS001118();  
         case 15211://介護老人保健施設
-            return new QS001119();  
+            // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+                return new QS001119_H2005();
+            }else{
+                return new QS001119();
+            }
+            // 2008/04/14 [Masahiko_Higuchi] edit - end
         case 15311://介護療養型医療施設(療養病床を有する病院)
             return new QS001120();  
         case 15312://介護療養型医療施設(療養病床を有する診療所)
-            return new QS001121();  
+        	// 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
+        	// 平成20年4月以降は生成先を変更する
+        	if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+        		return new QS001121_H2004();
+        	}else{
+        		return new QS001121();
+        	}
+        	// 2008/03/18 [Masahiko_Higuchi] edit - end
+        	
         case 15313://介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
             return new QS001122();  
         case 15411://地域密着型介護福祉施設
@@ -1861,11 +2125,25 @@ public class QS001 extends QS001Event {
         case 12411: //介護予防短期入所生活介護
             return new QS001137();
         case 12511: //介護予防短期入所療養介護（老健）
-            return new QS001138();
+            // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+                return new QS001138_H2005();
+            }else{
+                return new QS001138();
+            }
+            // 2008/04/14 [Masahiko_Higuchi] edit - end
         case 12611: //介護予防短期入所療養介護（病院）
             return new QS001139();
         case 12612: //介護予防短期入所療養介護（診療所）
-            return new QS001140();
+        	// 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
+        	// 平成20年4月以降は生成先を変更する
+        	if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+        		return new QS001140_H2004();
+        	}else{
+        		return new QS001140();
+        	}
+        	// 2008/03/18 [Masahiko_Higuchi] edit - end
+        	
         case 12613: //介護予防短期入所療養介護（認知症疾患型）
             return new QS001141();
         case 12614: //介護予防短期入所療養介護（基準適合型診療所）
@@ -2244,6 +2522,10 @@ public class QS001 extends QS001Event {
                 while (it.hasNext()) {
                     Map row = (Map) it.next();
                     Object key = row.get("SERVICE_ID");
+                    // 2008/01/24 [Masahiko_Higuchi] add - begin サービスパターン設定ボタン操作実行時エラー対応
+                    // 処理用のキー情報を削除する
+                    row.remove("CORRECT_KEY");
+                    // 2008/01/24 [Masahiko_Higuchi] add - end
                     if (key != null) {
                         if (keySet.contains(key)) {
                             // キーの衝突
@@ -2283,7 +2565,9 @@ public class QS001 extends QS001Event {
         setSelectedServiceKind(serviceKind);
 
         // 選択中の独自サービス種類コード(selectedServiceKind)に対応したサービスパターンクラスを生成する。
-        ACPanel serviceClass = createServicePatternClass();
+        // 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応（介護療養型老人保健施設対応）
+        ACPanel serviceClass = createServicePatternClass(getCalcurater().getTargetDate());
+        // 2008/03/18 [Masahiko_Higuchi] edit - end
         if(serviceClass instanceof QS001ServicePanel){
             ((QS001ServicePanel)serviceClass).setDBManager(getDBManager());
             ((QS001ServicePanel)serviceClass).setOldFacilityUser(getOldFacilityUserFlag()==2);
@@ -2481,6 +2765,66 @@ public class QS001 extends QS001Event {
             getWeeklyPanel().setSchedule(schedules);
         }
         
+    }
+    /**
+     * 該当Map内に該当バインドパスの値が存在するかチェックします。
+     * 
+     * @return サービスの有無
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.0
+     * 
+     */
+    public boolean checkValidSysteBindPath(String[] bindPaths, VRMap service)
+            throws Exception {
+        Object obj = null;
+        // 引数の数ループ
+        for(int i=0;i<bindPaths.length;i++){
+            obj = VRBindPathParser.get(bindPaths[i], service);
+            // 比較処理
+            if(ACCastUtilities.toInt(obj,0)!=0){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    /**
+     * 名称ボタン押下時の処理
+     * 
+     * @since Version 5.4.1
+     * @author Masahiko Higuchi
+     */
+    protected void patternNameChangeActionPerformed(ActionEvent e) throws Exception {
+        // VRMap以外は処理対象外にする。
+        if (!(getPatternList().getSelectedValue() instanceof VRMap)) {
+            return;
+        }
+        VRMap pattern = (VRMap) getPatternList().getSelectedValue();
+        QS001033 qs001033 = new QS001033();
+        // パターンダイアログの表示
+        qs001033.showModel(pattern,getDBManager());
+        // パターン名称が変更されている場合
+        if(qs001033.isPatternNameChange()){
+            // 既存登録サービスパターンであるか
+            if(pattern.containsKey("SERVICE_ID")){
+                // 既存のサービスパターンである場合はDelete - Insertで処理する。
+                getDeleteReseveServicePatterns().add(pattern);
+                // サービスIDの取得
+                int serviceID = ACCastUtilities.toInt(pattern.getData("SERVICE_ID"),-1);
+                // 登録予定リスト内に既に同一のデータがないか走査する
+                for (int i = getInsertReserveServicePatterns().size(); i > 0 ; i--) {
+                    VRMap insertPattern = (VRMap)getInsertReserveServicePatterns().get(i-1);
+                    int insertPatternServiceID = ACCastUtilities.toInt(insertPattern.getData("SERVICE_ID"),-2);
+                    // 多重登録防止（同一のデータである場合は削ってから足す）
+                    if(serviceID == insertPatternServiceID){
+                        getInsertReserveServicePatterns().remove(i-1);
+                    }
+                }
+                // 最後に追加
+                getInsertReserveServicePatterns().add(pattern);
+            }
+        }
     }
 
 }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/09/06  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2007/04/04  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -162,6 +162,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel taxUnit;
 
   private ACButton taxChange;
+
+  private ACIntegerCheckBox showOldKohi;
 
   private ACGroupBox backupResotres;
 
@@ -902,6 +904,25 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 過去の公費も表示するを取得します。
+   * @return 過去の公費も表示する
+   */
+  public ACIntegerCheckBox getShowOldKohi(){
+    if(showOldKohi==null){
+
+      showOldKohi = new ACIntegerCheckBox();
+
+      showOldKohi.setText("過去の公費も表示する");
+
+      showOldKohi.setBindPath("SHOW_OLD_KOHI");
+
+      addShowOldKohi();
+    }
+    return showOldKohi;
+
+  }
+
+  /**
    * データの退避・復元領域を取得します。
    * @return データの退避・復元領域
    */
@@ -1256,6 +1277,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     others.add(getTaxContainer(), VRLayout.FLOW_RETURN);
 
+    others.add(getShowOldKohi(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -1296,6 +1319,13 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 税率編集に内部項目を追加します。
    */
   protected void addTaxChange(){
+
+  }
+
+  /**
+   * 過去の公費も表示するに内部項目を追加します。
+   */
+  protected void addShowOldKohi(){
 
   }
 

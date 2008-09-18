@@ -83,6 +83,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 
 /**
@@ -450,7 +451,9 @@ public class QO008 extends QO008Event {
         } else {
             if (!new Integer(SQL_MODE_DELETE).equals(map.getData("SQL_MODE"))) {
                 // 現在処理中の項目リストを取得
-                VRList list = (VRList) getListGroupMap().getData(String.valueOf(getFixedFormId()));
+                //// 2008/01/07 [Masahiko_Higuchi] edit - begin version 5.3.8 対応漏れエラー対応
+                VRList list = (VRList) getListGroupMap().getData(getTableType() + "-" + getFixedFormId());
+                //// 2008/01/07 [Masahiko_Higuchi] edit - end
                 // SQL_MODE_INSERTもしくはSQL_MODE_INSERT_TO_UPDATEの場合;
                 if (new Integer(SQL_MODE_INSERT)
                         .equals(map.getData("SQL_MODE"))

@@ -826,7 +826,16 @@ public class QO005 extends QO005Event {
 		} else {
 			params.setData("PRIVATE_EXPENSES", new Integer(CHECKBOX_OFF));
 		}
+        
+        if (ACFrame.getInstance().hasProperty("ScreenConfig/ShowOldKohi")) {
+            // paramsの KEY : SHOW_OLD_KOHI のVALUEに、設定ファイルの ID :
+            // ScreenConfig/ShowOldKohi の値を設定する。
+            params.setData("SHOW_OLD_KOHI", getProperty("ScreenConfig/ShowOldKohi"));
+        } else {
+            params.setData("SHOW_OLD_KOHI", new Integer(CHECKBOX_OFF));
+        }
 
+        
 		// 関数の変数として、paramsを返す。
 		return params;
 	}
@@ -908,7 +917,10 @@ public class QO005 extends QO005Event {
 			// 設定ファイルの ID : PrintConfig/privateExpenses の値に、paramsの KEY :
 			// PRIVATE_EXPENSES のVALUEを設定する。
 			setProperty("PrintConfig/PrivateExpenses", String.valueOf(params.getData("PRIVATE_EXPENSES")));
-
+            // 設定ファイルの ID : ScreenConfig/ShowOldKohi の値に、paramsの KEY :
+            // SHOW_OLD_KOHI のVALUEを設定する。
+            setProperty("ScreenConfig/ShowOldKohi", String.valueOf(params.getData("SHOW_OLD_KOHI")));
+            
             saveProperty();
             
 			return true;

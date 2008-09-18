@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/28  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2007/12/25  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -394,5 +395,13 @@ public abstract class QC005Event extends QC005SQL {
    * @return boolean
    */
   public abstract boolean checkValidInput() throws Exception;
+
+  /**
+   * 「データの印刷有無の判断」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean isPrintFinish() throws Exception;
 
 }

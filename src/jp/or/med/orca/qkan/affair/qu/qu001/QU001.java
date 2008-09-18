@@ -37,8 +37,13 @@ import java.text.Format;
 import java.util.Date;
 
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.TableModel;
+import javax.swing.text.StyledEditorKit.ItalicAction;
+
+import com.lowagie.text.pdf.hyphenation.TernaryTree.Iterator;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
@@ -48,10 +53,13 @@ import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACHashMapFormat;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.ac.util.splash.ACSplash;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.component.table.VRSortableTableModelar;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -66,8 +74,11 @@ import jp.or.med.orca.qkan.affair.qc.qc002.QC002;
 import jp.or.med.orca.qkan.affair.qc.qc003.QC003;
 import jp.or.med.orca.qkan.affair.qc.qc004.QC004;
 import jp.or.med.orca.qkan.affair.qc.qc005.QC005;
+import jp.or.med.orca.qkan.affair.qc.qc005.QC005P01;
+import jp.or.med.orca.qkan.affair.qc.qc005.QC005P02;
 import jp.or.med.orca.qkan.affair.qs.qs001.QS001;
 import jp.or.med.orca.qkan.affair.qu.qu002.QU002;
+import jp.or.med.orca.qkan.text.QkanPatientListDataTypeFormat;
 
 /**
  * 利用者一覧(QU001) 
@@ -125,7 +136,11 @@ public class QU001 extends QU001Event {
     ACTableModelAdapter model = new ACTableModelAdapter();
 
     model.setColumns(new String[]{
+            "SHOW_FLAG",
     		"SHOW_FLAG",
+            "REPORT",
+            "FINISH_FLAG",
+            "CHOISE",
 			"PATIENT_CODE",
 			"PATIENT_FAMILY_NAME+'　'+PATIENT_FIRST_NAME",
 			"PATIENT_FAMILY_KANA+'　'+PATIENT_FIRST_KANA",
@@ -133,18 +148,18 @@ public class QU001 extends QU001Event {
 			"PATIENT_BIRTHDAY",
 			"PATIENT_ZIP_FIRST+'-'+PATIENT_ZIP_SECOND",
 			"PATIENT_ADDRESS",
-			"PATIENT_TEL_FIRST+'-'+PATIENT_TEL_SECOND+'-'+PATIENT_TEL_THIRD",
-			"PATIENT_FAMILY_NAME",
-			"PATIENT_FIRST_NAME",
-			"PATIENT_FAMILY_KANA",
-			"PATIENT_FIRST_KANA",
-			"PATIENT_ZIP_FIRST",
-			"PATIENT_ZIP_SECOND",
-			"PATIENT_TEL_FIRST",
-			"PATIENT_TEL_SECOND",
-			"PATIENT_TEL_THIRD",
+			"PATIENT_TEL_FIRST+'-'+PATIENT_TEL_SECOND+'-'+PATIENT_TEL_THIRD",            
+            "PATIENT_FAMILY_NAME",
+            "PATIENT_FIRST_NAME",
+            "PATIENT_FAMILY_KANA",
+            "PATIENT_FIRST_KANA",
+            "PATIENT_ZIP_FIRST",
+            "PATIENT_ZIP_SECOND",
+            "PATIENT_TEL_FIRST",
+            "PATIENT_TEL_SECOND",
+            "PATIENT_TEL_THIRD"
     });
-    
+
     setPatientTableModel(model);
     
     // アダプタをテーブルのモデルとして設定する。
@@ -156,6 +171,18 @@ public class QU001 extends QU001Event {
 						"jp/nichicom/ac/images/icon/pix16/btn_080.png",
 						"jp/nichicom/ac/images/icon/pix16/btn_079.png" },
 						new Integer[] { new Integer(0), new Integer(1), }));
+  
+  /**TODO 2007年度対応 */
+  // フォーマッタの設定を行う      
+  getPatientReportColumn().setFormat(
+                new ACHashMapFormat(new String[] {
+                        "",
+                        "jp/nichicom/ac/images/icon/pix16/btn_013.png" },
+                        new Integer[] { new Integer(0), new Integer(1), }));
+  
+  getPatientFinishFlagColumn().setFormat(
+                new QkanPatientListDataTypeFormat(getNextAffair()));
+  // TODO
   
     // 検索を行う。
     doFind();
@@ -725,8 +752,13 @@ public class QU001 extends QU001Event {
     }else if("QC005".equals(getNextAffair())){
         //「QC005」の場合
     	
+        // 2008/01/07 [Masahiko Higuchi] del - begin 居宅療養管理指導書一括印刷
     	// QC005用の設定を行う。
-	    setState_INIT_KYOTAKU();
+	    // setState_INIT_KYOTAKU();
+        // 2008/01/07 [Masahiko Higuchi] del - end
+        // 2008/01/07 [Masahiko Higuchi] add - begin 居宅療養管理指導書一括印刷
+        doInitializeQC005();
+        // 2008/01/07 [Masahiko Higuchi] add - end
 	    
     }
       	
@@ -850,6 +882,17 @@ public class QU001 extends QU001Event {
 	// 取得したSQL文を発行し、結果をpatientDataに格納する。
     VRList patientData = new VRArrayList();    
     patientData = getDBManager().executeQuery(strSql);
+
+    // 2008/01/07 [Masahiko Higuchi] add - begin 居宅療養管理指導書の一括印刷
+    if("QC005".equals(getNextAffair())){
+        // 業務独自検索処理
+        patientData = doFindQC005(patientData,sqlParam);
+        if(patientData == null){
+            // 検索前チェックにかかった場合は処理終了
+            return;
+        }
+    }
+    // 2008/01/07 [Masahiko Higuchi] add - end
     
     // patientDataを退避する。
     setPatientData(patientData);
@@ -913,6 +956,77 @@ public class QU001 extends QU001Event {
     }
     
   }
+  
+  /**
+   * データを手動検索します。
+   * 
+   * @param targetList
+   * @param findParam
+   * @param keys
+   * @return
+   * @throws Exception
+   */
+  public VRList doMultiFind(VRList targetList,VRMap findParam,String[] keys)throws Exception{
+      // 不正な値が引数なので初期値で返す
+      if(targetList == null || targetList.isEmpty()){
+          return new VRArrayList();
+      }
+      boolean isFindKey =false;
+      // 検索キーの存在の有無
+      for(int i = 0;i<keys.length;i++){
+          if(findParam.containsKey(keys[i])){
+              // 存在有の場合はループを終了
+              isFindKey = true;
+              break;
+          }
+      }
+      // パラメーターが不正もしくは検索キーは未入力
+      if(findParam == null || !isFindKey){
+          // 何もせずに返す
+          return targetList;
+      }
+
+      // 事業所等名
+      // 介護支援専門員
+      for(int j = 0;j<keys.length;j++){
+          // 検索キーの存在の有無
+          if(findParam.containsKey(keys[j])){
+              // 手動検索
+              targetList = filterData(targetList,findParam,keys[j]);
+          }
+      }
+
+      return targetList;
+  }
+  
+  /**
+   * 検索キーを元に対象のデータ集合をフィルタリングします。
+   * @param targetList
+   * @param findParam
+   * @param filterKey
+   * @return
+   */
+  public VRList filterData(VRList targetList,VRMap findParam,String filterKey) throws Exception{
+      VRMap editMap = new VRHashMap();
+      VRList resultList = new VRArrayList();
+      String convValue;
+      // リストの数ループ処理
+      for(int i=0;i<targetList.size();i++){
+          if(targetList.getData(i) instanceof VRMap){
+              // 比較行を取り出す
+              editMap = (VRMap)targetList.getData(i);
+              // 比較する値を取り出す
+              convValue = ACCastUtilities.toString(editMap.getData(filterKey),"");
+              // 比較処理
+              if(convValue.equals(findParam.getData(filterKey))){
+                  resultList.add(editMap);
+              }
+          }
+      }
+          
+      return resultList;
+  }
+  
   
   /**
    * 「画面遷移処理」に関する処理を行います。
@@ -1149,4 +1263,503 @@ public class QU001 extends QU001Event {
 		}
 
 	}
+
+    /**  
+     * 印刷処理を行います。
+     * 
+     * @author Masahiko Higuchi
+     * @since version 5.4.1
+     * 
+     */
+    protected void printReportActionPerformed(ActionEvent e) throws Exception {
+        if("QC005".equals(getNextAffair())){
+            // テーブルよりデータを取得
+            VRList patientList = (VRList)getPatientTableModel().getAdaptee();
+            // 印刷前チェック
+            int result = checkPrintData(patientList);
+            // 印刷対象データ格納要
+            VRList printData = new VRArrayList();
+            ACSplash splash  = null;
+            switch(result) {
+            case PRINT_NORMAL: // 正常
+            case PRINT_EMPTY_AND_TARGET: // データ混合（印刷続行）
+                try{
+                    // スプラッシュの生成
+                    splash = (ACSplash)ACFrame.getInstance().getFrameEventProcesser().createSplash("居宅療養管理指導書印刷"); 
+                    for (int i = 0; i < patientList.size(); i++) {
+                        VRMap editMap = (VRMap)patientList.getData(i);
+                        // 選択有
+                        if(new Boolean(true).equals(VRBindPathParser.get("CHOISE",editMap))){
+                            // 居宅療養管理指導データ
+                            if(VRBindPathParser.has("TARGET_DATE",editMap)){
+                                printData.add(editMap);
+                            }
+                        }
+                    }
+                    // 印刷処理
+                    if(!doPrintQC005(printData)){
+                        // 印刷失敗時
+                        QkanMessageList.getInstance().ERROR_OF_PRINT();
+                        return;
+                    }
+                }finally{
+                    //スプラッシュを終了する。
+                    if(splash != null){
+                        splash.close();
+                        splash = null;
+                    }
+                }
+                break;
+            case PRINT_NO_SELECT: // データ選択無し（続行）
+                try{
+                    boolean isPrint = false;
+                    splash = (ACSplash)ACFrame.getInstance().getFrameEventProcesser().createSplash("居宅療養管理指導書印刷"); 
+                    for (int i = 0; i < patientList.size(); i++) {
+                        VRMap editMap = (VRMap)patientList.getData(i);
+                        // 居宅療養管理指導データ
+                        if(VRBindPathParser.has("TARGET_DATE",editMap)){
+                            // 選択ありに設定する。
+                            VRBindPathParser.set("CHOISE",editMap,new Boolean(true));
+                            printData.add(editMap);
+                            // 最低でも1件は印刷データがある。
+                            isPrint = true;
+                        }
+                    }
+                    // 印刷対象が存在しない場合
+                    if(!isPrint){
+                        QkanMessageList.getInstance()
+                                .QU001_ERROR_OF_NO_PRINT_DATA("居宅療養管理指導書");
+                    }
+                    
+                    // 印刷処理
+                    if(!doPrintQC005(printData)){
+                        // 印刷失敗時
+                        QkanMessageList.getInstance().ERROR_OF_PRINT();
+                        return;
+                    }
+                    // テーブル再描画
+                    getPatients().repaint();
+                }finally{
+                    //スプラッシュを終了する。
+                    if(splash != null){
+                        splash.close();
+                        splash = null;
+                    }
+                }
+                break;
+            case PRINT_ERROR: // エラーまたはキャンセル
+                // 処理終了
+                return;
+            }
+            // 印刷履歴を確定する場合
+            if(QkanMessageList.getInstance().QP001_PRINT_COMMIT() == ACMessageBox.RESULT_YES){
+                // トランザクションの開始
+                getDBManager().beginTransaction();
+                try{
+                    // テーブルの件数ループ処理
+                    for(int i=0;i<patientList.size();i++){
+                        VRMap updateMap = (VRMap)patientList.get(i);
+                        // 印刷対象である場合
+                        if (new Boolean(true).equals(updateMap
+                                .getData("CHOISE"))
+                                && new Integer(1).equals(updateMap
+                                        .getData("REPORT"))) {
+                            VRMap updateParam = new VRHashMap();
+                            // 印刷済みコード
+                            int printedCode = QkanPatientListDataTypeFormat
+                                    .getPrintedCode(getNextAffair(), updateMap
+                                            .getData("FINISH_FLAG"));
+                            // テーブルにもデータを反映する
+                            updateMap.setData("FINISH_FLAG",ACCastUtilities.toInteger(printedCode));
+                            // パラメーター設定
+                            updateParam.setData("FINISH_FLAG",ACCastUtilities.toInteger(printedCode));
+                            updateParam.setData("PATIENT_ID",updateMap.getData("PATIENT_ID"));
+                            updateParam.setData("TARGET_DATE",updateMap.getData("TARGET_DATE"));
+                            // 更新処理
+                            getDBManager().executeUpdate(getSQL_UPDATE_KYOTAKU_RYOYO_FINISH_FLAG(updateParam));
+                        }
+                    }
+                    
+                    // データをコミットする。
+                    getDBManager().commitTransaction();
+                    
+                }catch(Exception sqlExp){
+                    // ロールバックする。
+                    getDBManager().rollbackTransaction();
+                }
+            }
+            // テーブルの再描画処理
+            getPatients().repaint();
+        }
+    }
+    
+    /**
+     * 事業所コンボ選択時処理
+     * 
+     * @since version 5.4.1
+     * @author Masahiko Higuchi
+     */
+    protected void providerNameActionPerformed(ActionEvent e) throws Exception {
+        //Mapを生成
+        VRMap comboItemMap = new VRHashMap();
+        // 空白選択に対応
+        if(getProviderName().getSelectedModelItem() instanceof VRMap){
+            //現在選択中のコンボからレコードを取得
+            comboItemMap = (VRMap)getProviderName().getSelectedModelItem();
+            
+            if(comboItemMap != null){
+                //介護支援専門員を取得
+                VRList senmoninList = getDBManager().executeQuery(
+                        getSQL_GET_CARE_MANAGER(comboItemMap));
+                
+                if(senmoninList != null && senmoninList.size() > 0){
+                    for(int i = 0; i < senmoninList.size(); i++){
+                        VRMap map = new VRHashMap();
+                        map = (VRMap)senmoninList.getData(i);
+                        //専門員の名前を取得し姓名を結合する。
+                        map.setData("STAFF_NAME", QkanCommon.toFullName(
+                                ACCastUtilities.toString(map
+                                        .getData("STAFF_FAMILY_NAME")),
+                                ACCastUtilities.toString(map
+                                        .getData("STAFF_FIRST_NAME"))));
+                    }
+                }
+                //バインドパスを設定
+                comboItemMap.setData("SENMONIN",senmoninList);
+                //画面に展開
+                getSenmonin().setModelSource(comboItemMap);
+                getSenmonin().bindModelSource();
+            }
+        }else{
+            // 未選択時は空白で格納する
+            VRList blankList = new VRArrayList();
+            comboItemMap.setData("SENMONIN",blankList);
+            getSenmonin().setModelSource(comboItemMap);
+            getSenmonin().bindModelSource();
+        }
+    }
+
+    /**
+     * 居宅療養管理指導の一覧初期化処理
+     * 
+     * @since version 5.4.1
+     * @author Masahiko Higuchi
+     */
+    public void doInitializeQC005() throws Exception {
+        // QC005用の設定を行う。
+        setState_INIT_KYOTAKU();
+        // 事業所情報の取得
+        VRList providerList = QkanCommon.getProviderInfo(getDBManager());
+        // 事業所情報を設定
+        VRMap comboItemMap = new VRHashMap();
+        comboItemMap.setData("PROVIDER_NAMES",providerList);
+        // モデル設定
+        getProviderFindContents().setModelSource(comboItemMap);
+        // モデル反映
+        getProviderFindContents().bindModelSource();
+    }
+
+    /**
+     * 居宅療養管理指導の一覧検索処理
+     * 
+     * @since version 5.4.1
+     * @author Masahiko Higuchi
+     */
+    public VRList doFindQC005(VRList patientData,VRMap sqlParam) throws Exception {
+        // 対象年月
+        if(getTargetDate().isValidDate()){
+            // 画面の「対象年月」の値を取得する。
+            Date targetDate = getTargetDate().getDate();
+            // 取得した値をsqlParamの KEY : DATE_START の VALUE として設定する。
+            VRBindPathParser.set("DATE_START", sqlParam, ACDateUtilities.toFirstDayOfMonth(targetDate));      
+            // 取得した値をsqlParamの KEY : DATE_END の VALUE として設定する。
+            VRBindPathParser.set("DATE_END", sqlParam, ACDateUtilities.toLastDayOfMonth(targetDate));
+            // 項目が選択されている場合
+            if(getProviderName().getSelectedModelItem() instanceof VRMap){
+                VRMap providerMap = (VRMap)getProviderName().getSelectedModelItem();
+                String providerName = ACCastUtilities.toString(VRBindPathParser.get("PROVIDER_NAME",providerMap));
+                VRBindPathParser.set("PROVIDER_NAME",sqlParam,providerName);
+            }
+            // 項目が選択されている場合
+            if(getSenmonin().getSelectedModelItem() instanceof VRMap){
+                VRMap senmoninMap = (VRMap)getSenmonin().getSelectedModelItem();
+                String senmoninName = ACCastUtilities.toString(VRBindPathParser.get("STAFF_NAME",senmoninMap));
+                VRBindPathParser.set("SENMONIN",sqlParam,senmoninName);
+            }
+            // 居宅療養管理データ取得用SQL
+            String strKyotakuSql = getSQL_GET_KYOTAKU_RYOYO_PATIENT(sqlParam);
+            // 格納用データ群
+            VRList kyotakuData = new VRArrayList();
+            kyotakuData = getDBManager().executeQuery(strKyotakuSql);
+            // データ数ループ処理
+            for(int j=0;j<patientData.size();j++){
+                VRMap patientMap = new VRHashMap();
+                patientMap = (VRMap)patientData.get(j);
+                // 利用者の数ループ処理
+                for(int k=0;k<kyotakuData.size();k++){
+                    VRMap kyotakuMap = new VRHashMap();
+                    kyotakuMap = (VRMap)kyotakuData.get(k);
+                    // 居宅療養管理指導のデータがある場合は有効にする。
+                    if (VRBindPathParser.get("TARGET_DATE", kyotakuMap) != null
+                                && patientMap.getData("PATIENT_ID").equals(
+                                        kyotakuMap.getData("PATIENT_ID"))) {
+                        // 選択有
+                        patientMap.setData("REPORT",new Integer(1));
+                        // 印刷状態
+                        patientMap.setData("FINISH_FLAG",ACCastUtilities.toInteger(kyotakuMap.getData("FINISH_FLAG"),0));
+                        // 選択チェックのフラグが入っていない場合
+                        if(!patientMap.containsKey("CHOISE")){
+                            patientMap.setData("CHOISE",new Boolean(false));
+                        }
+                        // 全ての帳票データを持たせておく
+                        patientMap.putAll(kyotakuMap);
+                        // 一致した場合は次の対象者へ
+                        break;
+                    }else{
+                        // 帳票が未選択の場合のみ
+                        if(!patientMap.containsKey("CHOISE")){
+                            patientMap.setData("CHOISE",new Boolean(false));
+                            patientMap.setData("REPORT",new Integer(0));
+                        }
+                    }
+                }
+            }
+            // 手動検索処理
+            String[] keys = {"PROVIDER_NAME","SENMONIN"};
+            patientData = doMultiFind(patientData,sqlParam,keys);
+            
+            return patientData;
+            
+        }else{
+            // エラーメッセージ
+            QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("対象年月の");
+            //フォーカスを当てる
+            getTargetDate().requestFocus();
+
+            return null;
+            
+        }
+    }
+
+    /**
+     * 居宅療養管理指導書の一括印刷処理
+     * 
+     * @author Masahiko Higuchi
+     * @since version 5.4.1
+     */
+    public boolean doPrintQC005(VRList printData) throws Exception {
+
+        QC005P01 pageCreater1 = new QC005P01();
+        QC005P02 pageCreater2 = new QC005P02();
+        ACChotarouXMLWriter writer = new ACChotarouXMLWriter();
+        // 印刷開始
+        writer.beginPrintEdit();
+        
+        for(int i=0;i<printData.size();i++){
+            VRMap printParam = parseQC005PrintData((VRMap)printData.getData(i));
+            // 1枚目
+            if(!pageCreater1.doPrint(writer,printParam)){
+                // 何らかのエラーが発生した場合
+                return false;
+            }
+            // 2枚目
+            if(!pageCreater2.doPrint(writer,printParam)){
+                return false;
+            }
+        }
+        // 印刷終了
+        writer.endPrintEdit();
+        // 帳票の生成
+        ACChotarouXMLUtilities.openPDF(writer);
+        
+        return true;
+    }
+
+    /**
+     * 印刷対象のデータをチェックします。
+     * 
+     * @return 0:正常 1:データ選択無し(続行) 2:印刷対象・対象外データの混合データ(続行) 99:エラー(処理キャンセル）
+     * @since version 5.4.1
+     * @author Masahiko Higuchi
+     * 
+     */
+    public int checkPrintData(VRList patientData) throws Exception {
+        // 利用者情報を一括取得
+        boolean isPrintData = false; // 印刷対象データが選択されているか
+        boolean isEmptyDataSelect = false; // 印刷対象外データを選択しているか
+        boolean isPrintDataToAllPatient = false; // 印刷可能なデータはあるか（全利用者）
+        
+        for (int i = 0; i < patientData.size(); i++) {
+            VRMap editMap = (VRMap)patientData.getData(i);
+            // 選択がTRUEの場合
+            if(new Boolean(true).equals(VRBindPathParser.get("CHOISE",editMap))){
+                // 居宅療養管理指導のデータが存在しているか
+                if(VRBindPathParser.has("TARGET_DATE",editMap)){
+                    isPrintData = true;
+                    isPrintDataToAllPatient = true;
+                }else{
+                    // 対象外データ選択有
+                    isEmptyDataSelect = true;
+                }
+                // 両方変更済みの場合はループ終了
+                if(isPrintData && isEmptyDataSelect){
+                    break;
+                }
+            }else{
+                // 居宅療養管理指導のデータが存在しているか
+                if(VRBindPathParser.has("TARGET_DATE",editMap)){
+                    isPrintDataToAllPatient = true;
+                }                
+            }
+        }
+        // 全利用にデータが存在しない
+        if(!isPrintDataToAllPatient){
+            QkanMessageList.getInstance().QU001_ERROR_OF_NO_PRINT_DATA("居宅療養管理指導書");
+            return PRINT_ERROR;
+        }
+        // 印刷対象データなし And 対象外データ選択あり
+        // 対象外だけが選択されている
+        if(!isPrintData && isEmptyDataSelect){
+            QkanMessageList.getInstance().QU001_ERROR_OF_NO_PRINT_DATA("居宅療養管理指導書");
+            return PRINT_ERROR;
+        }
+        // 印刷対象データなし And 対象外データ選択なし
+        // 全く選択されていない
+        if(!isPrintData && !isEmptyDataSelect){
+            if (QkanMessageList.getInstance()
+                    .QU001_WARNING_OF_PRINT_TARGET_NO_SELECT("居宅療養管理指導書") == ACMessageBox.RESULT_OK) {
+                // 続行
+                return PRINT_NO_SELECT;
+            }else{
+                // キャンセル
+                return PRINT_ERROR;
+            }
+        }
+        // 印刷対象データあり And 対象外データあり 
+        // 正常・異常混合
+        if(isPrintData && isEmptyDataSelect){
+            if (QkanMessageList.getInstance()
+                    .QU001_WARNING_OF_EMPTY_DATA_REPORT_MIXED("居宅療養管理指導書") == ACMessageBox.RESULT_OK) {
+                // 続行
+                return PRINT_EMPTY_AND_TARGET;
+            }else{
+                // キャンセル
+                return PRINT_ERROR;
+            }            
+        }
+        // 正常
+        return PRINT_NORMAL;
+    }
+    
+    /**
+     * 帳票印刷用のデータ変換処理を行います。
+     * 
+     * @param 帳票データ
+     * @return 変換後のデータ（1利用者帳票データ）
+     * @since version 5.4.1
+     * @author Masahiko Higuchi
+     * 
+     */
+    public VRMap parseQC005PrintData(VRMap printParam) throws Exception {
+        VRMap parseParam = new VRHashMap();
+        
+        parseParam = (VRMap)printParam.clone();
+        
+        String patientName = QkanCommon.toFullName(VRBindPathParser.get(
+                "PATIENT_FAMILY_NAME", printParam), VRBindPathParser.get(
+                "PATIENT_FIRST_NAME", printParam));
+        // 利用者名
+        VRBindPathParser.set("PATIENT_NAME",parseParam,patientName);
+        // 変換処理用のKEY群
+        String convKeys[] = { "VISIT_THIS_MONTH_NO1", "VISIT_THIS_MONTH_NO2",
+                "VISIT_THIS_MONTH_NO3", "VISIT_THIS_MONTH_NO4",
+                "VISIT_THIS_MONTH_NO5", "VISIT_THIS_MONTH_NO6",
+                "VISIT_NEXT_MONTH_NO1", "VISIT_NEXT_MONTH_NO2",
+                "VISIT_NEXT_MONTH_NO3", "VISIT_NEXT_MONTH_NO4",
+                "VISIT_NEXT_MONTH_NO5", "VISIT_NEXT_MONTH_NO6" };
+        // 変換対象のキーを連続変換処理
+        for(int i= 0;i<convKeys.length;i++){
+            int dayValue = 0;
+            String key = convKeys[i];
+            // nullの場合は空白に変換する
+            if(ACTextUtilities.isNullText(VRBindPathParser.get(key,printParam))){
+                VRBindPathParser.set(key, parseParam,
+                        "");
+                // 次の対象処理へ
+                continue;
+            }
+            // null以外の場合は日で変換
+            dayValue = ACDateUtilities.getDayOfMonth(ACCastUtilities
+                    .toDate(VRBindPathParser
+                            .get(key, printParam)));
+            // データを格納
+            VRBindPathParser.set(key, parseParam,
+                    ACCastUtilities.toString(dayValue));
+        }
+        // データシフト処理
+        String thisMonth[] = new String[6];
+        String nextMonth[] = new String[6];
+        // 今月分の日付をコピー
+        System.arraycopy(convKeys,0,thisMonth,0,6);
+        // 次月分の日付をコピー
+        System.arraycopy(convKeys,6,nextMonth,0,6);
+        // 居宅療養管理指導書よりロジックパクリ
+        int end = thisMonth.length;
+        for(int i=0; i<end; i++){
+            if(ACTextUtilities.isNullText(
+                    VRBindPathParser.get(thisMonth[i], parseParam))){
+                //空欄があれば右方向へ走査
+                boolean find=false;
+                for(int j=i+1; j<end; j++){
+                    Object obj =VRBindPathParser.get(thisMonth[j], parseParam); 
+                    if(!ACTextUtilities.isNullText(obj)){
+                        //空欄以外データが見つかれば左へ転記
+                        VRBindPathParser.set(thisMonth[i], parseParam, obj);
+                        VRBindPathParser.set(thisMonth[j], parseParam, "");
+                        find = true;
+                        break;
+                    }
+                }
+                if(!find){
+                    //右方向に新規データがなければ処理終了
+                    break;
+                }
+            }
+        }
+        
+        end = nextMonth.length;
+        for(int i=0; i<end; i++){
+            if(ACTextUtilities.isNullText(
+                    VRBindPathParser.get(nextMonth[i], parseParam))){
+                //空欄があれば右方向へ走査
+                boolean find=false;
+                for(int j=i+1; j<end; j++){
+                    Object obj =VRBindPathParser.get(nextMonth[j], parseParam); 
+                    if(!ACTextUtilities.isNullText(obj)){
+                        //空欄以外データが見つかれば左へ転記
+                        VRBindPathParser.set(nextMonth[i], parseParam, obj);
+                        VRBindPathParser.set(nextMonth[j], parseParam, "");
+                        find = true;
+                        break;
+                    }
+                }
+                if(!find){
+                    //右方向に新規データがなければ処理終了
+                    break;
+                }
+            }
+        }
+        
+        VRBindPathParser.set("PATIENT_ADDRESS",parseParam,VRBindPathParser.get("KYOTAKU_PATIENT_ADDRESS",parseParam));
+        VRBindPathParser.set("PATIENT_TEL_FIRST",parseParam,VRBindPathParser.get("KYOTAKU_PATIENT_TEL_FIRST",parseParam));
+        VRBindPathParser.set("PATIENT_TEL_SECOND",parseParam,VRBindPathParser.get("KYOTAKU_PATIENT_TEL_SECOND",parseParam));
+        VRBindPathParser.set("PATIENT_TEL_THIRD",parseParam,VRBindPathParser.get("KYOTAKU_PATIENT_TEL_THIRD",parseParam));
+        
+        return parseParam;
+    }
+
+    protected void patientChoiseColumnCheckMenuActionPerformed(ActionEvent e) throws Exception {
+        // TODO 自動生成されたメソッド・スタブ
+        
+    }
 }

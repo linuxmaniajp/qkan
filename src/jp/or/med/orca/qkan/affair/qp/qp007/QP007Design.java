@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/02/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2008/02/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -125,6 +126,8 @@ public class QP007Design extends QkanAffairDialog {
   private ACIntegerCheckBox patientBillSetupUnderPrintOn;
 
   private ACIntegerCheckBox patientBillSetupMedicalTreatmentOn;
+
+  private ACIntegerCheckBox patientBillSetupDetailsPrintOn;
 
   private ACPanel buttons;
 
@@ -251,9 +254,9 @@ public class QP007Design extends QkanAffairDialog {
 
       patientBillSetupPapersRadio.setBindPath("TARGET_RADIO");
 
-      patientBillSetupPapersRadio.setModel(getPatientBillSetupPapersRadioModel());
-
       patientBillSetupPapersRadio.setUseClearButton(false);
+
+      patientBillSetupPapersRadio.setModel(getPatientBillSetupPapersRadioModel());
 
       addPatientBillSetupPapersRadio();
     }
@@ -269,6 +272,7 @@ public class QP007Design extends QkanAffairDialog {
     if(patientBillSetupPapersRadioContainer==null){
       patientBillSetupPapersRadioContainer = new ACLabelContainer();
       patientBillSetupPapersRadioContainer.setFollowChildEnabled(true);
+      patientBillSetupPapersRadioContainer.setVAlignment(VRLayout.CENTER);
       patientBillSetupPapersRadioContainer.add(getPatientBillSetupPapersRadio(), null);
     }
     return patientBillSetupPapersRadioContainer;
@@ -385,6 +389,7 @@ public class QP007Design extends QkanAffairDialog {
     if(patientBillSetupBillDateContainer==null){
       patientBillSetupBillDateContainer = new ACLabelContainer();
       patientBillSetupBillDateContainer.setFollowChildEnabled(true);
+      patientBillSetupBillDateContainer.setVAlignment(VRLayout.CENTER);
       patientBillSetupBillDateContainer.add(getPatientBillSetupBillDate(), null);
     }
     return patientBillSetupBillDateContainer;
@@ -417,6 +422,7 @@ public class QP007Design extends QkanAffairDialog {
     if(patientBillSetupReceiptDateContainer==null){
       patientBillSetupReceiptDateContainer = new ACLabelContainer();
       patientBillSetupReceiptDateContainer.setFollowChildEnabled(true);
+      patientBillSetupReceiptDateContainer.setVAlignment(VRLayout.CENTER);
       patientBillSetupReceiptDateContainer.add(getPatientBillSetupReceiptDate(), null);
     }
     return patientBillSetupReceiptDateContainer;
@@ -491,6 +497,25 @@ public class QP007Design extends QkanAffairDialog {
       addPatientBillSetupMedicalTreatmentOn();
     }
     return patientBillSetupMedicalTreatmentOn;
+
+  }
+
+  /**
+   * 詳細版で印刷するを取得します。
+   * @return 詳細版で印刷する
+   */
+  public ACIntegerCheckBox getPatientBillSetupDetailsPrintOn(){
+    if(patientBillSetupDetailsPrintOn==null){
+
+      patientBillSetupDetailsPrintOn = new ACIntegerCheckBox();
+
+      patientBillSetupDetailsPrintOn.setText("詳細版で印刷する");
+
+      patientBillSetupDetailsPrintOn.setBindPath("DETAILS_CHECK");
+
+      addPatientBillSetupDetailsPrintOn();
+    }
+    return patientBillSetupDetailsPrintOn;
 
   }
 
@@ -621,10 +646,15 @@ public class QP007Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(520, 200);
+      setSize(520, 220);
 
       // ウィンドウを中央に配置
-      Point pos = ACFrame.getInstance().getLocationOnScreen();
+      Point pos;
+      try{
+          pos= ACFrame.getInstance().getLocationOnScreen();
+      }catch(Exception ex){
+          pos = new Point(0,0);
+      }
       Dimension screenSize = ACFrame.getInstance().getSize();
       Dimension frameSize = this.getSize();
       if (frameSize.height > screenSize.height) {
@@ -725,12 +755,15 @@ public class QP007Design extends QkanAffairDialog {
   protected void addPatientBillSetupPapersRadioModel(){
 
     getPatientBillSetupPapersRadioItem1().setButtonIndex(1);
+
     getPatientBillSetupPapersRadioModel().add(getPatientBillSetupPapersRadioItem1());
 
     getPatientBillSetupPapersRadioItem2().setButtonIndex(2);
+
     getPatientBillSetupPapersRadioModel().add(getPatientBillSetupPapersRadioItem2());
 
     getPatientBillSetupPapersRadioItem3().setButtonIndex(3);
+
     getPatientBillSetupPapersRadioModel().add(getPatientBillSetupPapersRadioItem3());
 
   }
@@ -797,7 +830,9 @@ public class QP007Design extends QkanAffairDialog {
 
     patientBillSetupUnder.add(getPatientBillSetupUnderPrintOn(), VRLayout.FLOW);
 
-    patientBillSetupUnder.add(getPatientBillSetupMedicalTreatmentOn(), VRLayout.FLOW);
+    patientBillSetupUnder.add(getPatientBillSetupMedicalTreatmentOn(), VRLayout.FLOW_RETURN);
+
+    patientBillSetupUnder.add(getPatientBillSetupDetailsPrintOn(), VRLayout.FLOW);
 
   }
 
@@ -812,6 +847,13 @@ public class QP007Design extends QkanAffairDialog {
    * 医療費控除対応版で出力に内部項目を追加します。
    */
   protected void addPatientBillSetupMedicalTreatmentOn(){
+
+  }
+
+  /**
+   * 詳細版で印刷するに内部項目を追加します。
+   */
+  protected void addPatientBillSetupDetailsPrintOn(){
 
   }
 
@@ -886,7 +928,9 @@ public class QP007Design extends QkanAffairDialog {
     return true;
   }
   public Component getFirstFocusComponent() {
+
     return null;
+
   }
   public void initAffair(ACAffairInfo affair) throws Exception {
   }
@@ -895,7 +939,7 @@ public class QP007Design extends QkanAffairDialog {
     if(visible){
       try{
         initAffair(null);
-      }catch(Exception ex){
+      }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(ex);
       }
     }
@@ -907,6 +951,7 @@ public class QP007Design extends QkanAffairDialog {
       ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       new QP007Design().setVisible(true);
+      System.exit(0);
     } catch (Exception e) {
       e.printStackTrace();
     }

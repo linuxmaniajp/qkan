@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/10/12  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2008/01/15  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -3395,6 +3395,315 @@ public class QkanMessageList {
   public int QP001_WARNING_OF_INJUSTICE_CLAIM() throws Exception{
 
     return ACMessageBox.show("高齢7/8の指定に誤りがあります。" + ACConstants.LINE_SEPARATOR + "印刷を実行しますか?", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「利用者負担の発生する利用者が選択されていません。＜改行＞印刷を中止します。」を表示します。
+   * <p>
+   * 利用者負担額の発生しない利用者のみが選択されている場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_ERROR_OF_PATIENT_SELF_NO_PRICE() throws Exception{
+
+    return ACMessageBox.show("利用者負担の発生する利用者が選択されていません。" + ACConstants.LINE_SEPARATOR + "印刷を中止します。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「選択されている利用者の[reportName]の情報が存在しません。＜改行＞印刷を中止します。」を表示します。
+   * <p>
+   * 印刷対象の帳票データが1件も存在しない場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_ERROR_OF_EMPTY_DATA_REPORT_ONLY(VRMap param) throws Exception {
+    return QU001_ERROR_OF_EMPTY_DATA_REPORT_ONLY(
+
+      VRBindPathParser.get("reportName", param)
+
+           );
+  }
+  /**
+   * メッセージ「選択されている利用者の[reportName]の情報が存在しません。＜改行＞印刷を中止します。」を表示します。
+   * <p>
+   * 印刷対象の帳票データが1件も存在しない場合
+   * </p>
+   * @param arg1 reportName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_ERROR_OF_EMPTY_DATA_REPORT_ONLY(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("選択されている利用者の");
+
+    sb.append(arg1);
+
+    sb.append("の情報が存在しません。" + ACConstants.LINE_SEPARATOR + "印刷を中止します。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[reportName]の情報が存在しない利用者が含まれています。＜改行＞印刷してもよろしいですか？」を表示します。
+   * <p>
+   * 印刷対象に帳票データの存在しない対象者が含まれる場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_EMPTY_DATA_REPORT_MIXED(VRMap param) throws Exception {
+    return QU001_WARNING_OF_EMPTY_DATA_REPORT_MIXED(
+
+      VRBindPathParser.get("reportName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[reportName]の情報が存在しない利用者が含まれています。＜改行＞印刷してもよろしいですか？」を表示します。
+   * <p>
+   * 印刷対象に帳票データの存在しない対象者が含まれる場合
+   * </p>
+   * @param arg1 reportName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_EMPTY_DATA_REPORT_MIXED(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("の情報が存在しない利用者が含まれています。" + ACConstants.LINE_SEPARATOR + "印刷してもよろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_YES);
+
+  }
+
+  /**
+   * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞表示されている利用者の印刷可能な[reportName]を印刷してもよろしいですか？」を表示します。
+   * <p>
+   * 印刷対象にチェックがついていない場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_PRINT_TARGET_NO_SELECT(VRMap param) throws Exception {
+    return QU001_WARNING_OF_PRINT_TARGET_NO_SELECT(
+
+      VRBindPathParser.get("reportName", param)
+
+           );
+  }
+  /**
+   * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞表示されている利用者の印刷可能な[reportName]を印刷してもよろしいですか？」を表示します。
+   * <p>
+   * 印刷対象にチェックがついていない場合
+   * </p>
+   * @param arg1 reportName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_PRINT_TARGET_NO_SELECT(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("印刷可能な");
+
+    sb.append(arg1);
+
+    sb.append("が選択されていません。" + ACConstants.LINE_SEPARATOR + "表示されている利用者の印刷可能な");
+
+    sb.append(arg1);
+
+    sb.append("を印刷してもよろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「印刷に失敗しました。」を表示します。
+   * <p>
+   * 印刷処理に失敗した場合、原則出ることはない
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int ERROR_OF_PRINT() throws Exception{
+
+    return ACMessageBox.show("印刷に失敗しました。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「利用者負担の発生しない利用者が含まれています。＜改行＞印刷してもよろしいですか？」を表示します。
+   * <p>
+   * 利用者向け請求書選択バージョンの印刷
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_OF_CUSTOM_PRINT() throws Exception{
+
+    return ACMessageBox.showYesNoCancel("利用者負担の発生しない利用者が含まれています。" + ACConstants.LINE_SEPARATOR + "印刷してもよろしいですか？", "印刷する(全て)(O)", 'O', "印刷する(請求あり)(N)", 'N', ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「利用者負担の発生しない利用者が選択されています。＜改行＞印刷してもよろしいですか？」を表示します。
+   * <p>
+   * 印刷対象が存在しないが印刷する場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_EMPTY_DATA_REPORT_ONLY() throws Exception{
+
+    return ACMessageBox.show("利用者負担の発生しない利用者が選択されています。" + ACConstants.LINE_SEPARATOR + "印刷してもよろしいですか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_YES);
+
+  }
+
+  /**
+   * メッセージ「印刷済みの[reportName]です。＜改行＞更新すると印刷済みでなくなります。＜改行＞更新してもよろしいですか？＜改行＞（印刷済みにする場合は再度印刷を行う必要があります。）」を表示します。
+   * <p>
+   * 既に印刷済みの居宅量管理指導書を保存する場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO(VRMap param) throws Exception {
+    return QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO(
+
+      VRBindPathParser.get("reportName", param)
+
+           );
+  }
+  /**
+   * メッセージ「印刷済みの[reportName]です。＜改行＞更新すると印刷済みでなくなります。＜改行＞更新してもよろしいですか？＜改行＞（印刷済みにする場合は再度印刷を行う必要があります。）」を表示します。
+   * <p>
+   * 既に印刷済みの居宅量管理指導書を保存する場合
+   * </p>
+   * @param arg1 reportName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("印刷済みの");
+
+    sb.append(arg1);
+
+    sb.append("です。" + ACConstants.LINE_SEPARATOR + "更新すると印刷済みでなくなります。" + ACConstants.LINE_SEPARATOR + "更新してもよろしいですか？" + ACConstants.LINE_SEPARATOR + "（印刷済みにする場合は再度印刷を行う必要があります。）");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞[reportName]の情報を保存することで印刷することが可能です。」を表示します。
+   * <p>
+   * 印刷不可能な場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_ERROR_OF_NO_PRINT_DATA(VRMap param) throws Exception {
+    return QU001_ERROR_OF_NO_PRINT_DATA(
+
+      VRBindPathParser.get("reportName", param)
+
+           );
+  }
+  /**
+   * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞[reportName]の情報を保存することで印刷することが可能です。」を表示します。
+   * <p>
+   * 印刷不可能な場合
+   * </p>
+   * @param arg1 reportName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_ERROR_OF_NO_PRINT_DATA(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("印刷可能な");
+
+    sb.append(arg1);
+
+    sb.append("が選択されていません。" + ACConstants.LINE_SEPARATOR + "");
+
+    sb.append(arg1);
+
+    sb.append("の情報を保存することで印刷することが可能です。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「サービスパターン名が未入力です。」を表示します。
+   * <p>
+   * サービスパターン名が入力されていない場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_SERVICE_PATTERN_NAME() throws Exception{
+
+    return ACMessageBox.show("サービスパターン名が未入力です。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「摘要欄に値を設定する場合は、数字6桁を設定してください。」を表示します。
+   * <p>
+   * 摘要欄に数値6桁以外が入力されている場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_TEKIYOU_INPUT() throws Exception{
+
+    return ACMessageBox.show("摘要欄に値を設定する場合は、数字6桁を設定してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「入力されたパスワードに空白文字が含まれています。＜改行＞空白文字を含んだパスワードは使用できません。」を表示します。
+   * <p>
+   * 日レセ連係時に空白を含むパスワードが設定されていた場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO013_ERROR_OF_BLANK_IN_PASSWORD() throws Exception{
+
+    return ACMessageBox.show("入力されたパスワードに空白文字が含まれています。" + ACConstants.LINE_SEPARATOR + "空白文字を含んだパスワードは使用できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
   }
 
