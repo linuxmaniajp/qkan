@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/01/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2008/09/18  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その多機能 (O)
@@ -205,6 +205,7 @@ public abstract class QO013Event extends QO013SQL {
   public static final int CODE_RECEIPT_VERSION = 271;
   public static final int DEFAULT_RECEIPT_VERSION_INDEX = 1;
   private int nowPage;
+  private Integer hospNum;
   private ACTableModelAdapter receiptTableModel;
   private VRList receiptDataList = new VRArrayList();
   //getter/setter
@@ -327,6 +328,21 @@ public abstract class QO013Event extends QO013SQL {
    */
   protected void setNowPage(int nowPage){
     this.nowPage = nowPage;
+  }
+
+  /**
+   * hospNumを返します。
+   * @return hospNum
+   */
+  protected Integer getHospNum(){
+    return hospNum;
+  }
+  /**
+   * hospNumを設定します。
+   * @param hospNum hospNum
+   */
+  protected void setHospNum(Integer hospNum){
+    this.hospNum = hospNum;
   }
 
   /**

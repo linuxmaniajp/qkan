@@ -126,10 +126,11 @@ public class QO013 extends QO013Event {
         }
         // ※戻り処理
         // 前画面に遷移する。
-        try{
+        try {
             // 中間テーブルの破棄
             QkanReceiptSoftDBManager.clearAccessSpace(getDBManager());
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
         return true;
     }
@@ -140,10 +141,11 @@ public class QO013 extends QO013Event {
         }
         // ※終了処理
         // システムを終了する。
-        try{
+        try {
             // 中間テーブルの破棄
             QkanReceiptSoftDBManager.clearAccessSpace(getDBManager());
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
         return true;
     }
@@ -214,13 +216,13 @@ public class QO013 extends QO013Event {
         if (getNowPage() > 1) {
             // ページ数を1引く
             setNowPage(getNowPage() - 1);
-        
+
             // ボタン状態制御
             pageButtonState();
             int begin = ((getNowPage() - 1) * PAGE_COUNT) + 1;
             int end = (getNowPage() * PAGE_COUNT) + 1;
             // 前ページ情報取得
-            VRList list = getPageData(begin,end);
+            VRList list = getPageData(begin, end);
             // 結果を格納する。
             getReceiptTableModel().setAdaptee(list);
         }
@@ -240,7 +242,7 @@ public class QO013 extends QO013Event {
         // ページ数を + 1
         setNowPage(getNowPage() + 1);
         // 1ページ分データ取得
-        VRList list = getPageData(begin,end);
+        VRList list = getPageData(begin, end);
         // 結果を格納する。
         getReceiptTableModel().setAdaptee(list);
         // 状態制御
@@ -267,13 +269,13 @@ public class QO013 extends QO013Event {
     public void initialize() throws Exception {
         // ※初期設定
         // ※ウインドウタイトル・業務ボタンを設定する。
-        setAffairTitle("QO013",getButtons());
+        setAffairTitle("QO013", getButtons());
 
         // テーブルモデルを作成し設定する。
         ACTableModelAdapter receiptTable = new ACTableModelAdapter();
 
         receiptTable
-                .setColumns(new String[] {"IMPORT_NO","IMPORT_FLAG", 
+                .setColumns(new String[] { "IMPORT_NO", "IMPORT_FLAG",
                         "BATTING_FLAG",
                         "PATIENT_FAMILY_NAME+'　'+PATIENT_FIRST_NAME",
                         "PATIENT_FAMILY_KANA+'　'+PATIENT_FIRST_KANA",
@@ -285,7 +287,7 @@ public class QO013 extends QO013Event {
         getPatients().setModel(getReceiptTableModel());
         // ウィンドウタイトルに、取得レコードのKEY : WINDOW_TITLEのVALUEを設定する。
         // 業務ボタンバーのテキストに、取得レコードのKEY : AFFAIR_TITLEのVALUEを設定する。
-        
+
         // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
         // コンボの値を設定する。
         VRList versionComboList = new VRArrayList();
@@ -294,8 +296,8 @@ public class QO013 extends QO013Event {
                 CODE_RECEIPT_VERSION, "RECEIPT_VERSION_CONTENT");
         // 値の設定
         getReceiptVersionCombo().setModel(versionComboList);
-        // 2008/01/15 [Masahiko Higuchi] add - end        
-        
+        // 2008/01/15 [Masahiko Higuchi] add - end
+
         // 通信の設定情報を読込む
         readProperty();
         // 設定復元
@@ -390,17 +392,19 @@ public class QO013 extends QO013Event {
         } else {
             setToHiraganaConvert("");
         }
-        
+
         // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
         // 設定ファイルが読込めるかチェックする。
-        if (ACFrame.getInstance().hasProperty("ReceiptAccess/ReceiptSoftVersion")) {
+        if (ACFrame.getInstance().hasProperty(
+                "ReceiptAccess/ReceiptSoftVersion")) {
             // 読込めた場合
             // パスワードを読込み receiptVersion に格納する。
             setReceiptVersion(ACFrame.getInstance().getProperty(
                     "ReceiptAccess/ReceiptSoftVersion"));
         } else {
-            setReceiptVersion(ACCastUtilities.toString(DEFAULT_RECEIPT_VERSION_INDEX));
-        }        
+            setReceiptVersion(ACCastUtilities
+                    .toString(DEFAULT_RECEIPT_VERSION_INDEX));
+        }
         // 2008/01/15 [Masahiko Higuchi] add - end
 
     }
@@ -420,9 +424,9 @@ public class QO013 extends QO013Event {
         setDbsVer(getDbsVersion().getText());
         // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応 version 5.3.8
         setReceiptVersion(ACCastUtilities.toString(getReceiptVersionCombo()
-				.getSelectedIndex()));
+                .getSelectedIndex()));
         // 2008/01/15 [Masahiko Higuchi] add - end
-        
+
         ACFrame.getInstance().getPropertyXML().setForceValueAt(
                 "ReceiptAccess/IP", getIp());
         ACFrame.getInstance().getPropertyXML().setForceValueAt(
@@ -438,7 +442,7 @@ public class QO013 extends QO013Event {
         ACFrame.getInstance().getPropertyXML().setForceValueAt(
                 "ReceiptAccess/ReceiptSoftVersion", getReceiptVersion());
         // 2008/01/15 [Masahiko Higuchi] add - end
-        
+
         // ひらがな変換がチェックされているか。
         if (getToHiragana().isSelected()) {
             // チェックされている場合
@@ -616,17 +620,18 @@ public class QO013 extends QO013Event {
 
         // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
         // パスがnullでないか念のためチェックする
-        if(getPass() != null){
+        if (getPass() != null) {
             // 空白がパスワードに設定されている場合
-            if(getPass().indexOf(" ") != -1 || getPass().indexOf("　") != -1 ){
-                QkanMessageList.getInstance().QO013_ERROR_OF_BLANK_IN_PASSWORD();
+            if (getPass().indexOf(" ") != -1 || getPass().indexOf("　") != -1) {
+                QkanMessageList.getInstance()
+                        .QO013_ERROR_OF_BLANK_IN_PASSWORD();
                 // 処理終了
                 getPassword().requestFocus();
                 return;
             }
         }
-        // 2008/01/15 [Masahiko Higuchi] add - end        
-        
+        // 2008/01/15 [Masahiko Higuchi] add - end
+
         QkanReceiptSoftDBManager dbm;
         ACSplashable splash = null;
 
@@ -643,7 +648,7 @@ public class QO013 extends QO013Event {
 
         int count = 0;
         try {
-            
+
             // 患者取り込みを行うのかチェックする。
             if (QkanMessageList.getInstance().QO013_QUESTION_OF_FIND() == ACMessageBox.RESULT_OK) {
                 // OK選択時
@@ -655,7 +660,7 @@ public class QO013 extends QO013Event {
                     ((ACSplash) splash)
                             .setIconPathes(((QkanFrameEventProcesser) processer)
                                     .getSplashFilePathes());
-                    
+
                     // サイズ
                     Dimension d = ((QkanFrameEventProcesser) processer)
                             .getSplashWindowSize();
@@ -670,58 +675,75 @@ public class QO013 extends QO013Event {
                     if (!((ACSplash) splash).isVisible()) {
                         ((ACSplash) splash).showModaless("データ通信");
                     }
-                    
-                    
+
                     // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
                     // 日医標準レセプトソフトのバージョンを判定する
-                    if(getReceiptVersionCombo().getSelectedIndex() != DEFAULT_RECEIPT_VERSION_INDEX){
-                    // 2008/01/15 [Masahiko Higuchi] add - end
+                    if (getReceiptVersionCombo().getSelectedIndex() != DEFAULT_RECEIPT_VERSION_INDEX) {
+                        // 2008/01/15 [Masahiko Higuchi] add - end
                         // ストアドプロシージャ引数 今回はnull
                         VRMap param = null;
                         // opassから結果を取得
                         count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
                                 "all", param, splash);
-                        
-                    // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
-                    }else{
+
+                        // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
+                    } else {
                         // HOSPNUM取得用の関数情報定義
                         String key = "key";
                         VRMap initialParam = new VRHashMap();
                         HashMap hospNumResult = new HashMap();
-                        initialParam.put("tbl_sysuser.USERID",getUser());
+                        initialParam.put("tbl_sysuser.USERID", getUser());
                         // 通信準備
                         dbm.executeSetUp();
-                        
+
                         // 一旦HOSPNUMを取得する。
-                        hospNumResult = dbm.executeQueryData("tbl_sysuser",key,initialParam);
-                        
+                        hospNumResult = dbm.executeQueryData("tbl_sysuser",
+                                key, initialParam);
+
                         // COMMIT
                         dbm.commitTransaction();
-                        
-                        // 患者情報取得用の関数情報定義                    
+
+                        // 患者情報取得用の関数情報定義
                         key = "all";
                         // 変数準備
                         VRMap findParam = new VRHashMap();
                         // HOSPNUMの取得
-                        Integer hospNum = ACCastUtilities.toInteger(hospNumResult.get("tbl_sysuser.HOSPNUM"),0);
+                        Integer hospNum = ACCastUtilities.toInteger(
+                                hospNumResult.get("tbl_sysuser.HOSPNUM"), 0);
                         // 検索キー設定
-                        findParam.put("tbl_ptinf.HOSPNUM",hospNum);
+                        findParam.put("tbl_ptinf.HOSPNUM", hospNum);
+                        // 2008/09/18 [Masahiko_Higuchi] add - begin 管理番号の取得仕様を変更
+                        // HOSPNUMの保持
+                        setHospNum(hospNum);
+                        // 2008/09/18 [Masahiko_Higuchi] add - end
+                        
                         // 患者情報取得
-                        count = dbm.executeQuery(getDBManager(),"tbl_ptinf", key, findParam, splash);
+                        count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
+                                key, findParam, splash);
+
+                        // 表示している患者の表示番号を取得する。
+
+                        // TODO: 患者の本当の患者番号を取得する。
+                        // VRMap sendParam = new VRHashMap();
+                        // sendParam.put("tbl_ptnum.HOSPNUM", hospNum);
+                        // sendParam.put("tbl_ptnum.PTID", // 取得したPTID);
+                        // count = dbm.executeQuery(getDBManager(), "tbl_ptnum",
+                        // key, sendParam, splash);
+
                         // 終了処理
                         dbm.close();
-                        
+
                     }
                     // 2008/01/15 [Masahiko Higuchi] add - end
-    
+
                 }
-                
+
             } else {
                 // キャンセル選択時
                 // 処理終了
                 return;
             }
-                
+
         } catch (Exception ex) {
             splash = closeSplash(splash);
             Throwable cause = ex.getCause();
@@ -753,9 +775,9 @@ public class QO013 extends QO013Event {
                 QkanMessageList.getInstance().QO013_ERROR_OF_CONECT_CUSTOM(
                         "認証", "ユーザー名およびパスワードが不正です。");
                 return;
-                
-            // 2008/01/15 [Masahiko_Higuchi] add - begin 日レセ連携 version 3.0.5
-            }else if("Connection reset".equals(ex.getMessage())){
+
+                // 2008/01/15 [Masahiko_Higuchi] add - begin 日レセ連携 version 3.0.5
+            } else if ("Connection reset".equals(ex.getMessage())) {
                 // 日レセのバージョン選択にミスの可能性有り
                 QkanMessageList
                         .getInstance()
@@ -767,8 +789,8 @@ public class QO013 extends QO013Event {
                                         + "接続設定を確認してください。");
                 return;
                 // 2008/01/15 [Masahiko_Higuchi] add - end
-                
-            }else if (cause == null){
+
+            } else if (cause == null) {
                 // エラーメッセージ
                 // エラーメッセージ表示
                 QkanMessageList.getInstance().QO013_ERROR_OF_CONECT_CUSTOM(
@@ -804,7 +826,7 @@ public class QO013 extends QO013Event {
         setNowPage(1);
         int end = getNowPage() + PAGE_COUNT;
         // テーブル用データを取得する。
-        VRList list = getPageData(getNowPage(),end);
+        VRList list = getPageData(getNowPage(), end);
         // 結果を格納する。
         getReceiptTableModel().setAdaptee(list);
         // 日レセデータを退避
@@ -843,7 +865,12 @@ public class QO013 extends QO013Event {
             return new VRArrayList();
         }
         int size = src.size();
-
+        
+        // 2008/09/18 [Masahiko_Higuchi] add - begin 管理番号の取得仕様を変更
+        QkanReceiptSoftDBManager receiptDbm = new QkanReceiptSoftDBManager();
+        VRMap findParam = new VRHashMap();
+        // 2008/09/18 [Masahiko_Higuchi] add - end
+        
         boolean encode = false;
         String osName = System.getProperty("os.name");
         // Mac以外であれば文字コード変換を行う。
@@ -859,6 +886,35 @@ public class QO013 extends QO013Event {
                 VRMap row = (VRMap) src.getData(i);
                 String val = ACTextUtilities.toBlankIfNull(ACCastUtilities
                         .toString(VRBindPathParser.get("PTID", row)));
+                // 2008/09/18 [Masahiko_Higuchi] add - begin 管理番号の取得仕様を変更
+                try {
+                    // 接続処理をやってみる
+                    receiptDbm = new QkanReceiptSoftDBManager(getIp(), ACCastUtilities
+                            .toInt(getPort()), getUser(), getPass(), getDbsVer());
+                    findParam.setData("tbl_ptnum.HOSPNUM",getHospNum());
+                    // 通信準備
+                    receiptDbm.executeSetUp();
+                    // 内部管理番号の設定
+                    findParam.setData("tbl_ptnum.PTID", val);
+                    // SQLを発行しデータ取得
+                    HashMap sqlResult = new HashMap();
+                    // DB通信
+                    if (!ACTextUtilities.isNullText(receiptDbm)) {
+                        sqlResult = receiptDbm.executeQueryData("tbl_ptnum", "key",
+                                findParam);
+                    }
+                    // トランザクションの終了
+                    receiptDbm.commitTransaction();
+                    // DBClose
+                    receiptDbm.close();
+                    // 念のため明示的に初期化
+                    receiptDbm = null;
+                    // 結果の格納
+                    val = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult
+                            .get("tbl_ptnum.PTNUM"), ""));
+                } catch (Exception ex) {
+                }
+                // 2008/09/18 [Masahiko_Higuchi] add - end
                 if (val.length() > 16) {
                     // 16文字制限
                     val = val.substring(0, 16);
@@ -892,15 +948,15 @@ public class QO013 extends QO013Event {
                     first = val.substring(0, sepPos);
                     family = val.substring(sepPos, val.length());
                     // 姓が16文字以上であれば名に結合する。
-                        // 16文字で切る
-                        VRBindPathParser.set("PATIENT_FAMILY_NAME", row, first
-                                .substring(0,Math.min(16,first.length())));
+                    // 16文字で切る
+                    VRBindPathParser.set("PATIENT_FAMILY_NAME", row, first
+                            .substring(0, Math.min(16, first.length())));
                     // スペースを取り除く
                     family = ACTextUtilities.trim(family);
 
                     // 名が16文字以上の場合
-                        // 16文字で切る
-                        VRBindPathParser.set("PATIENT_FIRST_NAME", row, family
+                    // 16文字で切る
+                    VRBindPathParser.set("PATIENT_FIRST_NAME", row, family
                             .substring(0, Math.min(16, family.length())));
 
                 } else {
@@ -946,15 +1002,15 @@ public class QO013 extends QO013Event {
                     firstKana = val.substring(0, sepPos);
                     familyKana = val.substring(sepPos, val.length());
 
-                        // 16文字で切る
-                        VRBindPathParser.set("PATIENT_FAMILY_KANA", row, firstKana
+                    // 16文字で切る
+                    VRBindPathParser.set("PATIENT_FAMILY_KANA", row, firstKana
                             .substring(0, Math.min(16, firstKana.length())));
 
                     // スペースを取り除く
                     familyKana = ACTextUtilities.trim(familyKana);
                     // 名が16文字以上の場合
-                        // 16文字で切る
-                        VRBindPathParser.set("PATIENT_FIRST_KANA", row, familyKana
+                    // 16文字で切る
+                    VRBindPathParser.set("PATIENT_FIRST_KANA", row, familyKana
                             .substring(0, Math.min(16, familyKana.length())));
 
                 } else {
@@ -1001,12 +1057,11 @@ public class QO013 extends QO013Event {
                 VRMap row = (VRMap) src.getData(i);
                 Object obj = VRBindPathParser.get("BIRTHDAY", row);
                 // 解析失敗時はnullを返す。
-                Date val = ACCastUtilities.toDate(obj,null);
+                Date val = ACCastUtilities.toDate(obj, null);
                 // 日付型に変換できるパターン
                 if (val != null) {
                     // 設定
-                    VRBindPathParser.set("PATIENT_BIRTHDAY", row,
-                            val);
+                    VRBindPathParser.set("PATIENT_BIRTHDAY", row, val);
                 } else {
                     // キャストが無理なら初期値を入れる
                     VRBindPathParser.set("PATIENT_BIRTHDAY", row, "");
@@ -1037,7 +1092,7 @@ public class QO013 extends QO013Event {
                         // 3文字以下の場合
                         VRBindPathParser.set("PATIENT_ZIP_FIRST", row, val
                                 .substring(0, val.length()));
-                        VRBindPathParser.set("PATIENT_ZIP_SECOND",row,"");
+                        VRBindPathParser.set("PATIENT_ZIP_SECOND", row, "");
                     }
                 } else {
                     // 8文字以上の場合
@@ -1113,7 +1168,7 @@ public class QO013 extends QO013Event {
                 // 数値のみの文字列に置換し返却
                 val = toNotTelCharReplace(val);
                 String[] tels = val.split("-");
-                if ((tels.length<=0)|| ACTextUtilities.isNullText(tels[0])) {
+                if ((tels.length <= 0) || ACTextUtilities.isNullText(tels[0])) {
                     // 全て初期化してループをスキップ
                     VRBindPathParser.set("PATIENT_TEL_FIRST", row, "");
                     VRBindPathParser.set("PATIENT_TEL_SECOND", row, "");
@@ -1130,49 +1185,55 @@ public class QO013 extends QO013Event {
                         // １つ設定
                         telSrc[0] = tels[0].substring(0, 6);
                         telSrc[1] = tels[0].substring(6, 10);
-                        telSrc[2] = tels[0].substring(10, Math.min(14,tels[0].length()));
+                        telSrc[2] = tels[0].substring(10, Math.min(14, tels[0]
+                                .length()));
                     } else {
                         // 9文字未満は2つめまで
                         telSrc = new String[2];
                         // １つ設定
                         telSrc[0] = tels[0].substring(0, 6);
                         telSrc[1] = tels[0].substring(6, tels[0].length());
-                         
+
                     }
                     tels = telSrc;
                 }
 
-
                 // 整形した文字列から設定
                 switch (tels.length) {
                 case 1:
-                    VRBindPathParser.set("PATIENT_TEL_FIRST", row, tels[0].substring(0,Math.min(6,tels[0].length())));
+                    VRBindPathParser.set("PATIENT_TEL_FIRST", row, tels[0]
+                            .substring(0, Math.min(6, tels[0].length())));
                     VRBindPathParser.set("PATIENT_TEL_SECOND", row, "");
                     VRBindPathParser.set("PATIENT_TEL_THIRD", row, "");
                     break;
                 case 2:
-                    VRBindPathParser.set("PATIENT_TEL_FIRST", row, tels[0].substring(0,Math.min(6,tels[0].length())));
-                    VRBindPathParser.set("PATIENT_TEL_SECOND", row, tels[1].substring(0,Math.min(4,tels[1].length())));
+                    VRBindPathParser.set("PATIENT_TEL_FIRST", row, tels[0]
+                            .substring(0, Math.min(6, tels[0].length())));
+                    VRBindPathParser.set("PATIENT_TEL_SECOND", row, tels[1]
+                            .substring(0, Math.min(4, tels[1].length())));
                     VRBindPathParser.set("PATIENT_TEL_THIRD", row, "");
                     break;
                 default:
-                    VRBindPathParser.set("PATIENT_TEL_FIRST", row, tels[0].substring(0,Math.min(6,tels[0].length())));
-                    VRBindPathParser.set("PATIENT_TEL_SECOND", row, tels[1].substring(0,Math.min(4,tels[1].length())));
-                    VRBindPathParser.set("PATIENT_TEL_THIRD", row, tels[2].substring(0,Math.min(4,tels[2].length())));
+                    VRBindPathParser.set("PATIENT_TEL_FIRST", row, tels[0]
+                            .substring(0, Math.min(6, tels[0].length())));
+                    VRBindPathParser.set("PATIENT_TEL_SECOND", row, tels[1]
+                            .substring(0, Math.min(4, tels[1].length())));
+                    VRBindPathParser.set("PATIENT_TEL_THIRD", row, tels[2]
+                            .substring(0, Math.min(4, tels[2].length())));
                     break;
                 }
-            
+
             }
-                
+
         }
-        
+
         // 初期値を設定
         for (int i = 0; i < size; i++) {
             VRMap row = (VRMap) src.getData(i);
             VRBindPathParser.set("IMPORT_FLAG", row, new Boolean(true));
             VRBindPathParser.set("BATTING_FLAG", row, "");
         }
-        
+
         return src;
     }
 
