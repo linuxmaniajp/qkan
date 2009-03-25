@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/12/25  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2009/01/21  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -138,6 +138,20 @@ public class QS001123Design extends QS001ServicePanel {
   private ACRadioButtonItem calculationDivisionBasicOnly;
 
   private ACIntegerCheckBox crackOnDayCheck;
+
+  private ACBackLabelContainer yakanHoumonKaigoTimeContainer;
+
+  private ACTimeComboBox yakanHoumonKaigoBeginTime;
+
+  private ACLabelContainer yakanHoumonKaigoBeginTimeContainer;
+
+  private ACComboBoxModelAdapter yakanHoumonKaigoBeginTimeModel;
+
+  private ACTimeComboBox yakanHoumonKaigoEndTime;
+
+  private ACLabelContainer yakanHoumonKaigoEndTimeContainer;
+
+  private ACComboBoxModelAdapter yakanHoumonKaigoEndTimeModel;
 
   //getter
 
@@ -641,6 +655,123 @@ public class QS001123Design extends QS001ServicePanel {
   }
 
   /**
+   * 提供時間コンテナを取得します。
+   * @return 提供時間コンテナ
+   */
+  public ACBackLabelContainer getYakanHoumonKaigoTimeContainer(){
+    if(yakanHoumonKaigoTimeContainer==null){
+
+      yakanHoumonKaigoTimeContainer = new ACBackLabelContainer();
+
+      addYakanHoumonKaigoTimeContainer();
+    }
+    return yakanHoumonKaigoTimeContainer;
+
+  }
+
+  /**
+   * 開始時刻コンボを取得します。
+   * @return 開始時刻コンボ
+   */
+  public ACTimeComboBox getYakanHoumonKaigoBeginTime(){
+    if(yakanHoumonKaigoBeginTime==null){
+
+      yakanHoumonKaigoBeginTime = new ACTimeComboBox();
+
+      getYakanHoumonKaigoBeginTimeContainer().setText("開始時刻");
+
+      yakanHoumonKaigoBeginTime.setBindPath("3");
+
+      yakanHoumonKaigoBeginTime.setModelBindPath("3");
+
+      yakanHoumonKaigoBeginTime.setRenderBindPath("CONTENT");
+
+      yakanHoumonKaigoBeginTime.setModel(getYakanHoumonKaigoBeginTimeModel());
+
+      addYakanHoumonKaigoBeginTime();
+    }
+    return yakanHoumonKaigoBeginTime;
+
+  }
+
+  /**
+   * 開始時刻コンボコンテナを取得します。
+   * @return 開始時刻コンボコンテナ
+   */
+  protected ACLabelContainer getYakanHoumonKaigoBeginTimeContainer(){
+    if(yakanHoumonKaigoBeginTimeContainer==null){
+      yakanHoumonKaigoBeginTimeContainer = new ACLabelContainer();
+      yakanHoumonKaigoBeginTimeContainer.setFollowChildEnabled(true);
+      yakanHoumonKaigoBeginTimeContainer.setVAlignment(VRLayout.CENTER);
+      yakanHoumonKaigoBeginTimeContainer.add(getYakanHoumonKaigoBeginTime(), null);
+    }
+    return yakanHoumonKaigoBeginTimeContainer;
+  }
+
+  /**
+   * 開始時刻コンボモデルを取得します。
+   * @return 開始時刻コンボモデル
+   */
+  protected ACComboBoxModelAdapter getYakanHoumonKaigoBeginTimeModel(){
+    if(yakanHoumonKaigoBeginTimeModel==null){
+      yakanHoumonKaigoBeginTimeModel = new ACComboBoxModelAdapter();
+      addYakanHoumonKaigoBeginTimeModel();
+    }
+    return yakanHoumonKaigoBeginTimeModel;
+  }
+
+  /**
+   * 終了時刻コンボを取得します。
+   * @return 終了時刻コンボ
+   */
+  public ACTimeComboBox getYakanHoumonKaigoEndTime(){
+    if(yakanHoumonKaigoEndTime==null){
+
+      yakanHoumonKaigoEndTime = new ACTimeComboBox();
+
+      getYakanHoumonKaigoEndTimeContainer().setText("終了時刻");
+
+      yakanHoumonKaigoEndTime.setBindPath("4");
+
+      yakanHoumonKaigoEndTime.setModelBindPath("4");
+
+      yakanHoumonKaigoEndTime.setRenderBindPath("CONTENT");
+
+      yakanHoumonKaigoEndTime.setModel(getYakanHoumonKaigoEndTimeModel());
+
+      addYakanHoumonKaigoEndTime();
+    }
+    return yakanHoumonKaigoEndTime;
+
+  }
+
+  /**
+   * 終了時刻コンボコンテナを取得します。
+   * @return 終了時刻コンボコンテナ
+   */
+  protected ACLabelContainer getYakanHoumonKaigoEndTimeContainer(){
+    if(yakanHoumonKaigoEndTimeContainer==null){
+      yakanHoumonKaigoEndTimeContainer = new ACLabelContainer();
+      yakanHoumonKaigoEndTimeContainer.setFollowChildEnabled(true);
+      yakanHoumonKaigoEndTimeContainer.setVAlignment(VRLayout.CENTER);
+      yakanHoumonKaigoEndTimeContainer.add(getYakanHoumonKaigoEndTime(), null);
+    }
+    return yakanHoumonKaigoEndTimeContainer;
+  }
+
+  /**
+   * 終了時刻コンボモデルを取得します。
+   * @return 終了時刻コンボモデル
+   */
+  protected ACComboBoxModelAdapter getYakanHoumonKaigoEndTimeModel(){
+    if(yakanHoumonKaigoEndTimeModel==null){
+      yakanHoumonKaigoEndTimeModel = new ACComboBoxModelAdapter();
+      addYakanHoumonKaigoEndTimeModel();
+    }
+    return yakanHoumonKaigoEndTimeModel;
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001123Design() {
@@ -684,7 +815,9 @@ public class QS001123Design extends QS001ServicePanel {
 
     nightTypeVisitCarePatterns.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    nightTypeVisitCarePatterns.add(getCrackOnDayCheck(), VRLayout.FLOW);
+    nightTypeVisitCarePatterns.add(getCrackOnDayCheck(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    nightTypeVisitCarePatterns.add(getYakanHoumonKaigoTimeContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -872,6 +1005,45 @@ public class QS001123Design extends QS001ServicePanel {
    * 日割に内部項目を追加します。
    */
   protected void addCrackOnDayCheck(){
+
+  }
+
+  /**
+   * 提供時間コンテナに内部項目を追加します。
+   */
+  protected void addYakanHoumonKaigoTimeContainer(){
+
+    yakanHoumonKaigoTimeContainer.add(getYakanHoumonKaigoBeginTimeContainer(), VRLayout.FLOW);
+
+    yakanHoumonKaigoTimeContainer.add(getYakanHoumonKaigoEndTimeContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 開始時刻コンボに内部項目を追加します。
+   */
+  protected void addYakanHoumonKaigoBeginTime(){
+
+  }
+
+  /**
+   * 開始時刻コンボモデルに内部項目を追加します。
+   */
+  protected void addYakanHoumonKaigoBeginTimeModel(){
+
+  }
+
+  /**
+   * 終了時刻コンボに内部項目を追加します。
+   */
+  protected void addYakanHoumonKaigoEndTime(){
+
+  }
+
+  /**
+   * 終了時刻コンボモデルに内部項目を追加します。
+   */
+  protected void addYakanHoumonKaigoEndTimeModel(){
 
   }
 

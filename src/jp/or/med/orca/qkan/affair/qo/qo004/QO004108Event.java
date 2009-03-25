@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/25  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/02/25  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 通所リハイベント定義(QO004108) 

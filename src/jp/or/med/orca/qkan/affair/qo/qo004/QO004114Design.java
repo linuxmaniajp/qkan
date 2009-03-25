@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/08  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2009/03/04  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,31 +28,61 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo004;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACBackLabelContainer;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 短期入所療養介護基準適合診療所型画面項目デザイン(QO004114) 
  */
-public class QO004114Design extends QS001ServicePanel {
+public class QO004114Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
@@ -127,6 +157,8 @@ public class QO004114Design extends QS001ServicePanel {
 
   private ACLabel tasyouRoomLabel;
 
+  private ACPanel oldLowElementArea;
+
   private ACPanel calculationDetails2;
 
   private ACLabelContainer reduceRateContainer;
@@ -190,9 +222,9 @@ public class QO004114Design extends QS001ServicePanel {
 
       meetingAndSendingOffSystem.setBindPath("1230401");
 
-      meetingAndSendingOffSystem.setModel(getMeetingAndSendingOffSystemModel());
-
       meetingAndSendingOffSystem.setUseClearButton(false);
+
+      meetingAndSendingOffSystem.setModel(getMeetingAndSendingOffSystemModel());
 
       addMeetingAndSendingOffSystem();
     }
@@ -277,9 +309,9 @@ public class QO004114Design extends QS001ServicePanel {
 
       nourishmentControlAdd.setBindPath("1230402");
 
-      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
-
       nourishmentControlAdd.setUseClearButton(false);
+
+      nourishmentControlAdd.setModel(getNourishmentControlAddModel());
 
       addNourishmentControlAdd();
     }
@@ -856,6 +888,23 @@ public class QO004114Design extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目を取得します。
+   * @return 旧法項目
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      oldLowElementArea.setFollowChildEnabled(true);
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
    * 算定項目領域2を取得します。
    * @return 算定項目領域2
    */
@@ -886,6 +935,8 @@ public class QO004114Design extends QS001ServicePanel {
       reduceRateContainer.setText("割引率");
 
       reduceRateContainer.setFollowChildEnabled(true);
+
+      reduceRateContainer.setForeground(java.awt.Color.gray);
 
       addReduceRateContainer();
     }
@@ -931,6 +982,8 @@ public class QO004114Design extends QS001ServicePanel {
 
       percentSign.setText("％");
 
+      percentSign.setForeground(java.awt.Color.gray);
+
       addPercentSign();
     }
     return percentSign;
@@ -975,6 +1028,8 @@ public class QO004114Design extends QS001ServicePanel {
 
     mainGroup.add(getStandardMoneyGroup(), VRLayout.NORTH);
 
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
+
     mainGroup.add(getCalculationDetails2(), VRLayout.NORTH);
 
   }
@@ -1003,9 +1058,11 @@ public class QO004114Design extends QS001ServicePanel {
   protected void addMeetingAndSendingOffSystemModel(){
 
     getMeetingAndSendingOffSystemItem1().setButtonIndex(1);
+
     getMeetingAndSendingOffSystemModel().add(getMeetingAndSendingOffSystemItem1());
 
     getMeetingAndSendingOffSystemItem2().setButtonIndex(2);
+
     getMeetingAndSendingOffSystemModel().add(getMeetingAndSendingOffSystemItem2());
 
   }
@@ -1037,12 +1094,15 @@ public class QO004114Design extends QS001ServicePanel {
   protected void addNourishmentControlAddModel(){
 
     getNourishmentControlAddItem1().setButtonIndex(1);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem1());
 
     getNourishmentControlAddItem2().setButtonIndex(2);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem2());
 
     getNourishmentControlAddItem3().setButtonIndex(3);
+
     getNourishmentControlAddModel().add(getNourishmentControlAddItem3());
 
   }
@@ -1274,6 +1334,13 @@ public class QO004114Design extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目に内部項目を追加します。
+   */
+  protected void addOldLowElementArea(){
+
+  }
+
+  /**
    * 算定項目領域2に内部項目を追加します。
    */
   protected void addCalculationDetails2(){
@@ -1329,7 +1396,6 @@ public class QO004114Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004114Design.class.getName()));
     } catch (Exception e) {

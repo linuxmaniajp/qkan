@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/05/18  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/01/06  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -175,6 +175,22 @@ public abstract class QS001101Event extends QS001101State implements QS001Servic
             }
         }
     });
+    getHoumonKaigoBeginTime().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                houmonKaigoBeginTimeActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -213,6 +229,13 @@ public abstract class QS001101Event extends QS001101State implements QS001Servic
    * @throws Exception 処理例外
    */
   protected abstract void houmonKaigoInTimeActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「開始時間変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void houmonKaigoBeginTimeActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 

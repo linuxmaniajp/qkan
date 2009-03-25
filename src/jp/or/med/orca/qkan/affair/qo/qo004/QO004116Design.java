@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/02  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2009/03/04  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -76,17 +77,37 @@ import jp.nichicom.vr.util.adapter.*;
 import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 福祉用具画面項目デザイン(QO004116) 
  */
-public class QO004116Design extends QS001ServicePanel {
+public class QO004116Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
+
+  private ACValueArrayRadioButtonGroup providerAddMountainousAreaRafioRadioGroup;
+
+  private ACLabelContainer providerAddMountainousAreaRafioRadioGroupContainer;
+
+  private ACListModelAdapter providerAddMountainousAreaRafioRadioGroupModel;
+
+  private ACRadioButtonItem providerAddMountainousAreaRafioRadioItem1;
+
+  private ACRadioButtonItem providerAddMountainousAreaRafioRadioItem2;
+
+  private ACValueArrayRadioButtonGroup providerAddMountainousAreaScaleRadioGroup;
+
+  private ACLabelContainer providerAddMountainousAreaScaleRadioGroupContainer;
+
+  private ACListModelAdapter providerAddMountainousAreaScaleRadioGroupModel;
+
+  private ACRadioButtonItem providerAddMountainousAreaScaleRadioItem1;
+
+  private ACRadioButtonItem providerAddMountainousAreaScaleRadioItem2;
+
+  private ACPanel oldLowElementArea;
 
   private ACLabelContainer reduceRateContainer;
 
@@ -116,6 +137,219 @@ public class QO004116Design extends QS001ServicePanel {
   }
 
   /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）を取得します。
+   * @return 中山間地域等における小規模事業所加算（地域に関する状況）
+   */
+  public ACValueArrayRadioButtonGroup getProviderAddMountainousAreaRafioRadioGroup(){
+    if(providerAddMountainousAreaRafioRadioGroup==null){
+
+      providerAddMountainousAreaRafioRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getProviderAddMountainousAreaRafioRadioGroupContainer().setText("中山間地域等における小規模事業所加算（地域に関する状況）");
+
+      providerAddMountainousAreaRafioRadioGroup.setBindPath("2");
+
+      providerAddMountainousAreaRafioRadioGroup.setVisible(true);
+
+      providerAddMountainousAreaRafioRadioGroup.setEnabled(true);
+
+      providerAddMountainousAreaRafioRadioGroup.setNoSelectIndex(0);
+
+      providerAddMountainousAreaRafioRadioGroup.setUseClearButton(false);
+
+      providerAddMountainousAreaRafioRadioGroup.setModel(getProviderAddMountainousAreaRafioRadioGroupModel());
+
+      providerAddMountainousAreaRafioRadioGroup.setValues(new int[]{1,2});
+
+      addProviderAddMountainousAreaRafioRadioGroup();
+    }
+    return providerAddMountainousAreaRafioRadioGroup;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）コンテナを取得します。
+   * @return 中山間地域等における小規模事業所加算（地域に関する状況）コンテナ
+   */
+  protected ACLabelContainer getProviderAddMountainousAreaRafioRadioGroupContainer(){
+    if(providerAddMountainousAreaRafioRadioGroupContainer==null){
+      providerAddMountainousAreaRafioRadioGroupContainer = new ACLabelContainer();
+      providerAddMountainousAreaRafioRadioGroupContainer.setFollowChildEnabled(true);
+      providerAddMountainousAreaRafioRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      providerAddMountainousAreaRafioRadioGroupContainer.add(getProviderAddMountainousAreaRafioRadioGroup(), null);
+    }
+    return providerAddMountainousAreaRafioRadioGroupContainer;
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）モデルを取得します。
+   * @return 中山間地域等における小規模事業所加算（地域に関する状況）モデル
+   */
+  protected ACListModelAdapter getProviderAddMountainousAreaRafioRadioGroupModel(){
+    if(providerAddMountainousAreaRafioRadioGroupModel==null){
+      providerAddMountainousAreaRafioRadioGroupModel = new ACListModelAdapter();
+      addProviderAddMountainousAreaRafioRadioGroupModel();
+    }
+    return providerAddMountainousAreaRafioRadioGroupModel;
+  }
+
+  /**
+   * 非該当を取得します。
+   * @return 非該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaRafioRadioItem1(){
+    if(providerAddMountainousAreaRafioRadioItem1==null){
+
+      providerAddMountainousAreaRafioRadioItem1 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaRafioRadioItem1.setText("非該当");
+
+      providerAddMountainousAreaRafioRadioItem1.setGroup(getProviderAddMountainousAreaRafioRadioGroup());
+
+      providerAddMountainousAreaRafioRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaRafioRadioItem1();
+    }
+    return providerAddMountainousAreaRafioRadioItem1;
+
+  }
+
+  /**
+   * 該当を取得します。
+   * @return 該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaRafioRadioItem2(){
+    if(providerAddMountainousAreaRafioRadioItem2==null){
+
+      providerAddMountainousAreaRafioRadioItem2 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaRafioRadioItem2.setText("該当");
+
+      providerAddMountainousAreaRafioRadioItem2.setGroup(getProviderAddMountainousAreaRafioRadioGroup());
+
+      providerAddMountainousAreaRafioRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaRafioRadioItem2();
+    }
+    return providerAddMountainousAreaRafioRadioItem2;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）を取得します。
+   * @return 中山間地域等における小規模事業所加算（規模に関する状況）
+   */
+  public ACValueArrayRadioButtonGroup getProviderAddMountainousAreaScaleRadioGroup(){
+    if(providerAddMountainousAreaScaleRadioGroup==null){
+
+      providerAddMountainousAreaScaleRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getProviderAddMountainousAreaScaleRadioGroupContainer().setText("中山間地域等における小規模事業所加算（規模に関する状況）");
+
+      providerAddMountainousAreaScaleRadioGroup.setBindPath("3");
+
+      providerAddMountainousAreaScaleRadioGroup.setVisible(true);
+
+      providerAddMountainousAreaScaleRadioGroup.setEnabled(true);
+
+      providerAddMountainousAreaScaleRadioGroup.setNoSelectIndex(0);
+
+      providerAddMountainousAreaScaleRadioGroup.setUseClearButton(false);
+
+      providerAddMountainousAreaScaleRadioGroup.setModel(getProviderAddMountainousAreaScaleRadioGroupModel());
+
+      providerAddMountainousAreaScaleRadioGroup.setValues(new int[]{1,2});
+
+      addProviderAddMountainousAreaScaleRadioGroup();
+    }
+    return providerAddMountainousAreaScaleRadioGroup;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）コンテナを取得します。
+   * @return 中山間地域等における小規模事業所加算（規模に関する状況）コンテナ
+   */
+  protected ACLabelContainer getProviderAddMountainousAreaScaleRadioGroupContainer(){
+    if(providerAddMountainousAreaScaleRadioGroupContainer==null){
+      providerAddMountainousAreaScaleRadioGroupContainer = new ACLabelContainer();
+      providerAddMountainousAreaScaleRadioGroupContainer.setFollowChildEnabled(true);
+      providerAddMountainousAreaScaleRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      providerAddMountainousAreaScaleRadioGroupContainer.add(getProviderAddMountainousAreaScaleRadioGroup(), null);
+    }
+    return providerAddMountainousAreaScaleRadioGroupContainer;
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）モデルを取得します。
+   * @return 中山間地域等における小規模事業所加算（規模に関する状況）モデル
+   */
+  protected ACListModelAdapter getProviderAddMountainousAreaScaleRadioGroupModel(){
+    if(providerAddMountainousAreaScaleRadioGroupModel==null){
+      providerAddMountainousAreaScaleRadioGroupModel = new ACListModelAdapter();
+      addProviderAddMountainousAreaScaleRadioGroupModel();
+    }
+    return providerAddMountainousAreaScaleRadioGroupModel;
+  }
+
+  /**
+   * 非該当を取得します。
+   * @return 非該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaScaleRadioItem1(){
+    if(providerAddMountainousAreaScaleRadioItem1==null){
+
+      providerAddMountainousAreaScaleRadioItem1 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaScaleRadioItem1.setText("非該当");
+
+      providerAddMountainousAreaScaleRadioItem1.setGroup(getProviderAddMountainousAreaScaleRadioGroup());
+
+      providerAddMountainousAreaScaleRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaScaleRadioItem1();
+    }
+    return providerAddMountainousAreaScaleRadioItem1;
+
+  }
+
+  /**
+   * 該当を取得します。
+   * @return 該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaScaleRadioItem2(){
+    if(providerAddMountainousAreaScaleRadioItem2==null){
+
+      providerAddMountainousAreaScaleRadioItem2 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaScaleRadioItem2.setText("該当");
+
+      providerAddMountainousAreaScaleRadioItem2.setGroup(getProviderAddMountainousAreaScaleRadioGroup());
+
+      providerAddMountainousAreaScaleRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaScaleRadioItem2();
+    }
+    return providerAddMountainousAreaScaleRadioItem2;
+
+  }
+
+  /**
+   * 旧法項目を取得します。
+   * @return 旧法項目
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
    * 割引率コンテナを取得します。
    * @return 割引率コンテナ
    */
@@ -127,6 +361,8 @@ public class QO004116Design extends QS001ServicePanel {
       reduceRateContainer.setText("割引率");
 
       reduceRateContainer.setFollowChildEnabled(true);
+
+      reduceRateContainer.setForeground(java.awt.Color.gray);
 
       addReduceRateContainer();
     }
@@ -172,6 +408,8 @@ public class QO004116Design extends QS001ServicePanel {
 
       percentSign.setText("％");
 
+      percentSign.setForeground(java.awt.Color.gray);
+
       addPercentSign();
     }
     return percentSign;
@@ -212,7 +450,92 @@ public class QO004116Design extends QS001ServicePanel {
    */
   protected void addMainGroup(){
 
+    mainGroup.add(getProviderAddMountainousAreaRafioRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getProviderAddMountainousAreaScaleRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
+
     mainGroup.add(getReduceRateContainer(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioGroup(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）モデルに内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioGroupModel(){
+
+    getProviderAddMountainousAreaRafioRadioItem1().setButtonIndex(1);
+
+    getProviderAddMountainousAreaRafioRadioGroupModel().add(getProviderAddMountainousAreaRafioRadioItem1());
+
+    getProviderAddMountainousAreaRafioRadioItem2().setButtonIndex(2);
+
+    getProviderAddMountainousAreaRafioRadioGroupModel().add(getProviderAddMountainousAreaRafioRadioItem2());
+
+  }
+
+  /**
+   * 非該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioItem1(){
+
+  }
+
+  /**
+   * 該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioItem2(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioGroup(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）モデルに内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioGroupModel(){
+
+    getProviderAddMountainousAreaScaleRadioItem1().setButtonIndex(1);
+
+    getProviderAddMountainousAreaScaleRadioGroupModel().add(getProviderAddMountainousAreaScaleRadioItem1());
+
+    getProviderAddMountainousAreaScaleRadioItem2().setButtonIndex(2);
+
+    getProviderAddMountainousAreaScaleRadioGroupModel().add(getProviderAddMountainousAreaScaleRadioItem2());
+
+  }
+
+  /**
+   * 非該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioItem1(){
+
+  }
+
+  /**
+   * 該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioItem2(){
+
+  }
+
+  /**
+   * 旧法項目に内部項目を追加します。
+   */
+  protected void addOldLowElementArea(){
 
   }
 
@@ -253,7 +576,9 @@ public class QO004116Design extends QS001ServicePanel {
     return true;
   }
   public Component getFirstFocusComponent() {
+
     return null;
+
   }
   public void initAffair(ACAffairInfo affair) throws Exception {
   }
@@ -261,7 +586,6 @@ public class QO004116Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004116Design.class.getName()));
     } catch (Exception e) {

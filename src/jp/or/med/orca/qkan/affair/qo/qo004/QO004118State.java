@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/23  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/07  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 介護老人福祉施設状態定義(QO004118) 
  */
@@ -127,6 +127,28 @@ public class QO004118State extends QO004118Design {
 
         getUnitCareMaintenance().setEnabled(false);
         getUnitCareMaintenance().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「夜勤職員配置加算・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_NIGHT_NURSE() throws Exception {
+
+        getNightStaffDispositionAddRadioGroup().setEnabled(true);
+        getNightStaffDispositionAddRadioGroup().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「夜勤職員配置加算・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_NIGHT_NURSE() throws Exception {
+
+        getNightStaffDispositionAddRadioGroup().setEnabled(false);
+        getNightStaffDispositionAddRadioGroup().getParent().setEnabled(false);
 
   }
 

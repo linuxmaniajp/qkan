@@ -539,12 +539,7 @@ public class QO004122 extends QO004122Event {
 //	  if(!getHospitalDivision().isEnabled()){
 //		  map.removeData("1530318");
 //	  }
-	  if(!getStaffAssignmentDivision().isEnabled()){
-		  map.removeData("1530302");
-	  }
-	  if(!getUnitCareMaintenance().isEnabled()){
-		  map.removeData("1530316");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 	  	  
   }
 

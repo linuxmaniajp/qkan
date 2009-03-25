@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/03/05  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/02  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 短期入所療養介護（病院療養型）イベント定義(QO004111) 
@@ -103,6 +104,22 @@ public abstract class QO004111Event extends QO004111SQL implements iProviderServ
             lockFlag = true;
             try {
                 facilitiesDivisionSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getFacilitiesDivision_H2103().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                facilitiesDivision_H2103SelectionChanged(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -170,6 +187,13 @@ public abstract class QO004111Event extends QO004111SQL implements iProviderServ
   protected abstract void facilitiesDivisionSelectionChanged(ListSelectionEvent e) throws Exception;
 
   /**
+   * 「画面状態設定」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void facilitiesDivision_H2103SelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
    * 「食費基準額合計表示処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -195,6 +219,8 @@ public abstract class QO004111Event extends QO004111SQL implements iProviderServ
   public static final int CODE_STAFF_REDUCE = 167;
   public static final int FACILITY_TYPE_BYOIN = 1;
   public static final int FACILITY_TYPE_UNIT = 2;
+  public static final int FACILITY_TYPE_PASSAGE = 3;
+  public static final int FACILITY_TYPE_UNIT_PASSAGE = 4;
   public static final int STAFF_LACK_KANGO_KAIGO = 2;
   public static final int STAFF_LACK_SEIKAN = 3;
   public static final int STAFF_LACK_HEKICHI = 5;

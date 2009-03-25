@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/02  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2009/03/04  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -76,14 +77,12 @@ import jp.nichicom.vr.util.adapter.*;
 import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 居宅療養管理指導画面項目デザイン(QO004106) 
  */
-public class QO004106Design extends QS001ServicePanel {
+public class QO004106Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
@@ -130,6 +129,8 @@ public class QO004106Design extends QS001ServicePanel {
 
       reduceRateContainer.setFollowChildEnabled(true);
 
+      reduceRateContainer.setForeground(java.awt.Color.gray);
+
       addReduceRateContainer();
     }
     return reduceRateContainer;
@@ -173,6 +174,8 @@ public class QO004106Design extends QS001ServicePanel {
       percentSign = new ACLabel();
 
       percentSign.setText("％");
+
+      percentSign.setForeground(java.awt.Color.gray);
 
       addPercentSign();
     }
@@ -255,7 +258,9 @@ public class QO004106Design extends QS001ServicePanel {
     return true;
   }
   public Component getFirstFocusComponent() {
+
     return null;
+
   }
   public void initAffair(ACAffairInfo affair) throws Exception {
   }
@@ -263,7 +268,6 @@ public class QO004106Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004106Design.class.getName()));
     } catch (Exception e) {

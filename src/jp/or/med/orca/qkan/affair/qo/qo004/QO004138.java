@@ -189,6 +189,17 @@ public class QO004138 extends QO004138Event {
 			return false;
 
 		}
+        if (!getStaffLack_H2103().isSelected()) {
+            errMsg = "人員減算";
+            // 未選択だった場合
+            // エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_SELECT 引数 = errMsg
+            QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+            // エラーが発生したインスタンスにフォーカスを当てる。
+            getStaffLack_H2103().requestFocus();
+            // 処理を抜ける。（中断する）
+            return false;
+
+        }
 
 		// ・unitCareMaintenance（ユニットケアの整備ラジオグループ）※ errMsg = ユニットケアの整備 ※Enabled = true の場合のみ
 		if (getUnitCareMaintenance().isEnabled()) {
@@ -351,9 +362,7 @@ public class QO004138 extends QO004138Event {
 		// ※無効データ削除
 		// 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。
 		// ・unitCareMaintenance 削除KEY：1250104
-		if (!getUnitCareMaintenance().isEnabled()) {
-			map.removeData("1250104");
-		}
+        QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 
 	}
 

@@ -522,4 +522,13 @@ public class QS001101 extends QS001101Event {
             }
         }
     }
+
+    /**
+     * 開始時間コンボ変更時の処理
+     */
+    protected void houmonKaigoBeginTimeActionPerformed(ActionEvent e) throws Exception {
+        // 開始時間に応じて連動
+        checkEndTime();
+        
+    }
 }

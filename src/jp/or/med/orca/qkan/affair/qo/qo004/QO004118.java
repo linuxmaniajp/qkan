@@ -572,9 +572,7 @@ public class QO004118 extends QO004118Event {
 	  
 	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。
 	  // ・unitCareMaintenance 削除KEY：1510121
-	  if(!getUnitCareMaintenance().isEnabled()){
-		  map.removeData("1510121");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 	  	  
   }
 
@@ -588,6 +586,7 @@ public class QO004118 extends QO004118Event {
 	  // 画面の状態を制御する。
 	  setStateByFacilitiesDivision();
 	  
+      nurseStructuralAddRadioGroupSelectionChanged(null);
   }
   
   /**
@@ -607,5 +606,26 @@ public class QO004118 extends QO004118Event {
 			setState_FACILITY_TYPE_UNIT();
 		}
 	}
+
+  /**
+   * 「看護体制加算に伴う画面状態設定」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void nurseStructuralAddRadioGroupSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        // 看護体制加算に伴う画面状態設定処理
+        switch (getNurseStructuralAddRadioGroup().getSelectedIndex()) {
+        case 2:
+            // 「あり」が選択された場合
+            // 状態ID：VALID_NIGHT_NURSE
+            setState_VALID_NIGHT_NURSE();
+            break;
+        default:
+            // 「あり」以外が選択された場合
+            // 状態ID：INVALID_NIGHT_NURSE
+            setState_INVALID_NIGHT_NURSE();
+        }
+    }
 
 }

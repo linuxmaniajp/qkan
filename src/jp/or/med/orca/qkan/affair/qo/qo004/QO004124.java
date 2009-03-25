@@ -249,6 +249,7 @@ public class QO004124 extends QO004124Event {
 //	  if(!getFacilitiesDivision2().isEnabled()){
 //		  map.removeData("1720102");
 //	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 
   }
 

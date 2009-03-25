@@ -35,7 +35,6 @@ import java.awt.event.ActionListener;
 
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 
 /**

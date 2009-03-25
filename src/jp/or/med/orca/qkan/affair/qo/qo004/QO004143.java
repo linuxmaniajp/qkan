@@ -252,13 +252,8 @@ public class QO004143 extends QO004143Event {
 		// 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。
 		// ・staffLack 削除KEY：1350103
 		// ・functionTrainingGuidanceSystem 削除KEY：1350104
-		if (!getStaffLack().isEnabled()) {
-			map.removeData("1350103");
-		}
-
-		if (!getFunctionTrainingGuidanceSystem().isEnabled()) {
-			map.removeData("1350104");
-		}
+        QkanCommon.removeDisabledBindPath(getMainGroup(), map);
+        
 	}
 
 }

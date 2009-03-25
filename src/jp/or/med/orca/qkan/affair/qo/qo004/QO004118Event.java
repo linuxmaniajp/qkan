@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/25  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/07  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 介護老人福祉施設イベント定義(QO004118) 
@@ -103,7 +104,7 @@ public abstract class QO004118Event extends QO004118SQL implements iProviderServ
             lockFlag = true;
             try {
                 facilitiesDivisionSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -119,7 +120,7 @@ public abstract class QO004118Event extends QO004118SQL implements iProviderServ
             lockFlag = true;
             try {
                 dinnerMorningFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -135,7 +136,7 @@ public abstract class QO004118Event extends QO004118SQL implements iProviderServ
             lockFlag = true;
             try {
                 dinnerNoonFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -151,7 +152,23 @@ public abstract class QO004118Event extends QO004118SQL implements iProviderServ
             lockFlag = true;
             try {
                 dinnerNightFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getNurseStructuralAddRadioGroup().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                nurseStructuralAddRadioGroupSelectionChanged(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -189,6 +206,13 @@ public abstract class QO004118Event extends QO004118SQL implements iProviderServ
    * @throws Exception 処理例外
    */
   protected abstract void dinnerNightFocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「看護体制加算に伴う画面状態設定」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void nurseStructuralAddRadioGroupSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 

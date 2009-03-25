@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2008/04/17  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2009/03/04  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -77,13 +77,12 @@ import jp.nichicom.vr.util.adapter.*;
 import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 地域密着特定施設入所者介護画面項目デザイン(QO004128) 
  */
-public class QO004128Design extends QS001ServicePanel {
+public class QO004128Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
@@ -147,6 +146,8 @@ public class QO004128Design extends QS001ServicePanel {
   private ACTextField reduceRate;
 
   private ACLabel percentSign;
+
+  private ACPanel oldLowElementArea;
 
   //getter
 
@@ -746,6 +747,21 @@ public class QO004128Design extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目を取得します。
+   * @return 旧法項目
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QO004128Design() {
@@ -788,6 +804,8 @@ public class QO004128Design extends QS001ServicePanel {
     mainGroup.add(getNightNursingSystemAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     mainGroup.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -1034,6 +1052,13 @@ public class QO004128Design extends QS001ServicePanel {
    * ％ラベルに内部項目を追加します。
    */
   protected void addPercentSign(){
+
+  }
+
+  /**
+   * 旧法項目に内部項目を追加します。
+   */
+  protected void addOldLowElementArea(){
 
   }
 

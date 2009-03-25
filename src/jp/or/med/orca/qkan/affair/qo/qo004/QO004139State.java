@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬一海
- * 作成日: 2006/07/04  日本コンピューター株式会社 廣瀬一海 新規作成
+ * 作成日: 2009/03/03  日本コンピューター株式会社 廣瀬一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -120,6 +120,8 @@ public class QO004139State extends QO004139Design {
         getStaffAssignmentDivision().setEnabled(false);
         getStaffAssignmentDivision().getParent().setEnabled(false);
 
+        getStaffAssignmentDivisionItem3().setEnabled(false);
+
   }
 
   /**
@@ -134,34 +136,12 @@ public class QO004139State extends QO004139Design {
         getStaffAssignmentDivision().setEnabled(true);
         getStaffAssignmentDivision().getParent().setEnabled(true);
 
-  }
-
-  /**
-   * 「人員配置区分有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_STAFF_ASSIGNMENT_TYPE1() throws Exception {
-
-        getStaffAssignmentDivisionItem1().setEnabled(true);
-
-        getStaffAssignmentDivisionItem2().setEnabled(true);
+        getStaffAssignmentDivisionItem3().setEnabled(true);
 
   }
 
   /**
-   * 「人員配置区分無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_STAFF_ASSIGNMENT_TYPE2() throws Exception {
-
-        getStaffAssignmentDivisionItem1().setEnabled(false);
-
-        getStaffAssignmentDivisionItem2().setEnabled(false);
-
-  }
-
-  /**
-   * 「経過型タイプ」の状態に設定します。
+   * 「経過タイプ」の状態に設定します。
    * @throws Exception 処理例外
    */
   public void setState_FACILITY_TYPE_PASSAGE() throws Exception {
@@ -169,8 +149,92 @@ public class QO004139State extends QO004139Design {
         getUnitCareMaintenance().setEnabled(false);
         getUnitCareMaintenance().getParent().setEnabled(false);
 
+        getStaffAssignmentDivision().setEnabled(true);
+        getStaffAssignmentDivision().getParent().setEnabled(true);
+
+        getStaffAssignmentDivisionItem3().setEnabled(false);
+
+  }
+
+  /**
+   * 「ユニット型経過タイプ」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITY_TYPE_UNIT_PASSAGE() throws Exception {
+
+        getUnitCareMaintenance().setEnabled(true);
+        getUnitCareMaintenance().getParent().setEnabled(true);
+
         getStaffAssignmentDivision().setEnabled(false);
         getStaffAssignmentDivision().getParent().setEnabled(false);
+
+        getStaffAssignmentDivisionItem3().setEnabled(false);
+
+  }
+
+  /**
+   * 「ユニットタイプ_H2103」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITY_TYPE_UNIT_H2103() throws Exception {
+
+        getUnitCareMaintenance_H2103().setEnabled(true);
+        getUnitCareMaintenance_H2103().getParent().setEnabled(true);
+
+        getStaffAssignmentDivision_H2103().setEnabled(false);
+        getStaffAssignmentDivision_H2103().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「ノーマルタイプ_H2103」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITY_TYPE_NORMAL_H2103() throws Exception {
+
+        getUnitCareMaintenance_H2103().setEnabled(false);
+        getUnitCareMaintenance_H2103().getParent().setEnabled(false);
+
+        getStaffAssignmentDivision_H2103().setEnabled(true);
+        getStaffAssignmentDivision_H2103().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「人員配置区分有効_H2103」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STAFF_ASSIGNMENT_TYPE1_H2103() throws Exception {
+
+        getStaffAssignmentDivisionItem1_H2103().setEnabled(true);
+
+        getStaffAssignmentDivisionItem2_H2103().setEnabled(true);
+
+  }
+
+  /**
+   * 「人員配置区分無効_H2103」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STAFF_ASSIGNMENT_TYPE2_H2103() throws Exception {
+
+        getStaffAssignmentDivisionItem1_H2103().setEnabled(false);
+
+        getStaffAssignmentDivisionItem2_H2103().setEnabled(false);
+
+  }
+
+  /**
+   * 「経過型タイプ_H2103」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_FACILITY_TYPE_PASSAGE_H2103() throws Exception {
+
+        getUnitCareMaintenance_H2103().setEnabled(false);
+        getUnitCareMaintenance_H2103().getParent().setEnabled(false);
+
+        getStaffAssignmentDivision_H2103().setEnabled(false);
+        getStaffAssignmentDivision_H2103().getParent().setEnabled(false);
 
   }
 

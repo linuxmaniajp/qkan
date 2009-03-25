@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/23  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/02  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 通所介護状態定義(QO004107) 
  */
@@ -114,7 +114,7 @@ public class QO004107State extends QO004107Design {
    */
   public void setState_LARGE_PROVIDER_TRUE() throws Exception {
 
-        getFacilitiesDivisionOther1().setEnabled(true);
+        getFacilitiesDivisionOther1_H2103().setEnabled(true);
 
   }
 
@@ -124,7 +124,7 @@ public class QO004107State extends QO004107Design {
    */
   public void setState_LARGE_PROVIDER_FALSE() throws Exception {
 
-        getFacilitiesDivisionOther1().setEnabled(false);
+        getFacilitiesDivisionOther1_H2103().setEnabled(false);
 
   }
 

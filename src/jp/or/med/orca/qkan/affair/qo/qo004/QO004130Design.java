@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/05/02  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/04  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -77,16 +77,45 @@ import jp.nichicom.vr.util.adapter.*;
 import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 介護予防訪問介護画面項目デザイン(QO004130) 
  */
-public class QO004130Design  extends QS001ServicePanel {
+public class QO004130Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
+
+  private ACValueArrayRadioButtonGroup thirdClassHelperRadioGroup;
+
+  private ACLabelContainer thirdClassHelperRadioGroupContainer;
+
+  private ACListModelAdapter thirdClassHelperRadioGroupModel;
+
+  private ACRadioButtonItem thirdClassHelperRadioItem1;
+
+  private ACRadioButtonItem thirdClassHelperRadioItem2;
+
+  private ACValueArrayRadioButtonGroup providerAddMountainousAreaRafioRadioGroup;
+
+  private ACLabelContainer providerAddMountainousAreaRafioRadioGroupContainer;
+
+  private ACListModelAdapter providerAddMountainousAreaRafioRadioGroupModel;
+
+  private ACRadioButtonItem providerAddMountainousAreaRafioRadioItem1;
+
+  private ACRadioButtonItem providerAddMountainousAreaRafioRadioItem2;
+
+  private ACValueArrayRadioButtonGroup providerAddMountainousAreaScaleRadioGroup;
+
+  private ACLabelContainer providerAddMountainousAreaScaleRadioGroupContainer;
+
+  private ACListModelAdapter providerAddMountainousAreaScaleRadioGroupModel;
+
+  private ACRadioButtonItem providerAddMountainousAreaScaleRadioItem1;
+
+  private ACRadioButtonItem providerAddMountainousAreaScaleRadioItem2;
 
   private ACLabelContainer reduceRateContainer;
 
@@ -95,6 +124,8 @@ public class QO004130Design  extends QS001ServicePanel {
   private ACLabel percentSign;
 
   private ACIntegerCheckBox ShahukuReduce;
+
+  private ACPanel oldLowElementArea;
 
   //getter
 
@@ -114,6 +145,303 @@ public class QO004130Design  extends QS001ServicePanel {
       addMainGroup();
     }
     return mainGroup;
+
+  }
+
+  /**
+   * 3級ヘルパー体制を取得します。
+   * @return 3級ヘルパー体制
+   */
+  public ACValueArrayRadioButtonGroup getThirdClassHelperRadioGroup(){
+    if(thirdClassHelperRadioGroup==null){
+
+      thirdClassHelperRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getThirdClassHelperRadioGroupContainer().setText("3級ヘルパー体制");
+
+      thirdClassHelperRadioGroup.setBindPath("1610104");
+
+      thirdClassHelperRadioGroup.setVisible(true);
+
+      thirdClassHelperRadioGroup.setEnabled(true);
+
+      thirdClassHelperRadioGroup.setNoSelectIndex(0);
+
+      thirdClassHelperRadioGroup.setUseClearButton(false);
+
+      thirdClassHelperRadioGroup.setModel(getThirdClassHelperRadioGroupModel());
+
+      thirdClassHelperRadioGroup.setValues(new int[]{1,2});
+
+      addThirdClassHelperRadioGroup();
+    }
+    return thirdClassHelperRadioGroup;
+
+  }
+
+  /**
+   * 3級ヘルパー体制コンテナを取得します。
+   * @return 3級ヘルパー体制コンテナ
+   */
+  protected ACLabelContainer getThirdClassHelperRadioGroupContainer(){
+    if(thirdClassHelperRadioGroupContainer==null){
+      thirdClassHelperRadioGroupContainer = new ACLabelContainer();
+      thirdClassHelperRadioGroupContainer.setFollowChildEnabled(true);
+      thirdClassHelperRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      thirdClassHelperRadioGroupContainer.add(getThirdClassHelperRadioGroup(), null);
+    }
+    return thirdClassHelperRadioGroupContainer;
+  }
+
+  /**
+   * 3級ヘルパー体制モデルを取得します。
+   * @return 3級ヘルパー体制モデル
+   */
+  protected ACListModelAdapter getThirdClassHelperRadioGroupModel(){
+    if(thirdClassHelperRadioGroupModel==null){
+      thirdClassHelperRadioGroupModel = new ACListModelAdapter();
+      addThirdClassHelperRadioGroupModel();
+    }
+    return thirdClassHelperRadioGroupModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getThirdClassHelperRadioItem1(){
+    if(thirdClassHelperRadioItem1==null){
+
+      thirdClassHelperRadioItem1 = new ACRadioButtonItem();
+
+      thirdClassHelperRadioItem1.setText("なし");
+
+      thirdClassHelperRadioItem1.setGroup(getThirdClassHelperRadioGroup());
+
+      thirdClassHelperRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addThirdClassHelperRadioItem1();
+    }
+    return thirdClassHelperRadioItem1;
+
+  }
+
+  /**
+   * ありを取得します。
+   * @return あり
+   */
+  public ACRadioButtonItem getThirdClassHelperRadioItem2(){
+    if(thirdClassHelperRadioItem2==null){
+
+      thirdClassHelperRadioItem2 = new ACRadioButtonItem();
+
+      thirdClassHelperRadioItem2.setText("あり");
+
+      thirdClassHelperRadioItem2.setGroup(getThirdClassHelperRadioGroup());
+
+      thirdClassHelperRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addThirdClassHelperRadioItem2();
+    }
+    return thirdClassHelperRadioItem2;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）を取得します。
+   * @return 中山間地域等における小規模事業所加算（地域に関する状況）
+   */
+  public ACValueArrayRadioButtonGroup getProviderAddMountainousAreaRafioRadioGroup(){
+    if(providerAddMountainousAreaRafioRadioGroup==null){
+
+      providerAddMountainousAreaRafioRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getProviderAddMountainousAreaRafioRadioGroupContainer().setText("中山間地域等における小規模事業所加算（地域に関する状況）");
+
+      providerAddMountainousAreaRafioRadioGroup.setBindPath("2");
+
+      providerAddMountainousAreaRafioRadioGroup.setVisible(true);
+
+      providerAddMountainousAreaRafioRadioGroup.setEnabled(true);
+
+      providerAddMountainousAreaRafioRadioGroup.setNoSelectIndex(0);
+
+      providerAddMountainousAreaRafioRadioGroup.setUseClearButton(false);
+
+      providerAddMountainousAreaRafioRadioGroup.setModel(getProviderAddMountainousAreaRafioRadioGroupModel());
+
+      providerAddMountainousAreaRafioRadioGroup.setValues(new int[]{1,2});
+
+      addProviderAddMountainousAreaRafioRadioGroup();
+    }
+    return providerAddMountainousAreaRafioRadioGroup;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）コンテナを取得します。
+   * @return 中山間地域等における小規模事業所加算（地域に関する状況）コンテナ
+   */
+  protected ACLabelContainer getProviderAddMountainousAreaRafioRadioGroupContainer(){
+    if(providerAddMountainousAreaRafioRadioGroupContainer==null){
+      providerAddMountainousAreaRafioRadioGroupContainer = new ACLabelContainer();
+      providerAddMountainousAreaRafioRadioGroupContainer.setFollowChildEnabled(true);
+      providerAddMountainousAreaRafioRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      providerAddMountainousAreaRafioRadioGroupContainer.add(getProviderAddMountainousAreaRafioRadioGroup(), null);
+    }
+    return providerAddMountainousAreaRafioRadioGroupContainer;
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）モデルを取得します。
+   * @return 中山間地域等における小規模事業所加算（地域に関する状況）モデル
+   */
+  protected ACListModelAdapter getProviderAddMountainousAreaRafioRadioGroupModel(){
+    if(providerAddMountainousAreaRafioRadioGroupModel==null){
+      providerAddMountainousAreaRafioRadioGroupModel = new ACListModelAdapter();
+      addProviderAddMountainousAreaRafioRadioGroupModel();
+    }
+    return providerAddMountainousAreaRafioRadioGroupModel;
+  }
+
+  /**
+   * 非該当を取得します。
+   * @return 非該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaRafioRadioItem1(){
+    if(providerAddMountainousAreaRafioRadioItem1==null){
+
+      providerAddMountainousAreaRafioRadioItem1 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaRafioRadioItem1.setText("非該当");
+
+      providerAddMountainousAreaRafioRadioItem1.setGroup(getProviderAddMountainousAreaRafioRadioGroup());
+
+      providerAddMountainousAreaRafioRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaRafioRadioItem1();
+    }
+    return providerAddMountainousAreaRafioRadioItem1;
+
+  }
+
+  /**
+   * 該当を取得します。
+   * @return 該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaRafioRadioItem2(){
+    if(providerAddMountainousAreaRafioRadioItem2==null){
+
+      providerAddMountainousAreaRafioRadioItem2 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaRafioRadioItem2.setText("該当");
+
+      providerAddMountainousAreaRafioRadioItem2.setGroup(getProviderAddMountainousAreaRafioRadioGroup());
+
+      providerAddMountainousAreaRafioRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaRafioRadioItem2();
+    }
+    return providerAddMountainousAreaRafioRadioItem2;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）を取得します。
+   * @return 中山間地域等における小規模事業所加算（規模に関する状況）
+   */
+  public ACValueArrayRadioButtonGroup getProviderAddMountainousAreaScaleRadioGroup(){
+    if(providerAddMountainousAreaScaleRadioGroup==null){
+
+      providerAddMountainousAreaScaleRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getProviderAddMountainousAreaScaleRadioGroupContainer().setText("中山間地域等における小規模事業所加算（規模に関する状況）");
+
+      providerAddMountainousAreaScaleRadioGroup.setBindPath("3");
+
+      providerAddMountainousAreaScaleRadioGroup.setVisible(true);
+
+      providerAddMountainousAreaScaleRadioGroup.setEnabled(true);
+
+      providerAddMountainousAreaScaleRadioGroup.setNoSelectIndex(0);
+
+      providerAddMountainousAreaScaleRadioGroup.setUseClearButton(false);
+
+      providerAddMountainousAreaScaleRadioGroup.setModel(getProviderAddMountainousAreaScaleRadioGroupModel());
+
+      providerAddMountainousAreaScaleRadioGroup.setValues(new int[]{1,2});
+
+      addProviderAddMountainousAreaScaleRadioGroup();
+    }
+    return providerAddMountainousAreaScaleRadioGroup;
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）コンテナを取得します。
+   * @return 中山間地域等における小規模事業所加算（規模に関する状況）コンテナ
+   */
+  protected ACLabelContainer getProviderAddMountainousAreaScaleRadioGroupContainer(){
+    if(providerAddMountainousAreaScaleRadioGroupContainer==null){
+      providerAddMountainousAreaScaleRadioGroupContainer = new ACLabelContainer();
+      providerAddMountainousAreaScaleRadioGroupContainer.setFollowChildEnabled(true);
+      providerAddMountainousAreaScaleRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      providerAddMountainousAreaScaleRadioGroupContainer.add(getProviderAddMountainousAreaScaleRadioGroup(), null);
+    }
+    return providerAddMountainousAreaScaleRadioGroupContainer;
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）モデルを取得します。
+   * @return 中山間地域等における小規模事業所加算（規模に関する状況）モデル
+   */
+  protected ACListModelAdapter getProviderAddMountainousAreaScaleRadioGroupModel(){
+    if(providerAddMountainousAreaScaleRadioGroupModel==null){
+      providerAddMountainousAreaScaleRadioGroupModel = new ACListModelAdapter();
+      addProviderAddMountainousAreaScaleRadioGroupModel();
+    }
+    return providerAddMountainousAreaScaleRadioGroupModel;
+  }
+
+  /**
+   * 非該当を取得します。
+   * @return 非該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaScaleRadioItem1(){
+    if(providerAddMountainousAreaScaleRadioItem1==null){
+
+      providerAddMountainousAreaScaleRadioItem1 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaScaleRadioItem1.setText("非該当");
+
+      providerAddMountainousAreaScaleRadioItem1.setGroup(getProviderAddMountainousAreaScaleRadioGroup());
+
+      providerAddMountainousAreaScaleRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaScaleRadioItem1();
+    }
+    return providerAddMountainousAreaScaleRadioItem1;
+
+  }
+
+  /**
+   * 該当を取得します。
+   * @return 該当
+   */
+  public ACRadioButtonItem getProviderAddMountainousAreaScaleRadioItem2(){
+    if(providerAddMountainousAreaScaleRadioItem2==null){
+
+      providerAddMountainousAreaScaleRadioItem2 = new ACRadioButtonItem();
+
+      providerAddMountainousAreaScaleRadioItem2.setText("該当");
+
+      providerAddMountainousAreaScaleRadioItem2.setGroup(getProviderAddMountainousAreaScaleRadioGroup());
+
+      providerAddMountainousAreaScaleRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addProviderAddMountainousAreaScaleRadioItem2();
+    }
+    return providerAddMountainousAreaScaleRadioItem2;
 
   }
 
@@ -204,6 +532,21 @@ public class QO004130Design  extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目を取得します。
+   * @return 旧法項目
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QO004130Design() {
@@ -237,9 +580,125 @@ public class QO004130Design  extends QS001ServicePanel {
    */
   protected void addMainGroup(){
 
+    mainGroup.add(getThirdClassHelperRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getProviderAddMountainousAreaRafioRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getProviderAddMountainousAreaScaleRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     mainGroup.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE);
 
     mainGroup.add(getShahukuReduce(), VRLayout.FLOW_RETURN);
+
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 3級ヘルパー体制に内部項目を追加します。
+   */
+  protected void addThirdClassHelperRadioGroup(){
+
+  }
+
+  /**
+   * 3級ヘルパー体制モデルに内部項目を追加します。
+   */
+  protected void addThirdClassHelperRadioGroupModel(){
+
+    getThirdClassHelperRadioItem1().setButtonIndex(1);
+
+    getThirdClassHelperRadioGroupModel().add(getThirdClassHelperRadioItem1());
+
+    getThirdClassHelperRadioItem2().setButtonIndex(2);
+
+    getThirdClassHelperRadioGroupModel().add(getThirdClassHelperRadioItem2());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addThirdClassHelperRadioItem1(){
+
+  }
+
+  /**
+   * ありに内部項目を追加します。
+   */
+  protected void addThirdClassHelperRadioItem2(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioGroup(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（地域に関する状況）モデルに内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioGroupModel(){
+
+    getProviderAddMountainousAreaRafioRadioItem1().setButtonIndex(1);
+
+    getProviderAddMountainousAreaRafioRadioGroupModel().add(getProviderAddMountainousAreaRafioRadioItem1());
+
+    getProviderAddMountainousAreaRafioRadioItem2().setButtonIndex(2);
+
+    getProviderAddMountainousAreaRafioRadioGroupModel().add(getProviderAddMountainousAreaRafioRadioItem2());
+
+  }
+
+  /**
+   * 非該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioItem1(){
+
+  }
+
+  /**
+   * 該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaRafioRadioItem2(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioGroup(){
+
+  }
+
+  /**
+   * 中山間地域等における小規模事業所加算（規模に関する状況）モデルに内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioGroupModel(){
+
+    getProviderAddMountainousAreaScaleRadioItem1().setButtonIndex(1);
+
+    getProviderAddMountainousAreaScaleRadioGroupModel().add(getProviderAddMountainousAreaScaleRadioItem1());
+
+    getProviderAddMountainousAreaScaleRadioItem2().setButtonIndex(2);
+
+    getProviderAddMountainousAreaScaleRadioGroupModel().add(getProviderAddMountainousAreaScaleRadioItem2());
+
+  }
+
+  /**
+   * 非該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioItem1(){
+
+  }
+
+  /**
+   * 該当に内部項目を追加します。
+   */
+  protected void addProviderAddMountainousAreaScaleRadioItem2(){
 
   }
 
@@ -272,6 +731,13 @@ public class QO004130Design  extends QS001ServicePanel {
    * 社福減免対象事業者に内部項目を追加します。
    */
   protected void addShahukuReduce(){
+
+  }
+
+  /**
+   * 旧法項目に内部項目を追加します。
+   */
+  protected void addOldLowElementArea(){
 
   }
 

@@ -30,57 +30,22 @@
 
 package jp.or.med.orca.qkan.affair.qo.qo004;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.event.FocusEvent;
+
+import javax.swing.event.ListSelectionEvent;
+
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanSystemInformation;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 介護療養型医療施設（療養型病院）(QO004120) 
@@ -104,6 +69,16 @@ public class QO004120 extends QO004120Event {
 		// 画面状態設定
 		setState();
 	}
+  /**
+   * 「画面状態設定」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void facilitiesDivision_H2103SelectionChanged(ListSelectionEvent e)
+            throws Exception {
+        // 画面状態設定
+        setState();
+    }
 
 //  /**
 //   * 「画面状態設定」イベントです。
@@ -305,6 +280,12 @@ public class QO004120 extends QO004120Event {
     	getFacilitiesDivision().requestFocus();
     	return false;
     }
+    if(!getFacilitiesDivision_H2103().isSelected()){
+        errMsg = "施設区分";
+        QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+        getFacilitiesDivision_H2103().requestFocus();
+        return false;
+    }
     
     // ・staffAssignmentDivision（人員配置区分ラジオグループ）　
     // ※errMsg = 人員配置区分
@@ -324,6 +305,23 @@ public class QO004120 extends QO004120Event {
 			return false;			
 		}
     }
+    if(getStaffAssignmentDivision_H2103().isEnabled()){
+        if(!getStaffAssignmentDivision_H2103().isSelected()){
+            errMsg = "人員配置区分";
+            QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+            getStaffAssignmentDivision_H2103().requestFocus();
+            return false;
+        }
+        // 選択されている項目が無効状態の場合、選択していないとみなす。
+        if(!(getStaffAssignmentDivision_H2103().getSelectedButton()).isEnabled()){
+            errMsg = "人員配置区分";
+            QkanMessageList.getInstance()
+                    .ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+            getStaffAssignmentDivision_H2103().requestFocus();
+            return false;
+        }
+    }
+    
     
     // ・nightWorkDivision（夜間勤務条件基準）　
     // ※errMsg = 夜間勤務条件基準
@@ -333,6 +331,13 @@ public class QO004120 extends QO004120Event {
     	getNightWorkDivision().requestFocus();
     	return false;
     }
+    if(!getNightWorkDivision_H2103().isSelected()){
+        errMsg = "夜間勤務条件基準";
+        QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+        getNightWorkDivision_H2103().requestFocus();
+        return false;
+    }
+    
     
     // ・recuperationEnvironmental（療養環境基準ラジオグループ）　
     // ※errMsg = 療養環境基準
@@ -398,6 +403,15 @@ public class QO004120 extends QO004120Event {
 	    	return false;
 	    }
     }
+    if(getUnitCareMaintenance_H2103().isEnabled()){
+        if(!getUnitCareMaintenance_H2103().isSelected()){
+            errMsg = "ユニットケアの整備";
+            QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+            getUnitCareMaintenance_H2103().requestFocus();
+            return false;
+        }
+    }
+    
     
     // ・bodyRestraintAbolition（身体拘束廃止未実施減算ラジオグループ）
     // ※errMsg = 身体拘束廃止未実施減算
@@ -545,12 +559,8 @@ public class QO004120 extends QO004120Event {
 	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。
 	  // ・staffAssignmentDivision 削除KEY：1530102
 	  // ・unitCareMaintenance 削除KEY：1530119
-	  if(!getStaffAssignmentDivision().isEnabled()){
-		  map.removeData("1530102");
-	  }
-	  if(!getUnitCareMaintenance().isEnabled()){
-		  map.removeData("1530119");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
+      
 	  	  
   }
 
@@ -582,10 +592,29 @@ public class QO004120 extends QO004120Event {
 		} else if (facilityType == FACILITY_TYPE_UNIT) {
 			// 「ユニット型」が選択された場合
 			setState_FACILITY_TYPE_UNIT();
+        } else if (facilityType == FACILITY_TYPE_PASSAGE) {
+            // 「経過型」が選択された場合
+            setState_FACILITY_TYPE_PASSAGE();
 		} else {
-			// 「経過型」が選択された場合
-			setState_FACILITY_TYPE_PASSAGE();
+			// 「ユニット型経過型」が選択された場合
+			setState_FACILITY_TYPE_UNIT_PASSAGE();
 		}
+
+        switch(getFacilitiesDivision_H2103().getSelectedIndex()){
+        case FACILITY_TYPE_BYOIN:
+            // 「病院」が選択された場合
+            setState_FACILITY_TYPE_NORMAL_H2103();
+            break;
+        case FACILITY_TYPE_UNIT:
+            // 「ユニット型」が選択された場合
+            setState_FACILITY_TYPE_UNIT_H2103();
+            break;
+        case FACILITY_TYPE_PASSAGE:
+            // 「経過型」が選択された場合
+            setState_FACILITY_TYPE_PASSAGE_H2103();
+            break;
+        }
+
 	}
 
 //  /**

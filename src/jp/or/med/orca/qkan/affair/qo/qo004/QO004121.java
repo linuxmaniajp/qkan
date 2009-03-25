@@ -494,12 +494,7 @@ public class QO004121 extends QO004121Event {
 	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。	
 	  // ・staffAssignmentDivision　削除KEY：1530202
 	  // ・unitCareMaintenance　削除KEY：1530217
-	  if(!getStaffAssignmentDivision().isEnabled()){
-		  map.removeData("1530202");
-	  }
-	  if(!getUnitCareMaintenance().isEnabled()){
-		  map.removeData("1530217");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 	  	  
   }
 

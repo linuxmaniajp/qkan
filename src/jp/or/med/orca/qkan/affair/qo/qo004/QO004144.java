@@ -28,7 +28,6 @@
  */
 package jp.or.med.orca.qkan.affair.qo.qo004;
 
-import jp.nichicom.ac.component.ACTextArea;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -74,6 +73,14 @@ public class QO004144 extends QO004144Event {
 		// 割引率テキストに初期値0を代入する。
 		// ・reduceRate
 		getReduceRate().setText("0");
+        
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+        //＜平成21年4月法改正対応＞
+        //中山間地域等における小規模事業所加算（地域に関する状況）の初期値として「非該当」を選択する。
+        getProviderAddMountainousAreaRafioRadioGroup().setSelectedIndex(1);
+        //中山間地域等における小規模事業所加算（規模に関する状況）の初期値として「非該当」を選択する。
+        getProviderAddMountainousAreaScaleRadioGroup().setSelectedIndex(1);
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応
 	}
 
 	/**

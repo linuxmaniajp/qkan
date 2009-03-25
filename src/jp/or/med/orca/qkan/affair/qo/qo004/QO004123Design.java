@@ -18,7 +18,7 @@
  *****************************************************************
  * ƒAƒvƒŠ: QKANCHO
  * ŠJ”­Ò: ¼–{@Kˆê
- * ì¬“ú: 2006/03/08  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ ¼–{@Kˆê V‹Kì¬
+ * ì¬“ú: 2009/03/04  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ ¼–{@Kˆê V‹Kì¬
  * XV“ú: ----/--/--
  * ƒVƒXƒeƒ€ ‹‹•tŠÇ—‘ä’  (Q)
  * ƒTƒuƒVƒXƒeƒ€ ‚»‚Ì‘¼‹@”\ (O)
@@ -28,30 +28,61 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo004;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * –éŠÔ‘Î‰Œ^–K–âŠÅŒì‰æ–Ê€–ÚƒfƒUƒCƒ“(QO004123) 
  */
-public class QO004123Design extends QS001ServicePanel {
+public class QO004123Design extends QO004ProviderPanel {
   //GUIƒRƒ“ƒ|[ƒlƒ“ƒg
 
   private ACGroupBox mainGroup;
@@ -66,6 +97,78 @@ public class QO004123Design extends QS001ServicePanel {
 
   private ACRadioButtonItem facilitiesDivisionItem2;
 
+  private ACValueArrayRadioButtonGroup thirdClassHelperRadioGroup;
+
+  private ACLabelContainer thirdClassHelperRadioGroupContainer;
+
+  private ACListModelAdapter thirdClassHelperRadioGroupModel;
+
+  private ACRadioButtonItem thirdClassHelperRadioItem1;
+
+  private ACRadioButtonItem thirdClassHelperRadioItem2;
+
+  private ACValueArrayRadioButtonGroup hours24MessageAddRadioGroup;
+
+  private ACLabelContainer hours24MessageAddRadioGroupContainer;
+
+  private ACListModelAdapter hours24MessageAddRadioGroupModel;
+
+  private ACRadioButtonItem hours24MessageAddRadioItem1;
+
+  private ACRadioButtonItem hours24MessageAddRadioItem2;
+
+  private ACValueArrayRadioButtonGroup serviceAddProvisionStructuralRadioGroup;
+
+  private ACLabelContainer serviceAddProvisionStructuralRadioGroupContainer;
+
+  private ACListModelAdapter serviceAddProvisionStructuralRadioGroupModel;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralRadioItem1;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralRadioItem2;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralRadioItem3;
+
+  private ACValueArrayRadioButtonGroup baseMunicipalityAdd;
+
+  private ACLabelContainer baseMunicipalityAddContainer;
+
+  private ACListModelAdapter baseMunicipalityAddModel;
+
+  private ACRadioButtonItem baseMunicipalityAddItem1;
+
+  private ACRadioButtonItem baseMunicipalityAddItem2;
+
+  private ACRadioButtonItem baseMunicipalityAddItem3;
+
+  private ACRadioButtonItem baseMunicipalityAddItem4;
+
+  private ACRadioButtonItem baseMunicipalityAddItem5;
+
+  private ACRadioButtonItem baseMunicipalityAddItem6;
+
+  private ACRadioButtonItem baseMunicipalityAddItem7;
+
+  private ACValueArrayRadioButtonGroup serviceMunicipalityAdd;
+
+  private ACLabelContainer serviceMunicipalityAddContainer;
+
+  private ACListModelAdapter serviceMunicipalityAddModel;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem1;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem2;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem3;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem4;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem5;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem6;
+
+  private ACRadioButtonItem serviceMunicipalityAddItem7;
+
   private ACLabelContainer reduceRateContainer;
 
   private ACTextField reduceRate;
@@ -73,6 +176,8 @@ public class QO004123Design extends QS001ServicePanel {
   private ACLabel percentSign;
 
   private ACIntegerCheckBox ShahukuReduce;
+
+  private ACPanel oldLowElementArea;
 
   //getter
 
@@ -110,9 +215,9 @@ public class QO004123Design extends QS001ServicePanel {
 
       facilitiesDivision.setBindPath("1710101");
 
-      facilitiesDivision.setModel(getFacilitiesDivisionModel());
-
       facilitiesDivision.setUseClearButton(false);
+
+      facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
       addFacilitiesDivision();
     }
@@ -185,6 +290,724 @@ public class QO004123Design extends QS001ServicePanel {
       addFacilitiesDivisionItem2();
     }
     return facilitiesDivisionItem2;
+
+  }
+
+  /**
+   * 3‹‰ƒwƒ‹ƒp[‘Ì§‚ğæ“¾‚µ‚Ü‚·B
+   * @return 3‹‰ƒwƒ‹ƒp[‘Ì§
+   */
+  public ACValueArrayRadioButtonGroup getThirdClassHelperRadioGroup(){
+    if(thirdClassHelperRadioGroup==null){
+
+      thirdClassHelperRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getThirdClassHelperRadioGroupContainer().setText("3‹‰ƒwƒ‹ƒp[‘Ì§");
+
+      thirdClassHelperRadioGroup.setBindPath("1710102");
+
+      thirdClassHelperRadioGroup.setVisible(true);
+
+      thirdClassHelperRadioGroup.setEnabled(true);
+
+      thirdClassHelperRadioGroup.setNoSelectIndex(0);
+
+      thirdClassHelperRadioGroup.setUseClearButton(false);
+
+      thirdClassHelperRadioGroup.setModel(getThirdClassHelperRadioGroupModel());
+
+      thirdClassHelperRadioGroup.setValues(new int[]{1,2});
+
+      addThirdClassHelperRadioGroup();
+    }
+    return thirdClassHelperRadioGroup;
+
+  }
+
+  /**
+   * 3‹‰ƒwƒ‹ƒp[‘Ì§ƒRƒ“ƒeƒi‚ğæ“¾‚µ‚Ü‚·B
+   * @return 3‹‰ƒwƒ‹ƒp[‘Ì§ƒRƒ“ƒeƒi
+   */
+  protected ACLabelContainer getThirdClassHelperRadioGroupContainer(){
+    if(thirdClassHelperRadioGroupContainer==null){
+      thirdClassHelperRadioGroupContainer = new ACLabelContainer();
+      thirdClassHelperRadioGroupContainer.setFollowChildEnabled(true);
+      thirdClassHelperRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      thirdClassHelperRadioGroupContainer.add(getThirdClassHelperRadioGroup(), null);
+    }
+    return thirdClassHelperRadioGroupContainer;
+  }
+
+  /**
+   * 3‹‰ƒwƒ‹ƒp[‘Ì§ƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return 3‹‰ƒwƒ‹ƒp[‘Ì§ƒ‚ƒfƒ‹
+   */
+  protected ACListModelAdapter getThirdClassHelperRadioGroupModel(){
+    if(thirdClassHelperRadioGroupModel==null){
+      thirdClassHelperRadioGroupModel = new ACListModelAdapter();
+      addThirdClassHelperRadioGroupModel();
+    }
+    return thirdClassHelperRadioGroupModel;
+  }
+
+  /**
+   * ‚È‚µ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚È‚µ
+   */
+  public ACRadioButtonItem getThirdClassHelperRadioItem1(){
+    if(thirdClassHelperRadioItem1==null){
+
+      thirdClassHelperRadioItem1 = new ACRadioButtonItem();
+
+      thirdClassHelperRadioItem1.setText("‚È‚µ");
+
+      thirdClassHelperRadioItem1.setGroup(getThirdClassHelperRadioGroup());
+
+      thirdClassHelperRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addThirdClassHelperRadioItem1();
+    }
+    return thirdClassHelperRadioItem1;
+
+  }
+
+  /**
+   * ‚ ‚è‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚ ‚è
+   */
+  public ACRadioButtonItem getThirdClassHelperRadioItem2(){
+    if(thirdClassHelperRadioItem2==null){
+
+      thirdClassHelperRadioItem2 = new ACRadioButtonItem();
+
+      thirdClassHelperRadioItem2.setText("‚ ‚è");
+
+      thirdClassHelperRadioItem2.setGroup(getThirdClassHelperRadioGroup());
+
+      thirdClassHelperRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addThirdClassHelperRadioItem2();
+    }
+    return thirdClassHelperRadioItem2;
+
+  }
+
+  /**
+   * 24ŠÔ’Ê•ñ‘Î‰‰ÁZ‚ğæ“¾‚µ‚Ü‚·B
+   * @return 24ŠÔ’Ê•ñ‘Î‰‰ÁZ
+   */
+  public ACValueArrayRadioButtonGroup getHours24MessageAddRadioGroup(){
+    if(hours24MessageAddRadioGroup==null){
+
+      hours24MessageAddRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getHours24MessageAddRadioGroupContainer().setText("24ŠÔ’Ê•ñ‘Î‰‰ÁZ");
+
+      hours24MessageAddRadioGroup.setBindPath("1710103");
+
+      hours24MessageAddRadioGroup.setVisible(true);
+
+      hours24MessageAddRadioGroup.setEnabled(true);
+
+      hours24MessageAddRadioGroup.setNoSelectIndex(0);
+
+      hours24MessageAddRadioGroup.setUseClearButton(false);
+
+      hours24MessageAddRadioGroup.setModel(getHours24MessageAddRadioGroupModel());
+
+      hours24MessageAddRadioGroup.setValues(new int[]{1,2});
+
+      addHours24MessageAddRadioGroup();
+    }
+    return hours24MessageAddRadioGroup;
+
+  }
+
+  /**
+   * 24ŠÔ’Ê•ñ‘Î‰‰ÁZƒRƒ“ƒeƒi‚ğæ“¾‚µ‚Ü‚·B
+   * @return 24ŠÔ’Ê•ñ‘Î‰‰ÁZƒRƒ“ƒeƒi
+   */
+  protected ACLabelContainer getHours24MessageAddRadioGroupContainer(){
+    if(hours24MessageAddRadioGroupContainer==null){
+      hours24MessageAddRadioGroupContainer = new ACLabelContainer();
+      hours24MessageAddRadioGroupContainer.setFollowChildEnabled(true);
+      hours24MessageAddRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      hours24MessageAddRadioGroupContainer.add(getHours24MessageAddRadioGroup(), null);
+    }
+    return hours24MessageAddRadioGroupContainer;
+  }
+
+  /**
+   * 24ŠÔ’Ê•ñ‘Î‰‰ÁZƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return 24ŠÔ’Ê•ñ‘Î‰‰ÁZƒ‚ƒfƒ‹
+   */
+  protected ACListModelAdapter getHours24MessageAddRadioGroupModel(){
+    if(hours24MessageAddRadioGroupModel==null){
+      hours24MessageAddRadioGroupModel = new ACListModelAdapter();
+      addHours24MessageAddRadioGroupModel();
+    }
+    return hours24MessageAddRadioGroupModel;
+  }
+
+  /**
+   * ‘Î‰•s‰Â‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘Î‰•s‰Â
+   */
+  public ACRadioButtonItem getHours24MessageAddRadioItem1(){
+    if(hours24MessageAddRadioItem1==null){
+
+      hours24MessageAddRadioItem1 = new ACRadioButtonItem();
+
+      hours24MessageAddRadioItem1.setText("‘Î‰•s‰Â");
+
+      hours24MessageAddRadioItem1.setGroup(getHours24MessageAddRadioGroup());
+
+      hours24MessageAddRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addHours24MessageAddRadioItem1();
+    }
+    return hours24MessageAddRadioItem1;
+
+  }
+
+  /**
+   * ‘Î‰‰Â‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘Î‰‰Â
+   */
+  public ACRadioButtonItem getHours24MessageAddRadioItem2(){
+    if(hours24MessageAddRadioItem2==null){
+
+      hours24MessageAddRadioItem2 = new ACRadioButtonItem();
+
+      hours24MessageAddRadioItem2.setText("‘Î‰‰Â");
+
+      hours24MessageAddRadioItem2.setGroup(getHours24MessageAddRadioGroup());
+
+      hours24MessageAddRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addHours24MessageAddRadioItem2();
+    }
+    return hours24MessageAddRadioItem2;
+
+  }
+
+  /**
+   * ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZ
+   */
+  public ACValueArrayRadioButtonGroup getServiceAddProvisionStructuralRadioGroup(){
+    if(serviceAddProvisionStructuralRadioGroup==null){
+
+      serviceAddProvisionStructuralRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getServiceAddProvisionStructuralRadioGroupContainer().setText("ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZ");
+
+      serviceAddProvisionStructuralRadioGroup.setBindPath("1710104");
+
+      serviceAddProvisionStructuralRadioGroup.setVisible(true);
+
+      serviceAddProvisionStructuralRadioGroup.setEnabled(true);
+
+      serviceAddProvisionStructuralRadioGroup.setNoSelectIndex(0);
+
+      serviceAddProvisionStructuralRadioGroup.setUseClearButton(false);
+
+      serviceAddProvisionStructuralRadioGroup.setModel(getServiceAddProvisionStructuralRadioGroupModel());
+
+      serviceAddProvisionStructuralRadioGroup.setValues(new int[]{1,2,3});
+
+      addServiceAddProvisionStructuralRadioGroup();
+    }
+    return serviceAddProvisionStructuralRadioGroup;
+
+  }
+
+  /**
+   * ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZƒRƒ“ƒeƒi‚ğæ“¾‚µ‚Ü‚·B
+   * @return ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZƒRƒ“ƒeƒi
+   */
+  protected ACLabelContainer getServiceAddProvisionStructuralRadioGroupContainer(){
+    if(serviceAddProvisionStructuralRadioGroupContainer==null){
+      serviceAddProvisionStructuralRadioGroupContainer = new ACLabelContainer();
+      serviceAddProvisionStructuralRadioGroupContainer.setFollowChildEnabled(true);
+      serviceAddProvisionStructuralRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      serviceAddProvisionStructuralRadioGroupContainer.add(getServiceAddProvisionStructuralRadioGroup(), null);
+    }
+    return serviceAddProvisionStructuralRadioGroupContainer;
+  }
+
+  /**
+   * ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZƒ‚ƒfƒ‹
+   */
+  protected ACListModelAdapter getServiceAddProvisionStructuralRadioGroupModel(){
+    if(serviceAddProvisionStructuralRadioGroupModel==null){
+      serviceAddProvisionStructuralRadioGroupModel = new ACListModelAdapter();
+      addServiceAddProvisionStructuralRadioGroupModel();
+    }
+    return serviceAddProvisionStructuralRadioGroupModel;
+  }
+
+  /**
+   * ‚È‚µ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚È‚µ
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralRadioItem1(){
+    if(serviceAddProvisionStructuralRadioItem1==null){
+
+      serviceAddProvisionStructuralRadioItem1 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralRadioItem1.setText("‚È‚µ");
+
+      serviceAddProvisionStructuralRadioItem1.setGroup(getServiceAddProvisionStructuralRadioGroup());
+
+      serviceAddProvisionStructuralRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralRadioItem1();
+    }
+    return serviceAddProvisionStructuralRadioItem1;
+
+  }
+
+  /**
+   * ‰ÁZI‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZI
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralRadioItem2(){
+    if(serviceAddProvisionStructuralRadioItem2==null){
+
+      serviceAddProvisionStructuralRadioItem2 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralRadioItem2.setText("‰ÁZI");
+
+      serviceAddProvisionStructuralRadioItem2.setGroup(getServiceAddProvisionStructuralRadioGroup());
+
+      serviceAddProvisionStructuralRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralRadioItem2();
+    }
+    return serviceAddProvisionStructuralRadioItem2;
+
+  }
+
+  /**
+   * ‰ÁZII‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZII
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralRadioItem3(){
+    if(serviceAddProvisionStructuralRadioItem3==null){
+
+      serviceAddProvisionStructuralRadioItem3 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralRadioItem3.setText("‰ÁZII");
+
+      serviceAddProvisionStructuralRadioItem3.setGroup(getServiceAddProvisionStructuralRadioGroup());
+
+      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralRadioItem3();
+    }
+    return serviceAddProvisionStructuralRadioItem3;
+
+  }
+
+  /**
+   * Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZ‚ğæ“¾‚µ‚Ü‚·B
+   * @return Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZ
+   */
+  public ACValueArrayRadioButtonGroup getBaseMunicipalityAdd(){
+    if(baseMunicipalityAdd==null){
+
+      baseMunicipalityAdd = new ACValueArrayRadioButtonGroup();
+
+      getBaseMunicipalityAddContainer().setText("Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZ");
+
+      baseMunicipalityAdd.setBindPath("1710105");
+
+      baseMunicipalityAdd.setNoSelectIndex(0);
+
+      baseMunicipalityAdd.setUseClearButton(false);
+
+      baseMunicipalityAdd.setModel(getBaseMunicipalityAddModel());
+
+      baseMunicipalityAdd.setValues(new int[]{1,2,3,4,5,6,7});
+
+      addBaseMunicipalityAdd();
+    }
+    return baseMunicipalityAdd;
+
+  }
+
+  /**
+   * Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZƒRƒ“ƒeƒi‚ğæ“¾‚µ‚Ü‚·B
+   * @return Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZƒRƒ“ƒeƒi
+   */
+  protected ACLabelContainer getBaseMunicipalityAddContainer(){
+    if(baseMunicipalityAddContainer==null){
+      baseMunicipalityAddContainer = new ACLabelContainer();
+      baseMunicipalityAddContainer.setFollowChildEnabled(true);
+      baseMunicipalityAddContainer.setVAlignment(VRLayout.CENTER);
+      baseMunicipalityAddContainer.add(getBaseMunicipalityAdd(), null);
+    }
+    return baseMunicipalityAddContainer;
+  }
+
+  /**
+   * Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZƒ‚ƒfƒ‹
+   */
+  protected ACListModelAdapter getBaseMunicipalityAddModel(){
+    if(baseMunicipalityAddModel==null){
+      baseMunicipalityAddModel = new ACListModelAdapter();
+      addBaseMunicipalityAddModel();
+    }
+    return baseMunicipalityAddModel;
+  }
+
+  /**
+   * ‚È‚µ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚È‚µ
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem1(){
+    if(baseMunicipalityAddItem1==null){
+
+      baseMunicipalityAddItem1 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem1.setText("‚È‚µ");
+
+      baseMunicipalityAddItem1.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem1.setConstraints(VRLayout.FLOW);
+
+      addBaseMunicipalityAddItem1();
+    }
+    return baseMunicipalityAddItem1;
+
+  }
+
+  /**
+   * ‰ÁZ‚P‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚P
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem2(){
+    if(baseMunicipalityAddItem2==null){
+
+      baseMunicipalityAddItem2 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem2.setText("‰ÁZ1");
+
+      baseMunicipalityAddItem2.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem2.setConstraints(VRLayout.FLOW);
+
+      addBaseMunicipalityAddItem2();
+    }
+    return baseMunicipalityAddItem2;
+
+  }
+
+  /**
+   * ‰ÁZ‚Q‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚Q
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem3(){
+    if(baseMunicipalityAddItem3==null){
+
+      baseMunicipalityAddItem3 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem3.setText("‰ÁZ2");
+
+      baseMunicipalityAddItem3.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem3.setConstraints(VRLayout.FLOW);
+
+      addBaseMunicipalityAddItem3();
+    }
+    return baseMunicipalityAddItem3;
+
+  }
+
+  /**
+   * ‰ÁZ‚R‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚R
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem4(){
+    if(baseMunicipalityAddItem4==null){
+
+      baseMunicipalityAddItem4 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem4.setText("‰ÁZ3");
+
+      baseMunicipalityAddItem4.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addBaseMunicipalityAddItem4();
+    }
+    return baseMunicipalityAddItem4;
+
+  }
+
+  /**
+   * ‰ÁZ‚S‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚S
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem5(){
+    if(baseMunicipalityAddItem5==null){
+
+      baseMunicipalityAddItem5 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem5.setText("‰ÁZ4");
+
+      baseMunicipalityAddItem5.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem5.setConstraints(VRLayout.FLOW);
+
+      addBaseMunicipalityAddItem5();
+    }
+    return baseMunicipalityAddItem5;
+
+  }
+
+  /**
+   * ‰ÁZ‚T‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚T
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem6(){
+    if(baseMunicipalityAddItem6==null){
+
+      baseMunicipalityAddItem6 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem6.setText("‰ÁZ5");
+
+      baseMunicipalityAddItem6.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem6.setConstraints(VRLayout.FLOW);
+
+      addBaseMunicipalityAddItem6();
+    }
+    return baseMunicipalityAddItem6;
+
+  }
+
+  /**
+   * ‰ÁZ‚U‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚U
+   */
+  public ACRadioButtonItem getBaseMunicipalityAddItem7(){
+    if(baseMunicipalityAddItem7==null){
+
+      baseMunicipalityAddItem7 = new ACRadioButtonItem();
+
+      baseMunicipalityAddItem7.setText("‰ÁZ6");
+
+      baseMunicipalityAddItem7.setGroup(getBaseMunicipalityAdd());
+
+      baseMunicipalityAddItem7.setConstraints(VRLayout.FLOW);
+
+      addBaseMunicipalityAddItem7();
+    }
+    return baseMunicipalityAddItem7;
+
+  }
+
+  /**
+   * –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZ‚ğæ“¾‚µ‚Ü‚·B
+   * @return –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZ
+   */
+  public ACValueArrayRadioButtonGroup getServiceMunicipalityAdd(){
+    if(serviceMunicipalityAdd==null){
+
+      serviceMunicipalityAdd = new ACValueArrayRadioButtonGroup();
+
+      getServiceMunicipalityAddContainer().setText("–éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZ");
+
+      serviceMunicipalityAdd.setBindPath("1710106");
+
+      serviceMunicipalityAdd.setNoSelectIndex(0);
+
+      serviceMunicipalityAdd.setUseClearButton(false);
+
+      serviceMunicipalityAdd.setModel(getServiceMunicipalityAddModel());
+
+      serviceMunicipalityAdd.setValues(new int[]{1,2,3,4,5,6,7});
+
+      addServiceMunicipalityAdd();
+    }
+    return serviceMunicipalityAdd;
+
+  }
+
+  /**
+   * –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZƒRƒ“ƒeƒi‚ğæ“¾‚µ‚Ü‚·B
+   * @return –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZƒRƒ“ƒeƒi
+   */
+  protected ACLabelContainer getServiceMunicipalityAddContainer(){
+    if(serviceMunicipalityAddContainer==null){
+      serviceMunicipalityAddContainer = new ACLabelContainer();
+      serviceMunicipalityAddContainer.setFollowChildEnabled(true);
+      serviceMunicipalityAddContainer.setVAlignment(VRLayout.CENTER);
+      serviceMunicipalityAddContainer.add(getServiceMunicipalityAdd(), null);
+    }
+    return serviceMunicipalityAddContainer;
+  }
+
+  /**
+   * –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZƒ‚ƒfƒ‹
+   */
+  protected ACListModelAdapter getServiceMunicipalityAddModel(){
+    if(serviceMunicipalityAddModel==null){
+      serviceMunicipalityAddModel = new ACListModelAdapter();
+      addServiceMunicipalityAddModel();
+    }
+    return serviceMunicipalityAddModel;
+  }
+
+  /**
+   * ‚È‚µ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚È‚µ
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem1(){
+    if(serviceMunicipalityAddItem1==null){
+
+      serviceMunicipalityAddItem1 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem1.setText("‚È‚µ");
+
+      serviceMunicipalityAddItem1.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem1.setConstraints(VRLayout.FLOW);
+
+      addServiceMunicipalityAddItem1();
+    }
+    return serviceMunicipalityAddItem1;
+
+  }
+
+  /**
+   * ‰ÁZ‚P‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚P
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem2(){
+    if(serviceMunicipalityAddItem2==null){
+
+      serviceMunicipalityAddItem2 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem2.setText("‰ÁZ1");
+
+      serviceMunicipalityAddItem2.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem2.setConstraints(VRLayout.FLOW);
+
+      addServiceMunicipalityAddItem2();
+    }
+    return serviceMunicipalityAddItem2;
+
+  }
+
+  /**
+   * ‰ÁZ‚Q‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚Q
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem3(){
+    if(serviceMunicipalityAddItem3==null){
+
+      serviceMunicipalityAddItem3 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem3.setText("‰ÁZ2");
+
+      serviceMunicipalityAddItem3.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem3.setConstraints(VRLayout.FLOW);
+
+      addServiceMunicipalityAddItem3();
+    }
+    return serviceMunicipalityAddItem3;
+
+  }
+
+  /**
+   * ‰ÁZ‚R‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚R
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem4(){
+    if(serviceMunicipalityAddItem4==null){
+
+      serviceMunicipalityAddItem4 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem4.setText("‰ÁZ3");
+
+      serviceMunicipalityAddItem4.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addServiceMunicipalityAddItem4();
+    }
+    return serviceMunicipalityAddItem4;
+
+  }
+
+  /**
+   * ‰ÁZ‚S‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚S
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem5(){
+    if(serviceMunicipalityAddItem5==null){
+
+      serviceMunicipalityAddItem5 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem5.setText("‰ÁZ4");
+
+      serviceMunicipalityAddItem5.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem5.setConstraints(VRLayout.FLOW);
+
+      addServiceMunicipalityAddItem5();
+    }
+    return serviceMunicipalityAddItem5;
+
+  }
+
+  /**
+   * ‰ÁZ‚T‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚T
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem6(){
+    if(serviceMunicipalityAddItem6==null){
+
+      serviceMunicipalityAddItem6 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem6.setText("‰ÁZ5");
+
+      serviceMunicipalityAddItem6.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem6.setConstraints(VRLayout.FLOW);
+
+      addServiceMunicipalityAddItem6();
+    }
+    return serviceMunicipalityAddItem6;
+
+  }
+
+  /**
+   * ‰ÁZ‚U‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZ‚U
+   */
+  public ACRadioButtonItem getServiceMunicipalityAddItem7(){
+    if(serviceMunicipalityAddItem7==null){
+
+      serviceMunicipalityAddItem7 = new ACRadioButtonItem();
+
+      serviceMunicipalityAddItem7.setText("‰ÁZ6");
+
+      serviceMunicipalityAddItem7.setGroup(getServiceMunicipalityAdd());
+
+      serviceMunicipalityAddItem7.setConstraints(VRLayout.FLOW);
+
+      addServiceMunicipalityAddItem7();
+    }
+    return serviceMunicipalityAddItem7;
 
   }
 
@@ -275,6 +1098,21 @@ public class QO004123Design extends QS001ServicePanel {
   }
 
   /**
+   * ‹Œ–@€–Ú‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‹Œ–@€–Ú
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
    * ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚·B
    */
   public QO004123Design() {
@@ -310,9 +1148,21 @@ public class QO004123Design extends QS001ServicePanel {
 
     mainGroup.add(getFacilitiesDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    mainGroup.add(getThirdClassHelperRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getHours24MessageAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getBaseMunicipalityAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    mainGroup.add(getServiceMunicipalityAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     mainGroup.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE);
 
     mainGroup.add(getShahukuReduce(), VRLayout.FLOW_RETURN);
+
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -329,9 +1179,11 @@ public class QO004123Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
   }
@@ -347,6 +1199,307 @@ public class QO004123Design extends QS001ServicePanel {
    * ‡UŒ^‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addFacilitiesDivisionItem2(){
+
+  }
+
+  /**
+   * 3‹‰ƒwƒ‹ƒp[‘Ì§‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addThirdClassHelperRadioGroup(){
+
+  }
+
+  /**
+   * 3‹‰ƒwƒ‹ƒp[‘Ì§ƒ‚ƒfƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addThirdClassHelperRadioGroupModel(){
+
+    getThirdClassHelperRadioItem1().setButtonIndex(1);
+
+    getThirdClassHelperRadioGroupModel().add(getThirdClassHelperRadioItem1());
+
+    getThirdClassHelperRadioItem2().setButtonIndex(2);
+
+    getThirdClassHelperRadioGroupModel().add(getThirdClassHelperRadioItem2());
+
+  }
+
+  /**
+   * ‚È‚µ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addThirdClassHelperRadioItem1(){
+
+  }
+
+  /**
+   * ‚ ‚è‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addThirdClassHelperRadioItem2(){
+
+  }
+
+  /**
+   * 24ŠÔ’Ê•ñ‘Î‰‰ÁZ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addHours24MessageAddRadioGroup(){
+
+  }
+
+  /**
+   * 24ŠÔ’Ê•ñ‘Î‰‰ÁZƒ‚ƒfƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addHours24MessageAddRadioGroupModel(){
+
+    getHours24MessageAddRadioItem1().setButtonIndex(1);
+
+    getHours24MessageAddRadioGroupModel().add(getHours24MessageAddRadioItem1());
+
+    getHours24MessageAddRadioItem2().setButtonIndex(2);
+
+    getHours24MessageAddRadioGroupModel().add(getHours24MessageAddRadioItem2());
+
+  }
+
+  /**
+   * ‘Î‰•s‰Â‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addHours24MessageAddRadioItem1(){
+
+  }
+
+  /**
+   * ‘Î‰‰Â‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addHours24MessageAddRadioItem2(){
+
+  }
+
+  /**
+   * ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceAddProvisionStructuralRadioGroup(){
+
+  }
+
+  /**
+   * ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZƒ‚ƒfƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceAddProvisionStructuralRadioGroupModel(){
+
+    getServiceAddProvisionStructuralRadioItem1().setButtonIndex(1);
+
+    getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem1());
+
+    getServiceAddProvisionStructuralRadioItem2().setButtonIndex(2);
+
+    getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem2());
+
+    getServiceAddProvisionStructuralRadioItem3().setButtonIndex(3);
+
+    getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem3());
+
+  }
+
+  /**
+   * ‚È‚µ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceAddProvisionStructuralRadioItem1(){
+
+  }
+
+  /**
+   * ‰ÁZI‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceAddProvisionStructuralRadioItem2(){
+
+  }
+
+  /**
+   * ‰ÁZII‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceAddProvisionStructuralRadioItem3(){
+
+  }
+
+  /**
+   * Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAdd(){
+
+  }
+
+  /**
+   * Šî–{–éŠÔ–K–â I s’¬‘º“Æ©‰ÁZƒ‚ƒfƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddModel(){
+
+    getBaseMunicipalityAddItem1().setButtonIndex(1);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem1());
+
+    getBaseMunicipalityAddItem2().setButtonIndex(2);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem2());
+
+    getBaseMunicipalityAddItem3().setButtonIndex(3);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem3());
+
+    getBaseMunicipalityAddItem4().setButtonIndex(4);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem4());
+
+    getBaseMunicipalityAddItem5().setButtonIndex(5);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem5());
+
+    getBaseMunicipalityAddItem6().setButtonIndex(6);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem6());
+
+    getBaseMunicipalityAddItem7().setButtonIndex(7);
+
+    getBaseMunicipalityAddModel().add(getBaseMunicipalityAddItem7());
+
+  }
+
+  /**
+   * ‚È‚µ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem1(){
+
+  }
+
+  /**
+   * ‰ÁZ‚P‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem2(){
+
+  }
+
+  /**
+   * ‰ÁZ‚Q‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem3(){
+
+  }
+
+  /**
+   * ‰ÁZ‚R‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem4(){
+
+  }
+
+  /**
+   * ‰ÁZ‚S‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem5(){
+
+  }
+
+  /**
+   * ‰ÁZ‚T‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem6(){
+
+  }
+
+  /**
+   * ‰ÁZ‚U‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addBaseMunicipalityAddItem7(){
+
+  }
+
+  /**
+   * –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAdd(){
+
+  }
+
+  /**
+   * –éŠÔ–K–â‰îŒì II s’¬‘º“Æ©‰ÁZƒ‚ƒfƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddModel(){
+
+    getServiceMunicipalityAddItem1().setButtonIndex(1);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem1());
+
+    getServiceMunicipalityAddItem2().setButtonIndex(2);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem2());
+
+    getServiceMunicipalityAddItem3().setButtonIndex(3);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem3());
+
+    getServiceMunicipalityAddItem4().setButtonIndex(4);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem4());
+
+    getServiceMunicipalityAddItem5().setButtonIndex(5);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem5());
+
+    getServiceMunicipalityAddItem6().setButtonIndex(6);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem6());
+
+    getServiceMunicipalityAddItem7().setButtonIndex(7);
+
+    getServiceMunicipalityAddModel().add(getServiceMunicipalityAddItem7());
+
+  }
+
+  /**
+   * ‚È‚µ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem1(){
+
+  }
+
+  /**
+   * ‰ÁZ‚P‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem2(){
+
+  }
+
+  /**
+   * ‰ÁZ‚Q‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem3(){
+
+  }
+
+  /**
+   * ‰ÁZ‚R‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem4(){
+
+  }
+
+  /**
+   * ‰ÁZ‚S‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem5(){
+
+  }
+
+  /**
+   * ‰ÁZ‚T‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem6(){
+
+  }
+
+  /**
+   * ‰ÁZ‚U‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addServiceMunicipalityAddItem7(){
 
   }
 
@@ -383,6 +1536,13 @@ public class QO004123Design extends QS001ServicePanel {
   }
 
   /**
+   * ‹Œ–@€–Ú‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addOldLowElementArea(){
+
+  }
+
+  /**
    * ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ‰Šú‰»‚µ‚Ü‚·B
    * @throws Exception ‰Šú‰»—áŠO
    */
@@ -404,7 +1564,6 @@ public class QO004123Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //ƒfƒtƒHƒ‹ƒgƒfƒoƒbƒO‹N“®
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004123Design.class.getName()));
     } catch (Exception e) {

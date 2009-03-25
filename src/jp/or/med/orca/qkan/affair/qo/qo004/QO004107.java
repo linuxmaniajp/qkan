@@ -30,57 +30,17 @@
 
 package jp.or.med.orca.qkan.affair.qo.qo004;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import javax.swing.event.ListSelectionEvent;
+
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 通所介護(QO004107) 
@@ -93,17 +53,17 @@ public class QO004107 extends QO004107Event {
   }
 
   //コンポーネントイベント
-
   /**
    * 「状態設定処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected void facilitiesDivisionSelectionChanged(ListSelectionEvent e) throws Exception{
-	// ※状態設定
-	  setState();
-	
+  protected void facilitiesDivision_H2103SelectionChanged(ListSelectionEvent e) throws Exception{
+    // ※状態設定
+      setState();
+    
   }
+
 
   public static void main(String[] args) {
     //デフォルトデバッグ起動
@@ -131,7 +91,8 @@ public class QO004107 extends QO004107Event {
 	// 口腔機能向上体制の初期値として「なし」を選択する。
 	// 人員減算の初期値として「なし」を選択する。
 	getReduceRate().setText("0");
-	getFacilitiesDivision().setSelectedIndex(1);
+    getFacilitiesDivision().setSelectedIndex(1);
+    getFacilitiesDivision_H2103().setSelectedIndex(1);
 	getFunctionTrainingGuidanceSystem().setSelectedIndex(1);
 	getBathingHelpSystem().setSelectedIndex(1);
 	getNourishmentManagementAdd().setSelectedIndex(1);
@@ -139,7 +100,18 @@ public class QO004107 extends QO004107Event {
 	getStaffLack().setSelectedIndex(1);
 	getExtendTime().setSelectedIndex(1);
 	getDementiaCare().setSelectedIndex(1);
-		
+
+	//2009/02/24 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+    //＜平成21年4月法改正対応＞
+    //若年性認知症利用者受入加算の初期値として「なし」を選択する。
+    getYoungDementiaPatinetAddRadioGroup().setSelectedIndex(1);
+    //サービス提供体制強化加算の初期値として「なし」を選択する。
+    getServiceAddProvisionStructuralRadioGroup().setSelectedIndex(1);
+    //栄養改善体制の初期値として「なし」を選択する。
+    getNourishmentImprovement().setSelectedIndex(1);
+    //個別機能訓練体制の初期値として「なし」を選択する。
+    getFunctionTrainingGuidanceSystemH2104().setSelectedIndex(1);
+    //2009/02/24 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応
   }
 
   /**
@@ -160,6 +132,13 @@ public class QO004107 extends QO004107Event {
     	getFacilitiesDivision().requestFocus();
     	return false;
     }
+    if(!getFacilitiesDivision_H2103().isSelected()){
+        errMsg = "施設区分";
+        QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+        getFacilitiesDivision_H2103().requestFocus();
+        return false;
+    }
+    
     
     // ・functionTrainingGuidanceSystem（個別機能訓練指導体制ラジオグループ）
     // ※ errMsg = 個別機能訓練指導体制
@@ -242,8 +221,7 @@ public class QO004107 extends QO004107Event {
 		// 状態ID：SET_PANEL_TRUE
 		setState_SET_PANEL_TRUE();
 		
-		setState();
-		
+        setState();
 	} else {
 		// 引数としてfalseが渡された場合
 		// 状態ID：SET_PANEL_FALSE
@@ -263,11 +241,11 @@ public class QO004107 extends QO004107Event {
 	  getMainGroup().setSource(map);
 	  getMainGroup().applySource();
 	  
-	  // 無効状態のコントロールのデータを削除する。
-	  removeInvalidData(map);
-	  
+      
+      // 無効状態のコントロールのデータを削除する。
+      removeInvalidData(map);
+      
   }
-
   /**
    * 「無効データ削除」に関する処理を行ないます。
    *
@@ -276,14 +254,12 @@ public class QO004107 extends QO004107Event {
    * @return VRMap
    */
   public void removeInvalidData(VRMap map) throws Exception{
-	  // 無効データ削除
-	  
-	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。	
-	  // ・facilitiesDivisionOther1　削除KEY：1150107
-	  if(!getFacilitiesDivisionOther1().isEnabled()){
-		  map.removeData("1150107");
-	  }
-	  	  
+      // 無効データ削除
+      
+      // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。    
+      // ・facilitiesDivisionOther1　削除KEY：1150107
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
+          
   }
 
   /**
@@ -292,10 +268,10 @@ public class QO004107 extends QO004107Event {
    * @throws Exception 処理例外
    */
   public void setState() throws Exception {
-	  
-	  // 画面の状態を制御する。
-	  setStateByFacilitiesDivision();
-	  
+      
+      // 画面の状態を制御する。
+      setStateByFacilitiesDivision();
+      
   }
   
   /**
@@ -305,16 +281,17 @@ public class QO004107 extends QO004107Event {
    */
   public void setStateByFacilitiesDivision() throws Exception{
 
-	// 施設区分の値をチェックする。
-	if (getFacilitiesDivision().getSelectedIndex() == FACILITY_TYPE_SHOKIBO 
-			|| getFacilitiesDivision().getSelectedIndex() == FACILITY_TYPE_RYOYO_TSUSHO) {
-		// 小規模、療養通所が選択された場合
-		// 状態ID：LARGE_PROVIDER_FALSE
-		setState_LARGE_PROVIDER_FALSE();
-	} else {
-		// 小規模、療養通所以外が選択された場合
-		// 状態ID：LARGE_PROVIDER_TRUE
-		setState_LARGE_PROVIDER_TRUE();
-	}
+    // 施設区分の値をチェックする。
+    if (getFacilitiesDivision_H2103().getSelectedIndex() == FACILITY_TYPE_SHOKIBO 
+            || getFacilitiesDivision_H2103().getSelectedIndex() == FACILITY_TYPE_RYOYO_TSUSHO) {
+        // 小規模、療養通所が選択された場合
+        // 状態ID：LARGE_PROVIDER_FALSE
+        setState_LARGE_PROVIDER_FALSE();
+    } else {
+        // 小規模、療養通所以外が選択された場合
+        // 状態ID：LARGE_PROVIDER_TRUE
+        setState_LARGE_PROVIDER_TRUE();
+    }
   }
+
 }

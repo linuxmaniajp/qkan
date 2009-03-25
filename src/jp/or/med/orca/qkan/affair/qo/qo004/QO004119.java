@@ -361,6 +361,12 @@ public class QO004119 extends QO004119Event {
     	getStaffLack().requestFocus();
     	return false;
     }
+    if(!getStaffLack_H2103().isSelected()){
+        errMsg = "人員減算";
+        QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+        getStaffLack_H2103().requestFocus();
+        return false;
+    }
     
     //	2008/4/16 H.Tanaka Add Sta H2005転換型老健対応
     //  ・staffAssignmentDivision（施設等の区分（体制）ラジオグループ）
@@ -520,9 +526,7 @@ public class QO004119 extends QO004119Event {
 	  
 	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。
 	  // ・unitCareMaintenance 削除KEY：1520119
-	  if(!getUnitCareMaintenance().isEnabled()){
-		  map.removeData("1520119");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 	  	  
   }
 

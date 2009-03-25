@@ -30,57 +30,17 @@
 
 package jp.or.med.orca.qkan.affair.qo.qo004;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import javax.swing.event.ListSelectionEvent;
+
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 訪問看護(QO004103) 
@@ -128,12 +88,22 @@ public class QO004103 extends QO004103Event {
 	// 緊急時訪問看護体制ラジオの初期値として「なし」を選択する。
 	// 特別管理体制ラジオの初期値として「なし」を選択する。
 	getReduceRate().setText("0");
+    // [ID:0000440][Masahiko Higuchi] add begin
+    // ラジオの値を初期化する
+    QkanCommon.selectFirstRadioItem(getThis());
+    // [ID:0000440][Masahiko Higuchi] add end
 	getFacilitiesDivision().setSelectedIndex(FACILITY_TYPE_STATION);
 	getHomonkangoPressing().setSelectedIndex(1);
 	getSpecialManagementSystem().setSelectedIndex(1);
 	getTerminalCare().setSelectedIndex(1);
 	getContactAllDay().setSelectedIndex(1);
 	getSeriousCaseManagement().setSelectedIndex(1);
+	
+	//医療系非表示対応 fujihara.shin 2009.1.13 add start
+	if (!QkanCommon.isShowOldIryo()){
+		setState_VISIBLE_MEDICAL_INSURE_FALSE();
+	}
+	//医療系非表示対応 fujihara.shin 2009.1.13 add end
 	
   }
 
@@ -262,19 +232,7 @@ public class QO004103 extends QO004103Event {
 	  
 	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。	
 	  // ・stationCode　　削除KEY：2010101
-	  if(!getStationCode().isEnabled()){
-		  map.removeData("2010101");
-	  }
-	  
-	  // 24時間連絡体制加算
-	  if(!getContactAllDay().isEnabled()){
-		  map.removeData("2010102");
-	  }
-	  
-	  // 重症者管理加算
-	  if(!getSeriousCaseManagement().isEnabled()){
-		  map.removeData("2010103");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 	  	  
   }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/05/02  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/04  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -77,16 +77,17 @@ import jp.nichicom.vr.util.adapter.*;
 import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
 /**
  * 介護予防居宅療養管理指導画面項目デザイン(QO004134) 
  */
-public class QO004134Design  extends QS001ServicePanel {
+public class QO004134Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
+
+  private ACPanel oldLowElementArea;
 
   private ACLabelContainer reduceRateContainer;
 
@@ -118,6 +119,23 @@ public class QO004134Design  extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目を取得します。
+   * @return 旧法項目
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      oldLowElementArea.setFollowChildEnabled(true);
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
    * 割引率コンテナを取得します。
    * @return 割引率コンテナ
    */
@@ -129,6 +147,8 @@ public class QO004134Design  extends QS001ServicePanel {
       reduceRateContainer.setText("割引率");
 
       reduceRateContainer.setFollowChildEnabled(true);
+
+      reduceRateContainer.setForeground(java.awt.Color.gray);
 
       addReduceRateContainer();
     }
@@ -174,6 +194,8 @@ public class QO004134Design  extends QS001ServicePanel {
 
       percentSign.setText("％");
 
+      percentSign.setForeground(java.awt.Color.gray);
+
       addPercentSign();
     }
     return percentSign;
@@ -214,7 +236,16 @@ public class QO004134Design  extends QS001ServicePanel {
    */
   protected void addMainGroup(){
 
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
+
     mainGroup.add(getReduceRateContainer(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 旧法項目に内部項目を追加します。
+   */
+  protected void addOldLowElementArea(){
 
   }
 

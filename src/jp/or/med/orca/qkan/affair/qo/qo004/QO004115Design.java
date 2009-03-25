@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2006/03/08  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2009/03/11  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,34 +28,68 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo004;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.affair.qs.qs001.QS001ServicePanel;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 特定施設入居者生活介護画面項目デザイン(QO004115) 
  */
-public class QO004115Design extends QS001ServicePanel {
+public class QO004115Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
 
-  private ACClearableRadioButtonGroup facilitiesDivision;
+  private ACPanel calculationDetails;
+
+  private ACValueArrayRadioButtonGroup facilitiesDivision;
 
   private ACLabelContainer facilitiesDivisionContainer;
 
@@ -68,6 +102,14 @@ public class QO004115Design extends QS001ServicePanel {
   private ACRadioButtonItem facilitiesDivisionItem3;
 
   private ACRadioButtonItem facilitiesDivisionItem4;
+
+  private ACRadioButtonItem facilitiesDivisionItem5;
+
+  private ACRadioButtonItem facilitiesDivisionItem6;
+
+  private ACRadioButtonItem facilitiesDivisionItem7;
+
+  private ACRadioButtonItem facilitiesDivisionItem8;
 
   private ACClearableRadioButtonGroup staffAssignmentDivision;
 
@@ -117,6 +159,24 @@ public class QO004115Design extends QS001ServicePanel {
 
   private ACLabel percentSign;
 
+  private ACPanel oldLowElementArea;
+
+  private ACGroupBox oldLowH2103Group;
+
+  private ACClearableRadioButtonGroup facilitiesDivision_H2103;
+
+  private ACLabelContainer facilitiesDivision_H2103Container;
+
+  private ACListModelAdapter facilitiesDivision_H2103Model;
+
+  private ACRadioButtonItem facilitiesDivisionItem1_H2103;
+
+  private ACRadioButtonItem facilitiesDivisionItem2_H2103;
+
+  private ACRadioButtonItem facilitiesDivisionItem3_H2103;
+
+  private ACRadioButtonItem facilitiesDivisionItem4_H2103;
+
   //getter
 
   /**
@@ -141,21 +201,44 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
+   * 算定項目領域を取得します。
+   * @return 算定項目領域
+   */
+  public ACPanel getCalculationDetails(){
+    if(calculationDetails==null){
+
+      calculationDetails = new ACPanel();
+
+      calculationDetails.setFollowChildEnabled(true);
+
+      calculationDetails.setHgrid(200);
+
+      addCalculationDetails();
+    }
+    return calculationDetails;
+
+  }
+
+  /**
    * 施設等の区分ラジオグループを取得します。
    * @return 施設等の区分ラジオグループ
    */
-  public ACClearableRadioButtonGroup getFacilitiesDivision(){
+  public ACValueArrayRadioButtonGroup getFacilitiesDivision(){
     if(facilitiesDivision==null){
 
-      facilitiesDivision = new ACClearableRadioButtonGroup();
+      facilitiesDivision = new ACValueArrayRadioButtonGroup();
 
       getFacilitiesDivisionContainer().setText("施設等の区分");
 
-      facilitiesDivision.setBindPath("1330105");
+      facilitiesDivision.setBindPath("1330108");
+
+      facilitiesDivision.setNoSelectIndex(0);
+
+      facilitiesDivision.setUseClearButton(false);
 
       facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
-      facilitiesDivision.setUseClearButton(false);
+      facilitiesDivision.setValues(new int[]{1,2,3,4,5,6,7,8});
 
       addFacilitiesDivision();
     }
@@ -190,19 +273,19 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
-   * 有料老人ホームを取得します。
-   * @return 有料老人ホーム
+   * 有料老人ホーム（介護専用型）を取得します。
+   * @return 有料老人ホーム（介護専用型）
    */
   public ACRadioButtonItem getFacilitiesDivisionItem1(){
     if(facilitiesDivisionItem1==null){
 
       facilitiesDivisionItem1 = new ACRadioButtonItem();
 
-      facilitiesDivisionItem1.setText("有料老人ホーム");
+      facilitiesDivisionItem1.setText("有料老人ホーム（介護専用型）");
 
       facilitiesDivisionItem1.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem1.setConstraints(VRLayout.FLOW);
+      facilitiesDivisionItem1.setConstraints(VRLayout.FLOW_RETURN);
 
       addFacilitiesDivisionItem1();
     }
@@ -211,15 +294,15 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
-   * 軽費老人ホームを取得します。
-   * @return 軽費老人ホーム
+   * 軽費老人ホーム（介護専用型）を取得します。
+   * @return 軽費老人ホーム（介護専用型）
    */
   public ACRadioButtonItem getFacilitiesDivisionItem2(){
     if(facilitiesDivisionItem2==null){
 
       facilitiesDivisionItem2 = new ACRadioButtonItem();
 
-      facilitiesDivisionItem2.setText("軽費老人ホーム");
+      facilitiesDivisionItem2.setText("軽費老人ホーム（介護専用型）");
 
       facilitiesDivisionItem2.setGroup(getFacilitiesDivision());
 
@@ -232,19 +315,19 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
-   * 養護老人ホームを取得します。
-   * @return 養護老人ホーム
+   * 養護老人ホーム（介護専用型）を取得します。
+   * @return 養護老人ホーム（介護専用型）
    */
   public ACRadioButtonItem getFacilitiesDivisionItem3(){
     if(facilitiesDivisionItem3==null){
 
       facilitiesDivisionItem3 = new ACRadioButtonItem();
 
-      facilitiesDivisionItem3.setText("養護老人ホーム");
+      facilitiesDivisionItem3.setText("養護老人ホーム（介護専用型）");
 
       facilitiesDivisionItem3.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem3.setConstraints(VRLayout.FLOW);
+      facilitiesDivisionItem3.setConstraints(VRLayout.FLOW_RETURN);
 
       addFacilitiesDivisionItem3();
     }
@@ -253,23 +336,107 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
-   * 高齢者専用賃貸住宅を取得します。
-   * @return 高齢者専用賃貸住宅
+   * 高齢者専用賃貸住宅（介護専用型）を取得します。
+   * @return 高齢者専用賃貸住宅（介護専用型）
    */
   public ACRadioButtonItem getFacilitiesDivisionItem4(){
     if(facilitiesDivisionItem4==null){
 
       facilitiesDivisionItem4 = new ACRadioButtonItem();
 
-      facilitiesDivisionItem4.setText("高齢者専用賃貸住宅");
+      facilitiesDivisionItem4.setText("高齢者専用賃貸住宅（介護専用型）");
 
       facilitiesDivisionItem4.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem4.setConstraints(VRLayout.FLOW);
+      facilitiesDivisionItem4.setConstraints(VRLayout.FLOW_RETURN);
 
       addFacilitiesDivisionItem4();
     }
     return facilitiesDivisionItem4;
+
+  }
+
+  /**
+   * 有料老人ホーム（混合型）を取得します。
+   * @return 有料老人ホーム（混合型）
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem5(){
+    if(facilitiesDivisionItem5==null){
+
+      facilitiesDivisionItem5 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem5.setText("有料老人ホーム（混合型）");
+
+      facilitiesDivisionItem5.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem5.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem5();
+    }
+    return facilitiesDivisionItem5;
+
+  }
+
+  /**
+   * 軽費老人ホーム（混合型）を取得します。
+   * @return 軽費老人ホーム（混合型）
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem6(){
+    if(facilitiesDivisionItem6==null){
+
+      facilitiesDivisionItem6 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem6.setText("軽費老人ホーム（混合型）");
+
+      facilitiesDivisionItem6.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem6.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem6();
+    }
+    return facilitiesDivisionItem6;
+
+  }
+
+  /**
+   * 養護老人ホーム（混合型）を取得します。
+   * @return 養護老人ホーム（混合型）
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem7(){
+    if(facilitiesDivisionItem7==null){
+
+      facilitiesDivisionItem7 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem7.setText("養護老人ホーム（混合型）");
+
+      facilitiesDivisionItem7.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem7.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem7();
+    }
+    return facilitiesDivisionItem7;
+
+  }
+
+  /**
+   * 高齢者専用賃貸住宅（混合型）を取得します。
+   * @return 高齢者専用賃貸住宅（混合型）
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem8(){
+    if(facilitiesDivisionItem8==null){
+
+      facilitiesDivisionItem8 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem8.setText("高齢者専用賃貸住宅（混合型）");
+
+      facilitiesDivisionItem8.setGroup(getFacilitiesDivision());
+
+      facilitiesDivisionItem8.setConstraints(VRLayout.FLOW);
+
+      addFacilitiesDivisionItem8();
+    }
+    return facilitiesDivisionItem8;
 
   }
 
@@ -286,9 +453,9 @@ public class QO004115Design extends QS001ServicePanel {
 
       staffAssignmentDivision.setBindPath("1330103");
 
-      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
-
       staffAssignmentDivision.setUseClearButton(false);
+
+      staffAssignmentDivision.setModel(getStaffAssignmentDivisionModel());
 
       addStaffAssignmentDivision();
     }
@@ -377,9 +544,9 @@ public class QO004115Design extends QS001ServicePanel {
 
       staffLack.setBindPath("1330102");
 
-      staffLack.setModel(getStaffLackModel());
-
       staffLack.setUseClearButton(false);
+
+      staffLack.setModel(getStaffLackModel());
 
       addStaffLack();
     }
@@ -483,9 +650,9 @@ public class QO004115Design extends QS001ServicePanel {
 
       functionTrainingGuidanceSystem.setBindPath("1330101");
 
-      functionTrainingGuidanceSystem.setModel(getFunctionTrainingGuidanceSystemModel());
-
       functionTrainingGuidanceSystem.setUseClearButton(false);
+
+      functionTrainingGuidanceSystem.setModel(getFunctionTrainingGuidanceSystemModel());
 
       addFunctionTrainingGuidanceSystem();
     }
@@ -570,9 +737,9 @@ public class QO004115Design extends QS001ServicePanel {
 
       nightNursingSystemAdd.setBindPath("1330104");
 
-      nightNursingSystemAdd.setModel(getNightNursingSystemAddModel());
-
       nightNursingSystemAdd.setUseClearButton(false);
+
+      nightNursingSystemAdd.setModel(getNightNursingSystemAddModel());
 
       addNightNursingSystemAdd();
     }
@@ -712,6 +879,181 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目を取得します。
+   * @return 旧法項目
+   */
+  public ACPanel getOldLowElementArea(){
+    if(oldLowElementArea==null){
+
+      oldLowElementArea = new ACPanel();
+
+      oldLowElementArea.setFollowChildEnabled(true);
+
+      addOldLowElementArea();
+    }
+    return oldLowElementArea;
+
+  }
+
+  /**
+   * 平成21年3月以前グループを取得します。
+   * @return 平成21年3月以前グループ
+   */
+  public ACGroupBox getOldLowH2103Group(){
+    if(oldLowH2103Group==null){
+
+      oldLowH2103Group = new ACGroupBox();
+
+      oldLowH2103Group.setText("平成21年3月以前");
+
+      oldLowH2103Group.setFollowChildEnabled(true);
+
+      oldLowH2103Group.setHgap(0);
+
+      oldLowH2103Group.setLabelMargin(0);
+
+      oldLowH2103Group.setVgap(0);
+
+      addOldLowH2103Group();
+    }
+    return oldLowH2103Group;
+
+  }
+
+  /**
+   * 施設等の区分ラジオグループを取得します。
+   * @return 施設等の区分ラジオグループ
+   */
+  public ACClearableRadioButtonGroup getFacilitiesDivision_H2103(){
+    if(facilitiesDivision_H2103==null){
+
+      facilitiesDivision_H2103 = new ACClearableRadioButtonGroup();
+
+      getFacilitiesDivision_H2103Container().setText("施設等の区分");
+
+      facilitiesDivision_H2103.setBindPath("1330105");
+
+      facilitiesDivision_H2103.setUseClearButton(false);
+
+      facilitiesDivision_H2103.setModel(getFacilitiesDivision_H2103Model());
+
+      addFacilitiesDivision_H2103();
+    }
+    return facilitiesDivision_H2103;
+
+  }
+
+  /**
+   * 施設等の区分ラジオグループコンテナを取得します。
+   * @return 施設等の区分ラジオグループコンテナ
+   */
+  protected ACLabelContainer getFacilitiesDivision_H2103Container(){
+    if(facilitiesDivision_H2103Container==null){
+      facilitiesDivision_H2103Container = new ACLabelContainer();
+      facilitiesDivision_H2103Container.setFollowChildEnabled(true);
+      facilitiesDivision_H2103Container.setVAlignment(VRLayout.CENTER);
+      facilitiesDivision_H2103Container.add(getFacilitiesDivision_H2103(), null);
+    }
+    return facilitiesDivision_H2103Container;
+  }
+
+  /**
+   * 施設等の区分ラジオグループモデルを取得します。
+   * @return 施設等の区分ラジオグループモデル
+   */
+  protected ACListModelAdapter getFacilitiesDivision_H2103Model(){
+    if(facilitiesDivision_H2103Model==null){
+      facilitiesDivision_H2103Model = new ACListModelAdapter();
+      addFacilitiesDivision_H2103Model();
+    }
+    return facilitiesDivision_H2103Model;
+  }
+
+  /**
+   * 有料老人ホームを取得します。
+   * @return 有料老人ホーム
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem1_H2103(){
+    if(facilitiesDivisionItem1_H2103==null){
+
+      facilitiesDivisionItem1_H2103 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem1_H2103.setText("有料老人ホーム");
+
+      facilitiesDivisionItem1_H2103.setGroup(getFacilitiesDivision_H2103());
+
+      facilitiesDivisionItem1_H2103.setConstraints(VRLayout.FLOW);
+
+      addFacilitiesDivisionItem1_H2103();
+    }
+    return facilitiesDivisionItem1_H2103;
+
+  }
+
+  /**
+   * 軽費老人ホームを取得します。
+   * @return 軽費老人ホーム
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem2_H2103(){
+    if(facilitiesDivisionItem2_H2103==null){
+
+      facilitiesDivisionItem2_H2103 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem2_H2103.setText("軽費老人ホーム");
+
+      facilitiesDivisionItem2_H2103.setGroup(getFacilitiesDivision_H2103());
+
+      facilitiesDivisionItem2_H2103.setConstraints(VRLayout.FLOW_RETURN);
+
+      addFacilitiesDivisionItem2_H2103();
+    }
+    return facilitiesDivisionItem2_H2103;
+
+  }
+
+  /**
+   * 養護老人ホームを取得します。
+   * @return 養護老人ホーム
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem3_H2103(){
+    if(facilitiesDivisionItem3_H2103==null){
+
+      facilitiesDivisionItem3_H2103 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem3_H2103.setText("養護老人ホーム");
+
+      facilitiesDivisionItem3_H2103.setGroup(getFacilitiesDivision_H2103());
+
+      facilitiesDivisionItem3_H2103.setConstraints(VRLayout.FLOW);
+
+      addFacilitiesDivisionItem3_H2103();
+    }
+    return facilitiesDivisionItem3_H2103;
+
+  }
+
+  /**
+   * 高齢者専用賃貸住宅を取得します。
+   * @return 高齢者専用賃貸住宅
+   */
+  public ACRadioButtonItem getFacilitiesDivisionItem4_H2103(){
+    if(facilitiesDivisionItem4_H2103==null){
+
+      facilitiesDivisionItem4_H2103 = new ACRadioButtonItem();
+
+      facilitiesDivisionItem4_H2103.setText("高齢者専用賃貸住宅");
+
+      facilitiesDivisionItem4_H2103.setGroup(getFacilitiesDivision_H2103());
+
+      facilitiesDivisionItem4_H2103.setConstraints(VRLayout.FLOW);
+
+      addFacilitiesDivisionItem4_H2103();
+    }
+    return facilitiesDivisionItem4_H2103;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QO004115Design() {
@@ -745,17 +1087,28 @@ public class QO004115Design extends QS001ServicePanel {
    */
   protected void addMainGroup(){
 
-    mainGroup.add(getFacilitiesDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    mainGroup.add(getCalculationDetails(), VRLayout.NORTH);
 
-    mainGroup.add(getStaffAssignmentDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    mainGroup.add(getOldLowElementArea(), VRLayout.FLOW_RETURN);
 
-    mainGroup.add(getStaffLackContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+  }
 
-    mainGroup.add(getFunctionTrainingGuidanceSystemContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+  /**
+   * 算定項目領域に内部項目を追加します。
+   */
+  protected void addCalculationDetails(){
 
-    mainGroup.add(getNightNursingSystemAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails.add(getFacilitiesDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    mainGroup.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    calculationDetails.add(getStaffAssignmentDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails.add(getStaffLackContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails.add(getFunctionTrainingGuidanceSystemContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails.add(getNightNursingSystemAddContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    calculationDetails.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -772,44 +1125,92 @@ public class QO004115Design extends QS001ServicePanel {
   protected void addFacilitiesDivisionModel(){
 
     getFacilitiesDivisionItem1().setButtonIndex(1);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem1());
 
     getFacilitiesDivisionItem2().setButtonIndex(2);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
     getFacilitiesDivisionItem3().setButtonIndex(3);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem3());
 
     getFacilitiesDivisionItem4().setButtonIndex(4);
+
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem4());
+
+    getFacilitiesDivisionItem5().setButtonIndex(5);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem5());
+
+    getFacilitiesDivisionItem6().setButtonIndex(6);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem6());
+
+    getFacilitiesDivisionItem7().setButtonIndex(7);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem7());
+
+    getFacilitiesDivisionItem8().setButtonIndex(8);
+
+    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem8());
 
   }
 
   /**
-   * 有料老人ホームに内部項目を追加します。
+   * 有料老人ホーム（介護専用型）に内部項目を追加します。
    */
   protected void addFacilitiesDivisionItem1(){
 
   }
 
   /**
-   * 軽費老人ホームに内部項目を追加します。
+   * 軽費老人ホーム（介護専用型）に内部項目を追加します。
    */
   protected void addFacilitiesDivisionItem2(){
 
   }
 
   /**
-   * 養護老人ホームに内部項目を追加します。
+   * 養護老人ホーム（介護専用型）に内部項目を追加します。
    */
   protected void addFacilitiesDivisionItem3(){
 
   }
 
   /**
-   * 高齢者専用賃貸住宅に内部項目を追加します。
+   * 高齢者専用賃貸住宅（介護専用型）に内部項目を追加します。
    */
   protected void addFacilitiesDivisionItem4(){
+
+  }
+
+  /**
+   * 有料老人ホーム（混合型）に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem5(){
+
+  }
+
+  /**
+   * 軽費老人ホーム（混合型）に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem6(){
+
+  }
+
+  /**
+   * 養護老人ホーム（混合型）に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem7(){
+
+  }
+
+  /**
+   * 高齢者専用賃貸住宅（混合型）に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem8(){
 
   }
 
@@ -826,9 +1227,11 @@ public class QO004115Design extends QS001ServicePanel {
   protected void addStaffAssignmentDivisionModel(){
 
     getStaffAssignmentDivisionItem1().setButtonIndex(1);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem1());
 
     getStaffAssignmentDivisionItem2().setButtonIndex(2);
+
     getStaffAssignmentDivisionModel().add(getStaffAssignmentDivisionItem2());
 
   }
@@ -860,12 +1263,15 @@ public class QO004115Design extends QS001ServicePanel {
   protected void addStaffLackModel(){
 
     getStaffLackItem1().setButtonIndex(1);
+
     getStaffLackModel().add(getStaffLackItem1());
 
     getStaffLackItem2().setButtonIndex(2);
+
     getStaffLackModel().add(getStaffLackItem2());
 
     getStaffLackItem3().setButtonIndex(3);
+
     getStaffLackModel().add(getStaffLackItem3());
 
   }
@@ -904,9 +1310,11 @@ public class QO004115Design extends QS001ServicePanel {
   protected void addFunctionTrainingGuidanceSystemModel(){
 
     getFunctionTrainingGuidanceSystemItem1().setButtonIndex(1);
+
     getFunctionTrainingGuidanceSystemModel().add(getFunctionTrainingGuidanceSystemItem1());
 
     getFunctionTrainingGuidanceSystemItem2().setButtonIndex(2);
+
     getFunctionTrainingGuidanceSystemModel().add(getFunctionTrainingGuidanceSystemItem2());
 
   }
@@ -938,9 +1346,11 @@ public class QO004115Design extends QS001ServicePanel {
   protected void addNightNursingSystemAddModel(){
 
     getNightNursingSystemAddItem1().setButtonIndex(1);
+
     getNightNursingSystemAddModel().add(getNightNursingSystemAddItem1());
 
     getNightNursingSystemAddItem2().setButtonIndex(2);
+
     getNightNursingSystemAddModel().add(getNightNursingSystemAddItem2());
 
   }
@@ -985,6 +1395,82 @@ public class QO004115Design extends QS001ServicePanel {
   }
 
   /**
+   * 旧法項目に内部項目を追加します。
+   */
+  protected void addOldLowElementArea(){
+
+    oldLowElementArea.add(getOldLowH2103Group(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 平成21年3月以前グループに内部項目を追加します。
+   */
+  protected void addOldLowH2103Group(){
+
+    oldLowH2103Group.add(getFacilitiesDivision_H2103Container(), VRLayout.FLOW_INSETLINE_RETURN);
+
+  }
+
+  /**
+   * 施設等の区分ラジオグループに内部項目を追加します。
+   */
+  protected void addFacilitiesDivision_H2103(){
+
+  }
+
+  /**
+   * 施設等の区分ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addFacilitiesDivision_H2103Model(){
+
+    getFacilitiesDivisionItem1_H2103().setButtonIndex(1);
+
+    getFacilitiesDivision_H2103Model().add(getFacilitiesDivisionItem1_H2103());
+
+    getFacilitiesDivisionItem2_H2103().setButtonIndex(2);
+
+    getFacilitiesDivision_H2103Model().add(getFacilitiesDivisionItem2_H2103());
+
+    getFacilitiesDivisionItem3_H2103().setButtonIndex(3);
+
+    getFacilitiesDivision_H2103Model().add(getFacilitiesDivisionItem3_H2103());
+
+    getFacilitiesDivisionItem4_H2103().setButtonIndex(4);
+
+    getFacilitiesDivision_H2103Model().add(getFacilitiesDivisionItem4_H2103());
+
+  }
+
+  /**
+   * 有料老人ホームに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem1_H2103(){
+
+  }
+
+  /**
+   * 軽費老人ホームに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem2_H2103(){
+
+  }
+
+  /**
+   * 養護老人ホームに内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem3_H2103(){
+
+  }
+
+  /**
+   * 高齢者専用賃貸住宅に内部項目を追加します。
+   */
+  protected void addFacilitiesDivisionItem4_H2103(){
+
+  }
+
+  /**
    * コンポーネントを初期化します。
    * @throws Exception 初期化例外
    */
@@ -1006,7 +1492,6 @@ public class QO004115Design extends QS001ServicePanel {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO004115Design.class.getName()));
     } catch (Exception e) {

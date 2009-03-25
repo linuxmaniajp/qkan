@@ -64,21 +64,24 @@ public class QO004139 extends QO004139Event {
 	 *             処理例外
 	 */
 	protected void facilitiesDivisionSelectionChanged(ListSelectionEvent e) throws Exception {
-		// 画面状態設定
-		// 「病院」が選択された場合
-		int facilityType =getFacilitiesDivision().getSelectedIndex(); 
-		if (facilityType == FACILITY_TYPE_BYOIN) {
-			setState_FACILITY_TYPE_NORMAL();
-			// 状態ID：FACILITY_TYPE_NORMAL
-		} else if(facilityType == FACILITY_TYPE_UNIT){
-			// 「ユニット型」が選択された場合
-			setState_FACILITY_TYPE_UNIT();
-			// 状態ID：FACILITY_TYPE_UNIT
-		}else{
-			// 「経過型」が選択された場合
-			setState_FACILITY_TYPE_PASSAGE();
-		}
+        //画面状態設定    
+        //内部関数checkStateを呼び出す。
+        checkState();
 	}
+    /**
+     * 「画面状態設定」イベントです。
+     * 
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
+     */
+    protected void facilitiesDivision_H2103SelectionChanged(ListSelectionEvent e) throws Exception {
+        //画面状態設定    
+        //内部関数checkStateを呼び出す。
+        checkState();
+        
+    }
 
 	public static void main(String[] args) {
 		// デフォルトデバッグ起動
@@ -167,6 +170,16 @@ public class QO004139 extends QO004139Event {
 			// 処理を抜ける。（中断する）
 			return false;
 		}
+        if (!getFacilitiesDivision_H2103().isSelected()) {
+            errMsg = "施設区分";
+            // 未選択だった場合
+            // エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_SELECT 引数 = errMsg
+            QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+            // エラーが発生したインスタンスにフォーカスを当てる。
+            getFacilitiesDivision_H2103().requestFocus();
+            // 処理を抜ける。（中断する）
+            return false;
+        }
 
 		// ・staffAssignmentDivision（人員配置区分ラジオグループ） ※errMsg = 人員配置区分
 		if (getStaffAssignmentDivision().isEnabled()) {
@@ -180,7 +193,35 @@ public class QO004139 extends QO004139Event {
 				// 処理を抜ける。（中断する）
 				return false;
 			}
+            // 選択されている項目が無効状態の場合、選択していないとみなす。
+            if(!(getStaffAssignmentDivision().getSelectedButton()).isEnabled()){
+                errMsg = "人員配置区分";
+                QkanMessageList.getInstance()
+                        .ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+                getStaffAssignmentDivision().requestFocus();
+                return false;           
+            }
 		}
+        if (getStaffAssignmentDivision_H2103().isEnabled()) {
+            if (!getStaffAssignmentDivision_H2103().isSelected()) {
+                errMsg = "人員配置区分";
+                // 未選択だった場合
+                // エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_SELECT 引数 = errMsg
+                QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+                // エラーが発生したインスタンスにフォーカスを当てる。
+                getStaffAssignmentDivision_H2103().requestFocus();
+                // 処理を抜ける。（中断する）
+                return false;
+            }
+            // 選択されている項目が無効状態の場合、選択していないとみなす。
+            if(!(getStaffAssignmentDivision_H2103().getSelectedButton()).isEnabled()){
+                errMsg = "人員配置区分";
+                QkanMessageList.getInstance()
+                        .ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+                getStaffAssignmentDivision_H2103().requestFocus();
+                return false;           
+            }
+        }
 
 		// ・nightWorkDivision（夜間勤務条件基準ラジオグループ）※ errMsg = 夜間勤務条件基準
 		if (!getNightWorkDivision().isSelected()) {
@@ -194,6 +235,17 @@ public class QO004139 extends QO004139Event {
 			return false;
 
 		}
+        if (!getNightWorkDivision_H2103().isSelected()) {
+            errMsg = "夜間勤務条件基準";
+            // 未選択だった場合
+            // エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_SELECT 引数 = errMsg
+            QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+            // エラーが発生したインスタンスにフォーカスを当てる。
+            getNightWorkDivision_H2103().requestFocus();
+            // 処理を抜ける。（中断する）
+            return false;
+
+        }
 
 		// ・staffLack（人員減算コンボ）※ errMsg = 人員減算
 		if (!getStaffLack().isSelected()) {
@@ -220,7 +272,19 @@ public class QO004139 extends QO004139Event {
 				return false;
 			}
 		}
-
+        if (getUnitCareMaintenance_H2103().isEnabled()) {
+            if (!getUnitCareMaintenance_H2103().isSelected()) {
+                errMsg = "ユニットケアの整備";
+                // 未選択だった場合
+                // エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_SELECT 引数 = errMsg
+                QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(errMsg);
+                // エラーが発生したインスタンスにフォーカスを当てる。
+                getUnitCareMaintenance_H2103().requestFocus();
+                // 処理を抜ける。（中断する）
+                return false;
+            }
+        }
+        
 		// ・recuperationEnvironmental（療養環境基準ラジオグループ ※errMsg = 療養環境基準
 		if (!getRecuperationEnvironmental().isSelected()) {
 			errMsg = "療養環境基準";
@@ -313,17 +377,7 @@ public class QO004139 extends QO004139Event {
 			setState_SET_PANEL_TRUE();
 
 			// 施設区分の値をチェックする。
-			int facilityType = getFacilitiesDivision().getSelectedIndex();
-			if (facilityType == FACILITY_TYPE_BYOIN) {
-				// 「病院」が選択された場合
-				setState_FACILITY_TYPE_NORMAL();
-			} else if(facilityType == FACILITY_TYPE_UNIT){
-				// 「ユニット型」が選択された場合
-				setState_FACILITY_TYPE_UNIT();
-			}else{
-				// 「経過型」が選択された場合
-				setState_FACILITY_TYPE_PASSAGE();
-			}
+            checkState();
 
 		} else {
 			// 引数としてfalseが渡された場合
@@ -363,16 +417,55 @@ public class QO004139 extends QO004139Event {
 	public void removeInvalidData(VRMap map) throws Exception {
 		// ※無効データ削除
 		// 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。
-		// ・staffAssignmentDivision 削除KEY：1260102
-		if (!getStaffAssignmentDivision().isEnabled()) {
-			map.removeData("1260102");
-		}
-
-		// ・unitCareMaintenance 削除KEY：1260105
-		if (!getUnitCareMaintenance().isEnabled()) {
-			map.removeData("1260105");
-		}
+		// ・staffAssignmentDivision 削除KEY：1260123
+        QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 
 	}
+
+    /**
+     * 「画面状態制御」に関する処理を行ないます。
+     * 
+     * @throws Exception
+     *             処理例外
+     */
+    public void checkState() throws Exception {
+        // 施設区分に伴う画面状態設定
+
+        // 「病院」が選択された場合
+        int facilityType =getFacilitiesDivision().getSelectedIndex(); 
+        if (facilityType == FACILITY_TYPE_BYOIN) {
+            setState_FACILITY_TYPE_NORMAL();
+            // 状態ID：FACILITY_TYPE_NORMAL
+        } else if(facilityType == FACILITY_TYPE_UNIT){
+            // 「ユニット型」が選択された場合
+            setState_FACILITY_TYPE_UNIT();
+            // 状態ID：FACILITY_TYPE_UNIT
+        } else if (facilityType == FACILITY_TYPE_PASSAGE) {
+            // 「経過型」が選択された場合
+            setState_FACILITY_TYPE_PASSAGE();
+        } else {
+            // 「ユニット型経過型」が選択された場合
+            setState_FACILITY_TYPE_UNIT_PASSAGE();
+        }
+
+        //施設区分(平成21年4月法改正以前用)に伴う画面状態設定
+
+        switch (getFacilitiesDivision_H2103().getSelectedIndex()) {
+        case FACILITY_TYPE_BYOIN:
+            setState_FACILITY_TYPE_NORMAL_H2103();
+            // 状態ID：FACILITY_TYPE_NORMAL_H2103
+            break;
+        case FACILITY_TYPE_UNIT:
+            // 「ユニット型」が選択された場合
+            setState_FACILITY_TYPE_UNIT_H2103();
+            // 状態ID：FACILITY_TYPE_UNIT_H2103
+            break;
+        case FACILITY_TYPE_PASSAGE:
+            // 「経過型」が選択された場合
+            setState_FACILITY_TYPE_PASSAGE_H2103();
+            break;
+        }
+    }
+
 
 }

@@ -73,6 +73,16 @@ public class QO004130 extends QO004130Event {
 		// 割引率テキストに初期値0を代入する。
 		// ・reduceRate
 		getReduceRate().setText("0");
+
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+        //＜平成21年4月法改正対応＞
+        //3級ヘルパー体制の初期値として「なし」を選択する。
+        getThirdClassHelperRadioGroup().setSelectedIndex(1);
+        //中山間地域等における小規模事業所加算（地域に関する状況）の初期値として「非該当」を選択する。
+        getProviderAddMountainousAreaRafioRadioGroup().setSelectedIndex(1);
+        //中山間地域等における小規模事業所加算（規模に関する状況）の初期値として「非該当」を選択する。
+        getProviderAddMountainousAreaScaleRadioGroup().setSelectedIndex(1);
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応
 	}
 
 	/**

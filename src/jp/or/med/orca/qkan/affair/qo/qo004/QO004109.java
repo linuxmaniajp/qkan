@@ -30,57 +30,22 @@
 
 package jp.or.med.orca.qkan.affair.qo.qo004;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.event.FocusEvent;
+
+import javax.swing.event.ListSelectionEvent;
+
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanSystemInformation;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 短期入所生活介護(QO004109) 
@@ -261,6 +226,19 @@ public class QO004109 extends QO004109Event {
 
 			}
 		}	
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+        //＜平成21年4月法改正対応＞
+        //看護体制加算の初期値として「なし」を選択する。
+        getNurseStructuralAddRadioGroup().setSelectedIndex(1);
+        //夜勤職員配置加算の初期値として「なし」を選択する。
+        getNightStaffDispositionAddRadioGroup().setSelectedIndex(1);
+        //若年性認知症利用者受入加算の初期値として「なし」を選択する。
+        getYoungDementiaPatinetAddRadioGroup().setSelectedIndex(1);
+        //療養食加算の初期値として「なし」を選択する。
+        getMedicalFoodAddRadioGroup().setSelectedIndex(1);
+        //サービス提供体制強化加算の初期値として「なし」を選択する。
+        getServiceAddProvisionStructuralRadioGroup().setSelectedIndex(1);
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応
 	}
 
   /**
@@ -504,9 +482,7 @@ public class QO004109 extends QO004109Event {
 	  
 	  // 以下のコントロールが無効状態の場合、以下のKEYをmapより削除する。	
 	  // ・unitCareMaintenance　KEY：1210116
-	  if(!getUnitCareMaintenance().isEnabled()){
-		  map.removeData("1210116");
-	  }
+      QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 	  	  
   }
 

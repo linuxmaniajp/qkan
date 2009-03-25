@@ -74,6 +74,15 @@ public class QO004131 extends QO004131Event {
 		// ・reduceRate
 		getReduceRate().setText("0");
 
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+        //＜平成21年4月法改正対応＞
+        //中山間地域等における小規模事業所加算（地域に関する状況）の初期値として「非該当」を選択する。
+        getProviderAddMountainousAreaRafioRadioGroup().setSelectedIndex(1);
+        //中山間地域等における小規模事業所加算（規模に関する状況）の初期値として「非該当」を選択する。
+        getProviderAddMountainousAreaScaleRadioGroup().setSelectedIndex(1);
+        //サービス提供体制強化加算の初期値として「なし」を選択する。
+        getServiceAddProvisionStructuralRadioGroup().setSelectedIndex(1);
+        //2009/02/24 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応
 	}
 
 	/**
