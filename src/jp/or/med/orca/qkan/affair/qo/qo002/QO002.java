@@ -1065,6 +1065,9 @@ public class QO002 extends QO002Event {
 			// insurerInfoMapのソースを生成する。（新規登録時クリア処理に用いる）
 			// createSource();
 			setInsurerInfoMap((VRMap) getContents().createSource());
+			// [ID:0000461][Masahiko Higuchi] 2009/03 add begin 保険者登録時の初期値
+            getInsurerInfoMap().setData("INSURER_TYPE",new Integer(1));
+            // [ID:0000461][Masahiko Higuchi] 2009/03 add end
 			getContents().setSource(getInsurerInfoMap());
 			getContents().bindSource();
 			// 画面状態を変更する。
@@ -1806,6 +1809,9 @@ public class QO002 extends QO002Event {
 		VRMap allClearMap = new VRHashMap();
 		// allClearMapのソースを生成する。（新規登録時クリア処理に用いる）
 		allClearMap = (VRMap) getInsurerInfos().createSource();
+        // [ID:0000461][Masahiko Higuchi] 2009/03 add begin 保険者登録時の初期値
+        allClearMap.setData("INSURER_TYPE",new Integer(1));
+        // [ID:0000461][Masahiko Higuchi] 2009/03 add end
 		getInsurerInfos().setSource(allClearMap);
 		getInsurerInfos().bindSource();
 

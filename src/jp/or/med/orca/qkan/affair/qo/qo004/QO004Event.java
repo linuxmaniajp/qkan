@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/03/10  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/03/10  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 事業所登録イベント定義(QO004) 
@@ -356,6 +357,8 @@ public abstract class QO004Event extends QO004SQL {
   private ACPassiveKey PROVIDER_PASSIVE_CHECK_KEY;
   public static final String AFFAIR_ID = "QO004";
   public static final String KAIGO_KANGO_NAME = "訪問看護";
+  public static final String BIND_PATH_OF_MOUNTAINOUS_AREA_RAFIO = "2";
+  public static final String BIND_PATH_OF_MOUNTAINOUS_AREA_SCALE = "3";
   public static final Date TARGET_DATE_20060401 = ACCastUtilities.toDate("2006/4/1", null);
   public static final Date TARGET_DATE_20051001 = ACCastUtilities.toDate("2005/10/1", null);
   public static final int SERVICE_TYPE_KAIGO_KANGO = 11311;
@@ -384,6 +387,7 @@ public abstract class QO004Event extends QO004SQL {
   private VRList providerStaffList = new VRArrayList();
   private VRList providerMenuList = new VRArrayList();
   private VRList masterMenuList = new VRArrayList();
+  private VRList filteredServiceList = new VRArrayList();
   private ACTableModelAdapter providerStaffTableModel;
   private ACTableModelAdapter providerServiceTableModel;
   private iProviderServicePanel providerServiceClass;
@@ -629,6 +633,21 @@ public abstract class QO004Event extends QO004SQL {
    */
   protected void setMasterMenuList(VRList masterMenuList){
     this.masterMenuList = masterMenuList;
+  }
+
+  /**
+   * filteredServiceListを返します。
+   * @return filteredServiceList
+   */
+  protected VRList getFilteredServiceList(){
+    return filteredServiceList;
+  }
+  /**
+   * filteredServiceListを設定します。
+   * @param filteredServiceList filteredServiceList
+   */
+  protected void setFilteredServiceList(VRList filteredServiceList){
+    this.filteredServiceList = filteredServiceList;
   }
 
   /**

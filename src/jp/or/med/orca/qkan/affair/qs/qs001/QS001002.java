@@ -184,6 +184,11 @@ public class QS001002 extends QS001002Event {
                         }
                         // 「閉じる」で戻ってきた場合
                         // 何もしない。
+                        
+                        // 2009/01/13 [Mizuki Tsutsumi] : add begin / 自己負担額発生時、色変更
+                        //設定後、再描画をかける
+                        this.revalidate();
+                        // 2009/01/13 [Mizuki Tsutsumi] : end begin
                     }else{
                         QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_UNIT_ADJUST();
                         return;

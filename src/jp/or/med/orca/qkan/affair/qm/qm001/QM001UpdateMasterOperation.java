@@ -682,5 +682,40 @@ public class QM001UpdateMasterOperation {
 
         return sb.toString();
       }
+
+      /**
+       * 「平成21年4月法改正に関するアップデート対象確認」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Tozo TANAKA
+       * @since V545
+       */
+      public String getSQL_GET_PROVIDER_SERVICE_DETAIL_H2104(VRMap sqlParam) throws Exception{
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("SELECT");
+
+        sb.append(" COUNT(*) AS COUNTVAL");
+
+        sb.append(" FROM");
+
+        sb.append("  PROVIDER_SERVICE_DETAIL_INTEGER");
+
+        sb.append(" WHERE");
+
+        sb.append("(");
+
+        sb.append(" SYSTEM_BIND_PATH");
+
+        sb.append(" IN");
+
+        sb.append(" ('2','3','1150113','1150115','1150116','1160112','1220126','1230124','1230126','1230127','1330108','1430104','1510134','1520130','1520131','1530126','1530128','1530129','1530131','1530225','1530322','1720109','1540135','1250122','1260122','1260123','1260124','1260125','1230123','1230125','1530127','1530130','1260121')");
+
+        sb.append(")");
+
+        return sb.toString();
+      }
       
 }

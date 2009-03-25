@@ -1,5 +1,6 @@
 package jp.or.med.orca.qkan.affair.qs.qs001;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -16,9 +17,11 @@ import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.text.QkanServiceBeginDayFormat;
 import jp.or.med.orca.qkan.text.QkanServiceSpanFormat;
@@ -44,7 +47,33 @@ public class QS001ServicePatternListCellRenderer extends
     private QS001DaySchedule useSpanList;
     private QS001DaySchedule patternList;
     private VRMap masterService;
+    // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+    private Date targetDate;
+    // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
 
+    // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダーの色変更
+    //Color[] COLOR_ARRAY = {
+    //	(未選択・前), (未選択・後),
+    //	(選択＆フォーカスなし・前), (選択＆フォーカスなし・後),
+    //	(選択＆フォーカスあり・前), (選択＆フォーカスあり・後)}
+    //→null指定で着色なし（色の変更はなし）
+    
+    //自己負担時
+    private final Color[] COLOR_ARRAY_OF_REGULATION_RATE = {
+		new Color(160, 40, 40), null,
+		new Color(255, 255, 255), new Color(228, 57, 57), //HSV = (0, 75, 89.5)
+		new Color(255, 255, 255), new Color(160, 40, 40) //HSV = (0, 75, 63)
+    };
+    // 2009/01/13 [Mizuki Tsutsumi] : end begin
+    
+    // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+    private final Color[] COLOR_ARRAY_OF_INVALID_LOW = {
+            null, new Color(230, 230, 230),
+            null, new Color(128,128,128),
+            null, new Color(77,77,77)
+        };
+    // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+    
     /**
      * パターンリストインスタンス を返します。
      * 
@@ -163,39 +192,97 @@ public class QS001ServicePatternListCellRenderer extends
             }
         }
 
+        // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダー色変更（のためのフラグ）
+        boolean hasRegulationRate = false;
+        // 2009/01/13 [Mizuki Tsutsumi] : add end
+        // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+        boolean isInvalidLowVersion = false;
+        
+        //対象年月の法改正区分
+        int targetLowVer = 0;
+        if(getTargetDate()!=null){
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104,
+                    getTargetDate()) < 1) {
+                //平成21年4月以降
+                targetLowVer = QkanConstants.SERVICE_LOW_VERSION_H2104;
+            }
+        }
+        // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+        
         VRMap map = null;
         if (value instanceof VRMap) {
 
             map = (VRMap) value;
             try {
+                // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダー色変更（自己負担時）
+	            int regulationRate = ACCastUtilities.toInt((VRBindPathParser.get("REGULATION_RATE", map)), 0);
+	            if (regulationRate > 0) {
+	            	hasRegulationRate = true;
+	            }
+	            // 2009/01/13 [Mizuki Tsutsumi] : add end
+                // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+                //レコードの法改正区分を取得する。
+                int mapLowVer = CareServiceCommon.getServiceLowVersion(map);
+                if(mapLowVer != targetLowVer){
+                    //対象年月の法改正区分とレコードの法改正区分が異なる場合
+                    //不正な法改正区分を表すフラグisInvalidLowVersionを真(true)にする。
+                    isInvalidLowVersion = true;
+                }
+                // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+            	
                 // Map(レコード)すべてではなく説明だけを描画する
-                String serviceKind = String.valueOf(VRBindPathParser.get(
-                        "SYSTEM_SERVICE_KIND_DETAIL", map));
+                String serviceKind = String.valueOf(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", map));
 
                 Object service;
                 if (getMasterService() != null) {
-                    service = getMasterService().get(
-                            ACCastUtilities.toInteger(serviceKind, 0));
+                    service = getMasterService().get(ACCastUtilities.toInteger(serviceKind, 0));
                     if (service instanceof Map) {
-                        if (parent == getPatternList()) {
+                    	if (parent == getPatternList()) {
                             // 2008/01/07 [Masahiko Higuchi] add - begin サービスパターン名称変更
                             // 変更後の名称が設定されている場合
                             if(((Map)value).containsKey("11")){
-                                serviceKind = ACCastUtilities.toString(((Map) value)
-                                        .get("11"),"");
+                                serviceKind = ACCastUtilities.toString(((Map) value).get("11"),"");
                                 
                             }else{
                             // 2008/01/07 [Masahiko Higuchi] add - end
-                                // サービス名に置換
-                                serviceKind = String.valueOf(((Map) service)
-                                    .get("SERVICE_ABBREVIATION"));
+                            	// サービス名に置換
+                                serviceKind = String.valueOf(((Map) service).get("SERVICE_ABBREVIATION"));
                             // 2008/01/07 [Masahiko Higuchi] add - begin サービスパターン名称変更
                             }
                             // 2008/01/07 [Masahiko Higuchi] add - end
                         } else {
                             // サービスの略称名に置換
-                            serviceKind = String.valueOf(((Map) service)
-                                    .get("SERVICE_CALENDAR_ABBREVIATION"));
+                        	serviceKind = String.valueOf(((Map) service).get("SERVICE_CALENDAR_ABBREVIATION"));
+
+                            // 2009/01/15 [Mizuki Tsutsumi] : add begin / 訪問介護のとき、訪問種別も表示名に追加
+                            // 利用票・計画表や事業所情報で文言を使用しているため個別書き換えで対応する。
+                        	String serviceCodeKind = ACCastUtilities.toString(((Map)service).get("SERVICE_CODE_KIND"), "");
+                        	if (serviceCodeKind.equals("11")) {
+                        		int homonShubetsu = ACCastUtilities.toInt((VRBindPathParser.get("1110101", map)), 0); 
+                        		switch (homonShubetsu) {
+                        		case 1:
+                        			serviceKind = "身体介護";
+                        			break;
+                        		case 2:
+                        			serviceKind = "生活援助";
+                        			break;
+                        		case 3:
+                        			serviceKind = "身体生活";
+                        			break;
+                        		case 4:
+                        			serviceKind = "乗降介助";
+                        			break;
+                        		}
+                                
+                        	} else if(serviceCodeKind.equals("13")) {
+                                serviceKind = "訪看";
+                                
+                            } else if("31".equals(serviceCodeKind)) {
+                                serviceKind = "居宅療養";
+                                
+                            }
+                            
+                            // 2009/01/15 [Mizuki Tsutsumi] : add end
                         }
                     }
                 }
@@ -229,14 +316,26 @@ public class QS001ServicePatternListCellRenderer extends
                         value = VRBindPathParser.get("10",map) + " - " + value;
                     }
                 }
-
             } catch (ParseException e) {
             }
         }
 
-        Component comp = super.getListCellRendererComponent(list, value, index,
-                isSelected, cellHasFocus);
+        Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
+        // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダーの色を変える
+        //自己負担時
+        if (hasRegulationRate) {
+        	setComponentColor(comp, isSelected, cellHasFocus, COLOR_ARRAY_OF_REGULATION_RATE);
+        }
+        // 2009/01/13 [Mizuki Tsutsumi] : add end
+        // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+        if(isInvalidLowVersion){
+            // 不正な法改正区分を表すフラグisInvalidLowVersionが真(true)の場合
+            //レンダラの背景色を不正な法改正区分色に変更する。
+            setComponentColor(comp, isSelected, cellHasFocus, COLOR_ARRAY_OF_INVALID_LOW);
+        }
+        // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+        
         if (parent != null) {
 //          表示形式に応じてコントロールのVisibleを切り替える
                         try {
@@ -306,4 +405,65 @@ public class QS001ServicePatternListCellRenderer extends
         return contents;
 
     }
+
+    // 2009/01/15 [Mizuki Tsutsumi] : add begin
+    /**
+     * カレンダー項目の色を変更
+     * @param comp カレンダーの項目
+     * @param isSelected 選択有無
+     * @param cellHasFocus フォーカス有無
+     * @param colorArray 色情報配列
+     */
+    protected void setComponentColor(
+		Component comp, boolean isSelected, boolean cellHasFocus, Color[] colorArray) {
+    	if (colorArray.length != 6) {return;}
+    	
+    	if (isSelected) {
+    		if (cellHasFocus) {
+    			if (colorArray[4] != null) {
+    				comp.setForeground(colorArray[4]);
+    			}
+    			if (colorArray[5] != null) {
+    				comp.setBackground(colorArray[5]);
+    			}
+    		}
+    		else {
+    			if (colorArray[2] != null) {
+                	comp.setForeground(colorArray[2]);
+    			}
+    			if (colorArray[3] != null) {
+            		comp.setBackground(colorArray[3]);
+    			}
+    		}
+    	}
+    	else {
+    		if (colorArray[0] != null) {
+            	comp.setForeground(colorArray[0]);
+    		}
+    		if (colorArray[1] != null) {
+            	comp.setBackground(colorArray[1]);
+    		}
+    	}
+    }
+    // 2009/01/15 [Mizuki Tsutsumi] : add end
+    
+    // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+    /**
+     * 対象年月 を返します。
+     * @return 対象年月
+     */
+    public Date getTargetDate() {
+        return targetDate;
+    }
+
+    /**
+     * 対象年月 を設定します。
+     * @param targetDate 対象年月
+     */
+    public void setTargetDate(Date targetDate) {
+        this.targetDate = targetDate;
+    }
+    // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+    
+    
 }

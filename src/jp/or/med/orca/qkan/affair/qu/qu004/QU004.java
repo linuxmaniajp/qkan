@@ -3647,6 +3647,12 @@ public class QU004 extends QU004Event {
 				new ACHashMapFormat(new String[] { "–K–âŠÅŒì—Ã—{”ï–¾×‘" },
 						new Integer[] { new Integer(20101) }));
 
+		//ˆã—ÃŒn”ñ•\¦‘Î‰ fujihara.shin 2009.1.13 add start
+		if (!QkanCommon.isShowOldIryo()){
+			setState_OLD_IRYO_OFF();
+		}
+		//ˆã—ÃŒn”ñ•\¦‘Î‰ fujihara.shin 2009.1.13 add enf
+		
 		// ‰æ–Êİ’è
 		casualInitialize();
 

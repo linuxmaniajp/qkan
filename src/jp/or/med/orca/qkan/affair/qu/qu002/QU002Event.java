@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司 和善
- * 作成日: 2006/05/10  日本コンピューター株式会社 上司 和善 新規作成
+ * 作成日: 2009/03/07  日本コンピューター株式会社 上司 和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -778,6 +778,11 @@ public abstract class QU002Event extends QU002SQL {
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
   public static final int YOUKAIGODO_HIGAITOU = 1;
+  public static final int YOUKAIGODO_KEIKATEKI_YOUKAIGO = 11;
+  public static final int CODE_IDOU_REASON_NYUSYO_NYUIN = 278;
+  public static final int IDOU_START_SHISETSU1 = 1;
+  public static final int IDOU_START_SHISETSU2 = 1;
+  public static final int IDOU_START_SHISETSU3 = 1;
   private String processStart;
   private VRMap masterService = new VRHashMap();
   private VRMap masterCode = new VRHashMap();

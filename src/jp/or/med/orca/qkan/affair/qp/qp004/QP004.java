@@ -712,6 +712,13 @@ public class QP004 extends QP004Event {
 		}
 		//[H20.5 法改正対応] fujihara add end
 		
+		//[ID:0000451][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+		int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
+		if (term < jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200904_AFFTER) {
+			getContentsNyushoJotais().getParent().setVisible(false);
+		}
+		isShinryos = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
+		//[ID:0000451][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
 	}
 
 	/**

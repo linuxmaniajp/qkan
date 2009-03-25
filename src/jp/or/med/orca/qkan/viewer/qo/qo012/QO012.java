@@ -495,6 +495,22 @@ public class QO012 extends QO012Event {
 					// パーサを実行して、解析に問題が有った場合はスキップする
 					continue;
 				}
+				
+			//[ID:0000448][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+			} else if (exchangeType.equals("8124")) {
+				// 8124 H21.4以降　様式第7
+				if (!dataRecord812ParserH2104(rowIndex, dataRecordMap)) {
+					// パーサを実行して、解析に問題が有った場合はスキップする
+					continue;
+				}
+			} else if (exchangeType.equals("8125")) {
+				// 8125 H21.4以降 様式第7-2
+				if (!dataRecord812ParserH2104(rowIndex, dataRecordMap)) {
+					// パーサを実行して、解析に問題が有った場合はスキップする
+					continue;
+				}
+			//[ID:0000448][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+				
 			} else if (exchangeType.equals("8222")) {
 				// 8123 様式第11(給付管理表情報)
 				if (!dataRecord822Parser(rowIndex, dataRecordMap)) {
@@ -1216,6 +1232,111 @@ public class QO012 extends QO012Event {
 		return true;
 	}
 
+	//[ID:0000448][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+	/**
+	 * H21.4以降の「812系交換識別情報基本解析」に関する処理を行ないます。
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public boolean dataRecord812ParserH2104(int rowIndex, VRMap returnDataMap) throws Exception {
+		// returnDataMapに9.被保険者番号INSURED_IDと6.サービス提供年月YEAR_AND_MONTHを格納する。
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH))) {
+			returnDataMap.setData("YEAR_AND_MONTH", ACCastUtilities.toDate(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH) + "01"));
+		} else {
+			return false;
+		}
+
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID))) {
+			returnDataMap.setData("INSURED_ID", getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID));
+		} else {
+			return false;
+		}
+
+		// 18.要介護度状態区分コードを取得してreturnDataMapにBIND PATH CARE_LEVELで格納する
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_12_CARE_LEVEL))) {
+			returnDataMap.setData("CARE_LEVEL", checkCareLevel(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_12_CARE_LEVEL)));
+		} else {
+			return false;
+		}
+
+		// 被保険者番号から利用者名を取得する、取得した値はBIND PATH NAMEで格納する
+		// SQLパラメータ
+		// 6.被保険者番号
+		// 20.認定有効期間開始年月日
+		// 21.認定有効期間終了年月日
+
+		VRMap sqlParam = new VRHashMap();
+		// StartDate
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_13_INSURED_START_DATE))) {
+			sqlParam.setData("START_DATE", ACCastUtilities.toDate(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_13_INSURED_START_DATE)));
+		}
+
+		// EndDate
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_14_INSURED_END_DATE))) {
+			sqlParam.setData("END_DATE", ACCastUtilities.toDate(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_14_INSURED_END_DATE)));
+		}
+
+		// INSURED_ID
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID))) {
+			sqlParam.setData("INSURED_ID", getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID));
+		}
+
+		if (getCanDBConnect()) {
+			VRList patientList = getDBManager().executeQuery(getSQL_GET_PATIENT_INFO(sqlParam));
+
+			if (!patientList.isEmpty()) {
+				VRMap patientMap = (VRMap) patientList.getData(0);
+				// 返却されたPATIENT_FIRST_NAMEとPATIENT_FAMILY_NAMEを間をスペースで区切り結合してNAMEに格納する
+				String patientName = ACCastUtilities.toString(patientMap.getData("PATIENT_FAMILY_NAME")) + " " + ACCastUtilities.toString(patientMap.getData("PATIENT_FIRST_NAME"));
+				returnDataMap.setData("NAME", patientName);
+			} else {
+				returnDataMap.setData("NAME", NAME_LESS);
+			}
+		} else {
+			returnDataMap.setData("NAME", NAME_LESS);
+		}
+
+		// 被保険者番号とoutputTableMapのINSURED_IDが一致するなら
+		
+		// 交換識別番号を調べて
+		if (getInputCSVFile().getValueAtString(rowIndex, COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE).equals("8124")) {
+			// 介護の場合
+			// 43(プラン)をBIND_PATHとしてフラグ1を格納する。
+			returnDataMap.setData("43", MATRIX_ON);
+			// 集計カウント用フラグを格納する
+			returnDataMap.setData("PLAN_FLAG", ON);		
+		} else if(getInputCSVFile().getValueAtString(rowIndex, COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE).equals("8125")) {
+			// 予防の場合
+			// 46(プラン)をBIND_PATHとしてフラグ1を格納する。
+			returnDataMap.setData("46", MATRIX_ON);
+			// 集計カウント用フラグを格納する
+			returnDataMap.setData("PLAN_FLAG", ON);
+		}
+		
+		// 単位数を取得する
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_21_UNIT_TOTAL))) {
+			returnDataMap.setData("UNIT_TOTAL", ACCastUtilities.toInteger(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_21_UNIT_TOTAL)));
+		} else {
+			return false;
+		}
+
+		// 保険対象請求額を取得する
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_22_AMOUNT_TOTAL))) {
+			returnDataMap.setData("INSURANCE_AMOUNT", ACCastUtilities.toInteger(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_22_AMOUNT_TOTAL)));
+		} else {
+			return false;
+		}
+
+		// 集計用に一意のキーを作成して格納する
+		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		returnDataMap.setData("DATA_INDEX", dataIndexStr);
+
+		return true;
+	}
+	//[ID:0000448][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+	
+	
 	/**
 	 * 「822系交換識別情報基本解析」に関する処理を行ないます。
 	 * 

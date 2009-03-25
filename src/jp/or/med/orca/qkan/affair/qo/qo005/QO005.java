@@ -834,7 +834,39 @@ public class QO005 extends QO005Event {
         } else {
             params.setData("SHOW_OLD_KOHI", new Integer(CHECKBOX_OFF));
         }
-
+        
+        //医療系非表示対応 fujihara.shin 2009.1.13 add start
+        if (ACFrame.getInstance().hasProperty("ScreenConfig/ShowOldIryo")) {
+            // paramsの KEY : SHOW_OLD_IRYO のVALUEに、設定ファイルの ID :
+            // ScreenConfig/ShowOldIryo の値を設定する。
+            params.setData("SHOW_OLD_IRYO", getProperty("ScreenConfig/ShowOldIryo"));
+        } else {
+            params.setData("SHOW_OLD_IRYO", new Integer(CHECKBOX_OFF));
+        }
+        //医療系非表示対応 fujihara.shin 2009.1.13 add end
+        
+        //2009/02/25 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+        //＜平成21年4月法改正対応＞
+        //paramsの KEY : SHOW_OLD_LOW_PROVIDER_ELEMENTSのVALUEに、設定ファイルの
+        //ID : ScreenConfig/ShowOldLowProviderElements の値を設定する。
+        if (ACFrame.getInstance().hasProperty("ScreenConfig/ShowOldLowProviderElements")) {
+            // paramsの KEY : SHOW_OLD_IRYO のVALUEに、設定ファイルの ID :
+            // ScreenConfig/ShowOldIryo の値を設定する。
+            params.setData("SHOW_OLD_LOW_PROVIDER_ELEMENTS", getProperty("ScreenConfig/ShowOldLowProviderElements"));
+        } else {
+            params.setData("SHOW_OLD_LOW_PROVIDER_ELEMENTS", new Integer(CHECKBOX_OFF));
+        }
+        //2009/02/25 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応        
+        
+        //[ID:0000449][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+        if (ACFrame.getInstance().hasProperty("PrintConfig/printNursingZero")) {
+            // paramsの KEY : PRINT_NURSING_ZERO のVALUEに、設定ファイルの ID :
+            // PrintConfig/printNursingZero の値を設定する。
+            params.setData("PRINT_NURSING_ZERO", getProperty("PrintConfig/printNursingZero"));
+        } else {
+            params.setData("PRINT_NURSING_ZERO", new Integer(CHECKBOX_OFF));
+        }
+        //[ID:0000449][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
         
 		// 関数の変数として、paramsを返す。
 		return params;
@@ -920,6 +952,24 @@ public class QO005 extends QO005Event {
             // 設定ファイルの ID : ScreenConfig/ShowOldKohi の値に、paramsの KEY :
             // SHOW_OLD_KOHI のVALUEを設定する。
             setProperty("ScreenConfig/ShowOldKohi", String.valueOf(params.getData("SHOW_OLD_KOHI")));
+            
+            //医療系非表示対応 fujihara.shin 2009.1.13 add start
+            // SHOW_OLD_IRYO のVALUEを設定する。
+            setProperty("ScreenConfig/ShowOldIryo", String.valueOf(params.getData("SHOW_OLD_IRYO")));
+            //医療系非表示対応 fujihara.shin 2009.1.13 add end
+            
+            //2009/02/25 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+            //＜平成21年4月法改正対応＞
+            //設定ファイルの ID : ScreenConfig/ShowOldLowProviderElements の値に、paramsの
+            //KEY : SHOW_OLD_LOW_PROVIDER_ELEMENTS のVALUEを設定する。
+            setProperty("ScreenConfig/ShowOldLowProviderElements", String.valueOf(params.getData("SHOW_OLD_LOW_PROVIDER_ELEMENTS")));
+            //2009/02/25 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応  
+            
+            //[ID:0000449][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+            //設定ファイルの ID : ScreenConfig/ShowOldLowProviderElements の値に、paramsの
+            //KEY : SHOW_OLD_LOW_PROVIDER_ELEMENTS のVALUEを設定する。
+            setProperty("PrintConfig/printNursingZero", String.valueOf(params.getData("PRINT_NURSING_ZERO")));
+            //[ID:0000449][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
             
             saveProperty();
             

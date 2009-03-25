@@ -152,4 +152,16 @@ public class QS001ServicePanel extends ACPanel {
     public void setSelectedProvider(VRMap selectedProvider) {
         this.selectedProvider = selectedProvider;
     }
+    
+    // [ID:0000444][Tozo TANAKA] 2009/03/07 add begin 平成21年4月法改正対応
+    /**
+     * このサービスパネルが扱うサービスの法改正区分(M_DETAIL.SYSTEM_BIND_PATH=14)を返します。
+     * @return 法改正区分
+     * @exception Exception 処理例外
+     * @see 継承先でoverrideして実装します。
+     */
+    public int getServiceLowVersion() throws Exception{
+        return 0; 
+    }
+    // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
 }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/13  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/01/20  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -35,6 +35,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.text.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
@@ -46,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -76,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 利用者登録状態定義(QU002) 
  */
@@ -377,6 +378,16 @@ public class QU002State extends QU002Design {
         getInstitutionInfoTasyoRoomLimitMoneyContena().setEnabled(true);
 
         getInstitutionInfoTasyoRoomLimitMoneyLabel().setEnabled(true);
+
+  }
+
+  /**
+   * 「訪問看護医療非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VISIBLE_OLD_IRYOU_FALSE() throws Exception {
+
+        getToHokanInfoButton().setVisible(false);
 
   }
 

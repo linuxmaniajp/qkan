@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/05/12  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2009/03/06  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -156,6 +156,28 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField contentsGaihakuDays;
 
   private ACLabelContainer contentsGaihakuDaysContainer;
+
+  private ACValueArrayRadioButtonGroup contentsNyushoJotais;
+
+  private ACLabelContainer contentsNyushoJotaisContainer;
+
+  private ACListModelAdapter contentsNyushoJotaisModel;
+
+  private ACRadioButtonItem contentsNyushoZaitaku;
+
+  private ACRadioButtonItem contentsNyushoIryo;
+
+  private ACRadioButtonItem contentsNyushoFukushi;
+
+  private ACRadioButtonItem contentsNyushoHoken;
+
+  private ACRadioButtonItem contentsNyushoRyoyo;
+
+  private ACRadioButtonItem contentsNyushoNinchi;
+
+  private ACRadioButtonItem contentsNyushoTokutei;
+
+  private ACRadioButtonItem contentsNyushoEtc;
 
   private ACValueArrayRadioButtonGroup contentsTaishoJotais;
 
@@ -927,6 +949,225 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 入所（院）前の状況コードを取得します。
+   * @return 入所（院）前の状況コード
+   */
+  public ACValueArrayRadioButtonGroup getContentsNyushoJotais(){
+    if(contentsNyushoJotais==null){
+
+      contentsNyushoJotais = new ACValueArrayRadioButtonGroup();
+
+      getContentsNyushoJotaisContainer().setText("入所（院）前の状況コード");
+
+      contentsNyushoJotais.setBindPath("201023");
+
+      contentsNyushoJotais.setUseClearButton(false);
+
+      contentsNyushoJotais.setModel(getContentsNyushoJotaisModel());
+
+      contentsNyushoJotais.setValues(new int[]{1,2,3,4,5,6,7,8});
+
+      addContentsNyushoJotais();
+    }
+    return contentsNyushoJotais;
+
+  }
+
+  /**
+   * 入所（院）前の状況コードコンテナを取得します。
+   * @return 入所（院）前の状況コードコンテナ
+   */
+  protected ACLabelContainer getContentsNyushoJotaisContainer(){
+    if(contentsNyushoJotaisContainer==null){
+      contentsNyushoJotaisContainer = new ACLabelContainer();
+      contentsNyushoJotaisContainer.setFollowChildEnabled(true);
+      contentsNyushoJotaisContainer.setVAlignment(VRLayout.CENTER);
+      contentsNyushoJotaisContainer.add(getContentsNyushoJotais(), null);
+    }
+    return contentsNyushoJotaisContainer;
+  }
+
+  /**
+   * 入所（院）前の状況コードモデルを取得します。
+   * @return 入所（院）前の状況コードモデル
+   */
+  protected ACListModelAdapter getContentsNyushoJotaisModel(){
+    if(contentsNyushoJotaisModel==null){
+      contentsNyushoJotaisModel = new ACListModelAdapter();
+      addContentsNyushoJotaisModel();
+    }
+    return contentsNyushoJotaisModel;
+  }
+
+  /**
+   * 1.居宅を取得します。
+   * @return 1.居宅
+   */
+  public ACRadioButtonItem getContentsNyushoZaitaku(){
+    if(contentsNyushoZaitaku==null){
+
+      contentsNyushoZaitaku = new ACRadioButtonItem();
+
+      contentsNyushoZaitaku.setText("1.居宅");
+
+      contentsNyushoZaitaku.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoZaitaku.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoZaitaku();
+    }
+    return contentsNyushoZaitaku;
+
+  }
+
+  /**
+   * 2.医療機関を取得します。
+   * @return 2.医療機関
+   */
+  public ACRadioButtonItem getContentsNyushoIryo(){
+    if(contentsNyushoIryo==null){
+
+      contentsNyushoIryo = new ACRadioButtonItem();
+
+      contentsNyushoIryo.setText("2.医療機関");
+
+      contentsNyushoIryo.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoIryo.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoIryo();
+    }
+    return contentsNyushoIryo;
+
+  }
+
+  /**
+   * 3.介護老人福祉施設を取得します。
+   * @return 3.介護老人福祉施設
+   */
+  public ACRadioButtonItem getContentsNyushoFukushi(){
+    if(contentsNyushoFukushi==null){
+
+      contentsNyushoFukushi = new ACRadioButtonItem();
+
+      contentsNyushoFukushi.setText("3.介護老人福祉施設");
+
+      contentsNyushoFukushi.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoFukushi.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoFukushi();
+    }
+    return contentsNyushoFukushi;
+
+  }
+
+  /**
+   * 4.介護老人保健施設を取得します。
+   * @return 4.介護老人保健施設
+   */
+  public ACRadioButtonItem getContentsNyushoHoken(){
+    if(contentsNyushoHoken==null){
+
+      contentsNyushoHoken = new ACRadioButtonItem();
+
+      contentsNyushoHoken.setText("4.介護老人保健施設");
+
+      contentsNyushoHoken.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoHoken.setConstraints(VRLayout.FLOW_RETURN);
+
+      addContentsNyushoHoken();
+    }
+    return contentsNyushoHoken;
+
+  }
+
+  /**
+   * 5.介護療養型医療施設を取得します。
+   * @return 5.介護療養型医療施設
+   */
+  public ACRadioButtonItem getContentsNyushoRyoyo(){
+    if(contentsNyushoRyoyo==null){
+
+      contentsNyushoRyoyo = new ACRadioButtonItem();
+
+      contentsNyushoRyoyo.setText("5.介護療養型医療施設");
+
+      contentsNyushoRyoyo.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoRyoyo.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoRyoyo();
+    }
+    return contentsNyushoRyoyo;
+
+  }
+
+  /**
+   * 6.認知症対応型共同生活介護を取得します。
+   * @return 6.認知症対応型共同生活介護
+   */
+  public ACRadioButtonItem getContentsNyushoNinchi(){
+    if(contentsNyushoNinchi==null){
+
+      contentsNyushoNinchi = new ACRadioButtonItem();
+
+      contentsNyushoNinchi.setText("6.認知症対応型共同生活介護");
+
+      contentsNyushoNinchi.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoNinchi.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoNinchi();
+    }
+    return contentsNyushoNinchi;
+
+  }
+
+  /**
+   * 7.特定施設入居者生活介護を取得します。
+   * @return 7.特定施設入居者生活介護
+   */
+  public ACRadioButtonItem getContentsNyushoTokutei(){
+    if(contentsNyushoTokutei==null){
+
+      contentsNyushoTokutei = new ACRadioButtonItem();
+
+      contentsNyushoTokutei.setText("7.特定施設入居者生活介護");
+
+      contentsNyushoTokutei.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoTokutei.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoTokutei();
+    }
+    return contentsNyushoTokutei;
+
+  }
+
+  /**
+   * 8.その他を取得します。
+   * @return 8.その他
+   */
+  public ACRadioButtonItem getContentsNyushoEtc(){
+    if(contentsNyushoEtc==null){
+
+      contentsNyushoEtc = new ACRadioButtonItem();
+
+      contentsNyushoEtc.setText("8.その他");
+
+      contentsNyushoEtc.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoEtc.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoEtc();
+    }
+    return contentsNyushoEtc;
+
+  }
+
+  /**
    * 退所(院)後の状態コードを取得します。
    * @return 退所(院)後の状態コード
    */
@@ -1360,11 +1601,11 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
       shinryoDeseaseText.setBindPath("501008");
 
-      shinryoDeseaseText.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);// V4.5.8対応
+      shinryoDeseaseText.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);
 
       shinryoDeseaseText.setIMEMode(InputSubset.KANJI);
 
-      shinryoDeseaseText.setMaxLength(50);// V4.5.8対応
+      shinryoDeseaseText.setMaxLength(50);
 
       addShinryoDeseaseText();
     }
@@ -1723,24 +1964,31 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   protected void addContentsStopReasonsModel(){
 
     getContentsStopReaseonHigaito().setButtonIndex(1);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonHigaito());
 
-    getContentsStopReaseonNyuin().setButtonIndex(2);
+    getContentsStopReaseonNyuin().setButtonIndex(3);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonNyuin());
 
-    getContentsStopReaseonDeath().setButtonIndex(3);
+    getContentsStopReaseonDeath().setButtonIndex(4);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonDeath());
 
-    getContentsStopReaseonEtc().setButtonIndex(4);
+    getContentsStopReaseonEtc().setButtonIndex(5);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonEtc());
 
-    getContentsStopReaseonTokuyo().setButtonIndex(5);
+    getContentsStopReaseonTokuyo().setButtonIndex(6);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonTokuyo());
 
-    getContentsStopReaseonRouken().setButtonIndex(6);
+    getContentsStopReaseonRouken().setButtonIndex(7);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonRouken());
 
-    getContentsStopReaseonRyoyo().setButtonIndex(7);
+    getContentsStopReaseonRyoyo().setButtonIndex(8);
+
     getContentsStopReasonsModel().add(getContentsStopReaseonRyoyo());
 
   }
@@ -1809,6 +2057,8 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
     shisetsuIdouGroup.add(getContentsGaihakuDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    shisetsuIdouGroup.add(getContentsNyushoJotaisContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     shisetsuIdouGroup.add(getContentsTaishoJotaisContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
@@ -1849,6 +2099,108 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 入所（院）前の状況コードに内部項目を追加します。
+   */
+  protected void addContentsNyushoJotais(){
+
+  }
+
+  /**
+   * 入所（院）前の状況コードモデルに内部項目を追加します。
+   */
+  protected void addContentsNyushoJotaisModel(){
+
+    getContentsNyushoZaitaku().setButtonIndex(1);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoZaitaku());
+
+    getContentsNyushoIryo().setButtonIndex(2);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoIryo());
+
+    getContentsNyushoFukushi().setButtonIndex(3);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoFukushi());
+
+    getContentsNyushoHoken().setButtonIndex(4);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoHoken());
+
+    getContentsNyushoRyoyo().setButtonIndex(5);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoRyoyo());
+
+    getContentsNyushoNinchi().setButtonIndex(6);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoNinchi());
+
+    getContentsNyushoTokutei().setButtonIndex(7);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoTokutei());
+
+    getContentsNyushoEtc().setButtonIndex(8);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoEtc());
+
+  }
+
+  /**
+   * 1.居宅に内部項目を追加します。
+   */
+  protected void addContentsNyushoZaitaku(){
+
+  }
+
+  /**
+   * 2.医療機関に内部項目を追加します。
+   */
+  protected void addContentsNyushoIryo(){
+
+  }
+
+  /**
+   * 3.介護老人福祉施設に内部項目を追加します。
+   */
+  protected void addContentsNyushoFukushi(){
+
+  }
+
+  /**
+   * 4.介護老人保健施設に内部項目を追加します。
+   */
+  protected void addContentsNyushoHoken(){
+
+  }
+
+  /**
+   * 5.介護療養型医療施設に内部項目を追加します。
+   */
+  protected void addContentsNyushoRyoyo(){
+
+  }
+
+  /**
+   * 6.認知症対応型共同生活介護に内部項目を追加します。
+   */
+  protected void addContentsNyushoNinchi(){
+
+  }
+
+  /**
+   * 7.特定施設入居者生活介護に内部項目を追加します。
+   */
+  protected void addContentsNyushoTokutei(){
+
+  }
+
+  /**
+   * 8.その他に内部項目を追加します。
+   */
+  protected void addContentsNyushoEtc(){
+
+  }
+
+  /**
    * 退所(院)後の状態コードに内部項目を追加します。
    */
   protected void addContentsTaishoJotais(){
@@ -1861,24 +2213,31 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   protected void addContentsTaishoJotaisModel(){
 
     getContentsTaishoJotaiZaitaku().setButtonIndex(1);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiZaitaku());
 
-    getContentsTaishoJotaiNyuin().setButtonIndex(2);
+    getContentsTaishoJotaiNyuin().setButtonIndex(3);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiNyuin());
 
-    getContentsTaishoJotaiDeath().setButtonIndex(3);
+    getContentsTaishoJotaiDeath().setButtonIndex(4);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiDeath());
 
-    getContentsTaishoJotaiEtc().setButtonIndex(4);
+    getContentsTaishoJotaiEtc().setButtonIndex(5);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiEtc());
 
-    getContentsTaishoJotaiTokuyo().setButtonIndex(5);
+    getContentsTaishoJotaiTokuyo().setButtonIndex(6);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiTokuyo());
 
-    getContentsTaishoJotaiRouken().setButtonIndex(6);
+    getContentsTaishoJotaiRouken().setButtonIndex(7);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiRouken());
 
-    getContentsTaishoJotaiRyoyo().setButtonIndex(7);
+    getContentsTaishoJotaiRyoyo().setButtonIndex(8);
+
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiRyoyo());
 
   }

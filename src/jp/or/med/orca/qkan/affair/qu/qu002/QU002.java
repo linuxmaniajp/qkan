@@ -1601,6 +1601,16 @@ public class QU002 extends QU002Event {
 					// ・状態ID：setState_ENABLE_REASON_TRUE
 					setState_ENABLE_REASON_TRUE();
 					break;
+					
+					//[ID:0000453][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+				} else if (ACCastUtilities.toInt(VRBindPathParser.get(
+						"CHANGES_CONTENT", content)) == IDOU_START_SHISETSU1) {
+					caption = "入所前の状況";
+					list = QkanCommon.getArrayFromMasterCode(CODE_IDOU_REASON_NYUSYO_NYUIN, "CHANGES_REASON");
+					setState_ENABLE_REASON_TRUE();
+					break;
+					//[ID:0000453][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+					
 				} else {
 					// 「退所」以外が選択された場合
 					caption = "理由/状況";
@@ -1627,6 +1637,16 @@ public class QU002 extends QU002Event {
 					// ・状態ID：setState_ENABLE_REASON_TRUE
 					setState_ENABLE_REASON_TRUE();
 					break;
+					
+					//[ID:0000453][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+				} else 				if (ACCastUtilities.toInt(VRBindPathParser.get(
+						"CHANGES_CONTENT", content)) == IDOU_START_SHISETSU2) {
+					caption = "入院前の状況";
+					list = QkanCommon.getArrayFromMasterCode(CODE_IDOU_REASON_NYUSYO_NYUIN, "CHANGES_REASON");
+					setState_ENABLE_REASON_TRUE();
+					break;
+					//[ID:0000453][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+					
 				} else {
 					// 「退院」以外が選択された場合
 					caption = "理由/状況";
@@ -1686,6 +1706,16 @@ public class QU002 extends QU002Event {
 					// ・状態ID：setState_ENABLE_REASON_TRUE
 					setState_ENABLE_REASON_TRUE();
 					break;
+					
+					//[ID:0000453][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+				} else 				if (ACCastUtilities.toInt(VRBindPathParser.get(
+						"CHANGES_CONTENT", content)) == IDOU_START_SHISETSU3) {
+					caption = "入居前の状況";
+					list = QkanCommon.getArrayFromMasterCode(CODE_IDOU_REASON_NYUSYO_NYUIN, "CHANGES_REASON");
+					setState_ENABLE_REASON_TRUE();
+					break;
+					//[ID:0000453][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+					
 				} else {
 					// 「退居」以外が選択された場合
 					caption = "理由/状況";
@@ -3107,6 +3137,35 @@ public class QU002 extends QU002Event {
 			}
 		}
 
+        
+        // [ID:0000444][Tozo TANAKA] 2009/03/07 add begin 平成21年4月法改正対応
+        if (getNonCorrespondenceFlg() == 0) {
+            // 経過的要介護の期間チェック　※要介護度-非該当の場合は行わない
+            //下記のフィールドに入力されている日付が、要介護度と矛盾していないかチェックする。
+            // ・kaigoInfoValidLimit1（有効期間開始日）
+            // ・kaigoInfoValidLimit3（有効期間終了日）
+            
+            // 選択している要介護度を取得する。
+            VRMap temp = (VRMap) getKaigoInfoYokaigoInfo().getSelectedModelItem();
+            int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE", temp));
+            if(jotaiCode == YOUKAIGODO_KEIKATEKI_YOUKAIGO){
+                //選択している要介護度が経過的要介護の場合
+                //入力している要介護認定の有効期間を取得する。
+                Date start = getKaigoInfoValidLimit1().getDate();
+                Date end = getKaigoInfoValidLimit3().getDate();
+                if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, end)<1){
+                    //有効期間の終了日が平成21年4月以降の場合
+                    //経過的要介護の有効期間は平成21年3月31日以前にするようエラーメッセージを表示する。
+                    QkanMessageList.getInstance().ERROR_OF_GREATER_DATE_RELATION("経過的要介護の有効期間は","","平成21年3月31日");
+                    //処理を中断する。
+                    return false;
+                }
+            }
+            
+        }
+        // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
+        
+
 		// 編集ボタン押下時
 		if (checkMode == CHECK_MODE_UPDATE) {
 			// 更新モードの場合
@@ -3959,6 +4018,13 @@ public class QU002 extends QU002Event {
 		VRMap map = (VRMap) getContents().createSource();
 		// 「一覧に表示する」チェックボックスの値を設定する。
 		VRBindPathParser.set("SHOW_FLAG", map, new Integer(1));
+		
+		//医療系非表示対応 fujihara.shin 2009.1.13 add start
+		if (!QkanCommon.isShowOldIryo()){
+			setState_VISIBLE_OLD_IRYOU_FALSE();
+		}
+		//医療系非表示対応 fujihara.shin 2009.1.13 add end
+		
 		getContents().setSource(map);
 		getContents().bindSource();
 
@@ -4004,6 +4070,12 @@ public class QU002 extends QU002Event {
 						.toInt(VRBindPathParser.get(
 								"SYSTEM_SERVICE_KIND_DETAIL", serviceMap));
 
+				//医療系非表示対応 fujihara.shin 2009.1.13 add start
+				if ((systemServiceKindDetail == 20101) && !QkanCommon.isShowOldIryo()){
+					continue;
+				}
+				//医療系非表示対応 fujihara.shin 2009.1.13 add end
+				
 				// 「その他」「主な日常生活上の活動」を排除
 				if (!(systemServiceKindDetail == SERVICE_TYPE_OTHER || systemServiceKindDetail == SERVICE_TYPE_ROUTINE)) {
 					service.add(serviceMap);
@@ -4309,7 +4381,16 @@ public class QU002 extends QU002Event {
 						"CONTENT", temp));
 
 			}
-
+			//[ID:0000453][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+			else if (content == IDOU_START_SHISETSU1){
+				codeReasonList = new VRArrayList();
+				codeReasonList = (VRList) VRBindPathParser.get(new Integer(CODE_IDOU_REASON_NYUSYO_NYUIN), getMasterCode());
+				// 異動理由　※REASON列追加
+				temp = new VRHashMap();
+				temp = (VRMap) ACBindUtilities.getMatchRowFromValue(codeReasonList, "CONTENT_KEY", new Integer(reason));
+				VRBindPathParser.set("REASON", map, VRBindPathParser.get("CONTENT", temp));
+			}
+			//[ID:0000453][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
 			break;
 
 		// 施設系2
@@ -4343,7 +4424,17 @@ public class QU002 extends QU002Event {
 						"CONTENT", temp));
 
 			}
-
+			//[ID:0000453][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+			else if (content == IDOU_START_SHISETSU2){
+				codeReasonList = new VRArrayList();
+				codeReasonList = (VRList) VRBindPathParser.get(new Integer(CODE_IDOU_REASON_NYUSYO_NYUIN), getMasterCode());
+				// 異動理由　※REASON列追加
+				temp = new VRHashMap();
+				temp = (VRMap) ACBindUtilities.getMatchRowFromValue(codeReasonList, "CONTENT_KEY", new Integer(reason));
+				VRBindPathParser.set("REASON", map, VRBindPathParser.get("CONTENT", temp));
+			}
+			//[ID:0000453][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+			
 			break;
 
 		// 医療看護
@@ -4411,7 +4502,16 @@ public class QU002 extends QU002Event {
 						"CONTENT", temp));
 
 			}
-
+			//[ID:0000453][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+			else if (content == IDOU_START_SHISETSU3){
+				codeReasonList = new VRArrayList();
+				codeReasonList = (VRList) VRBindPathParser.get(new Integer(CODE_IDOU_REASON_NYUSYO_NYUIN), getMasterCode());
+				// 異動理由　※REASON列追加
+				temp = new VRHashMap();
+				temp = (VRMap) ACBindUtilities.getMatchRowFromValue(codeReasonList, "CONTENT_KEY", new Integer(reason));
+				VRBindPathParser.set("REASON", map, VRBindPathParser.get("CONTENT", temp));
+			}
+			//[ID:0000453][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
 			break;
 		}
 

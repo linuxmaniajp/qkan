@@ -318,6 +318,11 @@ public abstract class QO012Event extends QO012SQL {
 
 	public static final int CAREPLAN_RECORD_19_AMOUNT_TOTAL = 19; // 請求額
 	
+	//[ID:0000448][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+	public static final int CAREPLAN_RECORD_21_UNIT_TOTAL = 21; // 単位数
+	public static final int CAREPLAN_RECORD_22_AMOUNT_TOTAL = 22; // 請求額
+	//[ID:0000448][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+	
 	// 給付管理情報のインデックス
 
 	public static final int MANAGEMENT_RECORD_2_SERVICE_PROVIDE_YEAR_AND_MONTH = 3; // サービス提供年月

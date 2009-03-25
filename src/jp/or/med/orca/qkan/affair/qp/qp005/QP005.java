@@ -1563,6 +1563,27 @@ public class QP005 extends QP005Event {
 		// ・SQL_ID：GET_DETAIL_COMMENT
 		// マスタデータを取得し、detailCommentListに格納する。
 		setDetailCommentList(getDBManager().executeQuery(getSQL_GET_DETAIL_COMMENT(param)));
+		
+		//[ID:0000452][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+		switch (getClaimStyleType()){
+		case FORMAT_STYLE2:
+		case FORMAT_STYLE22:
+			int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
+			if (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200904_AFFTER <= term) {
+				Integer categoryNo = new Integer("2");
+				Integer commentId = new Integer("22");
+				for (int i = 0; i < getDetailCommentList().getDataSize(); i++){
+					VRMap map = (VRMap)getDetailCommentList().get(i);
+					if (categoryNo.equals(map.get("CATEGORY_NO"))
+						&&	commentId.equals(map.get("COMMENT_ID"))){
+						map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院");
+						break;
+					}
+				}
+			}
+			break;
+		}
+		//[ID:0000452][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
 	}
 
 	/**
@@ -2336,6 +2357,8 @@ public class QP005 extends QP005Event {
 			// ※居宅介護支援明細情報テーブルと明細情報詳細テーブルのテーブルモデルの設定。
 			// tableModelList2を以下のフィールドで設定する。
 
+			//[ID:0000452][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
+			/*
 			String[] tableModelList2 = new String[17];
 			tableModelList2[0] = "1001002"; // "1001002（事業所番号）"
 			tableModelList2[1] = "1001003"; // "1001003（指定/基準該当等事業所区分コード）"
@@ -2354,14 +2377,31 @@ public class QP005 extends QP005Event {
 			tableModelList2[14] = "1001016"; // "1001016（サービスコード）"
 			tableModelList2[15] = "1001017"; // "1001017（単位数）"
 			tableModelList2[16] = "1001018"; // "1001018（請求金額）"
+			*/
+			String[] tableModelList2 = new String[10];
+			tableModelList2[0] = "1001010"; // "1001010 (生年月日)"
+			tableModelList2[1] = "1001011"; // "1001011 (性別コード)"
+			tableModelList2[2] = "1001012"; // "1001012 (要介護状態区分コード)"
+			tableModelList2[3] = "1001013"; // "1001013 (認定有効期間開始日)"
+			tableModelList2[4] = "1001014"; // "1001014 (認定有効期間終了日)"
+			tableModelList2[5] = "1001015"; // "1001015 (居宅サービス計画作成依頼届出年月日)"
+			tableModelList2[6] = "1001016"; // "1001016 (サービスコード)"
+			tableModelList2[7] = "1001028"; // "1001028 (サービス名称)"
+			tableModelList2[8] = "1001017"; // "1001017 (単位数)"
+			tableModelList2[9] = "1001018"; // "1001018 (請求金額)"
+			//[ID:0000452][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
 
 			// 格納
 			setTableModelList2(new ACTableModelAdapter());
 			getTableModelList2().setColumns(tableModelList2);
 
 			// tableModelList2を明細情報テーブル（detailsInfoTable）に設定する。
-			getDetailsInfoTable().setModel(getTableModelList2());
-
+			//[ID:0000452][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
+			//設計書の誤りを修正
+			//getDetailsInfoTable().setModel(getTableModelList2());
+			getKyotakuDetailsInfoTable().setModel(getTableModelList2());
+			//[ID:0000452][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
+			
 			// tableModelDetail2を以下のフィールドで設定する。
 			// "DETAIL_NAME" "DETAIL_VALUE" "COMMENT"
 			String[] tableModelDetail2 = new String[3];

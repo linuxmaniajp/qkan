@@ -123,8 +123,16 @@ public class QM002 extends QM002Event {
             loginProviderMap.setData("LOGIN_PROVIDER_ID", QkanSystemInformation
                     .getInstance().getLoginProviderID());
 
-            VRList menuTreeList = getDBManager().executeQuery(
-                    getSQL_GET_MENU_TREE(loginProviderMap));
+            //ˆã—ÃŒn”ñ•\Ž¦‘Î‰ž fujihara.shin 2009.1.15 edit start
+            //VRList menuTreeList = getDBManager().executeQuery(
+            //        getSQL_GET_MENU_TREE(loginProviderMap));
+            VRList menuTreeList = null;
+            if (QkanCommon.isShowOldIryo()){
+            	menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE(loginProviderMap));
+            } else {
+            	menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE_WITHOUT_IRYO(loginProviderMap));
+            }
+            //ˆã—ÃŒn”ñ•\Ž¦‘Î‰ž fujihara.shin 2009.1.15 edit end
 
             // Žæ“¾Œ”‚ª0Œ‚æ‚è‘½‚¢ê‡
             if (menuTreeList.size() > 0) {

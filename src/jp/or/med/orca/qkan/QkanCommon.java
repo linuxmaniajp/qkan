@@ -4088,4 +4088,28 @@ public class QkanCommon {
         return ACFrame.getInstance().getFrameEventProcesser();
     }
     
+    //医療系非表示対応 fujihara.shin 2009.1.13 add start
+    /**
+     * 医療系のメニューを表示するか、プロパティファイルを参照し、判断します。
+     * @return true:表示　false:非表示
+     */
+    public static boolean isShowOldIryo() throws Exception{
+    	boolean result = false;
+    	final String SHOW_OLD_IRYO = "ScreenConfig/ShowOldIryo";
+    	//プロパティファイルに設定が含まれているか確認
+    	if (ACFrame.getInstance().hasProperty(SHOW_OLD_IRYO)){
+    		if (ACCastUtilities.toInt(ACFrame.getInstance().getProperty(SHOW_OLD_IRYO), 0) == 1){
+    			//チェックがついていない場合は、true(表示)とする。
+    			result = true;
+    		}
+    	//プロパティファイルに設定が含まれていない場合は、初期値(0)を与える。
+    	} else {
+            jp.nichicom.ac.io.ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
+            xml.setForceValueAt(SHOW_OLD_IRYO, "0");
+            xml.write();
+    	}
+    	return result;
+    }
+    //医療系非表示対応 fujihara.shin 2009.1.13 add end
+    
 }

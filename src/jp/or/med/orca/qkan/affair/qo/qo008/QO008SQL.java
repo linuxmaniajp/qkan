@@ -315,5 +315,59 @@ public class QO008SQL extends QO008State {
 
     return sb.toString();
   }
+  /**
+   * 「定型文分類情報取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_FIXED_FORM_GROUP_WITHOUT_IRYO(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
+    Object obj;
 
+    sb.append("SELECT");
+
+    sb.append(" TABLE_TYPE");
+
+    sb.append(",FIXED_FORM_ID");
+
+    sb.append(",FIXED_FORM_GROUP");
+
+    sb.append(",FIXED_FORM_TITLE");
+
+    sb.append(",SYSTEM_SERVICE_KIND_DETAIL");
+
+    sb.append(",FIXED_FORM_SORT");
+
+    sb.append(" FROM");
+
+    sb.append(" M_FIXED_FORM_GROUP");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" TABLE_TYPE");
+
+    sb.append(" IN");
+    
+    sb.append(" (1)");
+
+    sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" TABLE_TYPE");
+
+    sb.append(" ASC");
+
+    sb.append(",FIXED_FORM_ID");
+
+    sb.append(" ASC");
+
+    return sb.toString();
+  }
 }

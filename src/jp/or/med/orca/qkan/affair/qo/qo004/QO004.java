@@ -31,6 +31,7 @@ package jp.or.med.orca.qkan.affair.qo.qo004;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 
 import javax.swing.event.ListSelectionEvent;
 
@@ -38,6 +39,7 @@ import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACHashMapFormat;
@@ -405,11 +407,39 @@ public class QO004 extends QO004Event {
 
 			panel.setFollowChildEnabled(true);
 
-			((QS001ServicePanel) panel).setDBManager(getDBManager());
-
-			setProviderServiceClass((iProviderServicePanel) panel);
-
-			getProviderServiceClass().initialize();
+            //2009/02/25 [ID:0000440][Tozo TANAKA] replace begin - 平成21年4月法改正対応
+            //＜平成21年4月法改正対応＞
+//			((QS001ServicePanel) panel).setDBManager(getDBManager());
+//
+//			setProviderServiceClass((iProviderServicePanel) panel);
+//
+//			getProviderServiceClass().initialize();
+            if(panel instanceof QO004ProviderPanel){
+                ((QO004ProviderPanel) panel).setDBManager(getDBManager());
+            }
+            if(panel instanceof iProviderServicePanel){
+                setProviderServiceClass((iProviderServicePanel) panel);
+            }
+            getProviderServiceClass().initialize();
+            
+            if (panel instanceof QO004ProviderPanel) {
+                int oldLowSetting = 0;
+                if (ACFrame.getInstance().getPropertyXML().hasValueAt(
+                        "ScreenConfig/ShowOldLowProviderElements")) {
+                    //システム設定[ScreenConfig/ShowOldLowProviderElements]の値を取得する。
+                    oldLowSetting = ACCastUtilities.toInt(ACFrame
+                            .getInstance().getPropertyXML().getValueAt(
+                                    "ScreenConfig/ShowOldLowProviderElements"),
+                            0);
+                }
+                //取得した値が0より大きい場合
+                //旧法項目の表示状態を「表示」に設定する。
+                //取得した値が0以下の場合
+                //旧法項目の表示状態を「非表示」に設定する。
+                ((QO004ProviderPanel) panel)
+                        .setOldLowElementAreaVisible(oldLowSetting > 0);
+            }            
+            // 2009/02/25 [ID:0000440][Tozo TANAKA] replace end - 平成21年4月法改正対応
 
 			// サービス種類詳細領域（providerDetailServiceDetails）以下のパネルを削除する。セットされているパネルの削除処理
 			getProviderDetailServiceDetails().removeAll();
@@ -1119,6 +1149,45 @@ public class QO004 extends QO004Event {
 			// レコードをproviderServiceListに戻す。
 			getProviderServiceList().set(i, service);
 		}
+        
+
+        // [ID:0000440][Tozo TANAKA] 2009/03/09 add begin 平成21年4月法改正対応
+        int oldLowSetting = 0;
+        if (ACFrame.getInstance().getPropertyXML().hasValueAt(
+                "ScreenConfig/ShowOldLowProviderElements")) {
+            //システム設定[ScreenConfig/ShowOldLowProviderElements]の値を取得する。
+            oldLowSetting = ACCastUtilities.toInt(ACFrame
+                    .getInstance().getPropertyXML().getValueAt(
+                            "ScreenConfig/ShowOldLowProviderElements"),
+                    0);
+        }
+        if(oldLowSetting <= 0){
+            //取得した値が0以下の場合
+            //法改正後になくなるサービスはフィルタリングして表示する。
+
+            //提供サービス除外リストをクリアする。
+            getFilteredServiceList().clear();
+            Iterator it=getProviderServiceList().iterator();
+            while(it.hasNext()){
+                // 提供サービス情報（providerServiceList）のサービス種類を全走査する。
+                VRMap service = (VRMap) it.next();
+                switch (ACCastUtilities.toInt(VRBindPathParser.get(
+                        "SYSTEM_SERVICE_KIND_DETAIL", service), 0)) {
+                    //システムサービス種類が以下のいずれかの場合
+                    case 12314:
+                        //短期入所療養介護(基準適合診療所)
+                    case 12614:
+                        //介護予防短期入所療養介護(基準適合診療所)
+                        //提供サービス除外リストに対象サービスを追加する。
+                        getFilteredServiceList().add(service);
+                        break;
+                }
+            }
+            //提供サービス情報から提供サービス除外リストの項目を除外する。
+            getProviderServiceList().removeAll(getFilteredServiceList());
+        }
+        // [ID:0000440][Tozo TANAKA] 2009/03/09 add end
+        
 	}
 
 	/**
@@ -1288,6 +1357,39 @@ public class QO004 extends QO004Event {
 			getProviderContents().setSource(affairData);
 			getProviderContents().applySource();
 
+            //2009/02/25 [ID:0000440][Tozo TANAKA] add begin - 平成21年4月法改正対応
+            //＜平成21年4月法改正対応＞
+            //入力エラーの検出
+            if (ACCastUtilities.toInt(VRBindPathParser.get("SPECIAL_AREA_FLAG",
+                    affairData), 1) == 2) {
+                // 特別地域にチェックがついている場合
+                // 地域・規模ともに「中山間地域等」に該当する提供サービス情報がないかをチェックする。
+                int serviceCount = getProviderServiceList().size();
+                for (int i = 0; i < serviceCount; i++) {
+                    VRMap serviceInfo = (VRMap) getProviderServiceList().get(i);
+                    if (ACCastUtilities.toInt(VRBindPathParser.get(
+                            BIND_PATH_OF_MOUNTAINOUS_AREA_RAFIO, serviceInfo),
+                            1) == 2
+                            && ACCastUtilities.toInt(VRBindPathParser.get(
+                                    BIND_PATH_OF_MOUNTAINOUS_AREA_SCALE,
+                                    serviceInfo), 1) == 2) {
+                        // 地域・規模ともに「中山間地域等」に該当する提供サービス情報があった場合
+                        // エラーメッセージを表示する。
+                        VRMap messageParam = new VRHashMap();
+                        messageParam.put("serviceName", VRBindPathParser.get(
+                                "SERVICE_ABBREVIATION", serviceInfo));
+                        QkanMessageList.getInstance()
+                                .QO004_ERROR_OF_AREA_COLLISION(messageParam);
+
+                        // 提供サービステーブルの当該サービスにフォーカスをあて、サービス詳細情報を表示させる。
+                        getServiceKindTable().setSelectedModelRow(i);
+                        //戻り値としてfalseを返す。
+                        return false;
+                    }
+                }
+            }
+            //2009/02/25 [ID:0000440][Tozo TANAKA] add end - 平成21年4月法改正対応
+            
 			// トランザクションを開始する。
 			getDBManager().beginTransaction();
 
@@ -1421,17 +1523,53 @@ public class QO004 extends QO004Event {
 				}
 			}
 
-			// providerServiceList内のレコード数分ループを回し登録処理をする。
+            // [ID:0000444][Tozo TANAKA] 2009/03/09 replace begin 平成21年4月法改正対応
+//            // providerServiceList内のレコード数分ループを回し登録処理をする。
+//            VRList insertServiceList = new VRArrayList();
+//            for (int i = 0; i < getProviderServiceList().size(); i++) {
+//                VRMap temp = (VRMap) getProviderServiceList().get(i);
+//                boolean offer = ACCastUtilities.toBoolean(VRBindPathParser.get(
+//                        "OFFER", temp));
+//                int systemServiceKindDetail = ACCastUtilities
+//                        .toInt(VRBindPathParser.get(
+//                                "SYSTEM_SERVICE_KIND_DETAIL", temp));
+//
+//                // providerServiceListよりOFFERの値がtrueのレコードを取得する。
+//                if (offer) {
+//                    // 登録用VRListに追加
+//                    insertServiceList.add(temp);
+//                    // SYSTEM_SERVICE_KIND_DETAILが11301（訪問看護（介護））の場合
+//                    if (systemServiceKindDetail == SERVICE_TYPE_KAIGO_KANGO) {
+//                        // 訪問看護（医療）の作成
+//                        // 訪問看護（医療）のマスタデータをサービスマスタより取得
+//                        // ※訪問看護（医療）は画面展開時に削除
+//                        VRMap iryoKango = (VRMap) VRBindPathParser.get(
+//                                new Integer(SERVICE_TYPE_IRYO_KANGO),
+//                                (VRMap) QkanCommon
+//                                        .getMasterService(getDBManager()));
+//                        // 画面上データ（訪問看護（介護））とマスタデータ（訪問看護（医療））をマージ
+//                        VRMap cloneTemp = (VRMap) temp.clone();
+//                        cloneTemp.putAll(iryoKango);
+//                        insertServiceList.add(cloneTemp);
+//                    }
+//                }
+//            }
+            //フィルタされないサービス、フィルタされるサービス両方を結合したリストnoFilteredProviderServiceListを生成する。
+            VRList noFilteredProviderServiceList = new VRArrayList();
+            noFilteredProviderServiceList.addAll(getProviderServiceList());
+            noFilteredProviderServiceList.addAll(getFilteredServiceList());
+            
+			// noFilteredProviderServiceList内のレコード数分ループを回し登録処理をする。
 			VRList insertServiceList = new VRArrayList();
-			for (int i = 0; i < getProviderServiceList().size(); i++) {
-				VRMap temp = (VRMap) getProviderServiceList().get(i);
+			for (int i = 0; i < noFilteredProviderServiceList.size(); i++) {
+				VRMap temp = (VRMap) noFilteredProviderServiceList.get(i);
 				boolean offer = ACCastUtilities.toBoolean(VRBindPathParser.get(
 						"OFFER", temp));
 				int systemServiceKindDetail = ACCastUtilities
 						.toInt(VRBindPathParser.get(
 								"SYSTEM_SERVICE_KIND_DETAIL", temp));
 
-				// providerServiceListよりOFFERの値がtrueのレコードを取得する。
+				// noFilteredProviderServiceListよりOFFERの値がtrueのレコードを取得する。
 				if (offer) {
 					// 登録用VRListに追加
 					insertServiceList.add(temp);
@@ -1451,6 +1589,7 @@ public class QO004 extends QO004Event {
 					}
 				}
 			}
+            // [ID:0000444][Tozo TANAKA] 2009/03/09 replace end
 
 			if (insertServiceList != null) {
 

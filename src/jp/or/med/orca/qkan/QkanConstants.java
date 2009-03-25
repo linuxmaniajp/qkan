@@ -252,7 +252,15 @@ public interface QkanConstants {
      * 101-週単位以外のサービスにおける期間を表すサービス詳細定数です。
      */
     public static final Integer SERVICE_SYSTEM_BIND_PATH_SPAN = new Integer(101);
+
+    // [ID:0000444][Tozo TANAKA] 2009/03/07 add begin 平成21年4月法改正対応
+    /**
+     * 14-サービスの法改正区分を表すサービス詳細定数です。
+     */
+    public static final String SERVICE_SYSTEM_BIND_PATH_LOW_VERSION = "14";
+    // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
     
+
     /**
      * 10-サービスパターンの内部番号を表す数値です。
      */
@@ -605,5 +613,17 @@ public interface QkanConstants {
      */
     public static final Date H2005 = ACDateUtilities.createDate(2008,5,1);
     // 2008/03/18 [Masahiko_Higuchi] add - end 平成20年度法改正対応
+    
+    // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+    public static final Date H2104 = ACDateUtilities.createDate(2009, 4, 1);
+    // [ID:0000444][Masahiko Higuchi] 2009/02 add end
+
+    
+    // [ID:0000444][Tozo TANAKA] 2009/03/07 add begin 平成21年4月法改正対応
+    /**
+     * 20090401-サービスの法改正区分における[平成21年4月1日以降]を表す定数です。
+     */
+    public static final int SERVICE_LOW_VERSION_H2104 = 20090401;
+    // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
     
 }

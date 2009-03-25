@@ -4,6 +4,9 @@
  */
 package jp.or.med.orca.qkan.affair.qm.qm001;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -11,6 +14,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
 
 /**
  * システムから登録可能なマスタの補正用タスククラス 
@@ -49,8 +53,11 @@ public class QM001UpdateMasterTask {
 			//訪問看護療養費領収書出荷版タスク
             task2(dbm);
             
-            //
+            //老健に関する事業所情報の自動補正(V540)
             task3(dbm);
+            
+            //平成21年4月法改正における事業所体制の移行(V545)
+            task4(dbm);
             
 		}catch(Exception ex){
 			throw ex;
@@ -136,9 +143,9 @@ public class QM001UpdateMasterTask {
 	public String getVersion(){
 		return this.version;
 	}
-    
+
     /**
-     * 事業所情報の自動補正
+     * 老健に関する事業所情報の自動補正(V540)
      * @param dbm
      * @throws Exception
      * 
@@ -227,5 +234,167 @@ public class QM001UpdateMasterTask {
         }
         
     }
+    // [ID:0000444][Tozo TANAKA] 2009/03/12 add begin 平成21年4月法改正対応
+    /**
+     * 平成21年4月法改正における事業所体制の移行(V545)
+     * @param dbm
+     * @throws Exception
+     * 
+     * @author Tozo_TANAKA
+     * @since V545
+     */
+    public void task4(ACDBManager dbm) throws Exception{
+        try{ 
+            QM001UpdateMasterOperation op = new QM001UpdateMasterOperation();
+
+            //※アップデート前であるかを確認する。
+            //法改正後の事業所体制にしか存在しないBindPathで検索をかける。
+            VRList rows = dbm.executeQuery(op
+                    .getSQL_GET_PROVIDER_SERVICE_DETAIL_H2104(null));
+            if (rows.size() > 0
+                    && (ACCastUtilities.toInt(((Map) rows.get(0))
+                            .get("COUNTVAL"), 0) > 0)) {
+                // 取得件数が0件でなければ補正の必要がないため、処理を終了する。
+                return;
+            }
+            
+            // ＜そのまま移行＞
+            String[][] listForCopy = new String[][] {
+            // 通所介護/栄養改善体制/
+                    { "1150108", "1150113", },
+                    // 通所介護/施設等の区分/
+                    { "1150101", "1150115", },
+                    // 通所介護/個別機能訓練体制/
+                    { "1150102", "1150116", },
+                    // 通所リハ/施設等の区分/
+                    { "1160101", "1160112", },
+                    // 短期入所療養介護（介護老人保健施設）/職員の欠員による減算の状況/
+                    { "1220108", "1220126", },
+                    // 短期入所療養介護（病院療養型）/施設等の区分/
+                    { "1230101", "1230124", },
+                    // 短期入所療養介護（病院療養型）/人員配置区分/
+                    { "1230102", "1230126", },
+                    // 短期入所療養介護（病院療養型）/ユニットケア体制/
+                    { "1230118", "1230127", },
+                    // 特定施設入居者生活介護/施設等の区分/
+                    { "1330105", "1330108", },
+                    // 居宅介護支援/特定体制整備事業所加算の有無/
+                    { "1430103", "1430104", },
+                    // 介護老人福祉施設/栄養マネジメント体制/
+                    { "1510109", "1510134", },
+                    // 介護老人保健施設/栄養マネジメント体制/
+                    { "1520106", "1520130", },
+                    // 介護老人保健施設/職員の欠員による減算の状況/
+                    { "1520109", "1520131", },
+                    // 介護療養型医療施設（病院療養型）/栄養マネジメント体制/
+                    { "1530107", "1530126", },
+                    // 介護療養型医療施設（病院療養型）/施設等の区分/
+                    { "1530101", "1530128", },
+                    // 介護療養型医療施設（病院療養型）/人員配置区分/
+                    { "1530102", "1530129", },
+                    // 介護療養型医療施設（病院療養型）/ユニットケア体制/
+                    { "1530119", "1530131", },
+                    // 介護療養型医療施設（診療所型）/栄養マネジメント体制/
+                    { "1530205", "1530225", },
+                    // 介護療養型医療施設（認知症疾患型）/栄養マネジメント体制/
+                    { "1530304", "1530322", },
+                    // 認知症対応型通所介護/栄養改善体制/
+                    { "1720104", "1720109", },
+                    // 地域密着型介護老人福祉施設/栄養マネジメント体制/
+                    { "1540109", "1540135", },
+                    // 介護予防短期入所療養介護（介護老人保健施設）/職員の欠員による減算の状況/
+                    { "1250103", "1250122", },
+                    // 介護予防短期入所療養介護（病院療養型）/施設等の区分/
+                    { "1260101", "1260122", },
+                    // 介護予防短期入所療養介護（病院療養型）/人員配置区分/
+                    { "1260102", "1260123", },
+                    // 介護予防短期入所療養介護（病院療養型）/夜間勤務条件基準/
+                    { "1260103", "1260124", },
+                    // 介護予防短期入所療養介護（病院療養型）/ユニットケア体制/
+                    { "1260105", "1260125", }, };
+            // ＜1以外は2に移行＞
+            String[][] listFor1Or2 = new String[][] {
+            // 短期入所療養介護（病院療養型）/療養環境基準/
+                    { "1230104", "1230123", },
+                    // 介護療養型医療施設（病院療養型）/療養環境基準/
+                    { "1530104", "1530127", },
+                    // 介護予防短期入所療養介護（病院療養型）/療養環境基準/
+                    { "1260106", "1260121", }, };
+
+            // ＜4のみ6に移行＞
+            String[][] listFor4To6 = new String[][] {
+            // 短期入所療養介護（病院療養型）/夜間勤務条件基準/
+                    { "1230103", "1230125", },
+                    // 介護療養型医療施設（病院療養型）/夜間勤務条件基準/
+                    { "1530103", "1530130", }, };
+
+            VRArrayList providerDetails = QkanCommon
+                    .getProviderServiceDetailCustom(dbm, "");
+
+            Iterator it = providerDetails.iterator();
+            while (it.hasNext()) {
+                VRMap row = (VRMap) it.next();
+                int end;
+                // キーの単純転記
+                end = listForCopy.length;
+                for (int i = 0; i < end; i++) {
+                    Object val = VRBindPathParser.get(listForCopy[i][0], row);
+                    if (val != null) {
+                        VRBindPathParser.set(listForCopy[i][1], row, val);
+                    }
+                }
+
+                // ※リハビリ提供体制/理学療法の移行
+                // リハビリ提供体制/理学療法 II → 理学療法 I
+                if (ACCastUtilities.toInt(VRBindPathParser.get("3010104", row),
+                        0) == 2) {
+                    // 理学療法 IIの値が2(チェックが付いている)の場合
+                    // 理学療法 Iの値を2(チェックが付いている)にする。
+                    VRBindPathParser.set("3010103", row, new Integer(2));
+                }
+                // 理学療法 IIのキーを削除する。
+                row.remove("3010104");
+
+                // ※療養環境基準の移行
+                // 1以外は2として転記
+                end = listFor1Or2.length;
+                for (int i = 0; i < end; i++) {
+                    Object val = VRBindPathParser.get(listFor1Or2[i][0], row);
+                    if (val != null) {
+                        Object newVal = new Integer(2);
+                        if (ACCastUtilities.toInt(val, 0) == 1) {
+                            newVal = val;
+                        }
+                        VRBindPathParser.set(listFor1Or2[i][1], row, newVal);
+                    }
+                }
+
+                // ※夜間勤務条件基準の移行
+                // 4のみ6として転記
+                end = listFor4To6.length;
+                for (int i = 0; i < end; i++) {
+                    Object val = VRBindPathParser.get(listFor4To6[i][0], row);
+                    if (val != null) {
+                        Object newVal = val;
+                        if (ACCastUtilities.toInt(val, 0) == 4) {
+                            newVal = new Integer(6);
+                        }
+                        VRBindPathParser.set(listFor4To6[i][1], row, newVal);
+                    }
+                }
+
+            }
+
+            // 更新
+             QkanCommon.updateProviderServiceDetailCustom(dbm,
+             providerDetails, "(PROVIDER_ID IS NOT NULL)");
+            
+        }catch(Exception ex){
+            dbm.rollbackTransaction();
+            throw ex;
+        }
+    }     
+    // [ID:0000444][Tozo TANAKA] 2009/03/12 add end
+
 	
 }

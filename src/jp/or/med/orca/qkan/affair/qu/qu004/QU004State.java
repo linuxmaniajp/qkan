@@ -18,12 +18,12 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/06/06  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/01/20  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
- * プロセス 公費・減免情報 (004)
- * プログラム 公費・減免情報 (QU004)
+ * プロセス 公費・社福軽減情報 (004)
+ * プログラム 公費・社福軽減情報 (QU004)
  *
  *****************************************************************
  */
@@ -79,7 +79,7 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 /**
- * 公費・減免情報状態定義(QU004) 
+ * 公費・社福軽減情報状態定義(QU004) 
  */
 public class QU004State extends QU004Design {
   /**
@@ -245,6 +245,18 @@ public class QU004State extends QU004Design {
         getIryoInfoKohiNo().setEditable(true);
 
         getIryoInfoServices().setVisible(true);
+
+  }
+
+  /**
+   * 「医療タブOFF」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_OLD_IRYO_OFF() throws Exception {
+
+        if(getPoints2().getParent()!=null){
+          getPoints2().getParent().remove(getPoints2());
+        }
 
   }
 

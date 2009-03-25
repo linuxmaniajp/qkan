@@ -675,8 +675,17 @@ public class QO008 extends QO008Event {
         // sqlParamを引数として、定型文分類情報取得用SQL文を取得する。
         // 取得したSQL文を実行し、定型文分類情報を取得する。
         VRList list = new VRArrayList();
-        list = (VRList) getDBManager().executeQuery(
-                getSQL_GET_FIXED_FORM_GROUP(sqlParam));
+        
+        //医療系非表示対応 fujihara.shin 2009.1.15 edit start
+        //list = (VRList) getDBManager().executeQuery(
+        //        getSQL_GET_FIXED_FORM_GROUP(sqlParam));
+        if (QkanCommon.isShowOldIryo()){
+        	list = (VRList) getDBManager().executeQuery(getSQL_GET_FIXED_FORM_GROUP(sqlParam));
+        } else {
+        	list = (VRList) getDBManager().executeQuery(getSQL_GET_FIXED_FORM_GROUP_WITHOUT_IRYO(sqlParam));
+        }
+        //医療系非表示対応 fujihara.shin 2009.1.15 edit end
+        
         // 取得した定型文分類情報をfixedFormGroupTableModelに設定する。
         // setAdaptee(fixedFormGroupTableModel, 取得したデータ);
         getFixedFormGroupTableModel().setAdaptee(list);

@@ -69,6 +69,7 @@ import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
@@ -300,6 +301,38 @@ public class QS001 extends QS001Event {
                     .executeQuery(
                             getSQL_GET_USED_PROVIDER_SERVICE_WITHOUT_WEEKLY_SERVICE(sqlParam));
         }
+        
+        //医療系非表示対応 fujihara.shin 2009.1.13 add start
+        if (!QkanCommon.isShowOldIryo()){
+	        for (int i = 0; i < services.size(); i++){
+	        	VRMap row = (VRMap)services.get(i);
+	        	if (ACCastUtilities.toInt(row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == 20101){
+	        		services.remove(i);
+	        		break;
+	        	}
+	        }
+        }
+        //医療系非表示対応 fujihara.shin 2009.1.13 add end
+        
+        // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+        if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, getTargetDate())<1){
+            // 基準適合診療所は除外する。
+            // 12314 : 短期入所療養介護(基準適合診療所)
+            // 13411 : 介護予防短期入所療養介護(基準適合診療所)
+            int[] h2104RemoveServices = { 12314, 12614 };
+            for (int i = 0; i < services.size(); i++){
+                VRMap row = (VRMap)services.get(i);
+                for(int j=0; j < h2104RemoveServices.length;j++) {
+                    int removeSystemServiceKindDetail = h2104RemoveServices[j];
+                    if (ACCastUtilities.toInt(row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == removeSystemServiceKindDetail){
+                        services.remove(i);
+                        break;
+                    }
+                }
+            }            
+        }
+        // [ID:0000444][Masahiko Higuchi] 2009/02 add end
+        
         setServiceKindsList(services);
         getServiceKindList().setModel(new ACListModelAdapter(services));
         getServiceKindList().setCellRenderer(
@@ -441,6 +474,9 @@ public class QS001 extends QS001Event {
         VRMap masterService = QkanCommon.getMasterService(getDBManager(),
                 getTargetDate());
         cellRenderer.setMasterService(masterService);
+        // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+        cellRenderer.setTargetDate(getTargetDate());
+        // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
         setSharedFocusCellRenderer(cellRenderer);
         // パターンパネルへセルレンダラを設定する。
         getPatternList().setCellRenderer(cellRenderer);
@@ -626,6 +662,17 @@ public class QS001 extends QS001Event {
                     .WARNING_OF_UPDATE_ON_MODIFIED()) {
             case ACMessageBox.RESULT_YES:
                 // ※保存処理
+                
+                // [ID:0000456][Tozo TANAKA] 2009/03/12 add begin 平成21年4月法改正対応
+                // ※入力チェック
+                // 入力チェックを行う。
+                if (!checkValidInput()) {
+                    // 戻り値がfalseの場合
+                    // 戻り値としてfalseを返し、処理を中断する。
+                    return false;
+                }
+                // [ID:0000456][Tozo TANAKA] 2009/03/12 add end
+                
                 if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
                     doInsert();
                 } else {
@@ -1398,6 +1445,7 @@ public class QS001 extends QS001Event {
         Iterator it = list.iterator();
         
         // 2008/03/21 [Masahiko_Higuchi] add - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+        // バインドパスの変更により追加
         // 療養環境減算バインドパス郡
         final String[] RYOYO_TYPE = new String[] {"1230205","1260205","1530205"};
         // 設備基準バインドバス郡
@@ -1421,6 +1469,13 @@ public class QS001 extends QS001Event {
         final String[] TERMINAlCARE = new String[] {"1520133"};
         // 2008/04/21 [Masahiko_Higuchi] add - end
         
+        // [ID:0000444][Masahiko Higuchi] 2009/03 add begin 平成21年4月法改正対応
+        boolean isH2104  =false;
+        if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104,
+                getCalcurater().getTargetDate()) < 1) {
+            isH2104 = true;
+        }
+        // [ID:0000444][Masahiko Higuchi] 2009/03 add end        
         
         // ■入力チェック
         final String[] SENMONIN_NO_TYPE = new String[] { "1430107", "1730104",
@@ -1457,182 +1512,582 @@ public class QS001 extends QS001Event {
                 }
             }
             
-            // 2008/03/21 [Masahiko_Higuchi] add - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
-            // 過去データからの不正データを残さないようにチェックする
-            if(isH2004){
-                // 療養病床を有する診療所のサービスであるか
-                if(CareServiceCommon.isPracticeToHealthFacilityServices(row)){
-                    // 療養環境減算が存在するか。
-                    boolean isRyoyoGensan = false;
-                    boolean isSetubiGensan = false;
-                    for(int j=0; j< RYOYO_TYPE.length; j++){
-                        // 療養環境減算が設定されているか。
-                        Object obj = VRBindPathParser.get(RYOYO_TYPE[j], row);
-                        // 未設定、減算型Ⅰ以外の場合は正常
-                        if (obj != null && ACCastUtilities.toInt(obj) != 2
-                                && ACCastUtilities.toInt(obj) != 0) {
-                            isRyoyoGensan = true;
-                            break;
-                        }
+            // [ID:0000456][Masahiko Higuchi] 2009/03 edit begin 平成21年4月法改正対応
+            // 平成21年4月以降の処理は分岐させる
+            int lowVer = CareServiceCommon.getServiceLowVersion(row);
+            if(isH2104) {
+                //平成21年4月以降の場合
+                // 法改正区分による過去データの判別
+                if(lowVer != QkanConstants.SERVICE_LOW_VERSION_H2104){
+                    //法改正区分が20090401以外のサービスの場合
+                    Date serviceDate = ACCastUtilities.toDate(VRBindPathParser
+                            .get("SERVICE_DATE", row), null);
+                    String dayOfMonth = "";
+                    if (serviceDate != null) {
+                        dayOfMonth = ACDateUtilities.getDayOfMonth(serviceDate)
+                                + "日の";
                     }
-                    // 設備基準減算が存在するか。
-                    for(int k=0; k< SETUBI_BASE_TYPE.length; k++){
-                        // 設備基準減算が設定されているか。
-                        Object obj = VRBindPathParser.get(SETUBI_BASE_TYPE[k], row);
-                        // 設備基準に値が設定されている場合は
-                        if(ACCastUtilities.toInt(obj,0) != 0){
-                            isSetubiGensan = true;
-                            break;                            
-                        }
-                    }
-                    // どちらか一方でも不正データである場合
-                    if(!(isRyoyoGensan && isSetubiGensan)){
-                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-                        return false;
-                    }
-                }
-            }
-            // 2008/03/21 [Masahiko_Higuchi] add - end
-            // 2008/04/21 [Masahiko_Higuchi] add - begin 平成20年度5月法改正対応（介護療養型老人保健施設）
-            if(isH2005){
-                // 老健施設のサービスである場合
-                if(CareServiceCommon.isElderlyToHealthFacilityServices(row)){
-                    boolean isShisetuTaisei = false;
-                    boolean isRyoyoTaisei = false;
-                    isRyoyoTaisei = checkValidSysteBindPath(RYOYOTAISEIIJI, row);
-                    // 日帰りショートステイ選択時は施設等の区分のチェックはスルー
-                    if(row != null && ACCastUtilities.toInt(row.getData("1220101"),0) == 3){
-                        isShisetuTaisei = true;
-                    }else{
-                        // 施設等の区分（体制）のチェック処理
-                        isShisetuTaisei = checkValidSysteBindPath(SHISETUKUBUN_TAISEI, row);
+                    VRMap serviceKind = ACBindUtilities.getMatchRowFromValue(
+                            getServiceKindsList(),
+                            "SYSTEM_SERVICE_KIND_DETAIL", row
+                                    .get("SYSTEM_SERVICE_KIND_DETAIL"));
+                    String serviceKindName = "サービス";
+                    if (serviceKind != null) {
+                        serviceKindName = ACCastUtilities.toString(serviceKind
+                                .get("SERVICE_ABBREVIATION"));
                     }
                     // エラーメッセージ
-                    if(!isShisetuTaisei && !isRyoyoTaisei){
-                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-                        return false;
+                    QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(dayOfMonth, serviceKindName);
+                    return false;
+                } 
+            } else {
+                //平成21年4月より前の場合
+                // 法改正区分による過去データの判別
+                if(lowVer == QkanConstants.SERVICE_LOW_VERSION_H2104) {
+                    //法改正区分が20090401のサービスの場合
+                    Date serviceDate = ACCastUtilities.toDate(VRBindPathParser
+                            .get("SERVICE_DATE", row), null);
+                    String dayOfMonth = "";
+                    if (serviceDate != null) {
+                        dayOfMonth = ACDateUtilities.getDayOfMonth(serviceDate)
+                                + "日の";
+                    }
+                    VRMap serviceKind = ACBindUtilities.getMatchRowFromValue(
+                            getServiceKindsList(),
+                            "SYSTEM_SERVICE_KIND_DETAIL", row
+                                    .get("SYSTEM_SERVICE_KIND_DETAIL"));
+                    String serviceKindName = "サービス";
+                    if (serviceKind != null) {
+                        serviceKindName = ACCastUtilities.toString(serviceKind
+                                .get("SERVICE_ABBREVIATION"));
+                    }
+                    // エラーメッセージ
+                    QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(dayOfMonth, serviceKindName);
+                    return false;
+                } 
+                
+                // 2008/03/21 [Masahiko_Higuchi] add - begin 平成20年度4月法改正対応（介護療養型老人保健施設）
+                // 過去データからの不正データを残さないようにチェックする
+                if(isH2004){
+                    // 療養病床を有する診療所のサービスであるか
+                    if(CareServiceCommon.isPracticeToHealthFacilityServices(row)){
+                        // 療養環境減算が存在するか。
+                        boolean isRyoyoGensan = false;
+                        boolean isSetubiGensan = false;
+                        for(int j=0; j< RYOYO_TYPE.length; j++){
+                            // 療養環境減算が設定されているか。
+                            Object obj = VRBindPathParser.get(RYOYO_TYPE[j], row);
+                            // 未設定、減算型Ⅰ以外の場合は正常
+                            if (obj != null && ACCastUtilities.toInt(obj) != 2
+                                    && ACCastUtilities.toInt(obj) != 0) {
+                                isRyoyoGensan = true;
+                                break;
+                            }
+                        }
+                        // 設備基準減算が存在するか。
+                        for(int k=0; k< SETUBI_BASE_TYPE.length; k++){
+                            // 設備基準減算が設定されているか。
+                            Object obj = VRBindPathParser.get(SETUBI_BASE_TYPE[k], row);
+                            // 設備基準に値が設定されている場合は
+                            if(ACCastUtilities.toInt(obj,0) != 0){
+                                isSetubiGensan = true;
+                                break;                            
+                            }
+                        }
+                        // どちらか一方でも不正データである場合
+                        if(!(isRyoyoGensan && isSetubiGensan)){
+                            QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                            return false;
+                        }
+                    }
+                }
+                // 2008/03/21 [Masahiko_Higuchi] add - end
+                // 2008/04/21 [Masahiko_Higuchi] add - begin 平成20年度5月法改正対応（介護療養型老人保健施設）
+                if(isH2005){
+                    // 老健施設のサービスである場合
+                    if(CareServiceCommon.isElderlyToHealthFacilityServices(row)){
+                        boolean isShisetuTaisei = false;
+                        boolean isRyoyoTaisei = false;
+                        isRyoyoTaisei = checkValidSysteBindPath(RYOYOTAISEIIJI, row);
+                        // 日帰りショートステイ選択時は施設等の区分のチェックはスルー
+                        if(row != null && ACCastUtilities.toInt(row.getData("1220101"),0) == 3){
+                            isShisetuTaisei = true;
+                        }else{
+                            // 施設等の区分（体制）のチェック処理
+                            isShisetuTaisei = checkValidSysteBindPath(SHISETUKUBUN_TAISEI, row);
+                        }
+                        // エラーメッセージ
+                        if(!isShisetuTaisei && !isRyoyoTaisei){
+                            QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                            return false;
+                        }
+                        
+                    }
+                    // 個別に取り出す
+                    int code = -1;
+                    if(row==null){
+                        code = -1;
+                    }else{
+                        code = ACCastUtilities.toInt(row.get("SYSTEM_SERVICE_KIND_DETAIL"),-1);
+                    }
+                    // 介護老人保健施設であるか
+                    switch(code){
+                    case 15211:
+                        boolean isTerminalAdd = false;
+                        isTerminalAdd = checkValidSysteBindPath(TERMINAlCARE, row);
+                        // ターミナルケア加算のみ個別チェック
+                        if(!isTerminalAdd){
+                            QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                            return false;
+                        }
+                        
+                        int index = ACCastUtilities.toInt(row.getData("1520101"), 0);
+                        if (index != 1 && index != 3) {
+                            // 施設等の区分で小規模のデータ登録を行おうとした場合
+                            QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                            return false;
+                        }
+                        break;
                     }
                     
                 }
-                // 個別に取り出す
-                int code = -1;
-                if(row==null){
-                    code = -1;
-                }else{
-                    code = ACCastUtilities.toInt(row.get("SYSTEM_SERVICE_KIND_DETAIL"),-1);
-                }
-                // 介護老人保健施設であるか
-                switch(code){
-                case 15211:
-                    boolean isTerminalAdd = false;
-                    isTerminalAdd = checkValidSysteBindPath(TERMINAlCARE, row);
-                    // ターミナルケア加算のみ個別チェック
-                    if(!isTerminalAdd){
-                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-                        return false;
+                // 2008/04/21 [Masahiko_Higuchi] add - end            
+                
+            }
+            // [ID:0000456][Masahiko Higuchi] 2009/03 edit end
+        }
+
+        // [ID:0000456][Tozo TANAKA] 2009/03/12 add begin 平成21年4月法改正対応
+        //※回数チェック
+        if (isH2104) {
+            //対象年月が、平成21年4月以降の場合
+            //※居宅介護支援・回数チェック
+            
+            //居宅介護支援の検出回数を表す数値変数countOf14311を定義し、0で初期化する。
+            int countOf14311 = 0;
+            //介護予防支援の検出回数を表す数値変数countOf14611を定義し、0で初期化する。
+            int countOf14611 = 0;
+            final String BIND_PATH_OF_SYSTEM_SERVICE_KIND_DETAIL = "SYSTEM_SERVICE_KIND_DETAIL";
+    
+            //月間表上のサービスを全走査する。
+            it = list.iterator();
+            while (it.hasNext()) {
+                VRMap row = (VRMap) it.next();
+                //エラーとなったサービス名を表す文字列変数errorServiceを定義し、nullで初期化する。
+                String errorService=null;
+                switch (ACCastUtilities.toInt(VRBindPathParser.get(
+                        BIND_PATH_OF_SYSTEM_SERVICE_KIND_DETAIL, row), 0)) {
+                case 14311:
+                    //サービスが居宅介護支援の場合
+                    //countOf14311に1を加算する。
+                    if(++countOf14311>=2){
+                        //countOf14311が2以上の場合
+                        //errorServiceに"居宅介護支援"を代入する。
+                        errorService = "居宅介護支援";
                     }
-                    
-                    int index = ACCastUtilities.toInt(row.getData("1520101"), 0);
-                    if (index != 1 && index != 3) {
-                        // 施設等の区分で小規模のデータ登録を行おうとした場合
-                        QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-                        return false;
+                    break;
+                case 14611:
+                    //サービスが介護予防支援の場合
+                    //countOf14611に1を加算する。
+                    if(++countOf14611>=2){
+                        //countOf14611が2以上の場合
+                        //errorServiceに"介護予防支援"を代入する。
+                        errorService = "介護予防支援";
                     }
                     break;
                 }
+                if(errorService!=null){
+                    //errorServiceがnullではない場合
+                    //上限回数を超えている旨のエラー(ERROR_OF_SERVICE_COUNT_OVER)を表示する。
+                    QkanMessageList.getInstance().QS001_ERROR_OF_SERVICE_COUNT_OVER(errorService, new Integer(1));
+                    //戻り値falseを返して処理を終了する。
+                    return false;
+                }
+            }
+            
+            //※その他の回数超過警告チェック
+
+            //月n回を上限とする加算
+            String[][] monthlyAddCountChecks = new String[][]{
+                    //SERVICE_NAME,SYSTEM_SERVICE_KIND_DETAIL,加算名,SYSTEM_BIND_PATH,計上する値,上限
+                    //※通所介護・通所リハ
+                    //栄養改善加算：月2回
+                    //口腔機能：月2回
+                    {"通所介護","11511","栄養改善加算","1150116","2","2",},
+                    {"通所介護","11511","口腔機能向上加算","1150112","2","2",},
+                    {"通所リハ","11611","栄養改善加算","1160114","2","2",},
+                    {"通所リハ","11611","口腔機能向上加算","1160115","2","2",},
+                    {"認知症対応型通所介護","17211","栄養改善加算","1720105","2","2",},
+                    {"認知症対応型通所介護","17211","口腔機能向上加算","1720108","2","2",},
+                    //※通所リハ
+                    //個別リハ加算：月13回
+                    {"通所リハ","11611","個別リハビリ実施加算","1160118","2","13",},
+                    //※居宅介護支援
+                    //医療連携加算：月1回(居宅介護支援自体、ひと月に2個配置したらエラーになる)
+                    //{"居宅介護支援","14311","医療機関連携加算","1430109","2","1",},
+            };
+            //週n回を上限とするサービス
+            String[][] weeklyServiceCountChecks = new String[][]{
+                    //SERVICE_NAME,SYSTEM_SERVICE_KIND_DETAIL,上限
+                    //※訪問リハ
+                    //1週間に6回
+                    {"訪問リハ","11411","6",},
+            };
+            
+            //月n日を上限とする加算
+            String[][] monthlyDayAddCountChecks = new String[][]{
+                    //SERVICE_NAME,SYSTEM_SERVICE_KIND_DETAIL,加算名,SYSTEM_BIND_PATH,計上する値,上限
+                    //※特養・老健・療養型
+                    //外泊：月6日
+                    {"介護老人福祉施設","15111","外泊加算","1510111","2","6",},
+                    {"介護老人保健施設","15211","外泊加算","1520107","2","6",},
+                    {"介護療養型医療施設(病院療養型)","15311","外泊加算","1530108","2","6",},
+                    {"介護療養型医療施設(診療所型)","15312","外泊加算","1530206","2","6",},
+                    {"介護療養型医療施設(認知症疾患型)","15313","外泊加算","1530305","2","6",},
+            };
+            int[] monthlyAddCountResults = new int[monthlyAddCountChecks.length];
+            int[][] weeklyServiceCountResults = new int[weeklyServiceCountChecks.length][6];
+            int[] monthlyDayAddCountResults = new int[monthlyDayAddCountChecks.length];
+            boolean[][] monthlyDayAddFindFlags = new boolean[monthlyDayAddCountChecks.length][32];
+
+            int end;
+            end = monthlyAddCountChecks.length;
+            for(int i=0; i<end; i++){
+                monthlyAddCountResults[i] = ACCastUtilities.toInt(monthlyAddCountChecks[i][5]);
+            }
+            end = weeklyServiceCountChecks.length;
+            for(int i=0; i<end; i++){
+                int limit = ACCastUtilities.toInt(weeklyServiceCountChecks[i][2]);
+                for(int j=0; j<6; j++){
+                    weeklyServiceCountResults[i][j] = limit;
+                }
+            }
+            end = monthlyDayAddCountChecks.length;
+            for(int i=0; i<end; i++){
+                monthlyDayAddCountResults[i] = ACCastUtilities.toInt(monthlyDayAddCountChecks[i][5]);
+            }
+            
+            //月間表上のサービスを全走査する。
+            it = list.iterator();
+            while (it.hasNext()) {
+                VRMap row = (VRMap) it.next();
+                
+                String systemServiceKindDetail = ACCastUtilities.toString(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", row));
+                Date visitDay = ACCastUtilities.toDate(VRBindPathParser.get("SERVICE_DATE", row), null);
+
+                //警告メッセージの要素として以下の文字列変数を定義しnullで初期化する。
+                //warningTargetName
+                String warningTargetName = null;
+                //warningTargetSpan
+                String warningTargetSpan = null;
+                //warningTargetLimit
+                String warningTargetLimit = null;
+                
+                //月n回を上限とする加算をチェックする。
+                end = monthlyAddCountChecks.length;
+                for(int i=0; i<end; i++){
+                    if(monthlyAddCountChecks[i][1].equals(systemServiceKindDetail)){
+                        //システムサービス種類が該当した場合
+                        Object val=VRBindPathParser.get(monthlyAddCountChecks[i][3], row);
+                        if(val != null){
+                            //BindPathも該当した場合
+                            if(monthlyAddCountChecks[i][4].equals(ACCastUtilities.toString(val))){
+                                //計上すべき値も該当した場合
+                                //月単位加算残回数に1を減算する。
+                                monthlyAddCountResults[i]--;
+                                if(monthlyAddCountResults[i]==-1){
+                                    //月単位加算残回数が0を下回った場合
+                                    
+                                    //警告メッセージの要素として以下の変数を代入する。
+                                    //warningTargetName = SERVICE_NAME+"の"+加算名
+                                    warningTargetName = monthlyAddCountChecks[i][0]+"の"+monthlyAddCountChecks[i][2];
+                                    //warningTargetName = "ひと月に"
+                                    warningTargetSpan = "ひと月に";
+                                    //warningTargetLimit = 上限+"回まで"
+                                    warningTargetLimit = monthlyAddCountChecks[i][5]+"回まで";
+
+                                    //警告メッセージQS001_WARNING_OF_SERVICE_COUNT_OVERを表示する。
+                                    if (QkanMessageList.getInstance()
+                                            .QS001_WARNING_OF_SERVICE_COUNT_OVER(
+                                                    warningTargetName, warningTargetSpan,
+                                                    warningTargetLimit) != ACMessageBox.RESULT_OK) {
+                                        // 「OK」以外選択時
+                                        // 戻り値としてfalseを返す。
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //週n回を上限とするサービスをチェックする。
+                end = weeklyServiceCountChecks.length;
+                for(int i=0; i<end; i++){
+                    if(weeklyServiceCountChecks[i][1].equals(systemServiceKindDetail)){
+                        //システムサービス種類が該当した場合
+                        if (visitDay != null) {
+                            //週単位加算残回数の当該週目に1を減算する。
+                            int week = ACDateUtilities.getWeekOfMonth(visitDay);
+                            weeklyServiceCountResults[i][week]--;
+                            if(weeklyServiceCountResults[i][week]==-1){
+                                //週単位残回数が0を下回った場合
+                                
+                                //警告メッセージの要素として以下の変数を代入する。
+                                //warningTargetName = SERVICE_NAME
+                                warningTargetName = weeklyServiceCountChecks[i][0];
+                                //warningTargetName = "各週に"
+                                warningTargetSpan = "各週に";
+                                //warningTargetLimit = 上限+"回まで"
+                                warningTargetLimit = weeklyServiceCountChecks[i][2]+"回まで";
+
+                                //警告メッセージQS001_WARNING_OF_SERVICE_COUNT_OVERを表示する。
+                                if (QkanMessageList.getInstance()
+                                        .QS001_WARNING_OF_SERVICE_COUNT_OVER(
+                                                warningTargetName, warningTargetSpan,
+                                                warningTargetLimit) != ACMessageBox.RESULT_OK) {
+                                    // 「OK」以外選択時
+                                    // 戻り値としてfalseを返す。
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                //月n日を上限とする加算をチェックする。
+                end = monthlyDayAddCountChecks.length;
+                for(int i=0; i<end; i++){
+                    if(monthlyDayAddCountChecks[i][1].equals(systemServiceKindDetail)){
+                        //システムサービス種類が該当した場合
+                        Object val=VRBindPathParser.get(monthlyDayAddCountChecks[i][3], row);
+                        if(val != null){
+                            //BindPathも該当した場合
+                            if(monthlyDayAddCountChecks[i][4].equals(ACCastUtilities.toString(val))){
+                                //計上すべき値も該当した場合
+                                int mday = ACDateUtilities.getDayOfMonth(visitDay);
+                                if (!monthlyDayAddFindFlags[i][mday]) {
+                                    //月単位日別加算発見フラグの当該日が偽(未発見)の場合
+                                    //月単位日別加算発見フラグの当該日を真(発見済)にする。
+                                    monthlyDayAddFindFlags[i][mday] = true;
+                                    //月単位日別加算残回数に1を減算する。
+                                    monthlyDayAddCountResults[i]--;
+                                    if(monthlyDayAddCountResults[i]==-1){
+                                        //月単位日別加算残回数が0を下回った場合
+                                        
+                                        //警告メッセージの要素として以下の変数を代入する。
+                                        //warningTargetName = SERVICE_NAME+"の"+加算名
+                                        warningTargetName = monthlyDayAddCountChecks[i][0]+"の"+monthlyDayAddCountChecks[i][2];
+                                        //warningTargetName = "ひと月に"
+                                        warningTargetSpan = "ひと月に";
+                                        //warningTargetLimit = 上限+"日まで"
+                                        warningTargetLimit = monthlyDayAddCountChecks[i][5]+"日まで";
+
+                                        //警告メッセージQS001_WARNING_OF_SERVICE_COUNT_OVERを表示する。
+                                        if (QkanMessageList.getInstance()
+                                                .QS001_WARNING_OF_SERVICE_COUNT_OVER(
+                                                        warningTargetName, warningTargetSpan,
+                                                        warningTargetLimit) != ACMessageBox.RESULT_OK) {
+                                            // 「OK」以外選択時
+                                            // 戻り値としてfalseを返す。
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 
             }
-            // 2008/04/21 [Masahiko_Higuchi] add - end            
-            
         }
-
+        // [ID:0000456][Tozo TANAKA] 2009/03/12 add end
+        
+        
         it = list.iterator();
 
-        // ※居宅療養管理指導・回数チェック
-        // 居宅療養管理指導サービスのサービス回数をチェックする(月間表)。それぞれの上限回数は下記のとおりとする。
-        // 医師・歯科医師 : 2回
-        // 薬剤師(医療機関) : 2回
-        // 薬剤師(薬局) : 4回
-        // 管理栄養士 : 2回
-        // 歯科衛生士等 : 4回
-        // H18年4月法改正により、ガン末期の場合は以下を上限とする。
-        // 薬剤師(医療機関)ガン末期 : 8回
-        // 薬剤師(薬局)ガン末期 : 8回
-        // かつ週2回まで
-
-        final Integer VISITOR_TYPE_PATH = new Integer(1310103);
-        final Integer GAN_PATH = new Integer(1310110);
-
-        final int VISITOR_TYPE_COUNT = 7;
-        // [職員区分][第n週]の訪問回数
-        int[][] weeklyCounts = new int[VISITOR_TYPE_COUNT][7];
-        // [職員区分]の月間訪問回数
-        int[] visitCounts = new int[VISITOR_TYPE_COUNT];
-        // [職員区分]のがん末期フラグ
-        int[] ganFlags = new int[VISITOR_TYPE_COUNT];
-
-        while (it.hasNext()) {
-            VRMap row = (VRMap) it.next();
-            // 居宅療養管理指導の職員区分を取得
-            Object obj = VRBindPathParser.get(VISITOR_TYPE_PATH, row);
-            if (obj != null) {
-                int idx = ACCastUtilities.toInt(obj, 0);
-                // 月単位の訪問回数
-                visitCounts[idx]++;
-
-                Object gan = VRBindPathParser.get(GAN_PATH, row);
-                if ("2".equals(ACCastUtilities.toString(gan))) {
-                    // ガン末期
-                    ganFlags[idx] = 1;
-                }
-
-                Date visitDay = ACCastUtilities.toDate(VRBindPathParser.get(
-                        "SERVICE_DATE", row), null);
-                if (visitDay != null) {
-                    // 第n週の訪問回数
-                    weeklyCounts[idx][ACDateUtilities.getWeekOfMonth(visitDay)]++;
-                }
-            }
-        }
+        // [ID:0000456][Masahiko Higuchi] 2009/03 edit begin 平成21年4月法改正対応
         int overFlowCount = 0;
         int overflowIndex = -1;
-        int[][] limits = new int[][] { {// ガン末期を含まない場合
-                0,// ダミー
-                        2, // 医師
-                        2, // 歯科医師
-                        2, // 薬剤師(医療機関)
-                        4, // 薬剤師(薬局)
-                        2, // 管理栄養士
-                        4, // 歯科衛生士等
-                }, {// ガン末期を含む場合
-                0,// ダミー
-                        2, // 医師
-                        2, // 歯科医師
-                        8, // 薬剤師(医療機関)
-                        8, // 薬剤師(薬局)
-                        2, // 管理栄養士
-                        4, // 歯科衛生士等
-                } };
-        int end = visitCounts.length;
-        for (int i = 1; i < end; i++) {
-            if ((visitCounts[i] > limits[ganFlags[i]][i])) {
-                // 月内の上限訪問回数を超えたサービス
-                overFlowCount = visitCounts[i];
-                overflowIndex = i;
-                break;
-            } else {
-                // 週単位でチェック
-                int end2 = weeklyCounts[i].length;
-                for (int j = 1; j < end2; j++) {
-                    if (weeklyCounts[i][j] > 2) {
-                        // 週単位の上限訪問回数を超えたサービス
-                        overFlowCount = visitCounts[i];
-                        overflowIndex = i;
-                        break;
+        
+        if (isH2104) {
+            // ※居宅療養管理指導・回数チェック
+            // 居宅療養管理指導サービスのサービス回数をチェックする(月間表)。それぞれの上限回数は下記のとおりとする。
+            // 医師・歯科医師 : 2回
+            // 薬剤師(医療機関) : 2回
+            // 薬剤師(薬局) : 2回
+            // 管理栄養士 : 2回
+            // 歯科衛生士等 : 4回
+            // 看護職員：1回
+            // ガン末期の場合は以下を上限とする。
+            // 薬剤師(医療機関)ガン末期 : 4回
+            // 薬剤師(薬局)ガン末期 : 8回
+            // かつ週2回まで
+    
+            final Integer VISITOR_TYPE_PATH = new Integer(1310111);
+            final Integer GAN_PATH = new Integer(1310110);
+    
+            final int VISITOR_TYPE_COUNT = 8;
+            // [職員区分][第n週]の訪問回数
+            int[][] weeklyCounts = new int[VISITOR_TYPE_COUNT][8];
+            // [職員区分]の月間訪問回数
+            int[] visitCounts = new int[VISITOR_TYPE_COUNT];
+            // [職員区分]のがん末期フラグ
+            int[] ganFlags = new int[VISITOR_TYPE_COUNT];
+    
+            while (it.hasNext()) {
+                VRMap row = (VRMap) it.next();
+                // 居宅療養管理指導の職員区分を取得
+                Object obj = VRBindPathParser.get(VISITOR_TYPE_PATH, row);
+                if (obj != null) {
+                    int idx = ACCastUtilities.toInt(obj, 0);
+                    // 月単位の訪問回数
+                    visitCounts[idx]++;
+    
+                    Object gan = VRBindPathParser.get(GAN_PATH, row);
+                    if ("2".equals(ACCastUtilities.toString(gan))) {
+                        // ガン末期
+                        ganFlags[idx] = 1;
+                    }
+    
+                    Date visitDay = ACCastUtilities.toDate(VRBindPathParser.get(
+                            "SERVICE_DATE", row), null);
+                    if (visitDay != null) {
+                        // 第n週の訪問回数
+                        weeklyCounts[idx][ACDateUtilities.getWeekOfMonth(visitDay)]++;
+                    }
+                }
+            }
+
+            int[][] limits = new int[][] { {// ガン末期を含まない場合
+                    0,// ダミー
+                            2, // 医師
+                            2, // 歯科医師
+                            2, // 薬剤師(医療機関)
+                            4, // 薬剤師(薬局)
+                            2, // 管理栄養士
+                            4, // 歯科衛生士等
+                            1, // 看護職員
+                    }, {// ガン末期を含む場合
+                    0,// ダミー
+                            2, // 医師
+                            2, // 歯科医師
+                            2, // 薬剤師(医療機関)
+                            8, // 薬剤師(薬局)
+                            2, // 管理栄養士
+                            4, // 歯科衛生士等
+                            1, // 看護職員
+                    } };
+            int end = visitCounts.length;
+            for (int i = 1; i < end; i++) {
+                if ((visitCounts[i] > limits[ganFlags[i]][i])) {
+                    // 月内の上限訪問回数を超えたサービス
+                    overFlowCount = visitCounts[i];
+                    overflowIndex = i;
+                    break;
+                } else {
+                    // 週単位でチェック
+                    int end2 = weeklyCounts[i].length;
+                    for (int j = 1; j < end2; j++) {
+                        if (weeklyCounts[i][j] > 2) {
+                            // 週単位の上限訪問回数を超えたサービス
+                            overFlowCount = visitCounts[i];
+                            overflowIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }   
+            
+        } else {
+                
+            // ※居宅療養管理指導・回数チェック
+            // 居宅療養管理指導サービスのサービス回数をチェックする(月間表)。それぞれの上限回数は下記のとおりとする。
+            // 医師・歯科医師 : 2回
+            // 薬剤師(医療機関) : 2回
+            // 薬剤師(薬局) : 4回
+            // 管理栄養士 : 2回
+            // 歯科衛生士等 : 4回
+            // H18年4月法改正により、ガン末期の場合は以下を上限とする。
+            // 薬剤師(医療機関)ガン末期 : 8回
+            // 薬剤師(薬局)ガン末期 : 8回
+            // かつ週2回まで
+    
+            final Integer VISITOR_TYPE_PATH = new Integer(1310103);
+            final Integer GAN_PATH = new Integer(1310110);
+    
+            final int VISITOR_TYPE_COUNT = 7;
+            // [職員区分][第n週]の訪問回数
+            int[][] weeklyCounts = new int[VISITOR_TYPE_COUNT][7];
+            // [職員区分]の月間訪問回数
+            int[] visitCounts = new int[VISITOR_TYPE_COUNT];
+            // [職員区分]のがん末期フラグ
+            int[] ganFlags = new int[VISITOR_TYPE_COUNT];
+    
+            while (it.hasNext()) {
+                VRMap row = (VRMap) it.next();
+                // 居宅療養管理指導の職員区分を取得
+                Object obj = VRBindPathParser.get(VISITOR_TYPE_PATH, row);
+                if (obj != null) {
+                    int idx = ACCastUtilities.toInt(obj, 0);
+                    // 月単位の訪問回数
+                    visitCounts[idx]++;
+    
+                    Object gan = VRBindPathParser.get(GAN_PATH, row);
+                    if ("2".equals(ACCastUtilities.toString(gan))) {
+                        // ガン末期
+                        ganFlags[idx] = 1;
+                    }
+    
+                    Date visitDay = ACCastUtilities.toDate(VRBindPathParser.get(
+                            "SERVICE_DATE", row), null);
+                    if (visitDay != null) {
+                        // 第n週の訪問回数
+                        weeklyCounts[idx][ACDateUtilities.getWeekOfMonth(visitDay)]++;
+                    }
+                }
+            }
+
+            int[][] limits = new int[][] { {// ガン末期を含まない場合
+                    0,// ダミー
+                            2, // 医師
+                            2, // 歯科医師
+                            2, // 薬剤師(医療機関)
+                            4, // 薬剤師(薬局)
+                            2, // 管理栄養士
+                            4, // 歯科衛生士等
+                    }, {// ガン末期を含む場合
+                    0,// ダミー
+                            2, // 医師
+                            2, // 歯科医師
+                            8, // 薬剤師(医療機関)
+                            8, // 薬剤師(薬局)
+                            2, // 管理栄養士
+                            4, // 歯科衛生士等
+                    } };
+            int end = visitCounts.length;
+            for (int i = 1; i < end; i++) {
+                if ((visitCounts[i] > limits[ganFlags[i]][i])) {
+                    // 月内の上限訪問回数を超えたサービス
+                    overFlowCount = visitCounts[i];
+                    overflowIndex = i;
+                    break;
+                } else {
+                    // 週単位でチェック
+                    int end2 = weeklyCounts[i].length;
+                    for (int j = 1; j < end2; j++) {
+                        if (weeklyCounts[i][j] > 2) {
+                            // 週単位の上限訪問回数を超えたサービス
+                            overFlowCount = visitCounts[i];
+                            overflowIndex = i;
+                            break;
+                        }
                     }
                 }
             }
         }
+        // [ID:0000456][Masahiko Higuchi] 2009/03 edit end
+        
         if (overflowIndex < 0) {
             // 上限を超えたものがない場合
             // 戻り値としてtrueを返す。
@@ -1643,8 +2098,17 @@ public class QS001 extends QS001Event {
             // メッセージを表示する。(例)管理栄養士(上限2回)が、3回設定されている場合、VALUEは「管理栄養士 3回」となる。)
             // showMsg(QS001_LIMIT_OVER_KYOTAKU_RYOYO_KANRI_SHIDO,
             // ((上限回数を超えた項目名) + (回数) + 回));
-            String[] names = new String[] {"", "医師", "歯科医師", "薬剤師(医療機関)",
+            // [ID:0000456][Masahiko Higuchi] 2009/03 edit begin 平成21年4月法改正対応
+            String[] names = {""};
+            if(isH2104) {
+                // 平成21年4月以降は区分が追加される
+                names = new String[] {"", "医師", "歯科医師", "薬剤師(医療機関)",
+                        "薬剤師(薬局)", "管理栄養士", "歯科衛生士等", "看護職員" , };                
+            } else { 
+                names = new String[] {"", "医師", "歯科医師", "薬剤師(医療機関)",
                     "薬剤師(薬局)", "管理栄養士", "歯科衛生士等", };
+            }
+            // [ID:0000456][Masahiko Higuchi] 2009/03 edit end
             if (QkanMessageList.getInstance()
                     .QS001_LIMIT_OVER_KYOTAKU_RYOYO_KANRI_SHIDO(
                             names[overflowIndex] + " " + overFlowCount + "回") == ACMessageBox.RESULT_OK) {
@@ -2018,150 +2482,433 @@ public class QS001 extends QS001Event {
         switch (getSelectedServiceKind()) {
         //平成18年4月改正分
         case 11111://訪問介護
-            return new QS001101();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001101_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
+            return new QS001101();
+            
         case 11211://訪問入浴介護
-            return new QS001102();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001102_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
+            return new QS001102();
+            
         case 11311://訪問看護(介護保険)
-            return new QS001103();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001103_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
+            return new QS001103();
+            
 //        case 20101://訪問看護(医療保険)
 //            return new QS001104();  
         case 11411://訪問リハビリテーション
-            return new QS001105();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001105_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
+            return new QS001105();
+            
         case 11511://通所介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001107_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
             return new QS001107();  
+            
         case 11611://通所リハビリテーション
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001108_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
             return new QS001108();  
         case 11711://福祉用具貸与
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001116_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
             return new QS001116();  
         case 12111://短期入所生活介護
-            return new QS001109();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001109_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            
+            return new QS001109();
+            
         case 12211://短期入所療養介護(老健)
-            // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
-            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+            // [ID:0000444][Masahiko Higuchi] edit begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001110_H2104();
+                
+            } else if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+                // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
                 return new QS001110_H2005();
+                
             }else{
                 return new QS001110();
             }
             // 2008/04/14 [Masahiko_Higuchi] edit - end
+            // [ID:0000444][Masahiko Higuchi] edit end
             
         case 12311://短期入所療養介護(療養病床を有する病院)
-            return new QS001111();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001111_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            return new QS001111();
+            
         case 12312://短期入所療養介護(療養病床を有する診療所)
-        	// 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
-        	// 平成20年4月以降は生成先を変更する
-        	if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+            // [ID:0000444][Masahiko Higuchi] edit begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001112_H2104();
+                
+            } else if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+                // 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
+                // 平成20年4月以降は生成先を変更する
         		return new QS001112_H2004();
+                
         	}else{
         		return new QS001112();
         	}
-        	// 2008/03/18 [Masahiko_Higuchi] edit - end        	
+        	// 2008/03/18 [Masahiko_Higuchi] edit - end
+            // [ID:0000444][Masahiko Higuchi] edit end
+            
         case 12313://短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
-            return new QS001113();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate) < 1) {
+                return new QS001113_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end            
+            return new QS001113();
+            
         case 12314://短期入所療養介護(基準適合診療所)
             return new QS001114();  
+            
         case 13111:// 居宅療養管理指導
-            return new QS001106(); 
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001106_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end            
+            return new QS001106();
+            
         case 13211://認知症対応型共同生活介護(短期利用以外)
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001126_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001126();  
+            
         case 13311://特定施設入居者生活介護
-            return new QS001115();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001115_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            return new QS001115();
+            
         case 13611://地域密着型特定施設入居者生活介護
-            return new QS001128();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001128_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            return new QS001128();
+            
         case 13811://認知症対応型共同生活介護(短期利用)
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001127_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001127();  
+            
         case 14311://居宅介護支援
-            return new QS001117();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001117_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            return new QS001117();
+            
         case 15111://介護老人福祉施設
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001118_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001118();  
+            
         case 15211://介護老人保健施設
-            // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
-            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001119_H2104();
+                
+            } else if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+                // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
                 return new QS001119_H2005();
             }else{
                 return new QS001119();
             }
             // 2008/04/14 [Masahiko_Higuchi] edit - end
+            // [ID:0000444][Masahiko Higuchi] add end
+            
         case 15311://介護療養型医療施設(療養病床を有する病院)
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001120_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001120();  
+            
         case 15312://介護療養型医療施設(療養病床を有する診療所)
-        	// 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
-        	// 平成20年4月以降は生成先を変更する
-        	if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001121_H2104();
+            } else if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+                // 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
+                // 平成20年4月以降は生成先を変更する
         		return new QS001121_H2004();
         	}else{
         		return new QS001121();
         	}
         	// 2008/03/18 [Masahiko_Higuchi] edit - end
+            // [ID:0000444][Masahiko Higuchi] add end
         	
         case 15313://介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
-            return new QS001122();  
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001122_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
+            return new QS001122();
+            
         case 15411://地域密着型介護福祉施設
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001129_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001129();  
+            
         case 17111://夜間対応型訪問介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001123_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001123();  
+            
         case 17211://認知症対応型通所介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001124_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001124();  
+            
         case 17311://小規模多機能型居宅介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001125_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001125();  
+            
         case 90101:// その他
             return new QS001026(); 
         case 90201:// 主な日常生活上の活動
             return new QS001027(); 
             //平成18年4月予防
         case 16111: //介護予防訪問介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001130_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001130();
+            
         case 16211: //介護予防訪問入浴介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001131_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001131();
+            
         case 16311: //介護予防訪問看護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001132_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001132();
+            
         case 16411: //介護予防訪問リハ
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001133_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001133();
+            
         case 16511: //介護予防通所介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001135_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001135();
+            
         case 16611: //介護予防通所リハ
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001136_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001136();
+            
         case 16711: //介護予防福祉用具貸与
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001144_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001144();
+            
         case 12411: //介護予防短期入所生活介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001137_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001137();
+            
         case 12511: //介護予防短期入所療養介護（老健）
-            // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
+            // [ID:0000444][Masahiko Higuchi] 2009/02 edit begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001138_H2104();
+                
+            }
             if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2005, targetDate)<1){
+                // 2008/04/14 [Masahiko_Higuchi] edit - begin 平成20年5月法改正対応
                 return new QS001138_H2005();
+                
             }else{
                 return new QS001138();
             }
             // 2008/04/14 [Masahiko_Higuchi] edit - end
+            // [ID:0000444][Masahiko Higuchi] edit end
+            
         case 12611: //介護予防短期入所療養介護（病院）
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001139_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001139();
+            
         case 12612: //介護予防短期入所療養介護（診療所）
-        	// 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
-        	// 平成20年4月以降は生成先を変更する
-        	if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+            // [ID:0000444][Masahiko Higuchi] 2009/02 edit begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001140_H2104();
+                
+            } else if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2004, targetDate)<1){
+                // 2008/03/18 [Masahiko_Higuchi] edit - begin 平成20年4月法改正対応
+                // 平成20年4月以降は生成先を変更する
         		return new QS001140_H2004();
+                
         	}else{
         		return new QS001140();
         	}
         	// 2008/03/18 [Masahiko_Higuchi] edit - end
+            // [ID:0000444][Masahiko Higuchi] edit end
         	
         case 12613: //介護予防短期入所療養介護（認知症疾患型）
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001141_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001141();
+            
         case 12614: //介護予防短期入所療養介護（基準適合型診療所）
             return new QS001142();
         case 13411: //介護予防居宅療養管理指導
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001134_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001134();
+            
         case 13511: //介護予防特定施設入居者生活介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001143_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001143();
+            
         case 14611: //介護予防支援
+            // [ID:0000444][Tozo TANAKA] 2009/03/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001145_H2104();
+            }
+            // [ID:0000444][Tozo TANAKA] add end
             return new QS001145();
         case 17411: //介護予防認知症対応型通所介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001146_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001146();
+            
         case 17511: //介護予防小規模多機能型居宅介護
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001147_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001147();
+            
         case 13711: //介護予防認知症対応型共同生活介護（短期利用以外）
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001148_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001148();
+            
         case 13911: //介護予防認知症対応型共同生活介護（短期利用）
+            // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
+            if(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104, targetDate)<1){
+                return new QS001149_H2104();
+            }
+            // [ID:0000444][Masahiko Higuchi] add end
             return new QS001149();
+            
             //平成17年10月改正分
         case 11101:// 訪問介護
             return new QS001003(); 
@@ -2251,6 +2998,20 @@ public class QS001 extends QS001Event {
                 }
                 VRBindPathParser.set("SYSTEM_SERVICE_KIND_DETAIL", data, new Integer(getSelectedServiceKind()));
                 // SERVICE_USE_TYPEなどの情報は必要に応じて呼び出し元で設定すること。
+                
+
+                // [ID:0000444][Tozo TANAKA] 2009/03/07 add begin 平成21年4月法改正対応
+                if(getSelectedServiceClass() instanceof QS001ServicePanel){
+                    //サービスの法改正区分を設定します。
+                    VRBindPathParser
+                            .set(
+                                    QkanConstants.SERVICE_SYSTEM_BIND_PATH_LOW_VERSION,
+                                    data,
+                                    new Integer(
+                                            ((QS001ServicePanel) getSelectedServiceClass())
+                                                    .getServiceLowVersion()));
+                }
+                // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
                 
                 return data;
             }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2007/04/04  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/03/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -151,6 +151,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACIntegerCheckBox privateExpenses;
 
+  private ACIntegerCheckBox printNursingZero;
+
   private ACGroupBox others;
 
   private ACIntegerCheckBox oncePerMonth;
@@ -164,6 +166,10 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACButton taxChange;
 
   private ACIntegerCheckBox showOldKohi;
+
+  private ACIntegerCheckBox showOldIryo;
+
+  private ACIntegerCheckBox showOldLowProviderElements;
 
   private ACGroupBox backupResotres;
 
@@ -790,6 +796,25 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定入所者の利用者負担額が0円の場合に明細書に印字するを取得します。
+   * @return 特定入所者の利用者負担額が0円の場合に明細書に印字する
+   */
+  public ACIntegerCheckBox getPrintNursingZero(){
+    if(printNursingZero==null){
+
+      printNursingZero = new ACIntegerCheckBox();
+
+      printNursingZero.setText("特定入所者の利用者負担額が0円の場合に明細書に印字する");
+
+      printNursingZero.setBindPath("PRINT_NURSING_ZERO");
+
+      addPrintNursingZero();
+    }
+    return printNursingZero;
+
+  }
+
+  /**
    * その他の設定領域を取得します。
    * @return その他の設定領域
    */
@@ -919,6 +944,44 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       addShowOldKohi();
     }
     return showOldKohi;
+
+  }
+
+  /**
+   * 過去の医療情報も表示するを取得します。
+   * @return 過去の医療情報も表示する
+   */
+  public ACIntegerCheckBox getShowOldIryo(){
+    if(showOldIryo==null){
+
+      showOldIryo = new ACIntegerCheckBox();
+
+      showOldIryo.setText("過去の医療情報も表示する");
+
+      showOldIryo.setBindPath("SHOW_OLD_IRYO");
+
+      addShowOldIryo();
+    }
+    return showOldIryo;
+
+  }
+
+  /**
+   * 過去の事業所体制情報も表示するを取得します。
+   * @return 過去の事業所体制情報も表示する
+   */
+  public ACIntegerCheckBox getShowOldLowProviderElements(){
+    if(showOldLowProviderElements==null){
+
+      showOldLowProviderElements = new ACIntegerCheckBox();
+
+      showOldLowProviderElements.setText("過去の事業所体制情報も表示する");
+
+      showOldLowProviderElements.setBindPath("SHOW_OLD_LOW_PROVIDER_ELEMENTS");
+
+      addShowOldLowProviderElements();
+    }
+    return showOldLowProviderElements;
 
   }
 
@@ -1216,6 +1279,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     chohyos.add(getRiyohyos(), VRLayout.FLOW_RETURN);
 
+    chohyos.add(getPrintNursingZero(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -1269,6 +1334,13 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定入所者の利用者負担額が0円の場合に明細書に印字するに内部項目を追加します。
+   */
+  protected void addPrintNursingZero(){
+
+  }
+
+  /**
    * その他の設定領域に内部項目を追加します。
    */
   protected void addOthers(){
@@ -1277,7 +1349,11 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     others.add(getTaxContainer(), VRLayout.FLOW_RETURN);
 
-    others.add(getShowOldKohi(), VRLayout.FLOW_RETURN);
+    others.add(getShowOldKohi(), VRLayout.FLOW);
+
+    others.add(getShowOldIryo(), VRLayout.FLOW_RETURN);
+
+    others.add(getShowOldLowProviderElements(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -1326,6 +1402,20 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 過去の公費も表示するに内部項目を追加します。
    */
   protected void addShowOldKohi(){
+
+  }
+
+  /**
+   * 過去の医療情報も表示するに内部項目を追加します。
+   */
+  protected void addShowOldIryo(){
+
+  }
+
+  /**
+   * 過去の事業所体制情報も表示するに内部項目を追加します。
+   */
+  protected void addShowOldLowProviderElements(){
 
   }
 

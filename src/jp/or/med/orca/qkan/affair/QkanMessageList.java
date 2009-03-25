@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2008/01/15  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/03/14  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -3704,6 +3704,331 @@ public class QkanMessageList {
   public int QO013_ERROR_OF_BLANK_IN_PASSWORD() throws Exception{
 
     return ACMessageBox.show("入力されたパスワードに空白文字が含まれています。" + ACConstants.LINE_SEPARATOR + "空白文字を含んだパスワードは使用できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[serviceName]は中山間地域等に指定されていますが、特定地域と中山間地域等は同時に指定できません。」を表示します。
+   * <p>
+   * 事業所登録時に、特別地域の指定があるにもかかわらず、地域・規模ともに「中山間地域等」に該当する提供サービス情報があった場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO004_ERROR_OF_AREA_COLLISION(VRMap param) throws Exception {
+    return QO004_ERROR_OF_AREA_COLLISION(
+
+      VRBindPathParser.get("serviceName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[serviceName]は中山間地域等に指定されていますが、特定地域と中山間地域等は同時に指定できません。」を表示します。
+   * <p>
+   * 事業所登録時に、特別地域の指定があるにもかかわらず、地域・規模ともに「中山間地域等」に該当する提供サービス情報があった場合
+   * </p>
+   * @param arg1 serviceName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO004_ERROR_OF_AREA_COLLISION(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("は中山間地域等に指定されていますが、特定地域と中山間地域等は同時に指定できません。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「合計金額と明細の合算が一致しない利用者が存在します。＜改行＞[patientNames]利用者の居宅サービス計画作成者を設定しているか確認してください。」を表示します。
+   * <p>
+   * 利用者データに不整合のある給付管理票を印字しようとしたときのメッセージ
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_BENEFIT_MANAGEMENT(VRMap param) throws Exception {
+    return QP001_WARNING_BENEFIT_MANAGEMENT(
+
+      VRBindPathParser.get("patientNames", param)
+
+           );
+  }
+  /**
+   * メッセージ「合計金額と明細の合算が一致しない利用者が存在します。＜改行＞[patientNames]利用者の居宅サービス計画作成者を設定しているか確認してください。」を表示します。
+   * <p>
+   * 利用者データに不整合のある給付管理票を印字しようとしたときのメッセージ
+   * </p>
+   * @param arg1 patientNames
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_BENEFIT_MANAGEMENT(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("合計金額と明細の合算が一致しない利用者が存在します。" + ACConstants.LINE_SEPARATOR + "");
+
+    sb.append(arg1);
+
+    sb.append("利用者の居宅サービス計画作成者を設定しているか確認してください。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「40件以上居宅介護支援サービスを提供している人がいます。＜改行＞[staffNames]」を表示します。
+   * <p>
+   * 40件以上プランを作成しているスタッフが存在する場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_OVER_40_PLAN(VRMap param) throws Exception {
+    return QP001_WARNING_OVER_40_PLAN(
+
+      VRBindPathParser.get("staffNames", param)
+
+           );
+  }
+  /**
+   * メッセージ「40件以上居宅介護支援サービスを提供している人がいます。＜改行＞[staffNames]」を表示します。
+   * <p>
+   * 40件以上プランを作成しているスタッフが存在する場合
+   * </p>
+   * @param arg1 staffNames
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_OVER_40_PLAN(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("40件以上居宅介護支援サービスを提供している人がいます。" + ACConstants.LINE_SEPARATOR + "");
+
+    sb.append(arg1);
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[fieldName]の単位数は、基本単位数の[rate]までとしてください。」を表示します。
+   * <p>
+   * 福祉用具貸与における中山間地域等の単位数が法定上限を超過した場合の警告(規模または地域のいずれか1つが超過した場合)
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_MOUNTAINOUS_AREA(VRMap param) throws Exception {
+    return QS001_WARNING_OF_MOUNTAINOUS_AREA(
+
+      VRBindPathParser.get("fieldName", param)
+
+      , VRBindPathParser.get("rate", param)
+
+           );
+  }
+  /**
+   * メッセージ「[fieldName]の単位数は、基本単位数の[rate]までとしてください。」を表示します。
+   * <p>
+   * 福祉用具貸与における中山間地域等の単位数が法定上限を超過した場合の警告(規模または地域のいずれか1つが超過した場合)
+   * </p>
+   * @param arg1 fieldName
+   * @param arg2 rate
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_MOUNTAINOUS_AREA(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("の単位数は、基本単位数の");
+
+    sb.append(arg2);
+
+    sb.append("までとしてください。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「中山間地域等小規模事業所加算の単位数は、基本単位数の3分の2まで、＜改行＞中山間地域等でのサービス提供加算の単位数は、基本単位数の3分の1までとしてください。」を表示します。
+   * <p>
+   * 福祉用具貸与における中山間地域等の単位数が法定上限を超過した場合の警告(規模および地域の両方が超過した場合)
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_MOUNTAINOUS_AREA_ALL() throws Exception{
+
+    return ACMessageBox.show("中山間地域等小規模事業所加算の単位数は、基本単位数の3分の2まで、" + ACConstants.LINE_SEPARATOR + "中山間地域等でのサービス提供加算の単位数は、基本単位数の3分の1までとしてください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[serviceName]はひと月に[num]件までとしてください。」を表示します。
+   * <p>
+   * サービス予定/実績登録時、居宅介護支援の回数が限度回数を超えている場合などに表示。[serviceName]はサービス名、[num]は上限回数。(例:介護予防支援 1回)
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_SERVICE_COUNT_OVER(VRMap param) throws Exception {
+    return QS001_ERROR_OF_SERVICE_COUNT_OVER(
+
+      VRBindPathParser.get("serviceName", param)
+
+      , VRBindPathParser.get("num", param)
+
+           );
+  }
+  /**
+   * メッセージ「[serviceName]はひと月に[num]件までとしてください。」を表示します。
+   * <p>
+   * サービス予定/実績登録時、居宅介護支援の回数が限度回数を超えている場合などに表示。[serviceName]はサービス名、[num]は上限回数。(例:介護予防支援 1回)
+   * </p>
+   * @param arg1 serviceName
+   * @param arg2 num
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_SERVICE_COUNT_OVER(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("はひと月に");
+
+    sb.append(arg2);
+
+    sb.append("件までとしてください。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[warningTargetName]は、[warningTargetSpan][warningTargetLimit]としてください。＜改行＞限度を超えている可能性がありますが、このまま登録してもよろしいですか？」を表示します。
+   * <p>
+   * サービス予定/実績登録時、任意のサービスや加算が、月や週単位の限度回数を超えている場合などに表示する。[warningTargetName]はサービス名や加算名、[warningTargetSpan]は対象期間、[warningTargetLimit]は限度回数。(例:通所介護の栄養改善加算　ひと月に　2回まで)
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_SERVICE_COUNT_OVER(VRMap param) throws Exception {
+    return QS001_WARNING_OF_SERVICE_COUNT_OVER(
+
+      VRBindPathParser.get("warningTargetName", param)
+
+      , VRBindPathParser.get("warningTargetSpan", param)
+
+      , VRBindPathParser.get("warningTargetLimit", param)
+
+           );
+  }
+  /**
+   * メッセージ「[warningTargetName]は、[warningTargetSpan][warningTargetLimit]としてください。＜改行＞限度を超えている可能性がありますが、このまま登録してもよろしいですか？」を表示します。
+   * <p>
+   * サービス予定/実績登録時、任意のサービスや加算が、月や週単位の限度回数を超えている場合などに表示する。[warningTargetName]はサービス名や加算名、[warningTargetSpan]は対象期間、[warningTargetLimit]は限度回数。(例:通所介護の栄養改善加算　ひと月に　2回まで)
+   * </p>
+   * @param arg1 warningTargetName
+   * @param arg2 warningTargetSpan
+   * @param arg3 warningTargetLimit
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_SERVICE_COUNT_OVER(
+
+      Object arg1
+      , Object arg2
+      , Object arg3
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("は、");
+
+    sb.append(arg2);
+
+    sb.append(arg3);
+
+    sb.append("としてください。" + ACConstants.LINE_SEPARATOR + "限度を超えている可能性がありますが、このまま登録してもよろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[dayOfMonth][serviceKindName]には再設定が必要です。＜改行＞内容を確認し、設定(A)ボタンを押下してください。」を表示します。
+   * <p>
+   * 異なる法改正区分のサービスを貼り付けていた場合の保存エラー。[warningTargetName]はサービス名や加算名、[dayOfMonth]は提供日、[serviceKindName]はサービス名。(例:3日の　通所介護)
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(VRMap param) throws Exception {
+    return QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(
+
+      VRBindPathParser.get("dayOfMonth", param)
+
+      , VRBindPathParser.get("serviceKindName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[dayOfMonth][serviceKindName]には再設定が必要です。＜改行＞内容を確認し、設定(A)ボタンを押下してください。」を表示します。
+   * <p>
+   * 異なる法改正区分のサービスを貼り付けていた場合の保存エラー。[warningTargetName]はサービス名や加算名、[dayOfMonth]は提供日、[serviceKindName]はサービス名。(例:3日の　通所介護)
+   * </p>
+   * @param arg1 dayOfMonth
+   * @param arg2 serviceKindName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append(arg2);
+
+    sb.append("には再設定が必要です。" + ACConstants.LINE_SEPARATOR + "内容を確認し、設定(A)ボタンを押下してください。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
   }
 
