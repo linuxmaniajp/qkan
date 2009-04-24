@@ -718,4 +718,71 @@ public class QM001UpdateMasterOperation {
         return sb.toString();
       }
       
+      //[ID:0000447][Shin Fujihara] 2009/04 add begin 平成21年4月法改正対応
+      /**
+       * 変更対象の公費情報を持つ利用者情報取得用SQL
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Shin Fujihara
+       * @since V546
+       */
+      public String getSQL_GET_PATIENT_KOHI_H2104(VRMap sqlParam) throws Exception{
+    	  StringBuffer sb = new StringBuffer();
+    	  
+    	  sb.append(" SELECT");
+    	  sb.append(" k.PATIENT_ID,");
+    	  sb.append(" K.KOHI_ID");
+    	  sb.append(" FROM PATIENT_KOHI k");
+    	  sb.append(" LEFT OUTER JOIN");
+    	  sb.append(" PATIENT_KOHI_SERVICE s");
+    	  sb.append(" ON");
+    	  sb.append(" (k.PATIENT_ID = s.PATIENT_ID)");
+    	  sb.append(" AND (k.KOHI_ID = s.KOHI_ID)");
+    	  sb.append(" AND (s.SYSTEM_SERVICE_KIND_DETAIL = ");
+    	  sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", sqlParam)));
+    	  sb.append(")");
+    	  sb.append(" WHERE");
+    	  sb.append(" (k.INSURE_TYPE = 1)");
+    	  sb.append(" AND (k.KOHI_TYPE = ");
+    	  sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("KOHI_TYPE", sqlParam)));
+    	  sb.append(")");
+    	  sb.append(" AND ('2009-03-31' < k.KOHI_VALID_END)");
+    	  sb.append(" AND (s.PATIENT_ID IS NULL)");
+    	  
+    	  return sb.toString();
+      }
+      
+      /**
+       * 利用者の公費情報修正用SQL
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Shin Fujihara
+       * @since V546
+       */
+      public String getSQL_INSERT_PATIENT_KOHI_H2104(VRMap sqlParam) throws Exception{
+    	  StringBuffer sb = new StringBuffer();
+    	  
+    	  sb.append(" INSERT");
+    	  sb.append(" INTO");
+    	  sb.append(" PATIENT_KOHI_SERVICE");
+    	  sb.append(" (PATIENT_ID,");
+    	  sb.append(" KOHI_ID,");
+    	  sb.append(" SYSTEM_SERVICE_KIND_DETAIL,");
+    	  sb.append(" LAST_TIME)");
+    	  sb.append(" VALUES (");
+    	  sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+    	  sb.append(",");
+    	  sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("KOHI_ID", sqlParam)));
+    	  sb.append(",");
+    	  sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", sqlParam)));
+    	  sb.append(",");
+    	  sb.append(" CURRENT_TIMESTAMP)");
+    	  
+    	  return sb.toString();
+      }
+      //[ID:0000447][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
 }

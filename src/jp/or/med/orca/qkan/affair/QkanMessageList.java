@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/14  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/04/22  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -4029,6 +4029,96 @@ public class QkanMessageList {
     sb.append("には再設定が必要です。" + ACConstants.LINE_SEPARATOR + "内容を確認し、設定(A)ボタンを押下してください。");
 
     return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[itemName]にチェックがついています。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 事業所登録時に、サービス提供体制強化加算（単独型・併設型）にチェックがある状態で、サービス提供体制強化加算（空床型）にもチェックをつけて反映しようとした場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO004_WARNING_OF_DOUBLE_CHECK(VRMap param) throws Exception {
+    return QO004_WARNING_OF_DOUBLE_CHECK(
+
+      VRBindPathParser.get("itemName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[itemName]にチェックがついています。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 事業所登録時に、サービス提供体制強化加算（単独型・併設型）にチェックがある状態で、サービス提供体制強化加算（空床型）にもチェックをつけて反映しようとした場合
+   * </p>
+   * @param arg1 itemName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO004_WARNING_OF_DOUBLE_CHECK(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("にチェックがついています。" + ACConstants.LINE_SEPARATOR + "よろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[nintei]度変更前後に、[serviceName]が算定されています。＜改行＞よろしいですか？＜改行＞（変更前の[nintei]度にのみ加算のチェックをつけるよう修正してください。）」を表示します。
+   * <p>
+   * 月途中で要介護度が変化する場合に適用不可能なサービスがある場合の警告。[nintei]には要支援、要介護　[serviceName]にはサービス提供体制強化加算等のサービス名称を設定。
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_NINTEI_SERVICE(VRMap param) throws Exception {
+    return QS001_WARNING_OF_NINTEI_SERVICE(
+
+      VRBindPathParser.get("nintei", param)
+
+      , VRBindPathParser.get("serviceName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[nintei]度変更前後に、[serviceName]が算定されています。＜改行＞よろしいですか？＜改行＞（変更前の[nintei]度にのみ加算のチェックをつけるよう修正してください。）」を表示します。
+   * <p>
+   * 月途中で要介護度が変化する場合に適用不可能なサービスがある場合の警告。[nintei]には要支援、要介護　[serviceName]にはサービス提供体制強化加算等のサービス名称を設定。
+   * </p>
+   * @param arg1 nintei
+   * @param arg2 serviceName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_NINTEI_SERVICE(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("度変更前後に、");
+
+    sb.append(arg2);
+
+    sb.append("が算定されています。" + ACConstants.LINE_SEPARATOR + "よろしいですか？" + ACConstants.LINE_SEPARATOR + "（変更前の");
+
+    sb.append(arg1);
+
+    sb.append("度にのみ加算のチェックをつけるよう修正してください。）");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
 
   }
 

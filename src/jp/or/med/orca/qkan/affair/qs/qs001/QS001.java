@@ -477,6 +477,9 @@ public class QS001 extends QS001Event {
         // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
         cellRenderer.setTargetDate(getTargetDate());
         // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+        // [ID:0000472][Masahiko Higuchi] 2009/04 edit begin 平成21年4月法改正対応
+        cellRenderer.setProcessType(getProcessType());
+        // [ID:0000472][Masahiko Higuchi] 2009/04 edit end
         setSharedFocusCellRenderer(cellRenderer);
         // パターンパネルへセルレンダラを設定する。
         getPatternList().setCellRenderer(cellRenderer);
@@ -1484,7 +1487,15 @@ public class QS001 extends QS001Event {
         // 2005/05/31
         // ※介護支援専門員番号が未入力の場合の未入力チェック
         while (it.hasNext()) {
-            VRMap row = (VRMap) it.next();
+            // [ID:0000483][Masahiko Higuchi] 2009/04 edit begin 平成21年4月法改正対応
+            Object loopObj = it.next();
+            // 不正データチェック
+            if(!(loopObj instanceof VRMap)) {
+                continue;
+            }
+            // VRMapで取得
+            VRMap row = (VRMap) loopObj;
+            // [ID:0000483][Masahiko Higuchi] 2009/04 edit end
             if(CareServiceCommon.isCareManagement(row)||CareServiceCommon.isFacilityVisitMultifunction(row)){
                 // 初期化＋宣言
                 boolean isInputSenmoninNo = false;
@@ -1539,7 +1550,46 @@ public class QS001 extends QS001Event {
                     // エラーメッセージ
                     QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(dayOfMonth, serviceKindName);
                     return false;
-                } 
+                }
+                
+                // [ID:0000483][Masahiko Higuchi] 2009/04 add begin 平成21年4月法改正対応
+                // 介護老人福祉施設の場合
+                if ("15111".equals(ACCastUtilities.toString(VRBindPathParser
+                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
+                    // 日常生活継続支援
+                    if(ACCastUtilities.toInt(row.getData("1510133"),0) > 1){
+                        // サービス提供体制強化加算が算定されている
+                        if(ACCastUtilities.toInt(row.getData("1510141"),0) > 1){
+                            if (QkanMessageList
+                                    .getInstance()
+                                    .QO004_WARNING_OF_DOUBLE_CHECK(
+                                            "日常生活継続支援加算とサービス提供体制強化加算の両方") != ACMessageBox.RESULT_OK) {
+                                // エラー
+                                return false;
+                                
+                            }
+                        }
+                    }
+                } else if ("15411".equals(ACCastUtilities.toString(VRBindPathParser
+                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
+                    // 地域密着型介護老人福祉施設
+                    // 日常生活継続支援
+                    if(ACCastUtilities.toInt(row.getData("1540129"),0) > 1){
+                        // サービス提供体制強化加算が算定されている
+                        if(ACCastUtilities.toInt(row.getData("1540136"),0) > 1){
+                            if (QkanMessageList
+                                    .getInstance()
+                                    .QO004_WARNING_OF_DOUBLE_CHECK(
+                                            "日常生活継続支援加算とサービス提供体制強化加算の両方") != ACMessageBox.RESULT_OK) {
+                                // エラー
+                                return false;
+                                
+                            }
+                        }
+                    }
+                }
+                // [ID:0000483][Masahiko Higuchi] 2009/04 add end
+                
             } else {
                 //平成21年4月より前の場合
                 // 法改正区分による過去データの判別
@@ -1746,7 +1796,7 @@ public class QS001 extends QS001Event {
                     {"介護療養型医療施設(認知症疾患型)","15313","外泊加算","1530305","2","6",},
             };
             int[] monthlyAddCountResults = new int[monthlyAddCountChecks.length];
-            int[][] weeklyServiceCountResults = new int[weeklyServiceCountChecks.length][6];
+            int[][] weeklyServiceCountResults = new int[weeklyServiceCountChecks.length][7];
             int[] monthlyDayAddCountResults = new int[monthlyDayAddCountChecks.length];
             boolean[][] monthlyDayAddFindFlags = new boolean[monthlyDayAddCountChecks.length][32];
 
@@ -1758,7 +1808,7 @@ public class QS001 extends QS001Event {
             end = weeklyServiceCountChecks.length;
             for(int i=0; i<end; i++){
                 int limit = ACCastUtilities.toInt(weeklyServiceCountChecks[i][2]);
-                for(int j=0; j<6; j++){
+                for(int j=0; j<7; j++){
                     weeklyServiceCountResults[i][j] = limit;
                 }
             }
@@ -1898,10 +1948,125 @@ public class QS001 extends QS001Event {
                         }
                     }
                 }
-                
-            }
+            }         
         }
         // [ID:0000456][Tozo TANAKA] 2009/03/12 add end
+
+        // [ID:0000489][Masahiko Higuchi] 2009/04/22 add begin 平成21年4月法改正対応
+        if(isH2104) {
+            // 回数関連のチェックが全て終わった後に認定履歴の絡むチェック
+            VRList patientInsureInfoHistory = null;
+            // 要介護認定履歴の取得
+            patientInsureInfoHistory = QkanCommon.getPatientInsureInfoHistory(getDBManager(),
+                    getTargetDate(), getPatientID());
+            // 当月内に複数履歴存在しない場合は処理終了
+            if (patientInsureInfoHistory.size() >= 2) {
+                VRList checkList = new VRArrayList();
+                for(int i =0;i<patientInsureInfoHistory.size();i++){
+                    // 履歴を取得する
+                    VRMap history = (VRMap)patientInsureInfoHistory.getData(i);
+                    // 要介護認定履歴を格納して突合する
+                    checkList.add(ACCastUtilities.toString(history.getData("JOTAI_CODE"),""));
+                }
+                // 要介護度変化のチェック
+                boolean isCheck = false;
+                // ループ処理
+                for(int i=1;i<checkList.size();i++){
+                    int beforeHistory = ACCastUtilities.toInt(checkList.get(i-1),0);
+                    int afterHistory = ACCastUtilities.toInt(checkList.get(i),0);
+                    switch (beforeHistory) {
+                    case 12: // 要支援１
+                        switch (afterHistory) {
+                        case 13: // 要支援２
+                            isCheck = true;
+                            break;
+                        }
+                        break;
+                        
+                    case 13: // 要支援２
+                        switch (afterHistory) {
+                        case 12: // 要支援１
+                            isCheck = true;
+                            break;
+                        }
+                    }
+                }
+                // 要介護度の変化が確定した段階で履歴取得
+                if(isCheck) {
+                    VRMap history = (VRMap)patientInsureInfoHistory.getData(0);
+                    Date dayEndInsurer = null;
+                    Date dayEnd = ACCastUtilities.toDate(history
+                            .getData("INSURE_VALID_END"));
+                    // 終了日の取得
+                    if(ACDateUtilities.getMonth(getTargetDate()) == ACDateUtilities.getMonth(dayEnd)){
+                        // 同月の場合は採用する
+                        dayEndInsurer = ACCastUtilities.toDate(dayEnd);
+                    }else{
+                        // 最終日に変換
+                        dayEndInsurer = ACDateUtilities.toLastDayOfMonth(getTargetDate());
+                    }
+                    
+                    boolean yoboTsukai[][] = new boolean [1][3];
+                    boolean yoboTsuri[][] = new boolean [1][3];
+                    //月間表上のサービスを全走査する。
+                    it = list.iterator();
+                    while (it.hasNext()) {
+                        VRMap row = (VRMap) it.next();
+                        
+                        String systemServiceKindDetail = ACCastUtilities.toString(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", row));
+                        Date visitDay = ACCastUtilities.toDate(VRBindPathParser.get("SERVICE_DATE", row), null);
+                        // 予防通所介護
+                        if("16511".equals(systemServiceKindDetail) && !yoboTsukai[0][2]) {
+                            // 1650109 サービス提供体制強化加算がありの場合
+                            if(ACCastUtilities.toInt(row.getData("1650109"),0) > 1){
+                                if(ACDateUtilities.getDifferenceOnDay(visitDay, dayEndInsurer) <= 0) {
+                                    // 同月内最初の履歴
+                                    yoboTsukai[0][0] = true;
+                                } else {
+                                    // 同月内後方の履歴
+                                    yoboTsukai[0][1] = true;
+                                }
+                            }
+                            // 警告出力
+                            if(yoboTsukai[0][0] && yoboTsukai[0][1]) {
+                                if (QkanMessageList.getInstance()
+                                        .QS001_WARNING_OF_NINTEI_SERVICE("要支援" ,"サービス提供体制強化加算") == ACMessageBox.RESULT_OK) {
+                                    // OK押下時は何度も出ないようにする。
+                                    yoboTsukai[0][2] = true;
+                                } else {
+                                    // キャンセル・×ボタン押下時
+                                    return false;
+                                }
+                            }
+                        } else if("16611".equals(systemServiceKindDetail) && !yoboTsuri[0][2]) {
+                            // 予防通所リハ
+                            // 1660108 サービス提供体制強化加算がありの場合
+                            if(ACCastUtilities.toInt(row.getData("1660108"),0) > 1){
+                                if(ACDateUtilities.getDifferenceOnDay(visitDay, dayEndInsurer) <= 0) {
+                                    // 同月内最初の履歴
+                                    yoboTsuri[0][0] = true;
+                                } else {
+                                    // 同月内後方の履歴
+                                    yoboTsuri[0][1] = true;
+                                }
+                            }
+                            // 警告出力
+                            if(yoboTsuri[0][0] && yoboTsuri[0][1]) {
+                                if (QkanMessageList.getInstance()
+                                        .QS001_WARNING_OF_NINTEI_SERVICE("要支援" ,"サービス提供体制強化加算") == ACMessageBox.RESULT_OK) {
+                                    // OK押下時は何度も出ないようにする。
+                                    yoboTsuri[0][2] = true;
+                                } else {
+                                    // キャンセル・×ボタン押下時
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // [ID:0000489][Masahiko Higuchi] 2009/04/22 add end  
         
         
         it = list.iterator();

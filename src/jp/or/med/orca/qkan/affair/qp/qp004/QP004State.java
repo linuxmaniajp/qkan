@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2009/03/04  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/04/03  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -126,8 +126,6 @@ public class QP004State extends QP004Design {
 
         getShisetsuIdouGroup().setVisible(true);
 
-        getContentsNyushoJotais().getParent().setVisible(false);
-
   }
 
   /**
@@ -152,8 +150,6 @@ public class QP004State extends QP004Design {
 
         getShisetsuIdouGroup().setVisible(true);
 
-        getContentsNyushoJotais().getParent().setVisible(false);
-
   }
 
   /**
@@ -177,8 +173,6 @@ public class QP004State extends QP004Design {
         getKyotakuIdouGroup().setVisible(false);
 
         getShisetsuIdouGroup().setVisible(true);
-
-        getContentsNyushoJotais().getParent().setVisible(false);
 
   }
 
@@ -284,7 +278,30 @@ public class QP004State extends QP004Design {
 
         getShisetsuIdouGroup().setVisible(true);
 
-        getContentsNyushoJotais().getParent().setVisible(false);
+  }
+
+  /**
+   * 「状態コントロール入所前非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STATE_NYUSYO_HIDE() throws Exception {
+
+        if(getContentsNyushoJotais().getParent()!=null){
+          Container parentContainer = getContentsNyushoJotais().getParent();
+          if(parentContainer.getParent()!=null){
+            parentContainer.getParent().remove(parentContainer);
+          }
+        }
+
+  }
+
+  /**
+   * 「状態コントロール入所前表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STATE_NYUSYO_SHOW() throws Exception {
+
+        getContentsNyushoJotais().setVisible(true);
 
   }
 

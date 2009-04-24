@@ -712,13 +712,33 @@ public class QP004 extends QP004Event {
 		}
 		//[H20.5 法改正対応] fujihara add end
 		
+		//[ID:0000474][Shin Fujihara] 2009/04/02 edit begin 障害対応
 		//[ID:0000451][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
+		boolean isNyusyomaeShow = false;
 		int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
-		if (term < jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200904_AFFTER) {
-			getContentsNyushoJotais().getParent().setVisible(false);
+		if (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200904_AFFTER <= term) {
+			//getContentsNyushoJotais().getParent().setVisible(false);
+			switch (getClaimStyleType()){
+			case CLAIM_STYLE_TYPE61:
+			case CLAIM_STYLE_TYPE62:
+			case CLAIM_STYLE_TYPE63:
+			case CLAIM_STYLE_TYPE64:
+			case CLAIM_STYLE_TYPE8:
+			case CLAIM_STYLE_TYPE9:
+			case CLAIM_STYLE_TYPE10:
+				isNyusyomaeShow = true;
+				break;
+			}
 		}
-		isShinryos = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
+		if (isNyusyomaeShow){
+			setState_STATE_NYUSYO_SHOW();
+		} else {
+			setState_STATE_NYUSYO_HIDE();
+		}
+		//getShisetsuIdouGroup().remove(getContentsNyushoJotaisContainer());
+		//isShinryos = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
 		//[ID:0000451][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+		//[ID:0000474][Shin Fujihara] 2009/04/02 edit end 障害対応
 	}
 
 	/**

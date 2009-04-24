@@ -59,6 +59,9 @@ public class QM001UpdateMasterTask {
             //平成21年4月法改正における事業所体制の移行(V545)
             task4(dbm);
             
+            //平成21年4月法改正　利用者の公費情報補正(V546)
+            task5(dbm);
+            
 		}catch(Exception ex){
 			throw ex;
 		}
@@ -396,5 +399,49 @@ public class QM001UpdateMasterTask {
     }     
     // [ID:0000444][Tozo TANAKA] 2009/03/12 add end
 
-	
+    // [ID:0000447][Shin Fujihara] 2009/04 add begin 平成21年4月法改正対応
+    /**
+     * 平成21年4月法改正　利用者の公費情報補正(V546)
+     * @param dbm
+     * @throws Exception
+     * 
+     * @author Shin Fujihara
+     * @since V546
+     */
+    public void task5(ACDBManager dbm) throws Exception{
+        try{ 
+            QM001UpdateMasterOperation op = new QM001UpdateMasterOperation();
+            
+            String[][] kohiList = new String[][]{
+            		//結核予防法「一般患者」
+            		{"1001","12211"},
+            		{"1001","12511"},
+            		{"1001","15211"},
+            		//8102:原爆(地方単独・介護保険)
+            		{"8102","17311"},
+            		{"8102","17511"}
+            };
+            
+            for (int i = 0; i < kohiList.length; i++){            	
+            	VRMap sqlParam = new VRHashMap();
+            	sqlParam.put("KOHI_TYPE", kohiList[i][0]);
+            	sqlParam.put("SYSTEM_SERVICE_KIND_DETAIL", kohiList[i][1]);
+            	//修正
+            	VRList list = dbm.executeQuery(op.getSQL_GET_PATIENT_KOHI_H2104(sqlParam));
+            	
+            	Iterator it = list.iterator();
+            	
+            	while(it.hasNext()){
+            		VRMap row = (VRMap)it.next();
+            		row.put("SYSTEM_SERVICE_KIND_DETAIL", kohiList[i][1]);
+            		dbm.executeUpdate(op.getSQL_INSERT_PATIENT_KOHI_H2104(row));
+            	}
+            }
+            
+        }catch(Exception ex){
+            dbm.rollbackTransaction();
+            throw ex;
+        }
+    }     
+    // [ID:0000447][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
 }

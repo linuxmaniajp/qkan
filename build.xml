@@ -6,6 +6,7 @@
 	<property name="JarNameOfConvert" value="convert_csv.jar" />
 	<property name="JarNameOfCSVViewer" value="csv_viewer.jar" />
 	<property name="JarNameOfCopayCheck" value="copaycheck.jar" />
+	<property name="JarNameOfUpdate" value="update.jar" />
 	<!-- コンパイルに必要なクラスパス -->
 	<path id="BuildClasspath">
 		<pathelement path="lib/firebirdsql-full.jar" />
@@ -71,6 +72,24 @@
 			<manifest>
 				<attribute name="Main-Class" value="jp.or.med.orca.qkan.viewer.QkanCSVViewerStarter" />
 				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+			</manifest>
+		</jar>
+		<delete file="${JarNameOfUpdate}" />
+		<jar jarfile="${JarNameOfUpdate}" basedir="${ClassDir}">
+			<include name="jp/nichicom/update/**/*" />
+			<exclude name="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.nichicom.update.MainFrame" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
+			</manifest>
+		</jar>
+		<delete file="${JarNameOfCopayCheck}" />
+		<jar jarfile="${JarNameOfCopayCheck}" basedir="${ClassDir}">
+			<include name="jp/nichicom/copaychecker/**/*" />
+			<exclude name="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.nichicom.copaychecker.MainFrame" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
 			</manifest>
 		</jar>
 		<delete dir="${ClassDir}" />

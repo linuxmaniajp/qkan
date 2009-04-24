@@ -50,7 +50,11 @@ public class QS001ServicePatternListCellRenderer extends
     // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
     private Date targetDate;
     // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
-
+    // [ID:0000472][Masahiko Higuchi] 2009/04 add begin 平成21年4月法改正対応
+    private int processType;
+    // [ID:0000472][Masahiko Higuchi] 2009/04 add end
+    
+    
     // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダーの色変更
     //Color[] COLOR_ARRAY = {
     //	(未選択・前), (未選択・後),
@@ -280,7 +284,12 @@ public class QS001ServicePatternListCellRenderer extends
                             } else if("31".equals(serviceCodeKind)) {
                                 serviceKind = "居宅療養";
                                 
+                            // [ID:0000442][Masahiko Higuchi] 2009/04 edit begin V545出荷後対応
+                            } else if("63".equals(serviceCodeKind)) {
+                                serviceKind = "予訪看";
+                                
                             }
+                            // [ID:0000442][Masahiko Higuchi] 2009/04 edit end
                             
                             // 2009/01/15 [Mizuki Tsutsumi] : add end
                         }
@@ -322,13 +331,17 @@ public class QS001ServicePatternListCellRenderer extends
 
         Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-        // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダーの色を変える
-        //自己負担時
-        if (hasRegulationRate) {
-        	setComponentColor(comp, isSelected, cellHasFocus, COLOR_ARRAY_OF_REGULATION_RATE);
+        // [ID:0000472][Masahiko Higuchi] 2009/04 edit begin 平成21年4月法改正対応
+        if(getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
+            // 2009/01/13 [Mizuki Tsutsumi] : add begin / カレンダーの色を変える
+            //自己負担時
+            if (hasRegulationRate) {
+            	setComponentColor(comp, isSelected, cellHasFocus, COLOR_ARRAY_OF_REGULATION_RATE);
+            }
+            // 2009/01/13 [Mizuki Tsutsumi] : add end
         }
-        // 2009/01/13 [Mizuki Tsutsumi] : add end
         // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
+        // [ID:0000472][Masahiko Higuchi] 2009/04 edit end
         if(isInvalidLowVersion){
             // 不正な法改正区分を表すフラグisInvalidLowVersionが真(true)の場合
             //レンダラの背景色を不正な法改正区分色に変更する。
@@ -464,6 +477,23 @@ public class QS001ServicePatternListCellRenderer extends
         this.targetDate = targetDate;
     }
     // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
+
+    // [ID:0000472][Masahiko Higuchi] 2009/04 add begin 平成21年4月法改正対応
+    /**
+     * 現在処理中のモードを取得します。
+     */
+    public int getProcessType() {
+        return this.processType;
+    }
     
+    /**
+     * 現在処理中のモードを設定します。
+     * 
+     * @param processType 処理モード
+     */
+    public void setProcessType(int processType) {
+        this.processType = processType;
+    }
+    // [ID:0000472][Masahiko Higuchi] 2009/04 add end
     
 }
