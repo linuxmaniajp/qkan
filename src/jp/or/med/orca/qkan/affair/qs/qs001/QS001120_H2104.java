@@ -525,10 +525,17 @@ public class QS001120_H2104 extends QS001120_H2104Event {
                 case 2:
                     // 体制ありだった場合
                     setState_VALID_MEDICAL_EXPENSES();
-                    defaultMap.setData("1530114", obj);
+                    // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                    defaultMap.setData("1530114", obj);
+                    // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                     break;
                 }
             }
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add begin 平成21年4月法改正対応(療養食)
+            //常にdefaultMapに KEY：1530114 VALUE：1（なし）を設定する。
+            VRBindPathParser.set("1530114", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add end
+
             // ユニットケアの整備
             obj = VRBindPathParser.get("1530131", provider);
             if (obj != null) {

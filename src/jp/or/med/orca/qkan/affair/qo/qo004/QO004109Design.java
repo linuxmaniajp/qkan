@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/04  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/04/02  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -222,6 +222,20 @@ public class QO004109Design extends QO004ProviderPanel {
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem3;
 
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem4;
+
+  private ACValueArrayRadioButtonGroup serviceAddProvisionStructuralKusyoRadioGroup;
+
+  private ACLabelContainer serviceAddProvisionStructuralKusyoRadioGroupContainer;
+
+  private ACListModelAdapter serviceAddProvisionStructuralKusyoRadioGroupModel;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralKusyoRadioItem1;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralKusyoRadioItem2;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralKusyoRadioItem3;
+
+  private ACRadioButtonItem serviceAddProvisionStructuralKusyoRadioItem4;
 
   private ACPanel oldLowElementArea;
 
@@ -1442,15 +1456,15 @@ public class QO004109Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供体制強化加算を取得します。
-   * @return サービス提供体制強化加算
+   * サービス提供体制強化加算（単独型・併設型）を取得します。
+   * @return サービス提供体制強化加算（単独型・併設型）
    */
   public ACValueArrayRadioButtonGroup getServiceAddProvisionStructuralRadioGroup(){
     if(serviceAddProvisionStructuralRadioGroup==null){
 
       serviceAddProvisionStructuralRadioGroup = new ACValueArrayRadioButtonGroup();
 
-      getServiceAddProvisionStructuralRadioGroupContainer().setText("サービス提供体制強化加算");
+      getServiceAddProvisionStructuralRadioGroupContainer().setText("サービス提供体制強化加算（単独型・併設型）");
 
       serviceAddProvisionStructuralRadioGroup.setBindPath("1210124");
 
@@ -1473,8 +1487,8 @@ public class QO004109Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供体制強化加算コンテナを取得します。
-   * @return サービス提供体制強化加算コンテナ
+   * サービス提供体制強化加算（単独型・併設型）コンテナを取得します。
+   * @return サービス提供体制強化加算（単独型・併設型）コンテナ
    */
   protected ACLabelContainer getServiceAddProvisionStructuralRadioGroupContainer(){
     if(serviceAddProvisionStructuralRadioGroupContainer==null){
@@ -1487,8 +1501,8 @@ public class QO004109Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供体制強化加算モデルを取得します。
-   * @return サービス提供体制強化加算モデル
+   * サービス提供体制強化加算（単独型・併設型）モデルを取得します。
+   * @return サービス提供体制強化加算（単独型・併設型）モデル
    */
   protected ACListModelAdapter getServiceAddProvisionStructuralRadioGroupModel(){
     if(serviceAddProvisionStructuralRadioGroupModel==null){
@@ -1579,6 +1593,147 @@ public class QO004109Design extends QO004ProviderPanel {
       addServiceAddProvisionStructuralRadioItem4();
     }
     return serviceAddProvisionStructuralRadioItem4;
+
+  }
+
+  /**
+   * サービス提供体制強化加算（空床型）を取得します。
+   * @return サービス提供体制強化加算（空床型）
+   */
+  public ACValueArrayRadioButtonGroup getServiceAddProvisionStructuralKusyoRadioGroup(){
+    if(serviceAddProvisionStructuralKusyoRadioGroup==null){
+
+      serviceAddProvisionStructuralKusyoRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getServiceAddProvisionStructuralKusyoRadioGroupContainer().setText("サービス提供体制強化加算（空床型）");
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setBindPath("1210125");
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setVisible(true);
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setEnabled(true);
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setNoSelectIndex(0);
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setUseClearButton(false);
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setModel(getServiceAddProvisionStructuralKusyoRadioGroupModel());
+
+      serviceAddProvisionStructuralKusyoRadioGroup.setValues(new int[]{1,2,3,4});
+
+      addServiceAddProvisionStructuralKusyoRadioGroup();
+    }
+    return serviceAddProvisionStructuralKusyoRadioGroup;
+
+  }
+
+  /**
+   * サービス提供体制強化加算（空床型）コンテナを取得します。
+   * @return サービス提供体制強化加算（空床型）コンテナ
+   */
+  protected ACLabelContainer getServiceAddProvisionStructuralKusyoRadioGroupContainer(){
+    if(serviceAddProvisionStructuralKusyoRadioGroupContainer==null){
+      serviceAddProvisionStructuralKusyoRadioGroupContainer = new ACLabelContainer();
+      serviceAddProvisionStructuralKusyoRadioGroupContainer.setFollowChildEnabled(true);
+      serviceAddProvisionStructuralKusyoRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      serviceAddProvisionStructuralKusyoRadioGroupContainer.add(getServiceAddProvisionStructuralKusyoRadioGroup(), null);
+    }
+    return serviceAddProvisionStructuralKusyoRadioGroupContainer;
+  }
+
+  /**
+   * サービス提供体制強化加算（空床型）モデルを取得します。
+   * @return サービス提供体制強化加算（空床型）モデル
+   */
+  protected ACListModelAdapter getServiceAddProvisionStructuralKusyoRadioGroupModel(){
+    if(serviceAddProvisionStructuralKusyoRadioGroupModel==null){
+      serviceAddProvisionStructuralKusyoRadioGroupModel = new ACListModelAdapter();
+      addServiceAddProvisionStructuralKusyoRadioGroupModel();
+    }
+    return serviceAddProvisionStructuralKusyoRadioGroupModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralKusyoRadioItem1(){
+    if(serviceAddProvisionStructuralKusyoRadioItem1==null){
+
+      serviceAddProvisionStructuralKusyoRadioItem1 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralKusyoRadioItem1.setText("なし");
+
+      serviceAddProvisionStructuralKusyoRadioItem1.setGroup(getServiceAddProvisionStructuralKusyoRadioGroup());
+
+      serviceAddProvisionStructuralKusyoRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralKusyoRadioItem1();
+    }
+    return serviceAddProvisionStructuralKusyoRadioItem1;
+
+  }
+
+  /**
+   * 加算Iを取得します。
+   * @return 加算I
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralKusyoRadioItem2(){
+    if(serviceAddProvisionStructuralKusyoRadioItem2==null){
+
+      serviceAddProvisionStructuralKusyoRadioItem2 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralKusyoRadioItem2.setText("加算I");
+
+      serviceAddProvisionStructuralKusyoRadioItem2.setGroup(getServiceAddProvisionStructuralKusyoRadioGroup());
+
+      serviceAddProvisionStructuralKusyoRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralKusyoRadioItem2();
+    }
+    return serviceAddProvisionStructuralKusyoRadioItem2;
+
+  }
+
+  /**
+   * 加算IIを取得します。
+   * @return 加算II
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralKusyoRadioItem3(){
+    if(serviceAddProvisionStructuralKusyoRadioItem3==null){
+
+      serviceAddProvisionStructuralKusyoRadioItem3 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralKusyoRadioItem3.setText("加算II");
+
+      serviceAddProvisionStructuralKusyoRadioItem3.setGroup(getServiceAddProvisionStructuralKusyoRadioGroup());
+
+      serviceAddProvisionStructuralKusyoRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralKusyoRadioItem3();
+    }
+    return serviceAddProvisionStructuralKusyoRadioItem3;
+
+  }
+
+  /**
+   * 加算IIIを取得します。
+   * @return 加算III
+   */
+  public ACRadioButtonItem getServiceAddProvisionStructuralKusyoRadioItem4(){
+    if(serviceAddProvisionStructuralKusyoRadioItem4==null){
+
+      serviceAddProvisionStructuralKusyoRadioItem4 = new ACRadioButtonItem();
+
+      serviceAddProvisionStructuralKusyoRadioItem4.setText("加算III");
+
+      serviceAddProvisionStructuralKusyoRadioItem4.setGroup(getServiceAddProvisionStructuralKusyoRadioGroup());
+
+      serviceAddProvisionStructuralKusyoRadioItem4.setConstraints(VRLayout.FLOW);
+
+      addServiceAddProvisionStructuralKusyoRadioItem4();
+    }
+    return serviceAddProvisionStructuralKusyoRadioItem4;
 
   }
 
@@ -2519,6 +2674,8 @@ public class QO004109Design extends QO004ProviderPanel {
 
     calculationDetails.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    calculationDetails.add(getServiceAddProvisionStructuralKusyoRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
   }
 
   /**
@@ -2951,14 +3108,14 @@ public class QO004109Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供体制強化加算に内部項目を追加します。
+   * サービス提供体制強化加算（単独型・併設型）に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroup(){
 
   }
 
   /**
-   * サービス提供体制強化加算モデルに内部項目を追加します。
+   * サービス提供体制強化加算（単独型・併設型）モデルに内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroupModel(){
 
@@ -3005,6 +3162,64 @@ public class QO004109Design extends QO004ProviderPanel {
    * 加算IIIに内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioItem4(){
+
+  }
+
+  /**
+   * サービス提供体制強化加算（空床型）に内部項目を追加します。
+   */
+  protected void addServiceAddProvisionStructuralKusyoRadioGroup(){
+
+  }
+
+  /**
+   * サービス提供体制強化加算（空床型）モデルに内部項目を追加します。
+   */
+  protected void addServiceAddProvisionStructuralKusyoRadioGroupModel(){
+
+    getServiceAddProvisionStructuralKusyoRadioItem1().setButtonIndex(1);
+
+    getServiceAddProvisionStructuralKusyoRadioGroupModel().add(getServiceAddProvisionStructuralKusyoRadioItem1());
+
+    getServiceAddProvisionStructuralKusyoRadioItem2().setButtonIndex(2);
+
+    getServiceAddProvisionStructuralKusyoRadioGroupModel().add(getServiceAddProvisionStructuralKusyoRadioItem2());
+
+    getServiceAddProvisionStructuralKusyoRadioItem3().setButtonIndex(3);
+
+    getServiceAddProvisionStructuralKusyoRadioGroupModel().add(getServiceAddProvisionStructuralKusyoRadioItem3());
+
+    getServiceAddProvisionStructuralKusyoRadioItem4().setButtonIndex(4);
+
+    getServiceAddProvisionStructuralKusyoRadioGroupModel().add(getServiceAddProvisionStructuralKusyoRadioItem4());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addServiceAddProvisionStructuralKusyoRadioItem1(){
+
+  }
+
+  /**
+   * 加算Iに内部項目を追加します。
+   */
+  protected void addServiceAddProvisionStructuralKusyoRadioItem2(){
+
+  }
+
+  /**
+   * 加算IIに内部項目を追加します。
+   */
+  protected void addServiceAddProvisionStructuralKusyoRadioItem3(){
+
+  }
+
+  /**
+   * 加算IIIに内部項目を追加します。
+   */
+  protected void addServiceAddProvisionStructuralKusyoRadioItem4(){
 
   }
 

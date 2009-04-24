@@ -251,8 +251,10 @@ public class QS001132_H2104 extends QS001132_H2104Event {
         // ※設定
         // 画面のラジオの初期値を設定する。（selectFirstRadioItem）
         QkanCommon.selectFirstRadioItem(getThis());
+        // [ID:0000442][Masahiko Higuchi] 2009/04 edit begin 平成21年4月請求版対応
         // 時間区分初期設定
-        defaultMap.setData("1630103", new Integer(3));
+        defaultMap.setData("1630107", new Integer(3));
+        // [ID:0000442][Masahiko Higuchi] 2009/04 edit end
         // ※展開
         // 自身(this)にdefaultMapに設定する。
         getThis().setSource(defaultMap);
@@ -521,6 +523,26 @@ public class QS001132_H2104 extends QS001132_H2104Event {
             setState_INVALID_LONG_TIME();
         }
         
+        // [ID:0000478][Masahiko Higuchi] 2009/04 add begin 訪問看護サービスコードの追加対応
+        switch(getHoumonKangoKaigoTime().getSelectedIndex()){
+        case 1:
+        case 2:
+            // 時間区分が20分未満　30分未満の場合は無効にする
+            setState_INVALID_NUMBER_OF_PEOPLE_TIME();
+            break;
+        case 3:
+        case 4:
+            if(getVisitPersonAddRadio().getSelectedIndex() == 2) {
+                // 訪問人数が2人の場合
+                setState_VALID_NUMBER_OF_PEOPLE_TIME();
+            } else {
+                // 訪問人数が1人の場合
+                setState_INVALID_NUMBER_OF_PEOPLE_TIME();
+            }
+            break;
+        }        
+        // [ID:0000478][Masahiko Higuchi] 2009/04 add end
+        
         // ※事業所連動
         // 内部変数 providerInfoMap を生成する。
         VRMap providerInfoMap;
@@ -574,4 +596,13 @@ public class QS001132_H2104 extends QS001132_H2104Event {
         //QkanConstants.SERVICE_LOW_VERSION_H2104 を返す。
         return QkanConstants.SERVICE_LOW_VERSION_H2104;
     }
+
+    /**
+     * 2人目の訪問時間　イベント
+     */
+    protected void visitPersonAddRadioSelectionChanged(ListSelectionEvent e) throws Exception {
+        checkState();
+        
+    }
+
 }

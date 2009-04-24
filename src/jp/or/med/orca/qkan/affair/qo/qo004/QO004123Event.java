@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/02/25  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/30  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,8 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 夜間対応型訪問介護イベント定義(QO004123) 
@@ -94,9 +95,32 @@ public abstract class QO004123Event extends QO004123State implements iProviderSe
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
+    getFacilitiesDivision().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                facilitiesDivisionSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
+
+  /**
+   * 「市町村独自加算選択時制御」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void facilitiesDivisionSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 
@@ -137,5 +161,21 @@ public abstract class QO004123Event extends QO004123State implements iProviderSe
    *
    */
   public abstract void getDetails(VRMap map) throws Exception;
+
+  /**
+   * 「画面状態制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void changeState() throws Exception;
+
+  /**
+   * 「データバインド後処理」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void binded() throws Exception;
 
 }

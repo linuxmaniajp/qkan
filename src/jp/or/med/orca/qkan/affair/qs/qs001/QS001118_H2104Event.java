@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/07  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/04/08  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -175,7 +175,39 @@ public abstract class QS001118_H2104Event extends QS001118_H2104State implements
             }
         }
     });
-    getNurseStructuralAddRadioGroup().addListSelectionListener(new ListSelectionListener(){
+    getNurseStructuralAddCheckItem1().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                nurseStructuralAddCheckItem1ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getNurseStructuralAddCheckItem2().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                nurseStructuralAddCheckItem2ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getKaigoWelfareFacilityCalculationDivisionRadilo().addListSelectionListener(new ListSelectionListener(){
         private boolean lockFlag = false;
         public void valueChanged(ListSelectionEvent e) {
             if (lockFlag) {
@@ -183,7 +215,7 @@ public abstract class QS001118_H2104Event extends QS001118_H2104State implements
             }
             lockFlag = true;
             try {
-                nurseStructuralAddRadioGroupSelectionChanged(e);
+                kaigoWelfareFacilityCalculationDivisionRadiloSelectionChanged(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -235,7 +267,21 @@ public abstract class QS001118_H2104Event extends QS001118_H2104State implements
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void nurseStructuralAddRadioGroupSelectionChanged(ListSelectionEvent e) throws Exception;
+  protected abstract void nurseStructuralAddCheckItem1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「看護体制の変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void nurseStructuralAddCheckItem2ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「算定区分の変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void kaigoWelfareFacilityCalculationDivisionRadiloSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 
@@ -356,5 +402,21 @@ public abstract class QS001118_H2104Event extends QS001118_H2104State implements
    * @return int
    */
   public abstract int getServiceLowVersion() throws Exception;
+
+  /**
+   * 「バインド時の処理」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void binded() throws Exception;
+
+  /**
+   * 「画面状態制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void changeState() throws Exception;
 
 }

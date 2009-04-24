@@ -163,12 +163,15 @@ public class QS001118_H2104 extends QS001118_H2104Event {
     protected void kaigoWelfareFacilityTakingCareNursingAddRadioSelectionChanged(
             ListSelectionEvent e) throws Exception {
         // ※看取り介護の有効状態を変更
+        // [ID:0000482][Masahiko Higuchi] 2009/04 del begin 看取り介護加算の画面制御
         // 看取り介護の有効状態を変更する。
-        if(getKaigoWelfareFacilityTakingCareNursingAddRadioItem1().isSelected()){
-            setState_INVALID_TERMINAL();
-        }else{
-            setState_VALID_TERMINAL();
-        }
+        // if(getKaigoWelfareFacilityTakingCareNursingAddRadioItem1().isSelected()){
+        //     setState_INVALID_TERMINAL();
+        // }else{
+        //    setState_VALID_TERMINAL();
+        // }
+        // [ID:0000482][Masahiko Higuchi] 2009/04 del end
+        changeState();
     }
 
     /**
@@ -436,10 +439,16 @@ public class QS001118_H2104 extends QS001118_H2104Event {
                 case 2:
                     // 体制ありの場合
                     setState_VALID_MEDICAL_EXPENSES();
-                    VRBindPathParser.set("1510116", defaultMap, obj);
+                    // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                    VRBindPathParser.set("1510116", defaultMap, obj);
+                    // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                     break;
                 }
             }
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add begin 平成21年4月法改正対応(療養食)
+            //常にdefaultMapに KEY：1510116 VALUE：1（なし）を設定する。
+            VRBindPathParser.set("1510116", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add end
             
             // 日常生活継続支援加算:1510127
             obj = VRBindPathParser.get("1510127", provider);
@@ -560,16 +569,21 @@ public class QS001118_H2104 extends QS001118_H2104Event {
                 getKaigoWelfareFacilityDinnerOffer().setSelectedIndex(1);
             }
             
-            // 看護体制がⅠ型、Ⅱ型の場合
-            switch(getNurseStructuralAddRadioGroup().getSelectedIndex()) {
-            case 2:
-            case 3:
-                setState_VALID_NIGHT_NURSE();
-                break;
-            default:
-                setState_INVALID_NIGHT_NURSE();
-                break;
-            }
+            // [ID:0000468][Masahiko Higuchi] 2009/04 del begin 看護体制の併算定対応
+//            // 看護体制がⅠ型、Ⅱ型の場合
+//            switch(getNurseStructuralAddRadioGroup().getSelectedIndex()) {
+//            case 2:
+//            case 3:
+//                setState_VALID_NIGHT_NURSE();
+//                break;
+//            default:
+//                setState_INVALID_NIGHT_NURSE();
+//                break;
+//            }
+            // [ID:0000468][Masahiko Higuchi] 2009/04 del end
+            // [ID:0000468][Masahiko Higuchi] 2009/04 add begin 看護体制の併算定対応
+            changeState();
+            // [ID:0000468][Masahiko Higuchi] 2009/04 add end
         }
 
     }
@@ -692,22 +706,23 @@ public class QS001118_H2104 extends QS001118_H2104Event {
         return "";
     }
     
-    /**
-     * 看護体制加算の変更時の処理
-     */
-    protected void nurseStructuralAddRadioGroupSelectionChanged(ListSelectionEvent e) throws Exception {
-        // 看護体制がⅠ型、Ⅱ型の場合
-        switch(getNurseStructuralAddRadioGroup().getSelectedIndex()) {
-        case 2:
-        case 3:
-            setState_VALID_NIGHT_NURSE();
-            break;
-        default:
-            setState_INVALID_NIGHT_NURSE();
-            break;
-        }
-    }
-
+    // [ID:0000468][Masahiko Higuchi] 2009/04 del begin 平成21年4月請求版対応
+//    /**
+//     * 看護体制加算の変更時の処理
+//     */
+//    protected void nurseStructuralAddRadioGroupSelectionChanged(ListSelectionEvent e) throws Exception {
+//        // 看護体制がⅠ型、Ⅱ型の場合
+//        switch(getNurseStructuralAddRadioGroup().getSelectedIndex()) {
+//        case 2:
+//        case 3:
+//            setState_VALID_NIGHT_NURSE();
+//            break;
+//        default:
+//            setState_INVALID_NIGHT_NURSE();
+//            break;
+//        }
+//    }
+    // [ID:0000468][Masahiko Higuchi] 2009/04 del begin 平成21年4月請求版対応
     /**
      * 「サービス法改正区分取得」に関する処理を行ないます。
      *
@@ -718,5 +733,75 @@ public class QS001118_H2104 extends QS001118_H2104Event {
         //※このサービスパネルが扱うサービスの法改正区分(M_DETAIL.SYSTEM_BIND_PATH=14)を返す。 
         //QkanConstants.SERVICE_LOW_VERSION_H2104 を返す。
         return QkanConstants.SERVICE_LOW_VERSION_H2104;
+    }
+
+    /**
+     * 看護体制加算Ⅰ選択時
+     */
+    protected void nurseStructuralAddCheckItem1ActionPerformed(ActionEvent e) throws Exception {
+        // 画面状態制御
+        changeState();
+    }
+
+    /**
+     * 看護体制加算Ⅱ選択時
+     */
+    protected void nurseStructuralAddCheckItem2ActionPerformed(ActionEvent e) throws Exception {
+        // 画面状態制御
+        changeState();
+    }
+
+    /**
+     * データバインド後の処理
+     * [ID:0000468][Masahiko Higuchi] 2009/04 add begin 看護体制の併算定対応
+     */
+    public void binded() throws Exception {
+        // 画面状態制御
+        changeState();
+    }
+
+    /**
+     * 画面状態制御を行います。
+     */
+    public void changeState() throws Exception {
+        // [ID:0000442][Masahiko Higuchi] 2009/04 del begin 平成21年4月法改正対応(請求時対応)
+//        if (getNurseStructuralAddCheckItem1().getValue() == 2
+//                || getNurseStructuralAddCheckItem2().getValue() == 2) {
+//            setState_VALID_NIGHT_NURSE();
+//        } else {
+//            // 看護体制Ⅰ・Ⅱが両方ともあり以外になっている場合
+//            if (getNurseStructuralAddCheckItem1().getValue() != 2 
+//                    && getNurseStructuralAddCheckItem2().getValue() != 2) {
+//                setState_INVALID_NIGHT_NURSE();
+//            }
+//        }
+        // [ID:0000442][Masahiko Higuchi] 2009/04 del end
+        
+        // [ID:0000482][Masahiko Higuchi] 2009/04 add begin 看取り介護加算の画面制御
+        // 算定区分が、加算のみ算定である場合
+        if(getKaigoWelfareFacilityCalculationDivisionRadilo().getSelectedIndex() == 2) {
+            // 看取り介護加算の選択状況による制御
+            switch(getKaigoWelfareFacilityTakingCareNursingAddRadio().getSelectedIndex()) {
+            case 1: // なし選択時
+                setState_INVALID_TERMINAL();
+                break;
+            case 2:
+            case 3:
+            case 4:
+                setState_VALID_TERMINAL();
+                break;
+            }
+        } else {
+            setState_INVALID_TERMINAL();
+        }
+        // [ID:0000482][Masahiko Higuchi] 2009/04 add end
+    }
+
+    /**
+     * 算定区分選択時 イベント
+     */
+    protected void kaigoWelfareFacilityCalculationDivisionRadiloSelectionChanged(ListSelectionEvent e) throws Exception {
+        // 画面状態を制御する。
+        changeState();
     }
 }

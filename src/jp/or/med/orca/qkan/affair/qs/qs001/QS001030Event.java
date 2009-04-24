@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/05/30  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/03/27  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -84,7 +84,7 @@ import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 /**
  * 集計明細画面イベント定義(QS001030) 
  */
-public abstract class QS001030Event extends QS001030State {
+public abstract class QS001030Event extends QS001030SQL {
   /**
    * コンストラクタです。
    */
@@ -141,14 +141,15 @@ public abstract class QS001030Event extends QS001030State {
   public abstract void showModal(CareServiceUnitCalcurateResult inLimitAmout, VRMap insureInfo, int procesType, CareServiceCodeCalcurater calcurater, VRList services) throws Exception;
 
   /**
-   * 「給付管理対象概算算出」に関する処理を行ないます。
+   * 「利用者負担額概算算出」に関する処理を行ないます。
    *
+   * @param calcurater CareServiceCodeCalcurater
+   * @param services VRList
    * @param inLimitAmout CareServiceUnitCalcurateResult
+   * @param outLimitAmout CareServiceUnitCalcurateResult
    * @throws Exception 処理例外
    *
    */
-  public abstract void checkInLimitAmount(CareServiceCodeCalcurater calcurater,
-          VRList services,CareServiceUnitCalcurateResult inLimitAmout,CareServiceUnitCalcurateResult outLimitAmout) throws Exception;
-
+  public abstract void checkInLimitAmount(CareServiceCodeCalcurater calcurater, VRList services, CareServiceUnitCalcurateResult inLimitAmout, CareServiceUnitCalcurateResult outLimitAmout) throws Exception;
 
 }

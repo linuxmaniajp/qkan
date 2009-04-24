@@ -298,13 +298,10 @@ public class QS001106_H2104 extends QS001106_H2104Event {
             // 職種が薬剤師（薬局）だった場合
             if (getRecuperationManagementGuidanceOccupationalCategory()
                     .getSelectedIndex() == 4) {
-                // 所在地区分が在宅利用者の場合
-                if(getPatientRadioGroup().getSelectedIndex() == 1) {
-                    // がん末期を無効にする
-                    setState_INVALID_GAN_MAKKI();
-                } else {
-                    setState_VALID_GAN_MAKKI();
-                }
+                // [ID:0000466][Masahiko Higuchi] 2009/04 edit begin 平成21年4月法改正対応 
+                // V545出荷後の提示情報により遅れて対応
+                setState_VALID_GAN_MAKKI();
+                // [ID:0000466][Masahiko Higuchi] 2009/04 edit end
             }
         }
 

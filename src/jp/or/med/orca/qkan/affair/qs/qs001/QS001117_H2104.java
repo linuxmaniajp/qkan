@@ -202,80 +202,82 @@ public class QS001117_H2104 extends QS001117_H2104Event {
    */
   public void providerSelected(VRMap provider) throws Exception{
     // ※事業所コンボ変更時に呼ぶ関数
-    // 　選択事業所情報がnullでない場合
-      if (provider != null) {
-    // ※以下の内容詳細項目は、選択事業所の値を設定する。
-    // ※準備
-    // 事業所連動用のレコード defaultMap を生成する。
-    VRMap defaultMap = new VRHashMap();
-    // ※設定
-    Object obj;
-    // 特定事業所加算
-    obj = VRBindPathParser.get("1430104", provider);
-    if (obj != null) {
-        VRBindPathParser.set("1430106", defaultMap, ACCastUtilities.toInteger(obj));
-        if(ACCastUtilities.toInt(obj)==1){
-            setTokuteiAddFlag(false);
-        }else if(ACCastUtilities.toInt(obj)==2){
-            setTokuteiAddFlag(true);
+        // 選択事業所情報がnullでない場合
+        if (provider != null) {
+            // ※以下の内容詳細項目は、選択事業所の値を設定する。
+            // ※準備
+            // 事業所連動用のレコード defaultMap を生成する。
+            VRMap defaultMap = new VRHashMap();
+            // ※設定
+            Object obj;
+            // 特定事業所加算
+            obj = VRBindPathParser.get("1430104", provider);
+            if (obj != null) {
+                VRBindPathParser.set("1430106", defaultMap, ACCastUtilities
+                        .toInteger(obj));
+                if (ACCastUtilities.toInt(obj) == 1) {
+                    setTokuteiAddFlag(false);
+                } else if (ACCastUtilities.toInt(obj) == 2) {
+                    setTokuteiAddFlag(true);
+                }
+            }
+
+            // 中山間地域事業所であるかの判定ロジック
+            String providerID = ACCastUtilities.toString(((VRMap) provider)
+                    .getData("PROVIDER_ID"), "");
+            // 
+            VRList serviceInfo = QkanCommon.getProviderServiceDetail(
+                    getDBManager(), providerID, ACCastUtilities.toInt("14311",
+                            0));
+
+            if (serviceInfo != null && serviceInfo.getData(0) instanceof VRMap) {
+                VRMap providerServiceInfo = (VRMap) serviceInfo.getData(0);
+                // 中山間地域等の小規模事業所である場合
+                if (CareServiceCommon.isMountainousArea(providerServiceInfo)) {
+                    setIsMountainousAreaProvider(true);
+                } else {
+                    setIsMountainousAreaProvider(false);
+                }
+            } else {
+                // 中山間地域等の小規模事業所ではない
+                setIsMountainousAreaProvider(false);
+            }
+
+            // ※展開
+            // 自身(this)にdefaultMapに設定する。
+            getThis().setSource(defaultMap);
+            // 初期選択項目を展開する。
+            getThis().bindSource();
+            // ※以下の内容詳細項目は、選択事業所の「なし」「あり」によって、無効/有効を切り替える。
+            // 介護支援専門員コンボ
+            VRMap sqlParam = new VRHashMap();
+            VRBindPathParser.set("PROVIDER_ID", sqlParam, VRBindPathParser.get(
+                    "PROVIDER_ID", provider));
+
+            VRList staffs = getDBManager().executeQuery(
+                    getSQL_GET_CARE_MANAGER(sqlParam));
+            Iterator it = staffs.iterator();
+            while (it.hasNext()) {
+                Map staff = (Map) it.next();
+                staff.put("STAFF_NAME", QkanCommon.toFullName(staff
+                        .get("STAFF_FAMILY_NAME"), staff
+                        .get("STAFF_FIRST_NAME")));
+            }
+
+            getKaigoSupportSpecialMemberName().setModel(staffs);
+
+            if (staffs instanceof VRList) {
+                int idx = ACBindUtilities.getMatchIndexFromValue(staffs,
+                        "CARE_MANAGER_NO", getKaigoSupportSpecialMemberNumber()
+                                .getText());
+                if (idx >= 0) {
+                    getKaigoSupportSpecialMemberName().setSelectedIndex(idx);
+                }
+            }
+
         }
-    }
-    
-    // 中山間地域事業所であるかの判定ロジック
-    String providerID = ACCastUtilities.toString(((VRMap) provider)
-            .getData("PROVIDER_ID"), "");
-    // 
-    VRList serviceInfo = QkanCommon.getProviderServiceDetail(
-            getDBManager(), providerID, ACCastUtilities.toInt("14311", 0));
-
-    if(serviceInfo != null && serviceInfo.getData(0) instanceof VRMap) {
-        VRMap providerServiceInfo = (VRMap)serviceInfo.getData(0);
-        // 中山間地域等の小規模事業所である場合
-        if(CareServiceCommon.isMountainousArea(providerServiceInfo)) {
-            setIsMountainousAreaProvider(true);
-        } else {
-            setIsMountainousAreaProvider(false);
-        }
-    } else {
-        // 中山間地域等の小規模事業所ではない
-        setIsMountainousAreaProvider(false);
-    }  
-
-    // ※展開
-    // 自身(this)にdefaultMapに設定する。
-    getThis().setSource(defaultMap);
-    // 初期選択項目を展開する。
-    getThis().bindSource();
-      }
-    // ※以下の内容詳細項目は、選択事業所の「なし」「あり」によって、無効/有効を切り替える。
-      // 介護支援専門員コンボ
-      VRMap sqlParam = new VRHashMap();
-      VRBindPathParser.set("PROVIDER_ID", sqlParam, VRBindPathParser.get(
-              "PROVIDER_ID", provider));
-
-      VRList staffs =getDBManager().executeQuery(
-              getSQL_GET_CARE_MANAGER(sqlParam)); 
-      Iterator it=staffs.iterator();
-      while(it.hasNext()){
-          Map staff=(Map)it.next();
-          staff.put("STAFF_NAME", QkanCommon.toFullName(staff
-                  .get("STAFF_FAMILY_NAME"), staff
-                  .get("STAFF_FIRST_NAME")));
-      }
-      
-      getKaigoSupportSpecialMemberName().setModel(
-              staffs);
-      
-      if (staffs instanceof VRList) {
-          int idx = ACBindUtilities.getMatchIndexFromValue(
-                  staffs, "CARE_MANAGER_NO",
-                  getKaigoSupportSpecialMemberNumber().getText());
-          if(idx>=0){
-              getKaigoSupportSpecialMemberName().setSelectedIndex(idx);
-          }
-      }
-      // 画面状態制御
-      changeState();
+        // 画面状態制御
+        changeState();
       
   }
 
@@ -393,6 +395,22 @@ public class QS001117_H2104 extends QS001117_H2104Event {
           setState_PROVIDER_CUT_ON();
       }
       
+      // [ID:0000480][Masahiko Higuchi] 2009/04 add begin
+      // 運営基準減算による初回加算の制御
+      switch(getKaigoSupportManagementBasicRadio().getSelectedIndex()){
+      case 1:
+          // 退院・退所時加算がなしであれば有効にする
+          if(getDischargeAddRadio().getSelectedIndex() == 1) {
+              setState_VALID_SYOKAI_ADD();
+          }
+          break;
+      case 2:
+      case 3:
+          setState_INVALID_SYOKAI_ADD();
+          break;
+      }
+      // [ID:0000480][Masahiko Higuchi] 2009/04 add end
+      
   }
 
   /**
@@ -401,7 +419,12 @@ public class QS001117_H2104 extends QS001117_H2104Event {
     protected void dischargeAddRadioSelectionChanged(ListSelectionEvent e)
             throws Exception {
         if (getDischargeAddRadio().getSelectedIndex() == 1) {
-            setState_VALID_SYOKAI_ADD();
+            // [ID:0000480][Masahiko Higuchi] 2009/04 edit begin
+            // 運営基準減算による初回加算の制御
+            if(getKaigoSupportManagementBasicRadio().getSelectedIndex() == 1){            
+                setState_VALID_SYOKAI_ADD();
+            }
+            // [ID:0000480][Masahiko Higuchi] 2009/04 end
         } else {
             setState_INVALID_SYOKAI_ADD();
         }

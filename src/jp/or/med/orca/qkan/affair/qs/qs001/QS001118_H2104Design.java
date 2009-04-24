@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/06  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/04/08  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -183,17 +183,11 @@ public class QS001118_H2104Design extends QS001ServicePanel {
 
   private ACPanel tab2;
 
-  private ACValueArrayRadioButtonGroup nurseStructuralAddRadioGroup;
+  private ACLabelContainer nurseStructuralAddGroup;
 
-  private ACLabelContainer nurseStructuralAddRadioGroupContainer;
+  private ACIntegerCheckBox nurseStructuralAddCheckItem1;
 
-  private ACListModelAdapter nurseStructuralAddRadioGroupModel;
-
-  private ACRadioButtonItem nurseStructuralAddRadioItem1;
-
-  private ACRadioButtonItem nurseStructuralAddRadioItem2;
-
-  private ACRadioButtonItem nurseStructuralAddRadioItem3;
+  private ACIntegerCheckBox nurseStructuralAddCheckItem2;
 
   private ACValueArrayRadioButtonGroup nightStaffDispositionAddRadioGroup;
 
@@ -377,12 +371,6 @@ public class QS001118_H2104Design extends QS001ServicePanel {
 
   private ACRadioButtonItem kaigoWelfareFacilityTakingCareNursingAddRadioItem4;
 
-  private ACLabelContainer kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
-
-  private ACTextField kaigoWelfareFacilityTakingCareNursingAddDays;
-
-  private ACLabel kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
-
   private ACClearableRadioButtonGroup kaigoWelfareFacilityStayReturnSupportAddRadio;
 
   private ACLabelContainer kaigoWelfareFacilityStayReturnSupportAddRadioContainer;
@@ -440,6 +428,12 @@ public class QS001118_H2104Design extends QS001ServicePanel {
   private ACRadioButtonItem kaigoWelfareFacilityCalculationDivisionRadiloItem1;
 
   private ACRadioButtonItem kaigoWelfareFacilityCalculationDivisionRadiloItem2;
+
+  private ACLabelContainer kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
+
+  private ACTextField kaigoWelfareFacilityTakingCareNursingAddDays;
+
+  private ACLabel kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
 
   //getter
 
@@ -1349,76 +1343,25 @@ public class QS001118_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 看護体制加算を取得します。
-   * @return 看護体制加算
-   */
-  public ACValueArrayRadioButtonGroup getNurseStructuralAddRadioGroup(){
-    if(nurseStructuralAddRadioGroup==null){
-
-      nurseStructuralAddRadioGroup = new ACValueArrayRadioButtonGroup();
-
-      getNurseStructuralAddRadioGroupContainer().setText("看護体制加算");
-
-      nurseStructuralAddRadioGroup.setBindPath("1510134");
-
-      nurseStructuralAddRadioGroup.setNoSelectIndex(0);
-
-      nurseStructuralAddRadioGroup.setUseClearButton(false);
-
-      nurseStructuralAddRadioGroup.setModel(getNurseStructuralAddRadioGroupModel());
-
-      nurseStructuralAddRadioGroup.setValues(new int[]{1,2,3});
-
-      addNurseStructuralAddRadioGroup();
-    }
-    return nurseStructuralAddRadioGroup;
-
-  }
-
-  /**
    * 看護体制加算コンテナを取得します。
    * @return 看護体制加算コンテナ
    */
-  protected ACLabelContainer getNurseStructuralAddRadioGroupContainer(){
-    if(nurseStructuralAddRadioGroupContainer==null){
-      nurseStructuralAddRadioGroupContainer = new ACLabelContainer();
-      nurseStructuralAddRadioGroupContainer.setFollowChildEnabled(true);
-      nurseStructuralAddRadioGroupContainer.setVAlignment(VRLayout.CENTER);
-      nurseStructuralAddRadioGroupContainer.add(getNurseStructuralAddRadioGroup(), null);
+  public ACLabelContainer getNurseStructuralAddGroup(){
+    if(nurseStructuralAddGroup==null){
+
+      nurseStructuralAddGroup = new ACLabelContainer();
+
+      nurseStructuralAddGroup.setText("看護体制加算");
+
+      nurseStructuralAddGroup.setHgap(0);
+
+      nurseStructuralAddGroup.setLabelMargin(0);
+
+      nurseStructuralAddGroup.setVgap(0);
+
+      addNurseStructuralAddGroup();
     }
-    return nurseStructuralAddRadioGroupContainer;
-  }
-
-  /**
-   * 看護体制加算モデルを取得します。
-   * @return 看護体制加算モデル
-   */
-  protected ACListModelAdapter getNurseStructuralAddRadioGroupModel(){
-    if(nurseStructuralAddRadioGroupModel==null){
-      nurseStructuralAddRadioGroupModel = new ACListModelAdapter();
-      addNurseStructuralAddRadioGroupModel();
-    }
-    return nurseStructuralAddRadioGroupModel;
-  }
-
-  /**
-   * なしを取得します。
-   * @return なし
-   */
-  public ACRadioButtonItem getNurseStructuralAddRadioItem1(){
-    if(nurseStructuralAddRadioItem1==null){
-
-      nurseStructuralAddRadioItem1 = new ACRadioButtonItem();
-
-      nurseStructuralAddRadioItem1.setText("なし");
-
-      nurseStructuralAddRadioItem1.setGroup(getNurseStructuralAddRadioGroup());
-
-      nurseStructuralAddRadioItem1.setConstraints(VRLayout.FLOW);
-
-      addNurseStructuralAddRadioItem1();
-    }
-    return nurseStructuralAddRadioItem1;
+    return nurseStructuralAddGroup;
 
   }
 
@@ -1426,20 +1369,22 @@ public class QS001118_H2104Design extends QS001ServicePanel {
    * I型を取得します。
    * @return I型
    */
-  public ACRadioButtonItem getNurseStructuralAddRadioItem2(){
-    if(nurseStructuralAddRadioItem2==null){
+  public ACIntegerCheckBox getNurseStructuralAddCheckItem1(){
+    if(nurseStructuralAddCheckItem1==null){
 
-      nurseStructuralAddRadioItem2 = new ACRadioButtonItem();
+      nurseStructuralAddCheckItem1 = new ACIntegerCheckBox();
 
-      nurseStructuralAddRadioItem2.setText("I型");
+      nurseStructuralAddCheckItem1.setText("I型");
 
-      nurseStructuralAddRadioItem2.setGroup(getNurseStructuralAddRadioGroup());
+      nurseStructuralAddCheckItem1.setBindPath("1510142");
 
-      nurseStructuralAddRadioItem2.setConstraints(VRLayout.FLOW);
+      nurseStructuralAddCheckItem1.setSelectValue(2);
 
-      addNurseStructuralAddRadioItem2();
+      nurseStructuralAddCheckItem1.setUnSelectValue(1);
+
+      addNurseStructuralAddCheckItem1();
     }
-    return nurseStructuralAddRadioItem2;
+    return nurseStructuralAddCheckItem1;
 
   }
 
@@ -1447,20 +1392,22 @@ public class QS001118_H2104Design extends QS001ServicePanel {
    * II型を取得します。
    * @return II型
    */
-  public ACRadioButtonItem getNurseStructuralAddRadioItem3(){
-    if(nurseStructuralAddRadioItem3==null){
+  public ACIntegerCheckBox getNurseStructuralAddCheckItem2(){
+    if(nurseStructuralAddCheckItem2==null){
 
-      nurseStructuralAddRadioItem3 = new ACRadioButtonItem();
+      nurseStructuralAddCheckItem2 = new ACIntegerCheckBox();
 
-      nurseStructuralAddRadioItem3.setText("II型");
+      nurseStructuralAddCheckItem2.setText("II型");
 
-      nurseStructuralAddRadioItem3.setGroup(getNurseStructuralAddRadioGroup());
+      nurseStructuralAddCheckItem2.setBindPath("1510143");
 
-      nurseStructuralAddRadioItem3.setConstraints(VRLayout.FLOW);
+      nurseStructuralAddCheckItem2.setSelectValue(2);
 
-      addNurseStructuralAddRadioItem3();
+      nurseStructuralAddCheckItem2.setUnSelectValue(1);
+
+      addNurseStructuralAddCheckItem2();
     }
-    return nurseStructuralAddRadioItem3;
+    return nurseStructuralAddCheckItem2;
 
   }
 
@@ -3173,67 +3120,6 @@ public class QS001118_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 看取り介護加算コンテナを取得します。
-   * @return 看取り介護加算コンテナ
-   */
-  public ACLabelContainer getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
-    if(kaigoWelfareFacilityTakingCareNursingAddDaysContainer==null){
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysContainer = new ACLabelContainer();
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysContainer.setText("看取り介護加算日数");
-
-      addKaigoWelfareFacilityTakingCareNursingAddDaysContainer();
-    }
-    return kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
-
-  }
-
-  /**
-   * 看取り介護加算日数を取得します。
-   * @return 看取り介護加算日数
-   */
-  public ACTextField getKaigoWelfareFacilityTakingCareNursingAddDays(){
-    if(kaigoWelfareFacilityTakingCareNursingAddDays==null){
-
-      kaigoWelfareFacilityTakingCareNursingAddDays = new ACTextField();
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setText("1");
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setBindPath("1510132");
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setColumns(2);
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setCharType(VRCharType.ONLY_DIGIT);
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setHorizontalAlignment(SwingConstants.RIGHT);
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setMaxLength(2);
-
-      addKaigoWelfareFacilityTakingCareNursingAddDays();
-    }
-    return kaigoWelfareFacilityTakingCareNursingAddDays;
-
-  }
-
-  /**
-   * 看取り介護加算日数単位を取得します。
-   * @return 看取り介護加算日数単位
-   */
-  public ACLabel getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
-    if(kaigoWelfareFacilityTakingCareNursingAddDaysUnit==null){
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysUnit = new ACLabel();
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysUnit.setText("日");
-
-      addKaigoWelfareFacilityTakingCareNursingAddDaysUnit();
-    }
-    return kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
-
-  }
-
-  /**
    * 在宅復帰支援機能加算を取得します。
    * @return 在宅復帰支援機能加算
    */
@@ -3791,6 +3677,67 @@ public class QS001118_H2104Design extends QS001ServicePanel {
   }
 
   /**
+   * 看取り介護加算コンテナを取得します。
+   * @return 看取り介護加算コンテナ
+   */
+  public ACLabelContainer getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
+    if(kaigoWelfareFacilityTakingCareNursingAddDaysContainer==null){
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysContainer = new ACLabelContainer();
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysContainer.setText("看取り介護加算日数");
+
+      addKaigoWelfareFacilityTakingCareNursingAddDaysContainer();
+    }
+    return kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
+
+  }
+
+  /**
+   * 看取り介護加算日数を取得します。
+   * @return 看取り介護加算日数
+   */
+  public ACTextField getKaigoWelfareFacilityTakingCareNursingAddDays(){
+    if(kaigoWelfareFacilityTakingCareNursingAddDays==null){
+
+      kaigoWelfareFacilityTakingCareNursingAddDays = new ACTextField();
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setText("1");
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setBindPath("1510132");
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setColumns(2);
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setCharType(VRCharType.ONLY_DIGIT);
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setMaxLength(2);
+
+      addKaigoWelfareFacilityTakingCareNursingAddDays();
+    }
+    return kaigoWelfareFacilityTakingCareNursingAddDays;
+
+  }
+
+  /**
+   * 看取り介護加算日数単位を取得します。
+   * @return 看取り介護加算日数単位
+   */
+  public ACLabel getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
+    if(kaigoWelfareFacilityTakingCareNursingAddDaysUnit==null){
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysUnit = new ACLabel();
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysUnit.setText("日");
+
+      addKaigoWelfareFacilityTakingCareNursingAddDaysUnit();
+    }
+    return kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001118_H2104Design() {
@@ -4219,7 +4166,7 @@ public class QS001118_H2104Design extends QS001ServicePanel {
    */
   protected void addTab2(){
 
-    tab2.add(getNurseStructuralAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    tab2.add(getNurseStructuralAddGroup(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab2.add(getNightStaffDispositionAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -4244,49 +4191,27 @@ public class QS001118_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 看護体制加算に内部項目を追加します。
+   * 看護体制加算コンテナに内部項目を追加します。
    */
-  protected void addNurseStructuralAddRadioGroup(){
+  protected void addNurseStructuralAddGroup(){
 
-  }
+    nurseStructuralAddGroup.add(getNurseStructuralAddCheckItem1(), VRLayout.FLOW);
 
-  /**
-   * 看護体制加算モデルに内部項目を追加します。
-   */
-  protected void addNurseStructuralAddRadioGroupModel(){
-
-    getNurseStructuralAddRadioItem1().setButtonIndex(1);
-
-    getNurseStructuralAddRadioGroupModel().add(getNurseStructuralAddRadioItem1());
-
-    getNurseStructuralAddRadioItem2().setButtonIndex(2);
-
-    getNurseStructuralAddRadioGroupModel().add(getNurseStructuralAddRadioItem2());
-
-    getNurseStructuralAddRadioItem3().setButtonIndex(3);
-
-    getNurseStructuralAddRadioGroupModel().add(getNurseStructuralAddRadioItem3());
-
-  }
-
-  /**
-   * なしに内部項目を追加します。
-   */
-  protected void addNurseStructuralAddRadioItem1(){
+    nurseStructuralAddGroup.add(getNurseStructuralAddCheckItem2(), VRLayout.FLOW);
 
   }
 
   /**
    * I型に内部項目を追加します。
    */
-  protected void addNurseStructuralAddRadioItem2(){
+  protected void addNurseStructuralAddCheckItem1(){
 
   }
 
   /**
    * II型に内部項目を追加します。
    */
-  protected void addNurseStructuralAddRadioItem3(){
+  protected void addNurseStructuralAddCheckItem2(){
 
   }
 
@@ -4908,8 +4833,6 @@ public class QS001118_H2104Design extends QS001ServicePanel {
 
     tab4.add(getKaigoWelfareFacilityTakingCareNursingAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    tab4.add(getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
     tab4.add(getKaigoWelfareFacilityStayReturnSupportAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab4.add(getKaigoWelfareFacilityHomeShareAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -4921,6 +4844,8 @@ public class QS001118_H2104Design extends QS001ServicePanel {
     tab4.add(getKaigoWelfareFacilityOldMeasuresPerson(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab4.add(getKaigoWelfareFacilityCalculationDivisionRadiloContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab4.add(getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -4979,31 +4904,6 @@ public class QS001118_H2104Design extends QS001ServicePanel {
    * 死亡日に内部項目を追加します。
    */
   protected void addKaigoWelfareFacilityTakingCareNursingAddRadioItem4(){
-
-  }
-
-  /**
-   * 看取り介護加算コンテナに内部項目を追加します。
-   */
-  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
-
-    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDays(), VRLayout.FLOW);
-
-    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 看取り介護加算日数に内部項目を追加します。
-   */
-  protected void addKaigoWelfareFacilityTakingCareNursingAddDays(){
-
-  }
-
-  /**
-   * 看取り介護加算日数単位に内部項目を追加します。
-   */
-  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
 
   }
 
@@ -5224,6 +5124,31 @@ public class QS001118_H2104Design extends QS001ServicePanel {
    * 加算のみに内部項目を追加します。
    */
   protected void addKaigoWelfareFacilityCalculationDivisionRadiloItem2(){
+
+  }
+
+  /**
+   * 看取り介護加算コンテナに内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
+
+    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDays(), VRLayout.FLOW);
+
+    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 看取り介護加算日数に内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityTakingCareNursingAddDays(){
+
+  }
+
+  /**
+   * 看取り介護加算日数単位に内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
 
   }
 

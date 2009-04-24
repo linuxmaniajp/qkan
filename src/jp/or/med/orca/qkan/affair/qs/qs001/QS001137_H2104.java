@@ -304,15 +304,23 @@ public class QS001137_H2104 extends QS001137_H2104Event {
                 // 「あり」の場合
                 // 有効にする。
                 setState_VALID_MEDICAL_EXPENSES();
-                VRBindPathParser.set("1240107", defaultMap, new Integer(2));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                VRBindPathParser.set("1240107", defaultMap, new Integer(2));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                 break;
             default:
                 // 「なし」の場合
                 // 無効にする。
                 setState_INVALID_MEDICAL_EXPENSES();
-                VRBindPathParser.set("1240107", defaultMap, new Integer(1));
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                VRBindPathParser.set("1240107", defaultMap, new Integer(1));
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                 break;
             }
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add begin 平成21年4月法改正対応(療養食)
+            //常にdefaultMapに KEY：1240107 VALUE：1（なし）を設定する。
+            VRBindPathParser.set("1240107", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add end
 
             // 若年性認知症利用者受入加算（事業所パネル）KEY：1240116の値をチェックする。
             obj = VRBindPathParser.get("1240116", provider);
@@ -338,6 +346,17 @@ public class QS001137_H2104 extends QS001137_H2104Event {
                 VRBindPathParser.set("1240113", defaultMap, obj);
             }
 
+            // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+            // サービス提供体制強化加算（単独型）を優先するため値がなしの場合のみ適用
+            if(ACCastUtilities.toInt(obj , 0) == 1) {
+                // 1240119 サービス提供体制強化加算(空床型)
+                obj = VRBindPathParser.get("1240119", provider);
+                if (obj != null) {
+                    VRBindPathParser.set("1240113", defaultMap, obj);
+                }
+            }
+            // [ID:0000471][Masahiko Higuchi] 2009/04 add end
+            
             // ※展開
             // 自身(this)にdefaultMapに設定する。
             getThis().setSource(defaultMap);

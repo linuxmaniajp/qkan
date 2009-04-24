@@ -36,6 +36,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -76,6 +77,9 @@ public class QO004137 extends QO004137Event {
 			setState_FACILITY_TYPE_UNIT();
 			// 状態ID：FACILITY_TYPE_UNIT
 		}
+        // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+        setState();
+        // [ID:0000471][Masahiko Higuchi] 2009/04 add end
 	}
 
 	public static void main(String[] args) {
@@ -230,6 +234,23 @@ public class QO004137 extends QO004137Event {
 			return false;
 
 		}
+        
+        // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+        // サービス提供体制強化加算
+        if (getServiceAddProvisionStructuralRadioGroup().getSelectedIndex() > 1) {
+                // サービス提供体制強化加算（空床型）でなし以外が選択されている場合
+                if (getServiceAddProvisionStructuralKusyoRadioGroup().isEnabled()
+                    && getServiceAddProvisionStructuralKusyoRadioGroup()
+                            .getSelectedIndex() > 1) {
+                    // エラーメッセージ
+                    if (QkanMessageList.getInstance()
+                            .QO004_WARNING_OF_DOUBLE_CHECK("サービス提供体制強化加算（単独型・併設型／空床型）の両方") == ACMessageBox.RESULT_CANCEL) {
+                        return false;
+                    }
+                }
+            }    
+        // [ID:0000471][Masahiko Higuchi] 2009/04 add end
+        
 		// 下記のテキストフィールドに対して入力チェックを行う。未入力だった場合は errMsg にメッセージを格納する。
 		// 割引率の値をチェックする。
 		// ・reduceRate（割引率テキスト）※ errMsg = 割引率
@@ -277,12 +298,14 @@ public class QO004137 extends QO004137Event {
 			} else {
 				setState_FACILITY_TYPE_UNIT();
 			}
+            // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+            setState();
+            // [ID:0000471][Masahiko Higuchi] 2009/04 add end
 		} else {
 			// 引数としてfalseが渡された場合
 			// 状態ID：SET_PANEL_FALSE
 			setState_SET_PANEL_FALSE();
 		}
-
 	}
 
 	/**
@@ -320,5 +343,23 @@ public class QO004137 extends QO004137Event {
         QkanCommon.removeDisabledBindPath(getMainGroup(), map);
 
 	}
+
+    /**
+     * 画面状態制御を行います。
+     */
+    public void setState() throws Exception {
+        // ※サービス提供体制強化加算(空床型)の制御処理
+        switch(getFacilitiesDivision().getSelectedIndex()) {
+        case 1: // 単独型
+        case 3: // 単独型ユニット型
+            setState_INVALID_SERVICE_ADD_KUSYO();
+            break;
+        case 2: // 空床型
+        case 4: // ユニット型空床型
+            setState_VALID_SERVICE_ADD_KUSYO();
+            break;
+        }
+        
+    }
 
 }

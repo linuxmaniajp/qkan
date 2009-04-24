@@ -262,13 +262,22 @@ public class QS001109_H2104 extends QS001109_H2104Event {
                 // 「あり」の場合
                 // 有効にする。
                 setState_VALID_MEDICAL_EXPENSES();
-                VRBindPathParser.set("1210109", defaultMap, new Integer(2));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+                //VRBindPathParser.set("1210109", defaultMap, new Integer(2));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
             } else {
                 // 「なし」の場合
                 // 無効にする。
                 setState_INVALID_MEDICAL_EXPENSES();
-                VRBindPathParser.set("1210109", defaultMap, new Integer(1));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+                //VRBindPathParser.set("1210109", defaultMap, new Integer(1));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
             }
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add begin 平成21年4月法改正対応(療養食)
+            //常にdefaultMapに KEY：1210109 VALUE：1（なし）を設定する。
+            VRBindPathParser.set("1210109", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add end
+            
             // ネットワーク加算
             obj = VRBindPathParser.get("1210117", provider);
             if (obj != null) {
@@ -354,6 +363,17 @@ public class QS001109_H2104 extends QS001109_H2104Event {
             if (obj != null) {
                 VRBindPathParser.set("1210123", defaultMap, obj);
             }
+            
+            // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+            // サービス提供体制強化加算（単独型）を優先するため値がなしの場合のみ適用
+            if(ACCastUtilities.toInt(obj , 0) == 1) {
+                // 1210125 サービス提供体制強化加算(空床型)
+                obj = VRBindPathParser.get("1210125", provider);
+                if (obj != null) {
+                    VRBindPathParser.set("1210123", defaultMap, obj);
+                }
+            }
+            // [ID:0000471][Masahiko Higuchi] 2009/04 add end
             
 
             //若年性認知症利用者受入加算（事業所パネル）KEY：1210122の値をチェックする。

@@ -284,11 +284,10 @@ public class QS001134_H2104 extends QS001134_H2104Event {
             // 値が4（職種が薬剤師（薬局））だった場合
             // 画面の状態を｢状態4｣に変更する。
             setState_STATE_MODE_4();
-            if(getPatientDivisionRadio().getSelectedIndex() == 1) {
-                setState_INVALID_GAN_MAKKI();
-            } else {
-                setState_VALID_GAN_MAKKI();
-            }
+            // [ID:0000466][Masahiko Higuchi] 2009/04 edit begin 平成21年4月法改正対応 
+            // V545出荷後の提示情報により遅れて対応
+            setState_VALID_GAN_MAKKI();
+            // [ID:0000466][Masahiko Higuchi] 2009/04 edit end
             break;
         case 5:
         case 6:

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/09  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/04/02  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -209,6 +209,26 @@ public class QS001103_H2104State extends QS001103_H2104Design {
   public void setState_INVALID_LONG_TIME() throws Exception {
 
         getHoumonKangoKaigoLongTime().setEnabled(false);
+
+  }
+
+  /**
+   * 「2人目の訪問時間・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_NUMBER_OF_PEOPLE_TIME() throws Exception {
+
+        getHoumonKangoNumberOfPeopleTime().setEnabled(true);
+
+  }
+
+  /**
+   * 「2人目の訪問時間・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_NUMBER_OF_PEOPLE_TIME() throws Exception {
+
+        getHoumonKangoNumberOfPeopleTime().setEnabled(false);
 
   }
 

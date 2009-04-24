@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2009/02/28  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2009/04/08  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -127,6 +127,28 @@ public class QO004137State extends QO004137Design {
 
         getUnitCareMaintenance().setEnabled(false);
         getUnitCareMaintenance().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「サービス提供体制強化加算（空床型）・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_SERVICE_ADD_KUSYO() throws Exception {
+
+        getServiceAddProvisionStructuralKusyoRadioGroup().setEnabled(true);
+        getServiceAddProvisionStructuralKusyoRadioGroup().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「サービス提供体制強化加算（空床型）・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_SERVICE_ADD_KUSYO() throws Exception {
+
+        getServiceAddProvisionStructuralKusyoRadioGroup().setEnabled(false);
+        getServiceAddProvisionStructuralKusyoRadioGroup().getParent().setEnabled(false);
 
   }
 

@@ -38,6 +38,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -185,7 +186,10 @@ public class QO004109 extends QO004109Event {
 		getNightNursingSystemAdd().setSelectedIndex(1);
 //		getStayHeavyAdd().setSelectedIndex(1);
 		getStaffLack().setSelectedIndex(1);
-
+        // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+        getServiceAddProvisionStructuralKusyoRadioGroup().setSelectedIndex(1);
+        // [ID:0000471][Masahiko Higuchi] 2009/04 add end
+        
 		// 食費・居住費の取得と表示
 		VRMap param = new VRHashMap();
 		VRBindPathParser.set("SYSTEM_DATE", param, QkanSystemInformation
@@ -410,6 +414,22 @@ public class QO004109 extends QO004109Event {
 //        getTasyouRoom().requestFocus();
 //    	return false;
 //    }
+    
+    // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+    // サービス提供体制強化加算
+    if (getServiceAddProvisionStructuralRadioGroup().getSelectedIndex() > 1) {
+            // サービス提供体制強化加算（空床型）でなし以外が選択されている場合
+            if (getServiceAddProvisionStructuralKusyoRadioGroup().isEnabled()
+                    && getServiceAddProvisionStructuralKusyoRadioGroup()
+                            .getSelectedIndex() > 1) {
+                // エラーメッセージ
+                if (QkanMessageList.getInstance()
+                        .QO004_WARNING_OF_DOUBLE_CHECK("サービス提供体制強化加算（単独型・併設型／空床型）の両方") == ACMessageBox.RESULT_CANCEL) {
+                    return false;
+                }
+            }
+        }    
+    // [ID:0000471][Masahiko Higuchi] 2009/04 add end
 
     // 下記のテキストフィールドに対して入力チェックを行う。未入力だった場合は errMsg にメッセージを格納する。
     // ・reduceRate（割引率テキスト）※ errMsg = 割引率
@@ -514,6 +534,20 @@ public class QO004109 extends QO004109Event {
 		// 施設区分の「単独型」、「併設型」以外が選択されている場合
 		  setState_FACILITY_TYPE_UNIT();
 	  }
+      
+	  // [ID:0000471][Masahiko Higuchi] 2009/04 add begin 空床型対応
+	  switch(getFacilitiesDivision().getSelectedIndex()) {
+      case 1: // 単独型
+      case 3: // 単独型ユニット型
+          setState_INVALID_SERVICE_ADD_KUSYO();
+          break;
+      case 2: // 空床型
+      case 4: // ユニット型空床型
+          setState_VALID_SERVICE_ADD_KUSYO();
+          break;
+      }
+      // [ID:0000471][Masahiko Higuchi] 2009/04 add end
+      
   }
 
 }

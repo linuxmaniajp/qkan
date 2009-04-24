@@ -512,17 +512,25 @@ public class QS001129_H2104 extends QS001129_H2104Event {
                 //値が2（あり）だった場合
                 // 有効にする。
                 setState_VALID_MEDICAL_EXPENSES();
-                //defaultMapに KEY：1540118 VALUE：2（あり）を設定する。
-                VRBindPathParser.set("1540118", defaultMap, new Integer(2));   
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                //defaultMapに KEY：1540118 VALUE：2（あり）を設定する。
+//                VRBindPathParser.set("1540118", defaultMap, new Integer(2));   
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                 break;
             default:
                 //値が2（あり）以外だった場合
                 // 無効にする。
                 setState_INVALID_MEDICAL_EXPENSES();
-                //defaultMapに KEY：1540118 VALUE：1（なし）を設定する。
-                VRBindPathParser.set("1540118", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                //defaultMapに KEY：1540118 VALUE：1（なし）を設定する。
+//                VRBindPathParser.set("1540118", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                 break;
             }
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add begin 平成21年4月法改正対応(療養食)
+            //常にdefaultMapに KEY：1540118 VALUE：1（なし）を設定する。
+            VRBindPathParser.set("1540118", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add end
             
             
             //日常生活継続支援加算　事業所[1540128]の値をサービスパネル[1540129]に設定する

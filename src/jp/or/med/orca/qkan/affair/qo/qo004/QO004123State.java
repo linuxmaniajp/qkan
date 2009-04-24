@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2009/02/28  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/03/30  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -105,6 +105,50 @@ public class QO004123State extends QO004123Design {
   public void setState_SET_PANEL_FALSE() throws Exception {
 
         getMainGroup().setEnabled(false);
+
+  }
+
+  /**
+   * 「基本夜間訪問I市町村独自加算・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_BASE_MUNICIPALITY_ADD() throws Exception {
+
+        getBaseMunicipalityAdd().setEnabled(true);
+        getBaseMunicipalityAdd().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「基本夜間訪問I市町村独自加算・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_BASE_MUNICIPALITY_ADD() throws Exception {
+
+        getBaseMunicipalityAdd().setEnabled(false);
+        getBaseMunicipalityAdd().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「夜間訪問II市町村独自加算・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_SERVICE_MUNICIPALITY_ADD() throws Exception {
+
+        getServiceMunicipalityAdd().setEnabled(true);
+        getServiceMunicipalityAdd().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「夜間訪問II市町村独自加算・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_SERVICE_MUNICIPALITY_ADD() throws Exception {
+
+        getServiceMunicipalityAdd().setEnabled(false);
+        getServiceMunicipalityAdd().getParent().setEnabled(false);
 
   }
 

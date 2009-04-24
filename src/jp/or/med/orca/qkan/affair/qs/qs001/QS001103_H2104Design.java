@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/13  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/04/02  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -216,6 +216,16 @@ public class QS001103_H2104Design extends QS001ServicePanel {
   private ACRadioButtonItem houmonKangoNumberOfPeople1;
 
   private ACRadioButtonItem houmonKangoNumberOfPeople2;
+
+  private ACValueArrayRadioButtonGroup houmonKangoNumberOfPeopleTime;
+
+  private ACLabelContainer houmonKangoNumberOfPeopleTimeContainer;
+
+  private ACListModelAdapter houmonKangoNumberOfPeopleTimeModel;
+
+  private ACRadioButtonItem houmonKangoNumberOfPeopleTimeItem1;
+
+  private ACRadioButtonItem houmonKangoNumberOfPeopleTimeItem2;
 
   private ACValueArrayRadioButtonGroup providerAddMountainousAreaRafioRadioGroup;
 
@@ -1434,6 +1444,101 @@ public class QS001103_H2104Design extends QS001ServicePanel {
   }
 
   /**
+   * 2人目の訪問時間を取得します。
+   * @return 2人目の訪問時間
+   */
+  public ACValueArrayRadioButtonGroup getHoumonKangoNumberOfPeopleTime(){
+    if(houmonKangoNumberOfPeopleTime==null){
+
+      houmonKangoNumberOfPeopleTime = new ACValueArrayRadioButtonGroup();
+
+      getHoumonKangoNumberOfPeopleTimeContainer().setText("2人目の訪問時間");
+
+      houmonKangoNumberOfPeopleTime.setBindPath("1130115");
+
+      houmonKangoNumberOfPeopleTime.setNoSelectIndex(0);
+
+      houmonKangoNumberOfPeopleTime.setUseClearButton(false);
+
+      houmonKangoNumberOfPeopleTime.setModel(getHoumonKangoNumberOfPeopleTimeModel());
+
+      houmonKangoNumberOfPeopleTime.setValues(new int[]{1,2});
+
+      addHoumonKangoNumberOfPeopleTime();
+    }
+    return houmonKangoNumberOfPeopleTime;
+
+  }
+
+  /**
+   * 2人目の訪問時間コンテナを取得します。
+   * @return 2人目の訪問時間コンテナ
+   */
+  protected ACLabelContainer getHoumonKangoNumberOfPeopleTimeContainer(){
+    if(houmonKangoNumberOfPeopleTimeContainer==null){
+      houmonKangoNumberOfPeopleTimeContainer = new ACLabelContainer();
+      houmonKangoNumberOfPeopleTimeContainer.setFollowChildEnabled(true);
+      houmonKangoNumberOfPeopleTimeContainer.setVAlignment(VRLayout.CENTER);
+      houmonKangoNumberOfPeopleTimeContainer.add(getHoumonKangoNumberOfPeopleTime(), null);
+    }
+    return houmonKangoNumberOfPeopleTimeContainer;
+  }
+
+  /**
+   * 2人目の訪問時間モデルを取得します。
+   * @return 2人目の訪問時間モデル
+   */
+  protected ACListModelAdapter getHoumonKangoNumberOfPeopleTimeModel(){
+    if(houmonKangoNumberOfPeopleTimeModel==null){
+      houmonKangoNumberOfPeopleTimeModel = new ACListModelAdapter();
+      addHoumonKangoNumberOfPeopleTimeModel();
+    }
+    return houmonKangoNumberOfPeopleTimeModel;
+  }
+
+  /**
+   * 30分未満を取得します。
+   * @return 30分未満
+   */
+  public ACRadioButtonItem getHoumonKangoNumberOfPeopleTimeItem1(){
+    if(houmonKangoNumberOfPeopleTimeItem1==null){
+
+      houmonKangoNumberOfPeopleTimeItem1 = new ACRadioButtonItem();
+
+      houmonKangoNumberOfPeopleTimeItem1.setText("30分未満");
+
+      houmonKangoNumberOfPeopleTimeItem1.setGroup(getHoumonKangoNumberOfPeopleTime());
+
+      houmonKangoNumberOfPeopleTimeItem1.setConstraints(VRLayout.FLOW);
+
+      addHoumonKangoNumberOfPeopleTimeItem1();
+    }
+    return houmonKangoNumberOfPeopleTimeItem1;
+
+  }
+
+  /**
+   * 30分以上を取得します。
+   * @return 30分以上
+   */
+  public ACRadioButtonItem getHoumonKangoNumberOfPeopleTimeItem2(){
+    if(houmonKangoNumberOfPeopleTimeItem2==null){
+
+      houmonKangoNumberOfPeopleTimeItem2 = new ACRadioButtonItem();
+
+      houmonKangoNumberOfPeopleTimeItem2.setText("30分以上");
+
+      houmonKangoNumberOfPeopleTimeItem2.setGroup(getHoumonKangoNumberOfPeopleTime());
+
+      houmonKangoNumberOfPeopleTimeItem2.setConstraints(VRLayout.FLOW);
+
+      addHoumonKangoNumberOfPeopleTimeItem2();
+    }
+    return houmonKangoNumberOfPeopleTimeItem2;
+
+  }
+
+  /**
    * 中山間地域等でのサービス提供加算を取得します。
    * @return 中山間地域等でのサービス提供加算
    */
@@ -1921,6 +2026,8 @@ public class QS001103_H2104Design extends QS001ServicePanel {
 
     tab2.add(getHoumonKangoNumberOfPeopleContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab2.add(getHoumonKangoNumberOfPeopleTimeContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     tab2.add(getProviderAddMountainousAreaRafioRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
@@ -2066,6 +2173,42 @@ public class QS001103_H2104Design extends QS001ServicePanel {
    * 2人に内部項目を追加します。
    */
   protected void addHoumonKangoNumberOfPeople2(){
+
+  }
+
+  /**
+   * 2人目の訪問時間に内部項目を追加します。
+   */
+  protected void addHoumonKangoNumberOfPeopleTime(){
+
+  }
+
+  /**
+   * 2人目の訪問時間モデルに内部項目を追加します。
+   */
+  protected void addHoumonKangoNumberOfPeopleTimeModel(){
+
+    getHoumonKangoNumberOfPeopleTimeItem1().setButtonIndex(1);
+
+    getHoumonKangoNumberOfPeopleTimeModel().add(getHoumonKangoNumberOfPeopleTimeItem1());
+
+    getHoumonKangoNumberOfPeopleTimeItem2().setButtonIndex(2);
+
+    getHoumonKangoNumberOfPeopleTimeModel().add(getHoumonKangoNumberOfPeopleTimeItem2());
+
+  }
+
+  /**
+   * 30分未満に内部項目を追加します。
+   */
+  protected void addHoumonKangoNumberOfPeopleTimeItem1(){
+
+  }
+
+  /**
+   * 30分以上に内部項目を追加します。
+   */
+  protected void addHoumonKangoNumberOfPeopleTimeItem2(){
 
   }
 

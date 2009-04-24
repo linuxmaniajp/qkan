@@ -30,6 +30,8 @@
 
 package jp.or.med.orca.qkan.affair.qo.qo004;
 
+import javax.swing.event.ListSelectionEvent;
+
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -144,6 +146,10 @@ public class QO004123 extends QO004123Event {
 		// ˆø”‚Æ‚µ‚Ätrue‚ª“n‚³‚ê‚½ê‡
 		// ó‘ÔIDFSET_PANEL_TRUE
 		setState_SET_PANEL_TRUE();
+        // [ID:0000468][Masahiko Higuchi] 2009/04 add begin ŠÅŒì‘Ì§‰ÁZ‚Ì•¹Z’è
+		changeState();
+        // [ID:0000468][Masahiko Higuchi] 2009/04 add end
+        
 	} else {
 		// ˆø”‚Æ‚µ‚Äfalse‚ª“n‚³‚ê‚½ê‡
 		// ó‘ÔIDFSET_PANEL_FALSE
@@ -163,5 +169,40 @@ public class QO004123 extends QO004123Event {
 	  getMainGroup().applySource();
 	  
   }
+
+  // [ID:0000442][Masahiko Higuchi] 2009/04 add begin s’¬‘º“Æ©‰ÁZ§Œä
+    /**
+     * ‰æ–Êó‘Ô§Œä
+     */
+    public void changeState() throws Exception {
+        // {İ‹æ•ªƒ‰ƒWƒI‚Ì’l‚É‚æ‚Á‚Äs’¬‘º“Æ©‰ÁZ‚ğ§Œä
+        if(getFacilitiesDivision().getSelectedIndex() == 1) {
+            // IŒ^—LŒø
+            setState_VALID_BASE_MUNICIPALITY_ADD();
+            // ‡UŒ^–³Œø
+            setState_INVALID_SERVICE_MUNICIPALITY_ADD();
+        } else {
+            // ‡TŒ^–³Œø
+            setState_INVALID_BASE_MUNICIPALITY_ADD();
+            // ‡UŒ^—LŒø
+            setState_VALID_SERVICE_MUNICIPALITY_ADD();
+        }
+    }
+
+    /**
+     * ƒf[ƒ^ƒoƒCƒ“ƒhŒã‚Ìˆ—
+     */
+    public void binded() throws Exception {
+        changeState();        
+    }
+
+    /**
+     * 
+     */
+    protected void facilitiesDivisionSelectionChanged(ListSelectionEvent e) throws Exception {
+        changeState();
+        
+    }
+    // [ID:0000442][Masahiko Higuchi] 2009/04 add end
 
 }

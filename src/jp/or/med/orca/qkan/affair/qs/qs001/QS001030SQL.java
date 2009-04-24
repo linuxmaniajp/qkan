@@ -17,23 +17,23 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 廣瀬 一海
- * 作成日: 2009/04/08  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 開発者: サービス予定
+ * 作成日: 2009/03/27  日本コンピューター株式会社 サービス予定 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム その他機能 (O)
- * プロセス 事業所登録 (004)
- * プログラム 介護予防短期入所生活介護 (QO004137)
+ * サブシステム 予定管理 (S)
+ * プロセス サービス予定 (001)
+ * プログラム 集計明細画面 (QS001030)
  *
  *****************************************************************
  */
-package jp.or.med.orca.qkan.affair.qo.qo004;
+package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
+import java.text.*;
 import java.io.*;
 import java.sql.SQLException;
-import java.text.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -78,107 +78,116 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
- * 介護予防短期入所生活介護イベント定義(QO004137) 
+ * 集計明細画面SQL定義(QS001030) 
  */
-public abstract class QO004137Event extends QO004137SQL implements iProviderServicePanel {
+public class QS001030SQL extends QS001030State {
+  private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
   /**
    * コンストラクタです。
    */
-  public QO004137Event(){
-    addEvents();
+  public QS001030SQL() {
   }
-  /**
-   * イベント発生条件を定義します。
-   */
-  protected void addEvents() {
-    getFacilitiesDivision().addListSelectionListener(new ListSelectionListener(){
-        private boolean lockFlag = false;
-        public void valueChanged(ListSelectionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                facilitiesDivisionSelectionChanged(e);
-            }catch(Throwable ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
 
+  /**
+   * 「外部利用型の給付上限単位数取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_SELECT_EXTERNAL_USE_LIMIT(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" LIMIT_RATE_VALUE");
+
+    sb.append(" AS EXTERNAL_USE_LIMIT");
+
+    sb.append(" FROM");
+
+    sb.append(" M_LIMIT_RATE");
+
+    sb.append(",M_LIMIT_RATE_DETAIL");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" M_LIMIT_RATE.LIMIT_RATE_TYPE");
+
+    sb.append(" =");
+
+    sb.append(" 2");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" M_LIMIT_RATE.LIMIT_RATE_TYPE");
+
+    sb.append(" =");
+
+    sb.append(" M_LIMIT_RATE_DETAIL.LIMIT_RATE_TYPE");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" M_LIMIT_RATE.LIMIT_RATE_HISTORY_ID");
+
+    sb.append(" =");
+
+    sb.append(" M_LIMIT_RATE_DETAIL.LIMIT_RATE_HISTORY_ID");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" M_LIMIT_RATE.LIMIT_RATE_VALID_START");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" M_LIMIT_RATE.LIMIT_RATE_VALID_END");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" M_LIMIT_RATE_DETAIL.JOTAI_CODE");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("JOTAI_CODE", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
   }
-  //コンポーネントイベント
-
-  /**
-   * 「画面状態設定」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void facilitiesDivisionSelectionChanged(ListSelectionEvent e) throws Exception;
-
-  //変数定義
-
-  public static final int FACILITY_TYPE_NORMAL_TANDOKU = 1;
-  public static final int FACILITY_TYPE_NORMAL_HEISETSU = 2;
-  //getter/setter
-
-  //内部関数
-
-  /**
-   * 「初期化」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void initialize() throws Exception;
-
-  /**
-   * 「入力チェック」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean isValidInput() throws Exception;
-
-  /**
-   * 「パネル状態制御」に関する処理を行ないます。
-   *
-   * @param state boolean
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void stateManager(boolean state) throws Exception;
-
-  /**
-   * 「パネルデータ取得」に関する処理を行ないます。
-   *
-   * @param map VRMap
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void getDetails(VRMap map) throws Exception;
-
-  /**
-   * 「無効データ削除」に関する処理を行ないます。
-   *
-   * @param map VRMap
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void removeInvalidData(VRMap map) throws Exception;
-
-  /**
-   * 「画面状態制御」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void setState() throws Exception;
 
 }

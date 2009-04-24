@@ -46,6 +46,7 @@ import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResu
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
@@ -106,6 +107,24 @@ public class QS001030 extends QS001030Event {
         .getServiceUnitCalcurateResult(services,
                 CareServiceCodeCalcurater.CALC_MODE_OUTER_SERVICE_LIMIT_AMOUNT);
 
+        // [ID:0000470][Tozo TANAKA] 2009/03/27 add begin 平成21年4月法改正対応(請求)
+        // ※外部利用型の給付限度単位数を取得
+        if(insureInfo.getData("JOTAI_CODE") != null){
+            // 内部レコード変数sqlParamを宣言し生成する。
+            VRMap sqlParam = new VRHashMap();
+            // sqlParamにキー[TARGET_DATE_START]で対象年月[calcurater.getTargetDate()]を設定する。
+            VRBindPathParser.set("TARGET_DATE_START", sqlParam, calcurater.getTargetDate());
+            // sqlParamにキー[JOTAI_CODE]でinsureInfo内の要介護[JOTAI_CODE]を設定する。
+            VRBindPathParser.set("JOTAI_CODE", sqlParam, insureInfo.getData("JOTAI_CODE"));
+            // DBから外部利用型の給付限度単位数を取得する。(SELECT_EXTERNAL_USE_LIMIT)
+            VRList rows=getDBManager().executeQuery(getSQL_SELECT_EXTERNAL_USE_LIMIT(sqlParam));
+            if(rows.size()>0){
+                // 引数insureInfoに、取得した給付限度単位数をマージする。
+                insureInfo.put("EXTERNAL_USE_LIMIT", ((Map) rows.get(0))
+                        .get("EXTERNAL_USE_LIMIT"));
+            }
+        }
+        // [ID:0000470][Tozo TANAKA] 2009/03/27 add end
         
         // ※引数を元にテーブルモデルを作成し、集計明細テーブル(detailsTable)に設定する。
         getDetailsTable().setModel(

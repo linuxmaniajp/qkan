@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/17  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/03/30  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -159,17 +159,11 @@ public class QS001129_H2104Design extends QS001ServicePanel {
 
   private ACRadioButtonItem dailyLifeContinuanceRadioItem2;
 
-  private ACValueArrayRadioButtonGroup nurseStructuralAddRadioGroup;
+  private ACLabelContainer nurseStructuralAddGroup;
 
-  private ACLabelContainer nurseStructuralAddRadioGroupContainer;
+  private ACIntegerCheckBox nurseStructuralAddCheckItem1;
 
-  private ACListModelAdapter nurseStructuralAddRadioGroupModel;
-
-  private ACRadioButtonItem nurseStructuralAddRadioItem1;
-
-  private ACRadioButtonItem nurseStructuralAddRadioItem2;
-
-  private ACRadioButtonItem nurseStructuralAddRadioItem3;
+  private ACIntegerCheckBox nurseStructuralAddCheckItem2;
 
   private ACValueArrayRadioButtonGroup nightStaffDispositionAddRadioGroup;
 
@@ -1126,76 +1120,25 @@ public class QS001129_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 看護体制加算を取得します。
-   * @return 看護体制加算
-   */
-  public ACValueArrayRadioButtonGroup getNurseStructuralAddRadioGroup(){
-    if(nurseStructuralAddRadioGroup==null){
-
-      nurseStructuralAddRadioGroup = new ACValueArrayRadioButtonGroup();
-
-      getNurseStructuralAddRadioGroupContainer().setText("看護体制加算");
-
-      nurseStructuralAddRadioGroup.setBindPath("1540130");
-
-      nurseStructuralAddRadioGroup.setNoSelectIndex(0);
-
-      nurseStructuralAddRadioGroup.setUseClearButton(false);
-
-      nurseStructuralAddRadioGroup.setModel(getNurseStructuralAddRadioGroupModel());
-
-      nurseStructuralAddRadioGroup.setValues(new int[]{1,2,3});
-
-      addNurseStructuralAddRadioGroup();
-    }
-    return nurseStructuralAddRadioGroup;
-
-  }
-
-  /**
    * 看護体制加算コンテナを取得します。
    * @return 看護体制加算コンテナ
    */
-  protected ACLabelContainer getNurseStructuralAddRadioGroupContainer(){
-    if(nurseStructuralAddRadioGroupContainer==null){
-      nurseStructuralAddRadioGroupContainer = new ACLabelContainer();
-      nurseStructuralAddRadioGroupContainer.setFollowChildEnabled(true);
-      nurseStructuralAddRadioGroupContainer.setVAlignment(VRLayout.CENTER);
-      nurseStructuralAddRadioGroupContainer.add(getNurseStructuralAddRadioGroup(), null);
+  public ACLabelContainer getNurseStructuralAddGroup(){
+    if(nurseStructuralAddGroup==null){
+
+      nurseStructuralAddGroup = new ACLabelContainer();
+
+      nurseStructuralAddGroup.setText("看護体制加算");
+
+      nurseStructuralAddGroup.setHgap(0);
+
+      nurseStructuralAddGroup.setLabelMargin(0);
+
+      nurseStructuralAddGroup.setVgap(0);
+
+      addNurseStructuralAddGroup();
     }
-    return nurseStructuralAddRadioGroupContainer;
-  }
-
-  /**
-   * 看護体制加算モデルを取得します。
-   * @return 看護体制加算モデル
-   */
-  protected ACListModelAdapter getNurseStructuralAddRadioGroupModel(){
-    if(nurseStructuralAddRadioGroupModel==null){
-      nurseStructuralAddRadioGroupModel = new ACListModelAdapter();
-      addNurseStructuralAddRadioGroupModel();
-    }
-    return nurseStructuralAddRadioGroupModel;
-  }
-
-  /**
-   * なしを取得します。
-   * @return なし
-   */
-  public ACRadioButtonItem getNurseStructuralAddRadioItem1(){
-    if(nurseStructuralAddRadioItem1==null){
-
-      nurseStructuralAddRadioItem1 = new ACRadioButtonItem();
-
-      nurseStructuralAddRadioItem1.setText("なし");
-
-      nurseStructuralAddRadioItem1.setGroup(getNurseStructuralAddRadioGroup());
-
-      nurseStructuralAddRadioItem1.setConstraints(VRLayout.FLOW);
-
-      addNurseStructuralAddRadioItem1();
-    }
-    return nurseStructuralAddRadioItem1;
+    return nurseStructuralAddGroup;
 
   }
 
@@ -1203,20 +1146,22 @@ public class QS001129_H2104Design extends QS001ServicePanel {
    * I型を取得します。
    * @return I型
    */
-  public ACRadioButtonItem getNurseStructuralAddRadioItem2(){
-    if(nurseStructuralAddRadioItem2==null){
+  public ACIntegerCheckBox getNurseStructuralAddCheckItem1(){
+    if(nurseStructuralAddCheckItem1==null){
 
-      nurseStructuralAddRadioItem2 = new ACRadioButtonItem();
+      nurseStructuralAddCheckItem1 = new ACIntegerCheckBox();
 
-      nurseStructuralAddRadioItem2.setText("I型");
+      nurseStructuralAddCheckItem1.setText("I型");
 
-      nurseStructuralAddRadioItem2.setGroup(getNurseStructuralAddRadioGroup());
+      nurseStructuralAddCheckItem1.setBindPath("1540137");
 
-      nurseStructuralAddRadioItem2.setConstraints(VRLayout.FLOW);
+      nurseStructuralAddCheckItem1.setSelectValue(2);
 
-      addNurseStructuralAddRadioItem2();
+      nurseStructuralAddCheckItem1.setUnSelectValue(1);
+
+      addNurseStructuralAddCheckItem1();
     }
-    return nurseStructuralAddRadioItem2;
+    return nurseStructuralAddCheckItem1;
 
   }
 
@@ -1224,20 +1169,22 @@ public class QS001129_H2104Design extends QS001ServicePanel {
    * II型を取得します。
    * @return II型
    */
-  public ACRadioButtonItem getNurseStructuralAddRadioItem3(){
-    if(nurseStructuralAddRadioItem3==null){
+  public ACIntegerCheckBox getNurseStructuralAddCheckItem2(){
+    if(nurseStructuralAddCheckItem2==null){
 
-      nurseStructuralAddRadioItem3 = new ACRadioButtonItem();
+      nurseStructuralAddCheckItem2 = new ACIntegerCheckBox();
 
-      nurseStructuralAddRadioItem3.setText("II型");
+      nurseStructuralAddCheckItem2.setText("II型");
 
-      nurseStructuralAddRadioItem3.setGroup(getNurseStructuralAddRadioGroup());
+      nurseStructuralAddCheckItem2.setBindPath("1540138");
 
-      nurseStructuralAddRadioItem3.setConstraints(VRLayout.FLOW);
+      nurseStructuralAddCheckItem2.setSelectValue(2);
 
-      addNurseStructuralAddRadioItem3();
+      nurseStructuralAddCheckItem2.setUnSelectValue(1);
+
+      addNurseStructuralAddCheckItem2();
     }
-    return nurseStructuralAddRadioItem3;
+    return nurseStructuralAddCheckItem2;
 
   }
 
@@ -3815,7 +3762,7 @@ public class QS001129_H2104Design extends QS001ServicePanel {
 
     tab1.add(getDailyLifeContinuanceRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    tab1.add(getNurseStructuralAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    tab1.add(getNurseStructuralAddGroup(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab1.add(getNightStaffDispositionAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -4105,49 +4052,27 @@ public class QS001129_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 看護体制加算に内部項目を追加します。
+   * 看護体制加算コンテナに内部項目を追加します。
    */
-  protected void addNurseStructuralAddRadioGroup(){
+  protected void addNurseStructuralAddGroup(){
 
-  }
+    nurseStructuralAddGroup.add(getNurseStructuralAddCheckItem1(), VRLayout.FLOW);
 
-  /**
-   * 看護体制加算モデルに内部項目を追加します。
-   */
-  protected void addNurseStructuralAddRadioGroupModel(){
-
-    getNurseStructuralAddRadioItem1().setButtonIndex(1);
-
-    getNurseStructuralAddRadioGroupModel().add(getNurseStructuralAddRadioItem1());
-
-    getNurseStructuralAddRadioItem2().setButtonIndex(2);
-
-    getNurseStructuralAddRadioGroupModel().add(getNurseStructuralAddRadioItem2());
-
-    getNurseStructuralAddRadioItem3().setButtonIndex(3);
-
-    getNurseStructuralAddRadioGroupModel().add(getNurseStructuralAddRadioItem3());
-
-  }
-
-  /**
-   * なしに内部項目を追加します。
-   */
-  protected void addNurseStructuralAddRadioItem1(){
+    nurseStructuralAddGroup.add(getNurseStructuralAddCheckItem2(), VRLayout.FLOW);
 
   }
 
   /**
    * I型に内部項目を追加します。
    */
-  protected void addNurseStructuralAddRadioItem2(){
+  protected void addNurseStructuralAddCheckItem1(){
 
   }
 
   /**
    * II型に内部項目を追加します。
    */
-  protected void addNurseStructuralAddRadioItem3(){
+  protected void addNurseStructuralAddCheckItem2(){
 
   }
 

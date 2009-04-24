@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/20  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/03/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -554,15 +554,15 @@ public class QS001125_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 介護・看護職員の不足を取得します。
-   * @return 介護・看護職員の不足
+   * 従業者の不足を取得します。
+   * @return 従業者の不足
    */
   public ACRadioButtonItem getStaffSubtractionRadioItem3(){
     if(staffSubtractionRadioItem3==null){
 
       staffSubtractionRadioItem3 = new ACRadioButtonItem();
 
-      staffSubtractionRadioItem3.setText("介護・看護職員の不足");
+      staffSubtractionRadioItem3.setText("従業者の不足");
 
       staffSubtractionRadioItem3.setGroup(getStaffSubtractionRadio());
 
@@ -1682,7 +1682,7 @@ public class QS001125_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 介護・看護職員の不足に内部項目を追加します。
+   * 従業者の不足に内部項目を追加します。
    */
   protected void addStaffSubtractionRadioItem3(){
 

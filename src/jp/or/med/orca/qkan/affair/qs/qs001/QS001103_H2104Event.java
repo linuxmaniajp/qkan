@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/09  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/04/02  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -191,6 +191,22 @@ public abstract class QS001103_H2104Event extends QS001103_H2104State implements
             }
         }
     });
+    getHoumonKangoNumberOfPeople().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                houmonKangoNumberOfPeopleSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -236,6 +252,13 @@ public abstract class QS001103_H2104Event extends QS001103_H2104State implements
    * @throws Exception 処理例外
    */
   protected abstract void houmonKangoKaigoSpecialManageRadioSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「訪問人数選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void houmonKangoNumberOfPeopleSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 

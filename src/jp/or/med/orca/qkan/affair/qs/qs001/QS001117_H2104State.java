@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/06  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/04/08  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -95,7 +95,6 @@ public class QS001117_H2104State extends QS001117_H2104Design {
   public void setState_PROVIDER_CUT_OFF() throws Exception {
 
         getKaigoSupportSpecificProviderSubtractionRadio().setEnabled(false);
-        getKaigoSupportSpecificProviderSubtractionRadio().getParent().setEnabled(false);
 
   }
 
@@ -106,7 +105,6 @@ public class QS001117_H2104State extends QS001117_H2104Design {
   public void setState_PROVIDER_CUT_ON() throws Exception {
 
         getKaigoSupportSpecificProviderSubtractionRadio().setEnabled(true);
-        getKaigoSupportSpecificProviderSubtractionRadio().getParent().setEnabled(true);
 
   }
 

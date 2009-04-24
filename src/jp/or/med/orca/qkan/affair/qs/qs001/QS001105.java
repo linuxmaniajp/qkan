@@ -169,21 +169,24 @@ public class QS001105 extends QS001105Event {
             if (obj != null) {
                 VRBindPathParser.set("1140103", defaultMap, obj);
             }
+            // [ID:0000475][Masahiko Higuchi] 2009/04 add begin
+            // なぜかリリース当初よりの既存ロジックでサービス提供体制強化加算のコード番号とかぶっているためグレーアウトされるのでコメントアウト
             // リハビリ・マネジメント加算
-            obj = VRBindPathParser.get("1140102", provider);
-            if (obj != null) {
-                switch(ACCastUtilities.toInt(obj)){
-                case 1:
-                    VRBindPathParser.set("1140105", defaultMap, obj);
-                    setState_INVALID_MANAGEMENT_ADD();
-                    break;
-                case 2:
-                    VRBindPathParser.set("1140105", defaultMap, obj);
-                    setState_VALID_MANAGEMENT_ADD();
-                    break;
-                }
-                
-            }
+//            obj = VRBindPathParser.get("1140102", provider);
+//            if (obj != null) {
+//                switch(ACCastUtilities.toInt(obj)){
+//                case 1:
+//                    VRBindPathParser.set("1140105", defaultMap, obj);
+//                    setState_INVALID_MANAGEMENT_ADD();
+//                    break;
+//                case 2:
+//                    VRBindPathParser.set("1140105", defaultMap, obj);
+//                    setState_VALID_MANAGEMENT_ADD();
+//                    break;
+//                }
+//                
+//            }
+            // [ID:0000475][Masahiko Higuchi] 2009/04 add end
             // ※展開
             // 自身(this)にdefaultMapに設定する。
             getThis().setSource(defaultMap);

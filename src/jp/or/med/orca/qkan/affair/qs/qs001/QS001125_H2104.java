@@ -353,4 +353,25 @@ public class QS001125_H2104 extends QS001125_H2104Event {
         //QkanConstants.SERVICE_LOW_VERSION_H2104 を返す。
         return QkanConstants.SERVICE_LOW_VERSION_H2104;
     }
+    
+    /**
+     * バインド後処理
+     */
+    public void binded()throws Exception{
+        super.binded();
+        ComboBoxModel mdl = getKaigoSupportSpecialMemberName().getModel();
+        VRBindSource src=null;
+        if(mdl instanceof VRComboBoxModelAdapter){
+            src = ((VRComboBoxModelAdapter)mdl).getAdaptee();
+        }
+        if (src instanceof VRList) {
+            int idx = ACBindUtilities.getMatchIndexFromValue(
+                    (VRList)src, "CARE_MANAGER_NO",
+                    getKaigoSupportSpecialMemberNumber().getText());
+            if(idx>=0){
+                getKaigoSupportSpecialMemberName().setSelectedIndex(idx);
+            }
+        }
+    }
+    
 }

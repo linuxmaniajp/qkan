@@ -348,15 +348,24 @@ public class QS001138_H2104 extends QS001138_H2104Event {
                 // 「あり」の場合
                 // 有効にする。
                 setState_VALID_MEDICAL_EXPENSES();
-                VRBindPathParser.set("1250108", defaultMap, new Integer(2));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                VRBindPathParser.set("1250108", defaultMap, new Integer(2));
+                // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                 break;
             default:
                 // 「なし」の場合
                 // 無効にする。
                 setState_INVALID_MEDICAL_EXPENSES();
-                VRBindPathParser.set("1250108", defaultMap, new Integer(1));
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 delete begin 平成21年4月法改正対応(療養食)
+//                VRBindPathParser.set("1250108", defaultMap, new Integer(1));
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 delete end
                 break;
             }
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add begin 平成21年4月法改正対応(療養食)
+            //常にdefaultMapに KEY：1250108 VALUE：1（なし）を設定する。
+            VRBindPathParser.set("1250108", defaultMap, new Integer(1));   
+            // [ID:0000481][Tozo TANAKA] 2009/04/08 add end
+            
             // 夜勤職員配置加算
             obj = VRBindPathParser.get("1250118", provider);
             if (obj != null) {

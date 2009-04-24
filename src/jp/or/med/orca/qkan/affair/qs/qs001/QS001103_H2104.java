@@ -154,6 +154,29 @@ public class QS001103_H2104 extends QS001103_H2104Event {
     protected void houmonKangoKaigoTimeZoneSelectionChanged(ListSelectionEvent e)
             throws Exception {
         // 時間帯変更
+        // 訪問看護介護時間帯(houmonKaigoTimeZone)の値をチェックする。
+        switch (getHoumonKangoKaigoTimeZone().getSelectedIndex()) {
+        case 1:
+            // 通常の場合
+            // 開始時間を9:00にする。
+            getHoumonKangoKaigoBeginTime().setText("9:00");
+            break;
+        case 2:
+            // 早朝の場合
+            // 開始時間を6:00にする。
+            getHoumonKangoKaigoBeginTime().setText("6:00");
+            break;
+        case 3:
+            // 夜間の場合
+            // 開始時間を18:00にする。
+            getHoumonKangoKaigoBeginTime().setText("18:00");
+            break;
+        case 4:
+            // 深夜の場合
+            // 開始時間を22:00にする。
+            getHoumonKangoKaigoBeginTime().setText("22:00");
+            break;
+        }
         //終了時間計算処理を呼び出す。
         checkEndTime();
 
@@ -488,6 +511,26 @@ public class QS001103_H2104 extends QS001103_H2104Event {
             // 「長時間訪問看護加算・無効」状態にする。(INVALID_LONG_TIME)
             setState_INVALID_LONG_TIME();
         }
+        
+        // [ID:0000478][Masahiko Higuchi] 2009/04 add begin 訪問看護サービスコードの追加対応
+        switch(getHoumonKangoKaigoTime().getSelectedIndex()){
+        case 1:
+        case 2:
+            // 時間区分が20分未満　30分未満の場合は無効にする
+            setState_INVALID_NUMBER_OF_PEOPLE_TIME();
+            break;
+        case 3:
+        case 4:
+            if(getHoumonKangoNumberOfPeople().getSelectedIndex() == 2) {
+                // 訪問人数が2人の場合
+                setState_VALID_NUMBER_OF_PEOPLE_TIME();
+            } else {
+                // 訪問人数が1人の場合
+                setState_INVALID_NUMBER_OF_PEOPLE_TIME();
+            }
+            break;
+        }        
+        // [ID:0000478][Masahiko Higuchi] 2009/04 add end
         // 時間の状態制御
         changeState();
     }
@@ -500,6 +543,15 @@ public class QS001103_H2104 extends QS001103_H2104Event {
     protected void houmonKangoKaigoSpecialManageRadioSelectionChanged(ListSelectionEvent e) throws Exception {
         // 特別管理加算変更
         //画面状態制御処理を呼び出す。
+        checkState();
+        
+    }
+
+    /**
+     * 2人目の訪問時間選択　イベントです
+     */
+    protected void houmonKangoNumberOfPeopleSelectionChanged(ListSelectionEvent e) throws Exception {
+        // 画面状態制御
         checkState();
         
     }

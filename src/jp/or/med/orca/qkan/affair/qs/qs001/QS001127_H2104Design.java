@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/03  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/03/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -162,10 +162,6 @@ public class QS001127_H2104Design extends QS001ServicePanel {
   private ACRadioButtonItem dementiaProfessionalCareAddRadioItem2;
 
   private ACRadioButtonItem dementiaProfessionalCareAddRadioItem3;
-
-  private ACLabelContainer kaigoHealthCareOfTheAgedHijoAddition;
-
-  private ACIntegerCheckBox leaveApartmentsSupportAdd;
 
   private ACPanel tab2;
 
@@ -927,46 +923,6 @@ public class QS001127_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 退所関連加算を取得します。
-   * @return 退所関連加算
-   */
-  public ACLabelContainer getKaigoHealthCareOfTheAgedHijoAddition(){
-    if(kaigoHealthCareOfTheAgedHijoAddition==null){
-
-      kaigoHealthCareOfTheAgedHijoAddition = new ACLabelContainer();
-
-      kaigoHealthCareOfTheAgedHijoAddition.setText("退所関連加算");
-
-      addKaigoHealthCareOfTheAgedHijoAddition();
-    }
-    return kaigoHealthCareOfTheAgedHijoAddition;
-
-  }
-
-  /**
-   * 退居時相談援助加算を取得します。
-   * @return 退居時相談援助加算
-   */
-  public ACIntegerCheckBox getLeaveApartmentsSupportAdd(){
-    if(leaveApartmentsSupportAdd==null){
-
-      leaveApartmentsSupportAdd = new ACIntegerCheckBox();
-
-      leaveApartmentsSupportAdd.setText("退居時相談援助加算");
-
-      leaveApartmentsSupportAdd.setBindPath("1380109");
-
-      leaveApartmentsSupportAdd.setSelectValue(2);
-
-      leaveApartmentsSupportAdd.setUnSelectValue(1);
-
-      addLeaveApartmentsSupportAdd();
-    }
-    return leaveApartmentsSupportAdd;
-
-  }
-
-  /**
    * タブ2を取得します。
    * @return タブ2
    */
@@ -1232,8 +1188,6 @@ public class QS001127_H2104Design extends QS001ServicePanel {
     tab1.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab1.add(getDementiaProfessionalCareAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab1.add(getKaigoHealthCareOfTheAgedHijoAddition(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -1508,22 +1462,6 @@ public class QS001127_H2104Design extends QS001ServicePanel {
    * II型に内部項目を追加します。
    */
   protected void addDementiaProfessionalCareAddRadioItem3(){
-
-  }
-
-  /**
-   * 退所関連加算に内部項目を追加します。
-   */
-  protected void addKaigoHealthCareOfTheAgedHijoAddition(){
-
-    kaigoHealthCareOfTheAgedHijoAddition.add(getLeaveApartmentsSupportAdd(), VRLayout.FLOW_RETURN);
-
-  }
-
-  /**
-   * 退居時相談援助加算に内部項目を追加します。
-   */
-  protected void addLeaveApartmentsSupportAdd(){
 
   }
 
