@@ -339,11 +339,13 @@ public class QS001108_H2104 extends QS001108_H2104Event {
             getThis().bindSource();
             // ※以下の内容詳細項目は、選択事業所の「なし」「あり」によって、無効/有効を切り替える。
             
+            // [ID:0000500][Masahiko Higuchi] 2009/05/01 del begin 【サービス予定】通所リハの時間区分を非選択
             // 初期選択
-            if (getHoumonRehabilitationTimeDivision().getItemCount() > 0
-                    && getHoumonRehabilitationTimeDivision().getSelectedIndex() < 0) {
-                getHoumonRehabilitationTimeDivision().setSelectedIndex(0);
-            }
+//            if (getHoumonRehabilitationTimeDivision().getItemCount() > 0
+//                    && getHoumonRehabilitationTimeDivision().getSelectedIndex() < 0) {
+//                getHoumonRehabilitationTimeDivision().setSelectedIndex(0);
+//            }
+            // [ID:0000500][Masahiko Higuchi] 2009/05/01 del end
             
         }
 

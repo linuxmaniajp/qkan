@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/04/30  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/05/01  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -443,6 +443,126 @@ public class QS001199_H2104State extends QS001199_H2104Design {
         if(getConcentratedRehabilitation().getParent()!=null){
           getConcentratedRehabilitation().getParent().remove(getConcentratedRehabilitation());
         }
+
+  }
+
+  /**
+   * 「理学療法日常動作訓練指導加算・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_RIGAKU_ACTION_NO_22() throws Exception {
+
+        getNormalAction().setVisible(false);
+
+  }
+
+  /**
+   * 「理学療法日常動作訓練指導加算・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_RIGAKU_ACTION_NO_22() throws Exception {
+
+        getNormalAction().setVisible(true);
+
+  }
+
+  /**
+   * 「理学療法リハビリ計画加算・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_RIGAKU_PLAN_NO_20() throws Exception {
+
+        getRehabilitationPlan().setVisible(false);
+
+  }
+
+  /**
+   * 「理学療法リハビリ計画加算・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_RIGAKU_PLAN_NO_20() throws Exception {
+
+        getRehabilitationPlan().setVisible(true);
+
+  }
+
+  /**
+   * 「作業療法日常動作訓練指導加算・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_SAGYO_ACTION_NO_29() throws Exception {
+
+        getNormalActionTraning().setVisible(false);
+
+  }
+
+  /**
+   * 「作業療法日常動作訓練指導加算・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_SAGYO_ACTION_NO_29() throws Exception {
+
+        getNormalActionTraning().setVisible(true);
+
+  }
+
+  /**
+   * 「作業療法リハビリ計画加算・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_SAGYO_PLAN_NO_27() throws Exception {
+
+        getRehabilitationPlan2().setVisible(false);
+
+  }
+
+  /**
+   * 「作業療法リハビリ計画加算・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_SAGYO_PLAN_NO_27() throws Exception {
+
+        getRehabilitationPlan2().setVisible(true);
+
+  }
+
+  /**
+   * 「短期集中リハビリ加算・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_SHORT_RIHA_NO_52() throws Exception {
+
+        getConcentratedRehabilitation().setVisible(false);
+
+  }
+
+  /**
+   * 「短期集中リハビリ加算・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_SHORT_RIHA_NO_52() throws Exception {
+
+        getConcentratedRehabilitation().setVisible(true);
+
+  }
+
+  /**
+   * 「認知症短期集中リハビリ加算・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_NINCHI_SHORT_RIHA_NO_55() throws Exception {
+
+        getDementiaShortRehabilitation().setVisible(false);
+
+  }
+
+  /**
+   * 「認知症短期集中リハビリ加算・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_NINCHI_SHORT_RIHA_NO_55() throws Exception {
+
+        getDementiaShortRehabilitation().setVisible(true);
 
   }
 
