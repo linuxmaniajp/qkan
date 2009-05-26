@@ -785,4 +785,129 @@ public class QM001UpdateMasterOperation {
     	  return sb.toString();
       }
       //[ID:0000447][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
+      
+      
+      // [ID:0000493][Tozo TANAKA] 2009/04/28 add begin 【DB補正】不正なサービスデータ(特定診療費等)削除対応
+      /**
+       * 「サービス詳細テーブルの年度期間取得」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Tozo TANAKA
+       * @since V547
+       */
+      public String getSQL_GET_SERVICE_DETAIL_YEAR_RANGE(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("SELECT");
+          sb.append(" MINIMUM_YEAR");
+          sb.append(",MAXIMUM_YEAR");
+          sb.append(" FROM");
+          sb.append(" M_DETAIL_CONTROL");
+          sb.append(" WHERE");
+          sb.append(" TABLE_NAME = 'SERVICE_DETAIL'");
+          
+          return sb.toString();
+      }
+      
+      /**
+       * 「サービス詳細テーブルの存在確認用件数取得」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Tozo TANAKA
+       * @since V547
+       */
+      public String getSQL_GET_SERVICE_DETAIL_TABLE_ROWS(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("SELECT");
+          sb.append(" COUNT(*) AS CNT_VAL");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_");
+          sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam)));
+          
+          return sb.toString();
+      }
+      
+      /**
+       * 「サービス詳細テーブルの不正なレコード削除1」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Tozo TANAKA
+       * @since V547
+       */
+      public String getSQL_DELETE_JUNK_SERVICE_DETAIL1(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
+          
+          sb.append("DELETE");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year);
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH = 3010142");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID IN");
+          sb.append(" (");
+          sb.append("SELECT");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year);
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH = 14");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".DETAIL_VALUE = 20090401");
+          sb.append(")");
+          
+          return sb.toString();
+      }
+      /**
+       * 「サービス詳細テーブルの不正なレコード削除2」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Tozo TANAKA
+       * @since V547
+       */
+      public String getSQL_DELETE_JUNK_SERVICE_DETAIL2(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
+          
+          sb.append("DELETE");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year);
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH = 3010104");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID IN");
+          sb.append(" (");
+          sb.append("SELECT");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+"");
+          sb.append(",SERVICE");
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH = 14");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".DETAIL_VALUE = 20090401");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID = SERVICE.SERVICE_ID");
+          sb.append(" AND");
+          sb.append(" SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(15311,15312,15313)");
+          sb.append(")");
+          
+          return sb.toString();
+      }
+      
+      // [ID:0000493][Tozo TANAKA] 2009/04/28 add end 【DB補正】不正なサービスデータ(特定診療費等)削除対応
+      
+      
+      
 }

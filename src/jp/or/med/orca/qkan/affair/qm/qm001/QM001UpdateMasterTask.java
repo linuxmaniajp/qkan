@@ -4,6 +4,7 @@
  */
 package jp.or.med.orca.qkan.affair.qm.qm001;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -62,6 +63,11 @@ public class QM001UpdateMasterTask {
             //平成21年4月法改正　利用者の公費情報補正(V546)
             task5(dbm);
             
+            
+            // [ID:0000493][Tozo TANAKA] 2009/04/28 add begin 【DB補正】不正なサービスデータ(特定診療費等)削除対応
+            ArrayList tableYears = taskDeleteJunkServiceDetail(dbm);
+            // [ID:0000493][Tozo TANAKA] 2009/04/28 add end 【DB補正】不正なサービスデータ(特定診療費等)削除対応
+
 		}catch(Exception ex){
 			throw ex;
 		}
@@ -444,4 +450,47 @@ public class QM001UpdateMasterTask {
         }
     }     
     // [ID:0000447][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
+    
+    
+    // [ID:0000493][Tozo TANAKA] 2009/04/28 add begin 【DB補正】不正なサービスデータ(特定診療費等)削除対応
+    public ArrayList taskDeleteJunkServiceDetail(ACDBManager dbm) throws Exception{
+        ArrayList tableYears = new ArrayList();
+        try{ 
+            QM001UpdateMasterOperation op = new QM001UpdateMasterOperation();
+            
+            VRList rows = dbm.executeQuery(op.getSQL_GET_SERVICE_DETAIL_YEAR_RANGE(null));
+            if(!rows.isEmpty()){
+                VRMap row = (VRMap)rows.get(0);
+                int minumumYear = ACCastUtilities.toInt(row.get("MINIMUM_YEAR"),0);
+                int maximumYear = ACCastUtilities.toInt(row.get("MAXIMUM_YEAR"),0);
+                for(int year=minumumYear; year<=maximumYear; year++){
+                    try{
+                        VRMap sqlParam = new VRHashMap();
+                        sqlParam.put("YEAR", ACCastUtilities.toInteger(year));
+                        
+                        //テーブル存在チェック
+                        dbm.executeQuery(op.getSQL_GET_SERVICE_DETAIL_TABLE_ROWS(sqlParam));
+                        
+                        //エラーでなければ存在
+                        //特定診療費の重度療養管理(3010142)の削除
+                        dbm.executeUpdate(op.getSQL_DELETE_JUNK_SERVICE_DETAIL1(sqlParam));
+                        //介護療養型医療施設の特定診療費の重度療養管理(3010104)の削除
+                        dbm.executeUpdate(op.getSQL_DELETE_JUNK_SERVICE_DETAIL2(sqlParam));
+                        
+                        
+                        tableYears.add(new Integer(year));
+                    }catch(Exception ex){
+                        //テーブル不存在につきエラーを無視
+                    }
+                }   
+            }
+            
+        }catch(Exception ex){
+            dbm.rollbackTransaction();
+            throw ex;
+        }
+        return tableYears;
+    }     
+    // [ID:0000493][Tozo TANAKA] 2009/04/28 add end 【DB補正】不正なサービスデータ(特定診療費等)削除対応
+    
 }

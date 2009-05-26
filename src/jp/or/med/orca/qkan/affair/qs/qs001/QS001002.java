@@ -31,9 +31,11 @@ package jp.or.med.orca.qkan.affair.qs.qs001;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -45,11 +47,14 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSchedulePrintManager;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
 import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -236,6 +241,8 @@ public class QS001002 extends QS001002Event {
             // 超過分(限度額≧管理内の場合、0。限度額＜管理内の場合、管理内－限度額)
             // 調整分(サービス毎に設定した自費・調整単位の合計)
             // 調整後合計(管理対象内 - 調整分)
+        
+            // [ID:0000494][Tozo TANAKA] 2009/04/28 replace begin 【サービス予定】単位数概算の利用票別表同期化対応
             int adjustTotal = 0;
             int managementTotal = 0;
             Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
@@ -267,6 +274,41 @@ public class QS001002 extends QS001002Event {
                 adjustTotal += ACCastUtilities.toInt(row
                         .getData("REGULATION_RATE"), 0);
             }
+
+//            //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
+//            CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
+//            mng.initialize(getCalcurater());
+//            mng.parse(getSchedule(useType, false));
+//            mng.setBuildDivedProvider(false);
+//
+//            CareServicePrintParameter buildParam = new CareServicePrintParameter();
+//            buildParam.setPrintParameter(new VRHashMap());
+//            List list=new ArrayList();
+//            mng.buildUserSubTable(buildParam, list);
+//
+//            int adjustTotal = 0;
+//            int managementTotal = 0;
+//            Iterator it = list.iterator();
+//            while (it.hasNext()) {
+//                Iterator provIt = ((List) it.next()).iterator();
+//                while (provIt.hasNext()) {
+//                    List ins = (List) provIt.next();
+//                    if (!ins.isEmpty()) {
+//                        Map page = (Map) ins.get(0);
+//                        
+//                        // 区分支給限度基準内単位数
+//                        managementTotal += ACCastUtilities.toInt(page
+//                                .get("main.total.x9"), 0);
+//                        // 区分支給限度基準を超える単位数
+//                        adjustTotal += ACCastUtilities.toInt(page
+//                                .get("main.total.x12"), 0);
+//                    }
+//                }
+//            }
+                        
+            // [ID:0000494][Tozo TANAKA] 2009/04/28 replace end 【サービス予定】単位数概算の利用票別表同期化対応
+            
+            
             updateTotal(managementTotal, adjustTotal);
     }
 
