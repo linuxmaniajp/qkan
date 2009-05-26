@@ -529,6 +529,9 @@ public class QS001199_H2104 extends QS001199_H2104Event {
           break;
       }
       boolean sizeDown = false;
+      // [ID:0000499][Masahiko Higuchi] 2009/04/30 add begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示
+      boolean sizeDownMedicalNinchi = false;
+      // [ID:0000499][Masahiko Higuchi] 2009/04/30 add end
       switch (systemServiceKindDetail) {
       // 引数systemServiceKindDetailの値が以下の老人性認知症疾患療養病棟サービスの場合
       case 12303:
@@ -538,13 +541,43 @@ public class QS001199_H2104 extends QS001199_H2104Event {
       case 15313:
           // ・15303：介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
       case 12613: //介護予防短期入所療養介護（認知症疾患型）
-          
-          // 「老人性認知症疾患療養病棟」状態にする。
-          setState_OLD_COGNITIVE_WARD();
-          sizeDown = true;
+          // [ID:0000499][Masahiko Higuchi] 2009/04/30 replace begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示
+          // 介護療養型医療施設（認知症疾患型）個別制御
+          switch(systemServiceKindDetail){
+          case 15303:
+          case 15313:
+              setState_DISPLAY_MEDICAL_OLD_COGNITIVE_STATE();
+              // 専用の画面制御フラグを有効にする
+              sizeDownMedicalNinchi = true;
+              break;
+          default:
+              // 「老人性認知症疾患療養病棟」状態にする。
+              setState_OLD_COGNITIVE_WARD();
+              sizeDown = true;
+          }
+          // [ID:0000499][Masahiko Higuchi] 2009/04/30 replace end
           break;
       }
 
+      // [ID:0000495][Tozo TANAKA] 2009/04/28 add begin 【特定診療費】平成21年4月以降の重度療養管理の削除
+      // [ID:0000499][Masahiko Higuchi] 2009/04/30 add begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示
+      switch (systemServiceKindDetail) {
+      // 引数systemServiceKindDetailの値が以下の介護療養型医療施設サービスの場合
+      case 15311:
+            // ・15311：介護療養型医療施設(療養病床を有する病院)
+      case 15312:
+            // ・15312：介護療養型医療施設(療養病床を有する診療所)
+      case 15303:
+      case 15313:
+            // ・15313：介護療養型医療施設(老人性認知症疾患療養病棟を有する病院);
+          //「重度療養管理非表示」状態にする。
+          setState_NOT_DISPLAY_HEAVY_RECUPERATE_GUIDANCE();
+          // 認知症短期集中リハの表示
+          setState_DISPLAY_DEMENTIA_SHORT_REHA();
+      }
+      // [ID:0000495][Tozo TANAKA] 2009/04/28 add end 【特定診療費】平成21年4月以降の重度療養管理の削除
+      // [ID:0000499][Masahiko Higuchi] 2009/04/30 add end
+      
       // ※引数で渡された特定診療費情報を画面に展開する。
       // 引数param を内部変数valuesに設定する。
       setValues(param);
@@ -599,13 +632,18 @@ public class QS001199_H2104 extends QS001199_H2104Event {
           setState_VALID_LANGUAGE1();
       }
       
-
       if(sizeDown){
           setSize(600, 280);
       }else{
-          setSize(800, 590);
+          setSize(800, 605);
       }
 
+      // [ID:0000499][Masahiko Higuchi] 2009/04/30 add begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示
+      // 介護療養型医療施設（認知症疾患型）の場合
+      if(sizeDownMedicalNinchi) {
+          setSize(600, 385);
+      }
+      // [ID:0000499][Masahiko Higuchi] 2009/04/30 add end
 
       // 画面を表示する。
       setVisible(true);
@@ -638,7 +676,7 @@ public class QS001199_H2104 extends QS001199_H2104Event {
                     "3010121", "3010123", "3010124", "3010126", "3010128",
                     "3010130", "3010131", "3010133", "3010135", "3010136",
                     "3010137", "3010138", "3010139", "3010140", "3010141",
-                    "3010142", "3010143", "3010150" , "3010151" };
+                    "3010143", "3010150" , "3010151" };
       // 引数systemServiceKindDetailの値が以下の短期入所療養介護かつ老人性認知症疾患療養病棟サービスの場合
       case 12303:// 短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
       case 12313:
@@ -648,8 +686,25 @@ public class QS001199_H2104 extends QS001199_H2104Event {
       // 引数systemServiceKindDetailの値が以下の老人性認知症疾患療養病棟サービスの場合
       case 15303:// 介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
       case 15313:
-          return new String[] { "3010101", "3010102", "3010103", "3010104",
-                  "3010137", "3010138", };
+          // [ID:0000495][Tozo TANAKA] 2009/04/28 replace begin 【特定診療費】平成21年4月以降の重度療養管理の削除
+          // [ID:0000499][Masahiko Higuchi] 2009/04/30 replace begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示
+//          return new String[] { "3010101", "3010102", "3010103", "3010104",
+//                  "3010137", "3010138", };
+          return new String[] { "3010101", "3010102", "3010103", 
+                  "3010137", "3010138", "3010151" };
+          // [ID:0000499][Masahiko Higuchi] 2009/04/30 replace end
+      case 15311:
+          //介護療養型医療施設(療養病床を有する病院)
+      case 15312:
+          //介護療養型医療施設(療養病床を有する診療所)
+          return new String[] { "3010101", "3010102", "3010103", 
+                  "3010105", "3010106", "3010107", "3010108", "3010110",
+                  "3010111", "3010112", "3010113", "3010116", "3010117",
+                  "3010120", "3010121", "3010123", "3010124", "3010126",
+                  "3010128", "3010130", "3010131", "3010133", "3010135",
+                  "3010136", "3010137", "3010138", "3010139", "3010140",
+                  "3010141", "3010143", "3010150" , "3010151" };
+          // [ID:0000495][Tozo TANAKA] 2009/04/28 replace end 【特定診療費】平成21年4月以降の重度療養管理の削除
       default:
           return new String[] { "3010101", "3010102", "3010103", "3010104",
                     "3010105", "3010106", "3010107", "3010108", "3010110",
@@ -657,7 +712,7 @@ public class QS001199_H2104 extends QS001199_H2104Event {
                     "3010120", "3010121", "3010123", "3010124", "3010126",
                     "3010128", "3010130", "3010131", "3010133", "3010135",
                     "3010136", "3010137", "3010138", "3010139", "3010140",
-                    "3010141", "3010142", "3010143", "3010150" , "3010151" };
+                    "3010141", "3010143", "3010150" , "3010151" };
       }
   }
 

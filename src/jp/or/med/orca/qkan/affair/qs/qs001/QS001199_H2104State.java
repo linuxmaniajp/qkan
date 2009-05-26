@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/04  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/04/30  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -349,6 +349,100 @@ public class QS001199_H2104State extends QS001199_H2104Design {
   public void setState_DISPLAY_DEMENTIA_SHORT_REHA() throws Exception {
 
         getDementiaShortRehabilitation().setVisible(true);
+
+  }
+
+  /**
+   * 「重度療養管理・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_DISPLAY_HEAVY_RECUPERATE_GUIDANCE() throws Exception {
+
+        getHeavyRecuperateGuidanceManagement().setVisible(false);
+
+  }
+
+  /**
+   * 「重度療養管理・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_HEAVY_RECUPERATE_GUIDANCE() throws Exception {
+
+        getHeavyRecuperateGuidanceManagement().setVisible(true);
+
+  }
+
+  /**
+   * 「介護療養型医療施設（認知症）・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DISPLAY_MEDICAL_OLD_COGNITIVE_STATE() throws Exception {
+
+        if(getParticularInstitutionManagment().getParent()!=null){
+          getParticularInstitutionManagment().getParent().remove(getParticularInstitutionManagment());
+        }
+
+        if(getParticularInstitutionManagmentPrivateRoom().getParent()!=null){
+          getParticularInstitutionManagmentPrivateRoom().getParent().remove(getParticularInstitutionManagmentPrivateRoom());
+        }
+
+        if(getParticularInstitutionManagmentPrivateRoom2().getParent()!=null){
+          getParticularInstitutionManagmentPrivateRoom2().getParent().remove(getParticularInstitutionManagmentPrivateRoom2());
+        }
+
+        if(getHeavySkinManegement().getParent()!=null){
+          getHeavySkinManegement().getParent().remove(getHeavySkinManegement());
+        }
+
+        if(getMedicineManegementLeading().getParent()!=null){
+          getMedicineManegementLeading().getParent().remove(getMedicineManegementLeading());
+        }
+
+        if(getSpecialMedicineManagementLeading().getParent()!=null){
+          getSpecialMedicineManagementLeading().getParent().remove(getSpecialMedicineManagementLeading());
+        }
+
+        if(getMedicalScienceInfo1().getParent()!=null){
+          getMedicalScienceInfo1().getParent().remove(getMedicalScienceInfo1());
+        }
+
+        if(getMedicalScienceInfo2().getParent()!=null){
+          getMedicalScienceInfo2().getParent().remove(getMedicalScienceInfo2());
+        }
+
+        if(getScienceTherapy().getParent()!=null){
+          getScienceTherapy().getParent().remove(getScienceTherapy());
+        }
+
+        if(getWorkTherapyFrame().getParent()!=null){
+          getWorkTherapyFrame().getParent().remove(getWorkTherapyFrame());
+        }
+
+        if(getGroupCommunication().getParent()!=null){
+          getGroupCommunication().getParent().remove(getGroupCommunication());
+        }
+
+        getDementiaShortRehabilitation().setVisible(true);
+
+        if(getLanguageTherapy1Conteiner().getParent()!=null){
+          getLanguageTherapy1Conteiner().getParent().remove(getLanguageTherapy1Conteiner());
+        }
+
+        if(getLanguage1Conteiner().getParent()!=null){
+          getLanguage1Conteiner().getParent().remove(getLanguage1Conteiner());
+        }
+
+        if(getRehabilitationSystem3().getParent()!=null){
+          getRehabilitationSystem3().getParent().remove(getRehabilitationSystem3());
+        }
+
+        if(getDinner().getParent()!=null){
+          getDinner().getParent().remove(getDinner());
+        }
+
+        if(getConcentratedRehabilitation().getParent()!=null){
+          getConcentratedRehabilitation().getParent().remove(getConcentratedRehabilitation());
+        }
 
   }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/04  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/04/30  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -1204,7 +1204,7 @@ public class QS001199_H2104Design extends QkanAffairDialog {
 
       etcFrame.setText("その他");
 
-      etcFrame.setPreferredSize(new Dimension(1,100));
+      etcFrame.setPreferredSize(new Dimension(1,110));
 
       addEtcFrame();
     }

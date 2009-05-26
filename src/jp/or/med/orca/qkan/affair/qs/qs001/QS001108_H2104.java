@@ -432,12 +432,16 @@ public class QS001108_H2104 extends QS001108_H2104Event {
         case 0: // 1～2の場合
             setState_VALID_BODY_WORK();
             setState_VALID_PHYSIOTHERAPIST_STRENGTHENED();
-            setState_INVALID_OPEN_STOCK_REHABILITATION();
+            // [ID:0000496][Tozo TANAKA] 2009/04/28 delete begin 【サービス予定】通所リハの個別リハビリ実施加算の不活性化解除(時間区分1から2時間のとき)
+            //setState_INVALID_OPEN_STOCK_REHABILITATION();
+            // [ID:0000496][Tozo TANAKA] 2009/04/28 delete end 【サービス予定】通所リハの個別リハビリ実施加算の不活性化解除(時間区分1から2時間のとき)
             break;
         default:// 上記以外
             setState_INVALID_BODY_WORK();
             setState_INVALID_PHYSIOTHERAPIST_STRENGTHENED();
-            setState_VALID_OPEN_STOCK_REHABILITATION();
+            // [ID:0000496][Tozo TANAKA] 2009/04/28 delete begin 【サービス予定】通所リハの個別リハビリ実施加算の不活性化解除(時間区分1から2時間のとき)
+            //setState_VALID_OPEN_STOCK_REHABILITATION();
+            // [ID:0000496][Tozo TANAKA] 2009/04/28 delete end 【サービス予定】通所リハの個別リハビリ実施加算の不活性化解除(時間区分1から2時間のとき)
             break;
         }
         
