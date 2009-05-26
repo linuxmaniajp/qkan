@@ -900,7 +900,9 @@ public class QM001UpdateMasterOperation {
           sb.append(" AND");
           sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID = SERVICE.SERVICE_ID");
           sb.append(" AND");
-          sb.append(" SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(15311,15312,15313)");
+          // [ID:0000503][Masahiko Higuchi] 2009/05/01 replace begin【サービス予定・実績】特定診療費項目の表示制御の改修
+          sb.append(" SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(15311,15312,15313,12611,12612,12613)");
+          // [ID:0000503][Masahiko Higuchi] 2009/05/01 replace end
           sb.append(")");
           
           return sb.toString();
@@ -908,6 +910,85 @@ public class QM001UpdateMasterOperation {
       
       // [ID:0000493][Tozo TANAKA] 2009/04/28 add end 【DB補正】不正なサービスデータ(特定診療費等)削除対応
       
-      
-      
+      // [ID:0000503][Masahiko Higuchi] 2009/05/01 add begin【サービス予定・実績】特定診療費項目の表示制御の改修
+      /**
+       * 「サービス詳細テーブルの不正なレコード削除3」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Masahiko Higuchi
+       * @since V548
+       */
+      public String getSQL_DELETE_JUNK_SERVICE_DETAIL3(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
+          
+          sb.append("DELETE");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year);
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH IN (3010124,3010123,3010131,3010130)");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID IN");
+          sb.append(" (");
+          sb.append("SELECT");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+"");
+          sb.append(",SERVICE");
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH = 14");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".DETAIL_VALUE = 20090401");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID = SERVICE.SERVICE_ID");
+          sb.append(" AND");
+          sb.append(" SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(15311,15312)");
+          sb.append(")");
+          
+          return sb.toString();
+      }
+ 
+      /**
+       * 「サービス詳細テーブルの不正なレコード削除4」のためのSQLを返します。
+       * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+       * @throws Exception 処理例外
+       * @return SQL文
+       * 
+       * @author Masahiko Higuchi
+       * @since V548
+       */
+      public String getSQL_DELETE_JUNK_SERVICE_DETAIL4(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
+          
+          sb.append("DELETE");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year);
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH IN (3010143,3010151)");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID IN");
+          sb.append(" (");
+          sb.append("SELECT");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID");
+          sb.append(" FROM");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+"");
+          sb.append(",SERVICE");
+          sb.append(" WHERE");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SYSTEM_BIND_PATH = 14");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".DETAIL_VALUE = 20090401");
+          sb.append(" AND");
+          sb.append(" SERVICE_DETAIL_INTEGER_"+year+".SERVICE_ID = SERVICE.SERVICE_ID");
+          sb.append(" AND");
+          sb.append(" SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(12311,12312,12611,12612)");
+          sb.append(")");
+          
+          return sb.toString();
+      }
+      // [ID:0000503][Masahiko Higuchi] 2009/05/01 add end
 }

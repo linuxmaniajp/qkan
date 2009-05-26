@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2008/06/09  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2009/05/20  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -1433,18 +1433,6 @@ public class QP003SQL extends QP003State {
 
     sb.append(" CLAIM_ID");
 
-    sb.append(",SELF_SERVICE_NO1");
-
-    sb.append(",SELF_PAY_NO1");
-
-    sb.append(",SELF_SERVICE_NO2");
-
-    sb.append(",SELF_PAY_NO2");
-
-    sb.append(",SELF_SERVICE_NO3");
-
-    sb.append(",SELF_PAY_NO3");
-
     sb.append(",OTHER_HIMOKU_NO1");
 
     sb.append(",OTHER_PAY_NO1");
@@ -1464,8 +1452,6 @@ public class QP003SQL extends QP003State {
     sb.append(",OTHER_HIMOKU_NO5");
 
     sb.append(",OTHER_PAY_NO5");
-
-    sb.append(",KOJO_TARGET");
 
     sb.append(",LAST_TIME");
 

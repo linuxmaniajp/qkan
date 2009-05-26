@@ -243,68 +243,68 @@ public class QS001002 extends QS001002Event {
             // 調整後合計(管理対象内 - 調整分)
         
             // [ID:0000494][Tozo TANAKA] 2009/04/28 replace begin 【サービス予定】単位数概算の利用票別表同期化対応
-            int adjustTotal = 0;
-            int managementTotal = 0;
-            Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
-            VRList list = getSchedule(useType, false);
-            
-            // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
-            // 再集計処理もパース処理を通してみる
-            QkanValidServiceCommon parser = new QkanValidServiceCommon();
-            VRList cloneServices = new VRArrayList();
-            // データのクローンを作成する。
-            cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
-            list = new VRArrayList();
-            if(cloneServices != null && !cloneServices.isEmpty()){
-                VRMap patientMap = getCalcurater().getPatientInfo();
-                // 対象日付
-                Date targetDate = getCalcurater().getTargetDate();
-                list = parser.createValidService(QkanValidServiceManager
-                        .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
-                        cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
-            }
-            // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
-            
-            
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                // サービスコードデータを取得
-                VRMap row = (VRMap) it.next();
-                managementTotal += getCalcurater().getReductedUnit(row, true, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT,totalGroupingCache);
-                adjustTotal += ACCastUtilities.toInt(row
-                        .getData("REGULATION_RATE"), 0);
-            }
-
-//            //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
-//            CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
-//            mng.initialize(getCalcurater());
-//            mng.parse(getSchedule(useType, false));
-//            mng.setBuildDivedProvider(false);
-//
-//            CareServicePrintParameter buildParam = new CareServicePrintParameter();
-//            buildParam.setPrintParameter(new VRHashMap());
-//            List list=new ArrayList();
-//            mng.buildUserSubTable(buildParam, list);
-//
 //            int adjustTotal = 0;
 //            int managementTotal = 0;
+//            Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
+//            VRList list = getSchedule(useType, false);
+//            
+//            // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
+//            // 再集計処理もパース処理を通してみる
+//            QkanValidServiceCommon parser = new QkanValidServiceCommon();
+//            VRList cloneServices = new VRArrayList();
+//            // データのクローンを作成する。
+//            cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+//            list = new VRArrayList();
+//            if(cloneServices != null && !cloneServices.isEmpty()){
+//                VRMap patientMap = getCalcurater().getPatientInfo();
+//                // 対象日付
+//                Date targetDate = getCalcurater().getTargetDate();
+//                list = parser.createValidService(QkanValidServiceManager
+//                        .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
+//                        cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
+//            }
+//            // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
+//            
+//            
 //            Iterator it = list.iterator();
 //            while (it.hasNext()) {
-//                Iterator provIt = ((List) it.next()).iterator();
-//                while (provIt.hasNext()) {
-//                    List ins = (List) provIt.next();
-//                    if (!ins.isEmpty()) {
-//                        Map page = (Map) ins.get(0);
-//                        
-//                        // 区分支給限度基準内単位数
-//                        managementTotal += ACCastUtilities.toInt(page
-//                                .get("main.total.x9"), 0);
-//                        // 区分支給限度基準を超える単位数
-//                        adjustTotal += ACCastUtilities.toInt(page
-//                                .get("main.total.x12"), 0);
-//                    }
-//                }
+//                // サービスコードデータを取得
+//                VRMap row = (VRMap) it.next();
+//                managementTotal += getCalcurater().getReductedUnit(row, true, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT,totalGroupingCache);
+//                adjustTotal += ACCastUtilities.toInt(row
+//                        .getData("REGULATION_RATE"), 0);
 //            }
+
+            //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
+            CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
+            mng.initialize(getCalcurater());
+            mng.parse(getSchedule(useType, false));
+            mng.setBuildDivedProvider(false);
+
+            CareServicePrintParameter buildParam = new CareServicePrintParameter();
+            buildParam.setPrintParameter(new VRHashMap());
+            List list=new ArrayList();
+            mng.buildUserSubTable(buildParam, list);
+
+            int adjustTotal = 0;
+            int managementTotal = 0;
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                Iterator provIt = ((List) it.next()).iterator();
+                while (provIt.hasNext()) {
+                    List ins = (List) provIt.next();
+                    if (!ins.isEmpty()) {
+                        Map page = (Map) ins.get(0);
+                        
+                        // 区分支給限度基準内単位数
+                        managementTotal += ACCastUtilities.toInt(page
+                                .get("main.total.x9"), 0);
+                        // 区分支給限度基準を超える単位数
+                        adjustTotal += ACCastUtilities.toInt(page
+                                .get("main.total.x12"), 0);
+                    }
+                }
+            }
                         
             // [ID:0000494][Tozo TANAKA] 2009/04/28 replace end 【サービス予定】単位数概算の利用票別表同期化対応
             

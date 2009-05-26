@@ -477,6 +477,10 @@ public class QM001UpdateMasterTask {
                         //‰îŒì—Ã—{Œ^ˆã—Ã{İ‚Ì“Á’èf—Ã”ï‚Ìd“x—Ã—{ŠÇ—(3010104)‚Ìíœ
                         dbm.executeUpdate(op.getSQL_DELETE_JUNK_SERVICE_DETAIL2(sqlParam));
                         
+				        // [ID:0000503][Masahiko Higuchi] 2009/05/01 add beginyƒT[ƒrƒX—\’èEÀÑz“Á’èf—Ã”ï€–Ú‚Ì•\¦§Œä‚Ì‰üC
+                        dbm.executeUpdate(op.getSQL_DELETE_JUNK_SERVICE_DETAIL3(sqlParam));
+                        dbm.executeUpdate(op.getSQL_DELETE_JUNK_SERVICE_DETAIL4(sqlParam));
+				        // [ID:0000503][Masahiko Higuchi] 2009/05/01 add end
                         
                         tableYears.add(new Integer(year));
                     }catch(Exception ex){
