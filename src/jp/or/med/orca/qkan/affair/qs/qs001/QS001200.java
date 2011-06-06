@@ -179,7 +179,7 @@ public class QS001200 extends QS001200Event {
       if (!getCognitive().isSelected()) {
           getValues().remove(getCognitive().getBindPath());
       }
-      //リハビリ体制強化加算(rehabilitationSystem)が未選択ならば、リハビリ体制強化加算(rehabilitationSystem)のbindPathを削除する。
+/**      //リハビリ体制強化加算(rehabilitationSystem)が未選択ならば、リハビリ体制強化加算(rehabilitationSystem)のbindPathを削除する。
       if (!getRehabilitationSystem().isSelected()) {
           getValues().remove(getRehabilitationSystem().getBindPath());
       }
@@ -187,7 +187,12 @@ public class QS001200 extends QS001200Event {
       if(!getRehabilitationManegement().isSelected()){
           getValues().remove(getRehabilitationManegement().getBindPath());
       }
+*/
       
+      // リハビリ体制強化加算コンボ(rehabilitationSystemCombo)が無効ならば、リハビリ体制強化加算コンボ(rehabilitationSystemCombo)のbindPathを削除する。
+      if (!getRehabilitationSystemCombo().isEnabled()) {
+          getValues().remove(getRehabilitationSystemCombo().getBindPath());
+      }
 
       // ※設定済みとして閉じる。
 
@@ -246,6 +251,31 @@ public class QS001200 extends QS001200Event {
 
   }
 
+  /**
+   * 「リハビリ体制強化加算の有効状態変更」イベントです。
+   * 
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void rehabilitationSystemActionPerformed(ActionEvent e)
+          throws Exception {
+      // ※リハビリ体制強化加算のチェック有無に応じてコンボの有効状態を変更
+      if (getRehabilitationSystem().isSelected()) {
+          // リハビリ体制強化加算チェック(rehabilitationSystem)が選択されている場合
+          // リハビリ体制強化加算コンボ(rehabilitationSystemCombo)を有効にする。
+    	  setState_VALID_RIHABIRI_SYSTEM();
+          // リハビリ体制強化加算コンボ(rehabilitationSystemCombo)の1つ目の項目を選択する。
+    	  getRehabilitationSystemCombo().setSelectedIndex(0);
+      } else {
+          // リハビリ体制強化加算チェック(rehabilitationSystem)が選択されていない場合
+          // リハビリ体制強化加算コンボ(rehabilitationSystemCombo)を無効にする。
+    	  setState_INVALID_RIHABIRI_SYSTEM();
+          // リハビリ体制強化加算コンボ(rehabilitationSystemCombo)を未選択状態にする。
+    	  getRehabilitationSystemCombo().clearSelection();
+      }
+
+  }
+ 
   public static void main(String[] args) {
       // デフォルトデバッグ起動
       ACFrame.getInstance().setFrameEventProcesser(
@@ -283,6 +313,8 @@ public class QS001200 extends QS001200Event {
       VRList codes = QkanCommon.getArrayFromMasterCode(109, "3010115");
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010147");
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010148");
+      ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010141");
+      
       comboItemMap.setData("109", codes);
       // ※コンボアイテムの設定
       // 自身(specificConsultationFeePattern)にcomboItemMapに設定する。
@@ -336,7 +368,12 @@ public class QS001200 extends QS001200Event {
       if(getLanguage1().isSelected()){
           setState_VALID_LANGUAGE1();
       }
-
+      // リハビリ体制強化加算コンボ(rehabilitationSystemCombo)が選択されていれば、リハビリ体制強化加算チェック(rehabilitationSystem)を選択する。
+      getRehabilitationSystem().setSelected(
+    		  getRehabilitationSystemCombo().isSelected());
+      if(getRehabilitationSystem().isSelected()){
+    	  setState_VALID_RIHABIRI_SYSTEM();
+      }
       // 画面を表示する。
       setVisible(true);
       

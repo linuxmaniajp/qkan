@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/04/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2010/11/05  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -143,6 +143,22 @@ public abstract class QS001200Event extends QS001200State {
             }
         }
     });
+    getRehabilitationSystem().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                rehabilitationSystemActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -167,6 +183,13 @@ public abstract class QS001200Event extends QS001200State {
    * @throws Exception 処理例外
    */
   protected abstract void language1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「リハビリ体制強化加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void rehabilitationSystemActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 

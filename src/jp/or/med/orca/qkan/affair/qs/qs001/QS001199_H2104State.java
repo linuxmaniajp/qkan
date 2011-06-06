@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/05/01  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2010/11/05  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -563,6 +563,66 @@ public class QS001199_H2104State extends QS001199_H2104Design {
   public void setState_DISPLAY_NINCHI_SHORT_RIHA_NO_55() throws Exception {
 
         getDementiaShortRehabilitation().setVisible(true);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算（理学）・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_RIHABIRI_SYSTEM1() throws Exception {
+
+        getRehabilitationSystem1Combo().setEnabled(false);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算（理学）・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_RIHABIRI_SYSTEM1() throws Exception {
+
+        getRehabilitationSystem1Combo().setEnabled(true);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算（作業）・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_RIHABIRI_SYSTEM2() throws Exception {
+
+        getRehabilitationSystem2Combo().setEnabled(false);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算（作業）・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_RIHABIRI_SYSTEM2() throws Exception {
+
+        getRehabilitationSystem2Combo().setEnabled(true);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算（言語）・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_RIHABIRI_SYSTEM3() throws Exception {
+
+        getRehabilitationSystem3Combo().setEnabled(false);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算（言語）・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_RIHABIRI_SYSTEM3() throws Exception {
+
+        getRehabilitationSystem3Combo().setEnabled(true);
 
   }
 

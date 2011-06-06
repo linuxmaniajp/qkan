@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/03  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2010/11/05  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -175,6 +175,22 @@ public abstract class QS001199_H2104Event extends QS001199_H2104State {
             }
         }
     });
+    getRehabilitationSystem1().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                rehabilitationSystem1ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getWorkTherapy1().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -207,6 +223,22 @@ public abstract class QS001199_H2104Event extends QS001199_H2104State {
             }
         }
     });
+    getRehabilitationSystem2().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                rehabilitationSystem2ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getLanguageTherapy1().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -232,6 +264,22 @@ public abstract class QS001199_H2104Event extends QS001199_H2104State {
             lockFlag = true;
             try {
                 language1ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getRehabilitationSystem3().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                rehabilitationSystem3ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -279,6 +327,13 @@ public abstract class QS001199_H2104Event extends QS001199_H2104State {
   protected abstract void science2ActionPerformed(ActionEvent e) throws Exception;
 
   /**
+   * 「リハビリ体制強化加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void rehabilitationSystem1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
    * 「作業療法Iの有効状態変更」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -293,6 +348,13 @@ public abstract class QS001199_H2104Event extends QS001199_H2104State {
   protected abstract void work1ActionPerformed(ActionEvent e) throws Exception;
 
   /**
+   * 「リハビリ体制強化加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void rehabilitationSystem2ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
    * 「言語聴覚療法Ｉの有効状態変更」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -305,6 +367,13 @@ public abstract class QS001199_H2104Event extends QS001199_H2104State {
    * @throws Exception 処理例外
    */
   protected abstract void language1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「リハビリ体制強化加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void rehabilitationSystem3ActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 

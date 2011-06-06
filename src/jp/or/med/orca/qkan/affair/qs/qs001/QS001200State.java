@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/05/07  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2010/11/05  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -180,6 +180,8 @@ public class QS001200State extends QS001200Design {
 
         getEtcFrame().setVisible(true);
 
+        getRehabilitationSystemCombo().setVisible(true);
+
   }
 
   /**
@@ -203,6 +205,26 @@ public class QS001200State extends QS001200Design {
         if(getHeavyRecuperateGuidanceManagement().getParent()!=null){
           getHeavyRecuperateGuidanceManagement().getParent().remove(getHeavyRecuperateGuidanceManagement());
         }
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_RIHABIRI_SYSTEM() throws Exception {
+
+        getRehabilitationSystemCombo().setEnabled(false);
+
+  }
+
+  /**
+   * 「リハビリ体制強化加算・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_RIHABIRI_SYSTEM() throws Exception {
+
+        getRehabilitationSystemCombo().setEnabled(true);
 
   }
 

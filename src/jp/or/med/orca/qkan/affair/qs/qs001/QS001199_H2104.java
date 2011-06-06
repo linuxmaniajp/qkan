@@ -223,7 +223,7 @@ public class QS001199_H2104 extends QS001199_H2104Event {
       if (!getCognitive().isSelected()) {
           getValues().remove(getCognitive().getBindPath());
       }
-      //リハビリ体制強化加算(rehabilitationSystem)が未選択ならば、リハビリ体制強化加算(rehabilitationSystem)のbindPathを削除する。
+/**      //リハビリ体制強化加算(rehabilitationSystem)が未選択ならば、リハビリ体制強化加算(rehabilitationSystem)のbindPathを削除する。
       if (!getRehabilitationSystem().isSelected()) {
           getValues().remove(getRehabilitationSystem().getBindPath());
       }
@@ -235,6 +235,7 @@ public class QS001199_H2104 extends QS001199_H2104Event {
       if (!getRehabilitationSystem3().isSelected()) {
           getValues().remove(getRehabilitationSystem3().getBindPath());
       }
+*/
       //短期集中リハビリ加算(concentratedRehabilitation)が未選択ならば、短期集中リハビリ加算(concentratedRehabilitation)のbindPathを削除する。
       if (!getConcentratedRehabilitation().isSelected()) {
           getValues().remove(getConcentratedRehabilitation().getBindPath());
@@ -249,6 +250,18 @@ public class QS001199_H2104 extends QS001199_H2104Event {
           getValues().remove(getDementiaShortRehabilitation().getBindPath());
       }
       
+      // リハビリ体制強化加算コンボ(rehabilitationSystem1Combo)が無効ならば、リハビリ体制強化加算コンボ(rehabilitationSystem1Combo)のbindPathを削除する。
+      if (!getRehabilitationSystem1Combo().isSelected()) {
+          getValues().remove(getRehabilitationSystem1Combo().getBindPath());
+      }
+      // リハビリ体制強化加算コンボ(rehabilitationSystem2Combo)が無効ならば、リハビリ体制強化加算コンボ(rehabilitationSystem2Combo)のbindPathを削除する。
+      if (!getRehabilitationSystem2Combo().isSelected()) {
+          getValues().remove(getRehabilitationSystem2Combo().getBindPath());
+      }
+      // リハビリ体制強化加算コンボ(rehabilitationSystem3Combo)が無効ならば、リハビリ体制強化加算コンボ(rehabilitationSystem3Combo)のbindPathを削除する。
+      if (!getRehabilitationSystem3Combo().isSelected()) {
+          getValues().remove(getRehabilitationSystem3Combo().getBindPath());
+      }
 
       // ※設定済みとして閉じる。
 
@@ -439,6 +452,72 @@ public class QS001199_H2104 extends QS001199_H2104Event {
 
   }
 
+  /**
+   * 「リハビリ強化体制加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void rehabilitationSystem1ActionPerformed(ActionEvent e) throws Exception{
+      // ※リハビリ強化体制加算のチェック有無に応じてコンボの有効状態を変更
+      if (getRehabilitationSystem1().isSelected()) {
+          // リハビリ強化体制加算チェック(rehabilitationSystem1)が選択されている場合
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を有効にする。
+          setState_VALID_RIHABIRI_SYSTEM1();
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)の1つ目の項目を選択する。
+          getRehabilitationSystem1Combo().setSelectedIndex(0);
+      } else {
+          // リハビリ強化体制加算チェック(rehabilitationSystem1)が選択されていない場合
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を無効にする。
+          setState_INVALID_RIHABIRI_SYSTEM1();
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を未選択状態にする。
+          getRehabilitationSystem1Combo().clearSelection();
+      }
+  }
+  
+  /**
+   * 「リハビリ強化体制加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void rehabilitationSystem2ActionPerformed(ActionEvent e) throws Exception{
+      // ※リハビリ強化体制加算のチェック有無に応じてコンボの有効状態を変更
+      if (getRehabilitationSystem2().isSelected()) {
+          // リハビリ強化体制加算チェック(rehabilitationSystem1)が選択されている場合
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を有効にする。
+          setState_VALID_RIHABIRI_SYSTEM2();
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)の1つ目の項目を選択する。
+          getRehabilitationSystem2Combo().setSelectedIndex(0);
+      } else {
+          // リハビリ強化体制加算チェック(rehabilitationSystem1)が選択されていない場合
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を無効にする。
+          setState_INVALID_RIHABIRI_SYSTEM2();
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を未選択状態にする。
+          getRehabilitationSystem2Combo().clearSelection();
+      }
+  }
+  
+  /**
+   * 「リハビリ強化体制加算の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void rehabilitationSystem3ActionPerformed(ActionEvent e) throws Exception{
+      // ※リハビリ強化体制加算のチェック有無に応じてコンボの有効状態を変更
+      if (getRehabilitationSystem3().isSelected()) {
+          // リハビリ強化体制加算チェック(rehabilitationSystem1)が選択されている場合
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を有効にする。
+          setState_VALID_RIHABIRI_SYSTEM3();
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)の1つ目の項目を選択する。
+          getRehabilitationSystem3Combo().setSelectedIndex(0);
+      } else {
+          // リハビリ強化体制加算チェック(rehabilitationSystem1)が選択されていない場合
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を無効にする。
+          setState_INVALID_RIHABIRI_SYSTEM3();
+          // リハビリ強化体制加算コンボ(rehabilitationSystem1Combo)を未選択状態にする。
+          getRehabilitationSystem3Combo().clearSelection();
+      }
+  }
+  
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
@@ -475,6 +554,9 @@ public class QS001199_H2104 extends QS001199_H2104Event {
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010128");
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010133");
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010135");
+      ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010139");
+      ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010140");
+      ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010141");
       comboItemMap.setData("109", codes);
       // ※コンボアイテムの設定
       getSpecificConsultationFeePattern().setModelSource(comboItemMap);
@@ -727,6 +809,25 @@ public class QS001199_H2104 extends QS001199_H2104Event {
           setSize(600, 280);
       }else{
           setSize(800, 605);
+      }
+
+      // リハビリ強化体制加算コンボ(rehabilitationsystem1Combo)が選択されていれば、リハビリ強化体制加算チェック(rehabilitationsystem1)を選択する。
+      getRehabilitationSystem1()
+              .setSelected(getRehabilitationSystem1Combo().isSelected());
+      if(getRehabilitationSystem1().isSelected()){
+          setState_VALID_RIHABIRI_SYSTEM1();
+      }
+      // リハビリ強化体制加算コンボ(rehabilitationsystem2Combo)が選択されていれば、リハビリ強化体制加算チェック(rehabilitationsystem2)を選択する。
+      getRehabilitationSystem2()
+              .setSelected(getRehabilitationSystem2Combo().isSelected());
+      if(getRehabilitationSystem2().isSelected()){
+          setState_VALID_RIHABIRI_SYSTEM2();
+      }
+      // リハビリ強化体制加算コンボ(rehabilitationsystem3Combo)が選択されていれば、リハビリ強化体制加算チェック(rehabilitationsystem3)を選択する。
+      getRehabilitationSystem3()
+              .setSelected(getRehabilitationSystem3Combo().isSelected());
+      if(getRehabilitationSystem3().isSelected()){
+          setState_VALID_RIHABIRI_SYSTEM3();
       }
 
       // [ID:0000499][Masahiko Higuchi] 2009/04/30 add begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示

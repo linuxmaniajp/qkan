@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/05/01  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2010/11/05  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -139,7 +139,13 @@ public class QS001200Design extends QkanAffairDialog {
 
   private ACComboBoxModelAdapter language1ComboModel;
 
+  private ACLabelContainer rehabilitationSystemConteiner;
+
   private ACIntegerCheckBox rehabilitationSystem;
+
+  private ACComboBox rehabilitationSystemCombo;
+
+  private ACComboBoxModelAdapter rehabilitationSystemComboModel;
 
   private ACIntegerCheckBox dinner;
 
@@ -655,6 +661,21 @@ public class QS001200Design extends QkanAffairDialog {
   }
 
   /**
+   * リハビリ体制強化加算コンテナを取得します。
+   * @return リハビリ体制強化加算コンテナ
+   */
+  public ACLabelContainer getRehabilitationSystemConteiner(){
+    if(rehabilitationSystemConteiner==null){
+
+      rehabilitationSystemConteiner = new ACLabelContainer();
+
+      addRehabilitationSystemConteiner();
+    }
+    return rehabilitationSystemConteiner;
+
+  }
+
+  /**
    * リハビリ体制強化加算を取得します。
    * @return リハビリ体制強化加算
    */
@@ -665,12 +686,51 @@ public class QS001200Design extends QkanAffairDialog {
 
       rehabilitationSystem.setText("リハビリ体制強化加算");
 
-      rehabilitationSystem.setBindPath("3010141");
-
       addRehabilitationSystem();
     }
     return rehabilitationSystem;
 
+  }
+
+  /**
+   * リハビリ体制強化加算コンボを取得します。
+   * @return リハビリ体制強化加算コンボ
+   */
+  public ACComboBox getRehabilitationSystemCombo(){
+    if(rehabilitationSystemCombo==null){
+
+      rehabilitationSystemCombo = new ACComboBox();
+
+      rehabilitationSystemCombo.setBindPath("3010141");
+
+      rehabilitationSystemCombo.setEnabled(false);
+
+      rehabilitationSystemCombo.setEditable(false);
+
+      rehabilitationSystemCombo.setModelBindPath("109");
+
+      rehabilitationSystemCombo.setRenderBindPath("CONTENT");
+
+      rehabilitationSystemCombo.setModel(getRehabilitationSystemComboModel());
+
+      rehabilitationSystemCombo.setPreferredSize(new Dimension(50,10));
+
+      addRehabilitationSystemCombo();
+    }
+    return rehabilitationSystemCombo;
+
+  }
+
+  /**
+   * リハビリ体制強化加算コンボモデルを取得します。
+   * @return リハビリ体制強化加算コンボモデル
+   */
+  protected ACComboBoxModelAdapter getRehabilitationSystemComboModel(){
+    if(rehabilitationSystemComboModel==null){
+      rehabilitationSystemComboModel = new ACComboBoxModelAdapter();
+      addRehabilitationSystemComboModel();
+    }
+    return rehabilitationSystemComboModel;
   }
 
   /**
@@ -1019,7 +1079,7 @@ public class QS001200Design extends QkanAffairDialog {
 
     etcFrames.add(getLanguage1Conteiner(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    etcFrames.add(getRehabilitationSystem(), VRLayout.FLOW_INSETLINE);
+    etcFrames.add(getRehabilitationSystemConteiner(), VRLayout.FLOW_INSETLINE_RETURN);
 
     etcFrames.add(getDinner(), VRLayout.FLOW_INSETLINE);
 
@@ -1099,9 +1159,34 @@ public class QS001200Design extends QkanAffairDialog {
   }
 
   /**
+   * リハビリ体制強化加算コンテナに内部項目を追加します。
+   */
+  protected void addRehabilitationSystemConteiner(){
+
+    rehabilitationSystemConteiner.add(getRehabilitationSystem(), null);
+
+    rehabilitationSystemConteiner.add(getRehabilitationSystemCombo(), null);
+
+  }
+
+  /**
    * リハビリ体制強化加算に内部項目を追加します。
    */
   protected void addRehabilitationSystem(){
+
+  }
+
+  /**
+   * リハビリ体制強化加算コンボに内部項目を追加します。
+   */
+  protected void addRehabilitationSystemCombo(){
+
+  }
+
+  /**
+   * リハビリ体制強化加算コンボモデルに内部項目を追加します。
+   */
+  protected void addRehabilitationSystemComboModel(){
 
   }
 
