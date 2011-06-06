@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/07  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/08/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -223,6 +223,54 @@ public abstract class QS001143_H2104Event extends QS001143_H2104State implements
             }
         }
     });
+    getVisitCareCrackOnDayCheck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                visitCareCrackOnDayCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getExpertPlaceNursingCrackOnDayChaeck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                expertPlaceNursingCrackOnDayChaeckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getExpertPlaceRehabiliCrackOnDay().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                expertPlaceRehabiliCrackOnDayActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -283,9 +331,46 @@ public abstract class QS001143_H2104Event extends QS001143_H2104State implements
    */
   protected abstract void timeDivisionRadioSelectionChanged(ListSelectionEvent e) throws Exception;
 
+  /**
+   * 「訪問介護・日割選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void visitCareCrackOnDayCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「通所介護・日割選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void expertPlaceNursingCrackOnDayChaeckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「通所リハ・日割選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void expertPlaceRehabiliCrackOnDayActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
+  private boolean isPrintCheckShow;
   //getter/setter
+
+  /**
+   * isPrintCheckShowを返します。
+   * @return isPrintCheckShow
+   */
+  protected boolean getIsPrintCheckShow(){
+    return isPrintCheckShow;
+  }
+  /**
+   * isPrintCheckShowを設定します。
+   * @param isPrintCheckShow isPrintCheckShow
+   */
+  protected void setIsPrintCheckShow(boolean isPrintCheckShow){
+    this.isPrintCheckShow = isPrintCheckShow;
+  }
 
   //内部関数
 
@@ -393,5 +478,21 @@ public abstract class QS001143_H2104Event extends QS001143_H2104State implements
    * @return int
    */
   public abstract int getServiceLowVersion() throws Exception;
+
+  /**
+   * 「日割チェック画面制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkOnDayCheckState() throws Exception;
+
+  /**
+   * 「バインド後処理」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void binded() throws Exception;
 
 }

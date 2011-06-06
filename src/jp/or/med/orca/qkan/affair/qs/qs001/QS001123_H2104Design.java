@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/02/28  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/08/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -172,6 +172,8 @@ public class QS001123_H2104Design extends QS001ServicePanel {
   private ACRadioButtonItem calculationDivisionBasicOnly;
 
   private ACIntegerCheckBox crackOnDayCheck;
+
+  private ACIntegerCheckBox printable;
 
   private ACBackLabelContainer yakanHoumonKaigoTimeContainer;
 
@@ -1018,6 +1020,29 @@ public class QS001123_H2104Design extends QS001ServicePanel {
   }
 
   /**
+   * 提供日を取得します。
+   * @return 提供日
+   */
+  public ACIntegerCheckBox getPrintable(){
+    if(printable==null){
+
+      printable = new ACIntegerCheckBox();
+
+      printable.setText("提供日");
+
+      printable.setBindPath("15");
+
+      printable.setSelectValue(2);
+
+      printable.setUnSelectValue(1);
+
+      addPrintable();
+    }
+    return printable;
+
+  }
+
+  /**
    * 提供時間コンテナを取得します。
    * @return 提供時間コンテナ
    */
@@ -1186,7 +1211,9 @@ public class QS001123_H2104Design extends QS001ServicePanel {
 
     nightTypeVisitCarePatterns.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    nightTypeVisitCarePatterns.add(getCrackOnDayCheck(), VRLayout.FLOW_INSETLINE_RETURN);
+    nightTypeVisitCarePatterns.add(getCrackOnDayCheck(), VRLayout.FLOW);
+
+    nightTypeVisitCarePatterns.add(getPrintable(), VRLayout.FLOW_RETURN);
 
     nightTypeVisitCarePatterns.add(getYakanHoumonKaigoTimeContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -1487,6 +1514,13 @@ public class QS001123_H2104Design extends QS001ServicePanel {
    * 日割に内部項目を追加します。
    */
   protected void addCrackOnDayCheck(){
+
+  }
+
+  /**
+   * 提供日に内部項目を追加します。
+   */
+  protected void addPrintable(){
 
   }
 

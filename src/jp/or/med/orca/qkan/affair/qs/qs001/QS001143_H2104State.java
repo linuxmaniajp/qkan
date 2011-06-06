@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/16  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/08/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -124,6 +124,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
 
         getMedicalCoordinateAddRadioGroup().setEnabled(true);
 
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
+
   }
 
   /**
@@ -161,6 +167,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
         getImpairedPersonHelpAddRadioGroup().setEnabled(true);
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
+
+        getVisitCarePrintable().setEnabled(true);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
 
   }
 
@@ -200,6 +212,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
 
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
+
   }
 
   /**
@@ -237,6 +255,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
         getImpairedPersonHelpAddRadioGroup().setEnabled(true);
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
+
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
 
   }
 
@@ -276,6 +300,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
 
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
+
   }
 
   /**
@@ -313,6 +343,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
         getImpairedPersonHelpAddRadioGroup().setEnabled(true);
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
+
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
 
   }
 
@@ -352,6 +388,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
 
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(true);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
+
   }
 
   /**
@@ -389,6 +431,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
         getImpairedPersonHelpAddRadioGroup().setEnabled(true);
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
+
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(true);
 
   }
 
@@ -428,6 +476,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
 
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
+
   }
 
   /**
@@ -465,6 +519,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
         getImpairedPersonHelpAddRadioGroup().setEnabled(true);
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
+
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
 
   }
 
@@ -504,6 +564,12 @@ public class QS001143_H2104State extends QS001143_H2104Design {
 
         getMedicalCoordinateAddRadioGroup().setEnabled(false);
 
+        getVisitCarePrintable().setEnabled(false);
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
+
   }
 
   /**
@@ -523,6 +589,66 @@ public class QS001143_H2104State extends QS001143_H2104Design {
   public void setState_INDIVIDUAL_FUNCTION_TRAINING_ENABLE_TRUE() throws Exception {
 
         getNinchishoTaioTsushoIndividualFunctionTrainingAddRadio().setEnabled(true);
+
+  }
+
+  /**
+   * 「訪問介護・日割・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_VISIT_CARE_ON() throws Exception {
+
+        getVisitCarePrintable().setEnabled(true);
+
+  }
+
+  /**
+   * 「訪問介護・日割・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_VISIT_CARE_OFF() throws Exception {
+
+        getVisitCarePrintable().setEnabled(false);
+
+  }
+
+  /**
+   * 「通所介護・日割・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_NURSING_ON() throws Exception {
+
+        getExpertPlaceNursingPrintable().setEnabled(true);
+
+  }
+
+  /**
+   * 「通所介護・日割・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_NURSING_OFF() throws Exception {
+
+        getExpertPlaceNursingPrintable().setEnabled(false);
+
+  }
+
+  /**
+   * 「通所リハ・日割・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_REHABILI_ON() throws Exception {
+
+        getExpertPlaceRehabiliPrintable().setEnabled(true);
+
+  }
+
+  /**
+   * 「通所リハ・日割・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_REHABILI_OFF() throws Exception {
+
+        getExpertPlaceRehabiliPrintable().setEnabled(false);
 
   }
 

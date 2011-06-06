@@ -110,6 +110,40 @@ public class QS001136_H2104 extends QS001136_H2104Event {
    */
   public void initialize() throws Exception{
       // ※画面展開時の初期設定
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+      // 要介護認定履歴を取得
+      VRList ninteiList = getCalculater().getPatientInsureInfoHistoryList();
+      setIsPrintCheckShow(false);
+      // 同月内に複数履歴存在する場合
+      if(ninteiList.size() > 1) {
+        VRMap firstHistory = (VRMap)ninteiList.getData(0);
+        VRMap secondHistory = (VRMap)ninteiList.getData(1);
+        switch (ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE",
+                    firstHistory), 0)) {
+                    case 12:
+                        // 要支援１⇒要支援２
+                        switch (ACCastUtilities.toInt(VRBindPathParser.get(
+                                "JOTAI_CODE", secondHistory), 0)) {
+                        case 13:
+                            setIsPrintCheckShow(true);
+                            break;
+                        }
+                        break;
+
+                    case 13:
+                        // 要支援２⇒要支援１
+                        switch (ACCastUtilities.toInt(VRBindPathParser.get(
+                                "JOTAI_CODE", secondHistory), 0)) {
+                        case 12:
+                            setIsPrintCheckShow(true);
+                            break;
+                        }
+                        break;
+
+            }
+        
+      }
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add end
       // ※コンボアイテムの設定
       // ※準備
       // コンボアイテム設定用のレコード comboItemMap を生成する。
@@ -400,6 +434,10 @@ public class QS001136_H2104 extends QS001136_H2104Event {
               break;
           }
       }
+      
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+      checkOnDayCheckState();
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add end
 
   }
 
@@ -414,4 +452,64 @@ public class QS001136_H2104 extends QS001136_H2104Event {
       //QkanConstants.SERVICE_LOW_VERSION_H2104 を返す。
       return QkanConstants.SERVICE_LOW_VERSION_H2104;
   }
+   
+    /**
+     * 値バインド後処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+     */
+    public void binded() throws Exception{
+        // サービスパネルデータバインド直後のパネルデータの編集処理
+        if(this.getParent() instanceof ACPanel) {
+            ACPanel panel = (ACPanel)this.getParent();
+            // Mapが取れた場合
+            if(panel.getSource() instanceof VRMap) {
+                VRMap source = (VRMap)panel.getSource();
+                
+                /*
+                 * バージョンアップ直後の、本票に印字しないチェックにデータがない場合の処理 
+                 */
+                if(getIsPrintCheckShow() && !source.containsKey("15") && getCrackOnDayCheck().isSelected()) {
+                    // 表示されているにも関わらず、KEYがないならば選択状態にする
+                    getPrintable().setSelected(true);
+                }
+            }
+        }
+        checkOnDayCheckState();
+    }
+
+    /**
+     * 日割チェック時の画面制御処理です。
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+     */
+    public void checkOnDayCheckState() throws Exception {
+        if(getIsPrintCheckShow()) {
+            if(getCrackOnDayCheck().getValue() ==2){
+                // 日割チェックが有りの場合
+                setState_DAY_CHECK_ON();
+            } else {
+                // 日割チェックが無しの場合
+                setState_DAY_CHECK_OFF();
+            }
+        } else {
+            setState_DAY_CHECK_OFF();
+        }
+    }
+
+    /**
+     * 日割チェック時の処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+    */
+    protected void crackOnDayCheckActionPerformed(ActionEvent e) throws Exception {
+        checkOnDayCheckState();
+        
+    }
 }

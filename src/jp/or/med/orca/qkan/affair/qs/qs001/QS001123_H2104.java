@@ -114,7 +114,9 @@ public class QS001123_H2104 extends QS001123_H2104Event {
           setState_FACILITY_STATE_2();
           break;
       }
-
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+      checkState();
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add end
   }
 
   /**
@@ -189,6 +191,10 @@ public class QS001123_H2104 extends QS001123_H2104Event {
     getThis().setSource(defaultMap);
     // 　　初期選択項目を展開する。
     getThis().bindSource();
+    
+    // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+    checkState();
+    // [ID:0000532][Masahiko Higuchi] 2009/08 add end
 
   }
 
@@ -300,6 +306,11 @@ public class QS001123_H2104 extends QS001123_H2104Event {
       if(getServiceMunicipalityAdd().getSelectedIndex()<0 && getServiceMunicipalityAdd().getItemCount()>0){
           getServiceMunicipalityAdd().setSelectedIndex(0);
       }
+      
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+      checkState();
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add end
+      
   }
 
   /**
@@ -361,4 +372,76 @@ return getYakanHoumonKaigoEndTime();
       //QkanConstants.SERVICE_LOW_VERSION_H2104 を返す。
       return QkanConstants.SERVICE_LOW_VERSION_H2104;
   }
+  
+    /**
+     * 日割チェック時の画面制御処理です。
+     *
+     * @throws Exception 例外処理
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     */
+    public void checkOnDayCheckState() throws Exception {
+        if (getCrackOnDayCheck().isEnabled()
+                && getCrackOnDayCheck().getValue() == 2) {
+            // 日割チェックが有りの場合
+            setState_DAY_CHECK_ON();
+        } else {
+            // 日割チェックが無しの場合
+            setState_DAY_CHECK_OFF();
+        }
+    }
+
+    /**
+     * 画面状態制御
+     *
+     * @throws Exception 例外処理
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     */
+    public void checkState() throws Exception {
+        checkOnDayCheckState();
+        
+    }
+
+    /**
+     * データバインド後の処理
+     *
+     * @throws Exception 例外処理
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     */
+    public void binded() throws Exception {
+        // サービスパネルデータバインド直後のパネルデータの編集処理
+        if(this.getParent() instanceof ACPanel) {
+            ACPanel panel = (ACPanel)this.getParent();
+            // Mapが取れた場合
+            if(panel.getSource() instanceof VRMap) {
+                VRMap source = (VRMap)panel.getSource();
+                
+                /*
+                 * バージョンアップ直後の、本票に印字しないチェックにデータがない場合の処理 
+                 */
+                if(!source.containsKey("15") && getCrackOnDayCheck().isSelected()) {
+                    // 表示されているにも関わらず、KEYがないならば選択状態にする
+                    getPrintable().setSelected(true);
+                }
+            }
+        }
+        // 画面状態制御
+        checkOnDayCheckState();
+        
+    }
+
+    /**
+     * 日割チェック時の処理
+     * 
+     * @throws Exception 例外処理
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     */
+    protected void crackOnDayCheckActionPerformed(ActionEvent e) throws Exception {
+        checkOnDayCheckState();
+        
+    }
+  
 }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: サービス予定
- * 作成日: 2009/02/09  日本コンピューター株式会社 サービス予定 新規作成
+ * 作成日: 2009/08/06  日本コンピューター株式会社 サービス予定 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -82,7 +82,7 @@ import jp.or.med.orca.qkan.component.*;
 /**
  * サービスパターン小規模多機能型居宅介護SQL定義(QS001125_H2104) 
  */
-public class QS001125_H2104SQL extends QS001125_H2104Design {
+public class QS001125_H2104SQL extends QS001125_H2104State {
   private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
   /**
    * コンストラクタです。

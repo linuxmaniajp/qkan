@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/02/28  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/08/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -161,6 +161,26 @@ public class QS001123_H2104State extends QS001123_H2104Design {
   public void setState_INVALID_24MESSAGE() throws Exception {
 
         getHours24MessageAddRadioGroup().setEnabled(false);
+
+  }
+
+  /**
+   * 「日割チェック有り」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_ON() throws Exception {
+
+        getPrintable().setEnabled(true);
+
+  }
+
+  /**
+   * 「日割チェック無し」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_DAY_CHECK_OFF() throws Exception {
+
+        getPrintable().setEnabled(false);
 
   }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/07  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2009/08/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -95,6 +95,22 @@ public abstract class QS001147_H2104Event extends QS001147_H2104SQL implements Q
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
+    getCrackOnDayCheck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                crackOnDayCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getKaigoSupportSpecialMemberName().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -116,6 +132,13 @@ public abstract class QS001147_H2104Event extends QS001147_H2104SQL implements Q
   //コンポーネントイベント
 
   /**
+   * 「日割選択処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void crackOnDayCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
    * 「介護支援専門員番号の表示」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -124,7 +147,23 @@ public abstract class QS001147_H2104Event extends QS001147_H2104SQL implements Q
 
   //変数定義
 
+  private boolean isPrintCheckShow;
   //getter/setter
+
+  /**
+   * isPrintCheckShowを返します。
+   * @return isPrintCheckShow
+   */
+  protected boolean getIsPrintCheckShow(){
+    return isPrintCheckShow;
+  }
+  /**
+   * isPrintCheckShowを設定します。
+   * @param isPrintCheckShow isPrintCheckShow
+   */
+  protected void setIsPrintCheckShow(boolean isPrintCheckShow){
+    this.isPrintCheckShow = isPrintCheckShow;
+  }
 
   //内部関数
 
@@ -192,5 +231,21 @@ public abstract class QS001147_H2104Event extends QS001147_H2104SQL implements Q
    * @return int
    */
   public abstract int getServiceLowVersion() throws Exception;
+
+  /**
+   * 「画面状態制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkState() throws Exception;
+
+  /**
+   * 「日割チェック画面制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void checkOnDayCheckState() throws Exception;
 
 }

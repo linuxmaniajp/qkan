@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/03/30  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2010/01/28  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -158,6 +158,8 @@ public class QS001147_H2104Design extends QS001ServicePanel {
   private ACRadioButtonItem calculationDivisionItem2;
 
   private ACIntegerCheckBox crackOnDayCheck;
+
+  private ACIntegerCheckBox printable;
 
   private ACGroupBox kaigoSupportSpecialMemberContainer;
 
@@ -895,6 +897,29 @@ public class QS001147_H2104Design extends QS001ServicePanel {
   }
 
   /**
+   * 提供日を取得します。
+   * @return 提供日
+   */
+  public ACIntegerCheckBox getPrintable(){
+    if(printable==null){
+
+      printable = new ACIntegerCheckBox();
+
+      printable.setText("提供日");
+
+      printable.setBindPath("15");
+
+      printable.setSelectValue(2);
+
+      printable.setUnSelectValue(1);
+
+      addPrintable();
+    }
+    return printable;
+
+  }
+
+  /**
    * 介護支援専門員コンテナを取得します。
    * @return 介護支援専門員コンテナ
    */
@@ -1153,7 +1178,7 @@ public class QS001147_H2104Design extends QS001ServicePanel {
 
       infoLabel = new ACLabel();
 
-      infoLabel.setText("月途中で要介護状態区分が変更になる場合は、" + ACConstants.LINE_SEPARATOR + "各日割りサービスをすべての日数に貼り付けて、" + ACConstants.LINE_SEPARATOR + "集計後、編集画面で実日数の修正を行ってください。");
+      infoLabel.setText("月途中で要介護状態区分が変更になる場合は、" + ACConstants.LINE_SEPARATOR + "各日割りサービスを全ての日数に貼り付け、" + ACConstants.LINE_SEPARATOR + "実際の提供日には『提供日』のチェックをつけ" + ACConstants.LINE_SEPARATOR + "〔設定〕ボタンをクリックしてください。");
 
       addInfoLabel();
     }
@@ -1218,7 +1243,9 @@ public class QS001147_H2104Design extends QS001ServicePanel {
 
     tab1.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    tab1.add(getCrackOnDayCheck(), VRLayout.FLOW_RETURN);
+    tab1.add(getCrackOnDayCheck(), VRLayout.FLOW);
+
+    tab1.add(getPrintable(), VRLayout.FLOW_RETURN);
 
     tab1.add(getKaigoSupportSpecialMemberContainer(), VRLayout.FLOW_RETURN);
 
@@ -1488,6 +1515,13 @@ public class QS001147_H2104Design extends QS001ServicePanel {
    * 日割に内部項目を追加します。
    */
   protected void addCrackOnDayCheck(){
+
+  }
+
+  /**
+   * 提供日に内部項目を追加します。
+   */
+  protected void addPrintable(){
 
   }
 

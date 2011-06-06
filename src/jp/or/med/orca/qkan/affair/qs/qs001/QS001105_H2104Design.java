@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/02/28  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/07/08  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -142,6 +142,10 @@ public class QS001105_H2104Design extends QS001ServicePanel {
   private ACLabelContainer houmonRehabilitationEndTimeContainer;
 
   private ACComboBoxModelAdapter houmonRehabilitationEndTimeModel;
+
+  private ACGroupBox houmonRehabilitationInfoGroup;
+
+  private ACLabel houmonRehabilitationInfoLabel;
 
   //getter
 
@@ -671,6 +675,48 @@ public class QS001105_H2104Design extends QS001ServicePanel {
   }
 
   /**
+   * 説明文グループを取得します。
+   * @return 説明文グループ
+   */
+  public ACGroupBox getHoumonRehabilitationInfoGroup(){
+    if(houmonRehabilitationInfoGroup==null){
+
+      houmonRehabilitationInfoGroup = new ACGroupBox();
+
+      houmonRehabilitationInfoGroup.setAutoWrap(false);
+
+      houmonRehabilitationInfoGroup.setHgap(0);
+
+      houmonRehabilitationInfoGroup.setLabelMargin(0);
+
+      houmonRehabilitationInfoGroup.setVgap(0);
+
+      addHoumonRehabilitationInfoGroup();
+    }
+    return houmonRehabilitationInfoGroup;
+
+  }
+
+  /**
+   * 説明文ラベルを取得します。
+   * @return 説明文ラベル
+   */
+  public ACLabel getHoumonRehabilitationInfoLabel(){
+    if(houmonRehabilitationInfoLabel==null){
+
+      houmonRehabilitationInfoLabel = new ACLabel();
+
+      houmonRehabilitationInfoLabel.setText("サービスを40分以上提供する場合は、カレンダーに" + ACConstants.LINE_SEPARATOR + "2回貼り付けてください。");
+
+      houmonRehabilitationInfoLabel.setAutoWrap(false);
+
+      addHoumonRehabilitationInfoLabel();
+    }
+    return houmonRehabilitationInfoLabel;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001105_H2104Design() {
@@ -712,7 +758,9 @@ public class QS001105_H2104Design extends QS001ServicePanel {
 
     houmonRehabilitationPatterns.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    houmonRehabilitationPatterns.add(getHoumonRehabilitationTimeContena(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
+    houmonRehabilitationPatterns.add(getHoumonRehabilitationTimeContena(), VRLayout.FLOW_RETURN);
+
+    houmonRehabilitationPatterns.add(getHoumonRehabilitationInfoGroup(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -907,6 +955,22 @@ public class QS001105_H2104Design extends QS001ServicePanel {
    * 終了時刻コンボモデルに内部項目を追加します。
    */
   protected void addHoumonRehabilitationEndTimeModel(){
+
+  }
+
+  /**
+   * 説明文グループに内部項目を追加します。
+   */
+  protected void addHoumonRehabilitationInfoGroup(){
+
+    houmonRehabilitationInfoGroup.add(getHoumonRehabilitationInfoLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 説明文ラベルに内部項目を追加します。
+   */
+  protected void addHoumonRehabilitationInfoLabel(){
 
   }
 

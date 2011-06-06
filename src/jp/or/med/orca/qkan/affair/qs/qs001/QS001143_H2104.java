@@ -219,7 +219,37 @@ public class QS001143_H2104 extends QS001143_H2104Event {
    * @throws Exception 処理例外
    */
   public void initialize() throws Exception{
-        // ※画面展開時の初期設定
+      // ※画面展開時の初期設定
+      // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+      // 要介護認定履歴を取得
+      VRList ninteiList = getCalculater().getPatientInsureInfoHistoryList();
+      setIsPrintCheckShow(false);
+      // 同月内に複数履歴存在する場合
+      if (ninteiList.size() > 1) {
+            VRMap firstHistory = (VRMap) ninteiList.getData(0);
+            VRMap secondHistory = (VRMap) ninteiList.getData(1);
+            switch (ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE",
+                    firstHistory), 0)) {
+            case 12:
+                // 要支援１⇒要支援２
+                if (ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE",
+                        secondHistory), 0) == 13) {
+                    setIsPrintCheckShow(true);
+                    break;
+                }
+                break;
+            case 13:
+                // 要支援２⇒要支援１
+                if (ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE",
+                        secondHistory), 0) == 12) {
+                    setIsPrintCheckShow(true);
+                    break;
+                }
+                break;
+            }
+
+        }
+        // [ID:0000532][Masahiko Higuchi] 2009/08 add end
         // ※コンボアイテムの設定
         // ※準備
         // コンボアイテム設定用のレコード comboItemMap を生成する。
@@ -400,7 +430,7 @@ public class QS001143_H2104 extends QS001143_H2104Event {
         getThis().setSource(data);
         // 自身(this)のapplySourceを呼び出してデータを収集する。
         getThis().applySource();
-
+        
         // 施設区分
         int valOfFacilityDivision = getFacilitiesDivisionRadio()
                 .getSelectedIndex();
@@ -610,6 +640,10 @@ return true;
             }
             break;
         }
+        
+        // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
+        checkOnDayCheckState();
+        // [ID:0000532][Masahiko Higuchi] 2009/08 add end
 
         // ※事業所連動
         // 内部変数 providerInfoMap を生成する。
@@ -839,5 +873,131 @@ return true;
       return QkanConstants.SERVICE_LOW_VERSION_H2104;
   }
 
+    /**
+     * 日割チェック時の画面制御処理です。
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @throws Exception 処理例外
+     */
+    public void checkOnDayCheckState() throws Exception {
+        if(getIsPrintCheckShow()) {
+            // 訪問介護
+            if (getVisitCareCrackOnDayCheck().isEnabled()
+                    && getVisitCareCrackOnDayCheck().getValue() == 2) {
+                // 日割チェックが有りの場合
+                setState_DAY_CHECK_VISIT_CARE_ON();
+            } else {
+                // 日割チェックが無しの場合
+                setState_DAY_CHECK_VISIT_CARE_OFF();
+            }
+            
+            // 通所介護
+            if (getExpertPlaceNursingCrackOnDayChaeck().isEnabled()
+                    && getExpertPlaceNursingCrackOnDayChaeck().getValue() == 2) {
+                // 日割チェックが有りの場合
+                setState_DAY_CHECK_NURSING_ON();
+            } else {
+                // 日割チェックが無しの場合
+                setState_DAY_CHECK_NURSING_OFF();
+            }
+            
+            // 通所リハ
+            if (getExpertPlaceRehabiliCrackOnDay().isEnabled()
+                    && getExpertPlaceRehabiliCrackOnDay().getValue() == 2) {
+                // 日割チェックが有りの場合
+                setState_DAY_CHECK_REHABILI_ON();
+            } else {
+                // 日割チェックが無しの場合
+                setState_DAY_CHECK_REHABILI_OFF();
+            }
+        } else {
+            // 提供日は全て無効
+            setState_DAY_CHECK_VISIT_CARE_OFF();
+            setState_DAY_CHECK_NURSING_OFF();
+            setState_DAY_CHECK_REHABILI_OFF();
+        }
+        
+    }
+    
+    /**
+     * データバインド後処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @throws Exception 処理例外
+     */
+    public void binded() throws Exception {
+        // サービスパネルデータバインド直後のパネルデータの編集処理
+        if(this.getParent() instanceof ACPanel) {
+            ACPanel panel = (ACPanel)this.getParent();
+            // Mapが取れた場合
+            if(panel.getSource() instanceof VRMap) {
+                VRMap source = (VRMap)panel.getSource();
+                
+                /*
+                 * バージョンアップ直後の、本票に印字しないチェックにデータがない場合の処理 
+                 */
+                if (getIsPrintCheckShow()
+                        && !(source.containsKey("1350129")
+                                || source.containsKey("1350130") || source
+                                .containsKey("1350131"))) {
+                    // 表示されているにも関わらず、KEYがないならば選択状態にする
+                    // 訪問介護
+                    if(getVisitCareCrackOnDayCheck().isSelected()) {
+                        getVisitCarePrintable().setSelected(true);
+                    }
+                    // 通所介護
+                    if(getExpertPlaceNursingCrackOnDayChaeck().isSelected()) {
+                        getExpertPlaceNursingPrintable().setSelected(true);
+                    }
+                    // 通所リハ
+                    if(getExpertPlaceRehabiliCrackOnDay().isSelected()) {
+                        getExpertPlaceRehabiliPrintable().setSelected(true);
+                    }
+                    
+                }
+            }
+        }
+        checkOnDayCheckState();
+        
+    }
+
+    /**
+     * 通所介護・日割チェック時の処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingCrackOnDayChaeckActionPerformed(ActionEvent e) throws Exception {
+        checkOnDayCheckState();
+        
+    }
+
+    /**
+     * 通所リハ・日割チェック時の処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceRehabiliCrackOnDayActionPerformed(ActionEvent e) throws Exception {
+        checkOnDayCheckState();
+        
+    }
+
+    /**
+     * 訪問介護・日割チェック時の処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @throws Exception 処理例外
+     */
+    protected void visitCareCrackOnDayCheckActionPerformed(ActionEvent e) throws Exception {
+        checkOnDayCheckState();
+        
+    }
+  
 
 }

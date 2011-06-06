@@ -614,18 +614,20 @@ public class QO004118 extends QO004118Event {
    */
   protected void nurseStructuralAddRadioGroupSelectionChanged(
             ListSelectionEvent e) throws Exception {
+        // [ID:0000566][Masahiko Higuchi] 2009/12 del Start 画面制御修正
         // 看護体制加算に伴う画面状態設定処理
-        switch (getNurseStructuralAddRadioGroup().getSelectedIndex()) {
-        case 2:
-            // 「あり」が選択された場合
-            // 状態ID：VALID_NIGHT_NURSE
-            setState_VALID_NIGHT_NURSE();
-            break;
-        default:
-            // 「あり」以外が選択された場合
-            // 状態ID：INVALID_NIGHT_NURSE
-            setState_INVALID_NIGHT_NURSE();
-        }
+//        switch (getNurseStructuralAddRadioGroup().getSelectedIndex()) {
+//        case 2:
+//            // 「あり」が選択された場合
+//            // 状態ID：VALID_NIGHT_NURSE
+//            setState_VALID_NIGHT_NURSE();
+//            break;
+//        default:
+//            // 「あり」以外が選択された場合
+//            // 状態ID：INVALID_NIGHT_NURSE
+//            setState_INVALID_NIGHT_NURSE();
+//        }
+        // [ID:0000566][Masahiko Higuchi] 2009/12 del End
     }
 
 }

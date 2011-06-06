@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/04/22  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2010/01/28  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -91,6 +91,8 @@ public class QS001135_H2104Design extends QS001ServicePanel {
 
   private ACIntegerCheckBox crackOnDayCheck;
 
+  private ACIntegerCheckBox printable;
+
   private ACClearableRadioButtonGroup activityAddRadio;
 
   private ACLabelContainer activityAddRadioContainer;
@@ -142,12 +144,6 @@ public class QS001135_H2104Design extends QS001ServicePanel {
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem2;
 
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem3;
-
-  private ACGroupBox infoGroup;
-
-  private ACLabel infoLabel;
-
-  private ACPanel tab2;
 
   private ACClearableRadioButtonGroup staffSubtractionRadio;
 
@@ -205,6 +201,12 @@ public class QS001135_H2104Design extends QS001ServicePanel {
 
   private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
 
+  private ACPanel tab2;
+
+  private ACGroupBox infoGroup;
+
+  private ACLabel infoLabelPlan;
+
   //getter
 
   /**
@@ -232,8 +234,6 @@ public class QS001135_H2104Design extends QS001ServicePanel {
       tab1 = new ACPanel();
 
       tab1.setFollowChildEnabled(true);
-
-      tab1.setHgap(0);
 
       tab1.setLabelMargin(0);
 
@@ -265,6 +265,29 @@ public class QS001135_H2104Design extends QS001ServicePanel {
       addCrackOnDayCheck();
     }
     return crackOnDayCheck;
+
+  }
+
+  /**
+   * 本票に印字するを取得します。
+   * @return 本票に印字する
+   */
+  public ACIntegerCheckBox getPrintable(){
+    if(printable==null){
+
+      printable = new ACIntegerCheckBox();
+
+      printable.setText("提供日");
+
+      printable.setBindPath("15");
+
+      printable.setSelectValue(2);
+
+      printable.setUnSelectValue(1);
+
+      addPrintable();
+    }
+    return printable;
 
   }
 
@@ -745,67 +768,6 @@ public class QS001135_H2104Design extends QS001ServicePanel {
       addServiceAddProvisionStructuralRadioItem3();
     }
     return serviceAddProvisionStructuralRadioItem3;
-
-  }
-
-  /**
-   * 注意書きグループを取得します。
-   * @return 注意書きグループ
-   */
-  public ACGroupBox getInfoGroup(){
-    if(infoGroup==null){
-
-      infoGroup = new ACGroupBox();
-
-      infoGroup.setHgap(0);
-
-      infoGroup.setLabelMargin(0);
-
-      infoGroup.setVgap(0);
-
-      addInfoGroup();
-    }
-    return infoGroup;
-
-  }
-
-  /**
-   * 注意書きラベルを取得します。
-   * @return 注意書きラベル
-   */
-  public ACLabel getInfoLabel(){
-    if(infoLabel==null){
-
-      infoLabel = new ACLabel();
-
-      infoLabel.setText("月途中で要支援1⇔要支援2の変更となる場合" + ACConstants.LINE_SEPARATOR + "(1) 各日割りサービスを全ての日数に貼り付けて" + ACConstants.LINE_SEPARATOR + "集計後、編集画面で実日数の修正をしてください。" + ACConstants.LINE_SEPARATOR + "(2) サービス提供体制加算の算定は、まず全ての日数で" + ACConstants.LINE_SEPARATOR + "加算「なし」と貼り付け、次に月初(1日)のサービスを" + ACConstants.LINE_SEPARATOR + "クリック、加算(1型／2型）にチェックをつけ、" + ACConstants.LINE_SEPARATOR + "〔設定〕ボタンをクリックしてください。");
-
-      addInfoLabel();
-    }
-    return infoLabel;
-
-  }
-
-  /**
-   * タブ2を取得します。
-   * @return タブ2
-   */
-  public ACPanel getTab2(){
-    if(tab2==null){
-
-      tab2 = new ACPanel();
-
-      tab2.setFollowChildEnabled(true);
-
-      tab2.setHgap(0);
-
-      tab2.setLabelMargin(0);
-
-      tab2.setVgap(0);
-
-      addTab2();
-    }
-    return tab2;
 
   }
 
@@ -1320,6 +1282,67 @@ public class QS001135_H2104Design extends QS001ServicePanel {
   }
 
   /**
+   * タブ2を取得します。
+   * @return タブ2
+   */
+  public ACPanel getTab2(){
+    if(tab2==null){
+
+      tab2 = new ACPanel();
+
+      tab2.setFollowChildEnabled(true);
+
+      tab2.setHgap(0);
+
+      tab2.setLabelMargin(0);
+
+      tab2.setVgap(0);
+
+      addTab2();
+    }
+    return tab2;
+
+  }
+
+  /**
+   * 注意書きグループを取得します。
+   * @return 注意書きグループ
+   */
+  public ACGroupBox getInfoGroup(){
+    if(infoGroup==null){
+
+      infoGroup = new ACGroupBox();
+
+      infoGroup.setHgap(0);
+
+      infoGroup.setLabelMargin(0);
+
+      infoGroup.setVgap(0);
+
+      addInfoGroup();
+    }
+    return infoGroup;
+
+  }
+
+  /**
+   * 注意書きラベルを取得します。
+   * @return 注意書きラベル
+   */
+  public ACLabel getInfoLabelPlan(){
+    if(infoLabelPlan==null){
+
+      infoLabelPlan = new ACLabel();
+
+      infoLabelPlan.setText("月途中で要支援1⇔要支援2の変更となる場合" + ACConstants.LINE_SEPARATOR + "(1) 各日割りサービスを全ての日数に貼り付け、" + ACConstants.LINE_SEPARATOR + "実際の提供日には『提供日』のチェックをつけ" + ACConstants.LINE_SEPARATOR + "〔設定〕ボタンをクリックしてください。" + ACConstants.LINE_SEPARATOR + "(2) サービス提供体制加算の算定は、まず全ての日数で" + ACConstants.LINE_SEPARATOR + "加算「なし」と貼り付け、次に月初(1日)のサービスを" + ACConstants.LINE_SEPARATOR + "クリック、加算(1型／2型）にチェックをつけ、" + ACConstants.LINE_SEPARATOR + "〔設定〕ボタンをクリックしてください。");
+
+      addInfoLabelPlan();
+    }
+    return infoLabelPlan;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001135_H2104Design() {
@@ -1364,7 +1387,9 @@ public class QS001135_H2104Design extends QS001ServicePanel {
    */
   protected void addTab1(){
 
-    tab1.add(getCrackOnDayCheck(), VRLayout.FLOW_RETURN);
+    tab1.add(getCrackOnDayCheck(), VRLayout.FLOW);
+
+    tab1.add(getPrintable(), VRLayout.FLOW_RETURN);
 
     tab1.add(getActivityAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -1376,7 +1401,15 @@ public class QS001135_H2104Design extends QS001ServicePanel {
 
     tab1.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    tab1.add(getInfoGroup(), VRLayout.FLOW);
+    tab1.add(getStaffSubtractionRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab1.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab1.add(getOfficeEvaluationAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab1.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab1.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
 
   }
 
@@ -1384,6 +1417,13 @@ public class QS001135_H2104Design extends QS001ServicePanel {
    * 日割に内部項目を追加します。
    */
   protected void addCrackOnDayCheck(){
+
+  }
+
+  /**
+   * 本票に印字するに内部項目を追加します。
+   */
+  protected void addPrintable(){
 
   }
 
@@ -1579,39 +1619,6 @@ public class QS001135_H2104Design extends QS001ServicePanel {
   }
 
   /**
-   * 注意書きグループに内部項目を追加します。
-   */
-  protected void addInfoGroup(){
-
-    infoGroup.add(getInfoLabel(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 注意書きラベルに内部項目を追加します。
-   */
-  protected void addInfoLabel(){
-
-  }
-
-  /**
-   * タブ2に内部項目を追加します。
-   */
-  protected void addTab2(){
-
-    tab2.add(getStaffSubtractionRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getOfficeEvaluationAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
-
-  }
-
-  /**
    * 人員減算に内部項目を追加します。
    */
   protected void addStaffSubtractionRadio(){
@@ -1802,6 +1809,31 @@ public class QS001135_H2104Design extends QS001ServicePanel {
    * 終了時刻コンボモデルに内部項目を追加します。
    */
   protected void addHoumonKaigoEndTimeModel(){
+
+  }
+
+  /**
+   * タブ2に内部項目を追加します。
+   */
+  protected void addTab2(){
+
+    tab2.add(getInfoGroup(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 注意書きグループに内部項目を追加します。
+   */
+  protected void addInfoGroup(){
+
+    infoGroup.add(getInfoLabelPlan(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 注意書きラベルに内部項目を追加します。
+   */
+  protected void addInfoLabelPlan(){
 
   }
 

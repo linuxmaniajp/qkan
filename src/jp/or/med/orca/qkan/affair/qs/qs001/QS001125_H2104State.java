@@ -23,7 +23,7 @@
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム サービスパターン介護予防訪問介護 (QS001130_H2104)
+ * プログラム サービスパターン介護予防小規模多機能居宅介護 (QS001125_H2104)
  *
  *****************************************************************
  */
@@ -79,33 +79,13 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 /**
- * サービスパターン介護予防訪問介護状態定義(QS001130_H2104) 
+ * サービスパターン介護予防小規模多機能居宅介護状態定義(QS001125_H2104) 
  */
-public class QS001130_H2104State extends QS001130_H2104Design {
+public class QS001125_H2104State extends QS001125_H2104Design {
   /**
    * コンストラクタです。
    */
-  public QS001130_H2104State(){
-  }
-
-  /**
-   * 「Ⅲ型・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_EXPENSE_ADD_RADIO_ITEM_3_ENABLE_FALSE() throws Exception {
-
-        getVisitCareExpenseAddRadioItem3().setEnabled(false);
-
-  }
-
-  /**
-   * 「Ⅲ型・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_EXPENSE_ADD_RADIO_ITEM_3_ENABLE_TRUE() throws Exception {
-
-        getVisitCareExpenseAddRadioItem3().setEnabled(true);
-
+  public QS001125_H2104State(){
   }
 
   /**
