@@ -868,6 +868,16 @@ public class QO005 extends QO005Event {
         }
         //[ID:0000449][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
         
+        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
+        if (ACFrame.getInstance().hasProperty("PrintConfig/ServiceByReceipt")) {
+            // paramsの KEY : SERVICE_BY_RECEIPT のVALUEに、設定ファイルの ID :
+            // PrintConfig/ServiceByReceipt の値を設定する。
+            params.setData("SERVICE_BY_RECEIPT", getProperty("PrintConfig/ServiceByReceipt"));
+        } else {
+            params.setData("SERVICE_BY_RECEIPT", new Integer(CHECKBOX_OFF));
+        }
+        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
+        
 		// 関数の変数として、paramsを返す。
 		return params;
 	}
@@ -970,6 +980,10 @@ public class QO005 extends QO005Event {
             //KEY : SHOW_OLD_LOW_PROVIDER_ELEMENTS のVALUEを設定する。
             setProperty("PrintConfig/printNursingZero", String.valueOf(params.getData("PRINT_NURSING_ZERO")));
             //[ID:0000449][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
+            
+            // [ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
+            setProperty("PrintConfig/ServiceByReceipt", String.valueOf(params.getData("SERVICE_BY_RECEIPT")));
+            // [ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
             
             saveProperty();
             

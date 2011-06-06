@@ -1004,6 +1004,15 @@ public class QO012 extends QO012Event {
 		} else {
 			return false;
 		}
+		
+		
+		// [ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_5_INSURER_ID))) {
+			sqlParam.setData("INSURER_ID", getInsurerID(getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_5_INSURER_ID)));
+		} else {
+			return false;
+		}
+		// [ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
 
 		if (getCanDBConnect()) {
 			VRList patientList = getDBManager().executeQuery(getSQL_GET_PATIENT_INFO(sqlParam));
@@ -1020,7 +1029,12 @@ public class QO012 extends QO012Event {
 		}
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_5_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_6_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 
 		return true;
@@ -1047,7 +1061,12 @@ public class QO012 extends QO012Event {
 		}
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_5_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_6_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, DETAIL_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 		return true;
 	}
@@ -1068,7 +1087,12 @@ public class QO012 extends QO012Event {
 		}
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_5_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_6_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, SPECIAL_CLINIC_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 		return true;
 	}
@@ -1090,7 +1114,12 @@ public class QO012 extends QO012Event {
 		// System.out.println(insuranceTotal);
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_6_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_5_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_6_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, TOTAL_RECORD_3_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 		return true;
 	}
@@ -1178,6 +1207,15 @@ public class QO012 extends QO012Event {
 		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID))) {
 			sqlParam.setData("INSURED_ID", getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID));
 		}
+		
+		
+		// [ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_5_INSURER_ID))) {
+			sqlParam.setData("INSURER_ID", getInsurerID(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_5_INSURER_ID)));
+		} else {
+			return false;
+		}
+		// [ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
 
 		if (getCanDBConnect()) {
 			VRList patientList = getDBManager().executeQuery(getSQL_GET_PATIENT_INFO(sqlParam));
@@ -1226,7 +1264,12 @@ public class QO012 extends QO012Event {
 		}
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_5_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 
 		return true;
@@ -1281,7 +1324,15 @@ public class QO012 extends QO012Event {
 		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID))) {
 			sqlParam.setData("INSURED_ID", getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID));
 		}
-
+		
+		// [ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_5_INSURER_ID))) {
+			sqlParam.setData("INSURER_ID", getInsurerID(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_5_INSURER_ID)));
+		} else {
+			return false;
+		}
+		// [ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
+		
 		if (getCanDBConnect()) {
 			VRList patientList = getDBManager().executeQuery(getSQL_GET_PATIENT_INFO(sqlParam));
 
@@ -1329,7 +1380,12 @@ public class QO012 extends QO012Event {
 		}
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_5_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_7_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, CAREPLAN_RECORD_4_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 
 		return true;
@@ -1376,7 +1432,15 @@ public class QO012 extends QO012Event {
 		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_10_INSURED_ID))) {
 			sqlParam.setData("INSURED_ID", getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_10_INSURED_ID));
 		}
-
+		
+		// [ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+		if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_3_INSURER_ID))) {
+			sqlParam.setData("INSURER_ID", getInsurerID(getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_3_INSURER_ID)));
+		} else {
+			return false;
+		}
+		// [ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
+		
 		if (getCanDBConnect()) {
 			VRList patientList = getDBManager().executeQuery(getSQL_GET_PATIENT_INFO_MANAGEMENT(sqlParam));
 
@@ -1415,7 +1479,12 @@ public class QO012 extends QO012Event {
 		}
 
 		// 集計用に一意のキーを作成して格納する
-		String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_10_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_2_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit begin 2010年度対応
+		//String dataIndexStr = getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_10_INSURED_ID) + getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_2_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		String dataIndexStr = getInsurerID(getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_3_INSURER_ID))
+							+ getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_10_INSURED_ID)
+							+ getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_2_SERVICE_PROVIDE_YEAR_AND_MONTH);
+		// [ID:0000623][Shin Fujihara] 2010/11 edit end 2010年度対応
 		returnDataMap.setData("DATA_INDEX", dataIndexStr);
 
 		return true;
@@ -1506,5 +1575,14 @@ public class QO012 extends QO012Event {
 		} else {
 			return "";
 		}
+	}
+	
+	
+	private String getInsurerID(Object value) {
+		String insurer_id = String.valueOf(value);
+	    if (insurer_id.length() > 6) {
+	    	insurer_id = insurer_id.substring(insurer_id.length() - 6);
+	    }
+	    return insurer_id;
 	}
 }

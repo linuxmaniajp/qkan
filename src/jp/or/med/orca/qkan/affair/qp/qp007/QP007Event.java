@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/02/15  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2010/11/12  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
@@ -27,9 +27,7 @@
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qp.qp007;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -49,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -79,13 +78,13 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 利用者向請求書印刷設定イベント定義(QP007) 
  */
-public abstract class QP007Event extends QP007State {
+public abstract class QP007Event extends QP007SQL {
   /**
    * コンストラクタです。
    */
@@ -105,7 +104,7 @@ public abstract class QP007Event extends QP007State {
             lockFlag = true;
             try {
                 patientBillSetupPapersRadioSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -121,7 +120,7 @@ public abstract class QP007Event extends QP007State {
             lockFlag = true;
             try {
                 printActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -137,7 +136,7 @@ public abstract class QP007Event extends QP007State {
             lockFlag = true;
             try {
                 closeActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -172,6 +171,8 @@ public abstract class QP007Event extends QP007State {
   //変数定義
 
   private VRMap values = new VRHashMap();
+  private VRList providerNameList = new VRArrayList();
+  private int providerFixedFormId;
   //getter/setter
 
   /**
@@ -188,5 +189,53 @@ public abstract class QP007Event extends QP007State {
   protected void setValues(VRMap values){
     this.values = values;
   }
+
+  /**
+   * providerNameListを返します。
+   * @return providerNameList
+   */
+  protected VRList getProviderNameList(){
+    return providerNameList;
+  }
+  /**
+   * providerNameListを設定します。
+   * @param providerNameList providerNameList
+   */
+  protected void setProviderNameList(VRList providerNameList){
+    this.providerNameList = providerNameList;
+  }
+
+  /**
+   * providerFixedFormIdを返します。
+   * @return providerFixedFormId
+   */
+  protected int getProviderFixedFormId(){
+    return providerFixedFormId;
+  }
+  /**
+   * providerFixedFormIdを設定します。
+   * @param providerFixedFormId providerFixedFormId
+   */
+  protected void setProviderFixedFormId(int providerFixedFormId){
+    this.providerFixedFormId = providerFixedFormId;
+  }
+
+  //内部関数
+
+  /**
+   * 「事業所名称取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void getProviderNames() throws Exception;
+
+  /**
+   * 「事業所名称の保存」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void saveProviderNames() throws Exception;
 
 }

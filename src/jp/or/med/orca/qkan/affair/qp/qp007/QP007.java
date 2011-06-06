@@ -30,12 +30,24 @@
 package jp.or.med.orca.qkan.affair.qp.qp007;
 
 import java.awt.event.*;
+import java.awt.im.InputSubset;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.event.*;
+import javax.swing.table.TableCellEditor;
+
+import jp.nichicom.ac.bind.ACBindUtilities;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.component.table.ACTableCellViewer;
+import jp.nichicom.ac.component.table.ACTableCellViewerCustomCell;
 import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.util.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.text.QkanServiceKindNameFormat;
 
 /**
  * 利用者向請求書印刷設定(QP007)
@@ -130,6 +142,39 @@ public class QP007 extends QP007Event {
             settings.put("DETAILS_CHECK",new Integer(0));
         }
         // [利用者向け請求書・領収書　詳細版対応] fujihara add end
+        
+        
+        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
+        //「サービスごとに請求書・領収書を出力する」のチェックが付いている場合、
+        //サービス名称一覧のグリッドを表示する
+        if (ACFrame.getInstance().hasProperty("PrintConfig/ServiceByReceipt")
+        	&& ACCastUtilities.toInt(getProperty("PrintConfig/ServiceByReceipt")) == 1) {
+        	//サービス名称-事業所名のグリッドを表示
+            setState_BY_RECEIPT_ON();
+            
+            //印字に使用する事業所名称を取得し、グリッドに表示する
+            getProviderNames();
+            
+            //IMEモードを漢字入力に
+            VRList list = new VRArrayList();
+            for (int i = 0; i < getProviderNameList().size(); i++) {
+                ACTextField cellTextField = new ACTextField();
+                ACTableCellViewerCustomCell cell = new ACTableCellViewerCustomCell();
+                cell.setEditor(cellTextField);
+                cellTextField.setIMEMode(InputSubset.KANJI);
+                cellTextField.setMaxLength(100);
+                cell.setEditable(true);
+                list.add(cell);
+            }
+            getProviderNameColumn().setCustomCells(list);
+
+        } else {
+        	setState_BY_RECEIPT_OFF();
+        }
+        
+        //画面配置を最適化
+        pack();
+        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
         
         
         // 「請求書日付(patientBillSetupBillDate)」にログイン日付を設定する。
@@ -232,6 +277,15 @@ public class QP007 extends QP007Event {
         
         result = settings;
         result.put("PRINT","TRUE");
+        
+        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
+        //変更された事業所名称の保存処理
+        if (getTablePanel().isVisible()) {
+	        saveProviderNames();
+	        result.put("PROVIDER_NAMES",getProviderNameList());
+        }
+        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
+        
         //ウインドウを閉じる。
         dispose();
     }
@@ -263,5 +317,154 @@ public class QP007 extends QP007Event {
         //paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
         ACFrame.debugStart(new ACAffairInfo(QP007.class.getName(), param));
     }
+
+    
+    //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
+	public void getProviderNames() throws Exception {
+		
+		// ログイン事業所名称を取得
+		String loginProviderName = "";
+        VRList providerData = QkanCommon.getProviderInfo(getDBManager(), QkanSystemInformation.getInstance().getLoginProviderID());
+        if (!providerData.isEmpty()) {
+        	loginProviderName = ACCastUtilities.toString(((VRMap)providerData.get(0)).get("PROVIDER_NAME"), "");
+        }
+        
+		
+        // 提供しているサービスの一覧を取得
+		VRList providerServiceList = QkanCommon.getProviderServiceDetail(getDBManager(), QkanSystemInformation.getInstance().getLoginProviderID());
+		
+		// サービス名称の一覧を取得
+		VRMap serviceMap = QkanCommon.getMasterService(getDBManager());
+		
+		// 前回印刷時に使用した事業所名称の情報を取得
+		VRMap sqlParam = new VRHashMap();
+		sqlParam.put("PROVIDER_ID", QkanSystemInformation.getInstance().getLoginProviderID());
+		VRMap prePrintProviderNames = new VRHashMap();
+		ACBindUtilities.setMapFromArray(
+				getDBManager().executeQuery(getSQL_GET_FIXED_FORM(sqlParam)),
+				prePrintProviderNames,
+				"CONTENT_KEY");
+		
+		// FIXED_FORM_IDを退避しておく
+		if (prePrintProviderNames.isEmpty()) { 
+			setProviderFixedFormId(0);
+		} else {
+			setProviderFixedFormId(ACCastUtilities.toInt(((VRMap)prePrintProviderNames.getData(0)).get("FIXED_FORM_ID"), 0));
+		}
+		
+		
+		Set offerServiceKind = new HashSet();
+		VRList showList = new VRArrayList();
+		
+		for (int i = 0; i < providerServiceList.size(); i++) {
+
+			VRMap provider = (VRMap)providerServiceList.get(i);
+			VRMap master = (VRMap)serviceMap.get(provider.get("SYSTEM_SERVICE_KIND_DETAIL"));
+			
+			//マスタにサービス種類コードが設定されていない場合は、設定キャンセル
+			if (master.get("SERVICE_CODE_KIND") == null) {
+				continue;
+			}
+			
+			//既にリストに追加済みのサービスの場合はキャンセル
+			if (offerServiceKind.contains(master.get("SERVICE_CODE_KIND"))) {
+				continue;
+			}
+			
+			//データに追加
+			VRMap row = new VRHashMap();
+			row.put("SERVICE_CODE_KIND", new Integer(ACCastUtilities.toInt(master.get("SERVICE_CODE_KIND"), 0) + 1000));
+			
+			// prePrintProviderNamesの内容を確認
+			Integer kind = ACCastUtilities.toInteger(master.get("SERVICE_CODE_KIND"), 0);
+			if (prePrintProviderNames.containsKey(kind)) {
+				VRMap t = (VRMap)prePrintProviderNames.get(kind);
+				row.put("PROVIDER_NAME", t.get("CONTENT"));
+				prePrintProviderNames.remove(kind);
+			} else {
+				row.put("PROVIDER_NAME", loginProviderName);
+			}
+			
+			
+			showList.add(row);
+			
+			offerServiceKind.add(master.get("SERVICE_CODE_KIND"));
+		}
+		
+		// prePrintProviderNamesに残っているデータを追加
+		// （以前提供していたが、現在は提供していないサービス）
+		for (int i = 0; i < prePrintProviderNames.size(); i++) {
+			VRMap row = new VRHashMap();
+			VRMap t = (VRMap)prePrintProviderNames.getData(i);
+			row.put("SERVICE_CODE_KIND", new Integer(ACCastUtilities.toInt(t.get("CONTENT_KEY"), 0) + 1000));
+			row.put("PROVIDER_NAME", t.get("CONTENT"));
+			showList.add(row);
+		}
+		
+		setProviderNameList(showList);
+		
+		// 列の翻訳データとして、サービスコードのデータを設定
+		((QkanServiceKindNameFormat)getServiceNameColumn().getFormat()).setMasterService(serviceMap);
+		
+		// 作成したデータをテーブルに表示する
+        String[] ada = { "SERVICE_CODE_KIND", "PROVIDER_NAME" };
+		ACTableModelAdapter tableModel = new ACTableModelAdapter();
+		tableModel.setColumns(ada);
+		getServiceByProviderName().setModel(tableModel);
+		
+		tableModel.setAdaptee(getProviderNameList());
+	}
+
+	// 事業所名称保存処理
+	public void saveProviderNames() throws Exception {
+		
+		//FIXED_FORMに登録されている情報を念のため再取得
+		VRMap sqlParam = new VRHashMap();
+		sqlParam.put("PROVIDER_ID", QkanSystemInformation.getInstance().getLoginProviderID());
+		VRMap prePrintProviderNames = new VRHashMap();
+		ACBindUtilities.setMapFromArray(
+				getDBManager().executeQuery(getSQL_GET_FIXED_FORM(sqlParam)),
+				prePrintProviderNames,
+				"CONTENT_KEY");
+		
+		//idを確定
+		if (getProviderFixedFormId() == 0) {
+			
+			VRList result = getDBManager().executeQuery(getSQL_GET_MAX_FIXED_FORM_ID(null));
+			if (result.isEmpty()) {
+				throw new Exception("getSQL_GET_MAX_FIXED_FORM_IDの結果が0件です。");
+			}
+			setProviderFixedFormId(ACCastUtilities.toInt(((VRMap)result.get(0)).get("MAX_FIXED_FORM_ID")));
+		}
+		
+		
+		sqlParam.put("FIXED_FORM_ID", Integer.toString(getProviderFixedFormId()));
+		
+		VRMap row = null;
+		for (int i = 0; i < getProviderNameList().size(); i++) {
+			row = (VRMap)getProviderNameList().get(i);
+			row.put("SERVICE_CODE_KIND", new Integer(ACCastUtilities.toInt(row.get("SERVICE_CODE_KIND"), 0) - 1000));
+			
+			// 登録済みデータ
+			if (prePrintProviderNames.containsKey(row.get("SERVICE_CODE_KIND"))) {
+				VRMap t =(VRMap)prePrintProviderNames.get(row.get("SERVICE_CODE_KIND"));
+				
+				//事業所名の変更チェック
+				if (!t.get("CONTENT").equals(row.get("PROVIDER_NAME"))) {
+					sqlParam.put("CONTENT_KEY", row.get("SERVICE_CODE_KIND"));
+					sqlParam.put("CONTENT", row.get("PROVIDER_NAME"));
+					getDBManager().executeUpdate(getSQL_UPDATE_FIXED_FORM(sqlParam));
+				}
+				
+			// 未登録データ
+			} else {
+				sqlParam.put("CONTENT_KEY", row.get("SERVICE_CODE_KIND"));
+				sqlParam.put("CONTENT", row.get("PROVIDER_NAME"));
+				getDBManager().executeUpdate(getSQL_INSERT_FIXED_FORM(sqlParam));
+			}
+		}
+		
+	}
+	//[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
 
 }

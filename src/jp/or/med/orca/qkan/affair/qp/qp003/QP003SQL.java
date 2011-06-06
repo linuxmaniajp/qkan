@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2010/02/01  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2010/11/11  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -477,6 +477,8 @@ public class QP003SQL extends QP003State {
 
     sb.append(",CLAIM_PATIENT_DETAIL.MARK7_SERVICE_DATE_BIT");
 
+    sb.append(",CLAIM_PATIENT_DETAIL.SERVICE_CODE_KIND");
+
     sb.append(" FROM");
 
     sb.append(" CLAIM");
@@ -569,6 +571,18 @@ public class QP003SQL extends QP003State {
 
     sb.append(")");
 
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM_PATIENT_DETAIL.SERVICE_CODE_KIND");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SERVICE_CODE_KIND", sqlParam)));
+
+    sb.append(")");
+
     return sb.toString();
   }
 
@@ -658,6 +672,8 @@ public class QP003SQL extends QP003State {
     sb.append(",OTHER_COUNT_NO6");
 
     sb.append(",OTHER_PAY_NO6");
+
+    sb.append(",SERVICE_CODE_KIND");
 
     sb.append(")VALUES(");
 
@@ -794,6 +810,10 @@ public class QP003SQL extends QP003State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_PAY_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SERVICE_CODE_KIND", sqlParam)));
 
     sb.append(")");
 
@@ -1247,6 +1267,18 @@ public class QP003SQL extends QP003State {
 
     sb.append(")");
 
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_CODE_KIND");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SERVICE_CODE_KIND", sqlParam)));
+
+    sb.append(")");
+
     return sb.toString();
   }
 
@@ -1586,6 +1618,18 @@ public class QP003SQL extends QP003State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_CODE_KIND");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SERVICE_CODE_KIND", sqlParam)));
 
     sb.append(")");
 

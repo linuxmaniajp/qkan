@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2010/02/01  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2011/02/10  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -3708,7 +3708,7 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「[serviceName]は中山間地域等に指定されていますが、特定地域と中山間地域等は同時に指定できません。」を表示します。
+   * メッセージ「[serviceName]は中山間地域等に指定されていますが、特別地域と中山間地域等は同時に指定できません。」を表示します。
    * <p>
    * 事業所登録時に、特別地域の指定があるにもかかわらず、地域・規模ともに「中山間地域等」に該当する提供サービス情報があった場合
    * </p>
@@ -3724,7 +3724,7 @@ public class QkanMessageList {
            );
   }
   /**
-   * メッセージ「[serviceName]は中山間地域等に指定されていますが、特定地域と中山間地域等は同時に指定できません。」を表示します。
+   * メッセージ「[serviceName]は中山間地域等に指定されていますが、特別地域と中山間地域等は同時に指定できません。」を表示します。
    * <p>
    * 事業所登録時に、特別地域の指定があるにもかかわらず、地域・規模ともに「中山間地域等」に該当する提供サービス情報があった場合
    * </p>
@@ -3740,7 +3740,7 @@ public class QkanMessageList {
 
     sb.append(arg1);
 
-    sb.append("は中山間地域等に指定されていますが、特定地域と中山間地域等は同時に指定できません。");
+    sb.append("は中山間地域等に指定されていますが、特別地域と中山間地域等は同時に指定できません。");
 
     return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
@@ -4275,6 +4275,53 @@ public class QkanMessageList {
   public int QO002_WARNING_OF_INSURER() throws Exception{
 
     return ACMessageBox.show("入力されている保険者番号、もしくは保険者名称に誤りがある可能性があります。" + ACConstants.LINE_SEPARATOR + "登録してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「[targetDate]分の実績は、[claimDate]以降に請求することができます。＜改行＞請求年月もしくはサービス実績の年月を確認してください。＜改行＞このまま集計処理を続行しますか？」を表示します。
+   * <p>
+   * 対象年月 ]= 請求年月のとき
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_CLAIMDATE_COMP(VRMap param) throws Exception {
+    return QP001_WARNING_CLAIMDATE_COMP(
+
+      VRBindPathParser.get("targetDate", param)
+
+      , VRBindPathParser.get("claimDate", param)
+
+           );
+  }
+  /**
+   * メッセージ「[targetDate]分の実績は、[claimDate]以降に請求することができます。＜改行＞請求年月もしくはサービス実績の年月を確認してください。＜改行＞このまま集計処理を続行しますか？」を表示します。
+   * <p>
+   * 対象年月 ]= 請求年月のとき
+   * </p>
+   * @param arg1 targetDate
+   * @param arg2 claimDate
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP001_WARNING_CLAIMDATE_COMP(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("分の実績は、");
+
+    sb.append(arg2);
+
+    sb.append("以降に請求することができます。" + ACConstants.LINE_SEPARATOR + "請求年月もしくはサービス実績の年月を確認してください。" + ACConstants.LINE_SEPARATOR + "このまま集計処理を続行しますか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_CANCEL);
 
   }
 

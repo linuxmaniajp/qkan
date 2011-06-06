@@ -991,4 +991,72 @@ public class QM001UpdateMasterOperation {
           return sb.toString();
       }
       // [ID:0000503][Masahiko Higuchi] 2009/05/01 add end
+      
+      
+      //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
+      public String getSQL_EXIST_CLAIM_PATIENT_DETAIL_PROVIDER_ID() throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("SELECT");
+          sb.append(" RDB$FIELD_NAME");
+          sb.append(" FROM");
+          sb.append(" RDB$RELATION_FIELDS");
+          sb.append(" WHERE");
+          sb.append(" (RDB$RELATION_NAME = 'FIXED_FORM')");
+          sb.append(" AND (RDB$FIELD_NAME = 'PROVIDER_ID')");
+          
+          return sb.toString();
+      }
+      
+      
+      public String getSQL_GET_CLAIM_PATIENT_DETAIL_PRIMARY() throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("SELECT");
+          sb.append(" RDB$CONSTRAINT_NAME");
+          sb.append(" FROM");
+          sb.append(" RDB$RELATION_CONSTRAINTS");
+          sb.append(" WHERE");
+          sb.append(" (RDB$CONSTRAINT_TYPE = 'PRIMARY KEY')");
+          sb.append(" AND (RDB$RELATION_NAME = 'CLAIM_PATIENT_DETAIL')");
+          
+          return sb.toString();
+      }
+      
+      public String getSQL_DROP_CLAIM_PATIENT_DETAIL_PRIMARY(VRMap sqlParam) throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("ALTER TABLE CLAIM_PATIENT_DETAIL DROP CONSTRAINT ");
+          sb.append(sqlParam.get("CONSTRAINT_NAME"));
+          
+          return sb.toString();
+      }
+      
+      public String getSQL_ADD_CLAIM_PATIENT_DETAIL_SERVICE_CODE_KIND() throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("ALTER TABLE CLAIM_PATIENT_DETAIL");
+          sb.append(" ADD SERVICE_CODE_KIND CHAR(2) DEFAULT '00' NOT NULL");
+          
+          return sb.toString();
+      }
+      
+      public String getSQL_MAKE_CLAIM_PATIENT_DETAIL_PRIMARY() throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("ALTER TABLE CLAIM_PATIENT_DETAIL");
+          sb.append(" ADD PRIMARY KEY(CLAIM_ID, SERVICE_CODE_KIND)");
+          
+          return sb.toString();
+      }
+      
+      public String getSQL_ADD_FIXED_FORM_PROVIDER_ID() throws Exception{
+          StringBuffer sb = new StringBuffer();
+          
+          sb.append("ALTER TABLE FIXED_FORM");
+          sb.append(" ADD PROVIDER_ID CHAR(10)");
+          
+          return sb.toString();
+      }
+      //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
 }

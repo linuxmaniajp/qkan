@@ -354,6 +354,20 @@ public abstract class QO012Event extends QO012SQL {
 	public static final int CLAIM_RECORD_8_TOTAL_UNITS = 9; // 合計単位数
 
 	public static final int CLAIM_RECORD_10_TOTAL_AMOUNT = 11; // 合計保険請求額
+	
+	// [ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+	// データレコード711系
+	public static final int BASIC_RECORD_5_INSURER_ID = 6; // 基本情報レコード内 保険者番号インデックス
+	public static final int DETAIL_RECORD_5_INSURER_ID = 6; //明細情報レコード内 保険者番号インデックス
+	public static final int SPECIAL_CLINIC_RECORD_5_INSURER_ID = 6; // 特定診療費レコード内 保険者番号インデックス
+	public static final int TOTAL_RECORD_5_INSURER_ID = 6;  // 集計レコード内 保険者番号インデックス
+	
+	// データレコード812系 保険者番号インデックス
+	public static final int CAREPLAN_RECORD_5_INSURER_ID = 6; // 保険者番号インデックス
+	
+	// データレコード822系 保険者番号インデックス
+	public static final int MANAGEMENT_RECORD_3_INSURER_ID = 4; // 保険者番号インデックス
+	// [ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
 
 	
 	// getter/setter

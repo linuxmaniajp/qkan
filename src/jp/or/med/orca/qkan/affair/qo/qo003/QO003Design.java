@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/06/01  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2011/03/02  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録／修正 (O)
@@ -491,6 +491,8 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
 
       providerTable.setColumnModel(getProviderTableColumnModel());
 
+      providerTable.setExtendLastColumn(false);
+
       addProviderTable();
     }
     return providerTable;
@@ -722,8 +724,8 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 一覧：担当者を取得します。
-   * @return 一覧：担当者
+   * 一覧：介護支援専門員名を取得します。
+   * @return 一覧：介護支援専門員名
    */
   public ACTableColumn getProviderChargeColumn(){
     if(providerChargeColumn==null){
@@ -732,7 +734,7 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
 
       providerChargeColumn.setHeaderValue("担当者");
 
-      providerChargeColumn.setColumns(5);
+      providerChargeColumn.setColumns(50);
 
       providerChargeColumn.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -993,7 +995,7 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 一覧：担当者に内部項目を追加します。
+   * 一覧：介護支援専門員名に内部項目を追加します。
    */
   protected void addProviderChargeColumn(){
 

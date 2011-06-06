@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/08/28  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2010/11/15  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -313,6 +313,7 @@ public abstract class QO008Event extends QO008SQL {
   private int tableType;
   private int fixedFormId;
   public static final String AFFAIR_ID = "QO008";
+  public static final String PRINT_PROVIDER = "3-1";
   public static final int TABLE_TYPE_FIXED_FORM = 1;
   public static final int SQL_MODE_DEFAULT = 0;
   public static final int SQL_MODE_INSERT = 1;
@@ -324,6 +325,7 @@ public abstract class QO008Event extends QO008SQL {
   private VRList fixedFormList = new VRArrayList();
   private ACTableModelAdapter fixedFormGroupTableModel;
   private ACTableModelAdapter fixedFormTableModel;
+  private String selectedKey;
   //getter/setter
 
   /**
@@ -444,6 +446,21 @@ public abstract class QO008Event extends QO008SQL {
    */
   protected void setFixedFormTableModel(ACTableModelAdapter fixedFormTableModel){
     this.fixedFormTableModel = fixedFormTableModel;
+  }
+
+  /**
+   * selectedKeyを返します。
+   * @return selectedKey
+   */
+  protected String getSelectedKey(){
+    return selectedKey;
+  }
+  /**
+   * selectedKeyを設定します。
+   * @param selectedKey selectedKey
+   */
+  protected void setSelectedKey(String selectedKey){
+    this.selectedKey = selectedKey;
   }
 
   //内部関数

@@ -276,6 +276,20 @@ public class QO012SQL extends QO012Design {
     sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURED_ID", sqlParam)));
 
     sb.append(")");
+    
+    //[ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+    sb.append("AND");
+    
+    sb.append("(");
+    
+    sb.append(" PATIENT_NINTEI_HISTORY.INSURER_ID");
+    
+    sb.append(" =");
+    
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+    
+    sb.append(")");
+    //[ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
 
     sb.append(")");
 
@@ -340,6 +354,19 @@ public class QO012SQL extends QO012Design {
     sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURED_ID", sqlParam)));
 
     sb.append(")");
+    
+    
+    //[ID:0000623][Shin Fujihara] 2010/11 add begin 2010年度対応
+    sb.append(" AND (");
+
+    sb.append(" PATIENT_NINTEI_HISTORY.INSURER_ID");
+
+    sb.append(" =");
+    
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+    //[ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
 
     return sb.toString();
   }

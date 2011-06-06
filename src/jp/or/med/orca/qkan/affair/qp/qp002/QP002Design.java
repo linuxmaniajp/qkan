@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2006/05/22  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2010/11/09  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -126,6 +126,8 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn providerTableColumn5;
 
   private ACTableColumn providerTableColumn6;
+
+  private ACTableColumn providerTableColumn9;
 
   //getter
 
@@ -533,11 +535,34 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
 
       providerTableColumn6.setColumnName("CLAIM_STYLE_TYPE");
 
-      providerTableColumn6.setColumns(6);
+      providerTableColumn6.setColumns(7);
 
       addProviderTableColumn6();
     }
     return providerTableColumn6;
+
+  }
+
+  /**
+   * サービス種類を取得します。
+   * @return サービス種類
+   */
+  public ACTableColumn getProviderTableColumn9(){
+    if(providerTableColumn9==null){
+
+      providerTableColumn9 = new ACTableColumn();
+
+      providerTableColumn9.setHeaderValue("サービス種類");
+
+      providerTableColumn9.setColumnName("SERVICE_CODE_KIND");
+
+      providerTableColumn9.setColumns(14);
+
+      providerTableColumn9.setFormat(QkanServiceKindNameFormat.getInstance());
+
+      addProviderTableColumn9();
+    }
+    return providerTableColumn9;
 
   }
 
@@ -695,6 +720,8 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
 
     getProviderTableColumnModel().addColumn(getProviderTableColumn6());
 
+    getProviderTableColumnModel().addColumn(getProviderTableColumn9());
+
   }
 
   /**
@@ -750,6 +777,13 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
    * 様式に内部項目を追加します。
    */
   protected void addProviderTableColumn6(){
+
+  }
+
+  /**
+   * サービス種類に内部項目を追加します。
+   */
+  protected void addProviderTableColumn9(){
 
   }
 

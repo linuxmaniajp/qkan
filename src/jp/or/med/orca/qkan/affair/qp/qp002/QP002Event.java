@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/05/09  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2010/11/10  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -298,10 +298,11 @@ public abstract class QP002Event extends QP002SQL {
   /**
    * 「レコード編集」に関する処理を行ないます。
    *
+   * @param param VRMap
    * @throws Exception 処理例外
    *
    */
-  public abstract void editRecord() throws Exception;
+  public abstract void editRecord(VRMap param) throws Exception;
 
   /**
    * 「画面状態制御」に関する処理を行ないます。

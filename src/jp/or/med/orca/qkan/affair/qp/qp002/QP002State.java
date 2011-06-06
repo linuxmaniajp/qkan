@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/05/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2010/11/11  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -107,6 +107,18 @@ public class QP002State extends QP002Design {
   public void setState_AFFAIR_BUTTON_ENABLE_TRUE() throws Exception {
 
         getSeikyu().setEnabled(true);
+
+        getSelect().setEnabled(true);
+
+  }
+
+  /**
+   * 「請求ボタン・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_SEIKYU_BUTTON_ENABLE_FALSE() throws Exception {
+
+        getSeikyu().setEnabled(false);
 
         getSelect().setEnabled(true);
 

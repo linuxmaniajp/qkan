@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 安武　徳夫
- * 作成日: 2007/12/19  日本コンピューター株式会社 安武　徳夫 新規作成
+ * 作成日: 2010/11/05  日本コンピューター株式会社 安武　徳夫 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -164,6 +164,14 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn patientSexColumn;
 
   private ACTableColumn patientBirthColumn;
+
+  private ACTableColumn patientJotaiCodeColumn;
+
+  private ACTableColumn patientInsuredIdColumn;
+
+  private ACTableColumn patientInsureValidStartColumn;
+
+  private ACTableColumn patientInsureValidEndColumn;
 
   private ACTableColumn patientZipColumn;
 
@@ -850,8 +858,8 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 利用者一覧：有無を取得します。
-   * @return 利用者一覧：有無
+   * 利用者一覧：印刷を取得します。
+   * @return 利用者一覧：印刷
    */
   public ACTableColumn getPatientFinishFlagColumn(){
     if(patientFinishFlagColumn==null){
@@ -918,7 +926,7 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
 
       patientCodeColumn.setColumnName("PATIENT_CODE");
 
-      patientCodeColumn.setColumns(8);
+      patientCodeColumn.setColumns(7);
 
       addPatientCodeColumn();
     }
@@ -1011,6 +1019,96 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
       addPatientBirthColumn();
     }
     return patientBirthColumn;
+
+  }
+
+  /**
+   * 利用者一覧：要介護度を取得します。
+   * @return 利用者一覧：要介護度
+   */
+  public ACTableColumn getPatientJotaiCodeColumn(){
+    if(patientJotaiCodeColumn==null){
+
+      patientJotaiCodeColumn = new ACTableColumn();
+
+      patientJotaiCodeColumn.setHeaderValue("要介護度");
+
+      patientJotaiCodeColumn.setColumnName("JOTAI_CODE");
+
+      patientJotaiCodeColumn.setColumns(6);
+
+      patientJotaiCodeColumn.setFormat(QkanJotaiCodeFormat.getInstance());
+
+      addPatientJotaiCodeColumn();
+    }
+    return patientJotaiCodeColumn;
+
+  }
+
+  /**
+   * 利用者一覧：被保険者番号を取得します。
+   * @return 利用者一覧：被保険者番号
+   */
+  public ACTableColumn getPatientInsuredIdColumn(){
+    if(patientInsuredIdColumn==null){
+
+      patientInsuredIdColumn = new ACTableColumn();
+
+      patientInsuredIdColumn.setHeaderValue("被保険者番号");
+
+      patientInsuredIdColumn.setColumnName("INSURED_ID");
+
+      patientInsuredIdColumn.setColumns(8);
+
+      addPatientInsuredIdColumn();
+    }
+    return patientInsuredIdColumn;
+
+  }
+
+  /**
+   * 利用者一覧：有効期限開始を取得します。
+   * @return 利用者一覧：有効期限開始
+   */
+  public ACTableColumn getPatientInsureValidStartColumn(){
+    if(patientInsureValidStartColumn==null){
+
+      patientInsureValidStartColumn = new ACTableColumn();
+
+      patientInsureValidStartColumn.setHeaderValue("有効期限開始");
+
+      patientInsureValidStartColumn.setColumnName("INSURE_VALID_START");
+
+      patientInsureValidStartColumn.setColumns(10);
+
+      patientInsureValidStartColumn.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addPatientInsureValidStartColumn();
+    }
+    return patientInsureValidStartColumn;
+
+  }
+
+  /**
+   * 利用者一覧：有効期限終了を取得します。
+   * @return 利用者一覧：有効期限終了
+   */
+  public ACTableColumn getPatientInsureValidEndColumn(){
+    if(patientInsureValidEndColumn==null){
+
+      patientInsureValidEndColumn = new ACTableColumn();
+
+      patientInsureValidEndColumn.setHeaderValue("有効期限終了");
+
+      patientInsureValidEndColumn.setColumnName("INSURE_VALID_END");
+
+      patientInsureValidEndColumn.setColumns(10);
+
+      patientInsureValidEndColumn.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addPatientInsureValidEndColumn();
+    }
+    return patientInsureValidEndColumn;
 
   }
 
@@ -1324,6 +1422,14 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
 
     getPatientsColumnModel().addColumn(getPatientBirthColumn());
 
+    getPatientsColumnModel().addColumn(getPatientJotaiCodeColumn());
+
+    getPatientsColumnModel().addColumn(getPatientInsuredIdColumn());
+
+    getPatientsColumnModel().addColumn(getPatientInsureValidStartColumn());
+
+    getPatientsColumnModel().addColumn(getPatientInsureValidEndColumn());
+
     getPatientsColumnModel().addColumn(getPatientZipColumn());
 
     getPatientsColumnModel().addColumn(getPatientAddressColumn());
@@ -1354,7 +1460,7 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 利用者一覧：有無に内部項目を追加します。
+   * 利用者一覧：印刷に内部項目を追加します。
    */
   protected void addPatientFinishFlagColumn(){
 
@@ -1399,6 +1505,34 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
    * 利用者一覧：生年月日に内部項目を追加します。
    */
   protected void addPatientBirthColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：要介護度に内部項目を追加します。
+   */
+  protected void addPatientJotaiCodeColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：被保険者番号に内部項目を追加します。
+   */
+  protected void addPatientInsuredIdColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：有効期限開始に内部項目を追加します。
+   */
+  protected void addPatientInsureValidStartColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：有効期限終了に内部項目を追加します。
+   */
+  protected void addPatientInsureValidEndColumn(){
 
   }
 

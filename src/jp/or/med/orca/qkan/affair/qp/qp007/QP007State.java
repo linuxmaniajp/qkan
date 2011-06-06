@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/02/15  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2010/11/09  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -77,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 利用者向請求書印刷設定状態定義(QP007) 
  */
@@ -121,6 +121,26 @@ public class QP007State extends QP007Design {
         getPatientBillSetupUnderPrintOn().setEnabled(true);
 
         getPatientBillSetupMedicalTreatmentOn().setEnabled(true);
+
+  }
+
+  /**
+   * 「サービスごとの出力ＯＦＦ」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_BY_RECEIPT_OFF() throws Exception {
+
+        getTablePanel().setVisible(false);
+
+  }
+
+  /**
+   * 「サービスごとの出力ＯＮ」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_BY_RECEIPT_ON() throws Exception {
+
+        getTablePanel().setVisible(true);
 
   }
 

@@ -157,7 +157,11 @@ public class QU001 extends QU001Event {
             "PATIENT_ZIP_SECOND",
             "PATIENT_TEL_FIRST",
             "PATIENT_TEL_SECOND",
-            "PATIENT_TEL_THIRD"
+            "PATIENT_TEL_THIRD",
+            "JOTAI_CODE",
+            "INSURED_ID",
+            "INSURE_VALID_START",
+            "INSURE_VALID_END"
     });
 
     setPatientTableModel(model);
@@ -633,7 +637,9 @@ public class QU001 extends QU001Event {
 	    	VRBindPathParser.set("JOTAI_CODE", patientMap, VRBindPathParser.get("JOTAI_CODE", map));
 	    	// 有効期間終了
 	    	VRBindPathParser.set("INSURE_VALID_END", patientMap, VRBindPathParser.get("INSURE_VALID_END", map));
-	    	
+	    	// 有効期間開始
+	    	VRBindPathParser.set("INSURE_VALID_START", patientMap, VRBindPathParser.get("INSURE_VALID_START", map));
+
 		    // 居宅介護支援事業所IDを取得する。
 		    String providerId = ACCastUtilities.toString(VRBindPathParser.get("PROVIDER_ID", map));
 		    
@@ -896,7 +902,75 @@ public class QU001 extends QU001Event {
     
     // patientDataを退避する。
     setPatientData(patientData);
+
+    // ※渡すパラメータの取得
+    // patientDataの件数分ループする。
+    for(int i = 0; i < getPatientData().size(); i++){   
     
+	    // PATIENT_ID格納用変数を定義する。
+    	int patientId;
+    	// 利用者情報格納用Mapを定義する。
+    	VRMap patientMap = new VRHashMap();
+    	// 要介護報格納用Listを定義する。
+    	VRList patientInsureList;
+
+    	// patientDataのKEY : PATIENT_IDのVALUEを取得する(利用者ID)。
+	    patientMap = (VRMap)getPatientData().get(i);
+	    patientId = ACCastUtilities.toInt(VRBindPathParser.get("PATIENT_ID", patientMap));	
+	   
+	    // sqlParamの設定
+	    // 利用者ID追加
+	    VRBindPathParser.set("PATIENT_ID", sqlParam, new Integer(patientId));
+	    // 現在日付追加
+	    VRBindPathParser.set("NOW_DATE", sqlParam, new Date());
+	    
+	    // 現在日付時点の要介護情報を取得する。
+	    // SQL文の取得
+	    strSql = getSQL_GET_NINTEI_NOW(sqlParam);
+	    	
+	    // SQL文の実行
+	    patientInsureList = getDBManager().executeQuery(strSql);
+	    
+	    // 現在日付時点の要介護情報が0件の場合
+	    if(patientInsureList.size() == 0){
+	    	
+	    	// 現在日付より未来の要介護情報のうち直近の情報を取得する。
+		    // SQL文の取得
+		    strSql = getSQL_GET_NINTEI_FUTURE(sqlParam);
+		    	
+		    // SQL文の実行
+		    patientInsureList = getDBManager().executeQuery(strSql);
+		    
+		    if(patientInsureList.size() == 0){
+		    	
+		    	// 現在日付より過去の要介護情報のうち直近の情報を取得する。
+			    // SQL文の取得
+			    strSql = getSQL_GET_NINTEI_PAST(sqlParam);
+			    	
+			    // SQL文の実行
+			    patientInsureList = getDBManager().executeQuery(strSql);	    	
+		    	
+		    }	    	
+	    }
+	    
+	    // 取得した要介護情報が1件以上の場合
+	    if(patientInsureList.size() > 0){
+	    	
+	    	//要介護情報レコードを取り出す。
+	    	VRMap map = (VRMap)patientInsureList.get(0);
+	    	
+	    	// 利用者情報に以下の値を追加する。
+	    	// 被保険者番号
+	    	VRBindPathParser.set("INSURED_ID", patientMap, VRBindPathParser.get("INSURED_ID", map));
+	    	// 要介護度
+	    	VRBindPathParser.set("JOTAI_CODE", patientMap, VRBindPathParser.get("JOTAI_CODE", map));
+	    	// 有効期間終了
+	    	VRBindPathParser.set("INSURE_VALID_END", patientMap, VRBindPathParser.get("INSURE_VALID_END", map));
+	    	// 有効期間開始
+	    	VRBindPathParser.set("INSURE_VALID_START", patientMap, VRBindPathParser.get("INSURE_VALID_START", map));
+	    }
+    }
+	    
     // ※取得したデータを画面に展開
     getPatientTableModel().setAdaptee(patientData);
     

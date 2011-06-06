@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2010/11/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -170,6 +170,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACIntegerCheckBox showOldIryo;
 
   private ACIntegerCheckBox showOldLowProviderElements;
+
+  private ACIntegerCheckBox serviceByReceipt;
 
   private ACGroupBox backupResotres;
 
@@ -986,6 +988,25 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * サービスごとに請求書・領収書を出力するを取得します。
+   * @return サービスごとに請求書・領収書を出力する
+   */
+  public ACIntegerCheckBox getServiceByReceipt(){
+    if(serviceByReceipt==null){
+
+      serviceByReceipt = new ACIntegerCheckBox();
+
+      serviceByReceipt.setText("サービスごとに請求書・領収書を出力する");
+
+      serviceByReceipt.setBindPath("SERVICE_BY_RECEIPT");
+
+      addServiceByReceipt();
+    }
+    return serviceByReceipt;
+
+  }
+
+  /**
    * データの退避・復元領域を取得します。
    * @return データの退避・復元領域
    */
@@ -1355,6 +1376,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     others.add(getShowOldLowProviderElements(), VRLayout.FLOW_RETURN);
 
+    others.add(getServiceByReceipt(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -1416,6 +1439,13 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 過去の事業所体制情報も表示するに内部項目を追加します。
    */
   protected void addShowOldLowProviderElements(){
+
+  }
+
+  /**
+   * サービスごとに請求書・領収書を出力するに内部項目を追加します。
+   */
+  protected void addServiceByReceipt(){
 
   }
 

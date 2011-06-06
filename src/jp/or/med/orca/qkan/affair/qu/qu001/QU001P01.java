@@ -211,6 +211,22 @@ public class QU001P01 extends QU001P01Event {
 			    }
 		    		
 	    	}
+
+		    // 有効期限開始を設定する。
+	    	if(VRBindPathParser.get("INSURE_VALID_START", patientMap) instanceof Date){
+    	
+	    		Date insureValidStart = ACCastUtilities.toDate(VRBindPathParser.get("INSURE_VALID_START", patientMap));
+
+			    // 有効期限が9999/12/31の場合印字しない。※要介護度が「非該当」の場合
+			    if(ACDateUtilities.getDifferenceOnTotalDay(insureValidStart, MAX_DATE) != 0){
+			    		
+		    		ACChotarouXMLUtilities.setValue(
+			    			writer, 
+							"patients.h" + (j + 1) + ".validDateStart",
+							VRDateParser.format(insureValidStart, "ggge年MM月dd日"));
+			    }
+		    		
+	    	}
 	    	
 		    // 住所を設定する。
 	    	if(VRBindPathParser.has("PATIENT_ADDRESS", patientMap)){

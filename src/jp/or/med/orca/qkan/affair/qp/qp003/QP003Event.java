@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2009/07/28  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2010/11/11  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -689,6 +689,7 @@ public abstract class QP003Event extends QP003SQL {
   private String providerId;
   private String insurerId;
   private String insuredId;
+  private String serviceKind;
   private Date targetDate;
   private Date claimDate;
   private VRList claimList = new VRArrayList();
@@ -847,6 +848,21 @@ public abstract class QP003Event extends QP003SQL {
    */
   protected void setInsuredId(String insuredId){
     this.insuredId = insuredId;
+  }
+
+  /**
+   * serviceKindを返します。
+   * @return serviceKind
+   */
+  protected String getServiceKind(){
+    return serviceKind;
+  }
+  /**
+   * serviceKindを設定します。
+   * @param serviceKind serviceKind
+   */
+  protected void setServiceKind(String serviceKind){
+    this.serviceKind = serviceKind;
   }
 
   /**

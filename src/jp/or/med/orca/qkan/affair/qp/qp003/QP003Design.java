@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2009/07/29  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2010/11/09  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -104,6 +104,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel contentPatientID;
 
   private ACLabel contentPatientName;
+
+  private ACTextField contentServiceKindText;
+
+  private ACLabel contentServiceKindName;
 
   private ACPanel contentProviders;
 
@@ -532,6 +536,44 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentPatientName();
     }
     return contentPatientName;
+
+  }
+
+  /**
+   * サービス種類を取得します。
+   * @return サービス種類
+   */
+  public ACTextField getContentServiceKindText(){
+    if(contentServiceKindText==null){
+
+      contentServiceKindText = new ACTextField();
+
+      contentServiceKindText.setText("サービス種類");
+
+      contentServiceKindText.setEditable(false);
+
+      addContentServiceKindText();
+    }
+    return contentServiceKindText;
+
+  }
+
+  /**
+   * サービス種類名称を取得します。
+   * @return サービス種類名称
+   */
+  public ACLabel getContentServiceKindName(){
+    if(contentServiceKindName==null){
+
+      contentServiceKindName = new ACLabel();
+
+      contentServiceKindName.setText("サービス種類名称");
+
+      contentServiceKindName.setBindPath("PATIENT_SERVICE_KIND_NAME");
+
+      addContentServiceKindName();
+    }
+    return contentServiceKindName;
 
   }
 
@@ -2969,6 +3011,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentPatients.add(getContentPatientName(), VRLayout.FLOW);
 
+    contentPatients.add(getContentServiceKindText(), VRLayout.FLOW);
+
+    contentPatients.add(getContentServiceKindName(), VRLayout.FLOW);
+
   }
 
   /**
@@ -2989,6 +3035,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * 利用者名に内部項目を追加します。
    */
   protected void addContentPatientName(){
+
+  }
+
+  /**
+   * サービス種類に内部項目を追加します。
+   */
+  protected void addContentServiceKindText(){
+
+  }
+
+  /**
+   * サービス種類名称に内部項目を追加します。
+   */
+  protected void addContentServiceKindName(){
 
   }
 
