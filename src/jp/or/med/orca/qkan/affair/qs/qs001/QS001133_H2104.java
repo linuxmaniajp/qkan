@@ -58,7 +58,6 @@ import jp.nichicom.ac.sql.*;
 import jp.nichicom.ac.text.*;
 import jp.nichicom.ac.util.*;
 import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
 import jp.nichicom.vr.bind.*;
 import jp.nichicom.vr.bind.event.*;
 import jp.nichicom.vr.border.*;
