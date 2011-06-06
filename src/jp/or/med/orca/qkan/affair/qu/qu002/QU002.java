@@ -41,6 +41,7 @@ import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -2250,6 +2251,50 @@ public class QU002 extends QU002Event {
 			QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam);
 			return false;
 		}
+        
+		// [ID:0000582][Masahiko Higuchi] 2010/01 add begin 利用者情報詳細・異動情報の追加・編集時のチェック機能
+        // 状況コードの入力チェック
+        // ・idouInfoReason
+        VRMap service = (VRMap) getIdouInfoServise().getSelectedModelItem();
+        if(service != null) {
+            int systemServiceKindDetail = ACCastUtilities.toInt(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", service),0);
+            // 施設系/順施設系のサービスにおいては状況の入力を必須とする。
+            if (CareServiceCommon.isFacility(systemServiceKindDetail)
+                    || CareServiceCommon.isLifeCare(systemServiceKindDetail)) {
+                // 理由/状況が未選択もしくは、選択項目が空白である場合
+                if (!(getIdouInfoReason().isSelected())
+                        || !(getIdouInfoReason().getSelectedModelItem() instanceof VRMap)) {
+                    VRMap idou = (VRMap)getIdouInfoChangeContent().getSelectedModelItem();
+                    // 異動情報の選択を行っている場合
+                    int codeId = ACCastUtilities.toInt(idou.getData("CODE_ID"),0);
+                    boolean isIdouReasonCheck = false;
+                    // 施設系のみチェック対象とする
+                    switch(codeId){
+                    case CODE_IDOU_CONTENT_SHISETSU1:
+                        isIdouReasonCheck = true;
+                        break;
+                    case CODE_IDOU_CONTENT_SHISETSU2:
+                        isIdouReasonCheck = true;
+                        break;
+                    case CODE_IDOU_CONTENT_SHISETSU3:
+                        isIdouReasonCheck = true;
+                        break;
+                    }
+                    // 施設系は状況コードをチェックする。
+                    if(isIdouReasonCheck) {
+                        // 選択されている履歴のチェック
+                        getIdouInfoReason().requestFocus();
+                        // コンテナから名称取得
+                        msgParam = getIdouInfoReasonContainer().getText();
+                        QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(
+                                msgParam);
+                        return false;
+                    }
+                }
+            }
+        }
+        // [ID:0000582][Masahiko Higuchi] 2010/01 add end
+        
 
 		// 入力チェックエラーが発生しなかった場合
 		// 戻り値としてtrueを返す。

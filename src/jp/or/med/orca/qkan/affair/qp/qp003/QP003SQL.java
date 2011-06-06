@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2009/05/20  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2010/02/01  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -448,6 +448,34 @@ public class QP003SQL extends QP003State {
     sb.append(",CLAIM_PATIENT_DETAIL.OTHER_COUNT_NO6");
 
     sb.append(",CLAIM_PATIENT_DETAIL.OTHER_PAY_NO6");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK1_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK1_SERVICE_DATE_BIT");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK2_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK2_SERVICE_DATE_BIT");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK3_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK3_SERVICE_DATE_BIT");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK4_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK4_SERVICE_DATE_BIT");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK5_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK5_SERVICE_DATE_BIT");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK6_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK6_SERVICE_DATE_BIT");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK7_SERVICE_NAME");
+
+    sb.append(",CLAIM_PATIENT_DETAIL.MARK7_SERVICE_DATE_BIT");
 
     sb.append(" FROM");
 
@@ -1151,6 +1179,62 @@ public class QP003SQL extends QP003State {
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_PAY_NO6", sqlParam)));
 
+    sb.append(",");
+
+    sb.append(" MARK1_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK1_SERVICE_DATE_BIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" MARK2_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK2_SERVICE_DATE_BIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" MARK3_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK3_SERVICE_DATE_BIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" MARK4_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK4_SERVICE_DATE_BIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" MARK5_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK5_SERVICE_DATE_BIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" MARK6_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK6_SERVICE_DATE_BIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" MARK7_SERVICE_DATE_BIT");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK7_SERVICE_DATE_BIT", sqlParam)));
+
     sb.append(" WHERE");
 
     sb.append("(");
@@ -1412,6 +1496,12 @@ public class QP003SQL extends QP003State {
     sb.append(")");
 
     sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" CLAIM.LAST_TIME");
+
+    sb.append(" DESC");
 
     return sb.toString();
   }

@@ -37,6 +37,7 @@ import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
@@ -430,6 +431,21 @@ public class QC001 extends QC001Event {
             // 取得レコード集合の1件目のレコードを退避する。
             VRMap lastPlanDataMap = (VRMap) lastPlanData.getData(0);
 
+            // [ID:0000574][Masahiko Higuchi] 2010/01 add begin 2009年度対応 
+            // 要介護度の認定チェック
+            VRList patientNinteiHistory = QkanCommon
+                    .getPatientInsureInfoOnEndOfMonth(getDBManager(),
+                            getTargetDateSource(), getPatientID());
+            if(patientNinteiHistory != null && patientNinteiHistory.size() >= 1){
+                // 当月の末の情報を取得する
+                VRMap history = (VRMap)patientNinteiHistory.getData(0);
+                lastPlanDataMap.setData("JOTAI_CODE",history.getData("JOTAI_CODE"));
+            } else {
+                // 履歴が取得できないので、自立に設定
+                lastPlanDataMap.setData("JOTAI_CODE",new Integer(1));
+            }
+            // [ID:0000574][Masahiko Higuchi] 2010/01 add end
+            
             // contetnsパネルのsourceとして、退避したレコードを設定する。
             getContents().setSource(lastPlanDataMap);
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2008/06/09  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/07/28  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -479,6 +479,22 @@ public abstract class QP003Event extends QP003SQL {
             }
         }
     });
+    getTabs().addChangeListener(new ChangeListener(){
+        private boolean lockFlag = false;
+        public void stateChanged(ChangeEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                tabsStateChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -651,6 +667,13 @@ public abstract class QP003Event extends QP003SQL {
    */
   protected abstract void contentEtcCount6FocusLost(FocusEvent e) throws Exception;
 
+  /**
+   * 「サービス提供日タブクリック」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void tabsStateChanged(ChangeEvent e) throws Exception;
+
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_KEY;
@@ -673,6 +696,7 @@ public abstract class QP003Event extends QP003SQL {
   private VRList comboSet2 = new VRArrayList();
   private VRMap modelMap = new VRHashMap();
   private VRMap sourceMap = new VRHashMap();
+  private VRMap snapShotMap = new VRHashMap();
   //getter/setter
 
   /**
@@ -930,6 +954,21 @@ public abstract class QP003Event extends QP003SQL {
     this.sourceMap = sourceMap;
   }
 
+  /**
+   * snapShotMapを返します。
+   * @return snapShotMap
+   */
+  protected VRMap getSnapShotMap(){
+    return snapShotMap;
+  }
+  /**
+   * snapShotMapを設定します。
+   * @param snapShotMap snapShotMap
+   */
+  protected void setSnapShotMap(VRMap snapShotMap){
+    this.snapShotMap = snapShotMap;
+  }
+
   //内部関数
 
   /**
@@ -1002,5 +1041,29 @@ public abstract class QP003Event extends QP003SQL {
    *
    */
   public abstract void doCalcUnitPrice(ACTextField unit, ACTextField count, ACTextField price) throws Exception;
+
+  /**
+   * 「カレンダー情報を取得します。」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return VRMap
+   */
+  public abstract VRMap getCalenderBitData() throws Exception;
+
+  /**
+   * 「カレンダースナップショット」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void calenderSnapShot() throws Exception;
+
+  /**
+   * 「カレンダー変更チェック」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean calenderIsModified() throws Exception;
 
 }

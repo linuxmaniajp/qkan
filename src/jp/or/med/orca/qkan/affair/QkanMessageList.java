@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2009/04/22  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2010/02/01  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -4118,7 +4118,163 @@ public class QkanMessageList {
 
     sb.append("度にのみ加算のチェックをつけるよう修正してください。）");
 
-    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「[serviceName]の実績データが存在しませんでした。＜改行＞読込処理は行いません。」を表示します。
+   * <p>
+   * サービスの実績が読込めなかった場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int ERROR_OF_RESULT_READ_NOTHING(VRMap param) throws Exception {
+    return ERROR_OF_RESULT_READ_NOTHING(
+
+      VRBindPathParser.get("serviceName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[serviceName]の実績データが存在しませんでした。＜改行＞読込処理は行いません。」を表示します。
+   * <p>
+   * サービスの実績が読込めなかった場合
+   * </p>
+   * @param arg1 serviceName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int ERROR_OF_RESULT_READ_NOTHING(
+
+      Object arg1
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("の実績データが存在しませんでした。" + ACConstants.LINE_SEPARATOR + "読込処理は行いません。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[targetDate]の[serviceName]の実績を読込みます。＜改行＞（現在入力されているデータは消えてしまいます。）＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 指定サービスの実績を読込む場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int WARNING_OF_RESULT_SERVICE(VRMap param) throws Exception {
+    return WARNING_OF_RESULT_SERVICE(
+
+      VRBindPathParser.get("targetDate", param)
+
+      , VRBindPathParser.get("serviceName", param)
+
+           );
+  }
+  /**
+   * メッセージ「[targetDate]の[serviceName]の実績を読込みます。＜改行＞（現在入力されているデータは消えてしまいます。）＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 指定サービスの実績を読込む場合
+   * </p>
+   * @param arg1 targetDate
+   * @param arg2 serviceName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int WARNING_OF_RESULT_SERVICE(
+
+      Object arg1
+      , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append("の");
+
+    sb.append(arg2);
+
+    sb.append("の実績を読込みます。" + ACConstants.LINE_SEPARATOR + "（現在入力されているデータは消えてしまいます。）" + ACConstants.LINE_SEPARATOR + "よろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「再集計を行ってもよろしいですか？」を表示します。
+   * <p>
+   * 再集計時のメッセージ
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP005_WARNING_OF_RETOTAL() throws Exception{
+
+    return ACMessageBox.show("再集計を行ってもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「再集計が終了しました。」を表示します。
+   * <p>
+   * 再集計正常完了時のメッセージ
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP005_RETOTAL_SUCCESSED() throws Exception{
+
+    return ACMessageBox.show("再集計が終了しました。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「サービスコードには数字4桁を入力してください。」を表示します。
+   * <p>
+   * 4桁入力されていないとき。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP005_ERROR_OF_SERVICE_KIND() throws Exception{
+
+    return ACMessageBox.show("サービスコードには数字4桁を入力してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「入力されたサービスコードは存在しません。＜改行＞サービスコードを確認してください。」を表示します。
+   * <p>
+   * 入力されたサービスコードが見つからないとき。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP005_ERROR_OF_SERVICE_NAME() throws Exception{
+
+    return ACMessageBox.show("入力されたサービスコードは存在しません。" + ACConstants.LINE_SEPARATOR + "サービスコードを確認してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「入力されている保険者番号、もしくは保険者名称に誤りがある可能性があります。＜改行＞登録してもよろしいですか？」を表示します。
+   * <p>
+   * 保険者の名称と番号のどちらかがマスタと一致しない場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO002_WARNING_OF_INSURER() throws Exception{
+
+    return ACMessageBox.show("入力されている保険者番号、もしくは保険者名称に誤りがある可能性があります。" + ACConstants.LINE_SEPARATOR + "登録してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
 

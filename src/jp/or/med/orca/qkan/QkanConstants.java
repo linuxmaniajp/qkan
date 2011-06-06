@@ -625,5 +625,10 @@ public interface QkanConstants {
      */
     public static final int SERVICE_LOW_VERSION_H2104 = 20090401;
     // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
+
+    //[ID:0000435][Masahiko Higuchi] 2009/07 add begin 2009”N“x‘Î‰
+    public static final String[] CLAIM_PATIENT_DETAIL_SERVICE_MARK = { "›",
+            "", " ", "¢", "", "¤", "™" };
+    //[ID:0000435][Masahiko Higuchi] 2009/07 add end
     
 }

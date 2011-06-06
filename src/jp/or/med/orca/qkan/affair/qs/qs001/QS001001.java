@@ -962,8 +962,34 @@ public class QS001001 extends QS001001Event {
     public void convertServiceData(VRList paste) throws Exception {
     	final Integer OFF = new Integer(1);
     	final Integer ON = new Integer(2);
-    	//通所介護、通所リハビリ、認知症対応型通所介護の栄養マネジメント加算のバインドパス
-    	final String[] times2 = {"1150111","1160114","1720105"};
+        // [ID:0000559][Masahiko Higuchi] 2009/10 replace begin 自動展開時の制限処理
+        String[] times2 = null;
+        int lowVersion = 0;
+        // 空ではない場合
+        if(paste != null && !paste.isEmpty()){
+            for(int j = 0; j < paste.size(); j++){
+                VRMap check = (VRMap)paste.get(j);
+                // 念のためループしてチェックする
+                lowVersion = CareServiceCommon.getServiceLowVersion(check);
+                if(lowVersion != 0){
+                    break;
+                }
+            }
+        }
+        switch(lowVersion) {
+        case QkanConstants.SERVICE_LOW_VERSION_H2104:
+            // 平成21年4月法改正対応
+            //通所介護、通所リハビリ、認知症対応型通所介護の栄養改善加算、口腔機能向上加算を制限[月に2回]
+            times2 = new String[]{"1150112","1150116","1160114","1160115","1720105","1720108"};
+            break;
+        default:
+            // 今までの動作
+            //通所介護、通所リハビリ、認知症対応型通所介護の栄養マネジメント加算のバインドパス
+            //final String[] times2 = {"1150111","1160114","1720105"};
+            times2 = new String[]{"1150111","1160114","1720105"};
+            break;
+        }
+        // [ID:0000559][Masahiko Higuchi] 2009/10 replace end 自動展開時の制限処理
     	Collections.sort(paste, new ServiceDateComparator()); // DataComparatorで順序
     	
     	VRMap timesCheck = new VRHashMap();

@@ -39,20 +39,25 @@ import javax.swing.event.ListSelectionEvent;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.ACZipRelation;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
+import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 
@@ -94,7 +99,17 @@ public class QO002 extends QO002Event {
 		// 郵便番号から住所変換
 		new ACZipRelation(getInsurerZip1(), getInsurerZip2(),
 				getInsurerAddress());
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+        // データベース接続が許可され、保険者マスタが生成できていない場合
+        if (QkanSystemInformation.getInstance().isInsurerMasterDatabese()
+                && getMasterInsurerDBManager() == null) {
 
+            // マスタデータベースを生成する。
+            setMasterInsurerDBManager(new QO002_M_InsurerBridgeFirebirdDBManager());
+
+        }
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add end
+        
 		// 編集ボタン判定の初期化
 		insurerLimitRateEditHantei = false;
 		
@@ -120,7 +135,7 @@ public class QO002 extends QO002Event {
 		if (getPROCESS_MODE() == null) {
 			setPROCESS_MODE(String.valueOf(QkanConstants.PROCESS_MODE_INSERT));
 		}
-
+        
 		// this.insurerId = insurerId （保険者番号）
 		// ｢保険者情報TABLE（INSURER)｣のパッシブチェックキーを定義する。
 		// テーブル：INSURER
@@ -146,6 +161,18 @@ public class QO002 extends QO002Event {
 				Integer.toString(QkanConstants.PROCESS_MODE_INSERT))) {
 			// 画面状態を変更する。
 			setState_INSERT_STATE();
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+            // 保険者マスタが存在する場合、保険者番号連動イベントを組み込む
+            if (getMasterInsurerDBManager() != null
+                    && QkanSystemInformation.getInstance()
+                            .isInsurerMasterDatabese()) {
+                // 解析処理
+                setQO002_InsurerRelation(new QO002_InsurerRelation(
+                        getMasterInsurerDBManager(), getInsurerId(),
+                        getInsurerName(), true, true, true, true));
+            }
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add end
+            
 		} else if (getPROCESS_MODE().equals(
 				Integer.toString(QkanConstants.PROCESS_MODE_UPDATE))) {
 			// PROCESS_MODEが、共通定数の｢PROCESS_MODE_UPDATE(3)｣だった場合
@@ -901,6 +928,17 @@ public class QO002 extends QO002Event {
 				snapshotCustom();
 			}
 		}
+        
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+        if (getMasterInsurerDBManager() != null
+                && QkanSystemInformation.getInstance()
+                        .isInsurerMasterDatabese()) {
+            setState_VALID_INSURER_SELECT();
+        } else {
+            setState_INVALID_INSURER_SELECT();
+        }
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add end
+        
 	}
 
 	/**
@@ -1036,6 +1074,14 @@ public class QO002 extends QO002Event {
 					getINSURER_INFO_PASSIVE_CHECK_KEY(), getInsurerInfoList());
 			// 画面状態を変更する。
 			setState_UPDATE_STATE();
+            
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+            if(getQO002_InsurerRelation() != null) {
+                getQO002_InsurerRelation().deleteInsurerNameListener();
+                getQO002_InsurerRelation().deleteInsurerNoListener();
+            }
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add end
+            
 		} else {
 			// レコードが取得できなかった場合
 			// PROCESS_MODEのチェックを行う。
@@ -1073,6 +1119,16 @@ public class QO002 extends QO002Event {
 			// 画面状態を変更する。
 			setState_INSERT_STATE();
 			// }
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加 
+            // 保険者マスタとの接続が出来ているならば
+            if (getMasterInsurerDBManager() != null
+                    && QkanSystemInformation.getInstance()
+                            .isInsurerMasterDatabese()) {
+                setState_VALID_INSURER_SELECT();
+            } else {
+                setState_INVALID_INSURER_SELECT();
+            }
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add end
 		}
 	}
 
@@ -1169,7 +1225,7 @@ public class QO002 extends QO002Event {
 	 */
 	public boolean doSave() throws Exception {
 		setInsurereId(getInsurerId().getText());
-		
+        
 		// 入力モードがINSERTの時
 		if (getPROCESS_MODE().equals(
 				Integer.toString(QkanConstants.PROCESS_MODE_INSERT))) {
@@ -1221,6 +1277,23 @@ public class QO002 extends QO002Event {
 				return false;
 			}
 			// 登録済みでないとき処理を抜ける。
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+            // 保険者マスタが取得できた場合
+            if ((getMasterInsurerDBManager() != null && QkanSystemInformation
+                    .getInstance().isInsurerMasterDatabese())
+                    && !getQO002_InsurerRelation().isValidInsurer()) {
+                int msgID = QkanMessageList.getInstance().QO002_WARNING_OF_INSURER();
+                // メッセージID
+                switch(msgID) {
+                case ACMessageBox.RESULT_OK:
+                    // 処理続行
+                    break;
+                case ACMessageBox.RESULT_CANCEL:
+                    return false;
+                }
+            }
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add end
+            
 		}
 
 		// 保険者の情報をDBに登録する。
@@ -1812,6 +1885,17 @@ public class QO002 extends QO002Event {
         // [ID:0000461][Masahiko Higuchi] 2009/03 add begin 保険者登録時の初期値
         allClearMap.setData("INSURER_TYPE",new Integer(1));
         // [ID:0000461][Masahiko Higuchi] 2009/03 add end
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+        // 保険者マスタが存在する場合、保険者番号連動イベントを組み込む
+        if (getMasterInsurerDBManager() != null
+                && QkanSystemInformation.getInstance()
+                        .isInsurerMasterDatabese()) {
+            // 解析処理
+            setQO002_InsurerRelation(new QO002_InsurerRelation(
+                    getMasterInsurerDBManager(), getInsurerId(),
+                    getInsurerName(), true, true, true , true));
+        }
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add end
 		getInsurerInfos().setSource(allClearMap);
 		getInsurerInfos().bindSource();
 
@@ -1855,6 +1939,16 @@ public class QO002 extends QO002Event {
 		insertModeChange();
 		// 画面の状態を変更する。
 		setState_INIT_STATE();
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+        // 保険者マスタが存在する場合、保険者番号連動イベントを組み込む
+        if (getMasterInsurerDBManager() != null
+                && QkanSystemInformation.getInstance()
+                        .isInsurerMasterDatabese()) {
+            setState_VALID_INSURER_SELECT();
+        } else {
+            setState_INVALID_INSURER_SELECT();
+        }
+        // [ID:0000520][Masahiko Higuchi] 2009/07 add end
 		// フォーカス設定
 		getInsurerId().requestFocus();
 
@@ -1936,5 +2030,41 @@ public class QO002 extends QO002Event {
 			return null;
 		}
 	}
+
+    /**
+     * 保険者選択ボタン押下時の処理
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.5.0
+     */
+    protected void insurerSelectButtonActionPerformed(ActionEvent e)
+            throws Exception {
+        // 保険者選択画面を生成する。
+        QO002001 insurerSelectDialog = new QO002001();
+        VRMap selectData = insurerSelectDialog.showModal(getMasterInsurerDBManager());
+        // 選択されていない場合
+        if(selectData == null) {
+            return;
+        }
+        // ×ボタン対策
+        if(selectData.isEmpty()) {
+            return;
+        }
+        // 保険者番号
+        getInsurerId().setText(
+                ACCastUtilities.toString(VRBindPathParser.get("INSURER_NO",
+                        selectData), ""));
+        // 保険者名称
+        getInsurerName().setText(
+                ACCastUtilities.toString(VRBindPathParser.get("INSURER_NAME",
+                        selectData), ""));
+        getQO002_InsurerRelation().validDataNo(getInsurerId(),
+                getInsurerId().getText());
+        getQO002_InsurerRelation().validDataName(getInsurerName(),
+                getInsurerName().getText());
+        revalidate();
+        repaint();
+        
+    }
 
 }

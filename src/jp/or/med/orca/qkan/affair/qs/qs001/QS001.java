@@ -2487,8 +2487,28 @@ public class QS001 extends QS001Event {
                     // 更新モードの場合
                     dbm
                             .executeUpdate(getSQL_UPDATE_PASSIVE_CHECK_RECORD(getPassiveCheckSQLParam()));
+                    // [ID:0000491][Masahiko Higuchi] 2009/07 edit begin 再集計時に情報を引き継ぐ機能
                     //実績確定情報の破棄
-                    QkanCommon.updateClaimDetail(dbm, new VRArrayList(), getTargetDate(), getPatientID());
+                    // QkanCommon.updateClaimDetail(dbm, new VRArrayList(), getTargetDate(), getPatientID());
+                    VRMap sqlParam = new VRHashMap();
+                    sqlParam.setData("PATIENT_ID" , ACCastUtilities.toInteger(getPatientID()));
+                    sqlParam.setData("TARGET_DATE_FIRST" , ACDateUtilities.toFirstDayOfMonth(getTargetDate()));
+                    sqlParam.setData("TARGET_DATE_LAST" , ACDateUtilities.toLastDayOfMonth(getTargetDate()));
+                    // 請求番号取得
+                    VRList claimList = dbm.executeQuery(getSQL_GET_CLAIM_ID(sqlParam));
+                    if(!claimList.isEmpty()) {
+                        // 請求情報数ループ処理
+                        for(int i=0; i<claimList.size(); i++) {
+                            VRMap claim = (VRMap)claimList.getData(i);
+                            Integer claimID = ACCastUtilities.toInteger(claim.getData("CLAIM_ID"));
+                            // 一旦クリア
+                            sqlParam = new VRHashMap();
+                            sqlParam.setData("CLAIM_ID",claimID);
+                            // 請求テーブルの更新処理
+                            dbm.executeUpdate(getSQL_UPDATE_CLAIM_ID(sqlParam));
+                        }
+                    }
+                    // [ID:0000491][Masahiko Higuchi] 2009/07 edit end
                 }
                 dbm.commitTransaction();
             } catch (Exception ex) {

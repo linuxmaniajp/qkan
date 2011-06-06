@@ -308,6 +308,7 @@ public abstract class QP004Event extends QP004SQL {
   private VRList claimListTotal = new VRArrayList();
   private VRList columnListDetail = new VRArrayList();
   private VRList columnListSpecialClinic = new VRArrayList();
+  private VRList snapList = new VRArrayList();
   private ACTableModelAdapter tableModelDetail;
   private ACTableModelAdapter tableModelSpecialClinic;
   //getter/setter
@@ -567,6 +568,21 @@ public abstract class QP004Event extends QP004SQL {
     this.columnListSpecialClinic = columnListSpecialClinic;
   }
 
+  /**
+   * snapList‚ğ•Ô‚µ‚Ü‚·B
+   * @return snapList
+   */
+  protected VRList getSnapList(){
+    return snapList;
+  }
+  /**
+   * snapList‚ğİ’è‚µ‚Ü‚·B
+   * @param snapList snapList
+   */
+  protected void setSnapList(VRList snapList){
+    this.snapList = snapList;
+  }
+  
   /**
    * tableModelDetail‚ğ•Ô‚µ‚Ü‚·B
    * @return tableModelDetail

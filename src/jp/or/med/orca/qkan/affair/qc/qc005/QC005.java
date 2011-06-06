@@ -36,6 +36,7 @@ import java.util.Date;
 
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -205,7 +206,7 @@ public class QC005 extends QC005Event {
 		}
 
         
-		// 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応 TODO
+		// 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
         // 印刷対象のものを確認する
         if(isPrintFinish()){
             msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
@@ -308,7 +309,7 @@ public class QC005 extends QC005Event {
 				return;
 			// 処理を中断する。
 			}
-        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応 TODO
+        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
         }
         boolean isPrinted = isPrintFinish();
         // 2007/12/25 [Masahiko Higuchi] add - end
@@ -339,7 +340,7 @@ public class QC005 extends QC005Event {
 				return;
 			}
             
-        // 2007/12/25 [Masahiko Higuchi] del - begin Ver 5.4.1対応 TODO
+        // 2007/12/25 [Masahiko Higuchi] del - begin Ver 5.4.1対応
 		//}
         // 2007/12/25 [Masahiko Higuchi] del - end            
 
@@ -567,39 +568,75 @@ public class QC005 extends QC005Event {
             VRList patientNinteiHistory = QkanCommon
                     .getPatientInsureInfoOnEndOfMonth(getDBManager(),
                             getTargetDate(), getPatientID());
-            
-            if(!(patientNinteiHistory == null || patientNinteiHistory.size() == 0)){
+            // [ID:0000508][Masahiko Higuchi] 2010/01 edit begin 2009年度対応
+            if(patientNinteiHistory != null && patientNinteiHistory.size() >= 1){
+                VRMap history = (VRMap)patientNinteiHistory.getData(0);
                 // ※要介護度の取得
-                lastKyotakuDataMap.putAll((VRMap) patientNinteiHistory
-                        .getData());
+                Integer jotaiCode = ACCastUtilities.toInteger(history.getData("JOTAI_CODE"),0);
+                // 利用者情報を優先するため利用者情報で上書き
+                ((VRMap)lastKyotakuData.getData()).setData("JOTAI_CODE",jotaiCode);
+                // [ID:0000508][Masahiko Higuchi] 2010/01 edit end
+            } else {
+                // [ID:0000508][Masahiko Higuchi] 2009/07 add begin 2009年度対応
+                ((VRMap)lastKyotakuData.getData()).setData("JOTAI_CODE",new Integer(1));
+                // [ID:0000508][Masahiko Higuchi] 2009/07 add end
             }
+            
             
             //利用者情報取得後に上書きする形で取得する
             lastKyotakuDataMap = (VRMap) lastKyotakuData.getData();
             
-			// 来月の訪問予定の日付を今月の訪問日に設定する。
-			for (int i = 6; i < 12; i++) {
-				if (VRBindPathParser.get(VisitDayKey[i], lastKyotakuDataMap) != null) {
-					lastKyotakuDataMap
-							.setData(
-									VisitDayKey[i - 6],
-									String
-											.valueOf(ACDateUtilities
-													.getDayOfMonth(
-															ACCastUtilities
-																	.toDate(VRBindPathParser
-																			.get(
-																					VisitDayKey[i],
-																					lastKyotakuDataMap)))));
-				} else {
-					lastKyotakuDataMap.setData(VisitDayKey[i - 6], "");
-				}
-			}
-
-			// 訪問日のキーに空を登録
-			for (int i = 6; i < 12; i++) {
-				lastKyotakuDataMap.setData(VisitDayKey[i], "");
-			}
+            // [ID:0000595][Masahiko Higuchi] 2010/01 edit begin 2009年度対応
+            //全てのテキストボックスが未入力である場合
+            if (ACTextUtilities.isNullText(getVisitThisMonth1().getText())
+            	&& ACTextUtilities.isNullText(getVisitThisMonth2().getText())
+                && ACTextUtilities.isNullText(getVisitThisMonth3().getText())
+                && ACTextUtilities.isNullText(getVisitThisMonth4().getText())
+                && ACTextUtilities.isNullText(getVisitThisMonth5().getText())
+                && ACTextUtilities.isNullText(getVisitThisMonth6().getText())) {
+            	
+    			// 来月の訪問予定の日付を今月の訪問日に設定する。
+    			for (int i = 6; i < 12; i++) {
+    				if (VRBindPathParser.get(VisitDayKey[i], lastKyotakuDataMap) != null) {
+    					lastKyotakuDataMap.setData(
+    						VisitDayKey[i - 6],
+    						String.valueOf(ACDateUtilities.getDayOfMonth(ACCastUtilities.toDate(VRBindPathParser.get(VisitDayKey[i],lastKyotakuDataMap))))
+    					);
+    				} else {
+    					lastKyotakuDataMap.setData(VisitDayKey[i - 6], "");
+    				}
+    			}
+    			
+    		//登録されている場合は、設定値を残す
+            } else {
+            	lastKyotakuDataMap.setData(VisitDayKey[0], getVisitThisMonth1().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[1], getVisitThisMonth2().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[2], getVisitThisMonth3().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[3], getVisitThisMonth4().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[4], getVisitThisMonth5().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[5], getVisitThisMonth6().getText());
+            }
+            
+            
+            if (ACTextUtilities.isNullText(getVisitNextMonth1().getText())
+                && ACTextUtilities.isNullText(getVisitNextMonth2().getText())
+                && ACTextUtilities.isNullText(getVisitNextMonth3().getText())
+                && ACTextUtilities.isNullText(getVisitNextMonth4().getText())
+                && ACTextUtilities.isNullText(getVisitNextMonth5().getText())
+                && ACTextUtilities.isNullText(getVisitNextMonth6().getText())) {
+    			// 訪問日のキーに空を登録
+    			for (int i = 6; i < 12; i++) {
+    				lastKyotakuDataMap.setData(VisitDayKey[i], "");
+    			}
+            } else {
+            	lastKyotakuDataMap.setData(VisitDayKey[6], getVisitNextMonth1().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[7], getVisitNextMonth2().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[8], getVisitNextMonth3().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[9], getVisitNextMonth4().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[10], getVisitNextMonth5().getText());
+            	lastKyotakuDataMap.setData(VisitDayKey[11], getVisitNextMonth6().getText());
+            }
+            // [ID:0000595][Masahiko Higuchi] 2010/01 edit end
 
 			// 対象年月を和暦に変換
 			lastKyotakuDataMap.setData("TARGET_DATE", VRDateParser.format(
@@ -695,7 +732,7 @@ public class QC005 extends QC005Event {
 			return;
 		}
         
-        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応 TODO
+        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
         // 印刷対象のものを確認する
         if(isPrintFinish()){
             int msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
@@ -766,6 +803,14 @@ public class QC005 extends QC005Event {
 		setPASSIVE_CHECK_KEY(new ACPassiveKey("KYOTAKU_RYOYO", new String[] {
 				"PATIENT_ID", "TARGET_DATE" }, new Format[] { null,
 				new ACSQLSafeDateFormat("yyyy/M/d") }, "LAST_TIME", "LAST_TIME"));
+        
+		// [ID:0000547][Masahiko Higuchi] 2009/08 add begin 2009年度要望対応
+        Object obj = getCreateDateZaitaku().getParent();
+        // 親がラベルコンテナなら子の有効状態と連動する
+        if(obj instanceof ACLabelContainer) {
+            ((ACLabelContainer)obj).setVisible(getCreateDateZaitaku().isVisible());
+        }
+        // [ID:0000547][Masahiko Higuchi] 2009/08 add begin 2009年度要望対応
 
 		// 要介護度に初期値設定
 		getJotaiCode().setSelectedIndex(1);
@@ -834,6 +879,18 @@ public class QC005 extends QC005Event {
         int index = ACCommon.getInstance().getMatchIndexFromValue(ListProvider,
                 "PROVIDER_ID",
                 QkanSystemInformation.getInstance().getLoginProviderID());
+        
+        // [ID:0000519][Masahiko Higuchi] 2009/07 add begin 2009年度対応
+        // ※利用者情報をDBから取得
+        // 対象利用者(利用者一覧で選択された利用者)の基本情報を取得する。
+        VRList patientInfoList = QkanCommon.getPatientInfo(getDBManager(),
+                getPatientID());
+        // 格納用変数
+        VRMap patientMap = new VRHashMap();
+        patientMap = (VRMap)patientInfoList.getData();
+        // 住所を個別設定する。
+        bindMap.put("PATIENT_ADDRESS", ACCastUtilities.toString(patientMap.getData("PATIENT_ADDRESS"),""));
+        // [ID:0000519][Masahiko Higuchi] 2009/07 add end
         
         if(providerMap != null){
             bindMap.putAll(providerMap);
@@ -939,7 +996,7 @@ public class QC005 extends QC005Event {
 			setKyotakuData((VRMap) getContents().createSource());
             //初期値を取得
 			setInitValue();
-
+            
 			kyotakuDataMap.putAll(getKyotakuData());
 
 			// 0件より多い場合
@@ -1036,6 +1093,13 @@ public class QC005 extends QC005Event {
 		// 画面の事業所名(providerName)に、ログイン事業所名を設定する。
 		kyotakuDataMap.setData("PROVIDER_NAME", VRBindPathParser.get(
 				"PROVIDER_NAME", (VRMap) loginProviderName.getData()));
+        
+        // [ID:0000431][Masahiko Higuchi] 2009/07 add begin 実績読込(V5.4.9)
+        // サービス実績より提供日を取得
+        VRMap serviceResult = getKyotakuResult();
+        // 初期値として設定
+        kyotakuDataMap.putAll(serviceResult);
+        // [ID:0000431][Masahiko Higuchi] 2009/07 add end
         
 		setKyotakuData(kyotakuDataMap);
 	}
@@ -1369,39 +1433,40 @@ public class QC005 extends QC005Event {
 	public boolean checkValidInput() throws Exception {
 		// ※入力チェック
 
-
-		// ※作成年月・未入力チェック
-		// 画面の「作成年月(createDateZaitaku)」の値をチェックする。
-		if (!ACTextUtilities.isNullText(getCreateDateZaitaku().getText())) {
-			// 入力されている場合
-			// 処理を継続する。
-		} else {
-			// 未入力の場合
-			// エラーメッセージを表示する。
-			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT("作成年月");
-			// createDateZaitakuにフォーカスを当てる。
-            getTabsArea().setSelectedIndex(1);
-			getCreateDateZaitaku().requestFocus();
-
-			// 戻り値としてfalseを返し、処理を中断する。
-			return false;
-		}
-
-		// ※作成年月・不正チェック
-		// 画面の「作成年月(createDateZaitaku)」の値をチェックする。
-		if (getCreateDateZaitaku().isValidDate()) {
-			// 正常値の場合
-			// 処理を継続する。
-		} else {
-			// 異常値の場合
-			// エラーメッセージを表示する。
-			QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("作成年月の");
-			// createDateZaitakuにフォーカスを当てる。
-            getTabsArea().setSelectedIndex(1);
-			getCreateDateZaitaku().requestFocus();
-			// 戻り値としてfalseを返し、処理を中断する。
-			return false;
-		}
+        // [ID:0000547][Masahiko Higuchi] 2009/08 del begin 2009年度要望対応
+//		// ※作成年月・未入力チェック
+//		// 画面の「作成年月(createDateZaitaku)」の値をチェックする。
+//		if (!ACTextUtilities.isNullText(getCreateDateZaitaku().getText())) {
+//			// 入力されている場合
+//			// 処理を継続する。
+//		} else {
+//			// 未入力の場合
+//			// エラーメッセージを表示する。
+//			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT("作成年月");
+//			// createDateZaitakuにフォーカスを当てる。
+//            getTabsArea().setSelectedIndex(1);
+//			getCreateDateZaitaku().requestFocus();
+//
+//			// 戻り値としてfalseを返し、処理を中断する。
+//			return false;
+//		}
+//
+//		// ※作成年月・不正チェック
+//		// 画面の「作成年月(createDateZaitaku)」の値をチェックする。
+//		if (getCreateDateZaitaku().isValidDate()) {
+//			// 正常値の場合
+//			// 処理を継続する。
+//		} else {
+//			// 異常値の場合
+//			// エラーメッセージを表示する。
+//			QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("作成年月の");
+//			// createDateZaitakuにフォーカスを当てる。
+//            getTabsArea().setSelectedIndex(1);
+//			getCreateDateZaitaku().requestFocus();
+//			// 戻り値としてfalseを返し、処理を中断する。
+//			return false;
+//		}
+        // [ID:0000547][Masahiko Higuchi] 2009/08 del end
 
 		// ※作成年月日・未入力チェック
 		// 画面の「作成年月日(createDateKyotaku)」の値をチェックする。
@@ -1742,6 +1807,83 @@ public class QC005 extends QC005Event {
         }
 
         return false;
+    }
+
+    /**
+     * 当月の居宅療養管理指導の実績データを読み込み画面展開用に整形します。
+     * 
+     * [ID:0000431]
+     * @return 画面展開用実績データ
+     * @author Masahiko Higuchi
+     * @since Ver.5.4.9
+     */
+    public VRMap getKyotakuResult() throws Exception {
+        // 返却用のマップ
+        VRMap returnResult = new VRHashMap();
+        // SQL文用の値を設定する。
+        Date firstDate =  ACDateUtilities.toFirstDayOfMonth(getTargetDate());
+        Date lastDate =  ACDateUtilities.toLastDayOfMonth(getTargetDate());
+        VRMap sqlParam = new VRHashMap();
+        VRBindPathParser.set("PATIENT_ID", sqlParam, ACCastUtilities.toInteger(getPatientID()));
+        VRBindPathParser.set("TARGET_DATE_START", sqlParam, firstDate);
+        VRBindPathParser.set("TARGET_DATE_END", sqlParam, lastDate);
+        // 実績取得
+        VRList resultList = getDBManager().executeQuery(getSQL_GET_SERVICE_RESULT_DATA(sqlParam));
+        
+        if(resultList != null && !resultList.isEmpty()){
+            // ループしつつ展開用のデータに整形する
+            for(int i=0; i < resultList.size(); i++){
+                VRMap map = (VRMap)resultList.getData(i);
+                // 6個以上は設定不能なのでスキップ
+                if(i==6) {
+                    break;
+                }
+                // 整形処理
+                VRBindPathParser.set("VISIT_THIS_MONTH_NO"
+                        + ACCastUtilities.toString(i + 1), returnResult, map.getData("EXTRACT_SERVICE_DAY"));                
+            }
+            // 取得できたデータ以外は空でレコードを生成
+            for (int j = 1; j <= 6; j++) {
+                String bindKey = "VISIT_THIS_MONTH_NO"
+                        + ACCastUtilities.toString(j);
+                if (!returnResult.containsKey(bindKey)) {
+                    VRBindPathParser.set(bindKey, returnResult, "");
+                }
+            }
+        }
+        // 値の返却
+        return returnResult;
+    }
+
+    /**
+     * 実績読込みボタン押下時の処理
+     * 
+     * [ID:0000431]
+     * @author Masahiko Higuchi
+     * @since Ver.5.4.9
+     */
+    protected void resultReadButtonActionPerformed(ActionEvent e) throws Exception {
+
+        VRDateFormat vf = new VRDateFormat("ggge年M月");
+        // メッセージ構築
+        String message = String.valueOf(vf.format(getTargetDate()) + "度");
+        String serviceName = "居宅療養管理指導";
+        // メッセージ取得
+        int msgID = QkanMessageList.getInstance().WARNING_OF_RESULT_SERVICE(
+                message, serviceName);
+        if (msgID == ACMessageBox.RESULT_YES) {
+            // 実績取得
+            VRMap result = getKyotakuResult();
+            // 取得できない場合はメッセージ
+            if(result == null || result.isEmpty()) {
+                QkanMessageList.getInstance().ERROR_OF_RESULT_READ_NOTHING(serviceName);
+                return;
+            }
+            // 画面展開処理
+            getContents().setSource(result);
+            getContents().bindSource();
+        }
+        
     }
 
 }

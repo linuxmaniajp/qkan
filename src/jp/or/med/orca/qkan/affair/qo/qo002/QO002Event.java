@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/01/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/07/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -27,9 +27,7 @@
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qo.qo002;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -37,15 +35,19 @@ import java.io.*;
 import java.sql.SQLException;
 import java.text.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import jp.nichicom.ac.*;
 import jp.nichicom.ac.bind.*;
 import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -76,7 +78,8 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
+import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 保険者登録イベント定義(QO002) 
@@ -92,6 +95,22 @@ public abstract class QO002Event extends QO002SQL {
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
+    getInsurerSelectButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                insurerSelectButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getInsurerLimitRateEnableCheck().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -101,7 +120,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insurerLimitRateEnableCheckActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -117,7 +136,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insurerLimitRateTableSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -133,7 +152,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insurerLimitRateInsertButtonActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -149,7 +168,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insurerLimitRateEditButtonActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -165,7 +184,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insurerLimitRateDeleteButtonActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -181,7 +200,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insurerLimitRateRegularButtonActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -197,7 +216,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 insertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -213,7 +232,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 updateActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -229,7 +248,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 newDataActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -245,7 +264,7 @@ public abstract class QO002Event extends QO002SQL {
             lockFlag = true;
             try {
                 clearActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -255,6 +274,13 @@ public abstract class QO002Event extends QO002SQL {
 
   }
   //コンポーネントイベント
+
+  /**
+   * 「保険者選択ボタン押下時」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void insurerSelectButtonActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「区分支給限度額情報パネルを制御する」イベントです。
@@ -340,6 +366,8 @@ public abstract class QO002Event extends QO002SQL {
   private VRList insurerLimitRateListSource = new VRArrayList();
   private ACTableModelAdapter insurerLimitRateTableModel;
   private ACSnapshot snapShotPeriod = new ACSnapshot();
+  private ACDBManager masterInsurerDBManager;
+  private QO002_InsurerRelation QO002_InsurerRelation;
   //getter/setter
 
   /**
@@ -507,6 +535,51 @@ public abstract class QO002Event extends QO002SQL {
     this.insurerLimitRateTableModel = insurerLimitRateTableModel;
   }
 
+  /**
+   * snapShotPeriodを返します。
+   * @return snapShotPeriod
+   */
+  protected ACSnapshot getSnapShotPeriod(){
+    return snapShotPeriod;
+  }
+  /**
+   * snapShotPeriodを設定します。
+   * @param snapShotPeriod snapShotPeriod
+   */
+  protected void setSnapShotPeriod(ACSnapshot snapShotPeriod){
+    this.snapShotPeriod = snapShotPeriod;
+  }
+
+  /**
+   * masterInsurerDBManagerを返します。
+   * @return masterInsurerDBManager
+   */
+  protected ACDBManager getMasterInsurerDBManager(){
+    return masterInsurerDBManager;
+  }
+  /**
+   * masterInsurerDBManagerを設定します。
+   * @param masterInsurerDBManager masterInsurerDBManager
+   */
+  protected void setMasterInsurerDBManager(ACDBManager masterInsurerDBManager){
+    this.masterInsurerDBManager = masterInsurerDBManager;
+  }
+
+  /**
+   * QO002_InsurerRelationを返します。
+   * @return QO002_InsurerRelation
+   */
+  protected QO002_InsurerRelation getQO002_InsurerRelation(){
+    return QO002_InsurerRelation;
+  }
+  /**
+   * QO002_InsurerRelationを設定します。
+   * @param QO002_InsurerRelation QO002_InsurerRelation
+   */
+  protected void setQO002_InsurerRelation(QO002_InsurerRelation QO002_InsurerRelation){
+    this.QO002_InsurerRelation = QO002_InsurerRelation;
+  }
+
   //内部関数
 
   /**
@@ -537,7 +610,7 @@ public abstract class QO002Event extends QO002SQL {
    * 「保存処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
-   *
+   * @return boolean
    */
   public abstract boolean doSave() throws Exception;
 
@@ -574,14 +647,6 @@ public abstract class QO002Event extends QO002SQL {
   public abstract boolean doValidInsurerInfoCheck() throws Exception;
 
   /**
-   * 「保険者名称入力チェック」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean doValidInsurerNameCheck() throws Exception;
-
-  /**
    * 「支給限度額情報チェック処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
@@ -613,21 +678,6 @@ public abstract class QO002Event extends QO002SQL {
    */
   public abstract void snapshotCustom() throws Exception;
 
-  /**
-   * snapShotKaigoを返します。
-   * @return snapShotKaigo
-   */
-  protected ACSnapshot getSnapShotPeriod(){
-    return snapShotPeriod;
-  }
-  /**
-   * snapShotKaigoを設定します。
-   * @param snapShotKaigo snapShotKaigo
-   */
-  protected void setSnapShotPeriod(ACSnapshot snapShotPeriod){
-    this.snapShotPeriod = snapShotPeriod;
-  }
-  
   /**
    * 「規定支給限度額を取得する処理」に関する処理を行ないます。
    *

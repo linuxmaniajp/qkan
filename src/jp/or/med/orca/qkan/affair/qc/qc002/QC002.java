@@ -455,6 +455,21 @@ public class QC002 extends QC002Event {
             lastHoukokusyoMap.putAll(createBindData(leftDate, "LEFT"));
             lastHoukokusyoMap.putAll(createBindData(rightDate, "RIGHT"));
 
+            // [ID:0000574][Masahiko Higuchi] 2010/01 add begin 2009年度対応 
+            // 要介護度の認定チェック 
+            VRList patientNinteiHistory = QkanCommon
+                    .getPatientInsureInfoOnEndOfMonth(getDBManager(),
+                            getTargetDateSource(), getPatientID());
+            if(patientNinteiHistory != null && patientNinteiHistory.size() >= 1){
+                // 当月の末の情報を取得する
+                VRMap history = (VRMap)patientNinteiHistory.getData(0);
+                lastHoukokusyoMap.setData("JOTAI_CODE",history.getData("JOTAI_CODE"));
+            } else {
+                // 履歴が取得できないので、自立に設定
+                lastHoukokusyoMap.setData("JOTAI_CODE",new Integer(1));
+            }
+            // [ID:0000574][Masahiko Higuchi] 2010/01 add end
+            
             // カレンダー情報の初期値を設定する
             initializeCalendar();
             // 画面に前月情報を展開する

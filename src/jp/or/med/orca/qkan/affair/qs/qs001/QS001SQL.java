@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: サービス予定
- * 作成日: 2006/05/25  日本コンピューター株式会社 サービス予定 新規作成
+ * 作成日: 2009/07/24  日本コンピューター株式会社 サービス予定 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -99,8 +99,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_GET_USED_PROVIDER_SERVICE_WITHOUT_WEEKLY_SERVICE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -217,8 +217,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_GET_USED_PROVIDER_SERVICE_WITH_WEEKLY_SERVICE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -351,8 +351,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_GET_PASSIVE_CHECK_RECORD(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -417,8 +417,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_INSERT_PASSIVE_CHECK_RECORD(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -465,8 +465,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_UPDATE_PASSIVE_CHECK_RECORD(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");
@@ -553,8 +553,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_GET_LAST_PLAN_DATE(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -619,8 +619,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_GET_PATIENT_FACILITY_FLAG(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -657,8 +657,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_GET_LOGIN_PROVIDER_CARE_MANAGEMENT(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -705,8 +705,8 @@ public class QS001SQL extends QS001State {
   public String getSQL_CHECK_NINTEI_HISTORY_EXISTS(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -726,6 +726,106 @@ public class QS001SQL extends QS001State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「請求情報の親番号取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_CLAIM_ID(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" CLAIM.CLAIM_ID");
+
+    sb.append(" FROM");
+
+    sb.append(" CLAIM");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.TARGET_DATE");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_FIRST", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.TARGET_DATE");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_LAST", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「請求情報の差し戻し」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_CLAIM_ID(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" CLAIM");
+
+    sb.append(" SET");
+
+    sb.append(" CLAIM.CLAIM_FINISH_FLAG");
+
+    sb.append(" =");
+
+    sb.append(" NULL");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" CLAIM.CLAIM_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
 
     sb.append(")");
 

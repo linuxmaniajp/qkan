@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/05/01  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2009/08/27  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -256,6 +256,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField visitThisMonth6;
 
   private ACLabel visitThisMonthCaption;
+
+  private ACButton resultReadButton;
 
   private ACLabelContainer visitNextMonthContainer;
 
@@ -1826,6 +1828,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       createDateZaitaku.setBindPath("CREATE_DATE_ZAITAKU");
 
+      createDateZaitaku.setVisible(false);
+
       createDateZaitaku.setEditable(true);
 
       addCreateDateZaitaku();
@@ -2041,6 +2045,23 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
       addVisitThisMonthCaption();
     }
     return visitThisMonthCaption;
+
+  }
+
+  /**
+   * 実績読込みボタンを取得します。
+   * @return 実績読込みボタン
+   */
+  public ACButton getResultReadButton(){
+    if(resultReadButton==null){
+
+      resultReadButton = new ACButton();
+
+      resultReadButton.setText("実績読込");
+
+      addResultReadButton();
+    }
+    return resultReadButton;
 
   }
 
@@ -3258,30 +3279,39 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   protected void addJotaiCodeModel(){
 
     getYokaigodoRadioItem1().setButtonIndex(1);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem1());
 
-    getYokaigodoRadioItem8().setButtonIndex(2);
+    getYokaigodoRadioItem8().setButtonIndex(12);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem8());
 
-    getYokaigodoRadioItem9().setButtonIndex(3);
+    getYokaigodoRadioItem9().setButtonIndex(13);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem9());
 
-    getYokaigodoRadioItem2().setButtonIndex(4);
+    getYokaigodoRadioItem2().setButtonIndex(11);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem2());
 
-    getYokaigodoRadioItem3().setButtonIndex(5);
+    getYokaigodoRadioItem3().setButtonIndex(21);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem3());
 
-    getYokaigodoRadioItem4().setButtonIndex(6);
+    getYokaigodoRadioItem4().setButtonIndex(22);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem4());
 
-    getYokaigodoRadioItem5().setButtonIndex(7);
+    getYokaigodoRadioItem5().setButtonIndex(23);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem5());
 
-    getYokaigodoRadioItem6().setButtonIndex(8);
+    getYokaigodoRadioItem6().setButtonIndex(24);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem6());
 
-    getYokaigodoRadioItem7().setButtonIndex(9);
+    getYokaigodoRadioItem7().setButtonIndex(25);
+
     getJotaiCodeModel().add(getYokaigodoRadioItem7());
 
   }
@@ -3377,18 +3407,23 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   protected void addShogaiJiritsudoModel(){
 
     getShogaiJiritsudoRadioItem1().setButtonIndex(1);
+
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem1());
 
     getShogaiJiritsudoRadioItem2().setButtonIndex(2);
+
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem2());
 
     getShogaiJiritsudoRadioItem3().setButtonIndex(3);
+
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem3());
 
     getShogaiJiritsudoRadioItem4().setButtonIndex(4);
+
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem4());
 
     getShogaiJiritsudoRadioItem5().setButtonIndex(5);
+
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem5());
 
   }
@@ -3441,21 +3476,27 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   protected void addNinchishoJiritsudoModel(){
 
     getNinchishoJiritsudoRadioItem1().setButtonIndex(1);
+
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem1());
 
     getNinchishoJiritsudoRadioItem2().setButtonIndex(2);
+
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem2());
 
     getNinchishoJiritsudoRadioItem3().setButtonIndex(3);
+
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem3());
 
     getNinchishoJiritsudoRadioItem4().setButtonIndex(4);
+
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem4());
 
     getNinchishoJiritsudoRadioItem5().setButtonIndex(5);
+
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem5());
 
     getNinchishoJiritsudoRadioItem6().setButtonIndex(6);
+
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem6());
 
   }
@@ -3696,11 +3737,13 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
     points1.add(getYourDoctor(), VRLayout.FLOW);
 
-    points1.add(getYourDoctorCaption2(), VRLayout.FLOW);
+    points1.add(getYourDoctorCaption2(), VRLayout.FLOW_RETURN);
 
     points1.add(getCreateDateZaitakuContainer(), VRLayout.FLOW_RETURN);
 
-    points1.add(getVisitThisMonthContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    points1.add(getVisitThisMonthContainer(), VRLayout.FLOW_INSETLINE);
+
+    points1.add(getResultReadButton(), VRLayout.FLOW_INSETLINE_RETURN);
 
     points1.add(getVisitNextMonthContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -3803,6 +3846,13 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
    * 今月の訪問日キャプションに内部項目を追加します。
    */
   protected void addVisitThisMonthCaption(){
+
+  }
+
+  /**
+   * 実績読込みボタンに内部項目を追加します。
+   */
+  protected void addResultReadButton(){
 
   }
 

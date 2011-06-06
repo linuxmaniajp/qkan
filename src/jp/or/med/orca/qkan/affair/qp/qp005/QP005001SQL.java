@@ -17,23 +17,23 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2010/01/28  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 確認・修正
+ * 作成日: 2009/07/07  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 帳票管理 (C)
- * プロセス 老人訪問看護・訪問看護の記録書Ⅰ (003)
- * プログラム 老人訪問看護・訪問看護の記録書Ⅰ (QC003)
+ * サブシステム 請求データ作成 (P)
+ * プロセス 確認・修正 (005)
+ * プログラム 明細書詳細編集 (QP005001)
  *
  *****************************************************************
  */
-package jp.or.med.orca.qkan.affair.qc.qc003;
+package jp.or.med.orca.qkan.affair.qp.qp005;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
+import java.text.*;
 import java.io.*;
 import java.sql.SQLException;
-import java.text.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -78,48 +78,126 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+
 /**
- * 老人訪問看護・訪問看護の記録書Ⅰ状態定義(QC003) 
+ * 明細書詳細編集SQL定義(QP005001) 
  */
-public class QC003State extends QC003Design {
+public class QP005001SQL extends QP005001Design {
+  private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
   /**
    * コンストラクタです。
    */
-  public QC003State(){
+  public QP005001SQL() {
   }
 
   /**
-   * 「登録モード」の状態に設定します。
+   * 「サービスコードマスタのデータ取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
+   * @return SQL文
    */
-  public void setState_INSERT_STATE() throws Exception {
+  public String getSQL_GET_SPECIAL_CLINIC_SERVICE_CODE(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
 
-        getInsert().setVisible(true);
+    sb.append("SELECT");
 
-        getUpdate().setVisible(false);
+    sb.append(" SYSTEM_SERVICE_KIND_DETAIL");
 
-  }
+    sb.append(",SYSTEM_SERVICE_CODE_ITEM");
 
-  /**
-   * 「更新モード」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_UPDATE_STATE() throws Exception {
+    sb.append(",SERVICE_VALID_START");
 
-        getInsert().setVisible(false);
+    sb.append(",SERVICE_VALID_END");
 
-        getUpdate().setVisible(true);
+    sb.append(",SERVICE_CODE_KIND");
 
-  }
+    sb.append(",SERVICE_CODE_ITEM");
 
-  /**
-   * 「実績読み込み非表示」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_DISABLE_RESULTS() throws Exception {
+    sb.append(",SERVICE_NAME");
 
-        getHomonkaisuResultReadButton().setVisible(false);
+    sb.append(",SERVICE_UNIT");
 
+    sb.append(",LIMIT_AMOUNT_OBJECT");
+
+    sb.append(",SERVICE_ADD_FLAG");
+
+    sb.append(",TOTAL_GROUPING_TYPE");
+
+    sb.append(",SUMMARY_FLAG");
+
+    sb.append(",SUMMARY_MEMO");
+
+    sb.append(",CLASS_TYPE");
+
+    sb.append(",CODE_ID");
+
+    sb.append(",EDITABLE_FLAG");
+
+    sb.append(" FROM");
+
+    sb.append(" M_SERVICE_CODE");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_CODE_KIND");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SERVICE_CODE_KIND", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_CODE_ITEM");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SERVICE_CODE_ITEM", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_VALID_START");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_VALID_END");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" SERVICE_CODE_KIND");
+
+    sb.append(" ");
+
+    sb.append(",SERVICE_CODE_ITEM");
+
+    return sb.toString();
   }
 
 }

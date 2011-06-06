@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2008/06/09  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2009/07/29  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -95,6 +95,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel contents;
 
+  private ACPanel contentsCommon;
+
   private ACPanel contentPatients;
 
   private ACTextField contentPatientText;
@@ -111,13 +113,15 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel contentProviderName;
 
-  private ACLabel contentSpace1;
-
-  private ACPanel contentJikohutanArea;
-
   private ACPanel contentBillTitle;
 
   private ACTextField contentBill;
+
+  private JTabbedPane tabs;
+
+  private ACPanel contentMoney;
+
+  private ACPanel contentJikohutanArea;
 
   private ACPanel contentJikohutanTitle;
 
@@ -265,6 +269,74 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentKoujyoText;
 
+  private ACPanel contentDay;
+
+  private ACPanel contentCalendarUp;
+
+  private ACGroupBox contentCalendar;
+
+  private QP003ResultCalendar calendar01;
+
+  private QP003ResultCalendar calendar02;
+
+  private QP003ResultCalendar calendar03;
+
+  private QP003ResultCalendar calendar04;
+
+  private QP003ResultCalendar calendar05;
+
+  private QP003ResultCalendar calendar06;
+
+  private QP003ResultCalendar calendar07;
+
+  private QP003ResultCalendar calendar08;
+
+  private QP003ResultCalendar calendar09;
+
+  private QP003ResultCalendar calendar10;
+
+  private QP003ResultCalendar calendar11;
+
+  private QP003ResultCalendar calendar12;
+
+  private QP003ResultCalendar calendar13;
+
+  private QP003ResultCalendar calendar14;
+
+  private QP003ResultCalendar calendar15;
+
+  private QP003ResultCalendar calendar16;
+
+  private QP003ResultCalendar calendar17;
+
+  private QP003ResultCalendar calendar18;
+
+  private QP003ResultCalendar calendar19;
+
+  private QP003ResultCalendar calendar20;
+
+  private QP003ResultCalendar calendar21;
+
+  private QP003ResultCalendar calendar22;
+
+  private QP003ResultCalendar calendar23;
+
+  private QP003ResultCalendar calendar24;
+
+  private QP003ResultCalendar calendar25;
+
+  private QP003ResultCalendar calendar26;
+
+  private QP003ResultCalendar calendar27;
+
+  private QP003ResultCalendar calendar28;
+
+  private QP003ResultCalendar calendar29;
+
+  private QP003ResultCalendar calendar30;
+
+  private QP003ResultCalendar calendar31;
+
   //getter
 
   /**
@@ -369,6 +441,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContents();
     }
     return contents;
+
+  }
+
+  /**
+   * 共通領域を取得します。
+   * @return 共通領域
+   */
+  public ACPanel getContentsCommon(){
+    if(contentsCommon==null){
+
+      contentsCommon = new ACPanel();
+
+      contentsCommon.setHgap(3);
+
+      addContentsCommon();
+    }
+    return contentsCommon;
 
   }
 
@@ -521,40 +610,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * スペーサーを取得します。
-   * @return スペーサー
-   */
-  public ACLabel getContentSpace1(){
-    if(contentSpace1==null){
-
-      contentSpace1 = new ACLabel();
-
-      contentSpace1.setText(" ");
-
-      addContentSpace1();
-    }
-    return contentSpace1;
-
-  }
-
-  /**
-   * 自己負担分領域を取得します。
-   * @return 自己負担分領域
-   */
-  public ACPanel getContentJikohutanArea(){
-    if(contentJikohutanArea==null){
-
-      contentJikohutanArea = new ACPanel();
-
-      contentJikohutanArea.setAutoWrap(false);
-
-      addContentJikohutanArea();
-    }
-    return contentJikohutanArea;
-
-  }
-
-  /**
    * 項目タイトルを取得します。
    * @return 項目タイトル
    */
@@ -593,6 +648,53 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentBill();
     }
     return contentBill;
+
+  }
+
+  /**
+   * タブを取得します。
+   * @return タブ
+   */
+  public JTabbedPane getTabs(){
+    if(tabs==null){
+
+      tabs = new JTabbedPane();
+
+      addTabs();
+    }
+    return tabs;
+
+  }
+
+  /**
+   * 金額領域を取得します。
+   * @return 金額領域
+   */
+  public ACPanel getContentMoney(){
+    if(contentMoney==null){
+
+      contentMoney = new ACPanel();
+
+      addContentMoney();
+    }
+    return contentMoney;
+
+  }
+
+  /**
+   * 自己負担分領域を取得します。
+   * @return 自己負担分領域
+   */
+  public ACPanel getContentJikohutanArea(){
+    if(contentJikohutanArea==null){
+
+      contentJikohutanArea = new ACPanel();
+
+      contentJikohutanArea.setAutoWrap(false);
+
+      addContentJikohutanArea();
+    }
+    return contentJikohutanArea;
 
   }
 
@@ -2247,6 +2349,530 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 日付領域を取得します。
+   * @return 日付領域
+   */
+  public ACPanel getContentDay(){
+    if(contentDay==null){
+
+      contentDay = new ACPanel();
+
+      contentDay.setHgap(0);
+
+      contentDay.setLabelMargin(0);
+
+      contentDay.setVgap(0);
+
+      addContentDay();
+    }
+    return contentDay;
+
+  }
+
+  /**
+   * 上部領域を取得します。
+   * @return 上部領域
+   */
+  public ACPanel getContentCalendarUp(){
+    if(contentCalendarUp==null){
+
+      contentCalendarUp = new ACPanel();
+
+      addContentCalendarUp();
+    }
+    return contentCalendarUp;
+
+  }
+
+  /**
+   * カレンダー領域を取得します。
+   * @return カレンダー領域
+   */
+  public ACGroupBox getContentCalendar(){
+    if(contentCalendar==null){
+
+      contentCalendar = new ACGroupBox();
+
+      contentCalendar.setText("提供日");
+
+      contentCalendar.setFollowChildEnabled(false);
+
+      contentCalendar.setHgap(0);
+
+      contentCalendar.setVgap(0);
+
+      addContentCalendar();
+    }
+    return contentCalendar;
+
+  }
+
+  /**
+   * カレンダー1日を取得します。
+   * @return カレンダー1日
+   */
+  public QP003ResultCalendar getCalendar01(){
+    if(calendar01==null){
+
+      calendar01 = new QP003ResultCalendar();
+
+      addCalendar01();
+    }
+    return calendar01;
+
+  }
+
+  /**
+   * カレンダー2日を取得します。
+   * @return カレンダー2日
+   */
+  public QP003ResultCalendar getCalendar02(){
+    if(calendar02==null){
+
+      calendar02 = new QP003ResultCalendar();
+
+      addCalendar02();
+    }
+    return calendar02;
+
+  }
+
+  /**
+   * カレンダー3日を取得します。
+   * @return カレンダー3日
+   */
+  public QP003ResultCalendar getCalendar03(){
+    if(calendar03==null){
+
+      calendar03 = new QP003ResultCalendar();
+
+      addCalendar03();
+    }
+    return calendar03;
+
+  }
+
+  /**
+   * カレンダー4日を取得します。
+   * @return カレンダー4日
+   */
+  public QP003ResultCalendar getCalendar04(){
+    if(calendar04==null){
+
+      calendar04 = new QP003ResultCalendar();
+
+      addCalendar04();
+    }
+    return calendar04;
+
+  }
+
+  /**
+   * カレンダー5日を取得します。
+   * @return カレンダー5日
+   */
+  public QP003ResultCalendar getCalendar05(){
+    if(calendar05==null){
+
+      calendar05 = new QP003ResultCalendar();
+
+      addCalendar05();
+    }
+    return calendar05;
+
+  }
+
+  /**
+   * カレンダー6日を取得します。
+   * @return カレンダー6日
+   */
+  public QP003ResultCalendar getCalendar06(){
+    if(calendar06==null){
+
+      calendar06 = new QP003ResultCalendar();
+
+      addCalendar06();
+    }
+    return calendar06;
+
+  }
+
+  /**
+   * カレンダー7日を取得します。
+   * @return カレンダー7日
+   */
+  public QP003ResultCalendar getCalendar07(){
+    if(calendar07==null){
+
+      calendar07 = new QP003ResultCalendar();
+
+      addCalendar07();
+    }
+    return calendar07;
+
+  }
+
+  /**
+   * カレンダー8日を取得します。
+   * @return カレンダー8日
+   */
+  public QP003ResultCalendar getCalendar08(){
+    if(calendar08==null){
+
+      calendar08 = new QP003ResultCalendar();
+
+      addCalendar08();
+    }
+    return calendar08;
+
+  }
+
+  /**
+   * カレンダー9日を取得します。
+   * @return カレンダー9日
+   */
+  public QP003ResultCalendar getCalendar09(){
+    if(calendar09==null){
+
+      calendar09 = new QP003ResultCalendar();
+
+      addCalendar09();
+    }
+    return calendar09;
+
+  }
+
+  /**
+   * カレンダー10日を取得します。
+   * @return カレンダー10日
+   */
+  public QP003ResultCalendar getCalendar10(){
+    if(calendar10==null){
+
+      calendar10 = new QP003ResultCalendar();
+
+      addCalendar10();
+    }
+    return calendar10;
+
+  }
+
+  /**
+   * カレンダー11日を取得します。
+   * @return カレンダー11日
+   */
+  public QP003ResultCalendar getCalendar11(){
+    if(calendar11==null){
+
+      calendar11 = new QP003ResultCalendar();
+
+      addCalendar11();
+    }
+    return calendar11;
+
+  }
+
+  /**
+   * カレンダー12日を取得します。
+   * @return カレンダー12日
+   */
+  public QP003ResultCalendar getCalendar12(){
+    if(calendar12==null){
+
+      calendar12 = new QP003ResultCalendar();
+
+      addCalendar12();
+    }
+    return calendar12;
+
+  }
+
+  /**
+   * カレンダー13日を取得します。
+   * @return カレンダー13日
+   */
+  public QP003ResultCalendar getCalendar13(){
+    if(calendar13==null){
+
+      calendar13 = new QP003ResultCalendar();
+
+      addCalendar13();
+    }
+    return calendar13;
+
+  }
+
+  /**
+   * カレンダー14日を取得します。
+   * @return カレンダー14日
+   */
+  public QP003ResultCalendar getCalendar14(){
+    if(calendar14==null){
+
+      calendar14 = new QP003ResultCalendar();
+
+      addCalendar14();
+    }
+    return calendar14;
+
+  }
+
+  /**
+   * カレンダー15日を取得します。
+   * @return カレンダー15日
+   */
+  public QP003ResultCalendar getCalendar15(){
+    if(calendar15==null){
+
+      calendar15 = new QP003ResultCalendar();
+
+      addCalendar15();
+    }
+    return calendar15;
+
+  }
+
+  /**
+   * カレンダー16日を取得します。
+   * @return カレンダー16日
+   */
+  public QP003ResultCalendar getCalendar16(){
+    if(calendar16==null){
+
+      calendar16 = new QP003ResultCalendar();
+
+      addCalendar16();
+    }
+    return calendar16;
+
+  }
+
+  /**
+   * カレンダー17日を取得します。
+   * @return カレンダー17日
+   */
+  public QP003ResultCalendar getCalendar17(){
+    if(calendar17==null){
+
+      calendar17 = new QP003ResultCalendar();
+
+      addCalendar17();
+    }
+    return calendar17;
+
+  }
+
+  /**
+   * カレンダー18日を取得します。
+   * @return カレンダー18日
+   */
+  public QP003ResultCalendar getCalendar18(){
+    if(calendar18==null){
+
+      calendar18 = new QP003ResultCalendar();
+
+      addCalendar18();
+    }
+    return calendar18;
+
+  }
+
+  /**
+   * カレンダー19日を取得します。
+   * @return カレンダー19日
+   */
+  public QP003ResultCalendar getCalendar19(){
+    if(calendar19==null){
+
+      calendar19 = new QP003ResultCalendar();
+
+      addCalendar19();
+    }
+    return calendar19;
+
+  }
+
+  /**
+   * カレンダー20日を取得します。
+   * @return カレンダー20日
+   */
+  public QP003ResultCalendar getCalendar20(){
+    if(calendar20==null){
+
+      calendar20 = new QP003ResultCalendar();
+
+      addCalendar20();
+    }
+    return calendar20;
+
+  }
+
+  /**
+   * カレンダー21日を取得します。
+   * @return カレンダー21日
+   */
+  public QP003ResultCalendar getCalendar21(){
+    if(calendar21==null){
+
+      calendar21 = new QP003ResultCalendar();
+
+      addCalendar21();
+    }
+    return calendar21;
+
+  }
+
+  /**
+   * カレンダー22日を取得します。
+   * @return カレンダー22日
+   */
+  public QP003ResultCalendar getCalendar22(){
+    if(calendar22==null){
+
+      calendar22 = new QP003ResultCalendar();
+
+      addCalendar22();
+    }
+    return calendar22;
+
+  }
+
+  /**
+   * カレンダー23日を取得します。
+   * @return カレンダー23日
+   */
+  public QP003ResultCalendar getCalendar23(){
+    if(calendar23==null){
+
+      calendar23 = new QP003ResultCalendar();
+
+      addCalendar23();
+    }
+    return calendar23;
+
+  }
+
+  /**
+   * カレンダー24日を取得します。
+   * @return カレンダー24日
+   */
+  public QP003ResultCalendar getCalendar24(){
+    if(calendar24==null){
+
+      calendar24 = new QP003ResultCalendar();
+
+      addCalendar24();
+    }
+    return calendar24;
+
+  }
+
+  /**
+   * カレンダー25日を取得します。
+   * @return カレンダー25日
+   */
+  public QP003ResultCalendar getCalendar25(){
+    if(calendar25==null){
+
+      calendar25 = new QP003ResultCalendar();
+
+      addCalendar25();
+    }
+    return calendar25;
+
+  }
+
+  /**
+   * カレンダー26日を取得します。
+   * @return カレンダー26日
+   */
+  public QP003ResultCalendar getCalendar26(){
+    if(calendar26==null){
+
+      calendar26 = new QP003ResultCalendar();
+
+      addCalendar26();
+    }
+    return calendar26;
+
+  }
+
+  /**
+   * カレンダー27日を取得します。
+   * @return カレンダー27日
+   */
+  public QP003ResultCalendar getCalendar27(){
+    if(calendar27==null){
+
+      calendar27 = new QP003ResultCalendar();
+
+      addCalendar27();
+    }
+    return calendar27;
+
+  }
+
+  /**
+   * カレンダー28日を取得します。
+   * @return カレンダー28日
+   */
+  public QP003ResultCalendar getCalendar28(){
+    if(calendar28==null){
+
+      calendar28 = new QP003ResultCalendar();
+
+      addCalendar28();
+    }
+    return calendar28;
+
+  }
+
+  /**
+   * カレンダー29日を取得します。
+   * @return カレンダー29日
+   */
+  public QP003ResultCalendar getCalendar29(){
+    if(calendar29==null){
+
+      calendar29 = new QP003ResultCalendar();
+
+      addCalendar29();
+    }
+    return calendar29;
+
+  }
+
+  /**
+   * カレンダー30日を取得します。
+   * @return カレンダー30日
+   */
+  public QP003ResultCalendar getCalendar30(){
+    if(calendar30==null){
+
+      calendar30 = new QP003ResultCalendar();
+
+      addCalendar30();
+    }
+    return calendar30;
+
+  }
+
+  /**
+   * カレンダー31日を取得します。
+   * @return カレンダー31日
+   */
+  public QP003ResultCalendar getCalendar31(){
+    if(calendar31==null){
+
+      calendar31 = new QP003ResultCalendar();
+
+      addCalendar31();
+    }
+    return calendar31;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QP003Design() {
@@ -2313,21 +2939,22 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContents(){
 
-    contents.add(getContentPatients(), VRLayout.FLOW_RETURN);
+    contents.add(getContentsCommon(), VRLayout.NORTH);
 
-    contents.add(getContentProviders(), VRLayout.FLOW_RETURN);
+    contents.add(getTabs(), VRLayout.CLIENT);
 
-    contents.add(getContentSpace1(), VRLayout.FLOW_RETURN);
+  }
 
-    contents.add(getContentJikohutanArea(), VRLayout.FLOW_RETURN);
+  /**
+   * 共通領域に内部項目を追加します。
+   */
+  protected void addContentsCommon(){
 
-    contents.add(getContentSpace2(), VRLayout.FLOW_RETURN);
+    contentsCommon.add(getContentPatients(), VRLayout.FLOW_RETURN);
 
-    contents.add(getContentEtcs(), VRLayout.FLOW_RETURN);
+    contentsCommon.add(getContentProviders(), VRLayout.FLOW_RETURN);
 
-    contents.add(getContentSpace3(), VRLayout.FLOW_RETURN);
-
-    contents.add(getContentBottoms(), VRLayout.FLOW_RETURN);
+    contentsCommon.add(getContentBillTitle(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -2336,11 +2963,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentPatients(){
 
-    contentPatients.add(getContentPatientText(), VRLayout.FLOW_INSETLINE);
+    contentPatients.add(getContentPatientText(), VRLayout.FLOW);
 
-    contentPatients.add(getContentPatientID(), VRLayout.FLOW_INSETLINE);
+    contentPatients.add(getContentPatientID(), VRLayout.FLOW);
 
-    contentPatients.add(getContentPatientName(), VRLayout.FLOW_INSETLINE);
+    contentPatients.add(getContentPatientName(), VRLayout.FLOW);
 
   }
 
@@ -2370,11 +2997,11 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentProviders(){
 
-    contentProviders.add(getContentProviderText(), VRLayout.FLOW_INSETLINE);
+    contentProviders.add(getContentProviderText(), VRLayout.FLOW);
 
-    contentProviders.add(getContentProviderId(), VRLayout.FLOW_INSETLINE);
+    contentProviders.add(getContentProviderId(), VRLayout.FLOW);
 
-    contentProviders.add(getContentProviderName(), VRLayout.FLOW_INSETLINE);
+    contentProviders.add(getContentProviderName(), VRLayout.FLOW);
 
   }
 
@@ -2400,9 +3027,46 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * スペーサーに内部項目を追加します。
+   * 項目タイトルに内部項目を追加します。
    */
-  protected void addContentSpace1(){
+  protected void addContentBillTitle(){
+
+    contentBillTitle.add(getContentBill(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 請求対象年月に内部項目を追加します。
+   */
+  protected void addContentBill(){
+
+  }
+
+  /**
+   * タブに内部項目を追加します。
+   */
+  protected void addTabs(){
+
+    tabs.addTab("請求金額", getContentMoney());
+
+    tabs.addTab("サービス提供日", getContentDay());
+
+  }
+
+  /**
+   * 金額領域に内部項目を追加します。
+   */
+  protected void addContentMoney(){
+
+    contentMoney.add(getContentJikohutanArea(), VRLayout.FLOW_RETURN);
+
+    contentMoney.add(getContentSpace2(), VRLayout.FLOW_RETURN);
+
+    contentMoney.add(getContentEtcs(), VRLayout.FLOW_RETURN);
+
+    contentMoney.add(getContentSpace3(), VRLayout.FLOW_RETURN);
+
+    contentMoney.add(getContentBottoms(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -2410,8 +3074,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * 自己負担分領域に内部項目を追加します。
    */
   protected void addContentJikohutanArea(){
-
-    contentJikohutanArea.add(getContentBillTitle(), VRLayout.FLOW_RETURN);
 
     contentJikohutanArea.add(getContentJikohutanTitle(), VRLayout.FLOW_RETURN);
 
@@ -2422,22 +3084,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
     contentJikohutanArea.add(getContentJikohutan3(), VRLayout.FLOW_RETURN);
 
     contentJikohutanArea.add(getContentJikohutanTitleArea(), VRLayout.FLOW_RETURN);
-
-  }
-
-  /**
-   * 項目タイトルに内部項目を追加します。
-   */
-  protected void addContentBillTitle(){
-
-    contentBillTitle.add(getContentBill(), VRLayout.WEST);
-
-  }
-
-  /**
-   * 請求対象年月に内部項目を追加します。
-   */
-  protected void addContentBill(){
 
   }
 
@@ -3032,6 +3678,310 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * 医療費控除対象額に内部項目を追加します。
    */
   protected void addContentKoujyoText(){
+
+  }
+
+  /**
+   * 日付領域に内部項目を追加します。
+   */
+  protected void addContentDay(){
+
+    contentDay.add(getContentCalendarUp(), VRLayout.NORTH);
+
+    contentDay.add(getContentCalendar(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 上部領域に内部項目を追加します。
+   */
+  protected void addContentCalendarUp(){
+
+  }
+
+  /**
+   * カレンダー領域に内部項目を追加します。
+   */
+  protected void addContentCalendar(){
+
+    contentCalendar.add(getCalendar01(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar02(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar03(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar04(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar05(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar06(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar07(), VRLayout.FLOW_RETURN);
+
+    contentCalendar.add(getCalendar08(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar09(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar10(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar11(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar12(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar13(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar14(), VRLayout.FLOW_RETURN);
+
+    contentCalendar.add(getCalendar15(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar16(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar17(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar18(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar19(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar20(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar21(), VRLayout.FLOW_RETURN);
+
+    contentCalendar.add(getCalendar22(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar23(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar24(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar25(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar26(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar27(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar28(), VRLayout.FLOW_RETURN);
+
+    contentCalendar.add(getCalendar29(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar30(), VRLayout.FLOW);
+
+    contentCalendar.add(getCalendar31(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * カレンダー1日に内部項目を追加します。
+   */
+  protected void addCalendar01(){
+
+  }
+
+  /**
+   * カレンダー2日に内部項目を追加します。
+   */
+  protected void addCalendar02(){
+
+  }
+
+  /**
+   * カレンダー3日に内部項目を追加します。
+   */
+  protected void addCalendar03(){
+
+  }
+
+  /**
+   * カレンダー4日に内部項目を追加します。
+   */
+  protected void addCalendar04(){
+
+  }
+
+  /**
+   * カレンダー5日に内部項目を追加します。
+   */
+  protected void addCalendar05(){
+
+  }
+
+  /**
+   * カレンダー6日に内部項目を追加します。
+   */
+  protected void addCalendar06(){
+
+  }
+
+  /**
+   * カレンダー7日に内部項目を追加します。
+   */
+  protected void addCalendar07(){
+
+  }
+
+  /**
+   * カレンダー8日に内部項目を追加します。
+   */
+  protected void addCalendar08(){
+
+  }
+
+  /**
+   * カレンダー9日に内部項目を追加します。
+   */
+  protected void addCalendar09(){
+
+  }
+
+  /**
+   * カレンダー10日に内部項目を追加します。
+   */
+  protected void addCalendar10(){
+
+  }
+
+  /**
+   * カレンダー11日に内部項目を追加します。
+   */
+  protected void addCalendar11(){
+
+  }
+
+  /**
+   * カレンダー12日に内部項目を追加します。
+   */
+  protected void addCalendar12(){
+
+  }
+
+  /**
+   * カレンダー13日に内部項目を追加します。
+   */
+  protected void addCalendar13(){
+
+  }
+
+  /**
+   * カレンダー14日に内部項目を追加します。
+   */
+  protected void addCalendar14(){
+
+  }
+
+  /**
+   * カレンダー15日に内部項目を追加します。
+   */
+  protected void addCalendar15(){
+
+  }
+
+  /**
+   * カレンダー16日に内部項目を追加します。
+   */
+  protected void addCalendar16(){
+
+  }
+
+  /**
+   * カレンダー17日に内部項目を追加します。
+   */
+  protected void addCalendar17(){
+
+  }
+
+  /**
+   * カレンダー18日に内部項目を追加します。
+   */
+  protected void addCalendar18(){
+
+  }
+
+  /**
+   * カレンダー19日に内部項目を追加します。
+   */
+  protected void addCalendar19(){
+
+  }
+
+  /**
+   * カレンダー20日に内部項目を追加します。
+   */
+  protected void addCalendar20(){
+
+  }
+
+  /**
+   * カレンダー21日に内部項目を追加します。
+   */
+  protected void addCalendar21(){
+
+  }
+
+  /**
+   * カレンダー22日に内部項目を追加します。
+   */
+  protected void addCalendar22(){
+
+  }
+
+  /**
+   * カレンダー23日に内部項目を追加します。
+   */
+  protected void addCalendar23(){
+
+  }
+
+  /**
+   * カレンダー24日に内部項目を追加します。
+   */
+  protected void addCalendar24(){
+
+  }
+
+  /**
+   * カレンダー25日に内部項目を追加します。
+   */
+  protected void addCalendar25(){
+
+  }
+
+  /**
+   * カレンダー26日に内部項目を追加します。
+   */
+  protected void addCalendar26(){
+
+  }
+
+  /**
+   * カレンダー27日に内部項目を追加します。
+   */
+  protected void addCalendar27(){
+
+  }
+
+  /**
+   * カレンダー28日に内部項目を追加します。
+   */
+  protected void addCalendar28(){
+
+  }
+
+  /**
+   * カレンダー29日に内部項目を追加します。
+   */
+  protected void addCalendar29(){
+
+  }
+
+  /**
+   * カレンダー30日に内部項目を追加します。
+   */
+  protected void addCalendar30(){
+
+  }
+
+  /**
+   * カレンダー31日に内部項目を追加します。
+   */
+  protected void addCalendar31(){
 
   }
 

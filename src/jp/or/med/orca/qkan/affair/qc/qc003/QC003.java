@@ -104,6 +104,14 @@ public class QC003 extends QC003Event {
         
         // 画面の初期状態を設定する。
         setState_INSERT_STATE();
+        
+        //[ID:0000593][Shin Fujihara] 2010/01 add begin 2009年度対応
+        //共通関数「QkanCommon.isShowOldIryo()」の戻り値がfalseである場合
+        if (!QkanCommon.isShowOldIryo()) {
+        	//実績読込ボタンを非表示にする。
+        	setState_DISABLE_RESULTS();
+        }
+        //[ID:0000593][Shin Fujihara] 2010/01 add end 2009年度対応
 
         // 強制戻り判別フラグの値の初期設定
         setForciblyBackCheckFlag(false);
@@ -257,6 +265,21 @@ public class QC003 extends QC003Event {
                 lastInfoMap.removeData("HOMON_KAISU_DAY");
                 lastInfoMap.removeData("HOMON_KAISU_COUNT");
                 lastInfoMap.removeData("CREATE_DATE");
+                
+                // [ID:0000574][Masahiko Higuchi] 2010/01 add begin 2009年度対応 
+                // 要介護度の認定チェック
+                VRList patientNinteiHistory = QkanCommon
+                        .getPatientInsureInfoOnEndOfMonth(getDBManager(),
+                                getTargetDate(), getPatientId());
+                if(patientNinteiHistory != null && patientNinteiHistory.size() >= 1){
+                    // 当月の末の情報を取得する
+                    VRMap history = (VRMap)patientNinteiHistory.getData(0);
+                    lastInfoMap.setData("JOTAI_CODE",history.getData("JOTAI_CODE"));
+                } else {
+                    // 履歴が取得できないので、自立に設定
+                    lastInfoMap.setData("JOTAI_CODE",new Integer(1));
+                }
+                // [ID:0000574][Masahiko Higuchi] 2010/01 add end
 
                 // johoTeikyoshoMaoを「クライアント領域（contents）」にセットする。
                 getContents().setSource(lastInfoMap);

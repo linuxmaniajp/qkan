@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 在宅療養生活のポイント
- * 作成日: 2007/12/26  日本コンピューター株式会社 在宅療養生活のポイント 新規作成
+ * 作成日: 2010/02/01  日本コンピューター株式会社 在宅療養生活のポイント 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -246,8 +246,6 @@ public class QC005SQL extends QC005State {
     sb.append(",PATIENT_TEL_SECOND");
 
     sb.append(",PATIENT_TEL_THIRD");
-
-    sb.append(",CREATE_DATE_ZAITAKU");
 
     sb.append(",VISIT_THIS_MONTH_NO1");
 
@@ -1316,6 +1314,106 @@ public class QC005SQL extends QC005State {
     sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
 
     sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「サービス実績を取得する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_SERVICE_RESULT_DATA(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" EXTRACT(DAY FROM SERVICE_DATE)");
+
+    sb.append(" AS EXTRACT_SERVICE_DAY");
+
+    sb.append(",SERVICE_DATE");
+
+    sb.append(" FROM");
+
+    sb.append(" SERVICE");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_DATE");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_DATE");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SYSTEM_SERVICE_KIND_DETAIL");
+
+    sb.append(" IN");
+
+    sb.append(" (13111,13411)");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERVICE_USE_TYPE");
+
+    sb.append(" =");
+
+    sb.append(" 6");
+
+    sb.append(")");
+
+    sb.append(" GROUP BY");
+
+    sb.append(" SERVICE_DATE");
+
+    sb.append(" ");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" SERVICE_DATE");
+
+    sb.append(" ASC");
 
     return sb.toString();
   }

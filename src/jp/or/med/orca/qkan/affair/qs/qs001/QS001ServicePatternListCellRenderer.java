@@ -223,20 +223,31 @@ public class QS001ServicePatternListCellRenderer extends
 	            if (regulationRate > 0) {
 	            	hasRegulationRate = true;
 	            }
+                
+                // [ID:0000560][Masahiko Higuchi] 2009/10 add begin 不正表示機能の対応漏れに対応（位置を移動）
+                String serviceKind = String.valueOf(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", map));
+                // [ID:0000560][Masahiko Higuchi] 2009/10 add end
+                
 	            // 2009/01/13 [Mizuki Tsutsumi] : add end
                 // [ID:0000444][Tozo TANAKA] 2009/03/14 add begin 平成21年4月法改正対応
                 //レコードの法改正区分を取得する。
                 int mapLowVer = CareServiceCommon.getServiceLowVersion(map);
-                if(mapLowVer != targetLowVer){
+                
+                // [ID:0000560][Masahiko Higuchi] 2009/10 edit begin 不正表示機能の対応漏れに対応
+                // その他、主な日常生活上の活動を除外する
+                if (mapLowVer != targetLowVer && !"90101".equals(serviceKind)
+                        && !"90201".equals(serviceKind)) {
+                // [ID:0000560][Masahiko Higuchi] 2009/10 edit end 不正表示機能の対応漏れに対応
+                    
                     //対象年月の法改正区分とレコードの法改正区分が異なる場合
                     //不正な法改正区分を表すフラグisInvalidLowVersionを真(true)にする。
                     isInvalidLowVersion = true;
                 }
                 // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
-            	
+                // [ID:0000560][Masahiko Higuchi] 2009/10 del begin 不正表示機能の対応漏れに対応
                 // Map(レコード)すべてではなく説明だけを描画する
-                String serviceKind = String.valueOf(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", map));
-
+                //String serviceKind = String.valueOf(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", map));
+                // [ID:0000560][Masahiko Higuchi] 2009/10 del end
                 Object service;
                 if (getMasterService() != null) {
                     service = getMasterService().get(ACCastUtilities.toInteger(serviceKind, 0));

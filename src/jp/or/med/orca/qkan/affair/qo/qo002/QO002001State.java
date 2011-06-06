@@ -18,16 +18,16 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/01/28  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/07/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 帳票管理 (C)
- * プロセス 老人訪問看護・訪問看護の記録書Ⅰ (003)
- * プログラム 老人訪問看護・訪問看護の記録書Ⅰ (QC003)
+ * サブシステム その他機能 (O)
+ * プロセス 保険者管理 (002)
+ * プログラム 保険者選択 (QO002001)
  *
  *****************************************************************
  */
-package jp.or.med.orca.qkan.affair.qc.qc003;
+package jp.or.med.orca.qkan.affair.qo.qo002;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
@@ -79,46 +79,32 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 /**
- * 老人訪問看護・訪問看護の記録書Ⅰ状態定義(QC003) 
+ * 保険者選択状態定義(QO002001) 
  */
-public class QC003State extends QC003Design {
+public class QO002001State extends QO002001Design {
   /**
    * コンストラクタです。
    */
-  public QC003State(){
+  public QO002001State(){
   }
 
   /**
-   * 「登録モード」の状態に設定します。
+   * 「設定ボタン・有効」の状態に設定します。
    * @throws Exception 処理例外
    */
-  public void setState_INSERT_STATE() throws Exception {
+  public void setState_VALID_APPLY() throws Exception {
 
-        getInsert().setVisible(true);
-
-        getUpdate().setVisible(false);
-
-  }
-
-  /**
-   * 「更新モード」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_UPDATE_STATE() throws Exception {
-
-        getInsert().setVisible(false);
-
-        getUpdate().setVisible(true);
+        getApply().setEnabled(true);
 
   }
 
   /**
-   * 「実績読み込み非表示」の状態に設定します。
+   * 「設定ボタン・無効」の状態に設定します。
    * @throws Exception 処理例外
    */
-  public void setState_DISABLE_RESULTS() throws Exception {
+  public void setState_INVALID_APPLY() throws Exception {
 
-        getHomonkaisuResultReadButton().setVisible(false);
+        getApply().setEnabled(false);
 
   }
 

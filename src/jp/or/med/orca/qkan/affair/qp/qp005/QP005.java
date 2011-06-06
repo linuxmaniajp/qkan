@@ -42,13 +42,17 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 
+import sun.rmi.runtime.GetThreadPoolAction;
+
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableCellViewerCustomCell;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001ReTotal;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACCharacterConverter;
 import jp.nichicom.ac.text.ACTextUtilities;
@@ -142,6 +146,29 @@ public class QP005 extends QP005Event {
 		}
 		//[H20.5 法改正対応] fujihara add end
 
+		//[ID:0000429][Shin Fujihara] 2009/07 add start 2009年度対応
+		//サービス追加ボタン制御
+		switch (getClaimStyleType()){
+		case FORMAT_STYLE3:
+		case FORMAT_STYLE32:
+		case FORMAT_STYLE4:
+		case FORMAT_STYLE42:
+		case FORMAT_STYLE5:
+		case FORMAT_STYLE52:
+		case FORMAT_STYLE8:
+		case FORMAT_STYLE9:
+		case FORMAT_STYLE10:
+			break;
+		default:
+			setState_TYPE9();
+			break;
+		}
+		
+		//2009.8.10 暫定的にボタン非表示で、機能を封印する
+		getServiceDelButton().setVisible(false);
+		getServiceAddButton().setVisible(false);
+		//[ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
+		
 		// パッシブチェックのキーを定義する。
 		// TABLE：CLAIM
 		// キー：CLAIM_ID
@@ -152,6 +179,21 @@ public class QP005 extends QP005Event {
 
 		// データを取得し、画面に展開する。
 		doFind();
+		
+		//[ID:0000567][Shin Fujihara] 2009/12/10 add begin 2009年度対応
+		if (getTableClaimList2().size() < 2) {
+			//削除ボタンを使用不可能にする
+			setState_TYPE11();
+		} else {
+			setState_TYPE10();
+		}
+		//[ID:0000567][Shin Fujihara] 2009/12/10 add end 2009年度対応
+		
+		
+		//[ID:0000429][Shin Fujihara] 2009/07 add begin 2009年度対応
+		//スナップショット取得
+		doSnap();
+		//[ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
 	}
 
 	public boolean canBack(VRMap parameters) throws Exception {
@@ -160,7 +202,10 @@ public class QP005 extends QP005Event {
 		}
 		// 最後に保存されてから、画面テーブルのデータが変更されている場合（tableChangeFlgの値が1の場合）
 		// 確認メッセージを表示する。
-		if (getTableChangeFlg() == ON) {
+		//[ID:0000429][Shin Fujihara] 2009/07 edit begin 2009年度対応
+		//if (getTableChangeFlg() == ON) {
+		if (isModified() ) {
+		//[ID:0000429][Shin Fujihara] 2009/07 edit end 2009年度対応
 			switch(QkanMessageList.getInstance().WARNING_OF_UPDATE_ON_MODIFIED()){
 			case ACMessageBox.RESULT_OK:
 
@@ -222,12 +267,17 @@ public class QP005 extends QP005Event {
 			return false;
 		}
 		// 最後に保存されてから、画面テーブルのデータが変更されていない場合（tableChangeFlgの値が0の場合）
-		if (getTableChangeFlg() == OFF) {
+		//[ID:0000429][Shin Fujihara] 2009/07 edit begin 2009年度対応
+		//if (getTableChangeFlg() == OFF) {
+		if (!isModified()) {
+		//[ID:0000429][Shin Fujihara] 2009/07 edit end 2009年度対応
 			// システムを終了する。
 			return true;
 		}
 		// 最後に保存されてから、画面テーブルのデータが変更されている場合（tableChangeFlgの値が1の場合）
-		if (getTableChangeFlg() == ON) {
+		//[ID:0000429][Shin Fujihara] 2009/07 delete begin 2009年度対応
+		//if (getTableChangeFlg() == ON) {
+		//[ID:0000429][Shin Fujihara] 2009/07 delete end 2009年度対応
 			// 終了確認メッセージを表示する。
 			if (QkanMessageList.getInstance().WARNING_OF_CLOSE_ON_MODIFIED() == ACMessageBox.RESULT_OK) {
 				// ・メッセージID：WARNING_OF_CLOSE_ON_MODIFIED
@@ -239,8 +289,12 @@ public class QP005 extends QP005Event {
 				// 処理を中断する（何もしない）。
 				return false;
 			}
+		//[ID:0000429][Shin Fujihara] 2009/07 delete begin 2009年度対応
+		/*
 		}
 		return false;
+		*/
+		//[ID:0000429][Shin Fujihara] 2009/07 delete end 2009年度対応
 	}
 
 	// コンポーネントイベント
@@ -263,6 +317,12 @@ public class QP005 extends QP005Event {
 				// 保存処理が正常終了した場合
 				// 完了メッセージを表示する。
 				QkanMessageList.getInstance().UPDATE_SUCCESSED();
+				
+				//[ID:0000429][Shin Fujihara] 2009/07 add begin 2009年度対応
+				//スナップショット再取得
+				doSnap();
+				//[ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
+				
 				// ・メッセージID：UPDATE_SUCCESSED
 			} else {
 				// ・メッセージID：UPDATE_SUCCESSED
@@ -383,7 +443,12 @@ public class QP005 extends QP005Event {
 		// 特定入所者介護費情報テーブルで選択されている行のレコードを詳細テーブルに表示する。
 		if (getNyushoInfoTable().isSelected()) {
 			doShowClaimDetail("NYUSHO");
+			//[ID:0000429][Shin Fujihara] 2009/07 edit begin 2009年度対応
+			setState_TYPE7();
+		} else {
+			setState_TYPE8();
 		}
+		//[ID:0000429][Shin Fujihara] 2009/07 edit end 2009年度対応
 		// ・第一引数："NYUSHO"
 	}
 
@@ -1007,6 +1072,26 @@ public class QP005 extends QP005Event {
 		getShahukuInfoTable().validate();
 		getShahukuInfoTable().repaint();
 	}
+	
+	//[ID:0000429][Shin Fujihara] 2009/07 add start 2009年度対応
+	//特別療養費タブの変更チェック漏れ対応
+	/**
+	 * 「データ変更時処理」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void recuperationInfoRevisionTablecolumn2CellEditing(ChangeEvent e) throws Exception {
+		// tableChangeFlgに1を代入する。
+		setTableChangeFlg(ON);
+		// 特別療養費情報テーブルを再描画する。
+		getRecuperationInfoTable().validate();
+		getRecuperationInfoTable().repaint();
+		
+	}
+	//[ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
 
 	public static void main(String[] args) {
 		// デフォルトデバッグ起動
@@ -1015,14 +1100,14 @@ public class QP005 extends QP005Event {
 		VRMap param = new VRHashMap();
 		
 		
-		param.setData("PATIENT_ID", new Integer(8));
-		param.setData("INSURED_ID", "8888888888");
+		param.setData("PATIENT_ID", new Integer(27));
+		param.setData("INSURED_ID", "9000000001");
 		param.setData("PROVIDER_ID", "2000000000");
-		param.setData("LIST_INDEX", new Integer(0));
+		param.setData("LIST_INDEX", new Integer(1));
 		param.setData("INSURER_ID", "111111");
 		param.setData("CLAIM_STYLE_TYPE", new Integer(10411));
-		param.setData("CLAIM_DATE", jp.nichicom.ac.util.ACDateUtilities.createDate(2008, 6, 1));
-		param.setData("TARGET_DATE", jp.nichicom.ac.util.ACDateUtilities.createDate(2008, 5, 1));
+		param.setData("CLAIM_DATE", jp.nichicom.ac.util.ACDateUtilities.createDate(2009, 8, 1));
+		param.setData("TARGET_DATE", jp.nichicom.ac.util.ACDateUtilities.createDate(2009, 7, 1));
 		
 
 		// paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
@@ -3133,6 +3218,10 @@ public class QP005 extends QP005Event {
 			getTableModelList7().setAdaptee(getTableClaimList7());
 			// バインド先のParticularInfoTableの1行目を選択した状態にする。
 			getParticularInfoTable().setSelectedSortedFirstRow();
+			//[ID:0000429][Shin Fujihara] 2009/07 add begin 2009年度対応
+			//既存障害　先頭行を表示する
+			getRecuperationInfoTable().setSelectedSortedFirstRow();
+			//[ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
 			getRecuperationInfoRevisionTable().setSelectedSortedFirstRow();
 		}
 		//[H20.5 法改正対応] fujihara add end
@@ -3690,6 +3779,391 @@ public class QP005 extends QP005Event {
 		}
 	}
 
-    
+	
+	
+	/*=================================================================
+	 * [ID:0000429][Shin Fujihara] 2009/07 add begin 2009年度対応
+	 =================================================================*/
+	
+	/**
+	 * 再集計ボタン押下時の処理
+	 */
+	protected void retotalActionPerformed(ActionEvent e) throws Exception {
+		
+		//確認メッセージを表示
+		if (QkanMessageList.getInstance().QP005_WARNING_OF_RETOTAL() != ACMessageBox.RESULT_OK){
+			return;
+		}
+		//再集計実行
+		doRecount(false);
+		
+		QkanMessageList.getInstance().QP005_RETOTAL_SUCCESSED();
+	}
+	
+	
+	private void doRecount(boolean isPlanOverwrite) throws Exception {
+		VRList[] list = new VRArrayList[7];
+		list[0] = getTableClaimList1();
+		list[1] = getTableClaimList2();
+		list[2] = getTableClaimList3();
+		list[3] = getTableClaimList4();
+		list[4] = getTableClaimList5();
+		list[5] = getTableClaimList6();
+		list[6] = getTableClaimList7();
+		
+		dump(list, "before.txt");
+		
+		//再集計実行！
+		QP001ReTotal qp001retotal = new QP001ReTotal();
+		qp001retotal.calc(list, getDBManager(), getPatientId(), isPlanOverwrite);
+		
+		dump(list, "after.txt");
+		
+		//全テーブル再描画
+		repaintTable(getBasicInfoTable(), "BASIC", getTableClaimList1());
+		repaintTable(getDetailsInfoTable(), "DETAIL", getTableClaimList2());
+		repaintTable(getKyotakuDetailsInfoTable(), "KYOTAKU", getTableClaimList2());
+		repaintTable(getParticularInfoTable(), "PARTICULAR", getTableClaimList3());
+		repaintTable(getSpecialClinicInfoTable(), "SPECIAL_CLINIC", getTableClaimList3());
+		repaintTable(getTotalInfoTable(), "TOTAL", getTableClaimList4());
+		repaintTable(getNyushoInfoTable(), "NYUSHO", getTableClaimList5());
+		repaintTable(getShahukuInfoTable(), "SHAHUKU", getTableClaimList6());
+		repaintTable(getRecuperationInfoTable(), "RYOYO", getTableClaimList7());
+		
+		repaintTable(getTableModelList1());
+		repaintTable(getTableModelList2());
+		repaintTable(getTableModelList3());
+		repaintTable(getTableModelList4());
+		repaintTable(getTableModelList5());
+		repaintTable(getTableModelList6());
+		repaintTable(getTableModelList7());
+	}
+	
+	private void repaintTable(ACTableModelAdapter ta) throws Exception {
+		if ((ta != null) && (ta.getTable() != null)) {
+			ta.getTable().repaint();
+		}
+	}
+	
+	private void repaintTable(ACTable table, String key, VRList list) throws Exception {
+		if ((list == null) || (list.size() <= 0)) {
+			return;
+		}
+		
+		if (table.isVisible() && (table.getRowCount() > 0)){
+			if (!table.isSelected()){
+				table.setSelectedSortedFirstRow();
+			}
+			doShowClaimDetail(key);
+		}
+	}
+	
+	/**
+	 * サービス追加ボタン押下時の処理
+	 */
+	protected void serviceAddButtonActionPerformed(ActionEvent e) throws Exception {
+		QP005001 qp005001 = new QP005001();
+		qp005001.showModal(getTargetDate());
+		
+		//キャンセルされたか確認する
+		if (!qp005001.getIsAdd()) {
+			return;
+		}
+		//入力された値を取得
+		VRMap map = qp005001.getValues();
+		
+		//レコードに必須の情報を設定
+		//CATEGORY_NO
+		map.put("CATEGORY_NO", "8");
+		//レコード種別コード2桁(11を設定)
+		map.put("801002", "11");
+		
+		//基本情報レコードから値をコピー
+		if (getTableClaimList1().size() <= 0) {
+			return;
+		}
+		
+		int claim_id = QkanCommon.getBookingNumber(getDBManager(), "CLAIM","CLAIM_ID", 1);
+		
+		String[] copyKeys = new String[]
+		{"PATIENT_ID",
+		 "LAST_TIME",
+		 "CLAIM_DATE",
+		 "PROVIDER_ID",
+		 "INSURER_ID",
+		 "CLAIM_STYLE_TYPE",
+		 "TARGET_DATE",
+		 "INSURED_ID",
+		 "CLAIM_FINISH_FLAG"};
+		
+		String[] copyKeysNum = new String[]
+		{"01001", "01003", "01004", "01005", "01006"};
+		
+		VRMap base = (VRMap)getTableClaimList1().get(0);
+		
+		for (int i = 0; i < copyKeys.length; i++) {
+			map.put(copyKeys[i], base.get(copyKeys[i]));
+		}
+		for (int i = 0; i < copyKeysNum.length; i++) {
+			map.put("8" + copyKeysNum[i], base.get("2" + copyKeysNum[i]));
+		}
+		
+		//CLAIM_ID
+		map.put("CLAIM_ID", String.valueOf(claim_id));
+		
+		//とりあえず値を設定
+		//特定入所者介護サービス費用情報レコード順次番号2桁
+		map.put("801007", "0");
+		//公費1日数2桁
+		map.put("801013", "0");
+		//公費2日数2桁
+		map.put("801014", "0");
+		//公費3日数2桁
+		map.put("801015", "0");
+		//費用額6桁
+		map.put("801016", "0");
+		//保険分請求額6桁
+		map.put("801017", "0");
+		//公費1負担額(明細)6桁
+		map.put("801018", "0");
+		//公費2負担額(明細)6桁
+		map.put("801019", "0");
+		//公費3負担額(明細)6桁
+		map.put("801020", "0");
+		//利用者負担額5桁
+		map.put("801021", "0");
+		//費用額合計6桁
+		map.put("801022", "0");
+		//保険分請求額合計6桁
+		map.put("801023", "0");
+		//利用者負担額合計6桁
+		map.put("801024", "0");
+		//(公費1)負担額合計6桁
+		map.put("801025", "0");
+		//(公費1)請求額6桁
+		map.put("801026", "0");
+		//(公費1)本人負担月額5桁
+		map.put("801027", "0");
+		//(公費2)負担額合計6桁
+		map.put("801028", "0");
+		//(公費2)請求額6桁
+		map.put("801029", "0");
+		//(公費2)本人負担月額5桁
+		map.put("801030", "0");
+		//(公費3)負担額合計6桁
+		map.put("801031", "0");
+		//(公費3)請求額6桁
+		map.put("801032", "0");
+		//(公費3)本人負担月額5桁
+		map.put("801033", "0");
+		
+		getTableClaimList5().addData(map);
+		
+		getTableModelList5().setAdaptee(getTableClaimList5());
+		repaintTable(getNyushoInfoTable(), "NYUSHO", getTableClaimList5());
+		repaintTable(getTableModelList5());
+		
+		//最終行を選択状態にする。
+		getNyushoInfoTable().setSelectedSortedLastRow();
+	}
+	/**
+	 * サービス削除ボタン押下時の処理
+	 */
+	protected void serviceDelButtonActionPerformed(ActionEvent e) throws Exception {
+		if (!getNyushoInfoTable().isSelected()) {
+			return;
+		}
+		if (QkanMessageList.getInstance().WARNING_OF_DELETE_SELECTION() != ACMessageBox.RESULT_OK){
+			return;
+		}
+		VRMap map = (VRMap) getNyushoInfoTable().getSelectedModelRowValue();
+		
+		getTableClaimList5().remove(map);
+		
+		//データがなくなったら、詳細テーブルを非表示にする
+		if (getTableClaimList5().size() <= 0) {
+			getTableModelDetail5().setAdaptee(new VRArrayList());
+		} else {
+			//一行目を選択状態にする
+			getNyushoInfoTable().setSelectedSortedFirstRow();
+		}
+	}
+	
+	/**
+	 * スナップショット取得
+	 * @throws Exception
+	 */
+	private void doSnap() throws Exception {
+		VRList list = new VRArrayList();
+		
+		list.add(deepCopy(getTableClaimList1()));
+		list.add(deepCopy(getTableClaimList2()));
+		list.add(deepCopy(getTableClaimList3()));
+		list.add(deepCopy(getTableClaimList4()));
+		list.add(deepCopy(getTableClaimList5()));
+		list.add(deepCopy(getTableClaimList6()));
+		list.add(deepCopy(getTableClaimList7()));
+		
+		setSnapList(list);
+	}
+	
+	private VRList deepCopy(VRList list) throws Exception {
+		
+		VRList r = new VRArrayList();
+		
+		for (int i = 0; i < list.size(); i++) {
+			VRMap rm = new VRHashMap();
+			VRMap map = (VRMap)list.get(i);
+			
+			Iterator it = map.keySet().iterator();
+			
+			while(it.hasNext()) {
+				String key = it.next().toString();
+				rm.put(key, map.get(key));
+			}
+			
+			r.add(rm);
+		}
+		
+		return r;
+	}
+	
+	/**
+	 * スナップショットチェック
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean isModified() throws Exception {
+		VRList list = new VRArrayList();
+		
+		list.add(getTableClaimList1());
+		list.add(getTableClaimList2());
+		list.add(getTableClaimList3());
+		list.add(getTableClaimList4());
+		list.add(getTableClaimList5());
+		list.add(getTableClaimList6());
+		list.add(getTableClaimList7());
+		
+		if (getSnapList().size() != list.size()) {
+			return true;
+		}
+		
+		for (int i = 0; i < list.size(); i++) {
+			VRList l1 = (VRList)getSnapList().get(i);
+			VRList l2 = (VRList)list.get(i);
+			
+			if (l1.size() != l2.size()){
+				return true;
+			}
+			
+			for (int j = 0; j < l2.size(); j++) {
+				VRMap m1 = (VRMap)l1.get(j);
+				VRMap m2 = (VRMap)l2.get(j);
+				
+				Iterator it = m1.keySet().iterator();
+				
+				while(it.hasNext()) {
+					String key = it.next().toString();
+					if (!m2.containsKey(key)) {
+						return true;
+					}
+					
+					String v1 = ACCastUtilities.toString(m1.get(key), ""); 
+					String v2 = ACCastUtilities.toString(m2.get(key), "");
+					
+					if (!v1.equals(v2)) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		
+		return false;
+	}
+	
+	private void dump(VRList[] lists, String fileName) {
+		
+		try {
+		
+			if (!isDebugMode()) {
+				return;
+			}
+			
+			java.io.FileOutputStream fos = new java.io.FileOutputStream(fileName);
+			java.io.OutputStreamWriter osw = new java.io.OutputStreamWriter(fos , "MS932");
+			java.io.BufferedWriter bw = new java.io.BufferedWriter(osw);
+	
+			for (int i = 0; i < lists.length; i++ ){
+				for (int j = 0; j < lists[i].size(); j++) {
+					VRMap map = (VRMap)lists[i].get(j);
+					
+					Iterator it = map.keySet().iterator();
+					while(it.hasNext()) {
+						String key = it.next().toString();
+						bw.write(key);
+						bw.write(",");
+						bw.write(ACCastUtilities.toString(map.get(key), ""));
+						bw.write("\r\n");
+					}
+					
+					
+				}
+			}
+			bw.close();
+			osw.close();
+			fos.close();
+		
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+    public boolean isDebugMode() {
+		try {
+			if (ACFrame.getInstance().hasProperty("ReTotalDump")
+					&& "true".equalsIgnoreCase(ACCastUtilities.toString(ACFrame
+							.getInstance().getProperty("ReTotalDump")))) {
+				return true;
+			}
+		} catch (Exception ex) {
+		}
+		return false;
+	}
+	/*
+	 * =================================================================
+	 * [ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
+	 * =================================================================
+	 */
 
+	/*=================================================================
+	 * [ID:0000563][ID:0000576][Shin Fujihara] 2009/12 add begin 2009年度対応
+	 =================================================================*/
+    
+	protected void detailsDelButtonActionPerformed(ActionEvent e) throws Exception {
+		if (QkanMessageList.getInstance().WARNING_OF_DELETE_SELECTION() != ACMessageBox.RESULT_OK){
+			return;
+		}
+		
+		int deleteRow = getDetailsInfoTable().getSelectedRow();
+		VRMap map = (VRMap) getDetailsInfoTable().getSelectedModelRowValue();
+		
+		getTableClaimList2().remove(map);
+		//削除行の一行上を選択状態にする
+		getDetailsInfoTable().setSelectedSortedRowOnAfterDelete(deleteRow);
+		
+		if (getTableClaimList2().size() < 2) {
+			//削除ボタンを使用不可能にする
+			setState_TYPE11();
+		}
+		
+		//[ID:0000576]サービス削除後、再集計を実行する
+		//このときの再集計では、計画単位数を上書きする
+		doRecount(true);
+		
+	}
+	/*
+	 * =================================================================
+	 * [ID:0000563][ID:0000576][Shin Fujihara] 2009/07 add end 2009年度対応
+	 * =================================================================
+	 */
 }

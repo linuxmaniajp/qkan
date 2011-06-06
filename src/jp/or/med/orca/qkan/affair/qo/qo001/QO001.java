@@ -321,9 +321,16 @@ public class QO001 extends QO001Event {
             // 選択されている場合
             // 選択されている利用者の「保険者番号」を取得する。
             param = (VRMap) getInsurerInfoTable().getSelectedModelRowValue();
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+            param.setData("PROCESS_MODE", new Integer(
+                    QkanConstants.PROCESS_MODE_UPDATE));
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add end
         } else {
             // 選択されていない場合
             // 処理を中断する。
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加
+            return;
+            // [ID:0000520][Masahiko Higuchi] 2009/07 add end
 
         }
 

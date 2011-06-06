@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/06/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/08/10  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (P)
@@ -121,6 +121,74 @@ public class QP003State extends QP003Design {
         getContentInnerTaxLabel().setVisible(false);
 
         getContentInnerTaxText().setVisible(false);
+
+  }
+
+  /**
+   * 「カレンダー表示28日」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_CALENDER_MODE28() throws Exception {
+
+        if(getCalendar29().getParent()!=null){
+          getCalendar29().getParent().remove(getCalendar29());
+        }
+
+        if(getCalendar30().getParent()!=null){
+          getCalendar30().getParent().remove(getCalendar30());
+        }
+
+        if(getCalendar31().getParent()!=null){
+          getCalendar31().getParent().remove(getCalendar31());
+        }
+
+  }
+
+  /**
+   * 「カレンダー表示29日」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_CALENDER_MODE29() throws Exception {
+
+        if(getCalendar30().getParent()!=null){
+          getCalendar30().getParent().remove(getCalendar30());
+        }
+
+        if(getCalendar31().getParent()!=null){
+          getCalendar31().getParent().remove(getCalendar31());
+        }
+
+  }
+
+  /**
+   * 「カレンダー表示30日」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_CALENDER_MODE30() throws Exception {
+
+        if(getCalendar31().getParent()!=null){
+          getCalendar31().getParent().remove(getCalendar31());
+        }
+
+  }
+
+  /**
+   * 「カレンダー領域・選択」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_CALENDER_SELECT() throws Exception {
+
+        getOpen().setEnabled(false);
+
+  }
+
+  /**
+   * 「カレンダー領域・非選択」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_CALENDER_UNSELECT() throws Exception {
+
+        getOpen().setEnabled(true);
 
   }
 

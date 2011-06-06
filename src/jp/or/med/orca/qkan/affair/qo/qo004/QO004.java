@@ -31,7 +31,15 @@ package jp.or.med.orca.qkan.affair.qo.qo004;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.swing.event.ListSelectionEvent;
 
@@ -41,6 +49,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACHashMapFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
@@ -51,6 +60,7 @@ import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRLinkedHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
@@ -1093,10 +1103,65 @@ public class QO004 extends QO004Event {
 		if (VRBindPathParser.has(new Integer(SERVICE_TYPE_ROUTINE), temp)) {
 			temp.remove(new Integer(SERVICE_TYPE_ROUTINE));
 		}
+        
+        // [ID:0000521][Masahiko Higuchi] 2009/07 replace begin 2009”N“x‘Î‰
+        // VRList list = new VRArrayList(temp.values());
+        LinkedHashMap linkSortMap = new LinkedHashMap();
+        // ‰îŒì‚Æ—\–h‰îŒì‚Å–¼Ì‚ªˆÙ‚È‚éê‡
+        VRMap excepWordMap = new VRHashMap();
+        VRBindPathParser.set("x‰‡", excepWordMap, "‹‘î‰îŒìx‰‡");
+        VRBindPathParser.set("’ZŠú“üŠ—Ã—{‰îŒì(˜VŒ’)", excepWordMap, "’ZŠú“üŠ—Ã—{‰îŒì(˜VŒ’{İ)");
+        VRBindPathParser.set("‰îŒì•Ÿƒ{İ", excepWordMap, "‰îŒì˜Vl•Ÿƒ{İ");
+        
+        // ƒ‹[ƒv‚µ‚Â‚Âˆ—
+        Set itKey = temp.entrySet();
+        for(Iterator i = itKey.iterator(); i.hasNext();) {
+            Entry serviceEntry = (Entry)i.next();
+            LinkedHashMap service =  (LinkedHashMap)serviceEntry.getValue();
+            // ³®–¼Ì
+            String serviceName = ACCastUtilities.toString(service
+                    .get("SERVICE_ABBREVIATION"),"");
+            // •ÏŠ·Œã–¼Ì
+            String repServiceName = serviceName.replaceAll("‰îŒì—\–h", "");
+            repServiceName = repServiceName.replaceAll("’nˆæ–§’…Œ^", "");
 
-		VRList list = new VRArrayList(temp.values());
-		setProviderServiceList(list);
+            // ¦—áŠOˆ—i‰îŒì—\–h‚ğæ‚èœ‚¢‚½–¼Ì‚Æ‰îŒì‚Ì–¼Ì‚ªˆÙ‚È‚éê‡j
+            // —áŠOƒ[ƒh‚Æˆê’v‚µ‚½ê‡
+            if(VRBindPathParser.has(repServiceName, excepWordMap)) {
+                // •ÏŠ·@¦—áFx‰‡Ë‹‘î‰îŒìx‰‡
+                repServiceName = ACCastUtilities.toString(excepWordMap
+                        .getData(repServiceName), ""); 
+            }
+            // Šù‚É’Ç‰ÁÏ‚İ‚Å‚ ‚é‚©B
+            if(linkSortMap.get(repServiceName) instanceof ArrayList) {
+                VRList serviceDetailList = (VRArrayList)linkSortMap.get(repServiceName);
+                // Šù‘¶€–Ú‚Ö‚Ì’Ç‰Á
+                serviceDetailList.add(service);
 
+            } else {
+                ArrayList serviceDetailList = new VRArrayList();
+                // ’Ç‰Á
+                serviceDetailList.add(service);
+                // ƒŠƒXƒg‚Å•Û
+                linkSortMap.put(repServiceName, serviceDetailList);
+            }
+        }
+        
+        // ‰æ–Ê“WŠJ—p‚É‚Ü‚Æ‚ß‚éB
+        // VRArrayList‚ğg‚¤‚ÆƒCƒxƒ“ƒg”­‰Î‚µ‚Ä‚µ‚Ü‚¤‚½‚ßA’Êí‚ÌList‚ğg—p‚·‚éB
+        List list = new ArrayList();
+        Set itLinkKey = linkSortMap.entrySet();
+        for(Iterator l = itLinkKey.iterator(); l.hasNext();) {
+            Entry serviceEntry = (Entry)l.next();
+            VRList sortList = (VRArrayList)serviceEntry.getValue();
+            // ‡”Ô‚ÉŠi”[
+            list.addAll(sortList);
+
+        }
+        setProviderServiceList(new VRArrayList(list));
+        // [ID:0000521][Masahiko Higuchi] 2009/07 replace end
+
+        
 		// ƒ}ƒXƒ^ƒf[ƒ^‚ğæ“¾‚Å‚«‚½ê‡
 		// Ú×î•ñŠi”[—p
 		VRList providerServiceDetailList = new VRArrayList();

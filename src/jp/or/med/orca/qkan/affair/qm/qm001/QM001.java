@@ -69,6 +69,7 @@ import jp.or.med.orca.qkan.affair.QkanMessageList;
 import jp.or.med.orca.qkan.affair.QkanVersionAdjustmentListener;
 import jp.or.med.orca.qkan.affair.qm.qm002.QM002;
 import jp.or.med.orca.qkan.affair.qo.qo002.QO002;
+import jp.or.med.orca.qkan.affair.qo.qo002.QO002_M_InsurerBridgeFirebirdDBManager;
 import jp.or.med.orca.qkan.affair.qo.qo004.QO004;
 import jp.or.med.orca.qkan.affair.qo.qo005.QO005;
 import jp.or.med.orca.qkan.affair.qu.qu002.QU002;
@@ -322,6 +323,21 @@ public class QM001 extends QM001Event {
                     // ログイン事業所を選択済みであれば、再選択する。
                     getProviderList().setSelectedIndex(loginProviderIndex);
                 }
+                
+                
+                // [ID:0000520][Masahiko Higuchi] 2009/07 add begin 保険者マスタより保険者番号のエラーチェック機能を追加 
+                ACDBManager insurerDbm = new QO002_M_InsurerBridgeFirebirdDBManager();
+                // 保険者マスタが存在するか
+                if(insurerDbm != null && insurerDbm.canConnect()) {
+                    // 保険者マスタの使用を許可
+                    QkanSystemInformation.getInstance().setInsurerMasterDatabese(true);
+                    
+                } else {
+                    // 保険者マスタの仕様を不許可
+                    QkanSystemInformation.getInstance().setInsurerMasterDatabese(false);
+                    
+                }
+                // [ID:0000520][Masahiko Higuchi] 2009/07 add end                
                 
 				setState_VALID_PROVIDER();
 			} else {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/04/18  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/12/10  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -86,6 +86,8 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
 
   private ACAffairButtonBar buttons;
+
+  private ACAffairButton retotal;
 
   private ACAffairButton renewal;
 
@@ -174,6 +176,8 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   private ACPanel detailsInfoPanel;
 
   private ACLabel detailsInfoLabel;
+
+  private ACButton detailsDelButton;
 
   private ACTable detailsInfoTable;
 
@@ -429,6 +433,10 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel nyushoInfoLabel;
 
+  private ACButton serviceAddButton;
+
+  private ACButton serviceDelButton;
+
   private ACTable nyushoInfoTable;
 
   private VRTableColumnModel nyushoInfoTableColumnModel;
@@ -629,6 +637,27 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 再集計を取得します。
+   * @return 再集計
+   */
+  public ACAffairButton getRetotal(){
+    if(retotal==null){
+
+      retotal = new ACAffairButton();
+
+      retotal.setText("再集計(T)");
+
+      retotal.setMnemonic('T');
+
+      retotal.setIconPath(ACConstants.ICON_PATH_CALC_24);
+
+      addRetotal();
+    }
+    return retotal;
+
+  }
+
+  /**
    * 更新を取得します。
    * @return 更新
    */
@@ -802,7 +831,7 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
 
       commonInfoPublicExpenseText.setBindPath("KOHI_NAME");
 
-//      commonInfoPublicExpenseText.setColumns(20);
+      commonInfoPublicExpenseText.setColumns(20);
 
       addCommonInfoPublicExpenseText();
     }
@@ -1385,6 +1414,25 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
       addDetailsInfoLabel();
     }
     return detailsInfoLabel;
+
+  }
+
+  /**
+   * サービス削除ボタンを取得します。
+   * @return サービス削除ボタン
+   */
+  public ACButton getDetailsDelButton(){
+    if(detailsDelButton==null){
+
+      detailsDelButton = new ACButton();
+
+      detailsDelButton.setText("サービス削除");
+
+      detailsDelButton.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addDetailsDelButton();
+    }
+    return detailsDelButton;
 
   }
 
@@ -3568,6 +3616,44 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * サービス追加ボタンを取得します。
+   * @return サービス追加ボタン
+   */
+  public ACButton getServiceAddButton(){
+    if(serviceAddButton==null){
+
+      serviceAddButton = new ACButton();
+
+      serviceAddButton.setText("サービス追加");
+
+      serviceAddButton.setIconPath(ACConstants.ICON_PATH_RECORD_DOWNLOAD_16);
+
+      addServiceAddButton();
+    }
+    return serviceAddButton;
+
+  }
+
+  /**
+   * サービス削除ボタンを取得します。
+   * @return サービス削除ボタン
+   */
+  public ACButton getServiceDelButton(){
+    if(serviceDelButton==null){
+
+      serviceDelButton = new ACButton();
+
+      serviceDelButton.setText("サービス削除");
+
+      serviceDelButton.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addServiceDelButton();
+    }
+    return serviceDelButton;
+
+  }
+
+  /**
    * 特定入所者介護費情報テーブルを取得します。
    * @return 特定入所者介護費情報テーブル
    */
@@ -5156,6 +5242,14 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   protected void addButtons(){
 
     buttons.add(getRenewal(), VRLayout.EAST);
+    buttons.add(getRetotal(), VRLayout.EAST);
+  }
+
+  /**
+   * 再集計に内部項目を追加します。
+   */
+  protected void addRetotal(){
+
   }
 
   /**
@@ -5256,13 +5350,13 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
     etcInfoTabs.addTab("明細情報", getDetailsInfos());
 
     etcInfoTabs.addTab("特定治療・特定診療情報", getParticularInfos());
-    
+
     etcInfoTabs.addTab("集計情報", getTotalInfos());
 
     etcInfoTabs.addTab("特定入所者介護費情報", getNyushoInfos());
 
     etcInfoTabs.addTab("社会福祉法人軽減情報", getShahukuInfos());
-    
+
     etcInfoTabs.addTab("特別療養費情報", getRecuperationInfos());
 
   }
@@ -5555,12 +5649,20 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
 
     detailsInfoPanel.add(getDetailsInfoLabel(), VRLayout.FLOW);
 
+    detailsInfoPanel.add(getDetailsDelButton(), VRLayout.EAST);
   }
 
   /**
    * 明細情報ラベルに内部項目を追加します。
    */
   protected void addDetailsInfoLabel(){
+
+  }
+
+  /**
+   * サービス削除ボタンに内部項目を追加します。
+   */
+  protected void addDetailsDelButton(){
 
   }
 
@@ -6674,12 +6776,28 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
 
     nyushoInfoPanel.add(getNyushoInfoLabel(), VRLayout.FLOW);
 
+    nyushoInfoPanel.add(getServiceDelButton(), VRLayout.EAST);
+    nyushoInfoPanel.add(getServiceAddButton(), VRLayout.EAST);
   }
 
   /**
    * 特定入所者介護費情報ラベルに内部項目を追加します。
    */
   protected void addNyushoInfoLabel(){
+
+  }
+
+  /**
+   * サービス追加ボタンに内部項目を追加します。
+   */
+  protected void addServiceAddButton(){
+
+  }
+
+  /**
+   * サービス削除ボタンに内部項目を追加します。
+   */
+  protected void addServiceDelButton(){
 
   }
 

@@ -54,6 +54,15 @@ public class QkanSystemInformation {
      * メインメニューツリーです。
      */
     private VRList menuTree;
+    
+    /**
+     * 保険者マスタデータベースにアクセス可能であるか。
+     * 
+     * [MantisID:0000520] 保険者マスタによるチェック機能 
+     * @author Masahiko Higuchi
+     * @since Ver 5.4.9
+     */
+    private boolean isInsurerMasterDatabese = false;
 
     /**
      * ログイン事業者番号を返します。
@@ -222,4 +231,31 @@ public class QkanSystemInformation {
     public void setMenuTree(VRList menuTree) {
         this.menuTree = menuTree;
     }
+    
+    /**
+     * 保険者マスタが使用可能であるかを返します。
+     * 
+     * @return 保険者マスタの使用可否
+     * @author Masahiko Higuchi
+     * @since Ver 5.4.9
+     * [MantisID:0000520] 保険者マスタによるチェック機能
+     */
+    public boolean isInsurerMasterDatabese() {
+        return isInsurerMasterDatabese;
+    }
+
+    /**
+     * 保険者マスタの使用可否を設定します。
+     * 
+     * @param 保険者マスタの使用可否
+     * @author Masahiko Higuchi
+     * @since Ver 5.4.9
+     * [MantisID:0000520] 保険者マスタによるチェック機能
+     */
+    public void setInsurerMasterDatabese(boolean isMasterDatabese) {
+        this.isInsurerMasterDatabese = isMasterDatabese;
+    }
+    
+    
+    
 }

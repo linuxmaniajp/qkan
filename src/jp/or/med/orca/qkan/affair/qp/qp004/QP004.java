@@ -48,8 +48,11 @@ import jp.nichicom.ac.component.table.ACTableCellViewerCustomCell;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACCharacterConverter;
+import jp.nichicom.ac.text.ACKanaConvert;
+import jp.nichicom.ac.text.ACTextFieldDocument;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
@@ -143,7 +146,9 @@ public class QP004 extends QP004Event {
 
 		// ルーチンテスト用領域
 		// スナップショットの撮影対象を「クライアント領域（contents）」に設定する。
-		getSnapshot().setRootContainer(getContents());
+		//[ID:0000545][Shin Fujihara] 2009/08 delete begin 2009年度障害対応
+		//getSnapshot().setRootContainer(getContents());
+		//[ID:0000545][Shin Fujihara] 2009/08 delete end 2009年度障害対応
 		// 画面の初期化を行う。
 		initialize();
 
@@ -151,7 +156,14 @@ public class QP004 extends QP004Event {
 		doFind();
 
 		// スナップショットを撮影する。
+		//[ID:0000545][Shin Fujihara] 2009/08 delete begin 2009年度障害対応
 		getSnapshot().snapshot();
+		//[ID:0000545][Shin Fujihara] 2009/08 delete end 2009年度障害対応
+		
+		//[ID:0000545][Shin Fujihara] 2009/08 add begin 2009年度障害対応
+		//リストオブジェクトのスナップショット取得
+		doSnapList();
+		//[ID:0000545][Shin Fujihara] 2009/08 add end 2009年度障害対応
 
 	}
 
@@ -169,7 +181,10 @@ public class QP004 extends QP004Event {
 		// 入力チェックを行う。
 		// 入力エラーがあった場合
 		// 処理を中断する。(終了)
-		if (getSnapshot().isModified() || (getTableChangedFlg() == FLAG_ON)) {
+		// [ID:0000545][Shin Fujihara] 2009/08 edit begin 2009年度障害対応
+		//if (getSnapshot().isModified() || (getTableChangedFlg() == FLAG_ON)) {
+		if (isListModified()) {
+		//[ID:0000545][Shin Fujihara] 2009/08 edit end 2009年度障害対応
 			int selectButton = QkanMessageList.getInstance().WARNING_OF_UPDATE_ON_MODIFIED();
 			switch (selectButton) {
 				case ACMessageBox.RESULT_YES:
@@ -211,7 +226,10 @@ public class QP004 extends QP004Event {
 		}
 		// 変更チェック（スナップショット、テーブルのチェック）
 		// 最後に保存されてから、項目・画面テーブルが変更されている場合(下記のいずれかの場合)
-		if (getSnapshot().isModified() || (getTableChangedFlg() == FLAG_ON)) {
+		//[ID:0000545][Shin Fujihara] 2009/08 edit begin 2009年度障害対応
+		//if (getSnapshot().isModified() || (getTableChangedFlg() == FLAG_ON)) {
+		if (isListModified()) {
+		//[ID:0000545][Shin Fujihara] 2009/08 edit end 2009年度障害対応
 			if (QkanMessageList.getInstance().WARNING_OF_CLOSE_ON_MODIFIED() == ACMessageBox.RESULT_YES) {
 				// ・isModified
 				// ・tableChangedFlg = 1
@@ -276,7 +294,10 @@ public class QP004 extends QP004Event {
 		// 入力チェックを行う。
 		// 入力エラーがあった場合
 		// 処理を中断する。(終了)
-		if (getSnapshot().isModified() || (getTableChangedFlg() == FLAG_ON)) {
+		//[ID:0000545][Shin Fujihara] 2009/08 edit begin 2009年度障害対応
+		//if (getSnapshot().isModified() || (getTableChangedFlg() == FLAG_ON)) {
+		if (isListModified()) {
+		//[ID:0000545][Shin Fujihara] 2009/08 edit end 2009年度障害対応
 			int selectButton = ACMessageBox.showYesNoCancel("変更されています。" + ACConstants.LINE_SEPARATOR + "更新しますか？", "更新して進む(U)", 'U', "破棄して進む(R)", 'R', ACMessageBox.FOCUS_CANCEL);
 			switch (selectButton) {
 				case ACMessageBox.RESULT_YES:
@@ -977,6 +998,11 @@ public class QP004 extends QP004Event {
 
 				// スナップショットを撮影する。
 				getSnapshot().snapshot();
+				
+				//[ID:0000545][Shin Fujihara] 2009/08 add begin 2009年度障害対応
+				//リストオブジェクトのスナップショット取得
+				doSnapList();
+				//[ID:0000545][Shin Fujihara] 2009/08 add end 2009年度障害対応
 
 				return true;
 
@@ -1228,8 +1254,18 @@ public class QP004 extends QP004Event {
 					cell.setEditor(cellTextField);
 
 					// V4.5.8対応 全角文字のみ許可
-					cellTextField.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);
-					cellTextField.setIMEMode(InputSubset.KANJI);
+                    //[ID:0000551][Tozo TANAKA] 2009/08 replace begin 
+//					cellTextField.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);
+//					cellTextField.setIMEMode(InputSubset.KANJI);
+                    if(!(cellTextField.getDocument() instanceof ACTextFieldDocument)){
+                        //念のため、強制的にACTextFieldDocumentを設定する。
+                        cellTextField.setDocument(new ACTextFieldDocument(cellTextField));
+                    }
+                    ((ACTextFieldDocument) cellTextField.getDocument())
+                        .setCharacterConverter(new QP004WideCommaCharacterConverter());
+                    cellTextField.setConvertToCharacter(ACCharacterConverter.TO_WIDE_CHAR);
+                    cellTextField.setIMEMode(InputSubset.LATIN);
+                    //[ID:0000551][Tozo TANAKA] 2009/08 replace end 
 					cellTextField.setMaxLength(100);
 					cellTextField.setByteMaxLength(true);
 					cellTextField.setBindPath("501023");
@@ -1451,4 +1487,156 @@ public class QP004 extends QP004Event {
 		}
 		return true;
 	}
+	
+	//[ID:0000545][Shin Fujihara] 2009/08 edit begin 2009年度障害対応
+	/**
+	 * リストオブジェクトのスナップショット取得
+	 * @throws Exception
+	 */
+	private void doSnapList() throws Exception {
+		VRList list = getOrderList();
+		VRList snap = new VRArrayList();
+		
+		for (int i = 0; i < list.size(); i++) {
+			VRMap rec = (VRMap)list.get(i);
+			VRMap map = new VRHashMap();
+			Iterator it = rec.keySet().iterator();
+			
+			while(it.hasNext()) {
+				Object key = it.next();
+				map.put(key, rec.get(key));
+			}
+			snap.add(map);
+		}
+		setSnapList(snap);
+	}
+	
+	/**
+	 * リストオブジェクトの変更チェック
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean isListModified() throws Exception {
+		VRList list = getOrderList();
+		VRList snap = getSnapList();
+		
+		for (int i = 0; i < list.size(); i++) {
+			if (snap.size() <= i) {
+				return true;
+			}
+			VRMap rec1 = (VRMap)list.get(i);
+			VRMap rec2 = (VRMap)snap.get(i);
+			
+			Iterator it = rec1.keySet().iterator();
+			
+			while(it.hasNext()) {
+				Object key = it.next();
+				
+				if (!rec2.containsKey(key)) {
+					return true;
+				}
+				
+				String v1 = ACCastUtilities.toString(rec1.get(key), "");
+				String v2 = ACCastUtilities.toString(rec2.get(key), "");
+				
+				if (!v1.equals(v2)){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 所定の順番で並び替えたリストを取得
+	 * @return
+	 * @throws Exception
+	 */
+	private VRList getOrderList() throws Exception {
+		// 画面上のデータを取得する。
+		// パネルから基本情報レコードを取得する
+		VRMap saveMap = (VRMap) getClaimListBasic().getData(0);
+		getContents().setSource(saveMap);
+		getContents().applySource();
+
+		// 基本情報レコード集合の下記のデータの型をDate型からString型（yyyyMMdd）に変換する。
+		// ・KEY：201021（開始年月日）
+		// ・KEY：201022（中止年月日）
+		// ・KEY：201024（入所（院）年月日）
+		// ・KEY：201025（退所（院）年月日）
+
+		if (!ACTextUtilities.isNullText(saveMap.getData("201021"))) {
+			saveMap.setData("201021", ACCastUtilities.toString(VRDateParser.format(ACCastUtilities.toDate(saveMap.getData("201021")), "yyyyMMdd")));
+		}
+		if (!ACTextUtilities.isNullText(saveMap.getData("201022"))) {
+			saveMap.setData("201022", ACCastUtilities.toString(VRDateParser.format(ACCastUtilities.toDate(saveMap.getData("201022")), "yyyyMMdd")));
+		}
+		if (!ACTextUtilities.isNullText(saveMap.get("201024"))) {
+			saveMap.setData("201024", ACCastUtilities.toString(VRDateParser.format(ACCastUtilities.toDate(saveMap.getData("201024")), "yyyyMMdd")));
+		}
+		if (!ACTextUtilities.isNullText(saveMap.getData("201025"))) {
+			saveMap.setData("201025", ACCastUtilities.toString(VRDateParser.format(ACCastUtilities.toDate(saveMap.getData("201025")), "yyyyMMdd")));
+		}
+
+		// 短期入所系の場合
+		if (getClaimStyleType() == CLAIM_STYLE_TYPE31 || getClaimStyleType() == CLAIM_STYLE_TYPE32 || getClaimStyleType() == CLAIM_STYLE_TYPE41 || getClaimStyleType() == CLAIM_STYLE_TYPE42 || getClaimStyleType() == CLAIM_STYLE_TYPE51 || getClaimStyleType() == CLAIM_STYLE_TYPE52 || getClaimStyleType() == CLAIM_STYLE_TYPE65 || getClaimStyleType() == CLAIM_STYLE_TYPE66) {
+
+			Object obj = VRBindPathParser.get("701008", saveMap);
+			VRMap temp = (VRMap) getClaimListTotal().getData(0);
+			if (temp != null) {
+				VRBindPathParser.set("701008", temp, obj);
+			}
+			saveMap.remove("701008");
+		}
+        
+        /*
+         * スナップショットに使用するデータは全てディープコピーしたリストにする。
+         */
+        VRList copyClaimListBasic =  QkanValidServiceCommon.deepCopyVRList(getClaimListBasic());
+        VRList copyClaimListHideDetail =  QkanValidServiceCommon.deepCopyVRList(getClaimListHideDetail());
+        VRList copyClaimListDetail =  QkanValidServiceCommon.deepCopyVRList(getClaimListDetail());
+        VRList copyClaimListSpecialClinic = QkanValidServiceCommon.deepCopyVRList(getClaimListSpecialClinic());
+        VRList copyClaimListTotal = QkanValidServiceCommon.deepCopyVRList(getClaimListTotal());
+        
+		// 特定診療費情報レコードがnullでない場合
+		if (!(copyClaimListSpecialClinic == null || copyClaimListSpecialClinic.isEmpty())) {
+			Iterator specialClinicIterator = copyClaimListSpecialClinic.listIterator();
+
+			while (specialClinicIterator.hasNext()) {
+				VRMap specialClinicRecord = (VRMap) specialClinicIterator.next();
+				// 特定診療費情報レコード集合を順に見ていく。（ループ開始）
+				// KEY：501009（識別番号）の値が35（重度療養管理）の場合
+				if (new Integer(HEAVY_RECUPERATION_MANAGEMENT).equals(ACCastUtilities.toInteger(specialClinicRecord.getData("501009")))) {
+					// DB更新用にデータを変換する。
+					doChangeTekiyoForUpdate(specialClinicRecord);
+					// ・引数：HashMap（特定診療費レコード）
+				}
+				if (copyClaimListSpecialClinic.size() > 1) {
+					if (FLAG_START.equals(ACCastUtilities.toInteger(specialClinicRecord.getData("501007")))) {
+						// KEY：501007（レコード順次番号）の値が1の場合
+						// レコードに特定診療費傷病名テキストの値を以下のKEYで設定する。
+						// ・KEY：501008（傷病名）
+						specialClinicRecord.setData("501008", getShinryoDeseaseText().getText());
+					}
+				} else if (copyClaimListSpecialClinic.size() == 1) {
+					if (FLAG_END.equals(ACCastUtilities.toInteger(specialClinicRecord.getData("501007")))) {
+						specialClinicRecord.setData("501008", getShinryoDeseaseText().getText());
+					}
+				}
+			}
+		}
+		
+		VRList list = new VRArrayList();
+		
+		list.addAll(copyClaimListBasic);
+		list.addAll(copyClaimListHideDetail);
+		list.addAll(copyClaimListDetail);
+		list.addAll(copyClaimListSpecialClinic);
+		list.addAll(copyClaimListTotal);
+		
+		return list;
+	}
+	//[ID:0000545][Shin Fujihara] 2009/08 edit end 2009年度障害対応
+	
 }

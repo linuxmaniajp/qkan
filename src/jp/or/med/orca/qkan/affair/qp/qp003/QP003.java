@@ -160,6 +160,40 @@ public class QP003 extends QP003Event {
         	getContentInnerTaxText().setText("0");
         }
         
+        // [ID:0000435][Masahiko Higuchi] 2009/07 add begin カレンダーに実績を読み込む機能の拡張
+        // カレンダーの初期化
+        int dayCount = 1;
+        int year = ACDateUtilities.getYear(getTargetDate());
+        int month = ACDateUtilities.getMonth(getTargetDate());
+        // 画面状態の変更
+        int lastDay = ACDateUtilities.getLastDayOfMonth(getTargetDate());
+        switch(lastDay) {
+        case 28:
+            setState_CALENDER_MODE28();
+            break;
+        case 29:
+            setState_CALENDER_MODE29();
+            break;
+        case 30:
+            setState_CALENDER_MODE30();
+            break;
+        }
+        // コンポーネントを全走査
+        for (int j = 0; j < getContentCalendar().getComponentCount(); j++) {
+            Component cmp = getContentCalendar().getComponent(j);
+            // テーブルの場合のみ処理を
+            if (cmp instanceof QP003ResultCalendar) {
+                QP003ResultCalendar rc = (QP003ResultCalendar) cmp;
+                // サービスマスタの設定
+                // 日付を設定
+                rc.setCalenderDate(ACDateUtilities.createDate(year, month,
+                        dayCount));
+                // 日付を+1
+                dayCount++;
+            }
+        }
+        // [ID:0000435][Masahiko Higuchi] 2009/07 add end
+        
         // [V5.3.4対応 利用者向け領収書] kamitsukasa.kazuyoshi add end
         
         // 業務情報マスタより、データを取得する。
@@ -179,7 +213,9 @@ public class QP003 extends QP003Event {
             return false;
         }
         // 更新チェック（スナップショットのチェック）を行う。
-        if (getSnapshot().isModified()) {
+        // [ID:0000435][Masahiko Higuchi] 2009/07 edit begin カレンダーに実績を読み込む機能の拡張
+        if (getSnapshot().isModified() || calenderIsModified()) {
+        // [ID:0000435][Masahiko Higuchi] 2009/07 edit end
             // 最後に保存されてから、項目・テーブルが変更されている場合場合(not isModified)
             // 確認メッセージを表示する。
             int msgID = 0;
@@ -222,7 +258,7 @@ public class QP003 extends QP003Event {
         parameters.setData("CLAIM_DATE", getClaimDate());
         parameters.setData("LIST_INDEX", new Integer(getListIndex()));
 
-        // TODO 前画面への遷移を許可するならばtrueを返す。
+        // 前画面への遷移を許可するならばtrueを返す。
         return true;
 
     }
@@ -237,7 +273,9 @@ public class QP003 extends QP003Event {
         }
         // ※スナップショットチェック
         // スナップショットの更新チェックを行う。
-        if (!getSnapshot().isModified()) {
+        // [ID:0000435][Masahiko Higuchi] 2009/07 edit begin カレンダーに実績を読み込む機能の拡張
+        if (!getSnapshot().isModified() || !calenderIsModified()) {
+        // [ID:0000435][Masahiko Higuchi] 2009/07 edit end
             // 更新されていない場合
             return true;
             // システムを終了する。
@@ -257,7 +295,7 @@ public class QP003 extends QP003Event {
             // 処理を中断する。
             return false;
         }
-        //TODO 終了を許可するならばtrueを返す。
+        // 終了を許可するならばtrueを返す。
 
     }
 
@@ -467,12 +505,88 @@ public class QP003 extends QP003Event {
         // データ展開用HashMap(sourceMap)を「クライアント領域（contents）」に設定する。
         getContents().setSource(getSourceMap());
 
+        // [ID:0000435][Masahiko Higuchi] 2009/07 add begin カレンダーに実績を読み込む機能の拡張
+        // 作成用の管理マップ
+        VRHashMap dateCreateManager = new VRHashMap();
+        if(getClaimList() != null && !getClaimList().isEmpty() && getClaimList().getData(0) instanceof VRMap) {
+            VRMap patientData = (VRMap)getClaimList().getData(0);
+            // キー設定用変数を生成
+            String markServiceName = "";
+            String markServiceBitKey = "";
+            String[] marks = QkanConstants.CLAIM_PATIENT_DETAIL_SERVICE_MARK;
+            // 記号の数ループしつつ処理
+            for (int i = 1; i <= 7; i++) {
+                markServiceName = "MARK" + ACCastUtilities.toString(i) +"_SERVICE_NAME";
+                markServiceBitKey = "MARK" + ACCastUtilities.toString(i) +"_SERVICE_DATE_BIT";
+                String markServiceNameVal = ACCastUtilities.toString(patientData.getData(markServiceName),"");
+                // 日付を取得
+                int bits = ACCastUtilities.toInt(patientData.getData(markServiceBitKey),0);
+                // 名称と日数情報が正常な場合のみ反映する
+                if(!"".equals(markServiceNameVal)) {
+                    // 提供日付の2進数を取り出す
+                    String dateBit = Integer.toBinaryString(bits);
+                    int endIndex = dateBit.length();
+                    // 最終日を取得しておく
+                    int lastDay = ACDateUtilities.getLastDayOfMonth(getTargetDate());
+                    int dayCount = 1;
+                    // 該当月の日数分ループを行う
+                    for (int j2 = 1; j2 <= lastDay; j2++) {
+                        int dayFlag = 0;
+                        // bitの長さを超えないようにチェック
+                        if(endIndex>0) {
+                            dayFlag = ACCastUtilities.toInt(dateBit.substring(endIndex-1,endIndex));
+                            endIndex--;
+                        }
+                        // keyにするために数値を文字列にしておく
+                        String dayString = ACCastUtilities.toString(dayCount);
+                        // カレンダーに設定する情報の作成
+                        // チェックボックス、記号、サービス略称
+                        VRMap markRecord = new VRHashMap();
+                        markRecord.setData("CHECK",new Boolean((dayFlag==1)));
+                        markRecord.setData("MARK",marks[i-1]);
+                        // サービス名称
+                        markRecord.setData("SERVICE_NAME_COL",markServiceNameVal);
+                        // 該当日のデータが既に作成済みかチェック
+                        if(dateCreateManager.containsKey(dayString)) {
+                            // 作成済み
+                            VRList calenderList = (VRList)dateCreateManager.getData(dayString);
+                            calenderList.add(markRecord);
+                            
+                        } else {
+                            // 未作成
+                            // 新規追加
+                            VRList newCalenderList = new VRArrayList();
+                            newCalenderList.add(markRecord);
+                            dateCreateManager.setData(dayString,newCalenderList);
+                        }
+                        
+                        dayCount++;
+                    }
+                }
+            }
+        }
+        // コンポーネントを全走査
+        for(int j=0; j< getContentCalendar().getComponentCount(); j++) {
+            Component cmp = getContentCalendar().getComponent(j);
+            // テーブルの場合のみ処理を
+            if(cmp instanceof QP003ResultCalendar) {
+                QP003ResultCalendar rc = (QP003ResultCalendar)cmp;
+                // 日付を設定
+                rc.setData(dateCreateManager);
+            }
+        }
+        // [ID:0000435][Masahiko Higuchi] 2009/07 add end
+        
         // 画面に展開する。
         getContents().bindSource();
 
         // 金額の合計を算出する。
         calcSum();
 
+        // [ID:0000435][Masahiko Higuchi] 2009/07 add begin カレンダーに実績を読み込む機能の拡張
+        // カレンダー領域のスナップショットを取る
+        calenderSnapShot();
+        // [ID:0000435][Masahiko Higuchi] 2009/07 add end
         // スナップショットの撮影対象を「クライアント領域（contents）」に指定する。
         getSnapshot().setRootContainer(getContents());
         // スナップショットを撮影する。
@@ -751,6 +865,13 @@ public class QP003 extends QP003Event {
             } else if (getProcessMode() == QkanConstants.PROCESS_MODE_UPDATE) {
                 // 更新モードの場合（processModeが共通定数のPROCESS_MODE_UPDATEの場合）
                 // paramを引数として、SQL文を取得する。
+                // [ID:0000435][Masahiko Higuchi] 2009/07 add begin カレンダーに実績を読み込む機能の拡張
+                // カレンダーデータを混ぜ込む
+                VRMap dateBitMap = getCalenderBitData();
+                if(dateBitMap != null) {
+                    param.putAll(dateBitMap);
+                }
+                // [ID:0000435][Masahiko Higuchi] 2009/07 add end
                 // SQL文を実行する。
                 getDBManager().executeUpdate(
                         getSQL_UPDATE_CLAIM_PATIENT_DETAIL(param));
@@ -784,7 +905,6 @@ public class QP003 extends QP003Event {
             // 2007/11/30 [Masahiko Higuchi] add - begin Ver 5.4.1 利用者向け請求書対応
             otherList.add(param.getData("OTHER_HIMOKU_NO6"));
             // 2007/11/30 [Masahiko Higuchi] add - end
-
             // SQL文取得用のHashMap paramを生成する。
             VRMap params = new VRHashMap();
             // ※自己負担サービスの登録
@@ -1383,5 +1503,137 @@ public class QP003 extends QP003Event {
         calcSum();
         
     }
+
+    /**
+     * タブ選択時のイベントです。
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     */
+    protected void tabsStateChanged(ChangeEvent e) throws Exception {
+        if(getTabs().getSelectedIndex() == 1) {
+            // カレンダータブ選択時
+            setState_CALENDER_SELECT();
+        } else {
+            // 請求金額タブ選択時
+            setState_CALENDER_UNSELECT();
+        }
+        
+    }
+
+    /**
+     * データ登録用の形式にデータ変換し取得します。
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @return カレンダーのデータ
+     */
+    public VRMap getCalenderBitData() throws Exception {
+        // カレンダー情報を登録する数値に変換する。
+        VRMap dateManager = new VRHashMap();
+        // コンポーネントを全走査
+        for(int i=0; i< getContentCalendar().getComponentCount(); i++) {
+            Component cmp = getContentCalendar().getComponent(i);
+            // テーブルの場合のみ処理を
+            if(cmp instanceof QP003ResultCalendar) {
+                QP003ResultCalendar rc = (QP003ResultCalendar)cmp;
+                if(rc.getModel().getAdaptee() instanceof VRList) {
+                    // サービスマスタの設定
+                    VRList serviceList = (VRList)rc.getModel().getAdaptee();
+                    if(!serviceList.isEmpty()) {
+                        for(int j=0; j<serviceList.size(); j++) {
+                            String markServiceBitKey = "MARK" + ACCastUtilities.toString(j+1) +"_SERVICE_DATE_BIT";
+                            StringBuffer sbDateBit = new StringBuffer();
+                            // テーブルからデータを取得
+                            VRMap record = (VRMap)serviceList.getData(j);
+                            // ビットを作成する
+                            if(dateManager.containsKey(markServiceBitKey)) {
+                                sbDateBit = (StringBuffer)dateManager.getData(markServiceBitKey);
+                            }
+                            // チェックの値を見つつBitに変換
+                            if(ACCastUtilities.toBoolean(record.getData("CHECK"),false) == true) {
+                                sbDateBit.insert(0, "1");
+                            } else {
+                                sbDateBit.insert(0, "0");
+                            }
+                            // Bit形式で一次作成
+                            dateManager.setData(markServiceBitKey,sbDateBit);
+                        }
+                    }
+                }
+            }
+        }
+        // フィールド数ループ
+        for (int k = 1; k <= 7; k++) {
+            // バインドパス 
+            String markServiceBitKey = "MARK" + ACCastUtilities.toString(k) +"_SERVICE_DATE_BIT";
+            int bit = 0;
+            if(dateManager.containsKey(markServiceBitKey)) {
+                StringBuffer sbDateBit = (StringBuffer)dateManager.getData(markServiceBitKey);
+                int dayIndex = 1;
+                // 日付のビットデータを元にして計算
+                for (int l = sbDateBit.length(); l > 0 ; l--) {
+                    // bit演算で登録値を計算
+                    if("1".equals(sbDateBit.substring(l-1,l))) {
+                        bit |= (1 << (dayIndex - 1));
+                    }
+                    // 日付を進める
+                    dayIndex++;
+                }
+                dateManager.setData(markServiceBitKey,ACCastUtilities.toInteger(bit));
+            }
+        }
+        return dateManager;
+    }
+
+    /**
+     * カレンダー情報に変更がないかチェックします。
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     * @return True:変更あり False:変更なし
+     */
+    public boolean calenderIsModified() throws Exception {
+        // データがない場合は処理をしない
+        if(getSnapShotMap() == null || getSnapShotMap().isEmpty()) {
+            return false;
+        }
+        // 現在のカレンダーデータを取得
+        VRMap nowCalenderMap = getCalenderBitData();
+        if(nowCalenderMap == null || nowCalenderMap.isEmpty()) {
+            return true;
+        }
+        
+        // フィールド数ループ
+        for (int i = 1; i <= 7; i++) {
+            String markServiceBitKey = "MARK" + ACCastUtilities.toString(i) +"_SERVICE_DATE_BIT";
+            // キーが両方とも存在する場合
+            if (getSnapShotMap().containsKey(markServiceBitKey)
+                    && nowCalenderMap.containsKey(markServiceBitKey)) {
+                Integer old = ACCastUtilities.toInteger(getSnapShotMap().getData(markServiceBitKey),0);
+                Integer now = ACCastUtilities.toInteger(nowCalenderMap.getData(markServiceBitKey),0); 
+                // 項目が一致しているかチェックする。
+                if (!old.equals(now)) {
+                    return true;
+                }
+            }
+        }
+        // 最後まで一緒なら変更なし
+        return false;
+    }
+
+    /**
+     * カレンダー領域のスナップショットを撮影します。
+     * 
+     * @author Masahiko Higuchi
+     * @since V5.4.9
+     */
+    public void calenderSnapShot() throws Exception {
+        // データを設定
+        setSnapShotMap(getCalenderBitData());
+        
+    }
+
+
 
 }

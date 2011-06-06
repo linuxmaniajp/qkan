@@ -17,23 +17,23 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2010/01/28  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 保険者情報登録
+ * 作成日: 2009/08/03  日本コンピューター株式会社 保険者情報登録 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 帳票管理 (C)
- * プロセス 老人訪問看護・訪問看護の記録書Ⅰ (003)
- * プログラム 老人訪問看護・訪問看護の記録書Ⅰ (QC003)
+ * サブシステム 保険者管理 (O)
+ * プロセス 保険者情報登録 (002)
+ * プログラム 保険者選択 (QO002001)
  *
  *****************************************************************
  */
-package jp.or.med.orca.qkan.affair.qc.qc003;
+package jp.or.med.orca.qkan.affair.qo.qo002;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.im.*;
+import java.text.*;
 import java.io.*;
 import java.sql.SQLException;
-import java.text.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -78,48 +78,117 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+
 /**
- * 老人訪問看護・訪問看護の記録書Ⅰ状態定義(QC003) 
+ * 保険者選択SQL定義(QO002001) 
  */
-public class QC003State extends QC003Design {
+public class QO002001SQL extends QO002001State {
+  private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
   /**
    * コンストラクタです。
    */
-  public QC003State(){
+  public QO002001SQL() {
   }
 
   /**
-   * 「登録モード」の状態に設定します。
+   * 「検索SQL」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
+   * @return SQL文
    */
-  public void setState_INSERT_STATE() throws Exception {
+  public String getSQL_GET_FIND_M_INSURER_INFO(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
 
-        getInsert().setVisible(true);
+    sb.append("SELECT");
 
-        getUpdate().setVisible(false);
+    sb.append(" INSURER_NAME");
 
+    sb.append(",INSURER_NO");
+
+    sb.append(" FROM");
+
+    sb.append(" M_INSURER");
+
+    conditionStack.push(new Boolean(firstCondition));
+    firstCondition = true;
+
+    if(
+      VRBindPathParser.has("FIND_INSURER_NAME", sqlParam)
+    ){
+
+      if(firstCondition){
+        sb.append(" WHERE");
+        firstCondition = false;
+
+      }
+
+    sb.append("(");
+
+    sb.append(" INSURER_NAME");
+
+    sb.append(" LIKE");
+
+    sb.append(" ");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format("%"+VRBindPathParser.get("FIND_INSURER_NAME", sqlParam)+"%"));
+
+    sb.append(")");
+
+    }
+
+    firstCondition = ((Boolean)conditionStack.pop()).booleanValue();
+
+    sb.append(" ORDER BY");
+
+    sb.append(" INSURER_PREFECTURAL_CODE");
+
+    sb.append(" ASC");
+
+    sb.append(",INSURER_NO");
+
+    sb.append(" ASC");
+
+    return sb.toString();
   }
 
   /**
-   * 「更新モード」の状態に設定します。
+   * 「保険者マスタデータを全て取得します。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
+   * @return SQL文
    */
-  public void setState_UPDATE_STATE() throws Exception {
+  public String getSQL_GET_M_INSURER_INFO(VRMap sqlParam) throws Exception{
+    StringBuffer sb = new StringBuffer();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
 
-        getInsert().setVisible(false);
+    sb.append("SELECT");
 
-        getUpdate().setVisible(true);
+    sb.append(" INSURER_NAME");
 
-  }
+    sb.append(",INSURER_NO");
 
-  /**
-   * 「実績読み込み非表示」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_DISABLE_RESULTS() throws Exception {
+    sb.append(" FROM");
 
-        getHomonkaisuResultReadButton().setVisible(false);
+    sb.append(" M_INSURER");
 
+    sb.append(" ORDER BY");
+
+    sb.append(" INSURER_PREFECTURAL_CODE");
+
+    sb.append(" ASC");
+
+    sb.append(",INSURER_NO");
+
+    sb.append(" ASC");
+
+    return sb.toString();
   }
 
 }

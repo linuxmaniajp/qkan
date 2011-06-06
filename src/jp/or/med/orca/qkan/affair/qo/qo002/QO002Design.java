@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/03/29  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2009/07/09  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他 (O)
@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -103,6 +104,8 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField insurerId;
 
   private ACLabelContainer insurerIdContainer;
+
+  private ACButton insurerSelectButton;
 
   private ACTextField insurerName;
 
@@ -390,6 +393,8 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
       insurerInfos = new ACPanel();
 
+      insurerInfos.setHgap(1);
+
       addInsurerInfos();
     }
     return insurerInfos;
@@ -437,6 +442,27 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
       insurerIdContainer.add(getInsurerId(), null);
     }
     return insurerIdContainer;
+  }
+
+  /**
+   * 保険者選択を取得します。
+   * @return 保険者選択
+   */
+  public ACButton getInsurerSelectButton(){
+    if(insurerSelectButton==null){
+
+      insurerSelectButton = new ACButton();
+
+      insurerSelectButton.setText("保険者選択(I)");
+
+      insurerSelectButton.setToolTipText("保険者を一覧より選択します。");
+
+      insurerSelectButton.setMnemonic('I');
+
+      addInsurerSelectButton();
+    }
+    return insurerSelectButton;
+
   }
 
   /**
@@ -1849,7 +1875,9 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addInsurerInfos(){
 
-    insurerInfos.add(getInsurerIdContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    insurerInfos.add(getInsurerIdContainer(), VRLayout.FLOW_INSETLINE);
+
+    insurerInfos.add(getInsurerSelectButton(), VRLayout.FLOW_INSETLINE_RETURN);
 
     insurerInfos.add(getInsurerNameContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -1869,6 +1897,13 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
    * 保険者番号に内部項目を追加します。
    */
   protected void addInsurerId(){
+
+  }
+
+  /**
+   * 保険者選択に内部項目を追加します。
+   */
+  protected void addInsurerSelectButton(){
 
   }
 
@@ -1985,9 +2020,11 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   protected void addInsurerTypeModel(){
 
     getInsurerTypeCare().setButtonIndex(1);
+
     getInsurerTypeModel().add(getInsurerTypeCare());
 
     getInsurerTypeMedical().setButtonIndex(2);
+
     getInsurerTypeModel().add(getInsurerTypeMedical());
 
   }
@@ -2366,7 +2403,6 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QO002Design.class.getName()));
     } catch (Exception e) {

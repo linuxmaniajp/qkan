@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2008/04/18  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2009/12/10  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績データ作成 (P)
@@ -499,6 +499,92 @@ public abstract class QP005Event extends QP005SQL {
             }
         }
     });
+    getRecuperationInfoRevisionTablecolumn2().addCellEditorListener(new CellEditorListener(){
+        private boolean lockFlag = false;
+        public void editingStopped(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void editingCanceled(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void cellEditing(ChangeEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                recuperationInfoRevisionTablecolumn2CellEditing(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getRetotal().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                retotalActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getServiceAddButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                serviceAddButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getServiceDelButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                serviceDelButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getDetailsDelButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                detailsDelButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -664,6 +750,41 @@ public abstract class QP005Event extends QP005SQL {
    */
   protected abstract void shahukuInfoRevisionTablecolumn2CellEditing(ChangeEvent e) throws Exception;
 
+  /**
+   * 「データ変更時処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void recuperationInfoRevisionTablecolumn2CellEditing(ChangeEvent e) throws Exception;
+
+  /**
+   * 「再集計処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void retotalActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「サービス追加処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void serviceAddButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「サービスの削除処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void serviceDelButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「サービスの削除処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void detailsDelButtonActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_KEY;
@@ -767,6 +888,7 @@ public abstract class QP005Event extends QP005SQL {
   private VRList columnList7NameSimple = new VRArrayList();
   private VRList columnList7ValueSimple = new VRArrayList();
   private VRList columnList7CommentSimple = new VRArrayList();
+  private VRList snapList = new VRArrayList();
   private ACTableModelAdapter tableModelList1;
   private ACTableModelAdapter tableModelList2;
   private ACTableModelAdapter tableModelList3;
@@ -1067,7 +1189,7 @@ public abstract class QP005Event extends QP005SQL {
   protected void setTableClaimList6(VRList tableClaimList6){
     this.tableClaimList6 = tableClaimList6;
   }
-  
+
   /**
    * tableClaimList7を返します。
    * @return tableClaimList7
@@ -1076,7 +1198,7 @@ public abstract class QP005Event extends QP005SQL {
     return tableClaimList7;
   }
   /**
-   * tableClaimList6を設定します。
+   * tableClaimList7を設定します。
    * @param tableClaimList7 tableClaimList7
    */
   protected void setTableClaimList7(VRList tableClaimList7){
@@ -1819,6 +1941,21 @@ public abstract class QP005Event extends QP005SQL {
   }
 
   /**
+   * snapListを返します。
+   * @return snapList
+   */
+  protected VRList getSnapList(){
+    return snapList;
+  }
+  /**
+   * snapListを設定します。
+   * @param snapList snapList
+   */
+  protected void setSnapList(VRList snapList){
+    this.snapList = snapList;
+  }
+
+  /**
    * tableModelList1を返します。
    * @return tableModelList1
    */
@@ -2141,9 +2278,9 @@ public abstract class QP005Event extends QP005SQL {
    *
    * @param list VRList
    * @param keys String[]
-   * @param digits int
+   * @param digits int[]
    * @throws Exception 処理例外
-   *
+   * @return VRList
    */
   public abstract VRList getSortedData(VRList list, String[] keys, int[] digits) throws Exception;
 

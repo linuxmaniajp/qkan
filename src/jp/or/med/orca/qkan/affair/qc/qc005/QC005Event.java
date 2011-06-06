@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2007/12/25  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2009/06/29  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -207,6 +207,22 @@ public abstract class QC005Event extends QC005SQL {
             }
         }
     });
+    getResultReadButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                resultReadButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -259,6 +275,13 @@ public abstract class QC005Event extends QC005SQL {
    * @throws Exception 処理例外
    */
   protected abstract void providerNameActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「実績読込」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void resultReadButtonActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
@@ -403,5 +426,13 @@ public abstract class QC005Event extends QC005SQL {
    * @return boolean
    */
   public abstract boolean isPrintFinish() throws Exception;
+
+  /**
+   * 「居宅療養管理指導の実績を読み込む」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return VRMap
+   */
+  public abstract VRMap getKyotakuResult() throws Exception;
 
 }

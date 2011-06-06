@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/01/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/08/03  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -35,15 +35,19 @@ import java.io.*;
 import java.sql.SQLException;
 import java.text.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import jp.nichicom.ac.*;
 import jp.nichicom.ac.bind.*;
 import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -74,7 +78,6 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
 /**
  * 保険者登録状態定義(QO002) 
  */
@@ -89,7 +92,7 @@ public class QO002State extends QO002Design {
    * 「初期設定」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INIT_STATE() throws Exception {
+  public void setState_INIT_STATE() throws Exception {
 
         getInsurerLimitRateInsertButton().setEnabled(true);
 
@@ -104,8 +107,8 @@ public class QO002State extends QO002Design {
         getNewData().setVisible(false);
 
         getClear().setVisible(true);
-        
-        getInsurerId().setEditable(true);
+
+        getInsurerId().setVisible(true);
 
         getInsurerLimitRateInfo().setEnabled(false);
 
@@ -133,15 +136,17 @@ public class QO002State extends QO002Design {
 
         getInsurerLimitRateDeleteButton().setEnabled(false);
 
+        getInsurerSelectButton().setEnabled(false);
+
   }
 
   /**
    * 「支給限度額編集・削除不可」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_NOT_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE() throws Exception {
+  public void setState_NOT_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE() throws Exception {
 
-        //getInsurerLimitRateInsertButton().setEnabled(true);
+        getInsurerLimitRateInsertButton().setEnabled(true);
 
         getInsurerLimitRateEditButton().setEnabled(false);
 
@@ -153,7 +158,7 @@ public class QO002State extends QO002Design {
    * 「支給限度額編集・削除可」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE() throws Exception {
+  public void setState_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE() throws Exception {
 
         getInsurerLimitRateInsertButton().setEnabled(true);
 
@@ -167,7 +172,7 @@ public class QO002State extends QO002Design {
    * 「登録モード」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INSERT_STATE() throws Exception {
+  public void setState_INSERT_STATE() throws Exception {
 
         getInsert().setVisible(true);
 
@@ -179,13 +184,15 @@ public class QO002State extends QO002Design {
 
         getInsurerId().setEnabled(true);
 
+        getInsurerSelectButton().setEnabled(true);
+
   }
 
   /**
    * 「更新モード」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_UPDATE_STATE() throws Exception {
+  public void setState_UPDATE_STATE() throws Exception {
 
         getInsert().setVisible(false);
 
@@ -195,7 +202,9 @@ public class QO002State extends QO002Design {
 
         getClear().setVisible(false);
 
-        getInsurerId().setEditable(false);
+        getInsurerId().setEnabled(false);
+
+        getInsurerSelectButton().setEnabled(false);
 
   }
 
@@ -203,7 +212,7 @@ public class QO002State extends QO002Design {
    * 「支給限度額編集可」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INSURER_LIMIT_RATE_ENABLE_TRUE() throws Exception {
+  public void setState_INSURER_LIMIT_RATE_ENABLE_TRUE() throws Exception {
 
         getInsurerLimitRateInfo().setEnabled(true);
 
@@ -237,7 +246,7 @@ public class QO002State extends QO002Design {
    * 「支給限度額編集不可」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INSURER_LIMIT_RATE_ENABLE_FALSE() throws Exception {
+  public void setState_INSURER_LIMIT_RATE_ENABLE_FALSE() throws Exception {
 
         getInsurerLimitRateInfo().setEnabled(false);
 
@@ -264,8 +273,28 @@ public class QO002State extends QO002Design {
         getInsurerLimitRateEditButton().setEnabled(false);
 
         getInsurerLimitRateDeleteButton().setEnabled(false);
-        
-        getInsurerLimitRateEnableCheck().setSelected(false);
+
+        getInsurerLimitRateEnableCheck().setEnabled(false);
+
+  }
+
+  /**
+   * 「保険者選択ボタン・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_INSURER_SELECT() throws Exception {
+
+        getInsurerSelectButton().setEnabled(true);
+
+  }
+
+  /**
+   * 「保険者選択ボタン・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_INSURER_SELECT() throws Exception {
+
+        getInsurerSelectButton().setEnabled(false);
 
   }
 
