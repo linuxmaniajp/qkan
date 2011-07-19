@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/11/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2006/08/28  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -138,8 +138,6 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn fixedFormEditItemTableColumn1;
 
   private ACTableColumn fixedFormEditItemTableColumn2;
-
-  private ACTableColumn fixedFormEditItemTableColumn4;
 
   private ACTableColumn fixedFormEditItemTableColumn3;
 
@@ -372,7 +370,7 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getFixedFormTableColumn１(){
     if(fixedFormTableColumn１==null){
 
-      fixedFormTableColumn１ = new ACTableColumn();
+      fixedFormTableColumn１ = new ACTableColumn(0);
 
       fixedFormTableColumn１.setHeaderValue("No.");
 
@@ -399,8 +397,6 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
 
       fixedFormTableColumn２.setHeaderValue("分類");
 
-      fixedFormTableColumn２.setColumnName("FIXED_FORM_GROUP");
-
       fixedFormTableColumn２.setColumns(14);
 
       addFixedFormTableColumn２();
@@ -416,11 +412,9 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getFixedFormTableColumn３(){
     if(fixedFormTableColumn３==null){
 
-      fixedFormTableColumn３ = new ACTableColumn();
+      fixedFormTableColumn３ = new ACTableColumn(1);
 
       fixedFormTableColumn３.setHeaderValue("項目");
-
-      fixedFormTableColumn３.setColumnName("FIXED_FORM_TITLE");
 
       fixedFormTableColumn３.setColumns(10);
 
@@ -617,7 +611,7 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getFixedFormEditItemTableColumn1(){
     if(fixedFormEditItemTableColumn1==null){
 
-      fixedFormEditItemTableColumn1 = new ACTableColumn();
+      fixedFormEditItemTableColumn1 = new ACTableColumn(0);
 
       fixedFormEditItemTableColumn1.setHeaderValue("No.");
 
@@ -640,7 +634,7 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getFixedFormEditItemTableColumn2(){
     if(fixedFormEditItemTableColumn2==null){
 
-      fixedFormEditItemTableColumn2 = new ACTableColumn();
+      fixedFormEditItemTableColumn2 = new ACTableColumn(0);
 
       fixedFormEditItemTableColumn2.setHeaderValue("処理");
 
@@ -657,42 +651,15 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * サービス種類を取得します。
-   * @return サービス種類
-   */
-  public ACTableColumn getFixedFormEditItemTableColumn4(){
-    if(fixedFormEditItemTableColumn4==null){
-
-      fixedFormEditItemTableColumn4 = new ACTableColumn();
-
-      fixedFormEditItemTableColumn4.setHeaderValue("サービス種類");
-
-      fixedFormEditItemTableColumn4.setColumnName("SERVICE_CODE_KIND");
-
-      fixedFormEditItemTableColumn4.setColumns(14);
-
-      fixedFormEditItemTableColumn4.setFormat(QkanServiceKindNameFormat.getInstance());
-
-      fixedFormEditItemTableColumn4.setSortable(false);
-
-      addFixedFormEditItemTableColumn4();
-    }
-    return fixedFormEditItemTableColumn4;
-
-  }
-
-  /**
    * テーブル：内容を取得します。
    * @return テーブル：内容
    */
   public ACTableColumn getFixedFormEditItemTableColumn3(){
     if(fixedFormEditItemTableColumn3==null){
 
-      fixedFormEditItemTableColumn3 = new ACTableColumn();
+      fixedFormEditItemTableColumn3 = new ACTableColumn(1);
 
       fixedFormEditItemTableColumn3.setHeaderValue("内容");
-
-      fixedFormEditItemTableColumn3.setColumnName("CONTENT");
 
       fixedFormEditItemTableColumn3.setColumns(25);
 
@@ -1268,8 +1235,6 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
 
     getFixedFormEditItemTableColumnModel().addColumn(getFixedFormEditItemTableColumn2());
 
-    getFixedFormEditItemTableColumnModel().addColumn(getFixedFormEditItemTableColumn4());
-
     getFixedFormEditItemTableColumnModel().addColumn(getFixedFormEditItemTableColumn3());
 
   }
@@ -1285,13 +1250,6 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
    * テーブル：処理モードに内部項目を追加します。
    */
   protected void addFixedFormEditItemTableColumn2(){
-
-  }
-
-  /**
-   * サービス種類に内部項目を追加します。
-   */
-  protected void addFixedFormEditItemTableColumn4(){
 
   }
 

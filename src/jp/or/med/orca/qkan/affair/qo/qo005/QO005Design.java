@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/11/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2011/07/06  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -153,6 +153,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACIntegerCheckBox printNursingZero;
 
+  private ACIntegerCheckBox printNursingLimitZero;
+
   private ACGroupBox others;
 
   private ACIntegerCheckBox oncePerMonth;
@@ -170,8 +172,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACIntegerCheckBox showOldIryo;
 
   private ACIntegerCheckBox showOldLowProviderElements;
-
-  private ACIntegerCheckBox serviceByReceipt;
 
   private ACGroupBox backupResotres;
 
@@ -817,6 +817,25 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定入所者の負担限度額が0円の場合に明細書に印字するを取得します。
+   * @return 特定入所者の負担限度額が0円の場合に明細書に印字する
+   */
+  public ACIntegerCheckBox getPrintNursingLimitZero(){
+    if(printNursingLimitZero==null){
+
+      printNursingLimitZero = new ACIntegerCheckBox();
+
+      printNursingLimitZero.setText("特定入所者の負担限度額が0円の場合に明細書に印字する");
+
+      printNursingLimitZero.setBindPath("PRINT_NURSING_LIMIT_ZERO");
+
+      addPrintNursingLimitZero();
+    }
+    return printNursingLimitZero;
+
+  }
+
+  /**
    * その他の設定領域を取得します。
    * @return その他の設定領域
    */
@@ -984,25 +1003,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       addShowOldLowProviderElements();
     }
     return showOldLowProviderElements;
-
-  }
-
-  /**
-   * サービスごとに請求書・領収書を出力するを取得します。
-   * @return サービスごとに請求書・領収書を出力する
-   */
-  public ACIntegerCheckBox getServiceByReceipt(){
-    if(serviceByReceipt==null){
-
-      serviceByReceipt = new ACIntegerCheckBox();
-
-      serviceByReceipt.setText("サービスごとに請求書・領収書を出力する");
-
-      serviceByReceipt.setBindPath("SERVICE_BY_RECEIPT");
-
-      addServiceByReceipt();
-    }
-    return serviceByReceipt;
 
   }
 
@@ -1302,6 +1302,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     chohyos.add(getPrintNursingZero(), VRLayout.FLOW_RETURN);
 
+    chohyos.add(getPrintNursingLimitZero(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -1362,6 +1364,13 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定入所者の負担限度額が0円の場合に明細書に印字するに内部項目を追加します。
+   */
+  protected void addPrintNursingLimitZero(){
+
+  }
+
+  /**
    * その他の設定領域に内部項目を追加します。
    */
   protected void addOthers(){
@@ -1375,8 +1384,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
     others.add(getShowOldIryo(), VRLayout.FLOW_RETURN);
 
     others.add(getShowOldLowProviderElements(), VRLayout.FLOW_RETURN);
-
-    others.add(getServiceByReceipt(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -1439,13 +1446,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 過去の事業所体制情報も表示するに内部項目を追加します。
    */
   protected void addShowOldLowProviderElements(){
-
-  }
-
-  /**
-   * サービスごとに請求書・領収書を出力するに内部項目を追加します。
-   */
-  protected void addServiceByReceipt(){
 
   }
 

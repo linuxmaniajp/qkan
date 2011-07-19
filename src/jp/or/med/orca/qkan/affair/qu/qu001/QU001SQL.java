@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者一覧
- * 作成日: 2010/11/05  日本コンピューター株式会社 利用者一覧 新規作成
+ * 作成日: 2011/03/02  日本コンピューター株式会社 利用者一覧 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -334,7 +334,9 @@ public class QU001SQL extends QU001State {
 
     sb.append("SELECT");
 
-    sb.append(" INSURED_ID");
+    sb.append(" INSURER_ID");
+
+    sb.append(",INSURED_ID");
 
     sb.append(",JOTAI_CODE");
 
@@ -408,7 +410,9 @@ public class QU001SQL extends QU001State {
 
     sb.append("SELECT");
 
-    sb.append(" INSURED_ID");
+    sb.append(" INSURER_ID");
+
+    sb.append(",INSURED_ID");
 
     sb.append(",JOTAI_CODE");
 
@@ -504,7 +508,9 @@ public class QU001SQL extends QU001State {
 
     sb.append("SELECT");
 
-    sb.append(" INSURED_ID");
+    sb.append(" INSURER_ID");
+
+    sb.append(",INSURED_ID");
 
     sb.append(",JOTAI_CODE");
 

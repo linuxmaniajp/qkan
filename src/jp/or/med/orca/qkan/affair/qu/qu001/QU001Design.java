@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 安武　徳夫
- * 作成日: 2010/11/05  日本コンピューター株式会社 安武　徳夫 新規作成
+ * 作成日: 2011/03/02  日本コンピューター株式会社 安武　徳夫 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -172,6 +172,8 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn patientInsureValidStartColumn;
 
   private ACTableColumn patientInsureValidEndColumn;
+
+  private ACTableColumn patientInsurerIdColumn;
 
   private ACTableColumn patientZipColumn;
 
@@ -1113,6 +1115,27 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 利用者一覧：保険者番号を取得します。
+   * @return 利用者一覧：保険者番号
+   */
+  public ACTableColumn getPatientInsurerIdColumn(){
+    if(patientInsurerIdColumn==null){
+
+      patientInsurerIdColumn = new ACTableColumn();
+
+      patientInsurerIdColumn.setHeaderValue("保険者番号");
+
+      patientInsurerIdColumn.setColumnName("INSURER_ID");
+
+      patientInsurerIdColumn.setColumns(6);
+
+      addPatientInsurerIdColumn();
+    }
+    return patientInsurerIdColumn;
+
+  }
+
+  /**
    * 利用者一覧：郵便番号を取得します。
    * @return 利用者一覧：郵便番号
    */
@@ -1430,6 +1453,8 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
 
     getPatientsColumnModel().addColumn(getPatientInsureValidEndColumn());
 
+    getPatientsColumnModel().addColumn(getPatientInsurerIdColumn());
+
     getPatientsColumnModel().addColumn(getPatientZipColumn());
 
     getPatientsColumnModel().addColumn(getPatientAddressColumn());
@@ -1533,6 +1558,13 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
    * 利用者一覧：有効期限終了に内部項目を追加します。
    */
   protected void addPatientInsureValidEndColumn(){
+
+  }
+
+  /**
+   * 利用者一覧：保険者番号に内部項目を追加します。
+   */
+  protected void addPatientInsurerIdColumn(){
 
   }
 

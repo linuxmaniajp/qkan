@@ -126,7 +126,10 @@ public class QO003 extends QO003Event {
 						"PROVIDER_TEL_FIRST+'-'+PROVIDER_TEL_SECOND+'-'+PROVIDER_TEL_THIRD",
 						"PROVIDER_FAX_FIRST+'-'+PROVIDER_FAX_SECOND+'-'+PROVIDER_FAX_THIRD",
 						"PROVIDER_JIGYOU_TYPE", "PROVIDER_AREA_TYPE",
-						"STAFF_FAMILY_NAME+'　'+STAFF_FIRST_NAME", });
+						//[ID:0000638][Shin Fujihara] 2011/03 edit begin 2010年度対応
+						//"STAFF_FAMILY_NAME+'　'+STAFF_FIRST_NAME", });
+						"STAFF_NAME_LIST", });
+						//[ID:0000638][Shin Fujihara] 2011/03 edit begin 2010年度対応
 
 		setProviderTableModel(model);
 
@@ -417,12 +420,31 @@ public class QO003 extends QO003Event {
 			VRList providerStaffList = getDBManager().executeQuery(
 					getSQL_GET_STAFF(sqlparam));
 			if (providerStaffList.size() > 0) {
-				((VRMap) getProviderList().getData(i))
-						.putAll((VRMap) providerStaffList.getData());
+				//[ID:0000638][Shin Fujihara] 2011/03 edit begin 2010年度対応
+				//((VRMap) getProviderList().getData(i))
+				//		.putAll((VRMap) providerStaffList.getData());
+				((VRMap) getProviderList().getData(i)).put("STAFF_NAME_LIST", getStaffNameList(providerStaffList));
+				//[ID:0000638][Shin Fujihara] 2011/03 edit begin 2010年度対応
 			}
 		}
 
 	}
+	
+	//[ID:0000638][Shin Fujihara] 2011/03 add begin 2010年度対応
+	private String getStaffNameList(VRList providerStaffList) {
+		StringBuffer nameList = new StringBuffer();
+		
+		for (int i = 0; i < providerStaffList.size(); i++) {
+			VRMap map =  (VRMap)providerStaffList.get(i);
+			if (i != 0) {
+				nameList.append(",");
+			}
+			nameList.append(QkanCommon.toFullName(map.get("STAFF_FAMILY_NAME"), map.get("STAFF_FIRST_NAME")));
+		}
+		
+		return nameList.toString();
+	}
+	//[ID:0000638][Shin Fujihara] 2011/03 add begin 2010年度対応
 
 	/**
 	 * 「削除処理可否確認処理」に関する処理を行ないます。
@@ -676,8 +698,11 @@ public class QO003 extends QO003Event {
 						getSQL_GET_STAFF(sqlparam));
 
 				if (providerStaffList.size() > 0) {
-					((VRMap) getProviderList().getData(i))
-							.putAll((VRMap) providerStaffList.getData(0));
+					//[ID:0000638][Shin Fujihara] 2011/03 edit begin 2010年度対応
+					//((VRMap) getProviderList().getData(i))
+					//		.putAll((VRMap) providerStaffList.getData(0));
+					((VRMap) getProviderList().getData(i)).put("STAFF_NAME_LIST", getStaffNameList(providerStaffList));
+					//[ID:0000638][Shin Fujihara] 2011/03 edit begin 2010年度対応
 				}
 			}
 

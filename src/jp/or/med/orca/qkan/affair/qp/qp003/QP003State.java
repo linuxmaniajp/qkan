@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/11/11  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2009/08/10  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (P)
@@ -189,18 +189,6 @@ public class QP003State extends QP003Design {
   public void setState_CALENDER_UNSELECT() throws Exception {
 
         getOpen().setEnabled(true);
-
-  }
-
-  /**
-   * 「サービス名称非表示」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_SERVICE_KIND_VISIBLE_FALSE() throws Exception {
-
-        getContentServiceKindText().setVisible(false);
-
-        getContentServiceKindName().setVisible(false);
 
   }
 

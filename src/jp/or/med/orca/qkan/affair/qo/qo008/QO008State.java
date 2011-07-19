@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2010/11/15  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2006/02/18  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -47,7 +47,6 @@ import jp.nichicom.ac.component.dnd.event.*;
 import jp.nichicom.ac.component.event.*;
 import jp.nichicom.ac.component.mainmenu.*;
 import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
 import jp.nichicom.ac.container.*;
 import jp.nichicom.ac.core.*;
 import jp.nichicom.ac.filechooser.*;
@@ -78,6 +77,7 @@ import jp.nichicom.vr.util.logging.*;
 import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.lib.*;
 /**
  * 定型文編集状態定義(QO008) 
  */
@@ -106,8 +106,6 @@ public class QO008State extends QO008Design {
 
         getFixedFormEditItemManipulateButtonDown().setEnabled(false);
 
-        getFixedFormEditItemTableColumn4().setVisible(false);
-
   }
 
   /**
@@ -127,8 +125,6 @@ public class QO008State extends QO008Design {
         getFixedFormEditItemManipulateButtonUp().setEnabled(true);
 
         getFixedFormEditItemManipulateButtonDown().setEnabled(true);
-
-        getFixedFormEditItemTableColumn4().setVisible(false);
 
   }
 
@@ -168,8 +164,6 @@ public class QO008State extends QO008Design {
 
         getFixedFormEditInputAndCompileTextBox().setEnabled(false);
 
-        getFixedFormEditItemTableColumn4().setVisible(false);
-
   }
 
   /**
@@ -207,48 +201,6 @@ public class QO008State extends QO008Design {
         getFixedFormEditInputCaption3().setEnabled(true);
 
         getFixedFormEditInputAndCompileTextBox().setEnabled(true);
-
-        getFixedFormEditItemTableColumn4().setVisible(false);
-
-  }
-
-  /**
-   * 「定型文選択(事業所名)」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_ITEM_SELECTED_PROVIDER() throws Exception {
-
-        getFixedFormEditInsert().setEnabled(false);
-
-        getFixedFormEditUpdate().setEnabled(true);
-
-        getFixedFormEditDelete().setEnabled(true);
-
-        getFixedFormEditCancelDelete().setEnabled(true);
-
-        getFixedFormEditItemManipulateButtonUp().setEnabled(false);
-
-        getFixedFormEditItemManipulateButtonDown().setEnabled(false);
-
-        getFixedFormEditComments().setEnabled(true);
-
-        getFixedFormEditComment1().setEnabled(true);
-
-        getFixedFormEditComment2().setEnabled(true);
-
-        getFixedFormEditItemTable().setEnabled(true);
-
-        getFixedFormEditInputLeft().setEnabled(true);
-
-        getFixedFormEditInputCaption1().setEnabled(true);
-
-        getFixedFormEditInputCaption2().setEnabled(true);
-
-        getFixedFormEditInputCaption3().setEnabled(true);
-
-        getFixedFormEditInputAndCompileTextBox().setEnabled(true);
-
-        getFixedFormEditItemTableColumn4().setVisible(true);
 
   }
 

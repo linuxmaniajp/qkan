@@ -162,6 +162,9 @@ public class QU001 extends QU001Event {
             "INSURED_ID",
             "INSURE_VALID_START",
             "INSURE_VALID_END"
+            //[ID:0000637][Shin Fujihara] 2011/03 add begin 2010年度対応
+            ,"INSURER_ID"
+            //[ID:0000637][Shin Fujihara] 2011/03 add begin 2010年度対応
     });
 
     setPatientTableModel(model);
@@ -639,6 +642,10 @@ public class QU001 extends QU001Event {
 	    	VRBindPathParser.set("INSURE_VALID_END", patientMap, VRBindPathParser.get("INSURE_VALID_END", map));
 	    	// 有効期間開始
 	    	VRBindPathParser.set("INSURE_VALID_START", patientMap, VRBindPathParser.get("INSURE_VALID_START", map));
+	    	//[ID:0000637][Shin Fujihara] 2011/03 add begin 2010年度対応
+	    	// 保険者番号
+	    	VRBindPathParser.set("INSURER_ID", patientMap, VRBindPathParser.get("INSURER_ID", map));
+	    	//[ID:0000637][Shin Fujihara] 2011/03 add begin 2010年度対応
 
 		    // 居宅介護支援事業所IDを取得する。
 		    String providerId = ACCastUtilities.toString(VRBindPathParser.get("PROVIDER_ID", map));
@@ -968,6 +975,11 @@ public class QU001 extends QU001Event {
 	    	VRBindPathParser.set("INSURE_VALID_END", patientMap, VRBindPathParser.get("INSURE_VALID_END", map));
 	    	// 有効期間開始
 	    	VRBindPathParser.set("INSURE_VALID_START", patientMap, VRBindPathParser.get("INSURE_VALID_START", map));
+	    	
+	    	//[ID:0000637][Shin Fujihara] 2011/03 add begin 2010年度対応
+	    	// 保険者番号
+	    	VRBindPathParser.set("INSURER_ID", patientMap, VRBindPathParser.get("INSURER_ID", map));
+	    	//[ID:0000637][Shin Fujihara] 2011/03 add begin 2010年度対応
 	    }
     }
 	    

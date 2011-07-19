@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 定型文編集
- * 作成日: 2010/11/15  日本コンピューター株式会社 定型文編集 新規作成
+ * 作成日: 2006/08/28  日本コンピューター株式会社 定型文編集 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -99,8 +99,8 @@ public class QO008SQL extends QO008State {
   public String getSQL_GET_FIXED_FORM_GROUP(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
     Object obj;
 
     sb.append("SELECT");
@@ -129,7 +129,7 @@ public class QO008SQL extends QO008State {
 
     sb.append(" IN");
 
-    sb.append(" (1,2,3)");
+    sb.append(" (1,2)");
 
     sb.append(")");
 
@@ -155,8 +155,8 @@ public class QO008SQL extends QO008State {
   public String getSQL_GET_FIXED_FORM(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
     Object obj;
 
     sb.append("SELECT");
@@ -173,8 +173,6 @@ public class QO008SQL extends QO008State {
 
     sb.append(",LAST_TIME");
 
-    sb.append(",PROVIDER_ID");
-
     sb.append(" FROM");
 
     sb.append(" FIXED_FORM");
@@ -187,7 +185,7 @@ public class QO008SQL extends QO008State {
 
     sb.append(" IN");
 
-    sb.append(" (1,2,3)");
+    sb.append(" (1,2)");
 
     sb.append(")");
 
@@ -203,34 +201,6 @@ public class QO008SQL extends QO008State {
 
     sb.append(")");
 
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_ID");
-
-    sb.append(" IS");
-
-    sb.append(" NULL");
-
-    sb.append(")");
-
-    sb.append("OR");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append(")");
-
     sb.append(" ORDER BY");
 
     sb.append(" TABLE_TYPE");
@@ -238,8 +208,6 @@ public class QO008SQL extends QO008State {
     sb.append(" ");
 
     sb.append(",CONTENT_SORT");
-
-    sb.append(",CONTENT_KEY");
 
     return sb.toString();
   }
@@ -253,8 +221,8 @@ public class QO008SQL extends QO008State {
   public String getSQL_INSERT_FIXED_FORM(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -313,8 +281,8 @@ public class QO008SQL extends QO008State {
   public String getSQL_DELETE_FIXED_FORM(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
     Object obj;
 
     sb.append("DELETE FROM");
@@ -347,7 +315,6 @@ public class QO008SQL extends QO008State {
 
     return sb.toString();
   }
-
   /**
    * 「定型文分類情報取得」のためのSQLを返します。
    * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
@@ -357,8 +324,8 @@ public class QO008SQL extends QO008State {
   public String getSQL_GET_FIXED_FORM_GROUP_WITHOUT_IRYO(VRMap sqlParam) throws Exception{
     StringBuffer sb = new StringBuffer();
     Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
+    Stack conditionStack = new Stack();
+    boolean firstCondition = true;
     Object obj;
 
     sb.append("SELECT");
@@ -386,8 +353,8 @@ public class QO008SQL extends QO008State {
     sb.append(" TABLE_TYPE");
 
     sb.append(" IN");
-
-    sb.append(" (1,3)");
+    
+    sb.append(" (1)");
 
     sb.append(")");
 
@@ -403,157 +370,4 @@ public class QO008SQL extends QO008State {
 
     return sb.toString();
   }
-
-  /**
-   * 「定型文更新」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_UPDATE_FIXED_FORM_PROVIDER_NAME(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
-    Object obj;
-
-    sb.append("UPDATE");
-
-    sb.append(" FIXED_FORM");
-
-    sb.append(" SET");
-
-    sb.append(" CONTENT");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("CONTENT", sqlParam)));
-
-    sb.append(",");
-
-    sb.append(" LAST_TIME");
-
-    sb.append(" =");
-
-    sb.append(" CURRENT_TIMESTAMP");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" TABLE_TYPE");
-
-    sb.append(" =");
-
-    sb.append(" 3");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" FIXED_FORM_ID");
-
-    sb.append(" =");
-
-    sb.append(" 1");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" CONTENT_KEY");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CONTENT_KEY", sqlParam)));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
-
-    sb.append(")");
-
-    return sb.toString();
-  }
-
-  /**
-   * 「」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_DELETE_FIXED_FORM_PROVIDER_NAME(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
-    boolean firstCondition = true, firstConditionOfFrom = true;
-    Object obj;
-
-    sb.append("DELETE FROM");
-
-    sb.append(" FIXED_FORM");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" TABLE_TYPE");
-
-    sb.append(" =");
-
-    sb.append(" 3");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" FIXED_FORM_ID");
-
-    sb.append(" =");
-
-    sb.append(" 1");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" CONTENT_KEY");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CONTENT_KEY", sqlParam)));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
-
-    sb.append(")");
-
-    return sb.toString();
-  }
-
 }

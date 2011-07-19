@@ -868,15 +868,15 @@ public class QO005 extends QO005Event {
         }
         //[ID:0000449][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
         
-        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-        if (ACFrame.getInstance().hasProperty("PrintConfig/ServiceByReceipt")) {
-            // paramsの KEY : SERVICE_BY_RECEIPT のVALUEに、設定ファイルの ID :
-            // PrintConfig/ServiceByReceipt の値を設定する。
-            params.setData("SERVICE_BY_RECEIPT", getProperty("PrintConfig/ServiceByReceipt"));
+        //[ID:0000651][Shin Fujihara] 2011/07/06 add begin 負担限度額0円表示対応
+        if (ACFrame.getInstance().hasProperty("PrintConfig/printNursingLimitZero")) {
+        	// paramsの KEY : PRINT_NURSING_LIMIT_ZEROのVALUEに、設定ファイルの
+        	// ID : PrintConfig/printNursingLimitZero の値を設定する。
+            params.setData("PRINT_NURSING_LIMIT_ZERO", getProperty("PrintConfig/printNursingLimitZero"));
         } else {
-            params.setData("SERVICE_BY_RECEIPT", new Integer(CHECKBOX_OFF));
+            params.setData("PRINT_NURSING_LIMIT_ZERO", new Integer(CHECKBOX_OFF));
         }
-        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
+        //[ID:0000651][Shin Fujihara] 2011/07/06 add end 負担限度額0円表示対応
         
 		// 関数の変数として、paramsを返す。
 		return params;
@@ -981,9 +981,11 @@ public class QO005 extends QO005Event {
             setProperty("PrintConfig/printNursingZero", String.valueOf(params.getData("PRINT_NURSING_ZERO")));
             //[ID:0000449][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
             
-            // [ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-            setProperty("PrintConfig/ServiceByReceipt", String.valueOf(params.getData("SERVICE_BY_RECEIPT")));
-            // [ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
+            //[ID:0000651][Shin Fujihara] 2011/07/06 add begin 負担限度額0円表示対応
+            //設定ファイルの ID : PrintConfig/printNursingLimitZero の値に、paramsの
+            //KEY : PRINT_NURSING_LIMIT_ZERO のVALUEを設定する。
+            setProperty("PrintConfig/printNursingLimitZero", String.valueOf(params.getData("PRINT_NURSING_LIMIT_ZERO")));
+            //[ID:0000651][Shin Fujihara] 2011/07/06 add end 負担限度額0円表示対応
             
             saveProperty();
             

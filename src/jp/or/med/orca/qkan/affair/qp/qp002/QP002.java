@@ -32,7 +32,6 @@ package jp.or.med.orca.qkan.affair.qp.qp002;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Date;
-import java.util.Iterator;
 
 import javax.swing.event.ListSelectionEvent;
 
@@ -43,12 +42,10 @@ import jp.nichicom.ac.lib.care.claim.calculation.QP001;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
-import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.qp.qp003.QP003;
@@ -59,7 +56,6 @@ import jp.or.med.orca.qkan.affair.qp.qp006.QP006;
 import jp.or.med.orca.qkan.affair.qp.qp006.QP006Design;
 import jp.or.med.orca.qkan.text.QkanClaimStyleFormat;
 import jp.or.med.orca.qkan.text.QkanInsureTypeDivision;
-import jp.or.med.orca.qkan.text.QkanServiceKindNameFormat;
 
 /**
  * 帳票(様式)・事業所選択(QP002)
@@ -145,18 +141,11 @@ public class QP002 extends QP002Event {
         
 
         // 取得したデータを画面表示用に編集する。
-        //[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        //editRecord();
-        editRecord(param);
-        //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+        editRecord();
 
         ACTableModelAdapter providerTableModel = new ACTableModelAdapter();
-        //[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        //String[] ada = { "TARGET_DATE", "PROVIDER_ID", "PROVIDER_NAME",
-        //        "INSURED_ID", "CLAIM_STYLE_TYPE","INSURER_ID","UNIT_INSURED_ID"};
         String[] ada = { "TARGET_DATE", "PROVIDER_ID", "PROVIDER_NAME",
-                "INSURED_ID", "CLAIM_STYLE_TYPE","INSURER_ID","UNIT_INSURED_ID", "SERVICE_CODE_KIND" };
-        //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+                "INSURED_ID", "CLAIM_STYLE_TYPE","INSURER_ID","UNIT_INSURED_ID" };
 
         getProviderTableColumn6().setFormat(new QkanClaimStyleFormat());
         getProviderTableColumn5().setFormat(new QkanInsureTypeDivision());
@@ -250,16 +239,6 @@ public class QP002 extends QP002Event {
         }
         param.setData("INSURED_ID", findInsurer);
 //        param.setData("INSURED_ID", map.getData("INSURED_ID"));
-        
-        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-        //パラメーターにサービス種類コードを加える
-        int kindCode = ACCastUtilities.toInt(map.getData("SERVICE_CODE_KIND"), 0);
-        if (kindCode == 0) {
-        	param.setData("SERVICE_CODE_KIND", "00");
-        } else {
-        	param.setData("SERVICE_CODE_KIND", Integer.toString(kindCode - 1000));
-        }
-        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
 
         ACAffairInfo affair = new ACAffairInfo(QP003.class.getName(), param);
 
@@ -294,98 +273,29 @@ public class QP002 extends QP002Event {
                 new QkanFrameEventProcesser());
         QkanCommon.debugInitialize();
         VRMap param = new VRHashMap();
-        param.setData("PATIENT_ID", new Integer(36));
+        param.setData("PATIENT_ID", new Integer(1));
         param.setData("DEBUG_BACK", QP001.class.getName());
-        param.setData("CLAIM_DATE", new Date(110, 10, 1));
-        param.setData("PROVIDER_ID", "0000000001");
+        param.setData("CLAIM_DATE", new Date(106, 2, 1));
+        param.setData("PROVIDER_ID", "0000000005");
         param.setData("TARGET_DATE", new Date(106, 1, 1));
         param.setData("LIST_INDEX", new Integer(0));
-        QkanSystemInformation.getInstance().setLoginProviderID("0000000001");
         // paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
         ACFrame.debugStart(new ACAffairInfo(QP002.class.getName(), param));
     }
 
     // 内部関数
-    
-    // [ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
+
     /**
      * 「レコード編集」に関する処理を行ないます。
      * 
      * @throws Exception 処理例外
      */
-    public void editRecord(VRMap param) throws Exception {
-    	
+    public void editRecord() throws Exception {
         // 請求レコード集合（this.claimList）を順に見ていく。（ループ開始）
         VRList claimList = getClaimList();
-        VRList claimPatientList = getDBManager().executeQuery(getSQL_GET_CLAIM_PATIENT_DETAIL(param));
-        
-        //SYSTEM_SERVICE_KIND_DETAILがキー
-        VRMap masterService = QkanCommon.getMasterService(getDBManager());
-        ((QkanServiceKindNameFormat)getProviderTableColumn9().getFormat()).setMasterService(masterService);
-        
-        VRMap row = null;
-        
-        // サービス種類コード => 様式番号の変換を実行
-        for (int i = 0; i < claimPatientList.size(); i++) {
-        	
-        	row = (VRMap)claimPatientList.get(i);
-        	for (int j = 0; j < masterService.size(); j++) {
-        		VRMap code = (VRMap)masterService.getData(j);
-        		if (row.get("SERVICE_CODE_KIND").equals(code.get("SERVICE_CODE_KIND"))) {
-        			row.put("CLAIM_STYLE_TYPE", code.get("CLAIM_STYLE_TYPE"));
-        			break;
-        		}
-        		//見つからなかった場合は、適当な値を入れておく
-        		row.put("CLAIM_STYLE_TYPE", "0");
-        	}
-        }
-        
-        VRList newClaimList = new VRArrayList();
-        boolean colVisible = false;
-        
-        // 請求レコードと利用者向け請求のマージ処理
-        
-        for (int i = 0; i < claimList.size(); i++) {
-        	row = (VRMap)claimList.get(i);
-        	VRList sameList = getSamePatientList(row, claimPatientList);
-        	
-        	if (sameList.size() == 0) {
-        		row.put("SERVICE_CODE_KIND", "0");
-        		newClaimList.add(row);
-        	} else {
-        		newClaimList.addAll(sameList);
-        		colVisible = true;
-        	}
-        }
-        setClaimList(newClaimList);
-        
-        // 全て空白表示となってしまう場合は、列を非表示にする
-        getProviderTableColumn9().setVisible(colVisible);
+
+
     }
-    
-    private VRList getSamePatientList(VRMap row, VRList list) {
-    	VRList result = new VRArrayList();
-    	VRMap map = null;
-    	
-    	//提供日・様式コードが同じ利用者向け請求レコードの情報を返す
-    	for (int i = 0; i < list.size() ; i++) {
-    		map = (VRMap)list.get(i);
-    		if ((map.get("TARGET_DATE").equals(row.get("TARGET_DATE")))
-    			&& (map.get("CLAIM_STYLE_TYPE").equals(row.get("CLAIM_STYLE_TYPE")))) {
-    			
-    			int codeKind = ACCastUtilities.toInt(map.get("SERVICE_CODE_KIND"), 0) + 1000;
-    			
-    			VRMap newRow = new VRHashMap();
-    			newRow.putAll(row);
-    			newRow.put("SERVICE_CODE_KIND", String.valueOf(codeKind));
-    			result.add(newRow);
-    		}
-    	}
-    	
-    	return result;
-    }
-    
-    //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
     
     /**
      * 画面遷移処理を行います。
@@ -506,19 +416,7 @@ public class QP002 extends QP002Event {
             setState_AFFAIR_BUTTON_ENABLE_FALSE();
         }else{
             //選択されていた場合
-        	setState_AFFAIR_BUTTON_ENABLE_TRUE();
-        	//[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        	//様式第七選択時、利用者向け請求が押せる条件を追加。
-        	if (getProviderTableColumn9().isVisible()) {
-        		VRMap map = (VRMap) getProviderTable().getSelectedModelRowValue();
-        		int style = ACCastUtilities.toInt(map.get("CLAIM_STYLE_TYPE"), 0);
-        		
-        		if ((style == QkanConstants.CLAIM_STYLE_FORMAT_7)
-        			|| (style == QkanConstants.CLAIM_STYLE_FORMAT_7_2)) {
-        			setState_SEIKYU_BUTTON_ENABLE_FALSE();
-        		}
-        	}
-            //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+            setState_AFFAIR_BUTTON_ENABLE_TRUE();
         }
     }
     

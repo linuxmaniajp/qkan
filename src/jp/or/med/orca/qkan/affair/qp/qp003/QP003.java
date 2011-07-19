@@ -139,44 +139,10 @@ public class QP003 extends QP003Event {
         if (VRBindPathParser.has("INSURED_ID", params)) {
             setInsuredId(ACCastUtilities.toString(params.getData("INSURED_ID")));
         }
-        
-        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-        //サービス種類コードを渡りパラメーターに追加
-        if (VRBindPathParser.has("SERVICE_CODE_KIND", params)) {
-        	
-        	setServiceKind(ACCastUtilities.toString(params.getData("SERVICE_CODE_KIND")));
-            
-        	//コード'00'の場合は、機能未使用
-        	if ("00".equals(getServiceKind())) {
-        		setState_SERVICE_KIND_VISIBLE_FALSE();
-        		
-        	//コードが入っている場合は、該当するサービス名称を表示する
-        	} else {
-        		VRMap serviceMap = QkanCommon.getMasterService(getDBManager());
-        		Iterator it = serviceMap.values().iterator();
-        		while(it.hasNext()) {
-        			VRMap code = (VRMap)it.next();
-        			if (getServiceKind().equals(code.get("SERVICE_CODE_KIND"))){
-        				getContentServiceKindName().setText(code.get("SERVICE_KIND_NAME").toString());
-        				break;
-        			}
-        		}
-        	}
-        	
-        } else {
-        	setServiceKind("00");
-        	setState_SERVICE_KIND_VISIBLE_FALSE();
-        }
-        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-        
-        //[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        /* setPASSIVE_CHECK_KEY(new ACPassiveKey("CLAIM_PATIENT_DETAIL",
-                new String[] { "CLAIM_ID" }, new Format[] { null },
-                "LAST_TIME", "LAST_TIME")); */
+
         setPASSIVE_CHECK_KEY(new ACPassiveKey("CLAIM_PATIENT_DETAIL",
-                new String[] { "CLAIM_ID", "SERVICE_CODE_KIND" }, new Format[] { null, ACSQLSafeStringFormat.getInstance() },
+                new String[] { "CLAIM_ID" }, new Format[] { null },
                 "LAST_TIME", "LAST_TIME"));
-        //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
 
         // コンボ候補の設定
         comboInitialize();
@@ -654,11 +620,6 @@ public class QP003 extends QP003Event {
                 .setData("CATEGORY_NO", new Integer(
                         CATEGORY_NO_CLAIM_FOR_PATIENT));
         param.setData("INSURED_ID", getInsuredId());
-        
-        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-        param.setData("SERVICE_CODE_KIND", getServiceKind());
-        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-        
         // 利用者向け請求詳細情報を取得するSQL文を取得する。
         // 取得したSQL文を実行し、データをclaimListに格納する。
         setClaimList(getDBManager().executeQuery(
@@ -895,11 +856,6 @@ public class QP003 extends QP003Event {
             // 画面上のデータを格納しているVRMap（以下、param）に以下のKEY/VALUEを設定する。;
             // ・KEY：CLAIM_ID VALUE：claimId
             param.setData("CLAIM_ID", new Integer(getClaimId()));
-            
-            //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-            param.setData("SERVICE_CODE_KIND", getServiceKind());
-            //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-            
             // 登録モードの場合（processModeが共通定数のPROCESS_MODE_INSERTの場合）
             if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
                 // paramを引数として、SQL文を取得する。
@@ -1369,11 +1325,6 @@ public class QP003 extends QP003Event {
             sqlParam = new VRHashMap();
             // 取得したCLAIM_IDで PATIENT_CLAIM_DETAILテーブル からデータを取得する。
             sqlParam.setData("CLAIM_ID",lastClaimId);
-            
-            //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-            sqlParam.setData("SERVICE_CODE_KIND", getServiceKind());
-            //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-            
             VRList lastClaimPatient =  getDBManager().executeQuery(
                     getSQL_GET_LAST_CLAIM_PATIENT(sqlParam));
             // 過去のデータが取得できた場合

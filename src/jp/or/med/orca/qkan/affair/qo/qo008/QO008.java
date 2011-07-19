@@ -262,24 +262,14 @@ public class QO008 extends QO008Event {
             setFixedFormId(ACCastUtilities.toInt(map.getData("FIXED_FORM_ID")));
             setTableType(ACCastUtilities.toInt(map.getData("TABLE_TYPE")));
             
-            //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-            setSelectedKey(getTableType()+"-"+getFixedFormId());
-            //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-            
             // 現在選択中の分類に紐づく詳細項目群を取得する。
             if (getListGroupMap() != null) {
-            	//[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-                //list = (VRList) getListGroupMap().getData(getTableType()+"-"+getFixedFormId());
-            	list = (VRList) getListGroupMap().getData(getSelectedKey());
-                //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+                list = (VRList) getListGroupMap().getData(getTableType()+"-"+getFixedFormId());
             }
             // fixedFormTableModelにlistを設定する。
             if(list.size() >= 0){
                 getFixedFormTableModel().setAdaptee(list);
             }
-            
-            //[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-            /*
             // 画面の状態を設定する。
             setState_EDITABLE();
             // ・状態ID：EDITABLE
@@ -287,35 +277,12 @@ public class QO008 extends QO008Event {
             if (list.size() <= 0) {
                 // ボタンの状態設定を行う。
                 // ・状態ID：ITEM_UNSELECTED
-            	setState_ITEM_UNSELECTED();
+                setState_ITEM_UNSELECTED();
             } else {
                 // listの件数が1件以上の場合
                 // fixedFormEditItemTableの1行目を選択した状態に設定する。
-            	getFixedFormEditItemTable().setSelectedSortedFirstRow();
+                getFixedFormEditItemTable().setSelectedSortedFirstRow();
             }
-            */
-            
-            // 画面の状態を設定する。
-            // listの件数が0件の場合
-            if (list.size() <= 0) {
-            	if (PRINT_PROVIDER.equals(getSelectedKey())) {
-            		setState_UNEDITABLE();
-            	} else {
-            		setState_ITEM_UNSELECTED();
-            	}
-            	
-            } else {
-                // listの件数が1件以上の場合
-                // fixedFormEditItemTableの1行目を選択した状態に設定する。
-            	getFixedFormEditItemTable().setSelectedSortedFirstRow();
-            	
-            	if (PRINT_PROVIDER.equals(getSelectedKey())) {
-            		setState_ITEM_SELECTED_PROVIDER();
-            	} else {
-            		setState_EDITABLE();
-            	}
-            }
-            //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
         }
     }
 
@@ -332,33 +299,20 @@ public class QO008 extends QO008Event {
         // 選択されていない場合
         if (getFixedFormEditItemTable().getSelectedModelRow() == -1) {
             // ボタンの状態設定を行う。
-        	//[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        	if (PRINT_PROVIDER.equals(getSelectedKey())) {
-        		setState_UNEDITABLE();
-        	} else {
-        		setState_ITEM_UNSELECTED();
-        	}
-            //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+            setState_ITEM_UNSELECTED();
             // ・状態ID：ITEM_UNSELECTED
             // 「入力・編集テキストボックス領域（fixedFormEditInputCaptions）」のソースを生成し、mapに格納する。
             map = (VRMap) getFixedFormEditInputCaptions().createSource();
         } else {
             // 選択されている場合
             // ボタンの状態設定を行う。
-        	//[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        	if (PRINT_PROVIDER.equals(getSelectedKey())) {
-        		setState_ITEM_SELECTED_PROVIDER();
-        	} else {
-        		setState_ITEM_SELECTED();
-        	}
-            //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+            setState_ITEM_SELECTED();
             // ・状態ID：ITEM_SELECTED
             // 選択レコードをmapに格納する。
             map = (VRMap) getFixedFormEditItemTable()
                     .getSelectedModelRowValue();
 
         }
-        
         // mapを「入力・編集テキストボックス領域（fixedFormEditInputCaptions）」のソースとして設定する。
         getFixedFormEditInputCaptions().setSource(map);
 
@@ -659,7 +613,6 @@ public class QO008 extends QO008Event {
         QkanCommon.debugInitialize();
         VRMap param = new VRHashMap();
         // paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
-        QkanSystemInformation.getInstance().setLoginProviderID("0000000001");
         ACFrame.debugStart(new ACAffairInfo(QO008.class.getName(), param));
     }
 
@@ -695,11 +648,7 @@ public class QO008 extends QO008Event {
         ACTableModelAdapter fixedFormTableModel = new ACTableModelAdapter();
         // 以下のカラムを設定する。
         // "SQL_MODE" "CONTENT"
-        //[ID:0000612][Shin Fujihara] 2010/11 edit begin 2010年度対応
-        //fixedFormTableModel.setColumns(new String[] { "SQL_MODE", "CONTENT" });
-        fixedFormTableModel.setColumns(new String[] { "SQL_MODE", "SERVICE_CODE_KIND", "CONTENT" });
-        ((QkanServiceKindNameFormat)getFixedFormEditItemTableColumn4().getFormat()).setMasterService(QkanCommon.getMasterService(getDBManager()));
-        //[ID:0000612][Shin Fujihara] 2010/11 edit end 2010年度対応
+        fixedFormTableModel.setColumns(new String[] { "SQL_MODE", "CONTENT" });
         setFixedFormTableModel(fixedFormTableModel);
         // fixedFormEditItemTableに設定する。
         getFixedFormEditItemTable().setModel(getFixedFormTableModel());
@@ -745,11 +694,6 @@ public class QO008 extends QO008Event {
         // ※定型文情報取得
         // 定型文情報取得用SQL文を取得する。
         // 取得したSQL文を実行し、定型文情報を取得し、fixedFormListに格納する。
-        
-        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-        sqlParam.put("PROVIDER_ID", QkanSystemInformation.getInstance().getLoginProviderID());
-        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-        
         setFixedFormList(getDBManager().executeQuery(
                 getSQL_GET_FIXED_FORM(sqlParam)));
 
@@ -767,13 +711,6 @@ public class QO008 extends QO008Event {
                 }
             }
         }
-        
-        //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-        if(getListGroupMap().getData(PRINT_PROVIDER) == null){
-        	map.setData(PRINT_PROVIDER, new VRArrayList());
-        }
-        //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-        
         getListGroupMap().putAll(map);
 //        if(getListGroupMap().getData("1") == null|| getListGroupMap().getData("2") == null){
 //            VRList list1 = new VRArrayList();
@@ -887,15 +824,6 @@ public class QO008 extends QO008Event {
                 // 取り出したリストの件数分ループ処理を行う
                 for (int j = 0; j < groupList.size(); j++) {
                     VRMap map = (VRMap) groupList.getData(j);
-                    
-                    //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-                    String groupKey = String.valueOf(map.get("TABLE_TYPE")) + "-" +  String.valueOf(map.get("FIXED_FORM_ID"));
-                    if (PRINT_PROVIDER.equals(groupKey)) {
-                    	updatePrintProviderName(map);
-                    	continue;
-                    }
-                    //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
-                    
                     // 削除対象に指定されているレコードデータかチェックする。
                     // 削除対象のレコードではなかった場合
                     if (!new Integer(SQL_MODE_DELETE).equals(map
@@ -948,23 +876,6 @@ public class QO008 extends QO008Event {
         }
 
     }
-    
-    //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-    //事業所名称更新処理
-    private void updatePrintProviderName(VRMap map) throws Exception {
-    	
-    	switch (ACCastUtilities.toInt(map.getData("SQL_MODE"), Integer.MAX_VALUE)) {
-    	case SQL_MODE_UPDATE:
-    		getDBManager().executeUpdate(getSQL_UPDATE_FIXED_FORM_PROVIDER_NAME(map));
-    		break;
-    		
-    	case SQL_MODE_DELETE:
-    		getDBManager().executeUpdate(getSQL_DELETE_FIXED_FORM_PROVIDER_NAME(map));
-    		break;
-    	}
-    	
-    }
-    //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
 
     /**
      * グループごとにまとめたMapを作成します。
@@ -1001,12 +912,6 @@ public class QO008 extends QO008Event {
                 // 新規のキー名で格納
                 getListGroupMap().setData(key, adder);
             }
-            
-            //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-            if (PRINT_PROVIDER.equals(key)) {
-            	map.put("SERVICE_CODE_KIND", new Integer(ACCastUtilities.toInt(map.get("CONTENT_KEY"), 0) + 1000));
-            }
-            //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
         }
 
     }

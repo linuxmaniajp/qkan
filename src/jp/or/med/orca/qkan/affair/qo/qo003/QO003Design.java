@@ -732,9 +732,9 @@ public class QO003Design extends QkanAffairContainer implements ACAffairable {
 
       providerChargeColumn = new ACTableColumn(9);
 
-      providerChargeColumn.setHeaderValue("’S“–Ò");
+      providerChargeColumn.setHeaderValue("‰îŒìx‰‡ê–åˆõ–¼");
 
-      providerChargeColumn.setColumns(50);
+      providerChargeColumn.setColumns(35);
 
       providerChargeColumn.setHorizontalAlignment(SwingConstants.LEFT);
 

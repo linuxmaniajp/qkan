@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/11/12  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2008/02/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
@@ -128,16 +128,6 @@ public class QP007Design extends QkanAffairDialog {
   private ACIntegerCheckBox patientBillSetupMedicalTreatmentOn;
 
   private ACIntegerCheckBox patientBillSetupDetailsPrintOn;
-
-  private ACPanel tablePanel;
-
-  private ACTable serviceByProviderName;
-
-  private VRTableColumnModel serviceByProviderNameColumnModel;
-
-  private ACTableColumn serviceNameColumn;
-
-  private ACTableColumn providerNameColumn;
 
   private ACPanel buttons;
 
@@ -530,102 +520,6 @@ public class QP007Design extends QkanAffairDialog {
   }
 
   /**
-   * テーブル配置パネルを取得します。
-   * @return テーブル配置パネル
-   */
-  public ACPanel getTablePanel(){
-    if(tablePanel==null){
-
-      tablePanel = new ACPanel();
-
-      addTablePanel();
-    }
-    return tablePanel;
-
-  }
-
-  /**
-   * サービス種類別事業所名を取得します。
-   * @return サービス種類別事業所名
-   */
-  public ACTable getServiceByProviderName(){
-    if(serviceByProviderName==null){
-
-      serviceByProviderName = new ACTable();
-
-      serviceByProviderName.setColumnModel(getServiceByProviderNameColumnModel());
-
-      addServiceByProviderName();
-    }
-    return serviceByProviderName;
-
-  }
-
-  /**
-   * サービス種類別事業所名カラムモデルを取得します。
-   * @return サービス種類別事業所名カラムモデル
-   */
-  protected VRTableColumnModel getServiceByProviderNameColumnModel(){
-    if(serviceByProviderNameColumnModel==null){
-      serviceByProviderNameColumnModel = new VRTableColumnModel(new TableColumn[]{});
-      addServiceByProviderNameColumnModel();
-    }
-    return serviceByProviderNameColumnModel;
-  }
-
-  /**
-   * サービス種類別事業所名：サービス名称を取得します。
-   * @return サービス種類別事業所名：サービス名称
-   */
-  public ACTableColumn getServiceNameColumn(){
-    if(serviceNameColumn==null){
-
-      serviceNameColumn = new ACTableColumn();
-
-      serviceNameColumn.setHeaderValue("サービス名称");
-
-      serviceNameColumn.setColumnName("SERVICE_CODE_KIND");
-
-      serviceNameColumn.setColumns(20);
-
-      serviceNameColumn.setFormat(QkanServiceKindNameFormat.getInstance());
-
-      serviceNameColumn.setSortable(false);
-
-      addServiceNameColumn();
-    }
-    return serviceNameColumn;
-
-  }
-
-  /**
-   * サービス種類別事業所名：事業所名（出力時の事業所名称）を取得します。
-   * @return サービス種類別事業所名：事業所名（出力時の事業所名称）
-   */
-  public ACTableColumn getProviderNameColumn(){
-    if(providerNameColumn==null){
-
-      providerNameColumn = new ACTableColumn();
-
-      providerNameColumn.setHeaderValue("事業所名（出力時の事業所名称）");
-
-      providerNameColumn.setColumnName("PROVIDER_NAME");
-
-      providerNameColumn.setEditable(true);
-
-      providerNameColumn.setColumns(20);
-
-      providerNameColumn.setEditorType(VRTableCellViewer.EDITOR_TYPE_TEXT_FIELD);
-
-      providerNameColumn.setSortable(false);
-
-      addProviderNameColumn();
-    }
-    return providerNameColumn;
-
-  }
-
-  /**
    * ボタン領域を取得します。
    * @return ボタン領域
    */
@@ -752,7 +646,7 @@ public class QP007Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(520, 350);
+      setSize(520, 220);
 
       // ウィンドウを中央に配置
       Point pos;
@@ -800,9 +694,8 @@ public class QP007Design extends QkanAffairDialog {
 
     contents.add(getPatientBillSetupTargetGroup(), VRLayout.NORTH);
 
-    contents.add(getTablePanel(), VRLayout.CLIENT);
+    contents.add(getButtons(), VRLayout.NORTH);
 
-    contents.add(getButtons(), VRLayout.SOUTH);
   }
 
   /**
@@ -961,47 +854,6 @@ public class QP007Design extends QkanAffairDialog {
    * 詳細版で印刷するに内部項目を追加します。
    */
   protected void addPatientBillSetupDetailsPrintOn(){
-
-  }
-
-  /**
-   * テーブル配置パネルに内部項目を追加します。
-   */
-  protected void addTablePanel(){
-
-    tablePanel.add(getServiceByProviderName(), VRLayout.CLIENT);
-
-  }
-
-  /**
-   * サービス種類別事業所名に内部項目を追加します。
-   */
-  protected void addServiceByProviderName(){
-
-  }
-
-  /**
-   * サービス種類別事業所名カラムモデルに内部項目を追加します。
-   */
-  protected void addServiceByProviderNameColumnModel(){
-
-    getServiceByProviderNameColumnModel().addColumn(getServiceNameColumn());
-
-    getServiceByProviderNameColumnModel().addColumn(getProviderNameColumn());
-
-  }
-
-  /**
-   * サービス種類別事業所名：サービス名称に内部項目を追加します。
-   */
-  protected void addServiceNameColumn(){
-
-  }
-
-  /**
-   * サービス種類別事業所名：事業所名（出力時の事業所名称）に内部項目を追加します。
-   */
-  protected void addProviderNameColumn(){
 
   }
 

@@ -67,10 +67,6 @@ public class QM001UpdateMasterTask {
             // [ID:0000493][Tozo TANAKA] 2009/04/28 add begin 【DB補正】不正なサービスデータ(特定診療費等)削除対応
             ArrayList tableYears = taskDeleteJunkServiceDetail(dbm);
             // [ID:0000493][Tozo TANAKA] 2009/04/28 add end 【DB補正】不正なサービスデータ(特定診療費等)削除対応
-            
-            //[ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-            task553(dbm);
-            //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
 
 		}catch(Exception ex){
 			throw ex;
@@ -501,50 +497,4 @@ public class QM001UpdateMasterTask {
     }     
     // [ID:0000493][Tozo TANAKA] 2009/04/28 add end 【DB補正】不正なサービスデータ(特定診療費等)削除対応
     
-    // [ID:0000612][Shin Fujihara] 2010/11 add begin 2010年度対応
-    /**
-     * 2010年度対応　利用者向け請求機能拡張に伴うスキーマ変更(V553)
-     * @param dbm
-     * @throws Exception
-     * 
-     * @author Shin Fujihara
-     * @since V553
-     */
-    public void task553(ACDBManager dbm) throws Exception{
-        try{ 
-            QM001UpdateMasterOperation op = new QM001UpdateMasterOperation();
-            
-            // スキーマの変更が必要か確認
-            VRList list = dbm.executeQuery(op.getSQL_EXIST_CLAIM_PATIENT_DETAIL_PROVIDER_ID());
-            if (0 < list.size()) {
-            	return;
-            }
-            
-            //
-            list = dbm.executeQuery(op.getSQL_GET_CLAIM_PATIENT_DETAIL_PRIMARY());
-            if (0 < list.size()) {
-                VRMap sqlParam = new VRHashMap();
-                sqlParam.put("CONSTRAINT_NAME", ((VRMap)list.get(0)).get("RDB$CONSTRAINT_NAME"));
-                
-                //プライマリキー削除
-                dbm.executeUpdate(op.getSQL_DROP_CLAIM_PATIENT_DETAIL_PRIMARY(sqlParam));
-            }
-            
-            //列追加
-            dbm.executeUpdate(op.getSQL_ADD_CLAIM_PATIENT_DETAIL_SERVICE_CODE_KIND());
-            
-            //プライマリキー再作成
-            dbm.executeUpdate(op.getSQL_MAKE_CLAIM_PATIENT_DETAIL_PRIMARY());
-            
-            //列追加その２
-            dbm.executeUpdate(op.getSQL_ADD_FIXED_FORM_PROVIDER_ID());
-            
-            dbm.commitTransaction();
-            
-        }catch(Exception ex){
-            dbm.rollbackTransaction();
-            throw ex;
-        }
-    }
-    //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
 }

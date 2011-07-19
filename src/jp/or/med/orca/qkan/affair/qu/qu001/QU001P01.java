@@ -228,6 +228,15 @@ public class QU001P01 extends QU001P01Event {
 		    		
 	    	}
 	    	
+	    	// •ÛŒ¯Ò”Ô†‚ğİ’è‚·‚é
+	    	if(VRBindPathParser.has("INSURER_ID", patientMap)){
+		    	ACChotarouXMLUtilities.setValue(
+		    			writer, 
+						patientMap, 
+						"INSURER_ID", 
+						"patients.h" + (j + 1) + ".patientInsurerId");
+	    	}
+	    	
 		    // ZŠ‚ğİ’è‚·‚éB
 	    	if(VRBindPathParser.has("PATIENT_ADDRESS", patientMap)){
 			    ACChotarouXMLUtilities.setValue(

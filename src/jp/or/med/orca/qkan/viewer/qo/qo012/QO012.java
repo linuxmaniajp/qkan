@@ -713,10 +713,14 @@ public class QO012 extends QO012Event {
 
 					if ("01".equals(claimTotalData.getData("CLAIM_STATUS"))) {
 						// サービス件数を取得
-						totalMap.setData("TOTAL3", ACCastUtilities.toInteger(ACBindUtilities.getMatchListFromValue((VRList) annualTotalList, "SERVICE_FLAG", ON).size()));
+						//FIXME
+						//totalMap.setData("TOTAL3", ACCastUtilities.toInteger(ACBindUtilities.getMatchListFromValue((VRList) annualTotalList, "SERVICE_FLAG", ON).size()));
+						totalMap.setData("TOTAL3", getServiceCount(annualTotalList)); 
 					} else {
 						// PLAN_FLAGで抽出し、プラン件数を取得
-						totalMap.setData("TOTAL4", ACCastUtilities.toInteger(ACBindUtilities.getMatchListFromValue((VRList) annualTotalList, "PLAN_FLAG", ON).size()));
+						//FIXME
+						//totalMap.setData("TOTAL4", ACCastUtilities.toInteger(ACBindUtilities.getMatchListFromValue((VRList) annualTotalList, "PLAN_FLAG", ON).size()));
+						totalMap.setData("TOTAL4", getPlanCount(annualTotalList));
 					}
 
 					claimUnit = claimUnit + ACCastUtilities.toInt(claimTotalData.getData("CLAIM_UNIT"));
@@ -1585,4 +1589,82 @@ public class QO012 extends QO012Event {
 	    }
 	    return insurer_id;
 	}
+	
+	
+	// FIXME
+	
+	private static Set serviceCodeSet = new HashSet();
+	private static Set planCodeSet = new HashSet();
+	
+	static {
+		serviceCodeSet.add("11");
+		serviceCodeSet.add("12");
+		serviceCodeSet.add("13");
+		serviceCodeSet.add("14");
+		serviceCodeSet.add("15");
+		serviceCodeSet.add("16");
+		serviceCodeSet.add("17");
+		serviceCodeSet.add("21");
+		serviceCodeSet.add("22");
+		serviceCodeSet.add("23");
+		serviceCodeSet.add("31");
+		serviceCodeSet.add("32");
+		serviceCodeSet.add("33");
+		serviceCodeSet.add("36");
+		serviceCodeSet.add("38");
+		serviceCodeSet.add("51");
+		serviceCodeSet.add("52");
+		serviceCodeSet.add("53");
+		serviceCodeSet.add("54");
+		serviceCodeSet.add("71");
+		serviceCodeSet.add("72");
+		serviceCodeSet.add("73");
+		serviceCodeSet.add("61");
+		serviceCodeSet.add("62");
+		serviceCodeSet.add("63");
+		serviceCodeSet.add("64");
+		serviceCodeSet.add("65");
+		serviceCodeSet.add("66");
+		serviceCodeSet.add("67");
+		serviceCodeSet.add("24");
+		serviceCodeSet.add("25");
+		serviceCodeSet.add("26");
+		serviceCodeSet.add("34");
+		serviceCodeSet.add("35");
+		serviceCodeSet.add("74");
+		serviceCodeSet.add("75");
+		serviceCodeSet.add("37");
+		serviceCodeSet.add("39");
+		
+		planCodeSet.add("43");
+		planCodeSet.add("46");
+	}
+	
+	private Integer getServiceCount(List list) {
+		return getMatrixOnCount(list, serviceCodeSet);
+	}
+	private Integer getPlanCount(List list) {
+		return getMatrixOnCount(list, planCodeSet);
+	}
+	
+	private Integer getMatrixOnCount(List list, Set targetSet) {
+		VRMap row = null;
+		Iterator listIt = list.iterator();
+		int count = 0;
+		
+		while(listIt.hasNext()) {
+			row = (VRMap)listIt.next();
+			Iterator rowIt = row.keySet().iterator();
+			while(rowIt.hasNext()) {
+				String key = (String)rowIt.next();
+				if (serviceCodeSet.contains(key)) {
+					if (MATRIX_ON.equals(row.get(key))){
+						count++;
+					}
+				}
+			}
+		}
+		return new Integer(count);
+	}
+	
 }
