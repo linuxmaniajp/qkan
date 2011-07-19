@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2010/11/05  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2011/03/23  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -442,6 +442,22 @@ public class QS001199_H2104State extends QS001199_H2104Design {
 
         if(getConcentratedRehabilitation().getParent()!=null){
           getConcentratedRehabilitation().getParent().remove(getConcentratedRehabilitation());
+        }
+
+        if(getRehabilitationSystem1Combo().getParent()!=null){
+          getRehabilitationSystem1Combo().getParent().remove(getRehabilitationSystem1Combo());
+        }
+
+        if(getRehabilitationSystem2Combo().getParent()!=null){
+          getRehabilitationSystem2Combo().getParent().remove(getRehabilitationSystem2Combo());
+        }
+
+        if(getRehabilitationSystem3Combo().getParent()!=null){
+          getRehabilitationSystem3Combo().getParent().remove(getRehabilitationSystem3Combo());
+        }
+
+        if(getRehabilitationSystem3Container().getParent()!=null){
+          getRehabilitationSystem3Container().getParent().remove(getRehabilitationSystem3Container());
         }
 
   }

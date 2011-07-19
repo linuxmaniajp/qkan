@@ -808,7 +808,7 @@ public class QS001199_H2104 extends QS001199_H2104Event {
       if(sizeDown){
           setSize(600, 280);
       }else{
-          setSize(800, 605);
+          setSize(800, 625);
       }
 
       // リハビリ強化体制加算コンボ(rehabilitationsystem1Combo)が選択されていれば、リハビリ強化体制加算チェック(rehabilitationsystem1)を選択する。

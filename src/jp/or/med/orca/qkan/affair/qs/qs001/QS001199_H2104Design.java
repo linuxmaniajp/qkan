@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/11/05  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2011/05/17  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -564,7 +564,7 @@ public class QS001199_H2104Design extends QkanAffairDialog {
 
       scienceTherapy.setText("理学療法");
 
-      scienceTherapy.setPreferredSize(new Dimension(1,125));
+      scienceTherapy.setPreferredSize(new Dimension(1,130));
 
       addScienceTherapy();
     }
@@ -1020,7 +1020,7 @@ public class QS001199_H2104Design extends QkanAffairDialog {
 
       workTherapyFrame.setAutoWrap(false);
 
-      workTherapyFrame.setPreferredSize(new Dimension(1,100));
+      workTherapyFrame.setPreferredSize(new Dimension(1,105));
 
       addWorkTherapyFrame();
     }
@@ -1330,7 +1330,7 @@ public class QS001199_H2104Design extends QkanAffairDialog {
 
       etcFrame.setText("その他");
 
-      etcFrame.setPreferredSize(new Dimension(1,110));
+      etcFrame.setPreferredSize(new Dimension(1,130));
 
       addEtcFrame();
     }
@@ -1785,7 +1785,7 @@ public class QS001199_H2104Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(800, 600);
+      setSize(800, 625);
 
       // ウィンドウを中央に配置
       Point pos;

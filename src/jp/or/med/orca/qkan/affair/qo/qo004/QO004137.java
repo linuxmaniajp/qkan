@@ -133,7 +133,11 @@ public class QO004137 extends QO004137Event {
 						getUnitSemiRoom().setText(cost);
 						break;
 					// ]—ˆŒ^ŒÂº
-					case 5:
+					// [ID:0000644][Shin Fujihara] 2011/04/21 edit begin
+					// ‹àŠz‰Šú’l‚Ì•ªŠòŒë‚è
+					//case 5:
+					case 4:
+					// [ID:0000644][Shin Fujihara] 2011/04/21 edit end
 						getNormalRoom().setText(cost);
 						break;
 					// ‘½°º
