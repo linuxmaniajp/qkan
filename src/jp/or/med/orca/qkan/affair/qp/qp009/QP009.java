@@ -29,7 +29,7 @@
 
 package jp.or.med.orca.qkan.affair.qp.qp009;
 
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 
 /**
  * “`‘—Šm”F(QP009)

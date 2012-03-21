@@ -25,7 +25,7 @@ public class ModuleCopyTask extends AbstractTask{
 	/**
 	 * 実行するタスク情報
 	 */
-	private ArrayList taskList = new ArrayList();
+	private ArrayList<CopyTask> taskList = new ArrayList<CopyTask>();
 	
 	/**
 	 * Windows 用のバージョン情報を設定する

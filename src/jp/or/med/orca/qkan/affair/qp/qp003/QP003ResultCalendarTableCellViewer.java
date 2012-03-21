@@ -1,14 +1,10 @@
 package jp.or.med.orca.qkan.affair.qp.qp003;
 
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.util.EventObject;
 
-import javax.swing.FocusManager;
 import javax.swing.JTable;
 
 import jp.nichicom.ac.component.table.ACTableCellViewer;
-import jp.nichicom.vr.component.table.VRTableColumnModel;
 
 /**
  * Project code name "ORCA"

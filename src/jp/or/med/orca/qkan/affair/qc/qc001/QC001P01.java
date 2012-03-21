@@ -29,7 +29,6 @@
 
 package jp.or.med.orca.qkan.affair.qc.qc001;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -38,14 +37,12 @@ import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
-import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.VRDateFormat;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
-import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 
@@ -409,7 +406,7 @@ public class QC001P01 extends QC001P01Event {
         // 行数ごとのリスト形式に変換する
         List listPurpose = Arrays.asList(strPurpose);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         // 行数分ループする
         for (int i = 0; i < listPurpose.size(); i++) {
@@ -433,7 +430,7 @@ public class QC001P01 extends QC001P01Event {
 
         List listPlanComment = Arrays.asList(strPlanComment);
         // 初期化
-        sb = new StringBuffer();
+        sb = new StringBuilder();
 
         for (int i = 0; i < listPlanComment.size(); i++) {
             sb.append(listPlanComment.get(i));

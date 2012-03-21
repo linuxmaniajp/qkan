@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/08/03  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/02/24  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -275,6 +275,10 @@ public class QO002State extends QO002Design {
         getInsurerLimitRateDeleteButton().setEnabled(false);
 
         getInsurerLimitRateEnableCheck().setEnabled(false);
+
+        getInsurerLimitRateInfos().setVisible(false);
+
+        getInsurerLimitPanel().setVisible(false);
 
   }
 

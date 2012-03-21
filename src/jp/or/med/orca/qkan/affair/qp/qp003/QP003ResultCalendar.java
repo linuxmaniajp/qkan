@@ -2,43 +2,27 @@ package jp.or.med.orca.qkan.affair.qp.qp003;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Label;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
-
-import javax.swing.FocusManager;
-import javax.swing.JViewport;
 import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.table.ACCellStylizableTable;
 import jp.nichicom.ac.component.table.ACCheckBoxTableColumnPopupMenu;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableColumn;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.text.ACBorderBlankDateFormat;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
-import jp.nichicom.vr.component.table.VRTablar;
 import jp.nichicom.vr.component.table.VRTableCellViewer;
 import jp.nichicom.vr.component.table.VRTableColumnModel;
 import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.QkanCommon;
-import jp.or.med.orca.qkan.QkanSystemInformation;
-import jp.or.med.orca.qkan.text.QkanServiceKindNameFormat;
 
 /**
  * Project code name "ORCA"

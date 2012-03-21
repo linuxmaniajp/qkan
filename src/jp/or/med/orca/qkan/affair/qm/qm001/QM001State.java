@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/03/11  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2012/02/03  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -28,55 +28,6 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qm.qm001;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
 /**
  * ログイン画面状態定義(QM001) 
  */
@@ -263,6 +214,8 @@ public class QM001State extends QM001Design {
 
         getShareDBs().setVisible(false);
 
+        getDbSchemaError().setVisible(false);
+
   }
 
   /**
@@ -295,6 +248,8 @@ public class QM001State extends QM001Design {
 
         getShareDBs().setVisible(false);
 
+        getDbSchemaError().setVisible(false);
+
   }
 
   /**
@@ -326,6 +281,42 @@ public class QM001State extends QM001Design {
         getDbVersionError().setVisible(true);
 
         getShareDBs().setVisible(false);
+
+        getDbSchemaError().setVisible(false);
+
+  }
+
+  /**
+   * 「SCHEMAバージョンエラー」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_SCHEMA_VERSION() throws Exception {
+
+        getVersionErros().setVisible(false);
+
+        getStart().setEnabled(false);
+
+        getDbErros().setVisible(true);
+
+        getNoProviders().setVisible(false);
+
+        getNoInsurers().setVisible(false);
+
+        getNoPatients().setVisible(false);
+
+        getNoPDFViewers().setVisible(false);
+
+        getNoErrors().setVisible(false);
+
+        getDbConnectionError().setVisible(false);
+
+        getDbmsError().setVisible(false);
+
+        getDbVersionError().setVisible(false);
+
+        getShareDBs().setVisible(false);
+
+        getDbSchemaError().setVisible(true);
 
   }
 

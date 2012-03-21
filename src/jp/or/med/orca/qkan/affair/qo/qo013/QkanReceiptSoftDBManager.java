@@ -34,28 +34,29 @@ import java.net.SocketException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-import jp.or.med.orca.qkan.QkanCommon;
-import jp.or.med.orca.qkan.QkanConstants;
+
 import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.core.ACAffairContainer;
+import jp.nichicom.ac.io.ACAgeEncorder;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
-import jp.nichicom.ac.*;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.splash.ACSplash;
 import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.ac.util.splash.ACStopButtonSplash;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
-import jp.or.med.orca.qkan.QkanConstants;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
+import jp.or.med.orca.qkan.QkanCommon;
 
 /** TODO <HEAD_IKENSYO> */
 public class QkanReceiptSoftDBManager {
@@ -215,6 +216,13 @@ public class QkanReceiptSoftDBManager {
     // 接続済みであるか
     private boolean connected = false;
 
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+    private final int STATE_NOT_NEED = 1;
+    private final int STATE_NEED = 2;
+    private final int STATE_DEDUPLICATION = 3;
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+    
+    
     /**
      * dbsサーバーに接続するコンストラクタです。
      * 
@@ -1109,19 +1117,23 @@ protected void execData(final Map rec) throws IOException, Exception {
         throw e;
     }
 }
-    /**
-     * SELECT 文を発行する。
-     * 
-     * @param table テーブル名
-     * @param whereCondition WHERE句マップ
-     * @return 実行結果
-     * @throws Exception 実行時例外
-     */
-    public int executeQuery(ACDBManager dbm, String table, Map whereCondition)
-            throws Exception {
-        return executeQuery(dbm, table, "", whereCondition);
-    }
-    
+
+
+//[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+//    /**
+//     * SELECT 文を発行する。
+//     * 
+//     * @param table テーブル名
+//     * @param whereCondition WHERE句マップ
+//     * @return 実行結果
+//     * @throws Exception 実行時例外
+//     */
+//    public int executeQuery(ACDBManager dbm, String table, Map whereCondition)
+//            throws Exception {
+//        return executeQuery(dbm, table, "", whereCondition);
+//    }
+//[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+
     
     /**
      * SELECT 文を発行する。
@@ -1174,84 +1186,176 @@ protected void execData(final Map rec) throws IOException, Exception {
         return STATUS_CODE_OK;
     }
 
-    /**
-     * SELECTストアドプロシージャを発行する。
-     * 
-     * @param procedure 発行するプロシージャ名
-     * @return 実行結果
-     * @throws Exception 実行時例外
-     */
-    public int executeQueryProcedure(ACDBManager dbm, String procedure) throws Exception {
-        return executeQuery(dbm, "", procedure, null);
-    }
-    /**
-     * SELECT 文を発行する。
-     * 
-     * @param table テーブル名
-     * @param procedure 発行するプロシージャ名
-     * @param whereCondition WHERE句マップ
-     * @return 実行結果
-     * @throws Exception 実行時例外
-     */
-    public int executeQuery(ACDBManager dbm, String table, String procedure,
-            Map whereCondition) throws Exception {
-        return executeQuery(dbm, table, procedure, whereCondition, null);
-    }
+    //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+//    /**
+//     * SELECTストアドプロシージャを発行する。
+//     * 
+//     * @param procedure 発行するプロシージャ名
+//     * @return 実行結果
+//     * @throws Exception 実行時例外
+//     */
+//    public int executeQueryProcedure(ACDBManager dbm, String procedure) throws Exception {
+//        return executeQuery(dbm, "", procedure, null);
+//    }
+//    /**
+//     * SELECT 文を発行する。
+//     * 
+//     * @param table テーブル名
+//     * @param procedure 発行するプロシージャ名
+//     * @param whereCondition WHERE句マップ
+//     * @return 実行結果
+//     * @throws Exception 実行時例外
+//     */
+//    public int executeQuery(ACDBManager dbm, String table, String procedure,
+//            Map whereCondition) throws Exception {
+//        return executeQuery(dbm, table, procedure, whereCondition, null);
+//    }
+//    
+    //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+    
     /**
      * 中間テーブルを初期化します。
      * @param dbm DBマネージャ
      * @throws Exception 処理例外
      */
     public static void clearAccessSpace(ACDBManager dbm) throws Exception{
-        try{
-            //ローカルIPに該当するレコードを消去
-            StringBuffer sb = new StringBuffer();
-            sb.append(" WHERE");
-            sb.append("(RECEIPT_ACCESS_SPACE.LOCAL_IP='");
-            sb.append(getLocalIP());
-            sb.append("')");
-            String where = sb.toString();
-            sb = new StringBuffer();
-            sb.append("DELETE FROM");
-            sb.append(" RECEIPT_ACCESS_SPACE");
-            sb.append(where);
-            dbm.executeUpdate(sb.toString());
-            sb = new StringBuffer();
-            sb.append("SELECT");
-            sb.append(" COUNT(*)");
-            sb.append(" FROM");
-            sb.append(" RECEIPT_ACCESS_SPACE");
-            sb.append(where);
-            dbm.executeQuery(sb.toString());
-        }catch(Exception ex){
-            //存在しなければ作成してみる
-            StringBuffer sb = new StringBuffer();
-            sb.append("CREATE TABLE");
-            sb.append(" RECEIPT_ACCESS_SPACE");
-            sb.append(" (");
-            sb.append(" LOCAL_IP VARCHAR(30) NOT NULL");
-            sb.append(",SERIAL_ID INTEGER NOT NULL");
-            sb.append(",PTID VARCHAR(10)");
-            sb.append(",NAME VARCHAR(100)");
-            sb.append(",KANANAME VARCHAR(100)");
-            sb.append(",SEX CHAR(1)");
-            sb.append(",BIRTHDAY CHAR(8)");
-            sb.append(",HOME_POST VARCHAR(7)");
-            sb.append(",HOME_ADRS VARCHAR(200)");
-            sb.append(",HOME_BANTI VARCHAR(200)");
-            sb.append(",HOME_TEL1 VARCHAR(15)");
-            sb.append(",LAST_TIME TIMESTAMP");
-            sb.append(",PRIMARY KEY (");
-            sb.append(" LOCAL_IP");
-            sb.append(",SERIAL_ID");
-            sb.append(" )");
-            sb.append(")");
-            dbm.executeUpdate(sb.toString());
-            dbm.commitTransaction();
-            //コミットしないとCREATEが反映されない
-            dbm.beginTransaction();
-        }
+        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+//        try{
+//            //ローカルIPに該当するレコードを消去
+//            StringBuilder sb = new StringBuilder();
+//            sb.append(" WHERE");
+//            sb.append("(RECEIPT_ACCESS_SPACE.LOCAL_IP='");
+//            sb.append(getLocalIP());
+//            sb.append("')");
+//            String where = sb.toString();
+//            sb = new StringBuilder();
+//            sb.append("DELETE FROM");
+//            sb.append(" RECEIPT_ACCESS_SPACE");
+//            sb.append(where);
+//            dbm.executeUpdate(sb.toString());
+//            sb = new StringBuilder();
+//            sb.append("SELECT");
+//            sb.append(" COUNT(*)");
+//            sb.append(" FROM");
+//            sb.append(" RECEIPT_ACCESS_SPACE");
+//            sb.append(where);
+//            dbm.executeQuery(sb.toString());
+//        }catch(Exception ex){
+//            //存在しなければ作成してみる
+//            StringBuilder sb = new StringBuilder();
+//            sb.append("CREATE TABLE");
+//            sb.append(" RECEIPT_ACCESS_SPACE");
+//            sb.append(" (");
+//            sb.append(" LOCAL_IP VARCHAR(30) NOT NULL");
+//            sb.append(",SERIAL_ID INTEGER NOT NULL");
+//            sb.append(",PTID VARCHAR(10)");
+//            sb.append(",NAME VARCHAR(100)");
+//            sb.append(",KANANAME VARCHAR(100)");
+//            sb.append(",SEX CHAR(1)");
+//            sb.append(",BIRTHDAY CHAR(8)");
+//            sb.append(",HOME_POST VARCHAR(7)");
+//            sb.append(",HOME_ADRS VARCHAR(200)");
+//            sb.append(",HOME_BANTI VARCHAR(200)");
+//            sb.append(",HOME_TEL1 VARCHAR(15)");
+//            sb.append(",LAST_TIME TIMESTAMP");
+//            sb.append(",PRIMARY KEY (");
+//            sb.append(" LOCAL_IP");
+//            sb.append(",SERIAL_ID");
+//            sb.append(" )");
+//            sb.append(")");
+//            dbm.executeUpdate(sb.toString());
+//            dbm.commitTransaction();
+//            //コミットしないとCREATEが反映されない
+//            dbm.beginTransaction();
+//        }
+        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        //テーブルの生成は、業務起動時に行うよう修正
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM");
+        sb.append(" RECEIPT_ACCESS_SPACE");
+        sb.append(" WHERE");
+        sb.append("(RECEIPT_ACCESS_SPACE.LOCAL_IP='");
+        sb.append(getLocalIP());
+        sb.append("')");
+        dbm.executeUpdate(sb.toString());
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+        
     }
+    
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+    // 通信で取得したデータの退避領域確保
+    // テーブルレイアウト変更に伴い、IkenshoReceiptSoftDBManagerで行っていたCREATE TABLE処理を
+    // 業務起動時に行うよう修正
+    public static void initReceiptAccessSpace(ACDBManager dbm) throws Exception {
+        
+        StringBuilder sql = null;
+
+        // RECEIPT_ACCESS_SPACEが存在するか、必要なフィールドが存在するか確認
+        // 検索するフィールドは、
+        // LOCAL_IP(旧バージョンでも存在)
+        // HOSPNUM(今回のバージョンで追加)
+        sql = new StringBuilder();
+        sql.append("SELECT COUNT(*) AS F_EXIST FROM RDB$RELATION_FIELDS");
+        sql.append(" WHERE");
+        sql.append(" RDB$FIELD_NAME IN ('LOCAL_IP', 'HOSPNUM')");
+        sql.append(" AND (RDB$RELATION_NAME = 'RECEIPT_ACCESS_SPACE')");
+
+        VRList list = dbm.executeQuery(sql.toString());
+        int count = ACCastUtilities.toInt(
+                ((VRMap) list.getData()).get("F_EXIST"), 0);
+
+        switch (count) {
+        // 検索結果0の場合は、そもそもテーブルが存在しない
+        case 0:
+
+            sql = new StringBuilder();
+
+            sql.append("CREATE TABLE");
+            sql.append(" RECEIPT_ACCESS_SPACE");
+            sql.append(" (");
+            sql.append(" LOCAL_IP VARCHAR(30) NOT NULL");
+            sql.append(",SERIAL_ID INTEGER NOT NULL");
+            sql.append(",HOSPNUM INTEGER NOT NULL");
+            sql.append(",CHECKED INTEGER NOT NULL");
+            sql.append(",PTID VARCHAR(10)");
+            sql.append(",NAME VARCHAR(100)");
+            sql.append(",KANANAME VARCHAR(100)");
+            sql.append(",SEX CHAR(1)");
+            sql.append(",BIRTHDAY CHAR(8)");
+            sql.append(",HOME_POST VARCHAR(7)");
+            sql.append(",HOME_ADRS VARCHAR(200)");
+            sql.append(",HOME_BANTI VARCHAR(200)");
+            sql.append(",HOME_TEL1 VARCHAR(15)");
+            sql.append(",LAST_TIME TIMESTAMP");
+            sql.append(",PRIMARY KEY (");
+            sql.append(" LOCAL_IP");
+            sql.append(",SERIAL_ID");
+            sql.append(" )");
+            sql.append(")");
+
+            dbm.executeUpdate(sql.toString());
+            dbm.commitTransaction();
+            break;
+
+        // 検索結果1の場合は、テーブルは存在するが、今回追加するHOSPNUM、CHECKEDのフィールドが存在しない
+        case 1:
+
+            // 列の追加実行
+            dbm.executeUpdate("ALTER TABLE RECEIPT_ACCESS_SPACE ADD HOSPNUM INTEGER NOT NULL");
+            dbm.executeUpdate("ALTER TABLE RECEIPT_ACCESS_SPACE ADD CHECKED INTEGER NOT NULL");
+            dbm.commitTransaction();
+            break;
+
+        // 検索結果が2件帰ってきていれば、補正済のため、処理終了
+        default:
+            return;
+        }
+
+    }
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+    
+    
     /**
      * ローカルホストのIPアドレスを返します。
      * @return IPアドレス
@@ -1281,8 +1385,14 @@ protected void execData(final Map rec) throws IOException, Exception {
      * @return 実行結果
      * @throws Exception 実行時例外
      */
+    //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+//    public int executeQuery(ACDBManager dbm, String table, String procedure,
+//            Map whereCondition, ACSplashable splash) throws Exception {
+    //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
     public int executeQuery(ACDBManager dbm, String table, String procedure,
-            Map whereCondition, ACSplashable splash) throws Exception {
+            Map whereCondition, ACSplashable splash, Map refiners) throws Exception {
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
         if (!isConnected()) {
             if (connect() != STATUS_CODE_OK) {
                 return -1;
@@ -1292,6 +1402,18 @@ protected void execData(final Map rec) throws IOException, Exception {
         if (beginTransaction() != STATUS_CODE_OK) {
             return -2;
         }
+        
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        //絞り込み条件を復元
+        int ageStart = Integer.MIN_VALUE;
+        int ageEnd = Integer.MAX_VALUE;
+        boolean deduplication = false;
+        if (refiners != null) {
+            ageStart = ACCastUtilities.toInt(refiners.get("AGE_START"), Integer.MIN_VALUE);
+            ageEnd = ACCastUtilities.toInt(refiners.get("AGE_END"), Integer.MAX_VALUE);
+            deduplication = ACCastUtilities.toBoolean(refiners.get("DEDUPLICATION"), false);
+        }
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
         // カーソルを設定
         HashMap map = execute(COMMAND_DBSELECT, table, procedure,
@@ -1300,6 +1422,11 @@ protected void execData(final Map rec) throws IOException, Exception {
         int count = 1;
 //        ACDBManager dbm;
         try {
+            
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+            VRList nowPatients = getQkanPatients(dbm);
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+            
             dbm.beginTransaction();
             // 移行領域をいったんすべて初期化
             clearAccessSpace(dbm);
@@ -1318,18 +1445,48 @@ protected void execData(final Map rec) throws IOException, Exception {
             String ip = getLocalIP();
             // 1行ずつ取得
             while (true) {
+                
                 map = execute(COMMAND_DBFETCH, table, procedure, whereCondition);
                 if ((map == null) || (map.size() <= 0)) {
                     break;
                 }
                 Object patientName = map.get("tbl_ptinf.NAME");
-
-                StringBuffer sb = new StringBuffer();
+                //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+                Object patientBirth = map.get("tbl_ptinf.BIRTHDAY");
+                
+                if (splash instanceof ACSplash) {
+                    // 状況表示
+                    String message = (count - 1) + " 件目";
+                    if (patientName != null) {
+                        message += " / " + patientName;
+                    }
+                    ((ACSplash) splash).setMessage(message);
+                    
+                    if(splash instanceof ACStopButtonSplash){
+                        if(((ACStopButtonSplash)splash).isStopRequested()){
+                            //停止要求を監視する
+                            break;
+                        }
+                    }
+                }
+                
+                //絞り込み条件チェック
+                int state = getDataState(patientName, patientBirth, ageStart, ageEnd, deduplication, nowPatients);
+                if (state == STATE_NOT_NEED) {
+                    continue;
+                }
+                //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+                
+                StringBuilder sb = new StringBuilder();
                 sb.append("INSERT INTO");
                 sb.append(" RECEIPT_ACCESS_SPACE");
                 sb.append(" (");
                 sb.append(" LOCAL_IP");
                 sb.append(",SERIAL_ID");
+                //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+                sb.append(",HOSPNUM");
+                sb.append(",CHECKED");
+                //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
                 sb.append(",PTID");
                 sb.append(",NAME");
                 sb.append(",KANANAME");
@@ -1347,31 +1504,24 @@ protected void execData(final Map rec) throws IOException, Exception {
                 sb.append(",");
                 sb.append(count++);
                 sb.append(",");
+                //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+                int hospnum = 0;
+                if (map.containsKey("tbl_ptinf.HOSPNUM")) {
+                    hospnum = ACCastUtilities.toInt(map.get("tbl_ptinf.HOSPNUM"), 0);
+                }
+                sb.append(Integer.toString(hospnum));
+                sb.append(",");
+                
+                //重複時は、チェックOFF
+                if (state == STATE_DEDUPLICATION) {
+                    sb.append("0, ");
+                } else {
+                    sb.append("1, ");
+                }
+                //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
                 sb.append(ACConstants.FORMAT_SQL_STRING.format(map.get("tbl_ptinf.PTID")));
                 sb.append(",");
                 
-                
-                // 2006/02/11[Tozo Tanaka] : replace begin
-                // TODO canChange?
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(patientName));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.KANANAME")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.SEX")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.BIRTHDAY")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.HOME_POST")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.HOME_ADRS")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.HOME_BANTI")));
                 sb.append(ACConstants.FORMAT_SQL_STRING
                         .format(getORCADecodeString(patientName, encode)));
                 sb.append(",");
@@ -1395,7 +1545,6 @@ protected void execData(final Map rec) throws IOException, Exception {
                 sb.append(ACConstants.FORMAT_SQL_STRING
                         .format(getORCADecodeString(map
                                 .get("tbl_ptinf.HOME_BANTI"), encode)));
-                // 2006/02/11[Tozo Tanaka] : replace end
                 
                 
                 sb.append(",");
@@ -1406,24 +1555,10 @@ protected void execData(final Map rec) throws IOException, Exception {
 
                 dbm.executeUpdate(sb.toString());
                 
-                if (splash instanceof ACSplash) {
-                    // 状況表示
-                    String message = (count - 1) + " 件目";
-                    if (patientName != null) {
-                        message += " / " + patientName;
-                    }
-                    ((ACSplash) splash).setMessage(message);
-                    
-                    if(splash instanceof ACStopButtonSplash){
-                        if(((ACStopButtonSplash)splash).isStopRequested()){
-                            //停止要求を監視する
-                            break;
-                        }
-                    }
-                }
             }
-
+            
             dbm.commitTransaction();
+            
         } catch (Exception ex) {
             if(dbm!=null){
                 dbm.rollbackTransaction();
@@ -1439,6 +1574,79 @@ protected void execData(final Map rec) throws IOException, Exception {
         return count-1;
     }
     //2006/02/09[Tozo Tanaka] : replace end 
+    
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+    private VRList getQkanPatients(ACDBManager dbm) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT");
+        sb.append(" PATIENT_FAMILY_NAME");
+        sb.append(",PATIENT_FIRST_NAME");
+        sb.append(",PATIENT_BIRTHDAY");
+        sb.append(" FROM");
+        sb.append(" PATIENT");
+        sb.append(" WHERE");
+        sb.append(" (DELETE_FLAG = 0)");
+        return dbm.executeQuery(sb.toString());
+    }
+    
+    //表示して良いデータかチェック(年齢範囲、重複)
+    private int getDataState(
+            Object patientName,
+            Object patientBirth,
+            int ageStart,
+            int ageEnd,
+            boolean deduplication,
+            VRList nowPatients) throws Exception {
+        
+        
+        //日レセに登録されている生年月日を取得
+        Date srcBirthDate = ACCastUtilities.toDate(patientBirth, null);
+        //変換失敗
+        if (srcBirthDate == null) {
+            return STATE_NEED;
+        }
+        
+        //生年月日から年齢を算出
+        int age = ACAgeEncorder.getInstance().toAge(srcBirthDate);
+        //指定された年齢範囲外の場合は除外
+        if ((age < ageStart) || (ageEnd < age)) {
+            return STATE_NOT_NEED;
+        }
+        
+        //氏名・生年月日の重複チェック
+        if (nowPatients == null) {
+            return STATE_NEED;
+        }
+        
+        int end = nowPatients.size();
+        for (int i = 0; i < end; i++) {
+            VRMap row = (VRMap) nowPatients.getData(i);
+            
+            String nowName = QkanCommon.toFullName(VRBindPathParser.get(
+                    "PATIENT_FAMILY_NAME", row), VRBindPathParser.get(
+                    "PATIENT_FIRST_NAME", row));
+            String nowBirth = "";
+            Object nowObj = VRBindPathParser.get("PATIENT_BIRTHDAY", row);
+            if (nowObj instanceof Date) {
+                nowBirth = VRDateParser.format((Date) nowObj, "yyyyMMdd");
+            }
+            
+            String srcBirth = VRDateParser.format(srcBirthDate, "yyyyMMdd");
+            
+            //名前と生年月日が一致したら重複とみなす
+            if (nowName.equals(patientName) && (srcBirth.equals(nowBirth))) {
+                //絞り込み条件・重複除外
+                if (deduplication) {
+                    return STATE_NOT_NEED;
+                } else {
+                    return STATE_DEDUPLICATION;
+                }
+            }
+        }
+        
+        return STATE_NEED;
+    }
+    //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
     /**
      * 引数のマップ値をVRHashMapとして返します。

@@ -28,60 +28,22 @@
  */
 package jp.or.med.orca.qkan.affair.qo.qo003;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Stack;
 
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
+import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.text.ACSQLSafeStringFormat;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.text.QkanProviderAreaTypeFormat;
+import jp.or.med.orca.qkan.text.QkanProviderJigyoTypeFormat;
 
 /**
  * 事業所一覧(QO003P01) 帳票定義体ファイル名 ： QO003P01.xml
@@ -216,7 +178,7 @@ public class QO003P01 {//extends QO003P01Event {
             if (!providerDetail.isEmpty()) {
                 // 提供サービスが1個以上ある場合
                 // 提供サービス結合結果をあらわす文字列を宣言する。
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 // 提供サービス結合結果に、サービスマスタをもとに1つめの提供サービスの略称を格納する。
                 VRMap map = (VRMap) providerDetail.getData(0);
                 sb.append(VRBindPathParser.get("SERVICE_CALENDAR_ABBREVIATION",
@@ -276,7 +238,7 @@ public class QO003P01 {//extends QO003P01Event {
      * @return SQL文
      */
     public String getSQL_GET_SERVICE_CALENDAR_NAME(VRMap sqlParam) throws Exception{
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       Object[] inValues;
       Stack conditionStack = new Stack();
       boolean firstCondition = true;

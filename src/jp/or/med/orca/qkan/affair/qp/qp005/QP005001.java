@@ -28,14 +28,20 @@
  */
 package jp.or.med.orca.qkan.affair.qp.qp005;
 
-import java.awt.event.*;
-import java.util.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.util.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.util.Date;
+import java.util.Map;
+
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * ì¡íËêfó√îÔÉåÉRÅ[Éhí«â¡(QP005001) 

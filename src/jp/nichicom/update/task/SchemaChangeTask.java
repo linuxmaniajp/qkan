@@ -15,7 +15,7 @@ public class SchemaChangeTask extends AbstractTask{
 	/**
 	 * 実行するタスクデータを保持する。
 	 */
-	private ArrayList taskList = new ArrayList();
+	private ArrayList<String> taskList = new ArrayList<String>();
 	
 	/**
 	 * タスクを設定する。

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者一覧
- * 作成日: 2011/03/02  日本コンピューター株式会社 利用者一覧 新規作成
+ * 作成日: 2011/12/15  日本コンピューター株式会社 利用者一覧 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -28,56 +28,13 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu001;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.text.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
+import java.util.Stack;
+
+import jp.nichicom.ac.text.ACSQLSafeDateFormat;
+import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
+import jp.nichicom.ac.text.ACSQLSafeStringFormat;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * 利用者一覧SQL定義(QU001) 
@@ -97,7 +54,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_PATIENT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -286,7 +243,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_DELETE_PATIENT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -326,7 +283,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_NINTEI_NOW(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -402,7 +359,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_NINTEI_FUTURE(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -500,7 +457,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_NINTEI_PAST(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -598,7 +555,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_KYOTAKU_RYOYO_PATIENT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -849,7 +806,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_CARE_MANAGER(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -899,7 +856,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_GET_KYOTAKU_RYOYO_TARGET_PATIENT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -961,7 +918,7 @@ public class QU001SQL extends QU001State {
    * @return SQL文
    */
   public String getSQL_UPDATE_KYOTAKU_RYOYO_FINISH_FLAG(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -1002,6 +959,42 @@ public class QU001SQL extends QU001State {
     sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
 
     sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_NINTEI_ALL(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",INSURER_ID");
+
+    sb.append(",INSURED_ID");
+
+    sb.append(",JOTAI_CODE");
+
+    sb.append(",INSURE_VALID_START");
+
+    sb.append(",INSURE_VALID_END");
+
+    sb.append(",PROVIDER_ID");
+
+    sb.append(" FROM");
+
+    sb.append(" PATIENT_NINTEI_HISTORY");
 
     return sb.toString();
   }

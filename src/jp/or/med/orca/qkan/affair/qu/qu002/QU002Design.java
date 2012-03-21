@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2007/11/05  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2011/12/19  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -28,60 +28,51 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu002;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.im.InputSubset;
+
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.TableColumn;
+
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.component.ACAffairButton;
+import jp.nichicom.ac.component.ACAffairButtonBar;
+import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACKanaSendTextField;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACRadioButtonItem;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.component.ACTimeTextField;
+import jp.nichicom.ac.component.table.ACTable;
+import jp.nichicom.ac.component.table.ACTableCellViewer;
+import jp.nichicom.ac.component.table.ACTableColumn;
+import jp.nichicom.ac.container.ACBackLabelContainer;
+import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACAffairable;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.text.ACBorderBlankDateFormat;
+import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
+import jp.nichicom.ac.util.adapter.ACListModelAdapter;
+import jp.nichicom.vr.component.table.VRTableColumnModel;
+import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
+import jp.or.med.orca.qkan.affair.QkanAffairContainer;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.component.QkanDateTextField;
 /**
  * 利用者登録画面項目デザイン(QU002) 
  */
+@SuppressWarnings("serial")
 public class QU002Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
 
@@ -180,8 +171,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private ACLabelContainer basicInfoAddressContainer;
 
   private ACPanel infoButtons;
-
-  private ACButton toHokanInfoButton;
 
   private ACButton toKohiInfoButton;
 
@@ -1430,25 +1419,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 医療看護情報を取得します。
-   * @return 医療看護情報
-   */
-  public ACButton getToHokanInfoButton(){
-    if(toHokanInfoButton==null){
-
-      toHokanInfoButton = new ACButton();
-
-      toHokanInfoButton.setText("医療看護情報");
-
-      toHokanInfoButton.setToolTipText("医療看護情報画面に遷移します。");
-
-      addToHokanInfoButton();
-    }
-    return toHokanInfoButton;
-
-  }
-
-  /**
    * 公費・社福軽減情報を取得します。
    * @return 公費・社福軽減情報
    */
@@ -2372,8 +2342,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (有効期間・コンテナ)を取得します。
-   * @return (有効期間・コンテナ)
+   * (支給限度額・コンテナ)を取得します。
+   * @return (支給限度額・コンテナ)
    */
   public ACLabelContainer getKaigoInfoProvideLimitContena(){
     if(kaigoInfoProvideLimitContena==null){
@@ -2431,8 +2401,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (有効期間・コンテナ)を取得します。
-   * @return (有効期間・コンテナ)
+   * (外部利用型給付上限単位数・コンテナ)を取得します。
+   * @return (外部利用型給付上限単位数・コンテナ)
    */
   public ACLabelContainer getKaigoInfoExternalUseLimitContena(){
     if(kaigoInfoExternalUseLimitContena==null){
@@ -4750,16 +4720,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addInfoButtons(){
 
-    infoButtons.add(getToHokanInfoButton(), VRLayout.FLOW_RETURN);
-
     infoButtons.add(getToKohiInfoButton(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 医療看護情報に内部項目を追加します。
-   */
-  protected void addToHokanInfoButton(){
 
   }
 
@@ -5146,7 +5107,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (有効期間・コンテナ)に内部項目を追加します。
+   * (支給限度額・コンテナ)に内部項目を追加します。
    */
   protected void addKaigoInfoProvideLimitContena(){
 
@@ -5171,7 +5132,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (有効期間・コンテナ)に内部項目を追加します。
+   * (外部利用型給付上限単位数・コンテナ)に内部項目を追加します。
    */
   protected void addKaigoInfoExternalUseLimitContena(){
 

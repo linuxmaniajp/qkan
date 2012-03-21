@@ -28,58 +28,22 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp005;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
+
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * 明細書詳細編集イベント定義(QP005) 
@@ -799,6 +763,7 @@ public abstract class QP005Event extends QP005SQL {
   public static final int CATEGORY_NO8 = 8;
   public static final int CATEGORY_NO9 = 9;
   public static final int CATEGORY_NO10 = 10;
+  public static final int CATEGORY_NO17 = 17;
   public static final int FORMAT_STYLE2 = 10211;
   public static final int FORMAT_STYLE22 = 10212;
   public static final int FORMAT_STYLE3 = 10311;
@@ -813,6 +778,7 @@ public abstract class QP005Event extends QP005SQL {
   public static final int FORMAT_STYLE64 = 10614;
   public static final int FORMAT_STYLE65 = 10615;
   public static final int FORMAT_STYLE66 = 10616;
+  public static final int FORMAT_STYLE67 = 10617;
   public static final int FORMAT_STYLE7 = 10711;
   public static final int FORMAT_STYLE72 = 10712;
   public static final int FORMAT_STYLE8 = 10811;

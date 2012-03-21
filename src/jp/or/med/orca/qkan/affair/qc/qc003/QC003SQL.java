@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 老人訪問看護・訪問看護情報提供書
- * 作成日: 2006/04/16  日本コンピューター株式会社 老人訪問看護・訪問看護情報提供書 新規作成
+ * 作成日: 2011/12/19  日本コンピューター株式会社 老人訪問看護・訪問看護情報提供書 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -28,56 +28,13 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qc.qc003;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.text.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
+import java.util.Stack;
+
+import jp.nichicom.ac.text.ACSQLSafeDateFormat;
+import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
+import jp.nichicom.ac.text.ACSQLSafeStringFormat;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * 老人訪問看護・訪問看護情報提供書SQL定義(QC003) 
@@ -97,10 +54,10 @@ public class QC003SQL extends QC003State {
    * @return SQL文
    */
   public String getSQL_GET_HOMONKANGO_JOHO_TEIKYOSHO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -193,102 +150,16 @@ public class QC003SQL extends QC003State {
   }
 
   /**
-   * 「訪問看護ステーション履歴情報を」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_HOMONAKNGO_STATION_HISTORY(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
-
-    sb.append("SELECT");
-
-    sb.append(" PATIENT_STATION_HISTORY.DOCTOR_NAME");
-
-    sb.append(",MEDICAL_FACILITY.MEDICAL_FACILITY_ADDRESS");
-
-    sb.append(" FROM");
-
-    sb.append(" PATIENT_STATION_HISTORY");
-
-    sb.append(",MEDICAL_FACILITY");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_STATION_HISTORY.PATIENT_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append(" AND");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_STATION_HISTORY.STATION_HISTORY_ID");
-
-    sb.append(" =");
-
-    sb.append(" 1");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_ID");
-
-    sb.append(" =");
-
-    sb.append(" (");
-
-    sb.append("SELECT");
-
-    sb.append(" PATIENT_STATION_HISTORY.MEDICAL_FACILITY_ID");
-
-    sb.append(" FROM");
-
-    sb.append(" PATIENT_STATION_HISTORY");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_STATION_HISTORY.PATIENT_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append(")");
-
-    sb.append(")");
-
-    return sb.toString();
-  }
-
-  /**
    * 「訪問看護の情報提供書の情報を」のためのSQLを返します。
    * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
    * @return SQL文
    */
   public String getSQL_INSERT_JOHO_TEIKYOSHO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -477,10 +348,10 @@ public class QC003SQL extends QC003State {
    * @return SQL文
    */
   public String getSQL_UPDATE_JOHO_TEIKYOSHO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");
@@ -745,10 +616,10 @@ public class QC003SQL extends QC003State {
    * @return SQL文
    */
   public String getSQL_GET_LAST_HOMONKANGO_JOHO_TEIKYOSHO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -868,294 +739,6 @@ public class QC003SQL extends QC003State {
     sb.append(")");
 
     sb.append(")");
-
-    sb.append(")");
-
-    return sb.toString();
-  }
-
-  /**
-   * 「訪問看護の実施日数を取得する。」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_HOMONKANGO_RESULT_DAY(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
-
-    sb.append("SELECT");
-
-    sb.append(" COUNT(DISTINCT SERVICE_DATE)");
-
-    sb.append(" AS RESULT_DAY_COUNT");
-
-    sb.append(" FROM");
-
-    sb.append(" SERVICE");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" SERVICE_DATE ");
-
-    sb.append(" >=");
-
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" SERVICE_DATE ");
-
-    sb.append(" <=");
-
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" SERVICE_USE_TYPE");
-
-    sb.append(" =");
-
-    sb.append(" 6");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append("  SYSTEM_SERVICE_KIND_DETAIL");
-
-    sb.append(" =");
-
-    sb.append(" 20101");
-
-    sb.append(")");
-
-    return sb.toString();
-  }
-
-  /**
-   * 「訪問看護の実施回数を取得する。」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_HOMONKANGO_RESULT_COUNT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
-
-    sb.append("SELECT");
-
-    sb.append(" COUNT(SERVICE_DATE)");
-
-    sb.append(" AS RESULT_COUNT");
-
-    sb.append(" FROM");
-
-    sb.append(" SERVICE");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" SERVICE_DATE ");
-
-    sb.append(" >=");
-
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" SERVICE_DATE ");
-
-    sb.append(" <=");
-
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" SERVICE_USE_TYPE");
-
-    sb.append(" =");
-
-    sb.append(" 6");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append("  SYSTEM_SERVICE_KIND_DETAIL");
-
-    sb.append(" =");
-
-    sb.append(" 20101");
-
-    sb.append(")");
-
-    return sb.toString();
-  }
-
-  /**
-   * 「情報提供先を取得する。」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_JOHO_TEIKYO_SAKI(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
-
-    sb.append("SELECT");
-
-    sb.append(" INSURER.INSURER_ID");
-
-    sb.append(",INSURER.INSURER_NAME");
-
-    sb.append(" FROM");
-
-    sb.append(" INSURER");
-
-    sb.append(",PATIENT_MEDICAL_HISTORY");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_MEDICAL_HISTORY.PATIENT_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_INSURER_ID");
-
-    sb.append(" =");
-
-    sb.append(" INSURER.INSURER_ID");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append("(");
-
-    sb.append(" INSURER.INSURER_TYPE");
-
-    sb.append(" <>");
-
-    sb.append(" 1");
-
-    sb.append(")");
-
-    sb.append("OR");
-
-    sb.append("(");
-
-    sb.append(" INSURER.INSURER_TYPE");
-
-    sb.append(" IS");
-
-    sb.append(" NULL");
-
-    sb.append(")");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" INSURER.DELETE_FLAG");
-
-    sb.append(" =");
-
-    sb.append(" 0");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
-
-    sb.append(" <=");
-
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
-
-    sb.append(" >=");
-
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
 
     sb.append(")");
 

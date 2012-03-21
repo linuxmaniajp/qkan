@@ -20,7 +20,7 @@ public class DataUpdateTask extends AbstractTask{
 	/**
 	 * 実行するデータ更新プランを保存する
 	 */
-	private ArrayList taskList = new ArrayList();
+	private ArrayList<UpdateTask> taskList = new ArrayList<UpdateTask>();
 	
 	/**
 	 * 実行するデータ更新プランを設定する
@@ -135,9 +135,9 @@ class UpdateTask{
 		BufferedReader reader = new BufferedReader(new FileReader("temp/temp.csv"));
 		String line;
 		String[] tempData;
-		ArrayList ary;
+		ArrayList<String> ary;
 		while((line=reader.readLine())!=null){
-			ary = new ArrayList();
+			ary = new ArrayList<String>();
 			tempData = line.split("\",\"");
 			for(int i = 0; i < tempData.length; i++){
 				if(0 == i){

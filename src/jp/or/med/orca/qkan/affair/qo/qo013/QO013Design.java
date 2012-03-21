@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2008/01/15  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2012/01/24  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その多機能 (O)
@@ -28,57 +28,40 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo013;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.Component;
+import java.awt.im.InputSubset;
+
+import javax.swing.SwingConstants;
+import javax.swing.table.TableColumn;
+
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.component.ACAffairButton;
+import jp.nichicom.ac.component.ACAffairButtonBar;
+import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.component.table.ACCheckBoxTableColumnPopupMenu;
+import jp.nichicom.ac.component.table.ACTable;
+import jp.nichicom.ac.component.table.ACTableColumn;
+import jp.nichicom.ac.container.ACBackLabelContainer;
+import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACAffairable;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.text.ACBorderBlankDateFormat;
+import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
+import jp.nichicom.vr.component.table.VRTableCellViewer;
+import jp.nichicom.vr.component.table.VRTableColumnModel;
+import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
+import jp.or.med.orca.qkan.affair.QkanAffairContainer;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 /**
  * 日医標準レセプトソフト連携画面項目デザイン(QO013) 
  */
@@ -119,9 +102,33 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
 
   private ACComboBoxModelAdapter receiptVersionComboModel;
 
+  private ACGroupBox findSetting;
+
+  private ACBackLabelContainer ageContainer;
+
+  private ACLabel ageContainerTItle;
+
+  private ACTextField ageStartText;
+
+  private ACLabelContainer ageStartTextContainer;
+
+  private ACLabel ageConnectLabel;
+
+  private ACTextField ageEndText;
+
+  private ACLabelContainer ageEndTextContainer;
+
+  private ACLabel ageLabel;
+
+  private ACIntegerCheckBox deduplicationCheck;
+
   private ACGroupBox importSettings;
 
+  private ACPanel importPanel;
+
   private ACIntegerCheckBox toHiragana;
+
+  private ACIntegerCheckBox allPageCheck;
 
   private ACButton previewPage;
 
@@ -502,6 +509,186 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 取得条件を取得します。
+   * @return 取得条件
+   */
+  public ACGroupBox getFindSetting(){
+    if(findSetting==null){
+
+      findSetting = new ACGroupBox();
+
+      findSetting.setText("取得条件");
+
+      findSetting.setLabelMargin(0);
+
+      findSetting.setVgap(0);
+
+      addFindSetting();
+    }
+    return findSetting;
+
+  }
+
+  /**
+   * 年齢コンテナを取得します。
+   * @return 年齢コンテナ
+   */
+  public ACBackLabelContainer getAgeContainer(){
+    if(ageContainer==null){
+
+      ageContainer = new ACBackLabelContainer();
+
+      addAgeContainer();
+    }
+    return ageContainer;
+
+  }
+
+  /**
+   * 年齢タイトルを取得します。
+   * @return 年齢タイトル
+   */
+  public ACLabel getAgeContainerTItle(){
+    if(ageContainerTItle==null){
+
+      ageContainerTItle = new ACLabel();
+
+      ageContainerTItle.setText("年齢");
+
+      addAgeContainerTItle();
+    }
+    return ageContainerTItle;
+
+  }
+
+  /**
+   * 年齢指定テキスト（開始）を取得します。
+   * @return 年齢指定テキスト（開始）
+   */
+  public ACTextField getAgeStartText(){
+    if(ageStartText==null){
+
+      ageStartText = new ACTextField();
+
+      ageStartText.setBindPath("AGE_START");
+
+      ageStartText.setColumns(3);
+
+      ageStartText.setIMEMode(InputSubset.LATIN);
+
+      ageStartText.setMaxLength(3);
+
+      addAgeStartText();
+    }
+    return ageStartText;
+
+  }
+
+  /**
+   * 年齢指定テキスト（開始）コンテナを取得します。
+   * @return 年齢指定テキスト（開始）コンテナ
+   */
+  protected ACLabelContainer getAgeStartTextContainer(){
+    if(ageStartTextContainer==null){
+      ageStartTextContainer = new ACLabelContainer();
+      ageStartTextContainer.setFollowChildEnabled(true);
+      ageStartTextContainer.setVAlignment(VRLayout.CENTER);
+      ageStartTextContainer.add(getAgeStartText(), null);
+    }
+    return ageStartTextContainer;
+  }
+
+  /**
+   * 年齢ラベルを取得します。
+   * @return 年齢ラベル
+   */
+  public ACLabel getAgeConnectLabel(){
+    if(ageConnectLabel==null){
+
+      ageConnectLabel = new ACLabel();
+
+      ageConnectLabel.setText("～");
+
+      addAgeConnectLabel();
+    }
+    return ageConnectLabel;
+
+  }
+
+  /**
+   * 年齢指定テキスト（終了）を取得します。
+   * @return 年齢指定テキスト（終了）
+   */
+  public ACTextField getAgeEndText(){
+    if(ageEndText==null){
+
+      ageEndText = new ACTextField();
+
+      ageEndText.setBindPath("AGE_END");
+
+      ageEndText.setColumns(3);
+
+      ageEndText.setIMEMode(InputSubset.LATIN);
+
+      ageEndText.setMaxLength(3);
+
+      addAgeEndText();
+    }
+    return ageEndText;
+
+  }
+
+  /**
+   * 年齢指定テキスト（終了）コンテナを取得します。
+   * @return 年齢指定テキスト（終了）コンテナ
+   */
+  protected ACLabelContainer getAgeEndTextContainer(){
+    if(ageEndTextContainer==null){
+      ageEndTextContainer = new ACLabelContainer();
+      ageEndTextContainer.setFollowChildEnabled(true);
+      ageEndTextContainer.setVAlignment(VRLayout.CENTER);
+      ageEndTextContainer.add(getAgeEndText(), null);
+    }
+    return ageEndTextContainer;
+  }
+
+  /**
+   * 年齢終了ラベルを取得します。
+   * @return 年齢終了ラベル
+   */
+  public ACLabel getAgeLabel(){
+    if(ageLabel==null){
+
+      ageLabel = new ACLabel();
+
+      ageLabel.setText("歳");
+
+      addAgeLabel();
+    }
+    return ageLabel;
+
+  }
+
+  /**
+   * 登録済み除外チェックを取得します。
+   * @return 登録済み除外チェック
+   */
+  public ACIntegerCheckBox getDeduplicationCheck(){
+    if(deduplicationCheck==null){
+
+      deduplicationCheck = new ACIntegerCheckBox();
+
+      deduplicationCheck.setText("登録済みの患者を除外");
+
+      deduplicationCheck.setBindPath("DEDUPLICATION");
+
+      addDeduplicationCheck();
+    }
+    return deduplicationCheck;
+
+  }
+
+  /**
    * 取り込み設定を取得します。
    * @return 取り込み設定
    */
@@ -512,9 +699,34 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
 
       importSettings.setText("取り込み設定");
 
+      importSettings.setLabelMargin(0);
+
+      importSettings.setVgap(0);
+
       addImportSettings();
     }
     return importSettings;
+
+  }
+
+  /**
+   * 取込設定パネルを取得します。
+   * @return 取込設定パネル
+   */
+  public ACPanel getImportPanel(){
+    if(importPanel==null){
+
+      importPanel = new ACPanel();
+
+      importPanel.setHgap(0);
+
+      importPanel.setLabelMargin(0);
+
+      importPanel.setVgap(0);
+
+      addImportPanel();
+    }
+    return importPanel;
 
   }
 
@@ -534,6 +746,25 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
       addToHiragana();
     }
     return toHiragana;
+
+  }
+
+  /**
+   * 500件目以降の患者も取り込むを取得します。
+   * @return 500件目以降の患者も取り込む
+   */
+  public ACIntegerCheckBox getAllPageCheck(){
+    if(allPageCheck==null){
+
+      allPageCheck = new ACIntegerCheckBox();
+
+      allPageCheck.setText("500件目以降の患者も取り込む");
+
+      allPageCheck.setBindPath("ALLPAGE");
+
+      addAllPageCheck();
+    }
+    return allPageCheck;
 
   }
 
@@ -713,13 +944,9 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
 
       patientNo.setHeaderValue("No.");
 
-      patientNo.setColumnName("IMPORT_NO");
+      patientNo.setColumnName("SERIAL_ID");
 
       patientNo.setColumns(3);
-
-      patientNo.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
-
-      patientNo.setSortable(false);
 
       addPatientNo();
     }
@@ -984,6 +1211,8 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
 
     this.add(getConnectSettings(), VRLayout.NORTH);
 
+    this.add(getFindSetting(), VRLayout.NORTH);
+
     this.add(getImportSettings(), VRLayout.NORTH);
 
     this.add(getPatients(), VRLayout.CLIENT);
@@ -1082,17 +1311,98 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 取得条件に内部項目を追加します。
+   */
+  protected void addFindSetting(){
+
+    findSetting.add(getAgeContainer(), VRLayout.FLOW_INSETLINE);
+
+    findSetting.add(getDeduplicationCheck(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * 年齢コンテナに内部項目を追加します。
+   */
+  protected void addAgeContainer(){
+
+    ageContainer.add(getAgeContainerTItle(), VRLayout.FLOW);
+
+    ageContainer.add(getAgeStartTextContainer(), VRLayout.FLOW);
+
+    ageContainer.add(getAgeConnectLabel(), VRLayout.FLOW);
+
+    ageContainer.add(getAgeEndTextContainer(), VRLayout.FLOW);
+
+    ageContainer.add(getAgeLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 年齢タイトルに内部項目を追加します。
+   */
+  protected void addAgeContainerTItle(){
+
+  }
+
+  /**
+   * 年齢指定テキスト（開始）に内部項目を追加します。
+   */
+  protected void addAgeStartText(){
+
+  }
+
+  /**
+   * 年齢ラベルに内部項目を追加します。
+   */
+  protected void addAgeConnectLabel(){
+
+  }
+
+  /**
+   * 年齢指定テキスト（終了）に内部項目を追加します。
+   */
+  protected void addAgeEndText(){
+
+  }
+
+  /**
+   * 年齢終了ラベルに内部項目を追加します。
+   */
+  protected void addAgeLabel(){
+
+  }
+
+  /**
+   * 登録済み除外チェックに内部項目を追加します。
+   */
+  protected void addDeduplicationCheck(){
+
+  }
+
+  /**
    * 取り込み設定に内部項目を追加します。
    */
   protected void addImportSettings(){
 
-    importSettings.add(getToHiragana(), null);
+    importSettings.add(getImportPanel(), VRLayout.FLOW);
 
-    importSettings.add(getPreviewPage(), null);
+    importSettings.add(getPreviewPage(), VRLayout.FLOW);
 
-    importSettings.add(getNextPage(), null);
+    importSettings.add(getNextPage(), VRLayout.FLOW);
 
-    importSettings.add(getViewRange(), null);
+    importSettings.add(getViewRange(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 取込設定パネルに内部項目を追加します。
+   */
+  protected void addImportPanel(){
+
+    importPanel.add(getToHiragana(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    importPanel.add(getAllPageCheck(), VRLayout.FLOW_INSETLINE);
 
   }
 
@@ -1100,6 +1410,13 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
    * カナ指名をひらがなに変換に内部項目を追加します。
    */
   protected void addToHiragana(){
+
+  }
+
+  /**
+   * 500件目以降の患者も取り込むに内部項目を追加します。
+   */
+  protected void addAllPageCheck(){
 
   }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2011/07/06  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/02/29  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,60 +28,37 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo005;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.im.InputSubset;
+
+import javax.swing.SwingConstants;
+
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.component.ACAffairButton;
+import jp.nichicom.ac.component.ACAffairButtonBar;
+import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACRadioButtonItem;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACAffairable;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.util.adapter.ACListModelAdapter;
+import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.affair.QkanAffairContainer;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 /**
  * 設定変更・メンテナンス画面項目デザイン(QO005) 
  */
+@SuppressWarnings("serial")
 public class QO005Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
 
@@ -166,10 +143,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel taxUnit;
 
   private ACButton taxChange;
-
-  private ACIntegerCheckBox showOldKohi;
-
-  private ACIntegerCheckBox showOldIryo;
 
   private ACIntegerCheckBox showOldLowProviderElements;
 
@@ -524,7 +497,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       dbSettingComments = new ACLabel();
 
-      dbSettingComments.setText("・他のコンピューターを選択した場合は、接続先のコンピューターにFirebirdをインストールする必要があります。" + ACConstants.LINE_SEPARATOR + "　※NAS/SAN等の外部ストレージは利用できません。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、他のコンピューターでのデータベースのファイルパスを手入力してください。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、データの退避と復元を実行する事はできません。" + ACConstants.LINE_SEPARATOR + "　※他のコンピューター上で給管鳥を起動し、データの退避と復元を実行してください。" + ACConstants.LINE_SEPARATOR + "・データベースの場所に日本語を含める事はできません。使用するデータベースは、日本語を含まない場所に移動してください。" + ACConstants.LINE_SEPARATOR + "　例 ○： C:\\qkan4.5\\Data\\QKAN.FDB" + ACConstants.LINE_SEPARATOR + "　例 ×： C:\\給管鳥\\Data\\QKAN.FDB");
+      dbSettingComments.setText("・他のコンピューターを選択した場合は、接続先のコンピューターにFirebirdをインストールする必要があります。" + ACConstants.LINE_SEPARATOR + "　※NAS/SAN等の外部ストレージは利用できません。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、他のコンピューターでのデータベースのファイルパスを手入力してください。" + ACConstants.LINE_SEPARATOR + "・他のコンピューターを選択した場合は、データの退避と復元を実行する事はできません。" + ACConstants.LINE_SEPARATOR + "　※他のコンピューター上で給管鳥を起動し、データの退避と復元を実行してください。" + ACConstants.LINE_SEPARATOR + "・データベースの場所に日本語を含める事はできません。使用するデータベースは、日本語を含まない場所に移動してください。" + ACConstants.LINE_SEPARATOR + "　例 ○： C:\\qkan\\Data\\QKAN.FDB" + ACConstants.LINE_SEPARATOR + "　例 ×： C:\\給管鳥\\Data\\QKAN.FDB");
 
       dbSettingComments.setForeground(Color.blue);
 
@@ -637,7 +610,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       comment2 = new ACLabel();
 
-      comment2.setText("ファイル名には、印刷に用いるPDFファイルビュアー(Adobe Reader /Adobe Acrobat Reader ）等の場所を入力してください。" + ACConstants.LINE_SEPARATOR + "Adobe Reader 7.0の場合、標準では C:\\Program Files\\Adobe\\Acrobat 7.0\\Reader\\AcroRd32.exe となります。");
+      comment2.setText("ファイル名には、印刷に用いるPDFファイルビュアー(Adobe Reader /Adobe Acrobat Reader ）等の場所を入力してください。" + ACConstants.LINE_SEPARATOR + "Adobe Reader 10の場合、標準では C:\\Program Files\\Adobe\\Reader 10.0\\Reader\\AcroRd32.exe となります。");
 
       comment2.setForeground(Color.blue);
 
@@ -946,44 +919,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       addTaxChange();
     }
     return taxChange;
-
-  }
-
-  /**
-   * 過去の公費も表示するを取得します。
-   * @return 過去の公費も表示する
-   */
-  public ACIntegerCheckBox getShowOldKohi(){
-    if(showOldKohi==null){
-
-      showOldKohi = new ACIntegerCheckBox();
-
-      showOldKohi.setText("過去の公費も表示する");
-
-      showOldKohi.setBindPath("SHOW_OLD_KOHI");
-
-      addShowOldKohi();
-    }
-    return showOldKohi;
-
-  }
-
-  /**
-   * 過去の医療情報も表示するを取得します。
-   * @return 過去の医療情報も表示する
-   */
-  public ACIntegerCheckBox getShowOldIryo(){
-    if(showOldIryo==null){
-
-      showOldIryo = new ACIntegerCheckBox();
-
-      showOldIryo.setText("過去の医療情報も表示する");
-
-      showOldIryo.setBindPath("SHOW_OLD_IRYO");
-
-      addShowOldIryo();
-    }
-    return showOldIryo;
 
   }
 
@@ -1379,10 +1314,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     others.add(getTaxContainer(), VRLayout.FLOW_RETURN);
 
-    others.add(getShowOldKohi(), VRLayout.FLOW);
-
-    others.add(getShowOldIryo(), VRLayout.FLOW_RETURN);
-
     others.add(getShowOldLowProviderElements(), VRLayout.FLOW_RETURN);
 
   }
@@ -1425,20 +1356,6 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 税率編集に内部項目を追加します。
    */
   protected void addTaxChange(){
-
-  }
-
-  /**
-   * 過去の公費も表示するに内部項目を追加します。
-   */
-  protected void addShowOldKohi(){
-
-  }
-
-  /**
-   * 過去の医療情報も表示するに内部項目を追加します。
-   */
-  protected void addShowOldIryo(){
 
   }
 

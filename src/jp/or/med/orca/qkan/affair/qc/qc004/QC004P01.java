@@ -29,7 +29,6 @@
 
 package jp.or.med.orca.qkan.affair.qc.qc004;
 
-import java.beans.FeatureDescriptor;
 import java.util.Date;
 
 import jp.nichicom.ac.lang.ACCastUtilities;

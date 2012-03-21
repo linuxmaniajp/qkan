@@ -547,7 +547,7 @@ public class QC002P01 extends QC002P01Event {
 
      List listByojoStateComment = Arrays.asList(strByojoStateComment);
      // ‰Šú‰»
-     StringBuffer sb = new StringBuffer();
+     StringBuilder sb = new StringBuilder();
 
      for (int i = 0; i < listByojoStateComment.size(); i++) {
          sb.append(listByojoStateComment.get(i));
@@ -569,7 +569,7 @@ public class QC002P01 extends QC002P01Event {
 
     List listKangoRiha = Arrays.asList(strKangoRiha);
     // ‰Šú‰»
-    sb = new StringBuffer();
+    sb = new StringBuilder();
 
     for (int i = 0; i < listKangoRiha.size(); i++) {
         sb.append(listKangoRiha.get(i));
@@ -591,7 +591,7 @@ public class QC002P01 extends QC002P01Event {
 
     List listRyoyouKaigo = Arrays.asList(strRyoyouKaigo);
     // ‰Šú‰»
-    sb = new StringBuffer();
+    sb = new StringBuilder();
 
     for (int i = 0; i < listRyoyouKaigo.size(); i++) {
         sb.append(listRyoyouKaigo.get(i));
@@ -614,7 +614,7 @@ public class QC002P01 extends QC002P01Event {
 
     List listReportComment = Arrays.asList(strReportComment);
     // ‰Šú‰»
-    sb = new StringBuffer();
+    sb = new StringBuilder();
 
     for (int i = 0; i < listReportComment.size(); i++) {
         sb.append(listReportComment.get(i));

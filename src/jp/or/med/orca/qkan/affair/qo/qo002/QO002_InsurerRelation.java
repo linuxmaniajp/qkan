@@ -13,7 +13,6 @@ import jp.nichicom.ac.component.event.ACFollowContainerFormatEventListener;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACSQLSafeStringFormat;
-import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.vr.bind.VRBindable;
 import jp.nichicom.vr.bind.event.VRBindEvent;
@@ -223,7 +222,7 @@ public class QO002_InsurerRelation implements  KeyListener, FocusListener, VRBin
             // É}ÉXÉ^ìÀçáópÇÃSQL
             // åãâ ÇÃäiî[Åiñ≥ë Ç»SQLî≠çsÇÕñhé~Åj
             if(isConvertNo() && !"".equals(getInsurerNoValue())) {
-                StringBuffer sbNoSql = new StringBuffer();
+                StringBuilder sbNoSql = new StringBuilder();
                 sbNoSql.append("SELECT ");
                 sbNoSql.append("M_INSURER.INSURER_NAME ");
                 sbNoSql.append("FROM ");
@@ -242,7 +241,7 @@ public class QO002_InsurerRelation implements  KeyListener, FocusListener, VRBin
             }
             
             if(isConvertName() && !"".equals(getInsurerNameValue()) ) {
-                StringBuffer sbNameSql = new StringBuffer();
+                StringBuilder sbNameSql = new StringBuilder();
                 sbNameSql.append("SELECT ");
                 sbNameSql.append("M_INSURER.INSURER_NO ");
                 sbNameSql.append("FROM ");

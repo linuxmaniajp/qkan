@@ -49,9 +49,17 @@ public class DBConnect {
 	        String id = doc.getNodeValue("DBConfig","UserName");
 	        String pass = doc.getNodeValue("DBConfig","Password");
 			
-			
+            String charSet = doc.getNodeValue("DBConfig","Encoding");
+            
+            if(charSet == null){
+                charSet = "";
+            }
+            if(!"".equals(charSet)){
+                charSet = "?lc_ctype=" + charSet;
+            }
+            
 			Class.forName("org.firebirdsql.jdbc.FBDriver");
-			con = DriverManager.getConnection("jdbc:firebirdsql://" + server + ":" + port + "/" + path, id, pass);
+			con = DriverManager.getConnection("jdbc:firebirdsql://" + server + ":" + port + "/" + path + charSet, id, pass);
 			con.setAutoCommit(false);
 		} catch(Exception e){
 			Log.warning("makeConnection Error : " + e.getLocalizedMessage());
@@ -143,14 +151,15 @@ public class DBConnect {
 	 * 設定したprepareStatementの実行を行う
 	 * @param ary prepareStatementに設定するデータ
 	 */
-	public void execPrepareQuery(ArrayList ary) throws Exception{
+	public void execPrepareQuery(ArrayList<String> ary) throws Exception{
+        if(ary == null){
+            Log.warning("DataArray is null -- cancel running");
+            return;
+        }
+	    
 		Log.fine("--- start execPrepareQuery " + ary.toString() + " ---");
 		if(pstmt == null){
 			Log.warning("prepareStatement is null -- cancel running");
-			return;
-		}
-		if(ary == null){
-			Log.warning("DataArray is null -- cancel running");
 			return;
 		}
 		

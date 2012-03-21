@@ -18,19 +18,20 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/01/24  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/06/12  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
- * プロセス サービス予定 (001)
- * プログラム サービスパターン訪問介護 (QS001003)
+ * プロセス サービス予定・実績 (001)
+ * プログラム 利用・提供票印刷 (QS001031)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 /**
- * サービスパターン訪問介護状態定義(QS001003) 
+ * 利用・提供票印刷状態定義(QS001031) 
  */
+@SuppressWarnings("serial")
 public class QS001003State extends QS001003Design {
   /**
    * コンストラクタです。
@@ -39,58 +40,62 @@ public class QS001003State extends QS001003Design {
   }
 
   /**
-   * 「身体介護」の状態に設定します。
+   * 「作成者・事業所」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_SHINTAI_KAIGO() throws Exception {
+  public void setState_PROVIDER_MADE() throws Exception {
 
-        getHomonkaigoTeikyoTime().setEnabled(true);
+        getSupportProviderCd().setEnabled(true);
 
-        getHoumonKaigoInTime().setEnabled(false);
+        getSupportProviderName().setEnabled(true);
 
-        getHoumonKaigoNumberOfPeople().setEnabled(true);
+        getPersonInCharge().setEnabled(true);
+
+        getDateOfWrittenReport().setEnabled(false);
 
   }
 
   /**
-   * 「生活援助」の状態に設定します。
+   * 「作成者・被保険者」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_SEIKATSU_ENJO() throws Exception {
+  public void setState_SELF_MADE() throws Exception {
 
-        getHomonkaigoTeikyoTime().setEnabled(true);
+        getSupportProviderCd().setEnabled(false);
 
-        getHoumonKaigoInTime().setEnabled(false);
+        getSupportProviderName().setEnabled(false);
 
-        getHoumonKaigoNumberOfPeople().setEnabled(true);
+        getPersonInCharge().setEnabled(false);
+
+        getDateOfWrittenReport().setEnabled(true);
 
   }
 
   /**
-   * 「身体生活」の状態に設定します。
+   * 「予定印刷」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_SHINTAI_SEIKATSU() throws Exception {
+  public void setState_PROCESS_TYPE_PLAN() throws Exception {
 
-        getHomonkaigoTeikyoTime().setEnabled(true);
+        getDateOfMakingOutsideFrame().getParent().setVisible(true);
 
-        getHoumonKaigoInTime().setEnabled(true);
+        getPublicExpense().setVisible(true);
 
-        getHoumonKaigoNumberOfPeople().setEnabled(true);
+        getSlitKinds().setVisible(true);
 
   }
 
   /**
-   * 「通院等乗降介助」の状態に設定します。
+   * 「実績印刷」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_JOKOKAIJO() throws Exception {
+  public void setState_PROCESS_TYPE_RESULT() throws Exception {
 
-        getHomonkaigoTeikyoTime().setEnabled(false);
+        getDateOfMakingOutsideFrame().getParent().setVisible(false);
 
-        getHoumonKaigoInTime().setEnabled(false);
+        getPublicExpense().setVisible(false);
 
-        getHoumonKaigoNumberOfPeople().setEnabled(false);
+        getSlitKinds().setVisible(false);
 
   }
 

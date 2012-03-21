@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2006/05/11  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2011/12/22  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -159,38 +159,6 @@ public abstract class QC003Event extends QC003SQL {
             }
         }
     });
-    getProviderName().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                providerNameActionPerformed(e);
-            }catch(Throwable ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getHomonkaisuResultReadButton().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                homonkaisuResultReadButtonActionPerformed(e);
-            }catch(Throwable ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
 
   }
   //コンポーネントイベント
@@ -223,20 +191,6 @@ public abstract class QC003Event extends QC003SQL {
    */
   protected abstract void printActionPerformed(ActionEvent e) throws Exception;
 
-  /**
-   * 「画面処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void providerNameActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「訪問看護実績読込」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void homonkaisuResultReadButtonActionPerformed(ActionEvent e) throws Exception;
-
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_JOHO_TEIKYOSHO;
@@ -246,7 +200,6 @@ public abstract class QC003Event extends QC003SQL {
   private int processMode;
   private int homonkango;
   private Date targetDate;
-  private VRList providerList = new VRArrayList();
   //getter/setter
 
   /**
@@ -354,21 +307,6 @@ public abstract class QC003Event extends QC003SQL {
     this.targetDate = targetDate;
   }
 
-  /**
-   * providerListを返します。
-   * @return providerList
-   */
-  protected VRList getProviderList(){
-    return providerList;
-  }
-  /**
-   * providerListを設定します。
-   * @param providerList providerList
-   */
-  protected void setProviderList(VRList providerList){
-    this.providerList = providerList;
-  }
-
   //内部関数
 
   /**
@@ -418,29 +356,5 @@ public abstract class QC003Event extends QC003SQL {
    * @return VRList
    */
   public abstract VRList getJohoteikyoshoInfo() throws Exception;
-
-  /**
-   * 「訪問看護の実施回数を取得する処理」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return int
-   */
-  public abstract int getResultCount() throws Exception;
-
-  /**
-   * 「訪問看護の実施日数を取得する処理」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return int
-   */
-  public abstract int getResultDayCount() throws Exception;
-
-  /**
-   * 「情報提供先を取得します」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return String
-   */
-  public abstract String getJohoteikyosaki() throws Exception;
 
 }

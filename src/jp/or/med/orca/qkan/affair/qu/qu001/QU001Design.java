@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 安武　徳夫
- * 作成日: 2011/03/02  日本コンピューター株式会社 安武　徳夫 新規作成
+ * 作成日: 2011/12/13  日本コンピューター株式会社 安武　徳夫 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -430,7 +430,7 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
       targetDate.setAllowedBlank(false);
 
       try{
-        targetDate.setMinimumDate(ACCastUtilities.toDate("2006/04/01"));
+        targetDate.setMinimumDate(ACCastUtilities.toDate("2012/04/01"));
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("targetDate の最小年月日に不正な日付が指定されています。"));
       }

@@ -36,10 +36,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.sound.sampled.TargetDataLine;
-
-import sun.security.krb5.internal.tools.Kinit;
-
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -65,6 +61,7 @@ import jp.or.med.orca.qkan.affair.QkanMessageList;
 /**
  * 報告書情報入力(QC002)
  */
+@SuppressWarnings("serial")
 public class QC002 extends QC002Event {
     /**
      * コンストラクタです。
@@ -704,9 +701,7 @@ public class QC002 extends QC002Event {
         ArrayList services = new ArrayList();
         // servicesに以下の数値型の値を設定する。
         // 11301(訪問看護・介護)
-        // 20101(訪問看護・医療)
         services.add("11311");
-        services.add("20101");
 
         // 訪問看護を提供する事業所を取得する。
         comboItemMap = QkanCommon.getProviderInfo(getDBManager(), services);
@@ -982,34 +977,8 @@ public class QC002 extends QC002Event {
     public void setInitValue() throws Exception {
         // ※担当医師名(主治医氏名)の取得
         VRMap initMap = new VRHashMap();
-        // SQL文取得関数への渡りパラメータ(レコード) sqlParamを生成する。
-        VRMap sqlParam = new VRHashMap();
-
-        // sqlParamに下記の値を設定する。
-        // KEY :PATIENT_ID, VALUE : patientID
-        sqlParam.setData("PATIENT_ID", new Integer(getPatientID()));
-
-        // 「訪問看護ステーション履歴TABLE(PATIENT_STATION_HISTORY)」の情報取得用のSQL文を取得する。
-        // 取得したSQL文を発行する。
-        VRList stationList = getDBManager().executeQuery(
-                getSQL_GET_PATIENT_STATION_HISTORY(sqlParam));
-
-        if (stationList.size() > 0) {
-            // 取得件数が0件より多い場合
-            VRMap map = new VRHashMap();
-            map = (VRMap) stationList.getData(0);
-            // 取得したレコード集合の最初のレコードを退避する。
-            // findMapに下記の値を設定する。
-            // KEY : DOCTOR_NAME, VALUE : (退避レコードのKEY : DOCTOR_NAMEのVALUE)
-            initMap.setData("DOCTOR_NAME", map.getData("DOCTOR_NAME"));
-
-        } else {
-            // 取得件数が0件の場合
-            // findMapに下記の値を設定する。
-            initMap.setData("DOCTOR_NAME", "");
-            // KEY : DOCTOR_NAME, VALUE : (空白)
-
-        }
+        
+        initMap.setData("DOCTOR_NAME", "");
 
         // ※作成年月の設定
         // システムから、「システム日付」を取得する。
@@ -1092,26 +1061,6 @@ public class QC002 extends QC002Event {
     public VRMap getVisitDataFromService(Date targetDate, String type)
             throws Exception {
         // ※サービス実績から訪問日を取得
-        // ※指示期間(特別指示期間)の取得
-        // 訪問看護ステーション履歴情報格納用のレコード集合 stationList を生成する。
-        VRList stationList = new VRArrayList();
-
-        // 訪問看護ステーション履歴情報格納用のレコード stationMap を生成する。
-        VRMap stationMap = new VRHashMap();
-
-        // 指示書有効期間開始日格納用の日付変数 shijishoValidStart を生成する。
-        Date shijishoValidStart = null;
-
-        // 指示書有効期間終了日格納用の日付変数 shijishoValidEnd を生成する。
-        Date shijishoValidEnd = null;
-
-        // 特別指示書有効期間開始日格納用の日付変数 specialShijishoValidStart を生成する。
-        Date specialShijishoValidStart = null;
-
-        // 特別指示書有効期間終了日格納用の日付変数 specialShijishoValidEnd を生成する。
-        Date specialShijishovalidEnd = null;
-
-        boolean shijishoCheck = false;
 
         // sql文取得用にレコード sqlParam を生成し、下記の値を設定する。
         VRMap sqlParam = new VRHashMap();
@@ -1119,43 +1068,7 @@ public class QC002 extends QC002Event {
         // KEY : PATIENT_ID, VALUE : patientID (退避した渡りパラメータ)
         sqlParam.setData("PATIENT_ID", new Integer(getPatientID()));
 
-        // 訪問看護ステーション履歴情報取得用のSQL文を取得する。
-        // 取得したSQL文を発行し、stationListに格納する。
-        stationList = getDBManager().executeQuery(
-                getSQL_GET_PATIENT_STATION_HISTORY(sqlParam));
-
-        // stationListの件数をチェックする。
-        if (stationList.size() > 0) {
-            // 0件より多い場合
-            // stationMap に stationList の1レコード目を設定する。
-            stationMap = (VRMap) stationList.getData(0);
-            // shijishoValidStartにstationMapのKEY:SHIJISHO_VALID_STARTのVALUEを設定する。
-            sqlParam.setData("SHIJISHO_VALID_START", (Date) stationMap
-                    .getData("SHIJISHO_VALID_START"));
-
-            // shijishoValidEndにstationMapのKEY:SHIJISHO_VALID_ENDのVALUEを設定する。
-            sqlParam.setData("SHIJISHO_VALID_END", (Date) stationMap
-                    .getData("SHIJISHO_VALID_END"));
-
-            // specialShijishoValidStartにstationMapのKEY:SPECIAL_SHIJISHO_VALID_STARTのVALUEを設定する。
-            sqlParam.setData("SPECIAL_SHIJISHO_VALID_START", (Date) stationMap
-                    .getData("SPECIAL_SHIJISHO_VALID_START"));
-
-            // specialShijishoValidEndにstationMapのKEY:SPECIAL_SHIJISHO_VALID_ENDのVALUEを設定する。
-            sqlParam.setData("SPECIAL_SHIJISHO_VALID_END", stationMap
-                    .getData("SPECIAL_SHIJISHO_VALID_END"));
-
-            if (sqlParam.getData("SPECIAL_SHIJISHO_VALID_END") == null) {
-                shijishoCheck = false;
-
-            } else {
-                shijishoCheck = true;
-
-            }
-        }
         // ※サービス実績の取得
-        // 戻り値用のレコード集合 visitDatesを生成する。
-        VRMap visitDates = new VRHashMap();
         // サービスカレンダー情報格納用の serviceResultMapを生成する。
         VRMap serviceResultMap = new VRHashMap();
         // サービス実績情報格納用のレコード集合 serviceListを生成する。
@@ -1175,8 +1088,6 @@ public class QC002 extends QC002Event {
         serviceList = getDBManager().executeQuery(
                 getSQL_GET_SERVICE_RESULT_DATA(sqlParam));
         // ※サービス実績の訪問日情報への変換
-        // serviceCalnedarMap を生成する。
-        VRMap serviceCalendarMap = new VRHashMap();
         // monthInfo を生成する。
         String monthInfo = type;
 
@@ -1198,68 +1109,7 @@ public class QC002 extends QC002Event {
             // KEY:PATIENT_ID
             // 件数分ループした場合次処理へ
         }
-        // 利用者登録で特別指示期間が登録されていた場合
-        if (shijishoCheck) {
-            // ※特別指示期間中のサービス実績の取得
-            // 特別指示期間中のサービス実績を取得するSQL文を取得する
-            // 取得したSQL文を発行し、serviceListに格納する。
-            serviceList = getDBManager().executeQuery(
-                    getSQL_GET_SIJISYO_RESULT_DATA(sqlParam));
 
-            // ※特別指示期間中のサービス実績の設定
-            // serviceListの件数分ループし以下の処理を行う。 ※格納はserviceResultMapに行う。
-            for (int i = 0; i < serviceList.size(); i++) {
-                // VISIT_VALUEの値を取得し 以下のKEYで格納する。
-                map = (VRMap) serviceList.getData(i);
-
-                String key = "CALENDAR_" + monthInfo + "_DAY"
-                        + map.getData("VISIT_DATE_OF_DAY");
-
-                // カウントから1回以上の訪問か判断
-                if (Integer.parseInt(String.valueOf(map.getData("COUNT"))) == 1) {
-                    // 既に訪問実績があるか確認する。
-                    // 訪問実績があった場合
-                    // 以下のKEYで格納する。
-                    serviceResultMap.setData(key, new Integer(3));
-
-                    // KEY：CALENDAR_ + monthInfo + _DAY + 登録日付の日（2桁） VALUE:5
-                    // VISIT_DATEの値を下記のKEYで格納する。
-                    // KEY：VISIT_DATE
-                    serviceResultMap.setData("VISIT_DATE", map
-                            .getData("VISIT_DATE"));
-
-                    // 利用者番号を下記のKEYで格納する。
-                    // KEY:PATIENT_ID
-                    serviceResultMap.setData("PATIENT_ID", new Integer(
-                            getPatientID()));
-                    
-                // カウントが２回である場合
-                } else if (ACCastUtilities.toInt(ACCastUtilities.toString(map.getData("COUNT"))) == 2) {
-                    // 2回 ◎ を設定
-                    serviceResultMap.setData(key, new Integer(5));
-
-                    serviceResultMap.setData("VISIT_DATE", map
-                            .getData("VISIT_DATE"));
-
-                    serviceResultMap.setData("PATIENT_ID", new Integer(
-                            getPatientID()));
-
-                //予防時に対応 2006/05/12
-                //カウントが3回以上である場合
-                } else if (ACCastUtilities.toInt(ACCastUtilities.toString(map.getData("COUNT"))) >= 3){
-                    //3回以上 ◇ を設定
-                    serviceResultMap.setData(key, new Integer(6));
-
-                    serviceResultMap.setData("VISIT_DATE", map
-                            .getData("VISIT_DATE"));
-
-                    serviceResultMap.setData("PATIENT_ID", new Integer(
-                            getPatientID()));
-                }
-                //件数分ループした場合次処理へ
-            }
-
-        }
         return serviceResultMap;
 
     }
@@ -1473,16 +1323,13 @@ public class QC002 extends QC002Event {
         // 処理を継続する。
         // ※事業所のサービス詳細情報を取得
         // 事業所のサービス詳細情報を取得する。
-        StringBuffer sb = new StringBuffer();
-        sb.append(" SYSTEM_SERVICE_KIND_DETAIL IN (11311,20101)");
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SYSTEM_SERVICE_KIND_DETAIL IN (11311)");
         sb.append(" AND PROVIDER_ID = ");
         sb.append(String.valueOf("'"+ VRBindPathParser.get("PROVIDER_ID",rec) + "'"));
         
         VRList list = QkanCommon.getProviderServiceDetailCustom(
                 getDBManager(),sb.toString());
-//        VRList list = QkanCommon.getProviderServiceDetail(getDBManager(),
-//                ACCastUtilities.toString(VRBindPathParser.get("PROVIDER_ID",
-//                        rec)), 20101);
 
         if (list.size() <= 0) {
             // 取得件数が0件の場合

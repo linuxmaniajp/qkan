@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: メインメニュー
- * 作成日: 2006/02/20  日本コンピューター株式会社 メインメニュー 新規作成
+ * 作成日: 2012/02/24  日本コンピューター株式会社 メインメニュー 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -30,12 +30,10 @@
 package jp.or.med.orca.qkan.affair.qm.qm002;
 import java.util.Stack;
 
-import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.text.ACSQLSafeDateFormat;
 import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.QkanCommon;
 
 /**
  * メインメニューSQL定義(QM002) 
@@ -49,64 +47,16 @@ public class QM002SQL extends QM002State {
   }
 
   /**
-   * 「登録されている保険者数を取得する」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_INSURER_COUNT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
-
-    sb.append("SELECT");
-
-    sb.append(" COUNT(*) AS INSURER_COUNT");
-
-    sb.append(" FROM");
-
-    sb.append(" INSURER");
-
-    return sb.toString();
-  }
-
-  /**
-   * 「登録されている利用者数を取得する」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_PATIENT_COUNT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
-
-    sb.append("SELECT");
-
-    sb.append(" COUNT(*) AS PATIENT_COUNT");
-
-    sb.append(" FROM");
-
-    sb.append(" PATIENT");
-
-    return sb.toString();
-  }
-
-  /**
-   * 「ログイン事業者のメニュー情報を」のためのSQLを返します。
+   * 「通常のメニュー情報を取得」のためのSQLを返します。
    * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
    * @return SQL文
    */
   public String getSQL_GET_MENU_TREE(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -125,31 +75,13 @@ public class QM002SQL extends QM002State {
 
     sb.append(",M_MENU.MENU_SORT");
 
-    sb.append(",M_PARAMETER.PARAMETER_VALUE");
-
-    sb.append(",M_PARAMETER.PARAMETER_KEY");
+    sb.append(",M_MENU.PARAMETER_VALUE");
 
     sb.append(" FROM");
 
     sb.append(" PROVIDER_MENU");
 
     sb.append(",M_MENU");
-
-    sb.append(" LEFT JOIN");
-
-    sb.append(" M_PARAMETER");
-
-    sb.append(" ON");
-
-    sb.append("(");
-
-    sb.append(" M_MENU.PARAMETER_ID");
-
-    sb.append(" =");
-
-    sb.append(" M_PARAMETER.PARAMETER_ID");
-
-    sb.append(")");
 
     sb.append(" WHERE");
 
@@ -186,27 +118,18 @@ public class QM002SQL extends QM002State {
     sb.append(" M_MENU.MENU_ID");
 
     sb.append(")");
-    
-    //2009/1/6 fujihara add start
-    //「医療機関を表示する」にチェックがついていない場合、特定のメニューを表示しない。
-    /*
-       【請求書出力】
-		10605:請求書（訪問看護療養費明細書・請求書）
-		10608:訪問看護療養費領収書
-		
-		【その他機能】
-		10703:医療機関管理
-		
-		【帳票管理】
-		10401:訪問看護計画書
-		10402:訪問看護報告書
-		10403:訪問看護の情報提供書
-		10404:訪問看護記録書I
-     */
-    if(!QkanCommon.isShowOldIryo()){
-    	sb.append(" AND (M_MENU.MENU_ID NOT IN (10605,10608,10403))");
-	}
-    //2009/1/6 fujihara add end
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" M_MENU.MENU_ID");
+
+    sb.append(" NOT IN");
+
+    sb.append(" (105, 106)");
+
+    sb.append(")");
 
     sb.append(" ORDER BY");
 
@@ -218,27 +141,23 @@ public class QM002SQL extends QM002State {
   }
 
   /**
-   * 「事業所のマスタ情報」のためのSQLを返します。
+   * 「PROVIDER_MENUが取得できなかった場合の」のためのSQLを返します。
    * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
    * @return SQL文
    */
   public String getSQL_GET_M_MENU(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
 
     sb.append(" M_MENU.MENU_ID");
 
-    sb.append(",M_MENU.BUSINESS_TYPE");
-
     sb.append(",M_MENU.PARENT_MENU_ID");
-
-    sb.append(",M_MENU.CAN_CHANGE_VISIBLE_FLAG");
 
     sb.append(",M_MENU.NEXT_CLASS");
 
@@ -248,34 +167,14 @@ public class QM002SQL extends QM002State {
 
     sb.append(",M_MENU.ICON");
 
-    sb.append(",M_MENU.PARAMETER_ID");
-
     sb.append(",M_MENU.MENU_SORT");
 
-    sb.append(",M_PARAMETER.PARAMETER_KEY");
-
-    sb.append(",M_PARAMETER.PARAMETER_VALUE");
+    sb.append(",M_MENU.PARAMETER_VALUE");
 
     sb.append(" FROM");
 
     sb.append(" M_MENU");
 
-    sb.append(" LEFT JOIN");
-
-    sb.append(" M_PARAMETER");
-
-    sb.append(" ON");
-
-    sb.append("(");
-
-    sb.append(" M_MENU.PARAMETER_ID");
-
-    sb.append(" =");
-
-    sb.append(" M_PARAMETER.PARAMETER_ID");
-
-    sb.append(")");
-
     sb.append(" ORDER BY");
 
     sb.append(" MENU_SORT");
@@ -284,120 +183,5 @@ public class QM002SQL extends QM002State {
 
     return sb.toString();
   }
-  /**
-   * 「ログイン事業者のメニュー情報を」のためのSQLを返します。
-   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
-   * @throws Exception 処理例外
-   * @return SQL文
-   */
-  public String getSQL_GET_MENU_TREE_WITHOUT_IRYO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
-    Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
-    Object obj;
 
-    sb.append("SELECT");
-
-    sb.append(" M_MENU.MENU_ID");
-
-    sb.append(",M_MENU.PARENT_MENU_ID");
-
-    sb.append(",M_MENU.NEXT_CLASS");
-
-    sb.append(",M_MENU.CAPTION");
-
-    sb.append(",M_MENU.TOOLTIP_TEXT");
-
-    sb.append(",M_MENU.ICON");
-
-    sb.append(",M_MENU.MENU_SORT");
-
-    sb.append(",M_PARAMETER.PARAMETER_VALUE");
-
-    sb.append(",M_PARAMETER.PARAMETER_KEY");
-
-    sb.append(" FROM");
-
-    sb.append(" PROVIDER_MENU");
-
-    sb.append(",M_MENU");
-
-    sb.append(" LEFT JOIN");
-
-    sb.append(" M_PARAMETER");
-
-    sb.append(" ON");
-
-    sb.append("(");
-
-    sb.append(" M_MENU.PARAMETER_ID");
-
-    sb.append(" =");
-
-    sb.append(" M_PARAMETER.PARAMETER_ID");
-
-    sb.append(")");
-
-    sb.append(" WHERE");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_MENU.LOGIN_PROVIDER_ID");
-
-    sb.append(" =");
-
-    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("LOGIN_PROVIDER_ID", sqlParam)));
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_MENU.SHOW_FLAG");
-
-    sb.append(" =");
-
-    sb.append(" 1");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" PROVIDER_MENU.MENU_ID");
-
-    sb.append(" =");
-
-    sb.append(" M_MENU.MENU_ID");
-
-    sb.append(")");
-    
-    //「医療機関を表示する」にチェックがついていない場合、特定のメニューを表示しない。
-    /*
-       【請求書出力】
-		10605:請求書（訪問看護療養費明細書・請求書）
-		10608:訪問看護療養費領収書
-		
-		【その他機能】
-		10703:医療機関管理
-		
-		【帳票管理】
-		10401:訪問看護計画書
-		10402:訪問看護報告書
-		10403:訪問看護の情報提供書
-		10404:訪問看護記録書I
-     */
-    sb.append(" AND (M_MENU.MENU_ID NOT IN (10605,10608))");
-
-    sb.append(" ORDER BY");
-
-    sb.append(" MENU_SORT");
-
-    sb.append(" ASC");
-
-    return sb.toString();
-  }
 }

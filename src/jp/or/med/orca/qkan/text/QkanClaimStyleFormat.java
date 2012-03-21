@@ -144,6 +144,9 @@ public class QkanClaimStyleFormat extends Format{
     		// 10616-—lŽ®‘æ˜Z‚Ì˜Z
         } else if ("10616".equals(code)) {
             toAppendTo.append("—lŽ®‘æ˜Z‚Ì˜Z");
+            // 10617-—lŽ®‘æ˜Z‚ÌŽµ
+        } else if ("10617".equals(code)) {
+            toAppendTo.append("—lŽ®‘æ˜Z‚ÌŽµ");
     		// 10711-—lŽ®‘æŽµ
         } else if ("10711".equals(code)) {
             toAppendTo.append("—lŽ®‘æŽµ");
@@ -274,6 +277,9 @@ public class QkanClaimStyleFormat extends Format{
     		// 10616-—lŽ®‘æ˜Z‚Ì˜Z
         } else if ("—lŽ®‘æ˜Z‚Ì˜Z".equals(source)) {
             result = "10616";
+            // 10617-—lŽ®‘æ˜Z‚ÌŽµ
+        } else if ("—lŽ®‘æ˜Z‚ÌŽµ".equals(source)) {
+            result = "10617";
     		// 10711-—lŽ®‘æŽµ
         } else if ("—lŽ®‘æŽµ".equals(source)) {
             result = "10711";

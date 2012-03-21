@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2011/02/10  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2012/02/16  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -4322,6 +4322,46 @@ public class QkanMessageList {
     sb.append("以降に請求することができます。" + ACConstants.LINE_SEPARATOR + "請求年月もしくはサービス実績の年月を確認してください。" + ACConstants.LINE_SEPARATOR + "このまま集計処理を続行しますか？");
 
     return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「事業所のサービス提供情報において未設定の項目があります。＜改行＞事業所情報編集画面でサービスの提供情報を確認のうえ、更新してください。」を表示します。
+   * <p>
+   * 事業所のサービス提供情報において未設定の項目がある場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_NOT_USABLE_PROVIDER() throws Exception{
+
+    return ACMessageBox.show("事業所のサービス提供情報において未設定の項目があります。" + ACConstants.LINE_SEPARATOR + "事業所情報編集画面でサービスの提供情報を確認のうえ、更新してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「指定されたデータベースのバージョンが一致しません。＜改行＞旧バージョンのデータベースが指定されている可能性があります。＜改行＞最新のデータベースであるかを確認しくてください。」を表示します。
+   * 
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO005_ERROR_OF_SCHEMA_VERSION() throws Exception{
+
+    return ACMessageBox.show("指定されたデータベースのバージョンが一致しません。" + ACConstants.LINE_SEPARATOR + "旧バージョンのデータベースが指定されている可能性があります。" + ACConstants.LINE_SEPARATOR + "最新のデータベースであるかを確認しくてください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「摘要欄に値を設定する場合は、数字8桁を設定してください。」を表示します。
+   * <p>
+   * 摘要欄に数値8桁以外が入力されている場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_TEKIYOU_INPUT_8() throws Exception{
+
+    return ACMessageBox.show("摘要欄に値を設定する場合は、数字8桁を設定してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
 
   }
 

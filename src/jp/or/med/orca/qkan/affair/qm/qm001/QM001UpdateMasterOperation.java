@@ -149,7 +149,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_GET_QKAN_VERSION(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -175,7 +175,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_UPDATE_MASTER_VERSION(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -213,7 +213,7 @@ public class QM001UpdateMasterOperation {
 	 */
 	public String getSQL_DELETE_PATIENT_KOHI_SERVICE(VRMap sqlParam)
 			throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -233,7 +233,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_GET_PATIENT_KOHI(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -261,7 +261,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_GET_KOHI_SERVICE(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -299,7 +299,7 @@ public class QM001UpdateMasterOperation {
 	 */
 	public String getSQL_INSERT_PATIENT_KOHI_SERVICE(VRMap sqlParam)
 			throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -350,7 +350,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_GET_LOGIN_PROVIDER(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -386,7 +386,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_GET_EXISTING_M_MENU(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -423,7 +423,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_GET_EXISTING_PROVIDER_MENU(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -477,7 +477,7 @@ public class QM001UpdateMasterOperation {
 	 * @return SQL•¶
 	 */
 	public String getSQL_INSERT_PROVIDER_MENU(VRMap sqlParam) throws Exception {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object[] inValues;
 		Stack conditionStack = new Stack();
 		boolean firstCondition = true;
@@ -531,7 +531,7 @@ public class QM001UpdateMasterOperation {
        * @since V540
        */
       public String getSQL_GET_PROVIDER_SERVICE_ID(VRMap sqlParam) throws Exception{
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Object[] inValues;
         Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
         boolean firstCondition = true, firstConditionOfFrom = true;
@@ -570,7 +570,7 @@ public class QM001UpdateMasterOperation {
        * @since V540
        */
       public String getSQL_INSERT_PROVIDER_SERVICE_DETAIL_INTEGER(VRMap sqlParam) throws Exception{
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Object[] inValues;
         Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
         boolean firstCondition = true, firstConditionOfFrom = true;
@@ -620,7 +620,7 @@ public class QM001UpdateMasterOperation {
        * @since V540
        */
       public String getSQL_GET_PROVIDER_SERVICE_ROUKEN(VRMap sqlParam) throws Exception{
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Object[] inValues;
         Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
         boolean firstCondition = true, firstConditionOfFrom = true;
@@ -693,7 +693,7 @@ public class QM001UpdateMasterOperation {
        * @since V545
        */
       public String getSQL_GET_PROVIDER_SERVICE_DETAIL_H2104(VRMap sqlParam) throws Exception{
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("SELECT");
 
@@ -729,7 +729,7 @@ public class QM001UpdateMasterOperation {
        * @since V546
        */
       public String getSQL_GET_PATIENT_KOHI_H2104(VRMap sqlParam) throws Exception{
-    	  StringBuffer sb = new StringBuffer();
+    	  StringBuilder sb = new StringBuilder();
     	  
     	  sb.append(" SELECT");
     	  sb.append(" k.PATIENT_ID,");
@@ -764,7 +764,7 @@ public class QM001UpdateMasterOperation {
        * @since V546
        */
       public String getSQL_INSERT_PATIENT_KOHI_H2104(VRMap sqlParam) throws Exception{
-    	  StringBuffer sb = new StringBuffer();
+    	  StringBuilder sb = new StringBuilder();
     	  
     	  sb.append(" INSERT");
     	  sb.append(" INTO");
@@ -798,7 +798,7 @@ public class QM001UpdateMasterOperation {
        * @since V547
        */
       public String getSQL_GET_SERVICE_DETAIL_YEAR_RANGE(VRMap sqlParam) throws Exception{
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           
           sb.append("SELECT");
           sb.append(" MINIMUM_YEAR");
@@ -821,7 +821,7 @@ public class QM001UpdateMasterOperation {
        * @since V547
        */
       public String getSQL_GET_SERVICE_DETAIL_TABLE_ROWS(VRMap sqlParam) throws Exception{
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           
           sb.append("SELECT");
           sb.append(" COUNT(*) AS CNT_VAL");
@@ -842,7 +842,7 @@ public class QM001UpdateMasterOperation {
        * @since V547
        */
       public String getSQL_DELETE_JUNK_SERVICE_DETAIL1(VRMap sqlParam) throws Exception{
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           
           String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
           
@@ -876,7 +876,7 @@ public class QM001UpdateMasterOperation {
        * @since V547
        */
       public String getSQL_DELETE_JUNK_SERVICE_DETAIL2(VRMap sqlParam) throws Exception{
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           
           String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
           
@@ -921,7 +921,7 @@ public class QM001UpdateMasterOperation {
        * @since V548
        */
       public String getSQL_DELETE_JUNK_SERVICE_DETAIL3(VRMap sqlParam) throws Exception{
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           
           String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
           
@@ -961,7 +961,7 @@ public class QM001UpdateMasterOperation {
        * @since V548
        */
       public String getSQL_DELETE_JUNK_SERVICE_DETAIL4(VRMap sqlParam) throws Exception{
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           
           String year = ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("YEAR", sqlParam));
           

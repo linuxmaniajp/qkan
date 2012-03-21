@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2006/06/02  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2012/03/02  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -169,7 +169,11 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn csvDataTableColumn17;
 
+  private ACTableColumn csvDataTableColumn46;
+
   private ACTableColumn csvDataTableColumn18;
+
+  private ACTableColumn csvDataTableColumn47;
 
   private ACTableColumn csvDataTableColumn19;
 
@@ -184,6 +188,10 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn csvDataTableColumn24;
 
   private ACTableColumn csvDataTableColumn25;
+
+  private ACTableColumn csvDataTableColumn48;
+
+  private ACTableColumn csvDataTableColumn49;
 
   private ACTableColumn csvDataTableColumn26;
 
@@ -1126,6 +1134,31 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定短カラムを取得します。
+   * @return 特定短カラム
+   */
+  public ACTableColumn getCsvDataTableColumn46(){
+    if(csvDataTableColumn46==null){
+
+      csvDataTableColumn46 = new ACTableColumn();
+
+      csvDataTableColumn46.setHeaderValue("<html>地<br>定<br>短</html>");
+
+      csvDataTableColumn46.setColumnName("27");
+
+      csvDataTableColumn46.setEditable(false);
+
+      csvDataTableColumn46.setColumns(4);
+
+      csvDataTableColumn46.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn46();
+    }
+    return csvDataTableColumn46;
+
+  }
+
+  /**
    * 地特カラムを取得します。
    * @return 地特カラム
    */
@@ -1147,6 +1180,31 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
       addCsvDataTableColumn18();
     }
     return csvDataTableColumn18;
+
+  }
+
+  /**
+   * 地特短カラムを取得します。
+   * @return 地特短カラム
+   */
+  public ACTableColumn getCsvDataTableColumn47(){
+    if(csvDataTableColumn47==null){
+
+      csvDataTableColumn47 = new ACTableColumn();
+
+      csvDataTableColumn47.setHeaderValue("<html>地<br>特<br>短</html>");
+
+      csvDataTableColumn47.setColumnName("28");
+
+      csvDataTableColumn47.setEditable(false);
+
+      csvDataTableColumn47.setColumns(4);
+
+      csvDataTableColumn47.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn47();
+    }
+    return csvDataTableColumn47;
 
   }
 
@@ -1322,6 +1380,56 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
       addCsvDataTableColumn25();
     }
     return csvDataTableColumn25;
+
+  }
+
+  /**
+   * 定訪看カラムを取得します。
+   * @return 定訪看カラム
+   */
+  public ACTableColumn getCsvDataTableColumn48(){
+    if(csvDataTableColumn48==null){
+
+      csvDataTableColumn48 = new ACTableColumn();
+
+      csvDataTableColumn48.setHeaderValue("<html>定<br>巡<br>訪</html>");
+
+      csvDataTableColumn48.setColumnName("76");
+
+      csvDataTableColumn48.setEditable(false);
+
+      csvDataTableColumn48.setColumns(4);
+
+      csvDataTableColumn48.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn48();
+    }
+    return csvDataTableColumn48;
+
+  }
+
+  /**
+   * 複合Iカラムを取得します。
+   * @return 複合Iカラム
+   */
+  public ACTableColumn getCsvDataTableColumn49(){
+    if(csvDataTableColumn49==null){
+
+      csvDataTableColumn49 = new ACTableColumn();
+
+      csvDataTableColumn49.setHeaderValue("<html>複<br>合</html>");
+
+      csvDataTableColumn49.setColumnName("77");
+
+      csvDataTableColumn49.setEditable(false);
+
+      csvDataTableColumn49.setColumns(4);
+
+      csvDataTableColumn49.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn49();
+    }
+    return csvDataTableColumn49;
 
   }
 
@@ -1676,8 +1784,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 予支援カラムを取得します。
-   * @return 予支援カラム
+   * 予プランカラムを取得します。
+   * @return 予プランカラム
    */
   public ACTableColumn getCsvDataTableColumn40(){
     if(csvDataTableColumn40==null){
@@ -1726,8 +1834,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 予居介カラムを取得します。
-   * @return 予居介カラム
+   * 予小規模カラムを取得します。
+   * @return 予小規模カラム
    */
   public ACTableColumn getCsvDataTableColumn42(){
     if(csvDataTableColumn42==null){
@@ -2103,7 +2211,11 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn17());
 
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn46());
+
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn18());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn47());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn19());
 
@@ -2118,6 +2230,10 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn24());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn25());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn48());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn49());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn26());
 
@@ -2281,9 +2397,23 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 特定短カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn46(){
+
+  }
+
+  /**
    * 地特カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn18(){
+
+  }
+
+  /**
+   * 地特短カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn47(){
 
   }
 
@@ -2333,6 +2463,20 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * 認通カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn25(){
+
+  }
+
+  /**
+   * 定訪看カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn48(){
+
+  }
+
+  /**
+   * 複合Iカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn49(){
 
   }
 
@@ -2435,7 +2579,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 予支援カラムに内部項目を追加します。
+   * 予プランカラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn40(){
 
@@ -2449,7 +2593,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 予居介カラムに内部項目を追加します。
+   * 予小規模カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn42(){
 

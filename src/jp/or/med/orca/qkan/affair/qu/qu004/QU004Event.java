@@ -17,72 +17,41 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 上司　和善
- * 作成日: 2006/03/04  日本コンピューター株式会社 上司　和善 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2011/12/19  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
  * プロセス 利用者登録 (004)
- * プログラム 公費・減免情報 (QU004)
+ * プログラム 公費・社福軽減情報 (QU004)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu004;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.Date;
+
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.util.ACSnapshot;
+import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
- * 公費・減免情報イベント定義(QU004) 
+ * 公費・社福軽減情報イベント定義(QU004) 
  */
+@SuppressWarnings("serial")
 public abstract class QU004Event extends QU004SQL {
   /**
    * コンストラクタです。
@@ -103,7 +72,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 insertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -119,7 +88,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 updateActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -135,7 +104,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoButtonClearActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -151,7 +120,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoButtonInsertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -167,7 +136,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoButtonConpileActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -183,103 +152,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoButtonDeleteActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoButtonClear().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoButtonClearActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoButtonInsert().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoButtonInsertActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoButtonConpile().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoButtonConpileActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoButtonDelete().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoButtonDeleteActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getKaigoInfoTable().addListSelectionListener(new ListSelectionListener(){
-        private boolean lockFlag = false;
-        public void valueChanged(ListSelectionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                kaigoInfoTableSelectionChanged(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoTable().addListSelectionListener(new ListSelectionListener(){
-        private boolean lockFlag = false;
-        public void valueChanged(ListSelectionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoTableSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -295,7 +168,23 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoInsurerNoFocusLost(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getKaigoInfoTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                kaigoInfoTableSelectionChanged(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -311,39 +200,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoBearNameActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoInsurerNo().addFocusListener(new FocusAdapter(){
-        private boolean lockFlag = false;
-        public void focusLost(FocusEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoInsurerNoFocusLost(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoBearName().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoBearNameActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -359,23 +216,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 kaigoInfoPublicExpenseActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getIryoInfoPublicExpense().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                iryoInfoPublicExpenseActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -391,7 +232,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 shahukuInfoButtonClearActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -407,7 +248,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 shahukuInfoButtonInsertActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -423,7 +264,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 shahukuInfoButtonConpileActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -439,7 +280,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 shahukuInfoButtonDeleteActionPerformed(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -455,7 +296,7 @@ public abstract class QU004Event extends QU004SQL {
             lockFlag = true;
             try {
                 shahukuInfoTableSelectionChanged(e);
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -509,32 +350,11 @@ public abstract class QU004Event extends QU004SQL {
   protected abstract void kaigoInfoButtonDeleteActionPerformed(ActionEvent e) throws Exception;
 
   /**
-   * 「医療公費情報クリア処理」イベントです。
+   * 「負担者番号入力時処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void iryoInfoButtonClearActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「医療公費情報追加処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoButtonInsertActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「医療公費情報編集処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoButtonConpileActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「医療公費情報削除処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoButtonDeleteActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void kaigoInfoInsurerNoFocusLost(FocusEvent e) throws Exception;
 
   /**
    * 「介護公費情報展開処理」イベントです。
@@ -544,20 +364,6 @@ public abstract class QU004Event extends QU004SQL {
   protected abstract void kaigoInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
 
   /**
-   * 「医療公費情報展開処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
-
-  /**
-   * 「負担者番号入力時処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void kaigoInfoInsurerNoFocusLost(FocusEvent e) throws Exception;
-
-  /**
    * 「負担者名選択時処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -565,32 +371,11 @@ public abstract class QU004Event extends QU004SQL {
   protected abstract void kaigoInfoBearNameActionPerformed(ActionEvent e) throws Exception;
 
   /**
-   * 「負担者番号入力時処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoInsurerNoFocusLost(FocusEvent e) throws Exception;
-
-  /**
-   * 「負担者名選択時処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoBearNameActionPerformed(ActionEvent e) throws Exception;
-
-  /**
    * 「公費情報選択時処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
   protected abstract void kaigoInfoPublicExpenseActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「公費情報選択時処理」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void iryoInfoPublicExpenseActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「クリア処理」イベントです。
@@ -631,7 +416,6 @@ public abstract class QU004Event extends QU004SQL {
 
   private ACPassiveKey PASSIVE_CHECK_KEY;
   public static final int INSURE_TYPE_KAIGO = 1;
-  public static final int INSURE_TYPE_IRYO = 2;
   public static final int INSURE_TYPE_SHAHUKU = 3;
   public static final int CHECK_MODE_INSERT = 1;
   public static final int CHECK_MODE_UPDATE = 2;
@@ -644,27 +428,21 @@ public abstract class QU004Event extends QU004SQL {
   private int systemDate;
   private int processMode = QkanConstants.PROCESS_MODE_INSERT;
   private int kaigoTableChangeFlg;
-  private int iryoTableChangeFlg;
   private int shahukuTableChangeFlg;
   private int kohiDataFlg;
-  private int kohiServiceDataFlg;
   private int compulsoryBackFlg;
   private String processStart;
   public static final String AFFAIR_ID = "QU004";
   private VRList masterKohiServiceList = new VRArrayList();
-  private VRList patientKohiServiceList = new VRArrayList();
   private VRList patientKohiList = new VRArrayList();
   private VRList insurerList = new VRArrayList();
   private VRList masterKohiList = new VRArrayList();
   private VRMap masterService = new VRHashMap();
   private ACTableModelAdapter kaigoTableModel;
-  private ACTableModelAdapter iryoTableModel;
   private ACTableModelAdapter shahukuTableModel;
   private ACTableModelAdapter kaigoServiceTableModel;
-  private ACTableModelAdapter iryoServiceTableModel;
   private ACTableModelAdapter shahukuServiceTableModel;
   private ACSnapshot snapShotKaigo = new ACSnapshot();
-  private ACSnapshot snapShotIryo = new ACSnapshot();
   private ACSnapshot snapShotShahuku = new ACSnapshot();
   //getter/setter
 
@@ -744,21 +522,6 @@ public abstract class QU004Event extends QU004SQL {
   }
 
   /**
-   * iryoTableChangeFlgを返します。
-   * @return iryoTableChangeFlg
-   */
-  protected int getIryoTableChangeFlg(){
-    return iryoTableChangeFlg;
-  }
-  /**
-   * iryoTableChangeFlgを設定します。
-   * @param iryoTableChangeFlg iryoTableChangeFlg
-   */
-  protected void setIryoTableChangeFlg(int iryoTableChangeFlg){
-    this.iryoTableChangeFlg = iryoTableChangeFlg;
-  }
-
-  /**
    * shahukuTableChangeFlgを返します。
    * @return shahukuTableChangeFlg
    */
@@ -786,21 +549,6 @@ public abstract class QU004Event extends QU004SQL {
    */
   protected void setKohiDataFlg(int kohiDataFlg){
     this.kohiDataFlg = kohiDataFlg;
-  }
-
-  /**
-   * kohiServiceDataFlgを返します。
-   * @return kohiServiceDataFlg
-   */
-  protected int getKohiServiceDataFlg(){
-    return kohiServiceDataFlg;
-  }
-  /**
-   * kohiServiceDataFlgを設定します。
-   * @param kohiServiceDataFlg kohiServiceDataFlg
-   */
-  protected void setKohiServiceDataFlg(int kohiServiceDataFlg){
-    this.kohiServiceDataFlg = kohiServiceDataFlg;
   }
 
   /**
@@ -846,21 +594,6 @@ public abstract class QU004Event extends QU004SQL {
    */
   protected void setMasterKohiServiceList(VRList masterKohiServiceList){
     this.masterKohiServiceList = masterKohiServiceList;
-  }
-
-  /**
-   * patientKohiServiceListを返します。
-   * @return patientKohiServiceList
-   */
-  protected VRList getPatientKohiServiceList(){
-    return patientKohiServiceList;
-  }
-  /**
-   * patientKohiServiceListを設定します。
-   * @param patientKohiServiceList patientKohiServiceList
-   */
-  protected void setPatientKohiServiceList(VRList patientKohiServiceList){
-    this.patientKohiServiceList = patientKohiServiceList;
   }
 
   /**
@@ -939,21 +672,6 @@ public abstract class QU004Event extends QU004SQL {
   }
 
   /**
-   * iryoTableModelを返します。
-   * @return iryoTableModel
-   */
-  protected ACTableModelAdapter getIryoTableModel(){
-    return iryoTableModel;
-  }
-  /**
-   * iryoTableModelを設定します。
-   * @param iryoTableModel iryoTableModel
-   */
-  protected void setIryoTableModel(ACTableModelAdapter iryoTableModel){
-    this.iryoTableModel = iryoTableModel;
-  }
-
-  /**
    * shahukuTableModelを返します。
    * @return shahukuTableModel
    */
@@ -984,21 +702,6 @@ public abstract class QU004Event extends QU004SQL {
   }
 
   /**
-   * iryoServiceTableModelを返します。
-   * @return iryoServiceTableModel
-   */
-  protected ACTableModelAdapter getIryoServiceTableModel(){
-    return iryoServiceTableModel;
-  }
-  /**
-   * iryoServiceTableModelを設定します。
-   * @param iryoServiceTableModel iryoServiceTableModel
-   */
-  protected void setIryoServiceTableModel(ACTableModelAdapter iryoServiceTableModel){
-    this.iryoServiceTableModel = iryoServiceTableModel;
-  }
-
-  /**
    * shahukuServiceTableModelを返します。
    * @return shahukuServiceTableModel
    */
@@ -1026,21 +729,6 @@ public abstract class QU004Event extends QU004SQL {
    */
   protected void setSnapShotKaigo(ACSnapshot snapShotKaigo){
     this.snapShotKaigo = snapShotKaigo;
-  }
-
-  /**
-   * snapShotIryoを返します。
-   * @return snapShotIryo
-   */
-  protected ACSnapshot getSnapShotIryo(){
-    return snapShotIryo;
-  }
-  /**
-   * snapShotIryoを設定します。
-   * @param snapShotIryo snapShotIryo
-   */
-  protected void setSnapShotIryo(ACSnapshot snapShotIryo){
-    this.snapShotIryo = snapShotIryo;
   }
 
   /**
@@ -1075,14 +763,6 @@ public abstract class QU004Event extends QU004SQL {
    *
    */
   public abstract void doFindPatientKohi() throws Exception;
-
-  /**
-   * 「利用者公費サービス情報取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void doFindPatientKohiService() throws Exception;
 
   /**
    * 「負担者名検索」に関する処理を行ないます。
@@ -1132,15 +812,6 @@ public abstract class QU004Event extends QU004SQL {
   public abstract boolean doCheckKaigoKohi(int checkMode) throws Exception;
 
   /**
-   * 「医療公費のチェック」に関する処理を行ないます。
-   *
-   * @param checkMode int
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean doCheckIryoKohi(int checkMode) throws Exception;
-
-  /**
    * 「保存処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
@@ -1157,16 +828,6 @@ public abstract class QU004Event extends QU004SQL {
    *
    */
   public abstract void setPatientKohiService(int kohiId, int insureType) throws Exception;
-
-  /**
-   * 「給付対象のサービスの判定」に関する処理を行ないます。
-   *
-   * @param kohiId int
-   * @param systemServiceKindDetail int
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean doCheckUseService(int kohiId, int systemServiceKindDetail) throws Exception;
 
   /**
    * 「利用者公費サービス情報を画面より取得」に関する処理を行ないます。
@@ -1221,5 +882,26 @@ public abstract class QU004Event extends QU004SQL {
    * @return VRList
    */
   public abstract VRList getListToSetTable(VRList list, int insureType) throws Exception;
+
+  /**
+   * 「データ編集」に関する処理を行ないます。
+   *
+   * @param map VRMap
+   * @param mode String
+   * @throws Exception 処理例外
+   * @return VRMap
+   */
+  public abstract VRMap toShahukuTableList(VRMap map, String mode) throws Exception;
+
+  /**
+   * 「判定」に関する処理を行ないます。
+   *
+   * @param kohi VRMap
+   * @param aimDate Date
+   * @param showOldKohi int
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean canShowKohi(VRMap kohi, Date aimDate, int showOldKohi) throws Exception;
 
 }

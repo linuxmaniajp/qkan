@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2007/12/13  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2011/12/20  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -28,57 +28,30 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+
+import javax.swing.SwingConstants;
+
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.component.ACAffairButton;
+import jp.nichicom.ac.component.ACAffairButtonBar;
+import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACAffairable;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
+import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.affair.QkanAffairContainer;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 /**
  * サービス予定画面項目デザイン(QS001) 
  */
@@ -109,9 +82,7 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
 
   private ACGroupBox serviceKinds;
 
-  private ACListBox serviceKindList;
-
-  private ACListModelAdapter serviceKindListModel;
+  private QS001ServiceKindList serviceKindList;
 
   private ACGroupBox servicePatterns;
 
@@ -425,31 +396,17 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
    * サービス種類リストを取得します。
    * @return サービス種類リスト
    */
-  public ACListBox getServiceKindList(){
+  public QS001ServiceKindList getServiceKindList(){
     if(serviceKindList==null){
 
-      serviceKindList = new ACListBox();
+      serviceKindList = new QS001ServiceKindList();
 
-      serviceKindList.setModel(getServiceKindListModel());
-
-      serviceKindList.setPreferredSize(new Dimension(240,120));
+      serviceKindList.setPreferredSize(new Dimension(335,120));
 
       addServiceKindList();
     }
     return serviceKindList;
 
-  }
-
-  /**
-   * サービス種類リストモデルを取得します。
-   * @return サービス種類リストモデル
-   */
-  protected ACListModelAdapter getServiceKindListModel(){
-    if(serviceKindListModel==null){
-      serviceKindListModel = new ACListModelAdapter();
-      addServiceKindListModel();
-    }
-    return serviceKindListModel;
   }
 
   /**
@@ -542,8 +499,8 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * パターン-変更を取得します。
-   * @return パターン-変更
+   * パターン-名称を取得します。
+   * @return パターン-名称
    */
   public ACButton getPatternNameChange(){
     if(patternNameChange==null){
@@ -1102,13 +1059,6 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * サービス種類リストモデルに内部項目を追加します。
-   */
-  protected void addServiceKindListModel(){
-
-  }
-
-  /**
    * パターン追加・削除領域に内部項目を追加します。
    */
   protected void addServicePatterns(){
@@ -1153,7 +1103,7 @@ public class QS001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * パターン-変更に内部項目を追加します。
+   * パターン-名称に内部項目を追加します。
    */
   protected void addPatternNameChange(){
 

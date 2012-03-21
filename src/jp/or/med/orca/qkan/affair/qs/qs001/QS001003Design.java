@@ -18,23 +18,32 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2006/01/10  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2006/06/09  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 予定管理 (S)
- * プロセス サービス予定 (001)
- * プログラム サービスパターン訪問介護 (QS001003)
+ * サブシステム サービス作成/変更 (S)
+ * プロセス サービス予定・実績 (001)
+ * プログラム 利用・提供票印刷 (QS001031)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.im.InputSubset;
 
+import javax.swing.SwingConstants;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTimeComboBox;
-import jp.nichicom.ac.container.ACBackLabelContainer;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACAffairInfo;
@@ -42,657 +51,1298 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
 import jp.nichicom.ac.util.adapter.ACListModelAdapter;
 import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.affair.QkanAffairDialog;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.component.QkanDateTextField;
 /**
- * サービスパターン訪問介護画面項目デザイン(QS001003) 
+ * 利用・提供票印刷画面項目デザイン(QS001031) 
  */
-public class QS001003Design extends QS001ServicePanel {
+@SuppressWarnings("serial")
+public class QS001003Design extends QkanAffairDialog {
   //GUIコンポーネント
 
-  private ACPanel houmonKaigoPatterns;
+  private ACPanel contents;
 
-  private ACComboBox houmonKaigoServicePattern;
+  private ACPanel uppers;
 
-  private ACLabelContainer houmonKaigoServicePatternContainer;
+  private ACPanel upperLefts;
 
-  private ACComboBoxModelAdapter houmonKaigoServicePatternModel;
+  private ACPanel patients;
 
-  private ACComboBox homonkaigoTeikyoTime;
+  private ACTextField patentName;
 
-  private ACLabelContainer homonkaigoTeikyoTimeContainer;
+  private ACLabelContainer patentNameContainer;
 
-  private ACComboBoxModelAdapter homonkaigoTeikyoTimeModel;
+  private ACTextField serviceYearMonth;
 
-  private ACComboBox houmonKaigoInTime;
+  private ACLabelContainer serviceYearMonthContainer;
 
-  private ACLabelContainer houmonKaigoInTimeContainer;
+  private ACPanel prividers;
 
-  private ACComboBoxModelAdapter houmonKaigoInTimeModel;
+  private ACClearableRadioButtonGroup planManufacturer;
 
-  private ACBackLabelContainer houmonKaigoTimeContainer;
+  private ACLabelContainer planManufacturerContainer;
 
-  private ACTimeComboBox houmonKaigoBeginTime;
+  private ACListModelAdapter planManufacturerModel;
 
-  private ACLabelContainer houmonKaigoBeginTimeContainer;
+  private ACRadioButtonItem supportProvider;
 
-  private ACComboBoxModelAdapter houmonKaigoBeginTimeModel;
+  private ACRadioButtonItem patent;
 
-  private ACTimeComboBox houmonKaigoEndTime;
+  private ACRadioButtonItem preventSupportProvider;
 
-  private ACLabelContainer houmonKaigoEndTimeContainer;
+  private ACLabelContainer supportProviderContainer;
 
-  private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
+  private ACLabel supportProviderCd;
 
-  private ACClearableRadioButtonGroup houmonKaigoClass;
+  private ACComboBox supportProviderName;
 
-  private ACLabelContainer houmonKaigoClassContainer;
+  private ACComboBoxModelAdapter supportProviderNameModel;
 
-  private ACListModelAdapter houmonKaigoClassModel;
+  private ACComboBox personInCharge;
 
-  private ACRadioButtonItem houmonKaigoClassOther;
+  private ACLabelContainer personInChargeContainer;
 
-  private ACRadioButtonItem houmonKaigoClass3;
+  private ACComboBoxModelAdapter personInChargeModel;
 
-  private ACClearableRadioButtonGroup houmonKaigoNumberOfPeople;
+  private ACPanel upperRights;
 
-  private ACLabelContainer houmonKaigoNumberOfPeopleContainer;
+  private QkanDateTextField dateOfMakingOutsideFrame;
 
-  private ACListModelAdapter houmonKaigoNumberOfPeopleModel;
+  private ACLabelContainer dateOfMakingOutsideFrameContainer;
 
-  private ACRadioButtonItem houmonKaigoNumberOfPeople1;
+  private QkanDateTextField dateOfMaking;
 
-  private ACRadioButtonItem houmonKaigoNumberOfPeople2;
+  private ACLabelContainer dateOfMakingContainer;
 
-  private ACClearableRadioButtonGroup houmonKaigoTimeZone;
+  private QkanDateTextField dateOfWrittenReport;
 
-  private ACLabelContainer houmonKaigoTimeZoneContainer;
+  private ACLabelContainer dateOfWrittenReportContainer;
 
-  private ACListModelAdapter houmonKaigoTimeZoneModel;
+  private ACLabel solid2;
 
-  private ACRadioButtonItem houmonKaigoTimeZoneNormal;
+  private ACPanel middles;
 
-  private ACRadioButtonItem houmonKaigoTimeZoneEarlyMorning;
+  private ACGroupBox stateOfYouKaigo;
 
-  private ACRadioButtonItem houmonKaigoTimeZoneNighttime;
+  private ACLabel youKaigodoType1;
 
-  private ACRadioButtonItem houmonKaigoTimeZoneMidnight;
+  private ACLabel youKaigodoType2;
+
+  private ACPanel limitAmountInformation;
+
+  private ACLabelContainer limitAmountContainer;
+
+  private ACTextField limitAmountContent;
+
+  private ACLabel solid4;
+
+  private ACLabelContainer limitAmountApplicationPeriod;
+
+  private ACTextField applicationPeriodBegin;
+
+  private ACLabel solid5;
+
+  private ACTextField applicationPeriodEnd;
+
+  private ACPanel shortStayAndPublicExpense;
+
+  private ACLabelContainer shortStayUseDays;
+
+  private ACLabel solid6;
+
+  private ACTextField shortStayUseDay;
+
+  private ACLabel solid8;
+
+  private ACLabelContainer publicExpenses;
+
+  private ACIntegerCheckBox publicExpense;
+
+  private ACPanel lowers;
+
+  private ACGroupBox slitTypes;
+
+  private ACClearableRadioButtonGroup slitType;
+
+  private ACListModelAdapter slitTypeModel;
+
+  private ACRadioButtonItem useVoteType;
+
+  private ACRadioButtonItem offerVote;
+
+  private ACGroupBox slitKinds;
+
+  private ACClearableRadioButtonGroup slitKind;
+
+  private ACListModelAdapter slitKindModel;
+
+  private ACRadioButtonItem useVoteAndAttachedTable;
+
+  private ACRadioButtonItem useVoteKind;
+
+  private ACRadioButtonItem attachedTable;
+
+  private ACPanel printButtonArea;
+
+  private ACPanel printButtons;
+
+  private ACButton print;
+
+  private ACButton end;
 
   //getter
 
   /**
-   * 訪問介護パターン領域を取得します。
-   * @return 訪問介護パターン領域
+   * クライアント領域を取得します。
+   * @return クライアント領域
    */
-  public ACPanel getHoumonKaigoPatterns(){
-    if(houmonKaigoPatterns==null){
+  public ACPanel getContents(){
+    if(contents==null){
 
-      houmonKaigoPatterns = new ACPanel();
+      contents = new ACPanel();
 
-      addHoumonKaigoPatterns();
+      addContents();
     }
-    return houmonKaigoPatterns;
+    return contents;
 
   }
 
   /**
-   * サービスコンボを取得します。
-   * @return サービスコンボ
+   * 上段領域を取得します。
+   * @return 上段領域
    */
-  public ACComboBox getHoumonKaigoServicePattern(){
-    if(houmonKaigoServicePattern==null){
+  public ACPanel getUppers(){
+    if(uppers==null){
 
-      houmonKaigoServicePattern = new ACComboBox();
+      uppers = new ACPanel();
 
-      getHoumonKaigoServicePatternContainer().setText("訪問種別");
-
-      houmonKaigoServicePattern.setBindPath("1110101");
-
-      houmonKaigoServicePattern.setEditable(false);
-
-      houmonKaigoServicePattern.setModelBindPath("1110101");
-
-      houmonKaigoServicePattern.setModel(getHoumonKaigoServicePatternModel());
-
-      houmonKaigoServicePattern.setRenderBindPath("CONTENT");
-
-      addHoumonKaigoServicePattern();
+      addUppers();
     }
-    return houmonKaigoServicePattern;
+    return uppers;
 
   }
 
   /**
-   * サービスコンボコンテナを取得します。
-   * @return サービスコンボコンテナ
+   * 上段領域左を取得します。
+   * @return 上段領域左
    */
-  protected ACLabelContainer getHoumonKaigoServicePatternContainer(){
-    if(houmonKaigoServicePatternContainer==null){
-      houmonKaigoServicePatternContainer = new ACLabelContainer();
-      houmonKaigoServicePatternContainer.add(getHoumonKaigoServicePattern(), null);
+  public ACPanel getUpperLefts(){
+    if(upperLefts==null){
+
+      upperLefts = new ACPanel();
+
+      addUpperLefts();
     }
-    return houmonKaigoServicePatternContainer;
-  }
-
-  /**
-   * サービスコンボモデルを取得します。
-   * @return サービスコンボモデル
-   */
-  protected ACComboBoxModelAdapter getHoumonKaigoServicePatternModel(){
-    if(houmonKaigoServicePatternModel==null){
-      houmonKaigoServicePatternModel = new ACComboBoxModelAdapter();
-      addHoumonKaigoServicePatternModel();
-    }
-    return houmonKaigoServicePatternModel;
-  }
-
-  /**
-   * 提供時間コンボを取得します。
-   * @return 提供時間コンボ
-   */
-  public ACComboBox getHomonkaigoTeikyoTime(){
-    if(homonkaigoTeikyoTime==null){
-
-      homonkaigoTeikyoTime = new ACComboBox();
-
-      getHomonkaigoTeikyoTimeContainer().setText("提供時間");
-
-      homonkaigoTeikyoTime.setBindPath("1110105");
-
-      homonkaigoTeikyoTime.setEditable(false);
-
-      homonkaigoTeikyoTime.setModelBindPath("1110105");
-
-      homonkaigoTeikyoTime.setModel(getHomonkaigoTeikyoTimeModel());
-
-      homonkaigoTeikyoTime.setRenderBindPath("CONTENT");
-
-      homonkaigoTeikyoTime.setBlankable(false);
-
-      addHomonkaigoTeikyoTime();
-    }
-    return homonkaigoTeikyoTime;
+    return upperLefts;
 
   }
 
   /**
-   * 提供時間コンボコンテナを取得します。
-   * @return 提供時間コンボコンテナ
+   * 利用者情報領域を取得します。
+   * @return 利用者情報領域
    */
-  protected ACLabelContainer getHomonkaigoTeikyoTimeContainer(){
-    if(homonkaigoTeikyoTimeContainer==null){
-      homonkaigoTeikyoTimeContainer = new ACLabelContainer();
-      homonkaigoTeikyoTimeContainer.add(getHomonkaigoTeikyoTime(), null);
+  public ACPanel getPatients(){
+    if(patients==null){
+
+      patients = new ACPanel();
+
+      addPatients();
     }
-    return homonkaigoTeikyoTimeContainer;
-  }
-
-  /**
-   * 提供時間コンボモデルを取得します。
-   * @return 提供時間コンボモデル
-   */
-  protected ACComboBoxModelAdapter getHomonkaigoTeikyoTimeModel(){
-    if(homonkaigoTeikyoTimeModel==null){
-      homonkaigoTeikyoTimeModel = new ACComboBoxModelAdapter();
-      addHomonkaigoTeikyoTimeModel();
-    }
-    return homonkaigoTeikyoTimeModel;
-  }
-
-  /**
-   * うち身体時間コンボを取得します。
-   * @return うち身体時間コンボ
-   */
-  public ACComboBox getHoumonKaigoInTime(){
-    if(houmonKaigoInTime==null){
-
-      houmonKaigoInTime = new ACComboBox();
-
-      getHoumonKaigoInTimeContainer().setText("うち身体時間");
-
-      houmonKaigoInTime.setBindPath("1110104");
-
-      houmonKaigoInTime.setEditable(false);
-
-      houmonKaigoInTime.setModelBindPath("1110104");
-
-      houmonKaigoInTime.setModel(getHoumonKaigoInTimeModel());
-
-      houmonKaigoInTime.setRenderBindPath("CONTENT");
-
-      addHoumonKaigoInTime();
-    }
-    return houmonKaigoInTime;
+    return patients;
 
   }
 
   /**
-   * うち身体時間コンボコンテナを取得します。
-   * @return うち身体時間コンボコンテナ
+   * 利用者名ラベルを取得します。
+   * @return 利用者名ラベル
    */
-  protected ACLabelContainer getHoumonKaigoInTimeContainer(){
-    if(houmonKaigoInTimeContainer==null){
-      houmonKaigoInTimeContainer = new ACLabelContainer();
-      houmonKaigoInTimeContainer.add(getHoumonKaigoInTime(), null);
+  public ACTextField getPatentName(){
+    if(patentName==null){
+
+      patentName = new ACTextField();
+
+      getPatentNameContainer().setText("利用者氏名");
+
+      patentName.setBindPath("PATIENT_NAME");
+
+      patentName.setEditable(false);
+
+      patentName.setColumns(34);
+
+      addPatentName();
     }
-    return houmonKaigoInTimeContainer;
-  }
-
-  /**
-   * うち身体時間コンボモデルを取得します。
-   * @return うち身体時間コンボモデル
-   */
-  protected ACComboBoxModelAdapter getHoumonKaigoInTimeModel(){
-    if(houmonKaigoInTimeModel==null){
-      houmonKaigoInTimeModel = new ACComboBoxModelAdapter();
-      addHoumonKaigoInTimeModel();
-    }
-    return houmonKaigoInTimeModel;
-  }
-
-  /**
-   * 提供時間コンテナを取得します。
-   * @return 提供時間コンテナ
-   */
-  public ACBackLabelContainer getHoumonKaigoTimeContainer(){
-    if(houmonKaigoTimeContainer==null){
-
-      houmonKaigoTimeContainer = new ACBackLabelContainer();
-
-      addHoumonKaigoTimeContainer();
-    }
-    return houmonKaigoTimeContainer;
+    return patentName;
 
   }
 
   /**
-   * 開始時刻コンボを取得します。
-   * @return 開始時刻コンボ
+   * 利用者名ラベルコンテナを取得します。
+   * @return 利用者名ラベルコンテナ
    */
-  public ACTimeComboBox getHoumonKaigoBeginTime(){
-    if(houmonKaigoBeginTime==null){
-
-      houmonKaigoBeginTime = new ACTimeComboBox();
-
-      getHoumonKaigoBeginTimeContainer().setText("開始時刻");
-
-      houmonKaigoBeginTime.setBindPath("3");
-
-      houmonKaigoBeginTime.setModelBindPath("3");
-
-      houmonKaigoBeginTime.setModel(getHoumonKaigoBeginTimeModel());
-
-      houmonKaigoBeginTime.setRenderBindPath("CONTENT");
-
-      addHoumonKaigoBeginTime();
+  protected ACLabelContainer getPatentNameContainer(){
+    if(patentNameContainer==null){
+      patentNameContainer = new ACLabelContainer();
+      patentNameContainer.setFollowChildEnabled(true);
+      patentNameContainer.setVAlignment(VRLayout.CENTER);
+      patentNameContainer.add(getPatentName(), null);
     }
-    return houmonKaigoBeginTime;
+    return patentNameContainer;
+  }
+
+  /**
+   * 年月ラベルを取得します。
+   * @return 年月ラベル
+   */
+  public ACTextField getServiceYearMonth(){
+    if(serviceYearMonth==null){
+
+      serviceYearMonth = new ACTextField();
+
+      getServiceYearMonthContainer().setText("対象年月");
+
+      serviceYearMonth.setBindPath("TARGET_DATE");
+
+      serviceYearMonth.setEditable(false);
+
+      serviceYearMonth.setColumns(8);
+
+      addServiceYearMonth();
+    }
+    return serviceYearMonth;
 
   }
 
   /**
-   * 開始時刻コンボコンテナを取得します。
-   * @return 開始時刻コンボコンテナ
+   * 年月ラベルコンテナを取得します。
+   * @return 年月ラベルコンテナ
    */
-  protected ACLabelContainer getHoumonKaigoBeginTimeContainer(){
-    if(houmonKaigoBeginTimeContainer==null){
-      houmonKaigoBeginTimeContainer = new ACLabelContainer();
-      houmonKaigoBeginTimeContainer.add(getHoumonKaigoBeginTime(), null);
+  protected ACLabelContainer getServiceYearMonthContainer(){
+    if(serviceYearMonthContainer==null){
+      serviceYearMonthContainer = new ACLabelContainer();
+      serviceYearMonthContainer.setFollowChildEnabled(true);
+      serviceYearMonthContainer.setVAlignment(VRLayout.CENTER);
+      serviceYearMonthContainer.add(getServiceYearMonth(), null);
     }
-    return houmonKaigoBeginTimeContainer;
+    return serviceYearMonthContainer;
   }
 
   /**
-   * 開始時刻コンボモデルを取得します。
-   * @return 開始時刻コンボモデル
+   * 事業者情報領域を取得します。
+   * @return 事業者情報領域
    */
-  protected ACComboBoxModelAdapter getHoumonKaigoBeginTimeModel(){
-    if(houmonKaigoBeginTimeModel==null){
-      houmonKaigoBeginTimeModel = new ACComboBoxModelAdapter();
-      addHoumonKaigoBeginTimeModel();
+  public ACPanel getPrividers(){
+    if(prividers==null){
+
+      prividers = new ACPanel();
+
+      addPrividers();
     }
-    return houmonKaigoBeginTimeModel;
-  }
-
-  /**
-   * 終了時刻コンボを取得します。
-   * @return 終了時刻コンボ
-   */
-  public ACTimeComboBox getHoumonKaigoEndTime(){
-    if(houmonKaigoEndTime==null){
-
-      houmonKaigoEndTime = new ACTimeComboBox();
-
-      getHoumonKaigoEndTimeContainer().setText("終了時刻");
-
-      houmonKaigoEndTime.setBindPath("4");
-
-      houmonKaigoEndTime.setModelBindPath("4");
-
-      houmonKaigoEndTime.setModel(getHoumonKaigoEndTimeModel());
-
-      houmonKaigoEndTime.setRenderBindPath("CONTENT");
-
-      addHoumonKaigoEndTime();
-    }
-    return houmonKaigoEndTime;
+    return prividers;
 
   }
 
   /**
-   * 終了時刻コンボコンテナを取得します。
-   * @return 終了時刻コンボコンテナ
+   * 計画作成者ラジオグループを取得します。
+   * @return 計画作成者ラジオグループ
    */
-  protected ACLabelContainer getHoumonKaigoEndTimeContainer(){
-    if(houmonKaigoEndTimeContainer==null){
-      houmonKaigoEndTimeContainer = new ACLabelContainer();
-      houmonKaigoEndTimeContainer.add(getHoumonKaigoEndTime(), null);
+  public ACClearableRadioButtonGroup getPlanManufacturer(){
+    if(planManufacturer==null){
+
+      planManufacturer = new ACClearableRadioButtonGroup();
+
+      getPlanManufacturerContainer().setText("居宅計画作成者");
+
+      planManufacturer.setUseClearButton(false);
+
+      planManufacturer.setModel(getPlanManufacturerModel());
+
+      addPlanManufacturer();
     }
-    return houmonKaigoEndTimeContainer;
-  }
-
-  /**
-   * 終了時刻コンボモデルを取得します。
-   * @return 終了時刻コンボモデル
-   */
-  protected ACComboBoxModelAdapter getHoumonKaigoEndTimeModel(){
-    if(houmonKaigoEndTimeModel==null){
-      houmonKaigoEndTimeModel = new ACComboBoxModelAdapter();
-      addHoumonKaigoEndTimeModel();
-    }
-    return houmonKaigoEndTimeModel;
-  }
-
-  /**
-   * 訪問者の級職ラジオグループを取得します。
-   * @return 訪問者の級職ラジオグループ
-   */
-  public ACClearableRadioButtonGroup getHoumonKaigoClass(){
-    if(houmonKaigoClass==null){
-
-      houmonKaigoClass = new ACClearableRadioButtonGroup();
-
-      getHoumonKaigoClassContainer().setText("訪問者の級職");
-
-      houmonKaigoClass.setBindPath("1110106");
-
-      houmonKaigoClass.setModel(getHoumonKaigoClassModel());
-
-      houmonKaigoClass.setUseClearButton(false);
-
-      addHoumonKaigoClass();
-    }
-    return houmonKaigoClass;
+    return planManufacturer;
 
   }
 
   /**
-   * 訪問者の級職ラジオグループコンテナを取得します。
-   * @return 訪問者の級職ラジオグループコンテナ
+   * 計画作成者ラジオグループコンテナを取得します。
+   * @return 計画作成者ラジオグループコンテナ
    */
-  protected ACLabelContainer getHoumonKaigoClassContainer(){
-    if(houmonKaigoClassContainer==null){
-      houmonKaigoClassContainer = new ACLabelContainer();
-      houmonKaigoClassContainer.add(getHoumonKaigoClass(), null);
+  protected ACLabelContainer getPlanManufacturerContainer(){
+    if(planManufacturerContainer==null){
+      planManufacturerContainer = new ACLabelContainer();
+      planManufacturerContainer.setFollowChildEnabled(true);
+      planManufacturerContainer.setVAlignment(VRLayout.CENTER);
+      planManufacturerContainer.add(getPlanManufacturer(), null);
     }
-    return houmonKaigoClassContainer;
+    return planManufacturerContainer;
   }
 
   /**
-   * 訪問者の級職ラジオグループモデルを取得します。
-   * @return 訪問者の級職ラジオグループモデル
+   * 計画作成者ラジオグループモデルを取得します。
+   * @return 計画作成者ラジオグループモデル
    */
-  protected ACListModelAdapter getHoumonKaigoClassModel(){
-    if(houmonKaigoClassModel==null){
-      houmonKaigoClassModel = new ACListModelAdapter();
-      addHoumonKaigoClassModel();
+  protected ACListModelAdapter getPlanManufacturerModel(){
+    if(planManufacturerModel==null){
+      planManufacturerModel = new ACListModelAdapter();
+      addPlanManufacturerModel();
     }
-    return houmonKaigoClassModel;
+    return planManufacturerModel;
   }
 
   /**
-   * ３級以外を取得します。
-   * @return ３級以外
+   * 居宅介護支援事業者を取得します。
+   * @return 居宅介護支援事業者
    */
-  public ACRadioButtonItem getHoumonKaigoClassOther(){
-    if(houmonKaigoClassOther==null){
+  public ACRadioButtonItem getSupportProvider(){
+    if(supportProvider==null){
 
-      houmonKaigoClassOther = new ACRadioButtonItem();
+      supportProvider = new ACRadioButtonItem();
 
-      houmonKaigoClassOther.setText("3級以外");
+      supportProvider.setText("居宅介護支援事業所");
 
-      houmonKaigoClassOther.setGroup(getHoumonKaigoClass());
+      supportProvider.setGroup(getPlanManufacturer());
 
-      addHoumonKaigoClassOther();
+      addSupportProvider();
     }
-    return houmonKaigoClassOther;
-
-  }
-
-  /**
-   * ３級を取得します。
-   * @return ３級
-   */
-  public ACRadioButtonItem getHoumonKaigoClass3(){
-    if(houmonKaigoClass3==null){
-
-      houmonKaigoClass3 = new ACRadioButtonItem();
-
-      houmonKaigoClass3.setText("3級");
-
-      houmonKaigoClass3.setGroup(getHoumonKaigoClass());
-
-      addHoumonKaigoClass3();
-    }
-    return houmonKaigoClass3;
+    return supportProvider;
 
   }
 
   /**
-   * 訪問人数ラジオグループを取得します。
-   * @return 訪問人数ラジオグループ
+   * 被保険者を取得します。
+   * @return 被保険者
    */
-  public ACClearableRadioButtonGroup getHoumonKaigoNumberOfPeople(){
-    if(houmonKaigoNumberOfPeople==null){
+  public ACRadioButtonItem getPatent(){
+    if(patent==null){
 
-      houmonKaigoNumberOfPeople = new ACClearableRadioButtonGroup();
+      patent = new ACRadioButtonItem();
 
-      getHoumonKaigoNumberOfPeopleContainer().setText("訪問人数");
+      patent.setText("被保険者");
 
-      houmonKaigoNumberOfPeople.setBindPath("1110107");
+      patent.setGroup(getPlanManufacturer());
 
-      houmonKaigoNumberOfPeople.setModel(getHoumonKaigoNumberOfPeopleModel());
-
-      houmonKaigoNumberOfPeople.setUseClearButton(false);
-
-      addHoumonKaigoNumberOfPeople();
+      addPatent();
     }
-    return houmonKaigoNumberOfPeople;
+    return patent;
 
   }
 
   /**
-   * 訪問人数ラジオグループコンテナを取得します。
-   * @return 訪問人数ラジオグループコンテナ
+   * 介護予防支援事業所を取得します。
+   * @return 介護予防支援事業所
    */
-  protected ACLabelContainer getHoumonKaigoNumberOfPeopleContainer(){
-    if(houmonKaigoNumberOfPeopleContainer==null){
-      houmonKaigoNumberOfPeopleContainer = new ACLabelContainer();
-      houmonKaigoNumberOfPeopleContainer.add(getHoumonKaigoNumberOfPeople(), null);
+  public ACRadioButtonItem getPreventSupportProvider(){
+    if(preventSupportProvider==null){
+
+      preventSupportProvider = new ACRadioButtonItem();
+
+      preventSupportProvider.setText("介護予防支援事業所");
+
+      preventSupportProvider.setGroup(getPlanManufacturer());
+
+      addPreventSupportProvider();
     }
-    return houmonKaigoNumberOfPeopleContainer;
-  }
-
-  /**
-   * 訪問人数ラジオグループモデルを取得します。
-   * @return 訪問人数ラジオグループモデル
-   */
-  protected ACListModelAdapter getHoumonKaigoNumberOfPeopleModel(){
-    if(houmonKaigoNumberOfPeopleModel==null){
-      houmonKaigoNumberOfPeopleModel = new ACListModelAdapter();
-      addHoumonKaigoNumberOfPeopleModel();
-    }
-    return houmonKaigoNumberOfPeopleModel;
-  }
-
-  /**
-   * 1人を取得します。
-   * @return 1人
-   */
-  public ACRadioButtonItem getHoumonKaigoNumberOfPeople1(){
-    if(houmonKaigoNumberOfPeople1==null){
-
-      houmonKaigoNumberOfPeople1 = new ACRadioButtonItem();
-
-      houmonKaigoNumberOfPeople1.setText("1人");
-
-      houmonKaigoNumberOfPeople1.setGroup(getHoumonKaigoNumberOfPeople());
-
-      addHoumonKaigoNumberOfPeople1();
-    }
-    return houmonKaigoNumberOfPeople1;
+    return preventSupportProvider;
 
   }
 
   /**
-   * 2人を取得します。
-   * @return 2人
+   * 居宅支援事業者情報コンテナを取得します。
+   * @return 居宅支援事業者情報コンテナ
    */
-  public ACRadioButtonItem getHoumonKaigoNumberOfPeople2(){
-    if(houmonKaigoNumberOfPeople2==null){
+  public ACLabelContainer getSupportProviderContainer(){
+    if(supportProviderContainer==null){
 
-      houmonKaigoNumberOfPeople2 = new ACRadioButtonItem();
+      supportProviderContainer = new ACLabelContainer();
 
-      houmonKaigoNumberOfPeople2.setText("2人");
+      supportProviderContainer.setText("居宅支援事業所");
 
-      houmonKaigoNumberOfPeople2.setGroup(getHoumonKaigoNumberOfPeople());
+      supportProviderContainer.setAutoWrap(false);
 
-      addHoumonKaigoNumberOfPeople2();
+      supportProviderContainer.setHgap(0);
+
+      addSupportProviderContainer();
     }
-    return houmonKaigoNumberOfPeople2;
+    return supportProviderContainer;
 
   }
 
   /**
-   * 時間帯ラジオグループを取得します。
-   * @return 時間帯ラジオグループ
+   * 事業者番号ラベルを取得します。
+   * @return 事業者番号ラベル
    */
-  public ACClearableRadioButtonGroup getHoumonKaigoTimeZone(){
-    if(houmonKaigoTimeZone==null){
+  public ACLabel getSupportProviderCd(){
+    if(supportProviderCd==null){
 
-      houmonKaigoTimeZone = new ACClearableRadioButtonGroup();
+      supportProviderCd = new ACLabel();
 
-      getHoumonKaigoTimeZoneContainer().setText("時間帯");
+      supportProviderCd.setColumns(10);
 
-      houmonKaigoTimeZone.setBindPath("1110108");
-
-      houmonKaigoTimeZone.setModel(getHoumonKaigoTimeZoneModel());
-
-      houmonKaigoTimeZone.setUseClearButton(false);
-
-      addHoumonKaigoTimeZone();
+      addSupportProviderCd();
     }
-    return houmonKaigoTimeZone;
+    return supportProviderCd;
 
   }
 
   /**
-   * 時間帯ラジオグループコンテナを取得します。
-   * @return 時間帯ラジオグループコンテナ
+   * 事業者名称コンボを取得します。
+   * @return 事業者名称コンボ
    */
-  protected ACLabelContainer getHoumonKaigoTimeZoneContainer(){
-    if(houmonKaigoTimeZoneContainer==null){
-      houmonKaigoTimeZoneContainer = new ACLabelContainer();
-      houmonKaigoTimeZoneContainer.add(getHoumonKaigoTimeZone(), null);
+  public ACComboBox getSupportProviderName(){
+    if(supportProviderName==null){
+
+      supportProviderName = new ACComboBox();
+
+      supportProviderName.setBindPath("PROVIDER_ID");
+
+      supportProviderName.setEditable(false);
+
+      supportProviderName.setRenderBindPath("PROVIDER_NAME");
+
+      supportProviderName.setMaxColumns(30);
+
+      supportProviderName.setModel(getSupportProviderNameModel());
+
+      addSupportProviderName();
     }
-    return houmonKaigoTimeZoneContainer;
-  }
-
-  /**
-   * 時間帯ラジオグループモデルを取得します。
-   * @return 時間帯ラジオグループモデル
-   */
-  protected ACListModelAdapter getHoumonKaigoTimeZoneModel(){
-    if(houmonKaigoTimeZoneModel==null){
-      houmonKaigoTimeZoneModel = new ACListModelAdapter();
-      addHoumonKaigoTimeZoneModel();
-    }
-    return houmonKaigoTimeZoneModel;
-  }
-
-  /**
-   * 通常を取得します。
-   * @return 通常
-   */
-  public ACRadioButtonItem getHoumonKaigoTimeZoneNormal(){
-    if(houmonKaigoTimeZoneNormal==null){
-
-      houmonKaigoTimeZoneNormal = new ACRadioButtonItem();
-
-      houmonKaigoTimeZoneNormal.setText("通常");
-
-      houmonKaigoTimeZoneNormal.setGroup(getHoumonKaigoTimeZone());
-
-      addHoumonKaigoTimeZoneNormal();
-    }
-    return houmonKaigoTimeZoneNormal;
+    return supportProviderName;
 
   }
 
   /**
-   * 早朝を取得します。
-   * @return 早朝
+   * 事業者名称コンボモデルを取得します。
+   * @return 事業者名称コンボモデル
    */
-  public ACRadioButtonItem getHoumonKaigoTimeZoneEarlyMorning(){
-    if(houmonKaigoTimeZoneEarlyMorning==null){
-
-      houmonKaigoTimeZoneEarlyMorning = new ACRadioButtonItem();
-
-      houmonKaigoTimeZoneEarlyMorning.setText("早朝");
-
-      houmonKaigoTimeZoneEarlyMorning.setGroup(getHoumonKaigoTimeZone());
-
-      addHoumonKaigoTimeZoneEarlyMorning();
+  protected ACComboBoxModelAdapter getSupportProviderNameModel(){
+    if(supportProviderNameModel==null){
+      supportProviderNameModel = new ACComboBoxModelAdapter();
+      addSupportProviderNameModel();
     }
-    return houmonKaigoTimeZoneEarlyMorning;
+    return supportProviderNameModel;
+  }
+
+  /**
+   * 担当者コンボを取得します。
+   * @return 担当者コンボ
+   */
+  public ACComboBox getPersonInCharge(){
+    if(personInCharge==null){
+
+      personInCharge = new ACComboBox();
+
+      getPersonInChargeContainer().setText("担当者名");
+
+      personInCharge.setBindPath("STAFF_NAME");
+
+      personInCharge.setEditable(false);
+
+      personInCharge.setRenderBindPath("STAFF_NAME");
+
+      personInCharge.setMaxColumns(30);
+
+      personInCharge.setModel(getPersonInChargeModel());
+
+      addPersonInCharge();
+    }
+    return personInCharge;
 
   }
 
   /**
-   * 夜間を取得します。
-   * @return 夜間
+   * 担当者コンボコンテナを取得します。
+   * @return 担当者コンボコンテナ
    */
-  public ACRadioButtonItem getHoumonKaigoTimeZoneNighttime(){
-    if(houmonKaigoTimeZoneNighttime==null){
-
-      houmonKaigoTimeZoneNighttime = new ACRadioButtonItem();
-
-      houmonKaigoTimeZoneNighttime.setText("夜間");
-
-      houmonKaigoTimeZoneNighttime.setGroup(getHoumonKaigoTimeZone());
-
-      addHoumonKaigoTimeZoneNighttime();
+  protected ACLabelContainer getPersonInChargeContainer(){
+    if(personInChargeContainer==null){
+      personInChargeContainer = new ACLabelContainer();
+      personInChargeContainer.setFollowChildEnabled(true);
+      personInChargeContainer.setVAlignment(VRLayout.CENTER);
+      personInChargeContainer.add(getPersonInCharge(), VRLayout.CLIENT);
     }
-    return houmonKaigoTimeZoneNighttime;
+    return personInChargeContainer;
+  }
+
+  /**
+   * 担当者コンボモデルを取得します。
+   * @return 担当者コンボモデル
+   */
+  protected ACComboBoxModelAdapter getPersonInChargeModel(){
+    if(personInChargeModel==null){
+      personInChargeModel = new ACComboBoxModelAdapter();
+      addPersonInChargeModel();
+    }
+    return personInChargeModel;
+  }
+
+  /**
+   * 上段領域右を取得します。
+   * @return 上段領域右
+   */
+  public ACPanel getUpperRights(){
+    if(upperRights==null){
+
+      upperRights = new ACPanel();
+
+      upperRights.setHgrid(300);
+
+      addUpperRights();
+    }
+    return upperRights;
 
   }
 
   /**
-   * 深夜を取得します。
-   * @return 深夜
+   * 作成年月日（別表）を取得します。
+   * @return 作成年月日（別表）
    */
-  public ACRadioButtonItem getHoumonKaigoTimeZoneMidnight(){
-    if(houmonKaigoTimeZoneMidnight==null){
+  public QkanDateTextField getDateOfMakingOutsideFrame(){
+    if(dateOfMakingOutsideFrame==null){
 
-      houmonKaigoTimeZoneMidnight = new ACRadioButtonItem();
+      dateOfMakingOutsideFrame = new QkanDateTextField();
 
-      houmonKaigoTimeZoneMidnight.setText("深夜");
+      getDateOfMakingOutsideFrameContainer().setText("作成年月日（別表）");
 
-      houmonKaigoTimeZoneMidnight.setGroup(getHoumonKaigoTimeZone());
+      dateOfMakingOutsideFrame.setBindPath("CREATE_DATE_OUTER");
 
-      addHoumonKaigoTimeZoneMidnight();
+      addDateOfMakingOutsideFrame();
     }
-    return houmonKaigoTimeZoneMidnight;
+    return dateOfMakingOutsideFrame;
+
+  }
+
+  /**
+   * 作成年月日（別表）コンテナを取得します。
+   * @return 作成年月日（別表）コンテナ
+   */
+  protected ACLabelContainer getDateOfMakingOutsideFrameContainer(){
+    if(dateOfMakingOutsideFrameContainer==null){
+      dateOfMakingOutsideFrameContainer = new ACLabelContainer();
+      dateOfMakingOutsideFrameContainer.setFollowChildEnabled(true);
+      dateOfMakingOutsideFrameContainer.setVAlignment(VRLayout.CENTER);
+      dateOfMakingOutsideFrameContainer.add(getDateOfMakingOutsideFrame(), null);
+    }
+    return dateOfMakingOutsideFrameContainer;
+  }
+
+  /**
+   * 作成年月日を取得します。
+   * @return 作成年月日
+   */
+  public QkanDateTextField getDateOfMaking(){
+    if(dateOfMaking==null){
+
+      dateOfMaking = new QkanDateTextField();
+
+      getDateOfMakingContainer().setText("作成年月日");
+
+      dateOfMaking.setBindPath("CREATE_DATE_INNER");
+
+      addDateOfMaking();
+    }
+    return dateOfMaking;
+
+  }
+
+  /**
+   * 作成年月日コンテナを取得します。
+   * @return 作成年月日コンテナ
+   */
+  protected ACLabelContainer getDateOfMakingContainer(){
+    if(dateOfMakingContainer==null){
+      dateOfMakingContainer = new ACLabelContainer();
+      dateOfMakingContainer.setFollowChildEnabled(true);
+      dateOfMakingContainer.setVAlignment(VRLayout.CENTER);
+      dateOfMakingContainer.add(getDateOfMaking(), null);
+    }
+    return dateOfMakingContainer;
+  }
+
+  /**
+   * 届出年月日を取得します。
+   * @return 届出年月日
+   */
+  public QkanDateTextField getDateOfWrittenReport(){
+    if(dateOfWrittenReport==null){
+
+      dateOfWrittenReport = new QkanDateTextField();
+
+      getDateOfWrittenReportContainer().setText("届出年月日");
+
+      dateOfWrittenReport.setBindPath("DATE_OF_WRITTEN_REPORT");
+
+      addDateOfWrittenReport();
+    }
+    return dateOfWrittenReport;
+
+  }
+
+  /**
+   * 届出年月日コンテナを取得します。
+   * @return 届出年月日コンテナ
+   */
+  protected ACLabelContainer getDateOfWrittenReportContainer(){
+    if(dateOfWrittenReportContainer==null){
+      dateOfWrittenReportContainer = new ACLabelContainer();
+      dateOfWrittenReportContainer.setFollowChildEnabled(true);
+      dateOfWrittenReportContainer.setVAlignment(VRLayout.CENTER);
+      dateOfWrittenReportContainer.add(getDateOfWrittenReport(), null);
+    }
+    return dateOfWrittenReportContainer;
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getSolid2(){
+    if(solid2==null){
+
+      solid2 = new ACLabel();
+
+      solid2.setText("（被保険者自己作成の場合のみ）");
+
+      addSolid2();
+    }
+    return solid2;
+
+  }
+
+  /**
+   * 中段領域を取得します。
+   * @return 中段領域
+   */
+  public ACPanel getMiddles(){
+    if(middles==null){
+
+      middles = new ACPanel();
+
+      middles.setAutoWrap(false);
+
+      addMiddles();
+    }
+    return middles;
+
+  }
+
+  /**
+   * 要介護状態区分領域を取得します。
+   * @return 要介護状態区分領域
+   */
+  public ACGroupBox getStateOfYouKaigo(){
+    if(stateOfYouKaigo==null){
+
+      stateOfYouKaigo = new ACGroupBox();
+
+      stateOfYouKaigo.setText("要介護状態区分");
+
+      stateOfYouKaigo.setAutoWrap(false);
+
+      addStateOfYouKaigo();
+    }
+    return stateOfYouKaigo;
+
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getYouKaigodoType1(){
+    if(youKaigodoType1==null){
+
+      youKaigodoType1 = new ACLabel();
+
+      youKaigodoType1.setBindPath("YOKAIGODO_TYPE1");
+
+      addYouKaigodoType1();
+    }
+    return youKaigodoType1;
+
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getYouKaigodoType2(){
+    if(youKaigodoType2==null){
+
+      youKaigodoType2 = new ACLabel();
+
+      youKaigodoType2.setBindPath("YOKAIGODO_TYPE2");
+
+      addYouKaigodoType2();
+    }
+    return youKaigodoType2;
+
+  }
+
+  /**
+   * 限度額情報領域を取得します。
+   * @return 限度額情報領域
+   */
+  public ACPanel getLimitAmountInformation(){
+    if(limitAmountInformation==null){
+
+      limitAmountInformation = new ACPanel();
+
+      addLimitAmountInformation();
+    }
+    return limitAmountInformation;
+
+  }
+
+  /**
+   * 限度額コンテナを取得します。
+   * @return 限度額コンテナ
+   */
+  public ACLabelContainer getLimitAmountContainer(){
+    if(limitAmountContainer==null){
+
+      limitAmountContainer = new ACLabelContainer();
+
+      limitAmountContainer.setText("支給限度基準額");
+
+      addLimitAmountContainer();
+    }
+    return limitAmountContainer;
+
+  }
+
+  /**
+   * 支給限度基準額を取得します。
+   * @return 支給限度基準額
+   */
+  public ACTextField getLimitAmountContent(){
+    if(limitAmountContent==null){
+
+      limitAmountContent = new ACTextField();
+
+      limitAmountContent.setBindPath("LIMIT_AMOUNT_CONTENT");
+
+      limitAmountContent.setEditable(false);
+
+      limitAmountContent.setColumns(9);
+
+      limitAmountContent.setCharType(VRCharType.ONLY_DIGIT);
+
+      limitAmountContent.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      limitAmountContent.setIMEMode(InputSubset.LATIN);
+
+      limitAmountContent.setMaxLength(15);
+
+      addLimitAmountContent();
+    }
+    return limitAmountContent;
+
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getSolid4(){
+    if(solid4==null){
+
+      solid4 = new ACLabel();
+
+      solid4.setText("単位");
+
+      addSolid4();
+    }
+    return solid4;
+
+  }
+
+  /**
+   * 限度額適用期間コンテナを取得します。
+   * @return 限度額適用期間コンテナ
+   */
+  public ACLabelContainer getLimitAmountApplicationPeriod(){
+    if(limitAmountApplicationPeriod==null){
+
+      limitAmountApplicationPeriod = new ACLabelContainer();
+
+      limitAmountApplicationPeriod.setText("限度額適用期間");
+
+      addLimitAmountApplicationPeriod();
+    }
+    return limitAmountApplicationPeriod;
+
+  }
+
+  /**
+   * 適用期間開始を取得します。
+   * @return 適用期間開始
+   */
+  public ACTextField getApplicationPeriodBegin(){
+    if(applicationPeriodBegin==null){
+
+      applicationPeriodBegin = new ACTextField();
+
+      applicationPeriodBegin.setBindPath("INSURE_VALID_START");
+
+      applicationPeriodBegin.setEditable(false);
+
+      applicationPeriodBegin.setColumns(8);
+
+      addApplicationPeriodBegin();
+    }
+    return applicationPeriodBegin;
+
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getSolid5(){
+    if(solid5==null){
+
+      solid5 = new ACLabel();
+
+      solid5.setText("から");
+
+      addSolid5();
+    }
+    return solid5;
+
+  }
+
+  /**
+   * 適用期間終了を取得します。
+   * @return 適用期間終了
+   */
+  public ACTextField getApplicationPeriodEnd(){
+    if(applicationPeriodEnd==null){
+
+      applicationPeriodEnd = new ACTextField();
+
+      applicationPeriodEnd.setBindPath("INSURE_VALID_END");
+
+      applicationPeriodEnd.setEditable(false);
+
+      applicationPeriodEnd.setColumns(8);
+
+      addApplicationPeriodEnd();
+    }
+    return applicationPeriodEnd;
+
+  }
+
+  /**
+   * 短期入所公費情報領域を取得します。
+   * @return 短期入所公費情報領域
+   */
+  public ACPanel getShortStayAndPublicExpense(){
+    if(shortStayAndPublicExpense==null){
+
+      shortStayAndPublicExpense = new ACPanel();
+
+      addShortStayAndPublicExpense();
+    }
+    return shortStayAndPublicExpense;
+
+  }
+
+  /**
+   * 短期入所利用日数コンテナを取得します。
+   * @return 短期入所利用日数コンテナ
+   */
+  public ACLabelContainer getShortStayUseDays(){
+    if(shortStayUseDays==null){
+
+      shortStayUseDays = new ACLabelContainer();
+
+      addShortStayUseDays();
+    }
+    return shortStayUseDays;
+
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getSolid6(){
+    if(solid6==null){
+
+      solid6 = new ACLabel();
+
+      solid6.setText("前月までの短期入所利用日数");
+
+      addSolid6();
+    }
+    return solid6;
+
+  }
+
+  /**
+   * 短期入所利用日数を取得します。
+   * @return 短期入所利用日数
+   */
+  public ACTextField getShortStayUseDay(){
+    if(shortStayUseDay==null){
+
+      shortStayUseDay = new ACTextField();
+
+      shortStayUseDay.setBindPath("SHORT_STAY_USE_DAY");
+
+      shortStayUseDay.setColumns(3);
+
+      shortStayUseDay.setCharType(VRCharType.ONLY_DIGIT);
+
+      shortStayUseDay.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      shortStayUseDay.setIMEMode(InputSubset.LATIN);
+
+      shortStayUseDay.setMaxLength(15);
+
+      addShortStayUseDay();
+    }
+    return shortStayUseDay;
+
+  }
+
+  /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getSolid8(){
+    if(solid8==null){
+
+      solid8 = new ACLabel();
+
+      solid8.setText("日");
+
+      addSolid8();
+    }
+    return solid8;
+
+  }
+
+  /**
+   * 公費コンテナを取得します。
+   * @return 公費コンテナ
+   */
+  public ACLabelContainer getPublicExpenses(){
+    if(publicExpenses==null){
+
+      publicExpenses = new ACLabelContainer();
+
+      addPublicExpenses();
+    }
+    return publicExpenses;
+
+  }
+
+  /**
+   * 公費チェックを取得します。
+   * @return 公費チェック
+   */
+  public ACIntegerCheckBox getPublicExpense(){
+    if(publicExpense==null){
+
+      publicExpense = new ACIntegerCheckBox();
+
+      publicExpense.setText("公費も含めた給付率で別表を作成(E)");
+
+      publicExpense.setBindPath("WITH_PUBLIC_EXPENSE");
+
+      publicExpense.setMnemonic('E');
+
+      addPublicExpense();
+    }
+    return publicExpense;
+
+  }
+
+  /**
+   * 下段領域を取得します。
+   * @return 下段領域
+   */
+  public ACPanel getLowers(){
+    if(lowers==null){
+
+      lowers = new ACPanel();
+
+      lowers.setAutoWrap(false);
+
+      addLowers();
+    }
+    return lowers;
+
+  }
+
+  /**
+   * 帳票種別選択フレームを取得します。
+   * @return 帳票種別選択フレーム
+   */
+  public ACGroupBox getSlitTypes(){
+    if(slitTypes==null){
+
+      slitTypes = new ACGroupBox();
+
+      slitTypes.setText("帳票種別選択");
+
+      addSlitTypes();
+    }
+    return slitTypes;
+
+  }
+
+  /**
+   * 種別選択を取得します。
+   * @return 種別選択
+   */
+  public ACClearableRadioButtonGroup getSlitType(){
+    if(slitType==null){
+
+      slitType = new ACClearableRadioButtonGroup();
+
+      slitType.setBindPath("SLIT_TYPE");
+
+      slitType.setUseClearButton(false);
+
+      slitType.setModel(getSlitTypeModel());
+
+      addSlitType();
+    }
+    return slitType;
+
+  }
+
+  /**
+   * 種別選択モデルを取得します。
+   * @return 種別選択モデル
+   */
+  protected ACListModelAdapter getSlitTypeModel(){
+    if(slitTypeModel==null){
+      slitTypeModel = new ACListModelAdapter();
+      addSlitTypeModel();
+    }
+    return slitTypeModel;
+  }
+
+  /**
+   * 利用票を取得します。
+   * @return 利用票
+   */
+  public ACRadioButtonItem getUseVoteType(){
+    if(useVoteType==null){
+
+      useVoteType = new ACRadioButtonItem();
+
+      useVoteType.setText("利用票");
+
+      useVoteType.setGroup(getSlitType());
+
+      addUseVoteType();
+    }
+    return useVoteType;
+
+  }
+
+  /**
+   * 提供票を取得します。
+   * @return 提供票
+   */
+  public ACRadioButtonItem getOfferVote(){
+    if(offerVote==null){
+
+      offerVote = new ACRadioButtonItem();
+
+      offerVote.setText("提供票");
+
+      offerVote.setGroup(getSlitType());
+
+      addOfferVote();
+    }
+    return offerVote;
+
+  }
+
+  /**
+   * 帳票種類選択フレームを取得します。
+   * @return 帳票種類選択フレーム
+   */
+  public ACGroupBox getSlitKinds(){
+    if(slitKinds==null){
+
+      slitKinds = new ACGroupBox();
+
+      slitKinds.setText("印刷する帳票の選択");
+
+      addSlitKinds();
+    }
+    return slitKinds;
+
+  }
+
+  /**
+   * 種類選択を取得します。
+   * @return 種類選択
+   */
+  public ACClearableRadioButtonGroup getSlitKind(){
+    if(slitKind==null){
+
+      slitKind = new ACClearableRadioButtonGroup();
+
+      slitKind.setBindPath("SLIT_KIND");
+
+      slitKind.setUseClearButton(false);
+
+      slitKind.setModel(getSlitKindModel());
+
+      addSlitKind();
+    }
+    return slitKind;
+
+  }
+
+  /**
+   * 種類選択モデルを取得します。
+   * @return 種類選択モデル
+   */
+  protected ACListModelAdapter getSlitKindModel(){
+    if(slitKindModel==null){
+      slitKindModel = new ACListModelAdapter();
+      addSlitKindModel();
+    }
+    return slitKindModel;
+  }
+
+  /**
+   * 利用票・別表を取得します。
+   * @return 利用票・別表
+   */
+  public ACRadioButtonItem getUseVoteAndAttachedTable(){
+    if(useVoteAndAttachedTable==null){
+
+      useVoteAndAttachedTable = new ACRadioButtonItem();
+
+      useVoteAndAttachedTable.setText("本票と別表");
+
+      useVoteAndAttachedTable.setGroup(getSlitKind());
+
+      addUseVoteAndAttachedTable();
+    }
+    return useVoteAndAttachedTable;
+
+  }
+
+  /**
+   * 利用票を取得します。
+   * @return 利用票
+   */
+  public ACRadioButtonItem getUseVoteKind(){
+    if(useVoteKind==null){
+
+      useVoteKind = new ACRadioButtonItem();
+
+      useVoteKind.setText("本票");
+
+      useVoteKind.setGroup(getSlitKind());
+
+      addUseVoteKind();
+    }
+    return useVoteKind;
+
+  }
+
+  /**
+   * 別表を取得します。
+   * @return 別表
+   */
+  public ACRadioButtonItem getAttachedTable(){
+    if(attachedTable==null){
+
+      attachedTable = new ACRadioButtonItem();
+
+      attachedTable.setText("別表");
+
+      attachedTable.setGroup(getSlitKind());
+
+      addAttachedTable();
+    }
+    return attachedTable;
+
+  }
+
+  /**
+   * パネルを取得します。
+   * @return パネル
+   */
+  public ACPanel getPrintButtonArea(){
+    if(printButtonArea==null){
+
+      printButtonArea = new ACPanel();
+
+      addPrintButtonArea();
+    }
+    return printButtonArea;
+
+  }
+
+  /**
+   * ボタンパネルを取得します。
+   * @return ボタンパネル
+   */
+  public ACPanel getPrintButtons(){
+    if(printButtons==null){
+
+      printButtons = new ACPanel();
+
+      printButtons.setAutoWrap(false);
+
+      addPrintButtons();
+    }
+    return printButtons;
+
+  }
+
+  /**
+   * 印刷を取得します。
+   * @return 印刷
+   */
+  public ACButton getPrint(){
+    if(print==null){
+
+      print = new ACButton();
+
+      print.setText("印刷(P)");
+
+      print.setToolTipText("画面の設定で印刷します。");
+
+      print.setMnemonic('P');
+
+      addPrint();
+    }
+    return print;
+
+  }
+
+  /**
+   * 閉じるを取得します。
+   * @return 閉じる
+   */
+  public ACButton getEnd(){
+    if(end==null){
+
+      end = new ACButton();
+
+      end.setText("閉じる(C)");
+
+      end.setToolTipText("印刷せずに画面を閉じます。");
+
+      end.setMnemonic('C');
+
+      addEnd();
+    }
+    return end;
 
   }
 
@@ -701,8 +1351,33 @@ public class QS001003Design extends QS001ServicePanel {
    */
   public QS001003Design() {
 
+    super(ACFrame.getInstance(), true);
+    this.getContentPane().setLayout(new VRLayout());
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
     try {
       initialize();
+
+      setSize(900, 310);
+
+      // ウィンドウを中央に配置
+      Point pos;
+      try{
+          pos= ACFrame.getInstance().getLocationOnScreen();
+      }catch(Exception ex){
+          pos = new Point(0,0);
+      }
+      Dimension screenSize = ACFrame.getInstance().getSize();
+      Dimension frameSize = this.getSize();
+      if (frameSize.height > screenSize.height) {
+          frameSize.height = screenSize.height;
+      }
+      if (frameSize.width > screenSize.width) {
+          frameSize.width = screenSize.width;
+      }
+      this.setLocation((int)(pos.getX()+(screenSize.width - frameSize.width) / 2),
+              (int)(pos.getY()+(screenSize.height - frameSize.height) / 2));
+
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -720,231 +1395,526 @@ public class QS001003Design extends QS001ServicePanel {
    */
   protected void addThis(){
 
-    this.add(getHoumonKaigoPatterns(), VRLayout.WEST);
+    this.getContentPane().add(getContents(), VRLayout.CLIENT);
 
   }
 
   /**
-   * 訪問介護パターン領域に内部項目を追加します。
+   * クライアント領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoPatterns(){
+  protected void addContents(){
 
-    houmonKaigoPatterns.add(getHoumonKaigoServicePatternContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    contents.add(getUppers(), VRLayout.NORTH);
 
-    houmonKaigoPatterns.add(getHomonkaigoTeikyoTimeContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    contents.add(getMiddles(), VRLayout.NORTH);
 
-    houmonKaigoPatterns.add(getHoumonKaigoInTimeContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    houmonKaigoPatterns.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
-
-    houmonKaigoPatterns.add(getHoumonKaigoClassContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    houmonKaigoPatterns.add(getHoumonKaigoNumberOfPeopleContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    houmonKaigoPatterns.add(getHoumonKaigoTimeZoneContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    contents.add(getLowers(), VRLayout.NORTH);
 
   }
 
   /**
-   * サービスコンボに内部項目を追加します。
+   * 上段領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoServicePattern(){
+  protected void addUppers(){
+
+    uppers.add(getUpperLefts(), VRLayout.CLIENT);
+
+    uppers.add(getUpperRights(), VRLayout.EAST);
+  }
+
+  /**
+   * 上段領域左に内部項目を追加します。
+   */
+  protected void addUpperLefts(){
+
+    upperLefts.add(getPatients(), VRLayout.NORTH);
+
+    upperLefts.add(getPrividers(), VRLayout.NORTH);
 
   }
 
   /**
-   * サービスコンボモデルに内部項目を追加します。
+   * 利用者情報領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoServicePatternModel(){
+  protected void addPatients(){
+
+    patients.add(getPatentNameContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    patients.add(getServiceYearMonthContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
   /**
-   * 提供時間コンボに内部項目を追加します。
+   * 利用者名ラベルに内部項目を追加します。
    */
-  protected void addHomonkaigoTeikyoTime(){
+  protected void addPatentName(){
 
   }
 
   /**
-   * 提供時間コンボモデルに内部項目を追加します。
+   * 年月ラベルに内部項目を追加します。
    */
-  protected void addHomonkaigoTeikyoTimeModel(){
+  protected void addServiceYearMonth(){
 
   }
 
   /**
-   * うち身体時間コンボに内部項目を追加します。
+   * 事業者情報領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoInTime(){
+  protected void addPrividers(){
+
+    prividers.add(getPlanManufacturerContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    prividers.add(getPersonInChargeContainer(), VRLayout.SOUTH);
+    prividers.add(getSupportProviderContainer(), VRLayout.SOUTH);
+  }
+
+  /**
+   * 計画作成者ラジオグループに内部項目を追加します。
+   */
+  protected void addPlanManufacturer(){
 
   }
 
   /**
-   * うち身体時間コンボモデルに内部項目を追加します。
+   * 計画作成者ラジオグループモデルに内部項目を追加します。
    */
-  protected void addHoumonKaigoInTimeModel(){
+  protected void addPlanManufacturerModel(){
+
+    getSupportProvider().setButtonIndex(1);
+
+    getPlanManufacturerModel().add(getSupportProvider());
+
+    getPatent().setButtonIndex(2);
+
+    getPlanManufacturerModel().add(getPatent());
+
+    getPreventSupportProvider().setButtonIndex(3);
+
+    getPlanManufacturerModel().add(getPreventSupportProvider());
 
   }
 
   /**
-   * 提供時間コンテナに内部項目を追加します。
+   * 居宅介護支援事業者に内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeContainer(){
-
-    houmonKaigoTimeContainer.add(getHoumonKaigoBeginTimeContainer(), VRLayout.FLOW);
-
-    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW);
+  protected void addSupportProvider(){
 
   }
 
   /**
-   * 開始時刻コンボに内部項目を追加します。
+   * 被保険者に内部項目を追加します。
    */
-  protected void addHoumonKaigoBeginTime(){
+  protected void addPatent(){
 
   }
 
   /**
-   * 開始時刻コンボモデルに内部項目を追加します。
+   * 介護予防支援事業所に内部項目を追加します。
    */
-  protected void addHoumonKaigoBeginTimeModel(){
+  protected void addPreventSupportProvider(){
 
   }
 
   /**
-   * 終了時刻コンボに内部項目を追加します。
+   * 居宅支援事業者情報コンテナに内部項目を追加します。
    */
-  protected void addHoumonKaigoEndTime(){
+  protected void addSupportProviderContainer(){
+
+    supportProviderContainer.add(getSupportProviderCd(), VRLayout.FLOW_RETURN);
+
+    supportProviderContainer.add(getSupportProviderName(), VRLayout.SOUTH);
+  }
+
+  /**
+   * 事業者番号ラベルに内部項目を追加します。
+   */
+  protected void addSupportProviderCd(){
 
   }
 
   /**
-   * 終了時刻コンボモデルに内部項目を追加します。
+   * 事業者名称コンボに内部項目を追加します。
    */
-  protected void addHoumonKaigoEndTimeModel(){
+  protected void addSupportProviderName(){
 
   }
 
   /**
-   * 訪問者の級職ラジオグループに内部項目を追加します。
+   * 事業者名称コンボモデルに内部項目を追加します。
    */
-  protected void addHoumonKaigoClass(){
+  protected void addSupportProviderNameModel(){
 
   }
 
   /**
-   * 訪問者の級職ラジオグループモデルに内部項目を追加します。
+   * 担当者コンボに内部項目を追加します。
    */
-  protected void addHoumonKaigoClassModel(){
-
-    getHoumonKaigoClassOther().setButtonIndex(0);
-    getHoumonKaigoClassModel().add(getHoumonKaigoClassOther());
-
-    getHoumonKaigoClass3().setButtonIndex(1);
-    getHoumonKaigoClassModel().add(getHoumonKaigoClass3());
+  protected void addPersonInCharge(){
 
   }
 
   /**
-   * ３級以外に内部項目を追加します。
+   * 担当者コンボモデルに内部項目を追加します。
    */
-  protected void addHoumonKaigoClassOther(){
+  protected void addPersonInChargeModel(){
 
   }
 
   /**
-   * ３級に内部項目を追加します。
+   * 上段領域右に内部項目を追加します。
    */
-  protected void addHoumonKaigoClass3(){
+  protected void addUpperRights(){
+
+    upperRights.add(getDateOfMakingOutsideFrameContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    upperRights.add(getDateOfMakingContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    upperRights.add(getDateOfWrittenReportContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    upperRights.add(getSolid2(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
   /**
-   * 訪問人数ラジオグループに内部項目を追加します。
+   * 作成年月日（別表）に内部項目を追加します。
    */
-  protected void addHoumonKaigoNumberOfPeople(){
+  protected void addDateOfMakingOutsideFrame(){
 
   }
 
   /**
-   * 訪問人数ラジオグループモデルに内部項目を追加します。
+   * 作成年月日に内部項目を追加します。
    */
-  protected void addHoumonKaigoNumberOfPeopleModel(){
-
-    getHoumonKaigoNumberOfPeople1().setButtonIndex(0);
-    getHoumonKaigoNumberOfPeopleModel().add(getHoumonKaigoNumberOfPeople1());
-
-    getHoumonKaigoNumberOfPeople2().setButtonIndex(1);
-    getHoumonKaigoNumberOfPeopleModel().add(getHoumonKaigoNumberOfPeople2());
+  protected void addDateOfMaking(){
 
   }
 
   /**
-   * 1人に内部項目を追加します。
+   * 届出年月日に内部項目を追加します。
    */
-  protected void addHoumonKaigoNumberOfPeople1(){
+  protected void addDateOfWrittenReport(){
 
   }
 
   /**
-   * 2人に内部項目を追加します。
+   * ラベルに内部項目を追加します。
    */
-  protected void addHoumonKaigoNumberOfPeople2(){
+  protected void addSolid2(){
 
   }
 
   /**
-   * 時間帯ラジオグループに内部項目を追加します。
+   * 中段領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeZone(){
+  protected void addMiddles(){
+
+    middles.add(getStateOfYouKaigo(), VRLayout.FLOW);
+
+    middles.add(getLimitAmountInformation(), VRLayout.FLOW);
+
+    middles.add(getShortStayAndPublicExpense(), VRLayout.FLOW);
 
   }
 
   /**
-   * 時間帯ラジオグループモデルに内部項目を追加します。
+   * 要介護状態区分領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeZoneModel(){
+  protected void addStateOfYouKaigo(){
 
-    getHoumonKaigoTimeZoneNormal().setButtonIndex(0);
-    getHoumonKaigoTimeZoneModel().add(getHoumonKaigoTimeZoneNormal());
+    stateOfYouKaigo.add(getYouKaigodoType1(), VRLayout.FLOW_RETURN);
 
-    getHoumonKaigoTimeZoneEarlyMorning().setButtonIndex(1);
-    getHoumonKaigoTimeZoneModel().add(getHoumonKaigoTimeZoneEarlyMorning());
-
-    getHoumonKaigoTimeZoneNighttime().setButtonIndex(2);
-    getHoumonKaigoTimeZoneModel().add(getHoumonKaigoTimeZoneNighttime());
-
-    getHoumonKaigoTimeZoneMidnight().setButtonIndex(3);
-    getHoumonKaigoTimeZoneModel().add(getHoumonKaigoTimeZoneMidnight());
+    stateOfYouKaigo.add(getYouKaigodoType2(), VRLayout.FLOW_RETURN);
 
   }
 
   /**
-   * 通常に内部項目を追加します。
+   * ラベルに内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeZoneNormal(){
+  protected void addYouKaigodoType1(){
 
   }
 
   /**
-   * 早朝に内部項目を追加します。
+   * ラベルに内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeZoneEarlyMorning(){
+  protected void addYouKaigodoType2(){
 
   }
 
   /**
-   * 夜間に内部項目を追加します。
+   * 限度額情報領域に内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeZoneNighttime(){
+  protected void addLimitAmountInformation(){
+
+    limitAmountInformation.add(getLimitAmountContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    limitAmountInformation.add(getLimitAmountApplicationPeriod(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
   /**
-   * 深夜に内部項目を追加します。
+   * 限度額コンテナに内部項目を追加します。
    */
-  protected void addHoumonKaigoTimeZoneMidnight(){
+  protected void addLimitAmountContainer(){
+
+    limitAmountContainer.add(getLimitAmountContent(), null);
+
+    limitAmountContainer.add(getSolid4(), null);
+
+  }
+
+  /**
+   * 支給限度基準額に内部項目を追加します。
+   */
+  protected void addLimitAmountContent(){
+
+  }
+
+  /**
+   * ラベルに内部項目を追加します。
+   */
+  protected void addSolid4(){
+
+  }
+
+  /**
+   * 限度額適用期間コンテナに内部項目を追加します。
+   */
+  protected void addLimitAmountApplicationPeriod(){
+
+    limitAmountApplicationPeriod.add(getApplicationPeriodBegin(), null);
+
+    limitAmountApplicationPeriod.add(getSolid5(), null);
+
+    limitAmountApplicationPeriod.add(getApplicationPeriodEnd(), null);
+
+  }
+
+  /**
+   * 適用期間開始に内部項目を追加します。
+   */
+  protected void addApplicationPeriodBegin(){
+
+  }
+
+  /**
+   * ラベルに内部項目を追加します。
+   */
+  protected void addSolid5(){
+
+  }
+
+  /**
+   * 適用期間終了に内部項目を追加します。
+   */
+  protected void addApplicationPeriodEnd(){
+
+  }
+
+  /**
+   * 短期入所公費情報領域に内部項目を追加します。
+   */
+  protected void addShortStayAndPublicExpense(){
+
+    shortStayAndPublicExpense.add(getShortStayUseDays(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    shortStayAndPublicExpense.add(getPublicExpenses(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * 短期入所利用日数コンテナに内部項目を追加します。
+   */
+  protected void addShortStayUseDays(){
+
+    shortStayUseDays.add(getSolid6(), null);
+
+    shortStayUseDays.add(getShortStayUseDay(), null);
+
+    shortStayUseDays.add(getSolid8(), null);
+
+  }
+
+  /**
+   * ラベルに内部項目を追加します。
+   */
+  protected void addSolid6(){
+
+  }
+
+  /**
+   * 短期入所利用日数に内部項目を追加します。
+   */
+  protected void addShortStayUseDay(){
+
+  }
+
+  /**
+   * ラベルに内部項目を追加します。
+   */
+  protected void addSolid8(){
+
+  }
+
+  /**
+   * 公費コンテナに内部項目を追加します。
+   */
+  protected void addPublicExpenses(){
+
+    publicExpenses.add(getPublicExpense(), null);
+
+  }
+
+  /**
+   * 公費チェックに内部項目を追加します。
+   */
+  protected void addPublicExpense(){
+
+  }
+
+  /**
+   * 下段領域に内部項目を追加します。
+   */
+  protected void addLowers(){
+
+    lowers.add(getSlitTypes(), VRLayout.WEST);
+
+    lowers.add(getSlitKinds(), VRLayout.WEST);
+
+    lowers.add(getPrintButtonArea(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 帳票種別選択フレームに内部項目を追加します。
+   */
+  protected void addSlitTypes(){
+
+    slitTypes.add(getSlitType(), null);
+
+  }
+
+  /**
+   * 種別選択に内部項目を追加します。
+   */
+  protected void addSlitType(){
+
+  }
+
+  /**
+   * 種別選択モデルに内部項目を追加します。
+   */
+  protected void addSlitTypeModel(){
+
+    getUseVoteType().setButtonIndex(1);
+
+    getSlitTypeModel().add(getUseVoteType());
+
+    getOfferVote().setButtonIndex(2);
+
+    getSlitTypeModel().add(getOfferVote());
+
+  }
+
+  /**
+   * 利用票に内部項目を追加します。
+   */
+  protected void addUseVoteType(){
+
+  }
+
+  /**
+   * 提供票に内部項目を追加します。
+   */
+  protected void addOfferVote(){
+
+  }
+
+  /**
+   * 帳票種類選択フレームに内部項目を追加します。
+   */
+  protected void addSlitKinds(){
+
+    slitKinds.add(getSlitKind(), null);
+
+  }
+
+  /**
+   * 種類選択に内部項目を追加します。
+   */
+  protected void addSlitKind(){
+
+  }
+
+  /**
+   * 種類選択モデルに内部項目を追加します。
+   */
+  protected void addSlitKindModel(){
+
+    getUseVoteAndAttachedTable().setButtonIndex(1);
+
+    getSlitKindModel().add(getUseVoteAndAttachedTable());
+
+    getUseVoteKind().setButtonIndex(2);
+
+    getSlitKindModel().add(getUseVoteKind());
+
+    getAttachedTable().setButtonIndex(3);
+
+    getSlitKindModel().add(getAttachedTable());
+
+  }
+
+  /**
+   * 利用票・別表に内部項目を追加します。
+   */
+  protected void addUseVoteAndAttachedTable(){
+
+  }
+
+  /**
+   * 利用票に内部項目を追加します。
+   */
+  protected void addUseVoteKind(){
+
+  }
+
+  /**
+   * 別表に内部項目を追加します。
+   */
+  protected void addAttachedTable(){
+
+  }
+
+  /**
+   * パネルに内部項目を追加します。
+   */
+  protected void addPrintButtonArea(){
+
+    printButtonArea.add(getPrintButtons(), VRLayout.SOUTH);
+  }
+
+  /**
+   * ボタンパネルに内部項目を追加します。
+   */
+  protected void addPrintButtons(){
+
+    printButtons.add(getEnd(), VRLayout.EAST);
+    printButtons.add(getPrint(), VRLayout.EAST);
+  }
+
+  /**
+   * 印刷に内部項目を追加します。
+   */
+  protected void addPrint(){
+
+  }
+
+  /**
+   * 閉じるに内部項目を追加します。
+   */
+  protected void addEnd(){
 
   }
 
@@ -960,18 +1930,30 @@ public class QS001003Design extends QS001ServicePanel {
     return true;
   }
   public Component getFirstFocusComponent() {
+
     return null;
+
   }
   public void initAffair(ACAffairInfo affair) throws Exception {
   }
 
+  public void setVisible(boolean visible){
+    if(visible){
+      try{
+        initAffair(null);
+      }catch(Throwable ex){
+        ACCommon.getInstance().showExceptionMessage(ex);
+      }
+    }
+    super.setVisible(visible);
+  }
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
       ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
-      ACFrame.getInstance().getContentPane().add(new QS001003Design());
-      ACFrame.getInstance().setVisible(true);
+      new QS001003Design().setVisible(true);
+      System.exit(0);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -28,66 +28,38 @@
  */
 package jp.or.med.orca.qkan.affair.qo.qo013;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.net.SocketException;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import java.util.Map;
 
-import sun.io.Converters;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.core.ACFrameEventProcesser;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.text.ACKanaConvert;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.ac.util.splash.ACSplash;
 import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.ac.util.splash.ACStopButtonSplash;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.nichicom.vr.util.logging.VRLogger;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 日医標準レセプトソフト連携(QO013)
@@ -193,6 +165,16 @@ public class QO013 extends QO013Event {
             }
             // 重複チェックを行う。
             list = checkSameName(list);
+            
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+            //画面上のチェックをOFFに
+            int count = list.size();
+            for (int i = 0; i < count; i++) {
+                VRMap row = (VRMap)list.get(i);
+                VRBindPathParser.set("IMPORT_FLAG", row, new Boolean(false));
+            }
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+            
             // 結果を格納する。
             getReceiptTableModel().setAdaptee(list);
             // メッセージ表示
@@ -210,6 +192,12 @@ public class QO013 extends QO013Event {
      */
     protected void previewPageActionPerformed(ActionEvent e) throws Exception {
         // ※前へボタン押下時の処理
+        
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        //画面上のチェック状態を保存する
+        updateCheckState();
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+        
         // 前へボタン押下時
         // 現在のページ数が1ページ以外だった場合
         // 次ページ情報取得
@@ -236,6 +224,12 @@ public class QO013 extends QO013Event {
      */
     protected void nextPageActionPerformed(ActionEvent e) throws Exception {
         // ※次へボタン押下時の処理
+        
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        //画面上のチェック状態を保存する
+        updateCheckState();
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+        
         // 次へボタン押下時
         int begin = (getNowPage() * PAGE_COUNT) + 1;
         int end = ((getNowPage() + 1) * PAGE_COUNT) + 1;
@@ -274,8 +268,10 @@ public class QO013 extends QO013Event {
         // テーブルモデルを作成し設定する。
         ACTableModelAdapter receiptTable = new ACTableModelAdapter();
 
+        // [ID:0000679][Shin Fujihara] 2012/01/23 edit 日レセ連携機能追加対応
+        //IMPORT_NO => SERIAL_IDに変更
         receiptTable
-                .setColumns(new String[] { "IMPORT_NO", "IMPORT_FLAG",
+                .setColumns(new String[] { "SERIAL_ID", "IMPORT_FLAG",
                         "BATTING_FLAG",
                         "PATIENT_FAMILY_NAME+'　'+PATIENT_FIRST_NAME",
                         "PATIENT_FAMILY_KANA+'　'+PATIENT_FIRST_KANA",
@@ -308,6 +304,11 @@ public class QO013 extends QO013Event {
         pageButtonState();
         // ページ数のみ初期設定
         getViewBeginNo().setText("0");
+        
+        
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        QkanReceiptSoftDBManager.initReceiptAccessSpace(getDBManager());
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
     }
 
@@ -498,8 +499,11 @@ public class QO013 extends QO013Event {
                     }
                     if (nowBirth.equals(destBirth)) {
                         VRBindPathParser.set("BATTING_FLAG", destRow, "あり");
-                        VRBindPathParser.set("IMPORT_FLAG", destRow,
-                                new Boolean(false));
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+                        //チェック状態は、データベースに登録されている値を信じる
+//                        VRBindPathParser.set("IMPORT_FLAG", destRow,
+//                                new Boolean(false));
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
                     }
                 }
             }
@@ -516,8 +520,19 @@ public class QO013 extends QO013Event {
     public boolean doInsert() throws Exception {
         // ※取り込み患者データ取り込み処理
         // 取り込み患者データ取り込み
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        //処理に時間がかかるようになったので、スプラッシュを追加
+        ACSplashable splash = ACFrame.getInstance().getFrameEventProcesser().createSplash("日レセデータ");
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+        
         ACDBManager dbm = getDBManager();
         try {
+            
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+            //一旦、チェック状態を確定
+            updateCheckState();
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+            
             // トランザクション開始
             dbm.beginTransaction();
 
@@ -546,6 +561,16 @@ public class QO013 extends QO013Event {
                 // 登録
                 dbm.executeUpdate(getSQL_INSERT_PATIENT(sqlParam));
             }
+            
+            
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+            //500件以降も取り込むにチェックがついている場合は、データベースのフラグを未チェックで更新
+            if(getAllPageCheck().isSelected()){
+                VRMap sqlParam = new VRHashMap();
+                sqlParam.put("LOCAL_IP", QkanReceiptSoftDBManager.getLocalIP());
+                dbm.executeUpdate(getSQL_UPDATE_RECEPT_INFO_ALL(sqlParam));
+            }
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
             dbm.commitTransaction();
             // 処理正常終了
@@ -557,6 +582,14 @@ public class QO013 extends QO013Event {
             dbm.rollbackTransaction();
             return false;
         }
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        finally {
+            if(splash!=null){
+                splash.close();
+                splash = null;
+            }
+        }
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
     }
 
@@ -567,6 +600,9 @@ public class QO013 extends QO013Event {
      */
     public VRList getInsertCheckedRows() throws Exception {
         // ※取り込み患者取得処理
+        
+        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+        /*
         // 取り込み患者取得
         VRList rows = new VRArrayList();
         // テーブルから現在の情報を取得する
@@ -591,6 +627,102 @@ public class QO013 extends QO013Event {
                 }
             }
         }
+        */
+        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        VRList result = new VRArrayList();
+        VRMap sqlParam = new VRHashMap();
+        sqlParam.setData("LOCAL_IP", QkanReceiptSoftDBManager.getLocalIP());
+        //500件以降も取り込むにチェックがついている場合は、データベースから登録用のデータを取得する
+        if(getAllPageCheck().isSelected()){
+            VRList list = getDBManager().executeQuery(getSQL_GET_RECEPT_INFO_ALL_CHECKED(sqlParam));
+            result = convertQkanData(list);
+            
+        //チェックがついていない場合は、表示しているデータのみ処理を行う
+        } else {
+            VRList list;
+            Object obj = getReceiptTableModel().getAdaptee();
+            if (obj instanceof VRList) {
+                // listに変換
+                list = (VRList) obj;
+            } else {
+                // 変換できない場合は処理終了
+                return result;
+            }
+            
+            int count = list.getDataSize();
+            for (int i = 0; i < count; i++) {
+                VRMap row = (VRMap) list.getData(i);
+                // テーブルの一行からフラグをチェックする。
+                Object objs = row.getData("IMPORT_FLAG");
+                if (objs instanceof Boolean) {
+                    Boolean val = (Boolean) objs;
+                    if (val.booleanValue()) {
+                        result.add(row);
+                    }
+                }
+            }
+        }
+        
+        // 選択されている日レセのバージョンを確認
+        // 初期値(4.0.0未満)の場合は、PTNUMは取得できないので処理終了
+        if (getReceiptVersionCombo().getSelectedIndex() != DEFAULT_RECEIPT_VERSION_INDEX) {
+            return result;
+        }
+        
+        
+        //4.0.0以上の場合は、PTNUMを取得する
+        QkanReceiptSoftDBManager receiptDbm = null;
+        
+        try {
+            receiptDbm = new QkanReceiptSoftDBManager(getIp(), ACCastUtilities.toInt(getPort()), getUser(), getPass(), getDbsVer());
+            
+        } catch (Exception e){
+            VRLogger.warning("HOSPNUM取得時、日レセ端末との接続に失敗");
+            return result;
+        }
+        
+        VRMap findParam = new VRHashMap();
+        findParam.put("tbl_ptnum.HOSPNUM", getHospNum());
+        
+        int count = result.getDataSize();
+        for (int i = 0; i < count; i++) {
+            VRMap row = (VRMap)result.get(i);
+            
+            String patientCode = ACCastUtilities.toString(row.get("PATIENT_CODE"), null);
+            if (patientCode == null) {
+                continue;
+            }
+            
+            findParam.put("tbl_ptnum.PTID", patientCode);
+            try {
+                
+                // 通信準備
+                receiptDbm.executeSetUp();
+                Map sqlResult = receiptDbm.executeQueryData("tbl_ptnum", "key", findParam);
+                // トランザクションの終了
+                receiptDbm.commitTransaction();
+                
+                patientCode = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptnum.PTNUM"), ""));
+                row.put("PATIENT_CODE", patientCode);
+                
+            } catch (Exception e) {
+                VRLogger.warning(e);
+            }
+        }
+        
+        try {
+            // DBClose
+            receiptDbm.close();
+            // 念のため明示的に初期化
+            receiptDbm = null;
+            
+        } catch (Exception e) {
+            VRLogger.warning(e);
+        }
+        
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+        
         return result;
     }
 
@@ -631,6 +763,12 @@ public class QO013 extends QO013Event {
             }
         }
         // 2008/01/15 [Masahiko Higuchi] add - end
+        
+        // 2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+        if (!checkReceiptFindKey()) {
+            return;
+        }
+        // 2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
 
         QkanReceiptSoftDBManager dbm;
         ACSplashable splash = null;
@@ -675,6 +813,13 @@ public class QO013 extends QO013Event {
                     if (!((ACSplash) splash).isVisible()) {
                         ((ACSplash) splash).showModaless("データ通信");
                     }
+                    
+                    //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+                    VRMap refiners = new VRHashMap();
+                    refiners.put("AGE_START", getAgeStartText().getText());
+                    refiners.put("AGE_END", getAgeEndText().getText());
+                    refiners.put("DEDUPLICATION", new Boolean(getDeduplicationCheck().isSelected()));
+                    //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
                     // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
                     // 日医標準レセプトソフトのバージョンを判定する
@@ -683,8 +828,14 @@ public class QO013 extends QO013Event {
                         // ストアドプロシージャ引数 今回はnull
                         VRMap param = null;
                         // opassから結果を取得
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+//                        count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
+//                                "all", param, splash);
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
                         count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
-                                "all", param, splash);
+                                "all", param, splash, refiners);
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
                         // 2008/01/15 [Masahiko Higuchi] add - begin 日レセ連携対応
                     } else {
@@ -718,8 +869,14 @@ public class QO013 extends QO013Event {
                         // 2008/09/18 [Masahiko_Higuchi] add - end
                         
                         // 患者情報取得
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+//                        count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
+//                                key, findParam, splash);
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
                         count = dbm.executeQuery(getDBManager(), "tbl_ptinf",
-                                key, findParam, splash);
+                                key, findParam, splash, refiners);
+                        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
 
                         // 表示している患者の表示番号を取得する。
 
@@ -849,6 +1006,10 @@ public class QO013 extends QO013Event {
         // パラメータ格納
         sqlParam.setData("SERIAL_ID_HOME", ACCastUtilities.toInteger(begin));
         sqlParam.setData("SERIAL_ID_END", ACCastUtilities.toInteger(end));
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+        //既存障害対応
+        sqlParam.setData("LOCAL_IP", QkanReceiptSoftDBManager.getLocalIP());
+        //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
         // 一時領域から指定件数文のデータを取得します。
         VRList list = getDBManager().executeQuery(
                 getSQL_GET_RECEPT_INFO(sqlParam));
@@ -865,11 +1026,7 @@ public class QO013 extends QO013Event {
             return new VRArrayList();
         }
         int size = src.size();
-        
-        // 2008/09/18 [Masahiko_Higuchi] add - begin 管理番号の取得仕様を変更
-        QkanReceiptSoftDBManager receiptDbm = new QkanReceiptSoftDBManager();
-        VRMap findParam = new VRHashMap();
-        // 2008/09/18 [Masahiko_Higuchi] add - end
+
         
         boolean encode = false;
         String osName = System.getProperty("os.name");
@@ -886,35 +1043,7 @@ public class QO013 extends QO013Event {
                 VRMap row = (VRMap) src.getData(i);
                 String val = ACTextUtilities.toBlankIfNull(ACCastUtilities
                         .toString(VRBindPathParser.get("PTID", row)));
-                // 2008/09/18 [Masahiko_Higuchi] add - begin 管理番号の取得仕様を変更
-                try {
-                    // 接続処理をやってみる
-                    receiptDbm = new QkanReceiptSoftDBManager(getIp(), ACCastUtilities
-                            .toInt(getPort()), getUser(), getPass(), getDbsVer());
-                    findParam.setData("tbl_ptnum.HOSPNUM",getHospNum());
-                    // 通信準備
-                    receiptDbm.executeSetUp();
-                    // 内部管理番号の設定
-                    findParam.setData("tbl_ptnum.PTID", val);
-                    // SQLを発行しデータ取得
-                    HashMap sqlResult = new HashMap();
-                    // DB通信
-                    if (!ACTextUtilities.isNullText(receiptDbm)) {
-                        sqlResult = receiptDbm.executeQueryData("tbl_ptnum", "key",
-                                findParam);
-                    }
-                    // トランザクションの終了
-                    receiptDbm.commitTransaction();
-                    // DBClose
-                    receiptDbm.close();
-                    // 念のため明示的に初期化
-                    receiptDbm = null;
-                    // 結果の格納
-                    val = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult
-                            .get("tbl_ptnum.PTNUM"), ""));
-                } catch (Exception ex) {
-                }
-                // 2008/09/18 [Masahiko_Higuchi] add - end
+
                 if (val.length() > 16) {
                     // 16文字制限
                     val = val.substring(0, 16);
@@ -1230,7 +1359,17 @@ public class QO013 extends QO013Event {
         // 初期値を設定
         for (int i = 0; i < size; i++) {
             VRMap row = (VRMap) src.getData(i);
-            VRBindPathParser.set("IMPORT_FLAG", row, new Boolean(true));
+            //[ID:0000679][Shin Fujihara] 2012/01/23 delete - begin 日レセ連携機能追加対応
+            //VRBindPathParser.set("IMPORT_FLAG", row, new Boolean(true));
+            //[ID:0000679][Shin Fujihara] 2012/01/23 delete - end 日レセ連携機能追加対応
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
+            if (ACCastUtilities.toInt(VRBindPathParser.get("CHECKED", row), 0) == 1) {
+                VRBindPathParser.set("IMPORT_FLAG", row, new Boolean(true));
+            } else {
+                VRBindPathParser.set("IMPORT_FLAG", row, new Boolean(false));
+            }
+            //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
+            
             VRBindPathParser.set("BATTING_FLAG", row, "");
         }
 
@@ -1264,7 +1403,7 @@ public class QO013 extends QO013Event {
      * 数値のみに置換します。
      */
     public String toNotTelCharReplace(String src) throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int end = src.length();
         for (int i = 0; i < end; i++) {
             char c = src.charAt(i);
@@ -1338,4 +1477,81 @@ public class QO013 extends QO013Event {
         return list;
     }
 
+    /**
+     * 画面のチェック状態を更新します。
+     */
+    @Override
+    public void updateCheckState() throws Exception {
+        VRList list;
+        Object obj = getReceiptTableModel().getAdaptee();
+        if (obj instanceof VRList) {
+            // listに変換
+            list = (VRList) obj;
+        } else {
+            // 変換できない場合は処理終了
+            return;
+        }
+        
+        //チェックされているシリアルID
+        List<Object> checkedList = new ArrayList<Object>();
+        //チェックされていないシリアルID
+        List<Object> uncheckedList = new ArrayList<Object>();
+        
+        int count = list.size();
+        for (int i = 0; i < count; i++) {
+            VRMap row = (VRMap) list.getData(i);
+            // テーブルの一行からフラグをチェックする。
+            Object objs = row.getData("IMPORT_FLAG");
+            if (objs instanceof Boolean) {
+                Boolean val = (Boolean) objs;
+                if (val.booleanValue()) {
+                    checkedList.add(row.getData("SERIAL_ID"));
+                } else {
+                    uncheckedList.add(row.getData("SERIAL_ID"));
+                }
+            }
+        }
+        
+        VRMap sqlParam = new VRHashMap();
+        sqlParam.setData("LOCAL_IP", QkanReceiptSoftDBManager.getLocalIP());
+        
+        if (!checkedList.isEmpty()) {
+            sqlParam.put("CHECKED", new Integer(1));
+            sqlParam.put("SERIAL_ID", checkedList.toArray());
+            getDBManager().executeUpdate(getSQL_UPDATE_RECEPT_INFO(sqlParam));
+        }
+        
+        if (!uncheckedList.isEmpty()) {
+            sqlParam.put("CHECKED", new Integer(0));
+            sqlParam.put("SERIAL_ID", uncheckedList.toArray());
+            getDBManager().executeUpdate(getSQL_UPDATE_RECEPT_INFO(sqlParam));
+        }
+        
+    }
+    
+    /**
+     * 検索条件のチェックを行います。
+     * 
+     * @return
+     * @author Masahiko.Higuchi
+     * @since 3.1.5
+     * @throws Exception
+     */
+    public boolean checkReceiptFindKey() throws Exception {
+
+        String ageStartString = getAgeStartText().getText();
+        String ageEndString = getAgeEndText().getText();
+        int ageStart = ACCastUtilities.toInt(ageStartString, 0);
+        int ageEnd = ACCastUtilities.toInt(ageEndString, 0);
+
+        if (!"".equals(ageStartString) && !"".equals(ageEndString)) {
+            if (ageStart > ageEnd) {
+                ACMessageBox.showExclamation("年齢の開始と終了の入力が逆転しています。");
+                getAgeStartText().transferFocus();
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

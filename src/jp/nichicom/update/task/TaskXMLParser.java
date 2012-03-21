@@ -7,7 +7,7 @@ import jp.nichicom.update.util.XMLDocumentUtil;
 public class TaskXMLParser extends Thread {
     private String url;
     private boolean run=true;
-    private ArrayList taskArray;
+    private ArrayList<AbstractTask> taskArray;
     private Exception runException; 
 
     /**
@@ -22,7 +22,7 @@ public class TaskXMLParser extends Thread {
      * taskArray Çï‘ÇµÇ‹Ç∑ÅB
      * @return taskArray
      */
-    public ArrayList getTaskArray() {
+    public ArrayList<AbstractTask> getTaskArray() {
         return taskArray;
     }
 

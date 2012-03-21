@@ -33,11 +33,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
@@ -54,7 +52,6 @@ import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
 import jp.nichicom.ac.sql.ACDBManager;
-import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -178,7 +175,7 @@ public class QS001002 extends QS001002Event {
                         // ※調整画面
                         // 「QS001029 自費・調整画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
                         // 「自費・調整画面」の終了方法をチェックする。
-                        if (new QS001029().showModal(service, getMonthlySchedule()
+                        if (new QS001006().showModal(service, getMonthlySchedule()
                                 .getMasterService(),
                                 (VRMap) getHashedProviders().get(
                                         service.getData("PROVIDER_ID")),
@@ -529,8 +526,7 @@ public class QS001002 extends QS001002Event {
             VRMap patientMap = getCalcurater().getPatientInfo();
             // 対象日付
             Date targetDate = getCalcurater().getTargetDate();
-            list = parser.createValidService(QkanValidServiceManager
-                    .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
+            list = parser.createValidService(getDBManager(), targetDate,
                     cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
         }
         // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
@@ -545,7 +541,7 @@ public class QS001002 extends QS001002Event {
 
         // ※集計明細画面
         // 「QS001030 集計明細画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
-        new QS001030().showModal(inLimitAmout, getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater(), list);
+        new QS001005().showModal(inLimitAmout, getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater(), list);
     }
 
     /**
@@ -640,7 +636,7 @@ public class QS001002 extends QS001002Event {
      */
     protected void planUnitActionPerformed(ActionEvent e) throws Exception {
         // ※計画単位数編集画面の表示
-        QS001032 form = new QS001032();
+        QS001004 form = new QS001004();
         // 計画単位数表示画面を「決定」ボタンで閉じた場合
         if (form.showModal(getPlanUnits())) {
             // 保持している計画単位数を差し替える。

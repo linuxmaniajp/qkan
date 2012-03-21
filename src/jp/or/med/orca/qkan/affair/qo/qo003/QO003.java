@@ -31,10 +31,8 @@ package jp.or.med.orca.qkan.affair.qo.qo003;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.text.Format;
 import java.util.List;
 
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
@@ -55,8 +53,6 @@ import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
-import jp.or.med.orca.qkan.affair.qc.qc002.QC002P01;
-import jp.or.med.orca.qkan.affair.qm.qm002.QM002;
 import jp.or.med.orca.qkan.affair.qo.qo004.QO004;
 import jp.or.med.orca.qkan.text.QkanProviderAreaTypeFormat;
 import jp.or.med.orca.qkan.text.QkanProviderJigyoTypeFormat;
@@ -432,7 +428,7 @@ public class QO003 extends QO003Event {
 	
 	//[ID:0000638][Shin Fujihara] 2011/03 add begin 2010”N“x‘Î‰ž
 	private String getStaffNameList(VRList providerStaffList) {
-		StringBuffer nameList = new StringBuffer();
+		StringBuilder nameList = new StringBuilder();
 		
 		for (int i = 0; i < providerStaffList.size(); i++) {
 			VRMap map =  (VRMap)providerStaffList.get(i);

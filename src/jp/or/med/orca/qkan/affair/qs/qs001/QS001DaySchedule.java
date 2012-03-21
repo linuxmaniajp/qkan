@@ -17,11 +17,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Position.Bias;
 
-import jp.nichicom.ac.component.ACMutableListBox;
 import jp.nichicom.ac.component.dnd.ACDroppable;
 import jp.nichicom.ac.component.dnd.event.ACDroppableListener;
 import jp.nichicom.vr.bind.VRBindSource;
-import jp.nichicom.vr.component.AbstractVRListBox;
 import jp.nichicom.vr.component.VRListBoxar;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.util.VRArrayList;

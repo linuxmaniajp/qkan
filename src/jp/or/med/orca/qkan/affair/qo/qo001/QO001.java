@@ -31,16 +31,13 @@ package jp.or.med.orca.qkan.affair.qo.qo001;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.text.Format;
 
 import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.sql.ACPassiveKey;
-import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 日医標準レセプトソフト連携
- * 作成日: 2006/10/25  日本コンピューター株式会社 日医標準レセプトソフト連携 新規作成
+ * 作成日: 2012/01/25  日本コンピューター株式会社 日医標準レセプトソフト連携 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,56 +28,13 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo013;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.text.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
+import java.util.Stack;
+
+import jp.nichicom.ac.text.ACSQLSafeDateFormat;
+import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
+import jp.nichicom.ac.text.ACSQLSafeStringFormat;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * 日医標準レセプトソフト連携SQL定義(QO013) 
@@ -97,7 +54,7 @@ public class QO013SQL extends QO013State {
    * @return SQL文
    */
   public String getSQL_GET_RECEPT_INFO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -124,6 +81,10 @@ public class QO013SQL extends QO013State {
     sb.append(",RECEIPT_ACCESS_SPACE.HOME_BANTI");
 
     sb.append(",RECEIPT_ACCESS_SPACE.HOME_TEL1");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.HOSPNUM");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.CHECKED");
 
     sb.append(" FROM");
 
@@ -153,6 +114,24 @@ public class QO013SQL extends QO013State {
 
     sb.append(")");
 
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.LOCAL_IP");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("LOCAL_IP", sqlParam)));
+
+    sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.SERIAL_ID");
+
+    sb.append(" ");
+
     return sb.toString();
   }
 
@@ -163,7 +142,7 @@ public class QO013SQL extends QO013State {
    * @return SQL文
    */
   public String getSQL_GET_PATIENT_INFO(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -203,7 +182,7 @@ public class QO013SQL extends QO013State {
    * @return SQL文
    */
   public String getSQL_GET_NEW_PATIENT_ID(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -227,7 +206,7 @@ public class QO013SQL extends QO013State {
    * @return SQL文
    */
   public String getSQL_INSERT_PATIENT(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
     boolean firstCondition = true, firstConditionOfFrom = true;
@@ -272,6 +251,10 @@ public class QO013SQL extends QO013State {
     sb.append(",DELETE_FLAG");
 
     sb.append(",LAST_TIME");
+
+    sb.append(",PTID");
+
+    sb.append(",HOSPNUM");
 
     sb.append(")VALUES(");
 
@@ -360,6 +343,189 @@ public class QO013SQL extends QO013State {
     sb.append(",");
 
     sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PTID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("HOSPNUM", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「患者情報チェックフラグ更新」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_RECEPT_INFO(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" RECEIPT_ACCESS_SPACE");
+
+    sb.append(" SET");
+
+    sb.append(" CHECKED");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CHECKED", sqlParam)));
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.LOCAL_IP");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("LOCAL_IP", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" SERIAL_ID");
+
+    sb.append(" IN");
+
+    sb.append(" (");
+
+    inValues = (Object[])VRBindPathParser.get("SERIAL_ID", sqlParam);
+    
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(inValues[0]));
+
+    for(int i=1; i<inValues.length; i++){
+      sb.append(", ");
+      
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(inValues[i]));
+
+    }
+
+    sb.append(")");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「チェックされている患者情報取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_RECEPT_INFO_ALL_CHECKED(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.SERIAL_ID");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.PTID");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.NAME");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.KANANAME");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.SEX");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.BIRTHDAY");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.HOME_POST");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.HOME_ADRS");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.HOME_BANTI");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.HOME_TEL1");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.HOSPNUM");
+
+    sb.append(",RECEIPT_ACCESS_SPACE.CHECKED");
+
+    sb.append(" FROM");
+
+    sb.append(" RECEIPT_ACCESS_SPACE");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.LOCAL_IP");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("LOCAL_IP", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.CHECKED");
+
+    sb.append(" =");
+
+    sb.append(" 1");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「患者情報チェックフラグ全件更新」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_RECEPT_INFO_ALL(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" RECEIPT_ACCESS_SPACE");
+
+    sb.append(" SET");
+
+    sb.append(" CHECKED");
+
+    sb.append(" =");
+
+    sb.append(" 0");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" RECEIPT_ACCESS_SPACE.LOCAL_IP");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("LOCAL_IP", sqlParam)));
 
     sb.append(")");
 

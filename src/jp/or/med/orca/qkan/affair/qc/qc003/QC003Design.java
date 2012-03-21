@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口 雅彦
- * 作成日: 2006/05/11  日本コンピューター株式会社 樋口 雅彦 新規作成
+ * 作成日: 2011/12/22  日本コンピューター株式会社 樋口 雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -179,11 +179,9 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACGroupBox provider;
 
-  private ACComboBox providerName;
+  private ACTextField providerName;
 
   private ACLabelContainer providerNameContainer;
-
-  private ACComboBoxModelAdapter providerNameModel;
 
   private ACTextField providerAdderess;
 
@@ -316,8 +314,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabelContainer homonkaisuCountContainer;
 
   private ACLabel homonkaisuCaption;
-
-  private ACButton homonkaisuResultReadButton;
 
   private ACGroupBox kangoContents;
 
@@ -1265,28 +1261,20 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
    * 事業所名称を取得します。
    * @return 事業所名称
    */
-  public ACComboBox getProviderName(){
+  public ACTextField getProviderName(){
     if(providerName==null){
 
-      providerName = new ACComboBox();
+      providerName = new ACTextField();
 
       getProviderNameContainer().setText("名称");
 
       providerName.setBindPath("PROVIDER_NAME");
 
-      providerName.setEditable(true);
-
       providerName.setColumns(18);
-
-      providerName.setRenderBindPath("PROVIDER_NAME");
-
-      providerName.setBlankable(false);
 
       providerName.setIMEMode(InputSubset.KANJI);
 
       providerName.setMaxLength(63);
-
-      providerName.setModel(getProviderNameModel());
 
       addProviderName();
     }
@@ -1306,18 +1294,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
       providerNameContainer.add(getProviderName(), null);
     }
     return providerNameContainer;
-  }
-
-  /**
-   * 事業所名称モデルを取得します。
-   * @return 事業所名称モデル
-   */
-  protected ACComboBoxModelAdapter getProviderNameModel(){
-    if(providerNameModel==null){
-      providerNameModel = new ACComboBoxModelAdapter();
-      addProviderNameModel();
-    }
-    return providerNameModel;
   }
 
   /**
@@ -2596,23 +2572,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 実績読込ボタンを取得します。
-   * @return 実績読込ボタン
-   */
-  public ACButton getHomonkaisuResultReadButton(){
-    if(homonkaisuResultReadButton==null){
-
-      homonkaisuResultReadButton = new ACButton();
-
-      homonkaisuResultReadButton.setText("実績読込");
-
-      addHomonkaisuResultReadButton();
-    }
-    return homonkaisuResultReadButton;
-
-  }
-
-  /**
    * 看護の内容領域を取得します。
    * @return 看護の内容領域
    */
@@ -3076,30 +3035,39 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addPatientYokaigodoModel(){
 
     getYokaigodoRadio1().setButtonIndex(1);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio1());
 
-    getYokaigodoRadio2().setButtonIndex(2);
+    getYokaigodoRadio2().setButtonIndex(12);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio2());
 
-    getYokaigodoRadio3().setButtonIndex(3);
+    getYokaigodoRadio3().setButtonIndex(13);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio3());
 
-    getYokaigodoRadio4().setButtonIndex(4);
+    getYokaigodoRadio4().setButtonIndex(11);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio4());
 
-    getYokaigodoRadio5().setButtonIndex(5);
+    getYokaigodoRadio5().setButtonIndex(21);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio5());
 
-    getYokaigodoRadio6().setButtonIndex(6);
+    getYokaigodoRadio6().setButtonIndex(22);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio6());
 
-    getYokaigodoRadio7().setButtonIndex(7);
+    getYokaigodoRadio7().setButtonIndex(23);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio7());
 
-    getYokaigodoRadio8().setButtonIndex(8);
+    getYokaigodoRadio8().setButtonIndex(24);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio8());
 
-    getYokaigodoRadio9().setButtonIndex(9);
+    getYokaigodoRadio9().setButtonIndex(25);
+
     getPatientYokaigodoModel().add(getYokaigodoRadio9());
 
   }
@@ -3202,13 +3170,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
    * 事業所名称に内部項目を追加します。
    */
   protected void addProviderName(){
-
-  }
-
-  /**
-   * 事業所名称モデルに内部項目を追加します。
-   */
-  protected void addProviderNameModel(){
 
   }
 
@@ -3364,12 +3325,15 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addMovesModel(){
 
     getMoveRadioItem1().setButtonIndex(1);
+
     getMovesModel().add(getMoveRadioItem1());
 
     getMoveRadioItem2().setButtonIndex(2);
+
     getMovesModel().add(getMoveRadioItem2());
 
     getMoveRadioItem3().setButtonIndex(3);
+
     getMovesModel().add(getMoveRadioItem3());
 
   }
@@ -3408,12 +3372,15 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addExcretesModel(){
 
     getExcreteRadioItem1().setButtonIndex(1);
+
     getExcretesModel().add(getExcreteRadioItem1());
 
     getExcreteRadioItem2().setButtonIndex(2);
+
     getExcretesModel().add(getExcreteRadioItem2());
 
     getExcreteRadioItem3().setButtonIndex(3);
+
     getExcretesModel().add(getExcreteRadioItem3());
 
   }
@@ -3452,12 +3419,15 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addChangeClothesModel(){
 
     getChangeClothesRadioItem1().setButtonIndex(1);
+
     getChangeClothesModel().add(getChangeClothesRadioItem1());
 
     getChangeClothesRadioItem2().setButtonIndex(2);
+
     getChangeClothesModel().add(getChangeClothesRadioItem2());
 
     getChangeClothesRadioItem3().setButtonIndex(3);
+
     getChangeClothesModel().add(getChangeClothesRadioItem3());
 
   }
@@ -3509,12 +3479,15 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addMealModel(){
 
     getMealRadioItem1().setButtonIndex(1);
+
     getMealModel().add(getMealRadioItem1());
 
     getMealRadioItem2().setButtonIndex(2);
+
     getMealModel().add(getMealRadioItem2());
 
     getMealRadioItem3().setButtonIndex(3);
+
     getMealModel().add(getMealRadioItem3());
 
   }
@@ -3553,12 +3526,15 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addBathModel(){
 
     getBathRadioItem1().setButtonIndex(1);
+
     getBathModel().add(getBathRadioItem1());
 
     getBathRadioItem2().setButtonIndex(2);
+
     getBathModel().add(getBathRadioItem2());
 
     getBathRadioItem3().setButtonIndex(3);
+
     getBathModel().add(getBathRadioItem3());
 
   }
@@ -3597,12 +3573,15 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
   protected void addSeiyoModel(){
 
     getSeiyoRadioItem1().setButtonIndex(1);
+
     getSeiyoModel().add(getSeiyoRadioItem1());
 
     getSeiyoRadioItem2().setButtonIndex(2);
+
     getSeiyoModel().add(getSeiyoRadioItem2());
 
     getSeiyoRadioItem3().setButtonIndex(3);
+
     getSeiyoModel().add(getSeiyoRadioItem3());
 
   }
@@ -3668,8 +3647,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
 
     homonkaisus.add(getHomonkaisuCaption(), VRLayout.FLOW);
 
-    homonkaisus.add(getHomonkaisuResultReadButton(), VRLayout.FLOW);
-
   }
 
   /**
@@ -3690,13 +3667,6 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
    * 1月当たりの訪問回数・キャプションに内部項目を追加します。
    */
   protected void addHomonkaisuCaption(){
-
-  }
-
-  /**
-   * 実績読込ボタンに内部項目を追加します。
-   */
-  protected void addHomonkaisuResultReadButton(){
 
   }
 

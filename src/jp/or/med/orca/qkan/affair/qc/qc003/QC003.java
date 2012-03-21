@@ -42,7 +42,6 @@ import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACSQLSafeDateFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
-import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
@@ -58,6 +57,7 @@ import jp.or.med.orca.qkan.affair.QkanMessageList;
 /**
  * 老人訪問看護・訪問看護の情報提供書(QC003)
  */
+@SuppressWarnings("serial")
 public class QC003 extends QC003Event {
     /**
      * コンストラクタです。
@@ -104,14 +104,6 @@ public class QC003 extends QC003Event {
         
         // 画面の初期状態を設定する。
         setState_INSERT_STATE();
-        
-        //[ID:0000593][Shin Fujihara] 2010/01 add begin 2009年度対応
-        //共通関数「QkanCommon.isShowOldIryo()」の戻り値がfalseである場合
-        if (!QkanCommon.isShowOldIryo()) {
-        	//実績読込ボタンを非表示にする。
-        	setState_DISABLE_RESULTS();
-        }
-        //[ID:0000593][Shin Fujihara] 2010/01 add end 2009年度対応
 
         // 強制戻り判別フラグの値の初期設定
         setForciblyBackCheckFlag(false);
@@ -465,55 +457,6 @@ public class QC003 extends QC003Event {
 
     }
 
-    /**
-     * 「画面処理」イベントです。
-     * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void providerNameActionPerformed(ActionEvent e) throws Exception {
-        // 選択された訪問看護ステーション名称コンボの情報を表示する。
-
-        if (getProviderName().getSelectedIndex() >= 0) {
-            // 現在コンボで選択されている事業所情報を取得
-            VRMap providerMap = (VRMap) getProviderName().getModelItem(
-                    getProviderName().getSelectedIndex());
-            // 事業所の詳細情報を取得
-            VRList list = (VRList) QkanCommon.getProviderServiceDetail(
-                    getDBManager(), ACCastUtilities.toString(providerMap
-                            .getData("PROVIDER_ID")), 20101);
-
-            // 詳細情報が取得出来ているかチェックする
-            if (!list.isEmpty()) {
-                VRMap rec = (VRMap) list.getData(0);
-                // 管理者氏名が存在するかチェックする。
-                if (VRBindPathParser.has("1130103", rec)) {
-                    // 取得した事業所詳細情報の中から
-                    // 1130103(管理者氏名）を取得しproviderMapに下記のKEY/VALUEで格納する。
-                    // KEY：PROVIDER_ADMINISTRATOR VALUE：1130103
-                    providerMap.setData("PROVIDER_ADMINISTRATOR", rec
-                            .getData("1130103"));
-
-                } else {
-                    providerMap.setData("PROVIDER_ADMINISTRATOR", "");
-
-                }
-
-            } else {
-                getProviderName().setText("");
-                providerMap.setData("PROVIDER_ADMINISTRATOR", "");
-
-            }
-
-            // 「事業所領域（providers）」にrecをセットする。
-            getProviders().setSource(providerMap);
-            // 画面に展開する。
-            getProviders().bindSource();
-
-        }
-
-    }
-
     public static void main(String[] args) {
         // デフォルトデバッグ起動
         ACFrame.getInstance().setFrameEventProcesser(
@@ -564,16 +507,7 @@ public class QC003 extends QC003Event {
         if (!(yokaigodoList == null || yokaigodoList.size() == 0)) {
             copyPatientMap.putAll((VRMap) yokaigodoList.getData(0));
         }
-        
-//        } else {
-//            // レコードが取得できなかった場合
-//            // エラーメッセージを表示する。※メッセージID = ERROR_OF_PASSIVE_CHECK_ON_UPDATE
-//            QkanMessageList.getInstance().ERROR_OF_NO_NINTEI_HISTORY();
-//            // 「利用者一覧（QU001）」画面に戻る。（NEXT_AFFAIR = QC003）
-//            setForciblyBackCheckFlag(true);
-//            ACFrame.getInstance().back();
-//            return;
-//        }
+
         
         // レコードが取得できた場合
         Date systemDate = QkanSystemInformation.getInstance().getSystemDate();
@@ -587,62 +521,10 @@ public class QC003 extends QC003Event {
                 copyPatientMap.getData("PATIENT_FAMILY_NAME"), copyPatientMap
                         .getData("PATIENT_FIRST_NAME")));
 
-        copyPatientMap.setData("JOHO_TEIKYO_SAKI", getJohoteikyosaki());
+        copyPatientMap.setData("JOHO_TEIKYO_SAKI", "");
         // patientMapに、下記のKEY/VALUEを設定する
         // KEY：PATIENT_AGE VALUE：patientAge
         // KEY：PATIENT_NAME VALUE：patientName
-        // 訪問看護（医療）を提供している事業所の情報を取得する。
-        // 訪問看護（医療）の内部サービス種類コード(20101)をhomonkangoList(ArrayList)に格納する。
-
-        // 事業所情報を取得する。
-        setProviderList(QkanCommon.getProviderInfo(getDBManager(),
-                ACCastUtilities.toInt("20101")));
-
-        // レコードが取得できた場合
-        // 取得した事業所情報をproviderList（ArrayList）に格納する。
-        // 訪問看護ステーション履歴情報（PATIENT_STATION_HISTORY）を取得する。
-        // SQL文取得のためHashMap：paramを作成し、下記のKEY/VALUEを設定する。
-        VRMap param = new VRHashMap();
-
-        // KEY：PATIENT_ID VALUE：patientId
-        param.setData("PATIENT_ID", new Integer(getPatientId()));
-
-        // 訪問看護ステーション履歴取得のためのSQL文を取得する。
-        // SQL文を実行する。
-        VRList list = getDBManager().executeQuery(
-                getSQL_GET_HOMONAKNGO_STATION_HISTORY(param));
-
-        // レコードが取得できた場合
-        if (!list.isEmpty()) {
-            // 取得した値をpatientStationMapに格納する。
-            copyPatientMap.putAll((VRMap) list.getData(0));
-            // 医療機関の住所を設定
-            copyPatientMap.setData("DOCTOR_ADDRESS", copyPatientMap
-                    .getData("MEDICAL_FACILITY_ADDRESS"));
-
-        }
-
-        // 訪問看護の実施日数を取得する。
-        int resultCount = getResultCount();
-
-        copyPatientMap.setData("HOMON_KAISU_COUNT", new Integer(resultCount));
-
-        // レコードが取得できた場合
-        // johoTeikyoshoMapに取得した値を格納する。
-        // KEY：HOMON_KAISU_DAY VALUE：取得した値
-
-        // 訪問看護の実績訪問回数を取得
-        int resultDayCount = getResultDayCount();
-
-        copyPatientMap.setData("HOMON_KAISU_DAY", new Integer(resultDayCount));
-
-        // 訪問看護ステーション情報を画面に展開する。
-        // 「訪問看護ステーション名称コンボ（providerName）」に、訪問看護（医療）を提供している事業所情報（providerList）の事業所名称（PROVIDER_NAME）をセットする。（setRenderBindPath
-        // = PROVIDER_NAME）
-        getProviderName().setModel(getProviderList());
-
-        // 「訪問看護ステーション名称コンボ（providerName）に、モデル（選択候補）を取り込む。
-        // getProviderName().bindModelSource();
 
         // ログイン事業所番号を取得し、以下のKEYでloginProviderMap（VRMap）に格納する。
         // KEY：PROVIDER_ID
@@ -650,33 +532,7 @@ public class QC003 extends QC003Event {
         loginProviderMap.setData("PROVIDER_ID", QkanSystemInformation
                 .getInstance().getLoginProviderID());
 
-        // ログイン事業所番号と同一のものが事業所情報（ProviderList）に存在するかチェックする。
-        VRMap map = ACBindUtilities.getMatchRowFromMap(getProviderList(),
-                "PROVIDER_ID", loginProviderMap);
-
-        // 存在しなかった場合
-        if (map == null) {
-            // providerMapに以下のKEY/VALUEを設定する。※ログイン事業所が訪問看護（医療）サービスを提供していなかった場合、未選択状態とするためにnullを設定する。
-            // KEY：PROVIDER_NAME VALUE：null
-        } else {
-            copyPatientMap.putAll(map);
-        }
         // ※事業所のサービス詳細情報を取得
-        // 事業所のサービス詳細情報を取得する。
-        VRList comboList = QkanCommon.getProviderServiceDetail(getDBManager(),
-                String.valueOf(loginProviderMap.getData("PROVIDER_ID")), 20101);
-
-        if (comboList.size() > 0) {
-            // 取得件数が0件より多い場合
-            // 処理を継続する。
-            // ※管理者氏名の抽出
-            VRMap record = (VRMap) comboList.getData(0);
-            // 取得したレコード集合の、最初のレコードの KEY : 1130103のVALUEを取得する。
-            String administratorName = ACCastUtilities.toString(record
-                    .getData("1130103"));
-            copyPatientMap.setData("PROVIDER_ADMINISTRATOR",administratorName);
-        }
-
         VRList johoList = new VRArrayList();
 
         johoList = getJohoteikyoshoInfo();
@@ -911,132 +767,6 @@ public class QC003 extends QC003Event {
                 getSQL_GET_HOMONKANGO_JOHO_TEIKYOSHO(param));
 
         return johoList;
-    }
-
-    /**
-     * 訪問看護の実施回数を取得に関する処理を行います。
-     * @return 
-     * @throws Exception
-     */
-    public int getResultCount() throws Exception {
-
-        VRList resultList = new VRArrayList();
-
-        int resultCount = 0;
-
-        //訪問看護の実施回数を取得するためのSQL文を取得する。
-        //内部変数sqlParamを生成する。
-        VRMap sqlParam = new VRHashMap();
-
-        //sqlParamに下記のKEY/VALUEを設定する。
-        //KEY：PATIENT_ID　VALUE：patientId
-        sqlParam.setData("PATIENT_ID", new Integer(getPatientId()));
-
-        //targetDateの値を月初に変換しsqlParamに下記のKEY/VALUEで設定する。
-        //KEY：TARGET_DATE_START　VALUE：月初の値
-        sqlParam.setData("TARGET_DATE_START", ACDateUtilities.toFirstDayOfMonth(getTargetDate()));
-
-        //targetDateの値を月初に変換しsqlParamに下記のKEY/VALUEで設定する。
-        //KEY：TARGET_DATE_END　VALUE：月末の値
-        sqlParam.setData("TARGET_DATE_END", ACDateUtilities.toLastDayOfMonth(getTargetDate()));
-        sqlParam.setData("PROVIDER_ID",QkanSystemInformation.getInstance().getLoginProviderID());
-
-        //取得したSQL文を実行する。
-        resultList = (VRList) getDBManager().executeQuery(
-                getSQL_GET_HOMONKANGO_RESULT_COUNT(sqlParam));
-        //レコードが取得できた場合
-        //johoTeikyoshoMapに取得した値を格納する。
-        //KEY：HOMON_KAISU_COUNT　VALUE：取得した値
-        if (!resultList.isEmpty()) {
-            VRMap map = (VRMap) resultList.getData(0);
-            resultCount = Integer.parseInt(String.valueOf(map
-                    .getData("RESULT_COUNT")));
-        }
-
-        return resultCount;
-    }
-
-    /**
-     * 訪問看護の実施日数取得に関する処理を行います。
-     * @return
-     * @throws Exception
-     */
-    public int getResultDayCount() throws Exception {
-
-        int resultDayCount = 0;
-        //訪問看護の実施日数と実施回数を取得する。
-        //内部変数sqlParamを生成する。
-        VRMap sqlParam = new VRHashMap();
-        //sqlParamに下記のKEY/VALUEを設定する。
-        //KEY：PATIENT_ID　VALUE：patientId
-        sqlParam.setData("PATIENT_ID", new Integer(getPatientId()));
-        //targetDateの値を月初に変換しsqlParamに下記のKEY/VALUEで設定する。
-        //KEY：TARGET_DATE_START　VALUE：月初の値
-        sqlParam.setData("TARGET_DATE_START", ACDateUtilities.toFirstDayOfMonth(getTargetDate()));
-        //targetDateの値を月初に変換しsqlParamに下記のKEY/VALUEで設定する。
-        //KEY：TARGET_DATE_END　VALUE：月末の値
-        sqlParam.setData("TARGET_DATE_END", ACDateUtilities.toLastDayOfMonth(getTargetDate()));
-        sqlParam.setData("PROVIDER_ID", QkanSystemInformation
-                .getInstance().getLoginProviderID());
-        // 訪問看護の実施日数を取得するためのSQL文を取得する。
-        //TODO　
-        // 取得したSQL文を実行する。	  
-        VRList result = (VRList) getDBManager().executeQuery(
-                getSQL_GET_HOMONKANGO_RESULT_DAY(sqlParam));
-
-        if (!result.isEmpty()) {
-            VRMap map = (VRMap) result.getData(0);
-            resultDayCount = Integer.parseInt(String.valueOf(map
-                    .getData("RESULT_DAY_COUNT")));
-        }
-
-        return resultDayCount;
-    }
-
-    /**
-     * 情報提供先を取得します。
-     * @return
-     * @throws Exception
-     */
-    public String getJohoteikyosaki() throws Exception {
-
-        String johoteikyosaki = "";
-
-        VRMap sqlParam = new VRHashMap();
-        //sql文用の値を格納する
-        sqlParam.setData("PATIENT_ID", new Integer(getPatientId()));
-        //末日に変換して格納
-        sqlParam.setData("TARGET_DATE", ACDateUtilities.toLastDayOfMonth(getTargetDate()));
-        //情報提供先を取得する
-        VRList list = getDBManager().executeQuery(
-                getSQL_GET_JOHO_TEIKYO_SAKI(sqlParam));
-        //レコードが取得できた場合情報提供先を格納する。
-        if (!list.isEmpty()) {
-            VRMap map = (VRMap) list.getData(0);
-            johoteikyosaki = String.valueOf(map.getData("INSURER_NAME"));
-
-        }
-        //戻り値として情報提供先を返す
-        return johoteikyosaki;
-    }
-    
-    /**
-     * 「実績読込押下時」に関する処理を行います。
-     */
-    protected void homonkaisuResultReadButtonActionPerformed(ActionEvent e) throws Exception {
-//        訪問看護実施日数を取得する。 
-//        訪問看護実施回数を取得する。
-//        内部変数　applyMap を生成し下記のKEY/VALUを設定する。
-        VRMap applyMap = new VRHashMap();
-//            KEY：HOMON_KAISU_DAY　VALUE：取得した日数
-        applyMap.setData("HOMON_KAISU_DAY",ACCastUtilities.toString(getResultDayCount()));
-//            KEY：HOMON_KAISU_COUNT　VALUE：取得した回数
-        applyMap.setData("HOMON_KAISU_COUNT",ACCastUtilities.toString(getResultCount()));
-//        「病状・障害等の状態領域（points2）」にapplyMapをセットする。
-        getPoints2().setSource(applyMap);
-//        画面に展開する。                
-        getPoints2().bindSource();
-        
     }
 
 }

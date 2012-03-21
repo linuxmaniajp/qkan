@@ -74,11 +74,11 @@ public class QkanJotaiCodeUnapplicableFormat extends Format{
 //        return singleton;
 //    }
 //
-//    public StringBuffer format(Object obj, StringBuffer toAppendTo,
+//    public StringBuilder format(Object obj, StringBuilder toAppendTo,
 //            FieldPosition pos) {
 //
 //        if (obj == null)
-//            return new StringBuffer();
+//            return new StringBuilder();
 //
 //        String code = String.valueOf(obj);
 //

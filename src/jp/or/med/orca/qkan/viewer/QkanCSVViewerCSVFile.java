@@ -41,7 +41,7 @@ public class QkanCSVViewerCSVFile extends VRCSVFile {
 	 *             処理例外
 	 */
 
-	protected void appendValue(StringBuffer sb, Object value, int rowIndex, int columnIndex) {
+	protected void appendValue(StringBuilder sb, Object value, int rowIndex, int columnIndex) {
 		if (rowIndex == 0) {
 			// 1行目は別処理
 			// クォート処理をせずに出力

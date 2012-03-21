@@ -11,6 +11,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import jp.nichicom.update.task.AbstractTask;
 import jp.nichicom.update.task.DataUpdateTask;
 import jp.nichicom.update.task.ModuleCopyTask;
 import jp.nichicom.update.task.SchemaChangeTask;
@@ -63,8 +64,8 @@ public class XMLDocumentUtil {
 	 * @return パース後のタスク
 	 * @throws Exception 実行時エラー
 	 */
-	public ArrayList parseTask() throws Exception{
-		ArrayList taskArray = new ArrayList();
+	public ArrayList<AbstractTask> parseTask() throws Exception{
+		ArrayList<AbstractTask> taskArray = new ArrayList<AbstractTask>();
 		try {
 			NodeList list = root.getElementsByTagName("system_version");
 			

@@ -29,9 +29,7 @@
 
 package jp.or.med.orca.qkan.affair.qc.qc003;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -41,7 +39,6 @@ import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
-import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 
 /**
@@ -789,7 +786,7 @@ public class QC003P01 extends QC003P01Event {
         String[] slComment = ACTextUtilities.separateLineWrapOnByte(
                 ACCastUtilities.toString(printParam.getData(keyName)), columns*2+1);
 
-        StringBuffer sbComment = new StringBuffer();
+        StringBuilder sbComment = new StringBuilder();
 
         for (int i = 0; i < slComment.length; i++) {
             sbComment.append(slComment[i]);
@@ -815,7 +812,7 @@ public class QC003P01 extends QC003P01Event {
     public String getInsertionLineSeparatorToStringOnChar(String chr, int charIndex){
         String[] slCharacter = ACTextUtilities.separateLineWrapOnChar(chr,charIndex);
         
-        StringBuffer sbCharacter = new StringBuffer();
+        StringBuilder sbCharacter = new StringBuilder();
 
         for (int i = 0; i < slCharacter.length; i++) {
             sbCharacter.append(slCharacter[i]);
@@ -841,7 +838,7 @@ public class QC003P01 extends QC003P01Event {
     public String getInsertionLineSeparatorToStringOnByte(String chr, int byteIndex){
         String[] slCharacter = ACTextUtilities.separateLineWrapOnByte(chr,byteIndex);
         
-        StringBuffer sbCharacter = new StringBuffer();
+        StringBuilder sbCharacter = new StringBuilder();
 
         for (int i = 0; i < slCharacter.length; i++) {
             sbCharacter.append(slCharacter[i]);

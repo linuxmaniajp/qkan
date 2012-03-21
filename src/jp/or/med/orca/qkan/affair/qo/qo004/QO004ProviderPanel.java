@@ -2,11 +2,8 @@ package jp.or.med.orca.qkan.affair.qo.qo004;
 
 import java.awt.LayoutManager;
 
-import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.sql.ACDBManager;
-import jp.nichicom.vr.util.VRMap;
 
 /**
  * 事業所パネル用の基底パネルクラスです。

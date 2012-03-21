@@ -3,19 +3,14 @@ package jp.nichicom.update.task;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 
-public class TaskProcesser extends Thread {
+import jp.nichicom.update.MainFrame;
+
+public class TaskProcesser implements Runnable {
     private boolean update=false;
     private Exception runException; 
-    private boolean run=true;
-    private ArrayList taskArray;
-    private JFrame frame;
-    private JProgressBar progress;
-    private JLabel status;
+    private ArrayList<AbstractTask> taskArray;
+    private MainFrame frame;
     private String title="";
     private int progressValue=0;
     
@@ -30,23 +25,21 @@ public class TaskProcesser extends Thread {
         return title;
     }
 
-    public TaskProcesser(ArrayList taskArray, JFrame frame, JProgressBar progress, JLabel status){
-        this.progress = progress;
+    public TaskProcesser(ArrayList<AbstractTask> taskArray, MainFrame frame){
         this.taskArray = taskArray;
         this.frame = frame;
-        this.progress = progress;
-        this.status = status;
         
         int count = 0;
-        Iterator it=taskArray.iterator();
+        Iterator<AbstractTask> it=taskArray.iterator();
         while(it.hasNext()){
             count += ((AbstractTask) it.next()).size();
         }
-        progress.setMaximum(count);
+        frame.progress.setMaximum(count);
     }
     
+    @Override
     public void run(){
-        run = true;
+        runException = null;
         try {
             for (int i = 0; i < taskArray.size(); i++) {
                 AbstractTask task = (AbstractTask) taskArray.get(i);
@@ -56,44 +49,26 @@ public class TaskProcesser extends Thread {
             }
         } catch (Exception ex) {
             runException = ex;
-        } finally {
-            run = false;
         }
+        
+        frame.taskEnd(this);
     }
     /**
      * 進捗を更新します。
      * @param title
      */
     public void setStatus(String title) {
-        this.title = title;
-        status.setText(title);
-        ((JComponent) frame.getContentPane())
-                .paintImmediately(((JComponent) frame.getContentPane())
-                        .getVisibleRect());
+        frame.status.setText(title);
     }
     public void addProgress(){
         progressValue++;
-        progress.setValue(progressValue);
-        ((JComponent) frame.getContentPane())
-        .paintImmediately(((JComponent) frame.getContentPane())
-                .getVisibleRect());
+        frame.progress.setValue(progressValue);
     }
     public void skipTask(AbstractTask task){
         progressValue += task.size();
-        progress.setValue(progressValue);
-        ((JComponent) frame.getContentPane())
-        .paintImmediately(((JComponent) frame.getContentPane())
-                .getVisibleRect());
-        
+        frame.progress.setValue(progressValue);
     }
     
-    /**
-     * run を返します。
-     * @return run
-     */
-    public boolean isRun() {
-        return run;
-    }
     /**
      * runException を返します。
      * @return runException

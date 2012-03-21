@@ -23,7 +23,7 @@ public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser
      */
     public QkanFrameEventProcesser() {
     }
-    private String propertyXMLPath ="properity.xml"; 
+    private String propertyXMLPath ="property.xml"; 
     protected String getPropertyXMLPath() {
         return propertyXMLPath;
     }
@@ -106,7 +106,7 @@ public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser
     }
 
     public String getFrameIconPath() {
-        return "jp/or/med/orca/qkan/images/icon/flameicon.gif";
+        return "jp/or/med/orca/qkan/images/icon/flameicon.png";
     }
     
     protected boolean setDefaultPropertyXML(ACPropertyXML properityMap){
@@ -129,7 +129,7 @@ public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser
                 + "[メインメニュー]-[その他の機能]-[設定変更・メンテナンス]から設定してください。");
     }
     
-    protected void appendException(StringBuffer sb, Throwable ex) {
+    protected void appendException(StringBuilder sb, Throwable ex) {
         super.appendException(sb, ex);
         
         sb.append("Firebird:");
@@ -187,8 +187,9 @@ public class QkanFrameEventProcesser extends ACDefaultFrameEventProcesser
                 .getValueAt("DBConfig/MaxPoolSize"));
 
         String charSet = xml.getValueAt("DBConfig/CharSet");
+        String encoding = xml.getValueAt("DBConfig/Encoding");
         return new ACLoggerDBManager(new BridgeFirebirdDBManager(server, port, userName, pass,
-                path, loginTimeout, maxPoolSize, charSet));
+                path, loginTimeout, maxPoolSize, charSet, encoding));
     }
     
 }

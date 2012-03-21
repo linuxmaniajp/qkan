@@ -12,17 +12,16 @@
 　※ビルド時にリンクするライブラリと実行時にリンクするライブラリは異なります。
 　　このため、IDEによってはデバッグ実行できない場合があります。
 　　ご了承ください。
-・ビルド対象のJDKはj2sdk1.4.2_07を対象としています。他のJDKではライブラリの
+・ビルド対象のJDKはj2sdk1.6.0_31を対象としています。他のJDKではライブラリの
 　クラスVersionの関係上、ビルドできないことがありますのでご了承ください。
 
 【注意点】
 ・以下のファイルは同梱しておりません。
 　◇サードパーティ製ライブラリ
-　　→iText.jar、iTextAsian.jar、firebirdsql-full.jar
+　　→iText.jar、iTextAsian.jar、jaybird-full-2.1.6.jar
 　　※ビルドに必用であるため、バイナリモジュールから転用するか
 　　　当該ライブラリの公開サイトから入手してください。
 　◇実行に必用でもビルドには不要のリソースファイル
 　　→properity.xml、calendar.xml、jarキックモジュール(*.exe、*.app)、
-　　　実行時ライブラリ(vr-impl.jar、ac-impl.jar、bridge.jar、ac-lib-impl.jar)、
 　　　formatフォルダ以下、licenceフォルダ以下、versionフォルダ以下等
 　　※必要に応じて、バイナリモジュールから転用してください。

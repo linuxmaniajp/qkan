@@ -18,73 +18,33 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/04/16  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/02/14  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム サービスパターン訪問看護（医療） (QS001006)
+ * プログラム 自費・調整画面 (QS001029)
  *
  *****************************************************************
  */
+
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.component.event.ACFollowContainerFormatEventListener;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRMap;
 
 /**
- * サービスパターン訪問看護（医療）イベント定義(QS001006) 
+ * 自費・調整画面イベント定義(QS001029) 
  */
-public abstract class QS001006Event extends QS001006State implements QS001Service {
+@SuppressWarnings("serial")
+public abstract class QS001006Event extends QS001006State {
   /**
    * コンストラクタです。
    */
@@ -95,7 +55,7 @@ public abstract class QS001006Event extends QS001006State implements QS001Servic
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
-    getHoumonKangoIryoBasicChargeDivision().addActionListener(new ActionListener(){
+    getServiceIndependence().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -103,24 +63,56 @@ public abstract class QS001006Event extends QS001006State implements QS001Servic
             }
             lockFlag = true;
             try {
-                houmonKangoIryoBasicChargeDivisionActionPerformed(e);
-            }catch(Throwable ex){
+                serviceIndependenceActionPerformed(e);
+            }catch(Exception ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
-    getHoumonKangoIryoClass().addListSelectionListener(new ListSelectionListener(){
+    getServiceAdjustUnit().addFocusListener(new FocusAdapter(){
         private boolean lockFlag = false;
-        public void valueChanged(ListSelectionEvent e) {
+        public void focusLost(FocusEvent e) {
             if (lockFlag) {
                 return;
             }
             lockFlag = true;
             try {
-                houmonKangoIryoClassSelectionChanged(e);
-            }catch(Throwable ex){
+                serviceAdjustUnitFocusLost(e);
+            }catch(Exception ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getSubmit().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                submitActionPerformed(e);
+            }catch(Exception ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getClose().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                closeActionPerformed(e);
+            }catch(Exception ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -132,80 +124,113 @@ public abstract class QS001006Event extends QS001006State implements QS001Servic
   //コンポーネントイベント
 
   /**
-   * 「基本療養費区分」イベントです。
+   * 「自費/調整変更」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void houmonKangoIryoBasicChargeDivisionActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void serviceIndependenceActionPerformed(ActionEvent e) throws Exception;
 
   /**
-   * 「職員区分変更」イベントです。
+   * 「調整額変更時チェック」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void houmonKangoIryoClassSelectionChanged(ListSelectionEvent e) throws Exception;
+  protected abstract void serviceAdjustUnitFocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「決定処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void submitActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「キャンセル」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void closeActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
+  private VRMap values = new VRHashMap();
+  private boolean applied = false;
+  private ACFollowContainerFormatEventListener adjustUnitBackgroundChanger;
   //getter/setter
+
+  /**
+   * valuesを返します。
+   * @return values
+   */
+  protected VRMap getValues(){
+    return values;
+  }
+  /**
+   * valuesを設定します。
+   * @param values values
+   */
+  protected void setValues(VRMap values){
+    this.values = values;
+  }
+
+  /**
+   * appliedを返します。
+   * @return applied
+   */
+  protected boolean getApplied(){
+    return applied;
+  }
+  /**
+   * appliedを設定します。
+   * @param applied applied
+   */
+  protected void setApplied(boolean applied){
+    this.applied = applied;
+  }
+
+  /**
+   * adjustUnitBackgroundChangerを返します。
+   * @return adjustUnitBackgroundChanger
+   */
+  protected ACFollowContainerFormatEventListener getAdjustUnitBackgroundChanger(){
+    return adjustUnitBackgroundChanger;
+  }
+  /**
+   * adjustUnitBackgroundChangerを設定します。
+   * @param adjustUnitBackgroundChanger adjustUnitBackgroundChanger
+   */
+  protected void setAdjustUnitBackgroundChanger(ACFollowContainerFormatEventListener adjustUnitBackgroundChanger){
+    this.adjustUnitBackgroundChanger = adjustUnitBackgroundChanger;
+  }
 
   //内部関数
 
   /**
-   * 「初期化」に関する処理を行ないます。
+   * 「初期設定」に関する処理を行ないます。
    *
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void initialize() throws Exception;
-
-  /**
-   * 「事業所コンボ変更時関数」に関する処理を行ないます。
-   *
+   * @param serviceData VRMap
+   * @param serviceMaster VRMap
    * @param provider VRMap
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void providerSelected(VRMap provider) throws Exception;
-
-  /**
-   * 「入力内容の不備を検査」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return VRMap
-   */
-  public abstract VRMap getValidData() throws Exception;
-
-  /**
-   * 「事業所情報の必要性を取得」に関する処理を行ないます。
-   *
+   * @param managementTotal int
    * @throws Exception 処理例外
    * @return boolean
    */
-  public abstract boolean isUseProvider() throws Exception;
+  public abstract boolean showModal(VRMap serviceData, VRMap serviceMaster, VRMap provider, int managementTotal) throws Exception;
 
   /**
-   * 「開始時刻入力用のコンボ取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return ACComboBox
-   */
-  public abstract ACComboBox getBeginTimeCombo() throws Exception;
-
-  /**
-   * 「終了時刻入力用のコンボ取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return ACComboBox
-   */
-  public abstract ACComboBox getEndTimeCombo() throws Exception;
-
-  /**
-   * 「共同指導加算の有効状態確認」に関する処理を行ないます。
+   * 「自費/調整変更時の状態設定」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
    *
    */
-  public abstract void checkGuidanceState() throws Exception;
+  public abstract void setExpenceState() throws Exception;
+
+  /**
+   * 「調整結果判定」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return int
+   */
+  public abstract int getAdjustResult() throws Exception;
 
 }

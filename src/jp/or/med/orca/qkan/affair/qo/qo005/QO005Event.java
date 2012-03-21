@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/08/22  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2012/02/03  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他 (O)
@@ -28,58 +28,11 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo005;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * 設定変更・メンテナンスイベント定義(QO005) 
@@ -268,6 +221,9 @@ public abstract class QO005Event extends QO005State {
   public static final int SELECT_CANCEL = 2;
   public static final int CHECKBOX_ON = 1;
   public static final int CHECKBOX_OFF = 0;
+  public static final int DB_OK = 0;
+  public static final int DB_CONNECT_ERROR = 1;
+  public static final int DB_SCHEMA_ERROR = 2;
   public static final String[] FB_FILE_EXTENSIONS = {"old", "fdb"};
   public static final String[] PDF_FILE_EXTENSIONS = {"exe"};
   private boolean updateSuccessed;
@@ -376,9 +332,9 @@ public abstract class QO005Event extends QO005State {
    *
    * @param params VRMap
    * @throws Exception 処理例外
-   * @return boolean
+   * @return int
    */
-  public abstract boolean checkDBConnect(VRMap params) throws Exception;
+  public abstract int checkDBConnect(VRMap params) throws Exception;
 
   /**
    * 「消費税率の取得」に関する処理を行ないます。

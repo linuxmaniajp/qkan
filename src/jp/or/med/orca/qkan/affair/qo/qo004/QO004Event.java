@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/03/10  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2011/12/07  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -361,8 +361,8 @@ public abstract class QO004Event extends QO004SQL {
   public static final String BIND_PATH_OF_MOUNTAINOUS_AREA_SCALE = "3";
   public static final Date TARGET_DATE_20060401 = ACCastUtilities.toDate("2006/4/1", null);
   public static final Date TARGET_DATE_20051001 = ACCastUtilities.toDate("2005/10/1", null);
+  public static final Date TARGET_DATE_20120401 = ACCastUtilities.toDate("2012/4/1", null);
   public static final int SERVICE_TYPE_KAIGO_KANGO = 11311;
-  public static final int SERVICE_TYPE_IRYO_KANGO = 20101;
   public static final int SERVICE_TYPE_CARE_PLAN = 14311;
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;

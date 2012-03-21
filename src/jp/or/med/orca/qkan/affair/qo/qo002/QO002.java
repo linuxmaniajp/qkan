@@ -30,7 +30,6 @@
 package jp.or.med.orca.qkan.affair.qo.qo002;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -39,22 +38,18 @@ import javax.swing.event.ListSelectionEvent;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.ACZipRelation;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
-import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
-import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;

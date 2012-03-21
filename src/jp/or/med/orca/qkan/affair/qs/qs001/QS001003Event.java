@@ -18,28 +18,36 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/01/17  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2006/05/07  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
- * プロセス サービス予定 (001)
- * プログラム サービスパターン訪問介護 (QS001003)
+ * プロセス サービス予定・実績 (001)
+ * プログラム 利用・提供票印刷 (QS001031)
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qs.qs001;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
+import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 
 /**
- * サービスパターン訪問介護イベント定義(QS001003) 
+ * 利用・提供票印刷イベント定義(QS001031) 
  */
-public abstract class QS001003Event extends QS001003State implements QS001Service {
+@SuppressWarnings("serial")
+public abstract class QS001003Event extends QS001003SQL {
   /**
    * コンストラクタです。
    */
@@ -50,7 +58,7 @@ public abstract class QS001003Event extends QS001003State implements QS001Servic
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
-    getHoumonKaigoServicePattern().addActionListener(new ActionListener(){
+    getPlanManufacturer().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -58,15 +66,15 @@ public abstract class QS001003Event extends QS001003State implements QS001Servic
             }
             lockFlag = true;
             try {
-                houmonKaigoServicePatternActionPerformed(e);
-            }catch(Exception ex){
+                planManufacturerActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
-    getHoumonKaigoTimeZone().addActionListener(new ActionListener(){
+    getSupportProviderName().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -74,15 +82,15 @@ public abstract class QS001003Event extends QS001003State implements QS001Servic
             }
             lockFlag = true;
             try {
-                houmonKaigoTimeZoneActionPerformed(e);
-            }catch(Exception ex){
+                supportProviderNameActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
-    getHomonkaigoTeikyoTime().addActionListener(new ActionListener(){
+    getPrint().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -90,8 +98,24 @@ public abstract class QS001003Event extends QS001003State implements QS001Servic
             }
             lockFlag = true;
             try {
-                homonkaigoTeikyoTimeActionPerformed(e);
-            }catch(Exception ex){
+                printActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getEnd().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                endActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -103,79 +127,253 @@ public abstract class QS001003Event extends QS001003State implements QS001Servic
   //コンポーネントイベント
 
   /**
-   * 「状態設定」イベントです。
+   * 「居宅サービス作成者変更」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void houmonKaigoServicePatternActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void planManufacturerActionPerformed(ActionEvent e) throws Exception;
 
   /**
-   * 「時間帯変更時」イベントです。
+   * 「事業所名変更」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void houmonKaigoTimeZoneActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void supportProviderNameActionPerformed(ActionEvent e) throws Exception;
 
   /**
-   * 「提供時間変更」イベントです。
+   * 「利用票/提供票の印刷」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void homonkaigoTeikyoTimeActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void printActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「閉じる」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void endActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
+  private int processType;
+  private VRList serviceData = new VRArrayList();
+  private VRList supportProviders = new VRArrayList();
+  private VRList preventSupportProviders = new VRArrayList();
+  private VRList supporters = new VRArrayList();
+  private CareServiceCodeCalcurater calcurater;
   //getter/setter
+
+  /**
+   * processTypeを返します。
+   * @return processType
+   */
+  protected int getProcessType(){
+    return processType;
+  }
+  /**
+   * processTypeを設定します。
+   * @param processType processType
+   */
+  protected void setProcessType(int processType){
+    this.processType = processType;
+  }
+
+  /**
+   * serviceDataを返します。
+   * @return serviceData
+   */
+  protected VRList getServiceData(){
+    return serviceData;
+  }
+  /**
+   * serviceDataを設定します。
+   * @param serviceData serviceData
+   */
+  protected void setServiceData(VRList serviceData){
+    this.serviceData = serviceData;
+  }
+
+  /**
+   * supportProvidersを返します。
+   * @return supportProviders
+   */
+  protected VRList getSupportProviders(){
+    return supportProviders;
+  }
+  /**
+   * supportProvidersを設定します。
+   * @param supportProviders supportProviders
+   */
+  protected void setSupportProviders(VRList supportProviders){
+    this.supportProviders = supportProviders;
+  }
+
+  /**
+   * preventSupportProvidersを返します。
+   * @return preventSupportProviders
+   */
+  protected VRList getPreventSupportProviders(){
+    return preventSupportProviders;
+  }
+  /**
+   * preventSupportProvidersを設定します。
+   * @param preventSupportProviders preventSupportProviders
+   */
+  protected void setPreventSupportProviders(VRList preventSupportProviders){
+    this.preventSupportProviders = preventSupportProviders;
+  }
+
+  /**
+   * supportersを返します。
+   * @return supporters
+   */
+  protected VRList getSupporters(){
+    return supporters;
+  }
+  /**
+   * supportersを設定します。
+   * @param supporters supporters
+   */
+  protected void setSupporters(VRList supporters){
+    this.supporters = supporters;
+  }
+
+  /**
+   * calcuraterを返します。
+   * @return calcurater
+   */
+  protected CareServiceCodeCalcurater getCalcurater(){
+    return calcurater;
+  }
+  /**
+   * calcuraterを設定します。
+   * @param calcurater calcurater
+   */
+  protected void setCalcurater(CareServiceCodeCalcurater calcurater){
+    this.calcurater = calcurater;
+  }
 
   //内部関数
 
   /**
-   * 「初期化」に関する処理を行ないます。
+   * 「画面展開時イベント」に関する処理を行ないます。
+   *
+   * @param calcurater CareServiceCodeCalcurater
+   * @param serviceData VRList
+   * @param processType int
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void showModal(CareServiceCodeCalcurater calcurater, VRList serviceData, int processType) throws Exception;
+
+  /**
+   * 「初期値設定」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
    *
    */
-  public abstract void initialize() throws Exception;
+  public abstract void setInitValue() throws Exception;
 
   /**
-   * 「事業所コンボ変更時関数」に関する処理を行ないます。
+   * 「画面の初期状態の設定」に関する処理を行ないます。
    *
-   * @param provider VRMap
    * @throws Exception 処理例外
    *
    */
-  public abstract void providerSelected(VRMap provider) throws Exception;
+  public abstract void setInitState() throws Exception;
 
   /**
-   * 「入力内容の不備を検査」に関する処理を行ないます。
+   * 「居宅介護支援事業者事業所欄の状態設定」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
-   * @return VRMap
-   */
-  public abstract VRMap getValidData() throws Exception;
-
-  /**
-   * 「事業所情報の必要性を取得」に関する処理を行ないます。
    *
-   * @throws Exception 処理例外
-   * @return boolean
    */
-  public abstract boolean isUseProvider() throws Exception;
+  public abstract void setProviderComponentState() throws Exception;
 
   /**
-   * 「提供時間の取得」に関する処理を行ないます。
+   * 「利用者ID取得」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
    * @return int
    */
-  public abstract int getTeikyoTime() throws Exception;
+  public abstract int getPatientID() throws Exception;
 
   /**
-   * 「終了時間のチェック」に関する処理を行ないます。
+   * 「特定入居者フラグを取得」に関する処理を行ないます。
    *
+   * @throws Exception 処理例外
+   * @return int
+   */
+  public abstract int getInSpecialFacilityFlag() throws Exception;
+
+  /**
+   * 「対象年月取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return Date
+   */
+  public abstract Date getTargetDateSource() throws Exception;
+
+  /**
+   * 「要介護認定履歴取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return VRList
+   */
+  public abstract VRList getPatientInsureInfoHistoryList() throws Exception;
+
+  /**
+   * 「サービス種類集合取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return VRList
+   */
+  public abstract VRList getServiceKindsList() throws Exception;
+
+  /**
+   * 「事業所情報ハッシュ取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return VRMap
+   */
+  public abstract VRMap getHashedProviders() throws Exception;
+
+  /**
+   * 「本表印刷」に関する処理を行ないます。
+   *
+   * @param writer ACChotarouXMLWriter
+   * @param mainFormat String
+   * @param pages List
+   * @param invisibles List
+   * @param allTexts Map
    * @throws Exception 処理例外
    *
    */
-  public abstract void checkEndTime() throws Exception;
+  public abstract void printMainTable(ACChotarouXMLWriter writer, String mainFormat, List pages, List invisibles, Map allTexts) throws Exception;
+
+  /**
+   * 「別表印刷」に関する処理を行ないます。
+   *
+   * @param writer ACChotarouXMLWriter
+   * @param subFormat String
+   * @param pages List
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void printSubTable(ACChotarouXMLWriter writer, String subFormat, List pages) throws Exception;
+
+  /**
+   * 「印刷」に関する処理を行ないます。
+   *
+   * @param writer ACChotarouXMLWriter
+   * @param buildParam CareServicePrintParameter
+   * @param printMain, String mainFormat, List mainInsuredPages boolean
+   * @param allTexts HashMap
+   * @param printSub, String subFormat, List subInsuredPages boolean
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void print(ACChotarouXMLWriter writer, CareServicePrintParameter buildParam, boolean printMain, String mainFormat, List mainInsuredPages, HashMap allTexts, boolean printSub, String subFormat, List subInsuredPages) throws Exception;
 
 }

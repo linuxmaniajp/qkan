@@ -2,7 +2,6 @@ package jp.or.med.orca.qkan;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,8 +140,8 @@ public class QkanCommon {
             for (int i = 0; i < end; i++) {
                 Object targetKey = keys[i];
                 Object targetData = VRBindPathParser.get(targetKey, map);
-                VRBindPathParser.set(targetKey, map, ACCastUtilities.toInteger(
-                        targetData, null));
+                VRBindPathParser.set(targetKey, map,
+                        ACCastUtilities.toInteger(targetData, null));
             }
         }
     }
@@ -153,10 +152,11 @@ public class QkanCommon {
     public static void debugInitialize() {
         try {
             ACDBManager dbm;
-            //2006/10/04 replace-begin Tozo TANAKA システムプロセッサにDB生成処理を委譲
-            //dbm = new BridgeFirebirdDBManager();
-            dbm = ((ACDBManagerCreatable)ACFrame.getInstance().getFrameEventProcesser()).createDBManager();
-            //2006/10/04 replace-end Tozo TANAKA システムプロセッサにDB生成処理を委譲
+            // 2006/10/04 replace-begin Tozo TANAKA システムプロセッサにDB生成処理を委譲
+            // dbm = new BridgeFirebirdDBManager();
+            dbm = ((ACDBManagerCreatable) ACFrame.getInstance()
+                    .getFrameEventProcesser()).createDBManager();
+            // 2006/10/04 replace-end Tozo TANAKA システムプロセッサにDB生成処理を委譲
             VRList list;
 
             // コードマスタの取得と変換
@@ -260,9 +260,9 @@ public class QkanCommon {
      */
     public static VRMap getAffairInfo(ACDBManager dbm, String affairID,
             String mode) throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" M_AFFAIR_INFO.AFFAIR_ID,");
         sb.append(" M_AFFAIR_INFO.MODE,");
@@ -305,9 +305,9 @@ public class QkanCommon {
         cal.setTime(targetDate);
         String ym = VRDateParser.format(cal, "yyyy/MM/dd");
 
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" M_AREA_UNIT_PRICE.UNIT_PRICE_VALUE");
         sb.append(" FROM");
@@ -331,7 +331,8 @@ public class QkanCommon {
     /**
      * コードマスタデータ取得関数です。
      * <p>
-     * 本来コンテンツIDのフィールド名はCONTENTS_IDに固定ですが、このフィールド名を別のフィールド名に置換したVRArrayListを返します。
+     * 本来コンテンツIDのフィールド名はCONTENTS_IDに固定ですが、このフィールド名を別のフィールド名に置換したVRArrayListを返します
+     * 。
      * </p>
      * 
      * @param codeID コードID
@@ -351,6 +352,7 @@ public class QkanCommon {
         }
         return new VRArrayList();
     }
+
     /**
      * 番号予約関数です。
      * <p>
@@ -370,9 +372,9 @@ public class QkanCommon {
      */
     public static int getBookingNumber(ACDBManager dbm, String table,
             String field, int count) throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("UPDATE");
         sb.append(" M_NO_CONTROL");
         sb.append(" SET");
@@ -396,7 +398,7 @@ public class QkanCommon {
         int maxNo = 0;
         dbm.executeUpdate(sb.toString());
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" CONTROL_NO");
         sb.append(" FROM");
@@ -416,6 +418,7 @@ public class QkanCommon {
         }
         return beginNo;
     }
+
     /**
      * 請求詳細情報取得関数です。
      * <p>
@@ -446,6 +449,7 @@ public class QkanCommon {
             throws Exception {
         return getClaimDetail(dbm, claimDate, -1);
     }
+
     /**
      * 請求詳細情報取得関数です。
      * <p>
@@ -475,7 +479,7 @@ public class QkanCommon {
      */
     public static VRList getClaimDetail(ACDBManager dbm, Date claimDate,
             int patientID) throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(" AND(CLAIM.CLAIM_DATE = '"
                 + VRDateParser.format(claimDate, "yyyy/MM/dd") + "')");
         if (patientID >= 0) {
@@ -485,6 +489,7 @@ public class QkanCommon {
         return getClaimDetailCustom(dbm, claimDate, sb.toString());
 
     }
+
     /**
      * 請求詳細情報取得関数です。
      * <p>
@@ -508,8 +513,8 @@ public class QkanCommon {
      * @param where 親情報のwhere句
      * @throws Exception 処理例外
      */
-    public static VRList getClaimDetailCustom(ACDBManager dbm, Date claimDate, String where)
-            throws Exception {
+    public static VRList getClaimDetailCustom(ACDBManager dbm, Date claimDate,
+            String where) throws Exception {
 
         if (dbm == null) {
             return new VRArrayList();
@@ -524,7 +529,7 @@ public class QkanCommon {
         }
         // 作成したテーブル名は「元のテーブル名_年度」となる
         String tableSaffix = "_" + modify;
-        StringBuffer sb;
+        StringBuilder sb;
 
         TreeMap result = new TreeMap();
         final String[] shareFields = new String[] { "CLAIM_ID",
@@ -535,7 +540,7 @@ public class QkanCommon {
         String[] tableNames = new String[] { "CLAIM_DETAIL_TEXT",
                 "CLAIM_DETAIL_INTEGER", "CLAIM_DETAIL_DATE" };
         // SQL文の共通部分を構築
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" CLAIM.CLAIM_ID,");
         sb.append(" CLAIM.CLAIM_STYLE_TYPE,");
@@ -552,7 +557,7 @@ public class QkanCommon {
         int end = tableNames.length;
         for (int i = 0; i < end; i++) {
             String tableName = tableNames[i] + tableSaffix;
-            sb = new StringBuffer(header);
+            sb = new StringBuilder(header);
             sb.append(" " + tableName + ".SYSTEM_BIND_PATH,");
             sb.append(" " + tableName + ".DETAIL_VALUE");
             sb.append(" FROM");
@@ -573,7 +578,7 @@ public class QkanCommon {
         return new VRArrayList(result.values());
 
     }
-    
+
     /**
      * コードマスタ内名称取得関数です。
      * <p>
@@ -689,8 +694,9 @@ public class QkanCommon {
      * @return 保険者情報(保険者番号順)
      * @throws Exception 処理例外
      */
-    public static VRList getInsurerInfo(ACDBManager dbm, int mode) throws Exception {
-        switch(mode){
+    public static VRList getInsurerInfo(ACDBManager dbm, int mode)
+            throws Exception {
+        switch (mode) {
         case INSURER_FIND_CARE_ONLY:
             return getInsurerInfoCareOnly(dbm);
         case INSURER_FIND_MEDICAL_ONLY:
@@ -745,11 +751,11 @@ public class QkanCommon {
      * @return 保険者情報(保険者番号順)
      * @throws Exception 処理例外
      */
-    public static VRList getInsurerInfo(ACDBManager dbm, String insurerID, String where)
-            throws Exception {
-        StringBuffer sb;
+    public static VRList getInsurerInfo(ACDBManager dbm, String insurerID,
+            String where) throws Exception {
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" INSURER.INSURER_ID,");
         // del sta shin fujihara 2005.12.7
@@ -777,8 +783,8 @@ public class QkanCommon {
         } else {
             sb.append(" (INSURER.DELETE_FLAG = 0)");
         }
-        if((where!=null)&&(!"".equals(where))){
-            //追加の検索条件
+        if ((where != null) && (!"".equals(where))) {
+            // 追加の検索条件
             sb.append(where);
         }
         sb.append(" ORDER BY");
@@ -812,7 +818,8 @@ public class QkanCommon {
      */
     public static VRList getInsurerInfoCareOnly(ACDBManager dbm)
             throws Exception {
-        return getInsurerInfo(dbm, null, " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,1)))");
+        return getInsurerInfo(dbm, null,
+                " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,1)))");
     }
 
     // /**
@@ -876,7 +883,8 @@ public class QkanCommon {
      */
     public static VRList getInsurerInfoMedicalOnly(ACDBManager dbm)
             throws Exception {
-        return getInsurerInfo(dbm, null, " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,2)))");
+        return getInsurerInfo(dbm, null,
+                " AND((INSURER.INSURER_TYPE IS NULL)OR(INSURER.INSURER_TYPE IN(0,2)))");
     }
 
     /**
@@ -908,9 +916,9 @@ public class QkanCommon {
      */
     public static VRMap getMasterService(ACDBManager dbm, Date targetDate)
             throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL,");
         sb.append(" M_SERVICE.SERVICE_VALID_START,");
@@ -953,58 +961,6 @@ public class QkanCommon {
                     "SYSTEM_SERVICE_KIND_DETAIL");
         }
         return map;
-    }
-
-    /**
-     * 医療機関情報取得関数です。
-     * <p>
-     * すべての医療機関情報を取得します。
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(医療機関情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 医療機関番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @return 医療機関情報(医療機関番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getMedicalFacilityInfo(ACDBManager dbm)
-            throws Exception {
-        return getMedicalFacilityInfoImpl(dbm,
-                " WHERE (MEDICAL_FACILITY.DELETE_FLAG = 0)");
-    }
-
-    /**
-     * 医療機関情報取得関数です。
-     * <p>
-     * 特定の医療機関情報を取得します。
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(医療機関情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 医療機関番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param medicalFacilityID 医療機関番号
-     * @return 医療機関情報(医療機関番号順)
-     * @throws Exception 処理例外
-     */
-    public static VRList getMedicalFacilityInfo(ACDBManager dbm,
-            int medicalFacilityID) throws Exception {
-        return getMedicalFacilityInfoImpl(dbm,
-                " WHERE (MEDICAL_FACILITY.MEDICAL_FACILITY_ID = "
-                        + medicalFacilityID + ")");
     }
 
     /**
@@ -1052,9 +1008,9 @@ public class QkanCommon {
      */
     public static VRList getPatientInfo(ACDBManager dbm, int patientID)
             throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" PATIENT.PATIENT_ID,");
         sb.append(" PATIENT.PATIENT_CODE,");
@@ -1115,10 +1071,10 @@ public class QkanCommon {
     public static VRList getPatientInsureInfoHistory(ACDBManager dbm,
             Date targetMonth, int patientID) throws Exception {
 
-        StringBuffer sb;
+        StringBuilder sb;
 
         // メインSQL文を構築
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID,");
         sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID,");
@@ -1144,9 +1100,7 @@ public class QkanCommon {
         sb.append(" PATIENT_NINTEI_HISTORY");
         sb.append(" WHERE");
         sb.append(createWhereStatementOfNinteiHistory(targetMonth));
-        sb
-                .append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID
-                        + ")");
+        sb.append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID + ")");
         sb.append(" ORDER BY");
         sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START ASC");
 
@@ -1200,10 +1154,10 @@ public class QkanCommon {
             return new VRArrayList();
         }
 
-        StringBuffer sb;
+        StringBuilder sb;
 
         // メインSQL文を構築
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID,");
         sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID,");
@@ -1229,9 +1183,7 @@ public class QkanCommon {
         sb.append(" PATIENT_NINTEI_HISTORY");
         sb.append(" WHERE");
         sb.append(createWhereStatementOfNinteiHistory(targetMonth));
-        sb
-                .append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID
-                        + ")");
+        sb.append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID + ")");
         sb.append(" ORDER BY");
         sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START DESC");
 
@@ -1437,15 +1389,14 @@ public class QkanCommon {
      */
     public static VRList getProviderInfo(ACDBManager dbm, int[] serviceKind)
             throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(" ,PROVIDER_SERVICE");
         sb.append(" WHERE");
         sb.append(" (PROVIDER.PROVIDER_ID = PROVIDER_SERVICE.PROVIDER_ID)");
         if (serviceKind != null) {
             int end = serviceKind.length;
             if (end > 0) {
-                sb
-                        .append(" AND(PROVIDER_SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(");
+                sb.append(" AND(PROVIDER_SERVICE.SYSTEM_SERVICE_KIND_DETAIL IN(");
                 sb.append(serviceKind[0]);
                 for (int i = 1; i < end; i++) {
                     sb.append(",");
@@ -1482,7 +1433,7 @@ public class QkanCommon {
      */
     public static VRList getProviderInfo(ACDBManager dbm, List serviceKinds)
             throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(" ,PROVIDER_SERVICE");
         sb.append(" WHERE");
         sb.append(" (PROVIDER.PROVIDER_ID = PROVIDER_SERVICE.PROVIDER_ID)");
@@ -1563,10 +1514,10 @@ public class QkanCommon {
     // return new VRArrayList();
     // }
     //
-    // StringBuffer sb;
+    // StringBuilder sb;
     //
     // // FROM～要介護度以外のWHERE句まで
-    // sb = new StringBuffer();
+    // sb = new StringBuilder();
     // sb.append(" FROM");
     // sb.append(" PATIENT_NINTEI_HISTORY");
     // sb.append(" WHERE");
@@ -1582,7 +1533,7 @@ public class QkanCommon {
     // String fromWhere = sb.toString();
     //
     // // メインSQL文を構築
-    // sb = new StringBuffer();
+    // sb = new StringBuilder();
     // sb.append("SELECT");
     // sb.append(" PATIENT_NINTEI_HISTORY.PATIENT_ID,");
     // sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_HISTORY_ID,");
@@ -1705,7 +1656,7 @@ public class QkanCommon {
      */
     public static VRList getProviderServiceDetail(ACDBManager dbm,
             String providerID) throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // sb.append(" AND(PROVIDER_SERVICE.PROVIDER_ID = '" + providerID +
         // "')");
         sb.append(" (PROVIDER_SERVICE.PROVIDER_ID = '" + providerID + "')");
@@ -1735,7 +1686,7 @@ public class QkanCommon {
      */
     public static VRList getProviderServiceDetail(ACDBManager dbm,
             String providerID, int serviceKind) throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // sb.append(" AND(PROVIDER_SERVICE.PROVIDER_ID = '" + providerID +
         // "')");
         sb.append(" (PROVIDER_SERVICE.PROVIDER_ID = '" + providerID + "')");
@@ -1777,7 +1728,7 @@ public class QkanCommon {
             where = " WHERE" + where;
         }
 
-        StringBuffer sb;
+        StringBuilder sb;
 
         TreeMap result = new TreeMap();
         final String[] shareFields = new String[] { "PROVIDER_ID",
@@ -1790,7 +1741,7 @@ public class QkanCommon {
                 "PROVIDER_SERVICE_DETAIL_TEXT", "PROVIDER_SERVICE_DETAIL_DATE" };
 
         // SQL文の共通部分を構築
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" PROVIDER_SERVICE.PROVIDER_SERVICE_ID,");
         sb.append(" PROVIDER_SERVICE.PROVIDER_ID,");
@@ -1801,7 +1752,7 @@ public class QkanCommon {
         int end = tableNames.length;
         for (int i = 0; i < end; i++) {
             String tableName = tableNames[i];
-            sb = new StringBuffer(header);
+            sb = new StringBuilder(header);
             sb.append(" " + tableName + ".SYSTEM_BIND_PATH,");
             sb.append(" " + tableName + ".DETAIL_VALUE");
             sb.append(" FROM");
@@ -1850,9 +1801,9 @@ public class QkanCommon {
      */
     public static VRList getProviderServiceType(ACDBManager dbm,
             String providerID) throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" PROVIDER.PROVIDER_ID,");
         sb.append(" PROVIDER.PROVIDER_TYPE,");
@@ -1970,7 +1921,7 @@ public class QkanCommon {
         cal.setTime(targetMonth);
         String ym = VRDateParser.format(cal, "yyyy/MM");
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // sb.append(" AND(SERVICE.LOGIN_PROVIDER_ID = '" + providerID + "')");
         sb.append(" AND(SERVICE.PATIENT_ID = " + patientID + ")");
         sb.append(" AND(SERVICE.SERVICE_DATE >= '" + ym + "/01')");
@@ -2002,9 +1953,9 @@ public class QkanCommon {
      * @return 検索結果
      * @throws Exception 処理例外
      */
-    public static VRList getServiceDetailCustom(ACDBManager dbm, Date targetMonth, String where)
-            throws Exception {
-        StringBuffer sb;
+    public static VRList getServiceDetailCustom(ACDBManager dbm,
+            Date targetMonth, String where) throws Exception {
+        StringBuilder sb;
 
         if (dbm == null) {
             return new VRArrayList();
@@ -2013,8 +1964,8 @@ public class QkanCommon {
 
         String tableSaffix;
         // テーブル分割後の修飾語を取得
-        if(targetMonth==null){
-            targetMonth = ACDateUtilities.createDate(2006,4);
+        if (targetMonth == null) {
+            targetMonth = ACDateUtilities.createDate(2006, 4);
         }
         int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
                 "SERVICE_DETAIL", targetMonth);
@@ -2027,8 +1978,9 @@ public class QkanCommon {
 
         TreeMap result = new TreeMap();
         // 3テーブルの値を取得し、共通部分の合致するレコードをマージ
-        final String[] shareFields = new String[] { "SERVICE_ID",
-        // "LOGIN_PROVIDER_ID",
+        final String[] shareFields = new String[] {
+                "SERVICE_ID",
+                // "LOGIN_PROVIDER_ID",
                 "SERVICE_USE_TYPE", "PATIENT_ID", "PROVIDER_ID",
                 "SYSTEM_SERVICE_KIND_DETAIL", "SERVICE_DATE", "WEEK_DAY",
                 "LAST_TIME",
@@ -2039,7 +1991,7 @@ public class QkanCommon {
         String[] tableNames = new String[] { "SERVICE_DETAIL_TEXT",
                 "SERVICE_DETAIL_INTEGER", "SERVICE_DETAIL_DATE" };
         // SQL文の共通部分を構築
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" SERVICE.SERVICE_ID,");
         // sb.append(" SERVICE.LOGIN_PROVIDER_ID,");
@@ -2059,7 +2011,7 @@ public class QkanCommon {
         int end = tableNames.length;
         for (int i = 0; i < end; i++) {
             String tableName = tableNames[i] + tableSaffix;
-            sb = new StringBuffer(header);
+            sb = new StringBuilder(header);
             sb.append(" " + tableName + ".SYSTEM_BIND_PATH,");
             sb.append(" " + tableName + ".DETAIL_VALUE");
             sb.append(" FROM");
@@ -2067,9 +2019,7 @@ public class QkanCommon {
             // sb.append(",SERVICE_EXPENSES");
             sb.append(" LEFT JOIN ");
             sb.append(tableName);
-            sb
-                    .append(" ON (SERVICE.SERVICE_ID = " + tableName
-                            + ".SERVICE_ID)");
+            sb.append(" ON (SERVICE.SERVICE_ID = " + tableName + ".SERVICE_ID)");
             // sb.append(" WHERE");
             // sb.append(" AND(SERVICE.SERVICE_ID =
             // SERVICE_EXPENSES.SERVICE_ID)");
@@ -2106,7 +2056,7 @@ public class QkanCommon {
      */
     public static VRList getServicePatternDetail(ACDBManager dbm)
             throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(" AND(SERVICE.SERVICE_USE_TYPE = "
                 + QkanConstants.SERVICE_USE_TYPE_PATTERN + ")");
         // sb.append(" AND(SERVICE.LOGIN_PROVIDER_ID = '"
@@ -2141,7 +2091,7 @@ public class QkanCommon {
      */
     public static VRList getServicePatternDetail(ACDBManager dbm,
             int serviceKind) throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(" AND(SERVICE.SERVICE_USE_TYPE = "
                 + QkanConstants.SERVICE_USE_TYPE_PATTERN + ")");
         // sb.append(" AND(SERVICE.LOGIN_PROVIDER_ID = '"
@@ -2177,7 +2127,7 @@ public class QkanCommon {
      */
     public static VRList getServicePatternDetailCustom(ACDBManager dbm,
             String where) throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(" AND(SERVICE.SERVICE_USE_TYPE = "
                 + QkanConstants.SERVICE_USE_TYPE_PATTERN + ")");
         sb.append(where);
@@ -2365,7 +2315,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のCLAIM_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するCLAIM_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のCLAIM_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するCLAIM_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -2398,7 +2349,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のCLAIM_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するCLAIM_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のCLAIM_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するCLAIM_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -2416,8 +2368,8 @@ public class QkanCommon {
         String ym = VRDateParser.format(cal, "yyyy/MM");
         // 親情報特定のためのSQL文
 
-        StringBuffer sb;
-        sb = new StringBuffer();
+        StringBuilder sb;
+        sb = new StringBuilder();
         sb.append(" (CLAIM.TARGET_DATE >= '" + ym + "/01')");
         sb.append(" AND(CLAIM.TARGET_DATE <= '" + ym + "/"
                 + cal.getActualMaximum(Calendar.DAY_OF_MONTH) + "')");
@@ -2443,7 +2395,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のCLAIM_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するCLAIM_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のCLAIM_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するCLAIM_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -2461,33 +2414,32 @@ public class QkanCommon {
         }
         int updateCount = 0;
         // テーブル分割後の修飾語を取得
-        if(targetDate==null){
-            targetDate = ACDateUtilities.createDate(2006,4);
+        if (targetDate == null) {
+            targetDate = ACDateUtilities.createDate(2006, 4);
         }
 
-        //2006/06/06 tozo TANAKA begin edit 請求テーブルの年度別生成対応のため
-        StringBuffer sb;
+        // 2006/06/06 tozo TANAKA begin edit 請求テーブルの年度別生成対応のため
+        StringBuilder sb;
         if ((where == null) || ("".equals(where))) {
             where = "";
         } else {
             where = appendFrontWhere(where);
         }
-        
-        
-        //2007/03/19 tozo TANAKA begin move-to 年度またぎ対応のため
+
+        // 2007/03/19 tozo TANAKA begin move-to 年度またぎ対応のため
         // 親情報特定のためのSQL文
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" CLAIM.CLAIM_ID");
         sb.append(" FROM");
         sb.append(" CLAIM");
         sb.append(where);
         VRList ids = dbm.executeQuery(sb.toString());
-        
+
         int end = ids.size();
         if (end > 0) {
             // 既存の親IDをIN句として連結
-            sb = new StringBuffer();
+            sb = new StringBuilder();
             sb.append(".CLAIM_ID IN (");
             sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
             for (int i = 1; i < end; i++) {
@@ -2496,65 +2448,64 @@ public class QkanCommon {
             }
             sb.append(")");
             String parentIDSQL = sb.toString();
-            //2007/03/19 tozo TANAKA end move-to 年度またぎ対応のため
+            // 2007/03/19 tozo TANAKA end move-to 年度またぎ対応のため
 
-        // 親情報特定のためのSQL文
-        sb = new StringBuffer();
-        sb.append("SELECT");
-        sb.append(" DISTINCT");
-        sb.append(" CLAIM.CLAIM_DATE");
-        sb.append(" FROM");
-        sb.append(" CLAIM");
-        sb.append(" WHERE");
-        sb.append("(TARGET_DATE = '");
-        sb.append(VRDateParser.format(targetDate, "yyyy-MM-dd"));
-        sb.append("')");
-        VRList claimDates = dbm.executeQuery(sb.toString());
-        Iterator it=claimDates.iterator();
-        while(it.hasNext()){
-            //対象年月が一致する既存データの請求年月を全走査し、詳細データの実テーブルを検出する
-            int modify = getSeparateTableManager().getTableModifyFromDate(
-                    dbm,
-                    "CLAIM_DETAIL",
-                    ACCastUtilities.toDate(VRBindPathParser.get("CLAIM_DATE",
-                            (VRMap) it.next())));
-            if (modify < 0) {
-                continue;
-            }
+            // 親情報特定のためのSQL文
+            sb = new StringBuilder();
+            sb.append("SELECT");
+            sb.append(" DISTINCT");
+            sb.append(" CLAIM.CLAIM_DATE");
+            sb.append(" FROM");
+            sb.append(" CLAIM");
+            sb.append(" WHERE");
+            sb.append("(TARGET_DATE = '");
+            sb.append(VRDateParser.format(targetDate, "yyyy-MM-dd"));
+            sb.append("')");
+            VRList claimDates = dbm.executeQuery(sb.toString());
+            Iterator it = claimDates.iterator();
+            while (it.hasNext()) {
+                // 対象年月が一致する既存データの請求年月を全走査し、詳細データの実テーブルを検出する
+                int modify = getSeparateTableManager().getTableModifyFromDate(
+                        dbm,
+                        "CLAIM_DETAIL",
+                        ACCastUtilities.toDate(VRBindPathParser.get(
+                                "CLAIM_DATE", (VRMap) it.next())));
+                if (modify < 0) {
+                    continue;
+                }
 
-            // 作成したテーブル名は「元のテーブル名_年度」となる
-            String tableSaffix = "_" + modify;
+                // 作成したテーブル名は「元のテーブル名_年度」となる
+                String tableSaffix = "_" + modify;
 
-
-            // 一括削除 開始 ====================================================
-//            // 親情報特定のためのSQL文
-//            sb = new StringBuffer();
-//            sb.append("SELECT");
-//            sb.append(" CLAIM.CLAIM_ID");
-//            sb.append(" FROM");
-//            sb.append(" CLAIM");
-//            sb.append(where);
-//            VRList ids = dbm.executeQuery(sb.toString());
-//
-//            int end = ids.size();
-//            if (end > 0) {
-//                // 既存の親IDをIN句として連結
-//                sb = new StringBuffer();
-//                sb.append(".CLAIM_ID IN (");
-//                sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
-//                for (int i = 1; i < end; i++) {
-//                    sb.append(",");
-//                    sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
-//                }
-//                sb.append(")");
-//                String parentIDSQL = sb.toString();
+                // 一括削除 開始 ====================================================
+                // // 親情報特定のためのSQL文
+                // sb = new StringBuilder();
+                // sb.append("SELECT");
+                // sb.append(" CLAIM.CLAIM_ID");
+                // sb.append(" FROM");
+                // sb.append(" CLAIM");
+                // sb.append(where);
+                // VRList ids = dbm.executeQuery(sb.toString());
+                //
+                // int end = ids.size();
+                // if (end > 0) {
+                // // 既存の親IDをIN句として連結
+                // sb = new StringBuilder();
+                // sb.append(".CLAIM_ID IN (");
+                // sb.append(((Map) ids.get(0)).get("CLAIM_ID"));
+                // for (int i = 1; i < end; i++) {
+                // sb.append(",");
+                // sb.append(((Map) ids.get(i)).get("CLAIM_ID"));
+                // }
+                // sb.append(")");
+                // String parentIDSQL = sb.toString();
 
                 // 詳細文字列/数値/日付情報
                 String[] tableNames = new String[] { "CLAIM_DETAIL_TEXT",
                         "CLAIM_DETAIL_INTEGER", "CLAIM_DETAIL_DATE" };
                 for (int i = 0; i < tableNames.length; i++) {
                     String tableName = tableNames[i] + tableSaffix;
-                    sb = new StringBuffer();
+                    sb = new StringBuilder();
                     sb.append("DELETE FROM ");
                     sb.append(tableName);
                     sb.append(" WHERE ");
@@ -2563,37 +2514,37 @@ public class QkanCommon {
                     dbm.executeUpdate(sb.toString());
                 }
 
-//                // 親情報
-//                sb = new StringBuffer();
-//                sb.append("DELETE FROM");
-//                sb.append(" CLAIM");
-//                sb.append(" WHERE ");
-//                sb.append(" CLAIM");
-//                sb.append(parentIDSQL);
-//                //add sta 2006.05.25 fujihara.shin
-//                //再集計時、利用者向け請求の情報を消さないよう修整
-//                sb.append(" AND CLAIM.CATEGORY_NO <> 16");
-//                //add end 2006.05.25 fujihara.shin
-//                dbm.executeUpdate(sb.toString());
-//            }            
-        }
-        //2007/03/19 tozo TANAKA begin move-to 年度またぎ対応のため
-        // 親情報
-        sb = new StringBuffer();
-        sb.append("DELETE FROM");
-        sb.append(" CLAIM");
-        sb.append(" WHERE ");
-        sb.append(" CLAIM");
-        sb.append(parentIDSQL);
-        //add sta 2006.05.25 fujihara.shin
-        //再集計時、利用者向け請求の情報を消さないよう修整
-        sb.append(" AND CLAIM.CATEGORY_NO <> 16");
-        //add end 2006.05.25 fujihara.shin
-        dbm.executeUpdate(sb.toString());
-        //2007/03/19 tozo TANAKA end move-to 年度またぎ対応のため
+                // // 親情報
+                // sb = new StringBuilder();
+                // sb.append("DELETE FROM");
+                // sb.append(" CLAIM");
+                // sb.append(" WHERE ");
+                // sb.append(" CLAIM");
+                // sb.append(parentIDSQL);
+                // //add sta 2006.05.25 fujihara.shin
+                // //再集計時、利用者向け請求の情報を消さないよう修整
+                // sb.append(" AND CLAIM.CATEGORY_NO <> 16");
+                // //add end 2006.05.25 fujihara.shin
+                // dbm.executeUpdate(sb.toString());
+                // }
+            }
+            // 2007/03/19 tozo TANAKA begin move-to 年度またぎ対応のため
+            // 親情報
+            sb = new StringBuilder();
+            sb.append("DELETE FROM");
+            sb.append(" CLAIM");
+            sb.append(" WHERE ");
+            sb.append(" CLAIM");
+            sb.append(parentIDSQL);
+            // add sta 2006.05.25 fujihara.shin
+            // 再集計時、利用者向け請求の情報を消さないよう修整
+            sb.append(" AND CLAIM.CATEGORY_NO <> 16");
+            // add end 2006.05.25 fujihara.shin
+            dbm.executeUpdate(sb.toString());
+            // 2007/03/19 tozo TANAKA end move-to 年度またぎ対応のため
         }
         // 一括削除 終了 ====================================================
-        //2006/06/06 tozo TANAKA end edit 請求テーブルの年度別生成対応のため
+        // 2006/06/06 tozo TANAKA end edit 請求テーブルの年度別生成対応のため
 
         if (!details.isEmpty()) {
 
@@ -2613,20 +2564,21 @@ public class QkanCommon {
             VRMap detailMaster = getDetailMaster(dbm,
                     QkanConstants.DETAIL_MASTER_CLAIM);
 
-            
-            //2006/06/06 tozo TANAKA begin add 請求テーブルの年度別生成対応のため
-            //登録データの請求年月をもとに詳細情報の実テーブルを求める
-            int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
-                    "CLAIM_DETAIL", ACCastUtilities.toDate(VRBindPathParser.get("CLAIM_DATE", (VRMap)details.getData())));
+            // 2006/06/06 tozo TANAKA begin add 請求テーブルの年度別生成対応のため
+            // 登録データの請求年月をもとに詳細情報の実テーブルを求める
+            int modify = getSeparateTableManager().getTableModifyFromDate(
+                    dbm,
+                    "CLAIM_DETAIL",
+                    ACCastUtilities.toDate(VRBindPathParser.get("CLAIM_DATE",
+                            (VRMap) details.getData())));
             if (modify < 0) {
                 return 0;
             }
 
             // 作成したテーブル名は「元のテーブル名_年度」となる
             String tableSaffix = "_" + modify;
-            //2006/06/06 tozo TANAKA end add 請求テーブルの年度別生成対応のため
+            // 2006/06/06 tozo TANAKA end add 請求テーブルの年度別生成対応のため
 
-            
             Iterator it = details.iterator();
             while (it.hasNext()) {
                 VRMap row = (VRMap) it.next();
@@ -2642,7 +2594,7 @@ public class QkanCommon {
                 }
 
                 // 基本情報の登録
-                sb = new StringBuffer();
+                sb = new StringBuilder();
                 sb.append("INSERT INTO");
                 sb.append(" CLAIM");
                 sb.append(" (");
@@ -2662,24 +2614,19 @@ public class QkanCommon {
                 sb.append(" ," + VRBindPathParser.get("CLAIM_STYLE_TYPE", row));
                 sb.append(" ," + VRBindPathParser.get("CATEGORY_NO", row));
                 sb.append(" ," + VRBindPathParser.get("PATIENT_ID", row));
-                sb
-                        .append(" ,'" + VRBindPathParser.get("INSURED_ID", row)
-                                + "'");
+                sb.append(" ,'" + VRBindPathParser.get("INSURED_ID", row) + "'");
                 sb.append(" ,'"
-                        + VRDateParser.format((Date) VRBindPathParser.get(
-                                "TARGET_DATE", row), "yyyy/MM") + "/01'");
+                        + VRDateParser.format(
+                                (Date) VRBindPathParser.get("TARGET_DATE", row),
+                                "yyyy/MM") + "/01'");
                 sb.append(" ,'"
-                        + VRDateParser.format((Date) VRBindPathParser.get(
-                                "CLAIM_DATE", row), "yyyy/MM/dd") + "'");
-                sb
-                        .append(" ,'" + VRBindPathParser.get("INSURER_ID", row)
-                                + "'");
+                        + VRDateParser.format(
+                                (Date) VRBindPathParser.get("CLAIM_DATE", row),
+                                "yyyy/MM/dd") + "'");
+                sb.append(" ,'" + VRBindPathParser.get("INSURER_ID", row) + "'");
                 sb.append(" ,'" + VRBindPathParser.get("PROVIDER_ID", row)
                         + "'");
-                sb
-                        .append(" ,"
-                                + VRBindPathParser
-                                        .get("CLAIM_FINISH_FLAG", row));
+                sb.append(" ," + VRBindPathParser.get("CLAIM_FINISH_FLAG", row));
                 sb.append(" ,CURRENT_TIMESTAMP");
                 sb.append(")");
                 dbm.executeUpdate(sb.toString());
@@ -2698,7 +2645,7 @@ public class QkanCommon {
                     }
                     Object val = ent.getValue();
 
-                    sb = new StringBuffer();
+                    sb = new StringBuilder();
                     sb.append("INSERT INTO");
 
                     int mode = Integer.MAX_VALUE;
@@ -2756,7 +2703,7 @@ public class QkanCommon {
 
         return updateCount;
     }
-    
+
     /**
      * 事業所提供サービス詳細情報更新関数です。
      * <p>
@@ -2772,7 +2719,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のPROVIDER_SERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するPROVIDER_SERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のPROVIDER_SERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するPROVIDER_SERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -2783,11 +2731,12 @@ public class QkanCommon {
      */
     public static int updateProviderServiceDetail(ACDBManager dbm,
             VRList details, String providerID) throws Exception {
-        StringBuffer sb;
-        sb = new StringBuffer();
+        StringBuilder sb;
+        sb = new StringBuilder();
         sb.append(" (PROVIDER_SERVICE.PROVIDER_ID = '" + providerID + "')");
         return updateProviderServiceDetailCustom(dbm, details, sb.toString());
     }
+
     /**
      * 事業所提供サービス詳細情報更新関数です。
      * <p>
@@ -2803,7 +2752,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のPROVIDER_SERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するPROVIDER_SERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のPROVIDER_SERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するPROVIDER_SERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -2820,11 +2770,11 @@ public class QkanCommon {
         }
         int updateCount = 0;
 
-        StringBuffer sb;
+        StringBuilder sb;
 
         // 一括削除 開始 ====================================================
         // 親情報特定のためのSQL文
-         sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" PROVIDER_SERVICE.PROVIDER_SERVICE_ID");
         sb.append(" FROM");
@@ -2836,7 +2786,7 @@ public class QkanCommon {
         int end = ids.size();
         if (end > 0) {
             // 既存の親IDをIN句として連結
-            sb = new StringBuffer();
+            sb = new StringBuilder();
             sb.append(".PROVIDER_SERVICE_ID IN (");
             sb.append(((Map) ids.get(0)).get("PROVIDER_SERVICE_ID"));
             for (int i = 1; i < end; i++) {
@@ -2853,7 +2803,7 @@ public class QkanCommon {
                     "PROVIDER_SERVICE_DETAIL_DATE" };
             for (int i = 0; i < tableNames.length; i++) {
                 String tableName = tableNames[i];
-                sb = new StringBuffer();
+                sb = new StringBuilder();
                 sb.append("DELETE FROM ");
                 sb.append(tableName);
                 sb.append(" WHERE ");
@@ -2863,7 +2813,7 @@ public class QkanCommon {
             }
 
             // 親情報
-            sb = new StringBuffer();
+            sb = new StringBuilder();
             sb.append("DELETE FROM");
             sb.append(" PROVIDER_SERVICE");
             sb.append(" WHERE ");
@@ -2904,7 +2854,7 @@ public class QkanCommon {
                     id = String.valueOf(newID);
                 }
                 // 基本情報の登録
-                sb = new StringBuffer();
+                sb = new StringBuilder();
                 sb.append("INSERT INTO");
                 sb.append(" PROVIDER_SERVICE");
                 sb.append(" (");
@@ -2940,7 +2890,7 @@ public class QkanCommon {
 
                     String detailValue;
 
-                    sb = new StringBuffer();
+                    sb = new StringBuilder();
                     sb.append("INSERT INTO");
                     // 型によって振り分ける
                     int type = -1;
@@ -2967,11 +2917,11 @@ public class QkanCommon {
                         VRLogger.info("未対応のデータ型を指定するバインドパス「" + key
                                 + "」が指定されました。");
                         continue;
-                    // throw new IllegalArgumentException(
-                    // "未対応のデータ型を指定するバインドパス「"
-                    // + VRBindPathParser.get(
-                    // "SYSTEM_BIND_PATH", row)
-                    // + "」が指定されました。");
+                        // throw new IllegalArgumentException(
+                        // "未対応のデータ型を指定するバインドパス「"
+                        // + VRBindPathParser.get(
+                        // "SYSTEM_BIND_PATH", row)
+                        // + "」が指定されました。");
 
                     }
                     sb.append(" (");
@@ -2993,7 +2943,7 @@ public class QkanCommon {
 
         return updateCount;
     }
-    
+
     /**
      * サービス詳細情報更新関数です。
      * <p>
@@ -3012,7 +2962,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * <p>
      * 引数「取得区分」には以下の値を指定します。 <br />
@@ -3032,13 +2983,13 @@ public class QkanCommon {
             int patientID, Date targetDate, int useType) throws Exception {
 
         // 一括削除準備
-        StringBuffer sb;
+        StringBuilder sb;
         Calendar cal = Calendar.getInstance();
         cal.setTime(targetDate);
         String ym = VRDateParser.format(cal, "yyyy/MM");
 
         // 親情報検索条件
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append(" (SERVICE.SERVICE_DATE >= '" + ym + "/01')");
         sb.append(" AND(SERVICE.SERVICE_DATE <= '" + ym + "/"
                 + cal.getActualMaximum(Calendar.DAY_OF_MONTH) + "')");
@@ -3046,7 +2997,8 @@ public class QkanCommon {
         sb.append(" AND");
         sb.append(getServiceUseTypeSQLWithoutAnd(useType));
 
-        return updateServiceDetailCustom(dbm, details, targetDate, sb.toString());
+        return updateServiceDetailCustom(dbm, details, targetDate,
+                sb.toString());
     }
 
     /**
@@ -3067,7 +3019,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -3084,8 +3037,8 @@ public class QkanCommon {
         }
         int updateCount = 0;
         // テーブル分割後の修飾語を取得
-        if(targetDate==null){
-            targetDate = ACDateUtilities.createDate(2006,4);
+        if (targetDate == null) {
+            targetDate = ACDateUtilities.createDate(2006, 4);
         }
         int modify = getSeparateTableManager().getTableModifyFromDate(dbm,
                 "SERVICE_DETAIL", targetDate);
@@ -3094,7 +3047,7 @@ public class QkanCommon {
         }
         String tableSaffix = "_" + modify;
 
-        StringBuffer sb;
+        StringBuilder sb;
 
         // 一括削除 開始 ====================================================
         if ((where == null) || ("".equals(where))) {
@@ -3103,18 +3056,18 @@ public class QkanCommon {
             where = " WHERE " + where;
         }
         // 親情報検索SQL文
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" SERVICE.SERVICE_ID");
         sb.append(" FROM");
         sb.append(" SERVICE");
         sb.append(where);
-        VRList ids=dbm.executeQuery(sb.toString());
+        VRList ids = dbm.executeQuery(sb.toString());
 
         int end = ids.size();
         if (end > 0) {
-            //既存の親IDをIN句として連結
-            sb = new StringBuffer();
+            // 既存の親IDをIN句として連結
+            sb = new StringBuilder();
             sb.append(".SERVICE_ID IN (");
             sb.append(((Map) ids.get(0)).get("SERVICE_ID"));
             for (int i = 1; i < end; i++) {
@@ -3129,7 +3082,7 @@ public class QkanCommon {
                     "SERVICE_DETAIL_INTEGER", "SERVICE_DETAIL_DATE", };
             for (int i = 0; i < tableNames.length; i++) {
                 String tableName = tableNames[i] + tableSaffix;
-                sb = new StringBuffer();
+                sb = new StringBuilder();
                 sb.append("DELETE FROM ");
                 sb.append(tableName);
                 sb.append(" WHERE ");
@@ -3137,9 +3090,9 @@ public class QkanCommon {
                 sb.append(parentIDSQL);
                 dbm.executeUpdate(sb.toString());
             }
-            
+
             // 親情報 削除
-            sb = new StringBuffer();
+            sb = new StringBuilder();
             sb.append("DELETE FROM");
             sb.append(" SERVICE");
             sb.append(" WHERE ");
@@ -3160,7 +3113,7 @@ public class QkanCommon {
 
             Set exclusiveKeys = new HashSet();
             exclusiveKeys.addAll(Arrays.asList(new String[] { "SERVICE_ID",
-            // "LOGIN_PROVIDER_ID",
+                    // "LOGIN_PROVIDER_ID",
                     "SERVICE_USE_TYPE", "PATIENT_ID", "PROVIDER_ID",
                     "SYSTEM_SERVICE_KIND_DETAIL", "SERVICE_DATE", "WEEK_DAY",
                     // "EXPENSES_FLAG",
@@ -3179,15 +3132,15 @@ public class QkanCommon {
                     id = String.valueOf(idVal);
                 } else {
                     Integer newID = new Integer(uniqueID++);
-                    try{
+                    try {
                         row.put("SERVICE_ID", newID);
-                    }catch(java.util.ConcurrentModificationException ex){
-                        //イテレーションの同期例外は無視
+                    } catch (java.util.ConcurrentModificationException ex) {
+                        // イテレーションの同期例外は無視
                     }
                     id = String.valueOf(newID);
                 }
                 // 基本情報の登録
-                sb = new StringBuffer();
+                sb = new StringBuilder();
                 sb.append("INSERT INTO");
                 sb.append(" SERVICE");
                 sb.append(" (");
@@ -3208,10 +3161,8 @@ public class QkanCommon {
                 // + VRBindPathParser.get("LOGIN_PROVIDER_ID", row) + "'");
                 sb.append(" ," + row.get("SERVICE_USE_TYPE"));
                 sb.append(" ," + row.get("PATIENT_ID"));
-                sb.append(" ,'" + row.get("PROVIDER_ID")
-                        + "'");
-                sb.append(" ,"
-                        + row.get("SYSTEM_SERVICE_KIND_DETAIL"));
+                sb.append(" ,'" + row.get("PROVIDER_ID") + "'");
+                sb.append(" ," + row.get("SYSTEM_SERVICE_KIND_DETAIL"));
                 Object serviceData = row.get("SERVICE_DATE");
                 if (serviceData instanceof Date) {
                     sb.append(" ,'"
@@ -3230,8 +3181,7 @@ public class QkanCommon {
                 // row)));
                 sb.append(" ,"
                         + ACSQLSafeNullToZeroIntegerFormat.getInstance()
-                                .format(
-                                        row.get("REGULATION_RATE")));
+                                .format(row.get("REGULATION_RATE")));
                 sb.append(" ,CURRENT_TIMESTAMP");
                 sb.append(")");
                 dbm.executeUpdate(sb.toString());
@@ -3250,7 +3200,7 @@ public class QkanCommon {
                     Object val = ent.getValue();
 
                     String detailValue;
-                    sb = new StringBuffer();
+                    sb = new StringBuilder();
                     sb.append("INSERT INTO");
                     // 型によって振り分ける
                     int type = -1;
@@ -3278,10 +3228,10 @@ public class QkanCommon {
                         VRLogger.info("未対応のデータ型を指定するバインドパス「" + key
                                 + "」が指定されました。");
                         continue;
-                    // throw new IllegalArgumentException(
-                    // "未対応のデータ型を指定するバインドパス「"
-                    // + key
-                    // + "」が指定されました。");
+                        // throw new IllegalArgumentException(
+                        // "未対応のデータ型を指定するバインドパス「"
+                        // + key
+                        // + "」が指定されました。");
 
                     }
                     sb.append(" (");
@@ -3323,7 +3273,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -3337,6 +3288,7 @@ public class QkanCommon {
         return updateServicePatternDetailCustom(dbm, details,
                 " (SERVICE.SYSTEM_SERVICE_KIND_DETAIL = " + serviceKind + ")");
     }
+
     /**
      * サービスパターン詳細情報更新関数です。
      * <p>
@@ -3355,7 +3307,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -3386,7 +3339,8 @@ public class QkanCommon {
      * key:フィールド名・詳細種類 <br />
      * val:値 <br />
      * }</code><br />
-     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
+     * 同一のSERVICE_IDからなるレコードは連続して配置してください。また、
+     * 全てのレコードもしくは連続するSERVICE_IDの最初のレコードには詳細情報だけでなく親情報も格納してください。
      * </p>
      * 
      * @param dbm DBManager
@@ -3397,8 +3351,8 @@ public class QkanCommon {
      */
     public static int updateServicePatternDetailCustom(ACDBManager dbm,
             VRList details, String where) throws Exception {
-        StringBuffer sb;
-        sb = new StringBuffer();
+        StringBuilder sb;
+        sb = new StringBuilder();
         if (!ACTextUtilities.isNullText(where)) {
             sb.append(where);
             sb.append(" AND");
@@ -3463,7 +3417,7 @@ public class QkanCommon {
         cal.setTime(targetDate);
         String ym = VRDateParser.format(cal, "yyyy/MM");
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         // -- 有効期間をチェックするSQL文 開始----------------------------------------
         // 有効期間内もしくはかぶっているパターンは複数あり、そのいずれか一つに該当すれば許容する
@@ -3513,9 +3467,9 @@ public class QkanCommon {
      */
     protected static VRMap getDetailMaster(ACDBManager dbm, int type)
             throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" M_DETAIL.SYSTEM_BIND_PATH,");
         sb.append(" M_DETAIL.DATA_TYPE");
@@ -3565,56 +3519,6 @@ public class QkanCommon {
                 detailParentCount);
     }
 
-    /**
-     * 医療機関情報取得関数です。
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(医療機関情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * ASC 医療機関番号
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param where 絞込み句
-     * @return 医療機関情報(医療機関番号順)
-     * @throws Exception 処理例外
-     */
-    protected static VRList getMedicalFacilityInfoImpl(ACDBManager dbm,
-            String where) throws Exception {
-        StringBuffer sb;
-
-        sb = new StringBuffer();
-        sb.append("SELECT");
-        // sb.append(" DISTINCT MEDICAL_FACILITY.MEDICAL_FACILITY_ID,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_ID,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_NAME,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_TEL_FIRST,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_TEL_SECOND,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_TEL_THIRD,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_ZIP_FIRST,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_ZIP_SECOND,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_ADDRESS,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_FAX_FIRST,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_FAX_SECOND,");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_FAX_THIRD,");
-        sb.append(" MEDICAL_FACILITY.LAST_TIME");
-
-        sb.append(" FROM");
-        sb.append(" MEDICAL_FACILITY");
-        if (!ACTextUtilities.isNullText(where)) {
-            sb.append(where);
-        }
-        sb.append(" ORDER BY");
-        sb.append(" MEDICAL_FACILITY.MEDICAL_FACILITY_ID ASC");
-
-        if (dbm == null) {
-            return new VRArrayList();
-        }
-        return dbm.executeQuery(sb.toString());
-    }
 
     /**
      * 事業所情報取得関数です。
@@ -3638,9 +3542,9 @@ public class QkanCommon {
      */
     protected static VRList getProviderInfoImpl(ACDBManager dbm, String where)
             throws Exception {
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" DISTINCT PROVIDER.PROVIDER_ID,");
         sb.append(" PROVIDER.PROVIDER_TYPE,");
@@ -3818,9 +3722,9 @@ public class QkanCommon {
         cal.setTime(targetDate);
         String ym = VRDateParser.format(cal, "yyyy/MM/dd");
 
-        StringBuffer sb;
+        StringBuilder sb;
 
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         sb.append("SELECT");
         sb.append(" M_SPECIAL_CLINIC.SPECIAL_CLINIC_TYPE,");
         sb.append(" M_SPECIAL_CLINIC.SPECIAL_CLINIC_HISTORY_ID,");
@@ -3836,8 +3740,7 @@ public class QkanCommon {
                 + QkanConstants.SPECIAL_CLINIC_TYPE_SERVICE + ")");
         sb.append(" AND(M_SPECIAL_CLINIC_CONNECTION.SYSTEM_BIND_PATH = "
                 + systemBindPath + ")");
-        sb
-                .append(" AND(M_SPECIAL_CLINIC.SPECIAL_CLINIC_TYPE = M_SPECIAL_CLINIC_CONNECTION.SPECIAL_CLINIC_TYPE)");
+        sb.append(" AND(M_SPECIAL_CLINIC.SPECIAL_CLINIC_TYPE = M_SPECIAL_CLINIC_CONNECTION.SPECIAL_CLINIC_TYPE)");
         sb.append(" AND(M_SPECIAL_CLINIC.SPECIAL_CLINIC_VALID_START <= '" + ym
                 + "')");
         sb.append(" AND(M_SPECIAL_CLINIC.SPECIAL_CLINIC_VALID_END >= '" + ym
@@ -3898,6 +3801,7 @@ public class QkanCommon {
 
     /**
      * 「利用者の当月の認定履歴のうち、申請中の履歴がないかチェックします。」に関する処理を行います。
+     * 
      * @param ACDBManager dbm
      * @param Date targetDate 対象年月
      * @param int patientId 利用者ID
@@ -3905,30 +3809,30 @@ public class QkanCommon {
      * @throws Exception 処理例外
      */
     public static boolean isFullDecisionPatientInsureInfo(ACDBManager dbm,
-			Date targetDate, int patientId) throws Exception {
+            Date targetDate, int patientId) throws Exception {
 
-		// 当月の要介護認定履歴を取得する。
-		VRList list = QkanCommon.getPatientInsureInfoHistory(dbm, targetDate,
-				patientId);
+        // 当月の要介護認定履歴を取得する。
+        VRList list = QkanCommon.getPatientInsureInfoHistory(dbm, targetDate,
+                patientId);
 
-		if (list == null || list.size() < 1) {
-			return false;
-		}
+        if (list == null || list.size() < 1) {
+            return false;
+        }
 
-		for (int i = 0; i < list.size(); i++) {
-			VRMap record = (VRMap) list.get(i);
-			int changeFlag = ACCastUtilities
-					.toInt(record.get("CHANGE_CODE"), 1);
-			// 申請中の履歴があった場合はfalseを返す。
-			if (changeFlag == 1) {
-				return false;
-			}
-		}
+        for (int i = 0; i < list.size(); i++) {
+            VRMap record = (VRMap) list.get(i);
+            int changeFlag = ACCastUtilities
+                    .toInt(record.get("CHANGE_CODE"), 1);
+            // 申請中の履歴があった場合はfalseを返す。
+            if (changeFlag == 1) {
+                return false;
+            }
+        }
 
-		// 申請中の履歴が存在しない場合はtrueを返す。
-		return true;
+        // 申請中の履歴が存在しない場合はtrueを返す。
+        return true;
 
-	}
+    }
 
     /**
      * 消費税率取得関数です。
@@ -3944,8 +3848,10 @@ public class QkanCommon {
         try {
             VRList list = dbm.executeQuery("SELECT TAX FROM TAX");
             if (!list.isEmpty()) {
-                return ACCastUtilities.toDouble(VRBindPathParser.get("TAX",
-                        (VRMap) list.getData()), -1);
+                return ACCastUtilities
+                        .toDouble(
+                                VRBindPathParser.get("TAX",
+                                        (VRMap) list.getData()), -1);
             }
         } catch (SQLException ex) {
         }
@@ -3960,156 +3866,213 @@ public class QkanCommon {
      * @throws Exception 処理例外
      */
     public static void setTax(ACDBManager dbm, double val) throws Exception {
-        dbm.executeUpdate("UPDATE TAX SET TAX="+val+", LAST_TIME=CURRENT_TIMESTAMP");
+        dbm.executeUpdate("UPDATE TAX SET TAX=" + val
+                + ", LAST_TIME=CURRENT_TIMESTAMP");
     }
 
-    /**
-     * 医療保険情報取得関数です。
-     * <p>
-     * 指定の期間に有効な医療保険情報を取得する。 <br />
-     * <code>例：訪問看護療養費領収書作成時に請求期間のチェックに使用する。</code>
-     * </p>
-     * <p>
-     * 返り値 <br />
-     * <code>List{ <br />
-     * Map(医療保険情報) <br />
-     * key:フィールド名 <br />
-     * val:値 <br />
-     * }</code><br />
-     * </p>
-     * 
-     * @param dbm DBManager
-     * @param patientID 利用者ID
-     * @param start 期間開始年月日
-     * @param end 期間終了年月日
-     * @return 医療保険情報
-     * @throws Exception 処理例外
-     */
-    public static VRList getMedicalInsureInfo(ACDBManager dbm,
-            int patientID, Date start, Date end) throws Exception {
-        StringBuffer sb;
-
-        ACSQLSafeDateFormat fmt = new ACSQLSafeDateFormat();
-        String startText = fmt.format(start, "yyyy-MM-dd");
-        String endText = fmt.format(end, "yyyy-MM-dd");
-        
-        sb = new StringBuffer();
-        sb.append("SELECT");
-        sb.append(" PATIENT_MEDICAL_HISTORY.PATIENT_ID");
-        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_HISTORY_ID");
-        sb.append(",PATIENT_MEDICAL_HISTORY.INSURE_TYPE");
-        sb.append(",PATIENT_MEDICAL_HISTORY.OLD_FLAG");
-        sb.append(",PATIENT_MEDICAL_HISTORY.SELF_FLAG");
-        sb.append(",PATIENT_MEDICAL_HISTORY.OLD_RATE_FLAG");
-        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_LAW_NO");
-        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_INSURER_ID");
-        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_INSURE_ID");
-        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
-        sb.append(",PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
-        sb.append(",PATIENT_MEDICAL_HISTORY.BENEFIT_RATE");
-        sb.append(",PATIENT_MEDICAL_HISTORY.CITY_LAW_NO");
-        sb.append(",PATIENT_MEDICAL_HISTORY.CITY_INSURER_ID");
-        sb.append(",PATIENT_MEDICAL_HISTORY.OLD_RECIPIENT_ID");
-        sb.append(",PATIENT_MEDICAL_HISTORY.LAST_TIME");
-        sb.append(" FROM");
-        sb.append(" PATIENT_MEDICAL_HISTORY");
-        sb.append(" WHERE");
-        sb.append("(");
-        sb.append(" PATIENT_MEDICAL_HISTORY.PATIENT_ID");
-        sb.append(" =");
-        sb.append(patientID);
-        sb.append(")");
-        sb.append("AND");
-        sb.append("(");
-        sb.append("(");
-        
-        sb.append("(");
-        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
-        sb.append(" <=");
-        sb.append(startText);
-        sb.append(")");
-        sb.append("AND");
-        sb.append("(");
-        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
-        sb.append(" >=");
-        sb.append(endText);
-        sb.append(")");
-
-        sb.append(")");
-        sb.append("OR");
-        sb.append("(");
-
-        sb.append("(");
-        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_END");
-        sb.append(" >=");
-        sb.append(startText);
-        sb.append(")");
-        sb.append("AND");
-        sb.append("(");
-        sb.append(" PATIENT_MEDICAL_HISTORY.MEDICAL_VALID_START");
-        sb.append(" <=");
-        sb.append(endText);
-
-        sb.append(")");
-        sb.append(")");
-        sb.append(")");
-        
-        if (dbm == null) {
-            return new VRArrayList();
-        }
-        return dbm.executeQuery(sb.toString());
-    }
 
     /**
      * 外部連携用にプロパティファイルフォルダを設定して初期化します。
+     * 
      * @param propertyXMLDir プロパティファイルフォルダ
      */
-    public static void initializeForBackgroundCall(String propertyXMLDir){
+    public static void initializeForBackgroundCall(String propertyXMLDir) {
         QkanFrameEventProcesser fp = new QkanFrameEventProcesser();
-        fp.setPropertyXMLPath(propertyXMLDir+ "properity.xml");
+        fp.setPropertyXMLPath(propertyXMLDir + "property.xml");
         ACFrame.getInstance().setFrameEventProcesser(fp);
         QkanCommon.debugInitialize();
     }
 
     /**
      * 外部連携用のDBマネージャを返します。
+     * 
      * @return DBマネージャ
      * @throws Exception 処理例外
      */
-    public static ACDBManager createDBManagerForBackgroundCall() throws Exception{
+    public static ACDBManager createDBManagerForBackgroundCall()
+            throws Exception {
         return ((ACDBManagerCreatable) ACFrame.getInstance()
                 .getFrameEventProcesser()).createDBManager();
     }
+
     /**
      * 外部連携用のシステムイベント処理クラスを返します。
+     * 
      * @return システムイベント処理クラス
      */
-    public static ACFrameEventProcesser getFrameEventProcesserForBackgroundCall(){
+    public static ACFrameEventProcesser getFrameEventProcesserForBackgroundCall() {
         return ACFrame.getInstance().getFrameEventProcesser();
     }
-    
-    //医療系非表示対応 fujihara.shin 2009.1.13 add start
+
     /**
-     * 医療系のメニューを表示するか、プロパティファイルを参照し、判断します。
-     * @return true:表示　false:非表示
+     * 法改正区分判定用の文字列を返却します。
+     * 
+     * @param systemServiceKindDetail
+     * @param targetDate
+     * @param dbm
+     * @author Masahiko.Higuchi
+     * @since V6.0.0
+     * @return
      */
-    public static boolean isShowOldIryo() throws Exception{
-    	boolean result = false;
-    	final String SHOW_OLD_IRYO = "ScreenConfig/ShowOldIryo";
-    	//プロパティファイルに設定が含まれているか確認
-    	if (ACFrame.getInstance().hasProperty(SHOW_OLD_IRYO)){
-    		if (ACCastUtilities.toInt(ACFrame.getInstance().getProperty(SHOW_OLD_IRYO), 0) == 1){
-    			//チェックがついていない場合は、true(表示)とする。
-    			result = true;
-    		}
-    	//プロパティファイルに設定が含まれていない場合は、初期値(0)を与える。
-    	} else {
-            jp.nichicom.ac.io.ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
-            xml.setForceValueAt(SHOW_OLD_IRYO, "0");
-            xml.write();
-    	}
-    	return result;
+    public static String getServiceLowVersion(String systemServiceKindDetail,
+            Date targetDate, ACDBManager dbm) throws Exception {
+        String lowVersion = QkanCommon.getAffairLowVersion("", targetDate);
+
+        switch (ACCastUtilities.toInt(systemServiceKindDetail)) {
+        case 11111:// 訪問介護
+            return lowVersion;
+        case 11211:// 訪問入浴介護
+            return lowVersion;
+        case 11311:// 訪問看護(介護保険)
+            return lowVersion;
+        case 11411:// 訪問リハビリテーション
+            return lowVersion;
+        case 11511:// 通所介護
+            return lowVersion;
+        case 11611:// 通所リハビリテーション
+            return lowVersion;
+        case 11711:// 福祉用具貸与
+            return lowVersion;
+        case 12111:// 短期入所生活介護
+            return lowVersion;
+        case 12211:// 短期入所療養介護(老健)
+            return lowVersion;
+        case 12311:// 短期入所療養介護(療養病床を有する病院)
+            return lowVersion;
+        case 12312:// 短期入所療養介護(療養病床を有する診療所)
+            return lowVersion;
+        case 12313:// 短期入所療養介護(老人性認知症疾患療養病棟を有する病院)
+            return lowVersion;
+        case 12314:// 短期入所療養介護(基準適合診療所)
+            return lowVersion;
+        case 13111:// 居宅療養管理指導
+            return lowVersion;
+        case 13211:// 認知症対応型共同生活介護(短期利用以外)
+            return lowVersion;
+        case 13311:// 特定施設入居者生活介護
+            return lowVersion;
+        case 13611:// 地域密着型特定施設入居者生活介護
+            return lowVersion;
+        case 13811:// 認知症対応型共同生活介護(短期利用)
+            return lowVersion;
+        case 14311:// 居宅介護支援
+            return lowVersion;
+        case 15111:// 介護老人福祉施設
+            return lowVersion;
+        case 15211:// 介護老人保健施設
+            return lowVersion;
+        case 15311:// 介護療養型医療施設(療養病床を有する病院)
+            return lowVersion;
+        case 15312:// 介護療養型医療施設(療養病床を有する診療所)
+            return lowVersion;
+        case 15313:// 介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
+            return lowVersion;
+        case 15411:// 地域密着型介護福祉施設
+            return lowVersion;
+        case 17111:// 夜間対応型訪問介護
+            return lowVersion;
+        case 17211:// 認知症対応型通所介護
+            return lowVersion;
+        case 17311:// 小規模多機能型居宅介護
+            return lowVersion;
+        case 90101:// その他
+            return lowVersion;
+        case 90201:// 主な日常生活上の活動
+            return lowVersion;
+        case 16111: // 介護予防訪問介護
+            return lowVersion;
+        case 16211: // 介護予防訪問入浴介護
+            return lowVersion;
+        case 16311: // 介護予防訪問看護
+            return lowVersion;
+        case 16411: // 介護予防訪問リハ
+            return lowVersion;
+        case 16511: // 介護予防通所介護
+            return lowVersion;
+        case 16611: // 介護予防通所リハ
+            return lowVersion;
+        case 16711: // 介護予防福祉用具貸与
+            return lowVersion;
+        case 12411: // 介護予防短期入所生活介護
+            return lowVersion;
+        case 12511: // 介護予防短期入所療養介護（老健）
+            return lowVersion;
+        case 12611: // 介護予防短期入所療養介護（病院）
+            return lowVersion;
+        case 12612: // 介護予防短期入所療養介護（診療所）
+            return lowVersion;
+        case 12613: // 介護予防短期入所療養介護（認知症疾患型）
+            return lowVersion;
+        case 12614: // 介護予防短期入所療養介護（基準適合型診療所）
+            return lowVersion;
+        case 13411: // 介護予防居宅療養管理指導
+            return lowVersion;
+        case 13511: // 介護予防特定施設入居者生活介護
+            return lowVersion;
+        case 14611: // 介護予防支援
+            return lowVersion;
+        case 17411: // 介護予防認知症対応型通所介護
+            return lowVersion;
+        case 17511: // 介護予防小規模多機能型居宅介護
+            return lowVersion;
+        case 13711: // 介護予防認知症対応型共同生活介護（短期利用以外）
+            return lowVersion;
+        case 13911: // 介護予防認知症対応型共同生活介護（短期利用）
+            return lowVersion;
+        }
+
+        return lowVersion;
     }
-    //医療系非表示対応 fujihara.shin 2009.1.13 add end
+
+    /**
+     * 業務やパネルなどの法改正区分を判定し取得します。
+     * 
+     * @param className
+     * @param targetDate
+     * @return
+     * @throws Exception
+     */
+    public static String getAffairLowVersion(String className, Date targetDate)
+            throws Exception {
+        // パネルで使用する文字列を返却する
+        // パネルに応じて返却する文字列を変更できるように分岐させる
+        int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2404;
+        String lowVersionString = ACCastUtilities.toString(lowVersion, "");
+        lowVersionString = lowVersionString.substring(0, 6);
+
+        if ("QS001S01".equals(className)) {
+            return lowVersionString;
+        } else if ("QS001S02".equals(className)) {
+            return lowVersionString;
+        }
+
+        return lowVersionString;
+    }
     
+    /**
+     * 妥当なデータベーススキーマのバージョンであるか判定します。
+     * @param version M_QKAN_VERSION.SCHEME_VERSION
+     * @return システムの運用に問題ないスキーマバージョンである場合true
+     * @throws Exception
+     */
+    public static boolean isValidSchemaVersion(String version) throws Exception {
+        
+        if (ACTextUtilities.isNullText(version)){
+            return false;
+        }
+        
+        String[] ary = version.split("\\.");
+        
+        if (ary.length < 3) {
+            return false;
+        }
+        
+        //メジャーバージョンが6未満は不正なスキーマ
+        if (ACCastUtilities.toInt(ary[0], 0) < 6) {
+            return false;
+        }
+        
+        return true;
+    }
+
 }

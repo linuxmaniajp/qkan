@@ -39,7 +39,6 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001;
-import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRHashMap;
@@ -50,10 +49,7 @@ import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.qp.qp003.QP003;
 import jp.or.med.orca.qkan.affair.qp.qp004.QP004;
-import jp.or.med.orca.qkan.affair.qp.qp004.QP004Design;
 import jp.or.med.orca.qkan.affair.qp.qp005.QP005;
-import jp.or.med.orca.qkan.affair.qp.qp006.QP006;
-import jp.or.med.orca.qkan.affair.qp.qp006.QP006Design;
 import jp.or.med.orca.qkan.text.QkanClaimStyleFormat;
 import jp.or.med.orca.qkan.text.QkanInsureTypeDivision;
 
@@ -147,7 +143,7 @@ public class QP002 extends QP002Event {
         String[] ada = { "TARGET_DATE", "PROVIDER_ID", "PROVIDER_NAME",
                 "INSURED_ID", "CLAIM_STYLE_TYPE","INSURER_ID","UNIT_INSURED_ID" };
 
-        getProviderTableColumn6().setFormat(new QkanClaimStyleFormat());
+        getProviderTableColumn6().setFormat(QkanClaimStyleFormat.getInstance());
         getProviderTableColumn5().setFormat(new QkanInsureTypeDivision());
         
         providerTableModel.setColumns(ada);
@@ -361,36 +357,6 @@ public class QP002 extends QP002Event {
                 	affair = new ACAffairInfo(QP004.class.getName(), param);
                 }
                 	
-                ACFrame.getInstance().next(affair);
-
-            } else {
-                // 事業所一覧テーブルで選択されているレコードが医療請求のレコードの場合（(CLAIM_STYLE_TYPE = 20101)
-                // OR
-                // (CLAIM_STYLE_TYPE = 20102)）
-                VRMap param = new VRHashMap();
-                // 下記を渡りパラメータとして、医療請求詳細編集画面（QP006）に遷移する。
-                // ・KEY：PATIENT_ID VALUE：this.patientId
-                // ・KEY：CLAIM_DATE VALUE：this.claimDate
-                // ・KEY：TARGET_DATE VALUE：選択されているレコードの対象年月
-                // ・KEY：LIST_INDEX VALUE：選択されているレコードのインデックス
-                // ・KEY：PROVIDER_ID VALUE：選択されているレコードの事業所ID
-                // ・KEY：CLAIM_STYLE_TYPE VALUE：選択されているレコードの請求帳票様式
-                param.setData("PATIENT_ID", new Integer(getPatientId()));
-                param.setData("CLAIM_DATE", getClaimDate());
-                param.setData("TARGET_DATE", map.getData("TARGET_DATE"));
-                param.setData("LIST_INDEX", new Integer(getProviderTable()
-                        .getSelectedModelRow()));
-                param.setData("PROVIDER_ID", map.getData("PROVIDER_ID"));
-                param.setData("CLAIM_STYLE_TYPE", map
-                        .getData("CLAIM_STYLE_TYPE"));
-                // TODO 予防時対応
-                // 渡しパラメータ追加
-                param.setData("INSURER_ID",map.getData("INSURER_ID"));
-
-                // ACAffairInfo affair = new ACAffairInfo(QP006.class.getName(),
-                // param);
-                ACAffairInfo affair = new ACAffairInfo(QP006.class.getName(),
-                        param);
                 ACFrame.getInstance().next(affair);
 
             }

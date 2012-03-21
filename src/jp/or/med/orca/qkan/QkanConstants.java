@@ -2,10 +2,10 @@
 package jp.or.med.orca.qkan;
 
 import java.awt.Color;
-import java.util.Calendar;
 import java.util.Date;
 
-import jp.nichicom.ac.lang.ACCastUtilities;
+import javax.swing.plaf.ColorUIResource;
+
 import jp.nichicom.ac.text.ACHashMapFormat;
 import jp.nichicom.ac.text.ACNowAgeFormat;
 import jp.nichicom.ac.text.ACOneDecimalDoubleFormat;
@@ -22,8 +22,10 @@ import jp.nichicom.ac.util.ACDateUtilities;
  */
 public interface QkanConstants {
 
-    // public static final Color FRAME_BACKGROUND = new java.awt.Color(0, 51,
-    // 153);
+    /**
+     * 給管鳥システムのバージョン情報を管理します。
+     */
+    public static final String QKAN_SYSTEM_VERSION = "6.0.0";
 
     // アイコン
     /**
@@ -40,40 +42,43 @@ public interface QkanConstants {
     public static final String ICON_PATH_IKENSHO_24 = "jp/or/med/orca/qkan/images/icon/pix24/btn_103.png";
 
     // 色設定
-    public static final Color COLOR_TITLE_FOREGROUND = java.awt.Color.white;
-    public static final Color COLOR_TOOL_BUTTON_FOREGROUND = java.awt.Color.white;
-    public static final Color COLOR_TOOL_BUTTON_BACKGROUND = new java.awt.Color(
-            0, 51, 153);
-
-    public static final Color COLOR_BUTTON_YELLOW_FOREGROUND = new java.awt.Color(
-            255, 204, 102);
-    public static final Color COLOR_BUTTON_ORANGE_FOREGROUND = new java.awt.Color(
-            255, 153, 102);
-    public static final Color COLOR_BUTTON_GREEN_FOREGROUND = new java.awt.Color(
-            153, 204, 0);
-
-    public static final Color COLOR_BORDER_TEXT_FOREGROUND = new java.awt.Color(
-            49, 83, 152);
-    public static final Color COLOR_MESSAGE_TEXT_FOREGROUND = new java.awt.Color(
-            49, 83, 255);
-    public static final Color COLOR_MESSAGE_ALART_TEXT_FOREGROUND = new java.awt.Color(
-            255, 0, 0);
-    public static final Color COLOR_MESSAGE_WARNING_TEXT_FOREGROUND = new java.awt.Color(
-            160, 0, 0);
-
-    // public static final Color COLOR_RANGE_PANEL_BACKGROUND = new
-    // java.awt.Color(255, 255, 211);
-
-    // public static final Color COLOR_BACK_PANEL_BACKGROUND = new
-    // java.awt.Color(204, 204, 255);
-    // public static final Color COLOR_BACK_PANEL_FOREGROUND = Color.black;
-
-    // public static final Color COLOR_DOUBLE_BACK_PANEL_BACKGROUND = new
-    // Color(0xC5EDC5);
-
-    public static final Color COLOR_PANEL_TITLE_FOREGROUND = java.awt.Color.white;
-    public static final Color COLOR_PANEL_TITLE_BACKGROUND = new java.awt.Color(
-            0, 51, 153);
+    /*
+    //紫
+    public static final Color COLOR_QKAN_THEMA = new Color(71, 30, 71);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(111, 69, 78);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(161, 99, 148);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(191, 139, 173);
+    
+    // 紫系背景
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_1 = new ColorUIResource(150, 120, 120);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_2 = new ColorUIResource(220, 200, 200);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_3 = new ColorUIResource(250, 230, 230);
+    
+    // 紫系コンテナ背景色
+    public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(255, 183, 173);
+    */
+    
+    //紫
+    public static final Color COLOR_QKAN_THEMA = new Color(51,102,51);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(91 ,141 ,58);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(141 ,171 ,128);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(171 ,211 ,153);
+    
+    // 紫系背景
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_1 = new ColorUIResource(150, 120, 120);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_2 = new ColorUIResource(220, 200, 200);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_3 = new ColorUIResource(250, 230, 230);
+    
+    // 紫系コンテナ背景色
+    public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(130, 201, 82);
+    
+    
+    /*
+    public static final Color COLOR_QKAN_THEMA = new Color(0, 51, 153);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(40, 90, 160);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(90, 120, 230);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(120, 160, 255);
+    */
 
     // フォーマッタ
     /**
@@ -106,7 +111,6 @@ public interface QkanConstants {
     public static final int PROCESS_MODE_SELECT = 2; // 検索
     public static final int PROCESS_MODE_UPDATE = 3; // 更新
     public static final int PROCESS_MODE_INSERT = 4; // 登録
-
 
     // サービス詳細取得
     /**
@@ -247,7 +251,6 @@ public interface QkanConstants {
      */
     public static final Integer SERVICE_WEEK_DAY_FIRST_DAY = new Integer(37);
 
-    
     /**
      * 101-週単位以外のサービスにおける期間を表すサービス詳細定数です。
      */
@@ -259,47 +262,49 @@ public interface QkanConstants {
      */
     public static final String SERVICE_SYSTEM_BIND_PATH_LOW_VERSION = "14";
     // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
-    
 
     /**
      * 10-サービスパターンの内部番号を表す数値です。
      */
-    public static final Integer INTERNAL_SERVICE_PATTERN_NO_BIND_PATH = new Integer(10);
-//    /**
-//     * 90101-「その他」を表すサービス種類定数です。
-//     */
-//    public static final Integer SERVICE_KIND_DETAIL_OTHER = new Integer(90101);
-//    /**
-//     * 90201-「主な日常生活上の活動」を表すサービス種類定数です。
-//     */
-//    public static final Integer SERVICE_KIND_DETAIL_DAILY_LIFE = new Integer(90201);
-    
+    public static final Integer INTERNAL_SERVICE_PATTERN_NO_BIND_PATH = new Integer(
+            10);
+    // /**
+    // * 90101-「その他」を表すサービス種類定数です。
+    // */
+    // public static final Integer SERVICE_KIND_DETAIL_OTHER = new
+    // Integer(90101);
+    // /**
+    // * 90201-「主な日常生活上の活動」を表すサービス種類定数です。
+    // */
+    // public static final Integer SERVICE_KIND_DETAIL_DAILY_LIFE = new
+    // Integer(90201);
+
     /**
      * 1-「システム管理サービス」を表すサービス種類定数です。
      */
     public static final Integer SERVICE_KIND_DETAIL_SYSTEM_SERVICE = new Integer(
             1);
-    
+
     /**
      * 特定施設入所関連のサービスコードをあらわすサービスコード種類定数です。
      */
     public static final String SERVICE_KIND_LIFE_CARE_AT_SPECIAL_FACILITIY = "59";
-    
+
     /**
      * 特定入居者であるかをあらわすサービス詳細種類です。
      */
     public static final String SERVICE_SYSTEM_KIND_DETAIL_SPECIAL_FACILITIY = "7";
-    
+
     /**
      * 旧措置入所者であるかをあらわすサービス詳細種類です。
      */
     public static final String SERVICE_SYSTEM_KIND_DETAIL_OLD_FACILITIY_USER = "8";
-    
+
     /**
      * 計画単位数をあらわすサービス詳細種類です。
      */
     public static final String SERVICE_SYSTEM_KIND_DETAIL_PLAN_UNIT = "1001";
-    
+
     /**
      * サービスの単独加算フラグをあらわすサービス詳細種類です。
      */
@@ -309,8 +314,7 @@ public interface QkanConstants {
      * サービスパターンのソート順をあらわすサービス詳細種類です。
      */
     public static final String SERVICE_SYSTEM_KIND_DETAIL_SORT_ORDER = "10";
-    
-    
+
     // 特定診療費属性
     /**
      * 1-サービスを表す特定診療費属性定数です。
@@ -451,6 +455,10 @@ public interface QkanConstants {
      */
     public static final int CLAIM_STYLE_FORMAT_6_6 = 10616;
     /**
+     * 10617-様式第6-7を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_FORMAT_6_7 = 10617;
+    /**
      * 10711-様式第7を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_FORMAT_7 = 10711;
@@ -576,6 +584,11 @@ public interface QkanConstants {
      * 16-利用者向け請求を表す分類の情報定数です。
      */
     public static final Integer CATEGORY_NO_BILL_FOR_PATIENT = new Integer(16);
+    /**
+     * 17：緊急時施設療養・自施設療養費情報レコードを表す分類の情報定数です。
+     */
+    public static final Integer CATEGORY_NO_RECORD_EMERGENCY_OWN_FACILITY_INSTITUTION = new Integer(
+            17);
 
     // スケジュールカレンダへのドロップ許可フラグ
     /**
@@ -599,36 +612,39 @@ public interface QkanConstants {
      */
     public static final int CALENADR_DROP_DAILY_LIFE = 4;
 
-    // 2008/03/18 [Masahiko_Higuchi] add - begin 平成20年度法改正対応
     /**
      * 平成19年4月1日の定数です。
      */
-    public static final Date H1904 = ACDateUtilities.createDate(2007,4,1);
+    public static final Date H1904 = ACDateUtilities.createDate(2007, 4, 1);
     /**
      * 平成20年4月1日の定数です。
      */
-    public static final Date H2004 = ACDateUtilities.createDate(2008,4,1);
+    public static final Date H2004 = ACDateUtilities.createDate(2008, 4, 1);
     /**
      * 平成20年5月1日の定数です。
      */
-    public static final Date H2005 = ACDateUtilities.createDate(2008,5,1);
-    // 2008/03/18 [Masahiko_Higuchi] add - end 平成20年度法改正対応
-    
-    // [ID:0000444][Masahiko Higuchi] 2009/02 add begin 平成21年4月法改正対応
-    public static final Date H2104 = ACDateUtilities.createDate(2009, 4, 1);
-    // [ID:0000444][Masahiko Higuchi] 2009/02 add end
+    public static final Date H2005 = ACDateUtilities.createDate(2008, 5, 1);
 
-    
-    // [ID:0000444][Tozo TANAKA] 2009/03/07 add begin 平成21年4月法改正対応
+    public static final Date H2104 = ACDateUtilities.createDate(2009, 4, 1);
+
     /**
      * 20090401-サービスの法改正区分における[平成21年4月1日以降]を表す定数です。
      */
     public static final int SERVICE_LOW_VERSION_H2104 = 20090401;
-    // [ID:0000444][Tozo TANAKA] 2009/03/07 add end
 
-    //[ID:0000435][Masahiko Higuchi] 2009/07 add begin 2009年度対応
+    // [ID:0000666][Masahiko.Higuchi] 2012/12/13 add begin 法改正区分による分岐の修正
+    /**
+     * 20120401-サービスの法改正区分における[平成24年4月1日以降]を表す定数です。
+     */
+    public static final int SERVICE_LOW_VERSION_H2404 = 20120401;
+
+    /**
+     * 平成24年5月1日の定数です。
+     */
+    public static final Date H2404 = ACDateUtilities.createDate(2012, 4, 1);
+    // [ID:0000666][Masahiko.Higuchi] 2012/12/13 add End
+
     public static final String[] CLAIM_PATIENT_DETAIL_SERVICE_MARK = { "○",
             "◎", "□", "△", "◇", "▽", "☆" };
-    //[ID:0000435][Masahiko Higuchi] 2009/07 add end
-    
+
 }

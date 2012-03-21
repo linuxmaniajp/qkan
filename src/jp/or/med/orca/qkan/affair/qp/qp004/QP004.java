@@ -51,7 +51,6 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACCharacterConverter;
-import jp.nichicom.ac.text.ACKanaConvert;
 import jp.nichicom.ac.text.ACTextFieldDocument;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -462,7 +461,15 @@ public class QP004 extends QP004Event {
 		if (!(getClaimListBasic() == null || getClaimListBasic().isEmpty())) {
 			VRMap map = (VRMap) getClaimListBasic().getData(0);
 			// 短期入所系の場合
-			if (getClaimStyleType() == CLAIM_STYLE_TYPE31 || getClaimStyleType() == CLAIM_STYLE_TYPE32 || getClaimStyleType() == CLAIM_STYLE_TYPE41 || getClaimStyleType() == CLAIM_STYLE_TYPE42 || getClaimStyleType() == CLAIM_STYLE_TYPE51 || getClaimStyleType() == CLAIM_STYLE_TYPE52 || getClaimStyleType() == CLAIM_STYLE_TYPE65 || getClaimStyleType() == CLAIM_STYLE_TYPE66) {
+			if (getClaimStyleType() == CLAIM_STYLE_TYPE31
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE32
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE41
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE42
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE51
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE52
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE65
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE66
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE67) {
 
 				if (!(getClaimListTotal() == null || getClaimListTotal().isEmpty())) {
 					VRMap temp = (VRMap) getClaimListTotal().getData(0);
@@ -656,6 +663,7 @@ public class QP004 extends QP004Event {
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE21 || getClaimStyleType() == CLAIM_STYLE_TYPE22) {
 			setState_STATE_TYPE_2();
 			// ・状態ID：STATE_TYPE_2
+			setState_STATE_NYUSYO_HIDE();
 		}
 
 		// 帳票様式第3の場合（claimStyleType = 3）
@@ -663,6 +671,7 @@ public class QP004 extends QP004Event {
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE31 || getClaimStyleType() == CLAIM_STYLE_TYPE32) {
 			setState_STATE_TYPE_3();
 			// ・状態ID：STATE_TYPE_3
+			setState_STATE_NYUSYO_HIDE();
 		}
 
 		// 帳票様式第4の場合（claimStyleType = 4）
@@ -670,6 +679,10 @@ public class QP004 extends QP004Event {
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE41 || getClaimStyleType() == CLAIM_STYLE_TYPE42) {
 			setState_STATE_TYPE_4();
 			// ・状態ID：STATE_TYPE_4
+            getShinryos().setVisible(true);
+            getShinryos().setText("特別療養費");
+            
+            setState_STATE_NYUSYO_HIDE();
 		}
 
 		// 帳票様式第5の場合（claimStyleType = 5）
@@ -677,6 +690,7 @@ public class QP004 extends QP004Event {
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE51 || getClaimStyleType() == CLAIM_STYLE_TYPE52) {
 			setState_STATE_TYPE_5();
 			// ・状態ID：STATE_TYPE_5
+			setState_STATE_NYUSYO_HIDE();
 		}
 
 		// 帳票様式第6の場合（claimStyleType = 6）
@@ -684,13 +698,15 @@ public class QP004 extends QP004Event {
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE61 || getClaimStyleType() == CLAIM_STYLE_TYPE62 || getClaimStyleType() == CLAIM_STYLE_TYPE63 || getClaimStyleType() == CLAIM_STYLE_TYPE64) {
 			setState_STATE_TYPE_6();
 			// ・状態ID：STATE_TYPE_6
+			setState_STATE_NYUSYO_SHOW();
 		}
 
 		// 帳票様式第6の5と6の6の場合（claimStyleType = 65と66）
 		// 画面のVisible制御を行う。
-		if (getClaimStyleType() == CLAIM_STYLE_TYPE65 || getClaimStyleType() == CLAIM_STYLE_TYPE66) {
+		if (getClaimStyleType() == CLAIM_STYLE_TYPE65 || getClaimStyleType() == CLAIM_STYLE_TYPE66 || getClaimStyleType() == CLAIM_STYLE_TYPE67) {
 			setState_STATE_TYPE_65();
 			// ・状態ID：STATE_TYPE_65
+			setState_STATE_NYUSYO_HIDE();
 		}
 
 		// 帳票様式第8の場合（claimStyleType = 8）
@@ -698,6 +714,7 @@ public class QP004 extends QP004Event {
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE8) {
 			setState_STATE_TYPE_8();
 			// ・状態ID：STATE_TYPE_8
+			setState_STATE_NYUSYO_SHOW();
 		}
 
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE9) {
@@ -705,6 +722,10 @@ public class QP004 extends QP004Event {
 			// 画面のVisible制御を行う。
 			setState_STATE_TYPE_9();
 			// ・状態ID：STATE_TYPE_9
+            getShinryos().setVisible(true);
+            getShinryos().setText("特別療養費");
+            
+            setState_STATE_NYUSYO_SHOW();
 		}
 
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE10) {
@@ -712,54 +733,9 @@ public class QP004 extends QP004Event {
 			// 画面のVisible制御を行う。
 			setState_STATE_TYPE_10();
 			// ・状態ID：STATE_TYPE_10
-		}
-		
-		//[H20.5 法改正対応] fujihara add start
-		//H20.5以前であれば、特定療養費タブを消去する。
-		boolean isShinryos = false;
-		
-		switch (getClaimStyleType()){
-			case CLAIM_STYLE_TYPE41:
-			case CLAIM_STYLE_TYPE42:
-			case CLAIM_STYLE_TYPE9:
-				int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
-				isShinryos = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
-				break;
-		}
-		
-		if (isShinryos){
-			getShinryos().setVisible(true);
-			getShinryos().setText("特別療養費");
-		}
-		//[H20.5 法改正対応] fujihara add end
-		
-		//[ID:0000474][Shin Fujihara] 2009/04/02 edit begin 障害対応
-		//[ID:0000451][Shin Fujihara] 2009/02 add begin 平成21年4月法改正対応
-		boolean isNyusyomaeShow = false;
-		int term = jp.nichicom.ac.lib.care.claim.calculation.QP001Util.getTerm(getTargetDate());
-		if (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200904_AFFTER <= term) {
-			//getContentsNyushoJotais().getParent().setVisible(false);
-			switch (getClaimStyleType()){
-			case CLAIM_STYLE_TYPE61:
-			case CLAIM_STYLE_TYPE62:
-			case CLAIM_STYLE_TYPE63:
-			case CLAIM_STYLE_TYPE64:
-			case CLAIM_STYLE_TYPE8:
-			case CLAIM_STYLE_TYPE9:
-			case CLAIM_STYLE_TYPE10:
-				isNyusyomaeShow = true;
-				break;
-			}
-		}
-		if (isNyusyomaeShow){
 			setState_STATE_NYUSYO_SHOW();
-		} else {
-			setState_STATE_NYUSYO_HIDE();
 		}
-		//getShisetsuIdouGroup().remove(getContentsNyushoJotaisContainer());
-		//isShinryos = (jp.nichicom.ac.lib.care.claim.calculation.QP001Util.TERM_200805_AFFTER <= term);
-		//[ID:0000451][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
-		//[ID:0000474][Shin Fujihara] 2009/04/02 edit end 障害対応
+		
 	}
 
 	/**
@@ -918,7 +894,15 @@ public class QP004 extends QP004Event {
 				}
 
 				// 短期入所系の場合
-				if (getClaimStyleType() == CLAIM_STYLE_TYPE31 || getClaimStyleType() == CLAIM_STYLE_TYPE32 || getClaimStyleType() == CLAIM_STYLE_TYPE41 || getClaimStyleType() == CLAIM_STYLE_TYPE42 || getClaimStyleType() == CLAIM_STYLE_TYPE51 || getClaimStyleType() == CLAIM_STYLE_TYPE52 || getClaimStyleType() == CLAIM_STYLE_TYPE65 || getClaimStyleType() == CLAIM_STYLE_TYPE66) {
+				if (getClaimStyleType() == CLAIM_STYLE_TYPE31
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE32
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE41
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE42
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE51
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE52
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE65 
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE66
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE67) {
 
 					Object obj = VRBindPathParser.get("701008", saveMap);
 					VRMap temp = (VRMap) getClaimListTotal().getData(0);
@@ -1580,7 +1564,15 @@ public class QP004 extends QP004Event {
 		}
 
 		// 短期入所系の場合
-		if (getClaimStyleType() == CLAIM_STYLE_TYPE31 || getClaimStyleType() == CLAIM_STYLE_TYPE32 || getClaimStyleType() == CLAIM_STYLE_TYPE41 || getClaimStyleType() == CLAIM_STYLE_TYPE42 || getClaimStyleType() == CLAIM_STYLE_TYPE51 || getClaimStyleType() == CLAIM_STYLE_TYPE52 || getClaimStyleType() == CLAIM_STYLE_TYPE65 || getClaimStyleType() == CLAIM_STYLE_TYPE66) {
+		if (getClaimStyleType() == CLAIM_STYLE_TYPE31
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE32
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE41
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE42
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE51
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE52
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE65
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE66
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE67) {
 
 			Object obj = VRBindPathParser.get("701008", saveMap);
 			VRMap temp = (VRMap) getClaimListTotal().getData(0);

@@ -29,11 +29,7 @@
  */
 package jp.or.med.orca.qkan.affair.qp.qp004;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import javax.swing.event.ListSelectionEvent;
 

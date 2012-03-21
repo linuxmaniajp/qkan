@@ -28,57 +28,15 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qc.qc005;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
+import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
 
 /**
  * ãèëÓó√ó{ä«óùéwì±èë(QC005P02) 
@@ -636,7 +594,7 @@ public class QC005P02 extends QC005P02Event {
   public String getInsertionLineSeparatorToStringOnByte(String chr, int byteIndex){
       String[] slCharacter = ACTextUtilities.separateLineWrapOnByte(chr,byteIndex);
       
-      StringBuffer sbCharacter = new StringBuffer();
+      StringBuilder sbCharacter = new StringBuilder();
 
       for (int i = 0; i < slCharacter.length; i++) {
           sbCharacter.append(slCharacter[i]);

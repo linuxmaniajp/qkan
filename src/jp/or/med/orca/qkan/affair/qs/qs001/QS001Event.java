@@ -17,8 +17,8 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 小笠　貴志
- * 作成日: 2007/12/13  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 開発者: 上司　和善
+ * 作成日: 2011/12/13  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -28,58 +28,24 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
-import jp.nichicom.ac.lib.care.claim.print.schedule.*;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Date;
+
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.component.dnd.event.ACDroppableListener;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * サービス予定イベント定義(QS001) 
@@ -519,6 +485,7 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
   private CareServiceCodeCalcurater calcurater;
   private boolean serviceModify = false;
   private boolean serviceListLockFlag = false;
+  private boolean usableProvider = false;
   private Dimension servicePreferredSize;
   //getter/setter
 
@@ -910,6 +877,21 @@ public abstract class QS001Event extends QS001SQL implements ACDroppableListener
    */
   protected void setServiceListLockFlag(boolean serviceListLockFlag){
     this.serviceListLockFlag = serviceListLockFlag;
+  }
+
+  /**
+   * usableProviderを返します。
+   * @return usableProvider
+   */
+  protected boolean getUsableProvider(){
+    return usableProvider;
+  }
+  /**
+   * usableProviderを設定します。
+   * @param usableProvider usableProvider
+   */
+  protected void setUsableProvider(boolean usableProvider){
+    this.usableProvider = usableProvider;
   }
 
   /**

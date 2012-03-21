@@ -29,13 +29,17 @@
 
 package jp.or.med.orca.qkan.affair.qp.qp007;
 
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 
-import javax.swing.event.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.vr.util.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
+import javax.swing.event.ListSelectionEvent;
+
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanSystemInformation;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 
 /**
  * —˜—pÒŒü¿‹‘ˆóüİ’è(QP007)

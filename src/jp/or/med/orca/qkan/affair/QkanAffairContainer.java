@@ -1,7 +1,5 @@
 package jp.or.med.orca.qkan.affair;
 
-import java.io.FileNotFoundException;
-
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.core.ACAffairContainer;
 import jp.nichicom.ac.core.ACDBManagerCreatable;
@@ -9,16 +7,15 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.sql.ACDBManager;
-import jp.nichicom.ac.sql.ACLoggerDBManager;
 import jp.nichicom.ac.sql.ACPassiveCheck;
-import jp.nichicom.ac.sql.event.ACDefaultDBRetryListener;
 import jp.nichicom.ac.util.ACSnapshot;
 import jp.nichicom.ac.util.splash.ACSplashable;
-import jp.nichicom.bridge.sql.BridgeFirebirdDBManager;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * 給管帳システムの業務用コンテナです。
@@ -33,6 +30,12 @@ public class QkanAffairContainer extends ACAffairContainer {
     private ACPassiveCheck passiveChecker = new ACPassiveCheck();
     private ACSnapshot snapshot = new ACSnapshot();
     private ACDBManager dbm;
+    
+    public QkanAffairContainer() {
+        // FIXME
+        statusBar.setBackground(QkanConstants.COLOR_QKAN_THEMA);
+        this.setBackground(QkanConstants.COLOR_QKAN_THEMA);
+    }
 
     /**
      * 業務で使用するDBManagerを取得します。

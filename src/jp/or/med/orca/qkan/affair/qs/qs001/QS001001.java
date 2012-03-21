@@ -227,8 +227,8 @@ public class QS001001 extends QS001001Event {
             Object obj = getExceptionBeginCombo().getSelectedModelItem();
             if (obj instanceof VRMap) {
                 // 開始日
-                service.setData("WEEK_DAY", VRBindPathParser.get("CONTENT_KEY",
-                        (VRMap) obj));
+                service.setData("WEEK_DAY",
+                        VRBindPathParser.get("CONTENT_KEY", (VRMap) obj));
                 // 日数
                 service.setData(QkanConstants.SERVICE_SYSTEM_BIND_PATH_SPAN,
                         VRBindPathParser.get("CONTENT_KEY",
@@ -301,8 +301,8 @@ public class QS001001 extends QS001001Event {
         it = getFreedayServices().getSchedule().iterator();
         while (it.hasNext()) {
             VRMap service = (VRMap) it.next();
-//            Object kindDetail = VRBindPathParser.get(
-//                    "SYSTEM_SERVICE_KIND_DETAIL", service);
+            // Object kindDetail = VRBindPathParser.get(
+            // "SYSTEM_SERVICE_KIND_DETAIL", service);
             if (CareServiceCommon.isOtherService(service)) {
                 // サービス「その他」は無視
                 continue;
@@ -315,11 +315,12 @@ public class QS001001 extends QS001001Event {
 
             // サービスの開始日をチェック
             Object obj = VRBindPathParser.get("WEEK_DAY", service);
-            if(CareServiceCommon.isWelfareEquipment(service)&&QkanConstants.SERVICE_WEEK_DAY_UNKNOWN.equals(obj)){
-                //福祉用具貸与の指定無しは月初を意味する
+            if (CareServiceCommon.isWelfareEquipment(service)
+                    && QkanConstants.SERVICE_WEEK_DAY_UNKNOWN.equals(obj)) {
+                // 福祉用具貸与の指定無しは月初を意味する
                 obj = QkanConstants.SERVICE_WEEK_DAY_FIRST_DAY;
             }
-            
+
             if (QkanConstants.SERVICE_WEEK_DAY_UNKNOWN.equals(obj)) {
                 // 開始日が「指定なし」ならば開始日の特定できない月間サービスとする
                 VRBindPathParser.set("SERVICE_USE_TYPE", service,
@@ -401,7 +402,7 @@ public class QS001001 extends QS001001Event {
                 paste.add(service);
 
                 final String SENDING_BIND_PATH = "6";
-//                int kindDetailVal = ACCastUtilities.toInt(kindDetail, 0);
+                // int kindDetailVal = ACCastUtilities.toInt(kindDetail, 0);
                 if (CareServiceCommon.isShortStay(service)
                         && VRBindPathParser.has(SENDING_BIND_PATH, service)) {
                     // ※短期入所系の場合
@@ -507,13 +508,14 @@ public class QS001001 extends QS001001Event {
                             expansionBeginDay, shiftDays);
                 }
             }
-            
+
             // 週単位のサービスを展開する場合
             // 週間表のサービスを全走査
             it = getWeeklySchedule().getSchedule().iterator();
             while (it.hasNext()) {
                 VRMap service = (VRMap) it.next();
-                if (CareServiceCommon.isOtherService(service)|| CareServiceCommon.isDailyAction(service)) {
+                if (CareServiceCommon.isOtherService(service)
+                        || CareServiceCommon.isDailyAction(service)) {
                     // サービス「その他」「主な日常生活上の活動」は無視
                     continue;
                 }
@@ -590,8 +592,8 @@ public class QS001001 extends QS001001Event {
                 }
             }
         }
-        
-        //サービスの回数制限チェック
+
+        // サービスの回数制限チェック
         convertServiceData(paste);
 
         // 展開開始日以降の予定を削除
@@ -844,7 +846,7 @@ public class QS001001 extends QS001001Event {
                 setState_WELFARE_EQUIPMENT_UNSELECTED();
             }
         }
-        
+
         // サービスの時間帯を設定する。
         VRMap time = new VRHashMap();
         VRBindPathParser.set("3", time, VRBindPathParser.get("3", service));
@@ -933,7 +935,7 @@ public class QS001001 extends QS001001Event {
 
     /**
      * 「週間表のリストであるか」に関する処理を行ないます。
-     *
+     * 
      * @param list QS001DaySchedule
      * @throws Exception 処理例外
      * @return boolean
@@ -945,7 +947,7 @@ public class QS001001 extends QS001001Event {
 
     /**
      * 「主な日常生活上の活動を表すリストであるか」に関する処理を行ないます。
-     *
+     * 
      * @param list QS001DaySchedule
      * @throws Exception 処理例外
      * @return boolean
@@ -953,81 +955,82 @@ public class QS001001 extends QS001001Event {
     public boolean isDailyServiceList(QS001DaySchedule list) throws Exception {
         return getWeeklySchedule().isDailyServiceList(list);
     }
-    
+
     /**
      * 「サービスの制限回数チェック」に関する処理を行ないます
+     * 
      * @param paste 展開しようとしているサービスのリスト
      * @throws Exception 処理例外
      */
     public void convertServiceData(VRList paste) throws Exception {
-    	final Integer OFF = new Integer(1);
-    	final Integer ON = new Integer(2);
+        final Integer OFF = new Integer(1);
+        final Integer ON = new Integer(2);
         // [ID:0000559][Masahiko Higuchi] 2009/10 replace begin 自動展開時の制限処理
         String[] times2 = null;
         int lowVersion = 0;
         // 空ではない場合
-        if(paste != null && !paste.isEmpty()){
-            for(int j = 0; j < paste.size(); j++){
-                VRMap check = (VRMap)paste.get(j);
+        if (paste != null && !paste.isEmpty()) {
+            for (int j = 0; j < paste.size(); j++) {
+                VRMap check = (VRMap) paste.get(j);
                 // 念のためループしてチェックする
                 lowVersion = CareServiceCommon.getServiceLowVersion(check);
-                if(lowVersion != 0){
+                if (lowVersion != 0) {
                     break;
                 }
             }
         }
-        switch(lowVersion) {
-        case QkanConstants.SERVICE_LOW_VERSION_H2104:
-            // 平成21年4月法改正対応
-            //通所介護、通所リハビリ、認知症対応型通所介護の栄養改善加算、口腔機能向上加算を制限[月に2回]
-            times2 = new String[]{"1150112","1150116","1160114","1160115","1720105","1720108"};
-            break;
-        default:
-            // 今までの動作
-            //通所介護、通所リハビリ、認知症対応型通所介護の栄養マネジメント加算のバインドパス
-            //final String[] times2 = {"1150111","1160114","1720105"};
-            times2 = new String[]{"1150111","1160114","1720105"};
-            break;
-        }
+
+        // 平成21年4月法改正対応
+        // 通所介護、通所リハビリ、認知症対応型通所介護の栄養改善加算、口腔機能向上加算を制限[月に2回]
+        times2 = new String[] { "1150112", "1150116", "1160114", "1160115",
+                "1720105", "1720108" };
+
         // [ID:0000559][Masahiko Higuchi] 2009/10 replace end 自動展開時の制限処理
-    	Collections.sort(paste, new ServiceDateComparator()); // DataComparatorで順序
-    	
-    	VRMap timesCheck = new VRHashMap();
-    	
-    	for(int i = 0; i < paste.size(); i++){
-    		VRMap service = (VRMap)paste.get(i);
-    		
-        	for(int j = 0; j < times2.length; j++){
-            	if(service.containsKey(times2[j])){
-            		if(ACCastUtilities.toInt(service.get(times2[j]),0) == ON.intValue()){
-            			int onTimes = 0;
-                		String key = times2[j] + "-" + ACCastUtilities.toString(service.get("PROVIDER_ID"),"");
-            			if(timesCheck.containsKey(key)){
-            				onTimes = ACCastUtilities.toInt(timesCheck.get(key),0);
-            			}
-            			onTimes++;
-            			if(onTimes > 2){
-            				service.put(times2[j],OFF);
-            			}
-            			timesCheck.put(key,new Integer(onTimes));
-            		}
-            	}
-        	}
-    	}
+        Collections.sort(paste, new ServiceDateComparator()); // DataComparatorで順序
+
+        VRMap timesCheck = new VRHashMap();
+
+        for (int i = 0; i < paste.size(); i++) {
+            VRMap service = (VRMap) paste.get(i);
+
+            for (int j = 0; j < times2.length; j++) {
+                if (service.containsKey(times2[j])) {
+                    if (ACCastUtilities.toInt(service.get(times2[j]), 0) == ON
+                            .intValue()) {
+                        int onTimes = 0;
+                        String key = times2[j]
+                                + "-"
+                                + ACCastUtilities.toString(
+                                        service.get("PROVIDER_ID"), "");
+                        if (timesCheck.containsKey(key)) {
+                            onTimes = ACCastUtilities.toInt(
+                                    timesCheck.get(key), 0);
+                        }
+                        onTimes++;
+                        if (onTimes > 2) {
+                            service.put(times2[j], OFF);
+                        }
+                        timesCheck.put(key, new Integer(onTimes));
+                    }
+                }
+            }
+        }
     }
-    
+
     /**
      * サービス提供日順にサービスを並び替える
      */
     class ServiceDateComparator implements java.util.Comparator {
-		public int compare(Object o1, Object o2) {
-			Date date1 = ACCastUtilities.toDate(((VRMap)o1).get("SERVICE_DATE"),null);
-			Date date2 = ACCastUtilities.toDate(((VRMap)o2).get("SERVICE_DATE"),null);
-			
-			if(date1 == null || date2 == null){
-				return 0;
-			}
-			return ACDateUtilities.getDifferenceOnDay(date1,date2);
-		}
-	}
+        public int compare(Object o1, Object o2) {
+            Date date1 = ACCastUtilities.toDate(
+                    ((VRMap) o1).get("SERVICE_DATE"), null);
+            Date date2 = ACCastUtilities.toDate(
+                    ((VRMap) o2).get("SERVICE_DATE"), null);
+
+            if (date1 == null || date2 == null) {
+                return 0;
+            }
+            return ACDateUtilities.getDifferenceOnDay(date1, date2);
+        }
+    }
 }

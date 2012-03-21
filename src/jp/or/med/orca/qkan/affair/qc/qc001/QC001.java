@@ -37,7 +37,6 @@ import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
@@ -794,9 +793,7 @@ public class QC001 extends QC001Event {
         VRArrayList services = new VRArrayList();
         // servicesに以下の数値型の値を設定する。
         // 11311
-        // 20101
         services.add(new Integer(11311));
-        services.add(new Integer(20101));
 
         // 訪問看護を提供する事業所を取得する。
         VRList stationList = new VRArrayList();
@@ -1038,19 +1035,6 @@ public class QC001 extends QC001Event {
      * @throws Exception 処理例外
      */
     public void setInitValue() throws Exception {
-        // ※担当医師名(主治医氏名)の取得
-        // SQL文取得関数への渡りパラメータ(レコード) sqlParamを生成する。
-        VRMap sqlParam = null;
-        sqlParam = new VRHashMap();
-
-        // sqlParamに下記の値を設定する。
-        // KEY :PATIENT_ID
-        sqlParam.setData("PATIENT_ID", String.valueOf(getPatientID()));
-
-        // 「訪問看護ステーション履歴TABLE(PATIENT_STATION_HISTORY)」の情報取得用のSQL文を取得する。
-        // 取得したSQL文を発行する。
-        VRList patientStationHistory = getDBManager().executeQuery(
-                getSQL_GET_PATIENT_STATION_HISTORY(sqlParam));
 
         // 取得件数が0件より多い場合
         // HashMapを一時的に格納するMap
@@ -1061,30 +1045,9 @@ public class QC001 extends QC001Event {
 
         // 参照設定
         VRMap setMap = getPlanData();
+        
+        homonData.setData("DOCTOR_NAME", "");
 
-        if (patientStationHistory.size() > 0) {
-            // 取得したレコード集合の最初のレコードを退避する。
-            VRMap ps = (VRMap) patientStationHistory.getData(0);
-
-            // planDataに下記の値を設定する。
-            // KEY : DOCTOR_NAME
-            // DOCTOR_NAMEが存在しているかチェックする。
-            if (VRBindPathParser.has("DOCTOR_NAME", ps)) {
-                homonData.setData("DOCTOR_NAME", VRBindPathParser.get(
-                        "DOCTOR_NAME", ps));
-                setMap.putAll(homonData);
-            } else {
-                System.out.println("データがないです");
-            }
-
-        } else {
-            // 取得件数が0件の場合
-            // planDataに下記の値を設定する。
-            // KEY : DOCTOR_NAME
-            homonData.setData("DOCTOR_NAME", "");
-
-            setMap.putAll(homonData);
-        }
         // ※作成年月の設定
         // システムから、「システム日付」を取得する。
         Date systemDate = QkanSystemInformation.getInstance().getSystemDate();
@@ -1503,8 +1466,8 @@ public class QC001 extends QC001Event {
             }
             // ※事業所のサービス情報の取得
             // 事業所のサービス詳細情報を取得する。
-            StringBuffer sb = new StringBuffer();
-            sb.append(" SYSTEM_SERVICE_KIND_DETAIL IN (11311,20101)");
+            StringBuilder sb = new StringBuilder();
+            sb.append(" SYSTEM_SERVICE_KIND_DETAIL IN (11311)");
             sb.append(" AND PROVIDER_ID = ");
             sb.append(String.valueOf("'"+ VRBindPathParser.get("PROVIDER_ID",rec) + "'"));
             

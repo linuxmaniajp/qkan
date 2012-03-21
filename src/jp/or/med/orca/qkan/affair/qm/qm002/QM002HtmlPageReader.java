@@ -1,6 +1,5 @@
 package jp.or.med.orca.qkan.affair.qm.qm002;
 
-import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import jp.nichicom.ac.component.ACEditorPane;
-import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.text.ACTextUtilities;
 

@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.swing.Box.Filler;
-
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.sql.ACDBManager;
@@ -18,43 +16,35 @@ import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.logging.VRLogger;
-import jp.or.med.orca.qkan.QkanSystemInformation;
 
 import org.firebirdsql.pool.FBWrappingDataSource;
 
 /**
- * Project code name "ORCA"
- * 給付管理台帳ソフト QKANCHO（JMA care benefit management software）
- * Copyright(C) 2002 JMA (Japan Medical Association)
- *
+ * Project code name "ORCA" 給付管理台帳ソフト QKANCHO（JMA care benefit management
+ * software） Copyright(C) 2002 JMA (Japan Medical Association)
+ * 
  * This program is part of "QKANCHO (JMA care benefit management software)".
- *
- * This program is distributed in the hope that it will be useful
- * for further advancement in medical care, according to JMA Open
- * Source License, but WITHOUT ANY WARRANTY.
- * Everyone is granted permission to use, copy, modify and
- * redistribute this program, but only under the conditions described
- * in the JMA Open Source License. You should have received a copy of
- * this license along with this program. If not, stop using this
- * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
- * 113-8621, Japan.
- *****************************************************************
- * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2009  日本コンピューター株式会社 樋口 雅彦 新規作成
- * 更新日: ----/--/--
- * システム 給付管理台帳 (Q)
- * サブシステム 請求書出力 (O)
- * プロセス 請求処理 (002)
- * プログラム 保険者情報詳細 (QO002_M_InsurerBridgeFirebirdDBManager)
+ * 
+ * This program is distributed in the hope that it will be useful for further
+ * advancement in medical care, according to JMA Open Source License, but
+ * WITHOUT ANY WARRANTY. Everyone is granted permission to use, copy, modify and
+ * redistribute this program, but only under the conditions described in the JMA
+ * Open Source License. You should have received a copy of this license along
+ * with this program. If not, stop using this program and contact JMA, 2-28-16
+ * Honkomagome, Bunkyo-ku, Tokyo, 113-8621, Japan.
+ ***************************************************************** 
+ * アプリ: QKANCHO 開発者: 樋口　雅彦 作成日: 2009 日本コンピューター株式会社 樋口 雅彦 新規作成 更新日: ----/--/--
+ * システム 給付管理台帳 (Q) サブシステム 請求書出力 (O) プロセス 請求処理 (002) プログラム 保険者情報詳細
+ * (QO002_M_InsurerBridgeFirebirdDBManager)
+ * 
  * @since V5.4.9
- *
- *****************************************************************
+ * 
+ ***************************************************************** 
  */
 public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
 
     private static FBWrappingDataSource fbwds = null;
-    
+
     private static String masterPropertyPath = "masterProperty.xml";
 
     /** オブジェクト内で使用するコネクション */
@@ -79,9 +69,8 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
             dbVersion = (con.getMetaData()).getDatabaseProductVersion();
 
         } catch (SQLException e) {
-            VRLogger
-                    .warning("データベースバージョン取得(getDBMSVersion)失敗:\nDataBaseMetaData取得エラー\n"
-                            + e.toString());
+            VRLogger.warning("データベースバージョン取得(getDBMSVersion)失敗:\nDataBaseMetaData取得エラー\n"
+                    + e.toString());
             throw e;
         } finally {
             if (!blnTran)
@@ -140,9 +129,15 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
      */
     public QO002_M_InsurerBridgeFirebirdDBManager(String server, int port,
             String userName, String pass, String path, int loginTimeOut,
-            int maxPoolSize, String charSet) throws Exception {
+            int maxPoolSize, String charSet, String encoding) throws Exception {
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 del begin 接続仕様の修正
+        // createDBManager(server, port, userName, pass, path, loginTimeOut,
+        // maxPoolSize, charSet);
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 del begin 接続仕様の修正
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 add begin 接続仕様の修正
         createDBManager(server, port, userName, pass, path, loginTimeOut,
-                maxPoolSize, charSet);
+                maxPoolSize, charSet, encoding);
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 add end
     }
 
     /**
@@ -162,28 +157,32 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
             int lengthPoint = -1;
             // 数値
             lengthPoint = path.lastIndexOf("\\");
-            if(lengthPoint == -1) {
+            if (lengthPoint == -1) {
                 lengthPoint = path.lastIndexOf("/");
             }
             String rootDataPath = "";
-            if(path.length() > lengthPoint + 1) {
+            if (path.length() > lengthPoint + 1) {
                 // DB名までを取得
-                rootDataPath = path.substring(0,lengthPoint+1);
+                rootDataPath = path.substring(0, lengthPoint + 1);
             }
             // 接続先を定義する。
             String insurerPath = "";
-            ACPropertyXML masterPropertyXML = new ACPropertyXML(masterPropertyPath);
+            ACPropertyXML masterPropertyXML = new ACPropertyXML(
+                    masterPropertyPath);
             if (new File(masterPropertyPath).exists()) {
                 // propertyファイルより接続先データベース名を定義する。
                 masterPropertyXML.read();
                 String insurerPropPath = "";
                 // 手書きで変更を行った場合は接続先を変更できる仕様
-                if(masterPropertyXML.hasValueAt("Config/InsurerDBPath")) {
-                    insurerPropPath = masterPropertyXML.getValueAt("Config/InsurerDBPath");
+                if (masterPropertyXML.hasValueAt("Config/InsurerDBPath")) {
+                    insurerPropPath = masterPropertyXML
+                            .getValueAt("Config/InsurerDBPath");
                 }
-                String dbName = masterPropertyXML.getValueAt("Config/InsurerDBName");
+                String dbName = masterPropertyXML
+                        .getValueAt("Config/InsurerDBName");
                 // 接続先の定義
-                if(insurerPropPath == null || "".equals(insurerPropPath) || "default".equals(insurerPropPath)){
+                if (insurerPropPath == null || "".equals(insurerPropPath)
+                        || "default".equals(insurerPropPath)) {
                     // 特に指定変更がない場合（通常）
                     insurerPath = rootDataPath + dbName;
                 } else {
@@ -194,8 +193,8 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
                 insurerPath = "";
             }
             // 使用後は初期化
-            masterPropertyXML=null;
-            
+            masterPropertyXML = null;
+
             int loginTimeout = Integer.parseInt(xml
                     .getValueAt("DBConfig/LoginTimeOut"));
             int maxPoolSize = Integer.parseInt(xml
@@ -205,11 +204,24 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
             if (xml.hasValueAt("DBConfig/CharSet")) {
                 charSet = xml.getValueAt("DBConfig/CharSet");
             }
-            
+
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 add begin 接続仕様の修正
+            String encoding = null;
+            if (xml.hasValueAt("DBConfig/Encoding")) {
+                encoding = xml.getValueAt("DBConfig/Encoding");
+            }
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 add end
+
             // DBコネクション
-            createDBManager(server, port, userName, pass, insurerPath, loginTimeout,
-                    maxPoolSize, charSet);
-            
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 del begin 接続仕様の修正
+            // createDBManager(server, port, userName, pass, insurerPath,
+            // loginTimeout, maxPoolSize, charSet);
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 del end
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 add begin 接続仕様の修正
+            createDBManager(server, port, userName, pass, insurerPath,
+                    loginTimeout, maxPoolSize, charSet, encoding);
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 add end
+
         } catch (Exception e) {
             VRLogger.warning(e.toString());
             throw e;
@@ -232,8 +244,15 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
     private void createDBManager(String server, int port, String userName,
             String pass, String path, int loginTimeOut, int maxPoolSize)
             throws Exception {
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 del begin 接続仕様の修正
+        // createDBManager(server, port, userName, pass, path, loginTimeOut,
+        // maxPoolSize, null);
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 del end
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 add begin 接続仕様の修正
         createDBManager(server, port, userName, pass, path, loginTimeOut,
-                maxPoolSize, null);
+                maxPoolSize, "MS932", "SJIS_0208");
+        // [ID:0000681][Masahiko.Higuchi] 2012/01 add end
+
     }
 
     /**
@@ -251,7 +270,7 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
      */
     private void createDBManager(String server, int port, String userName,
             String pass, String path, int loginTimeOut, int maxPoolSize,
-            String charSet) throws Exception {
+            String charSet, String encoding) throws Exception {
         try {
             if (fbwds == null) {
                 fbwds = new FBWrappingDataSource();
@@ -267,9 +286,21 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
             fbwds.setLoginTimeout(loginTimeOut);
             fbwds.setMaxPoolSize(maxPoolSize);
 
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 del begin 接続仕様の修正
+            // if (charSet != null) {
+            // fbwds.setNonStandardProperty("isc_dpb_lc_ctype", charSet);
+            // }
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 del end 接続仕様の修正
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 add begin 接続仕様の修正
             if (charSet != null) {
-                fbwds.setNonStandardProperty("isc_dpb_lc_ctype", charSet);
+                fbwds.setCharSet(charSet);
             }
+
+            // Firebird 2.5からEncodingの指定が必要
+            if (encoding != null) {
+                fbwds.setEncoding(encoding);
+            }
+            // [ID:0000681][Masahiko.Higuchi] 2012/01 add end 接続仕様の修正
 
         } catch (Exception ex) {
             VRLogger.warning(ex.toString());
@@ -453,9 +484,8 @@ public class QO002_M_InsurerBridgeFirebirdDBManager implements ACDBManager {
             // tbl = ACResultSetForwardBindSource.forward(rs);
             valid = true;
         } catch (SQLException e) {
-            VRLogger
-                    .warning("コネクションテスト(isAvailableDBConnection)失敗:\nSQL:SELECT CURRENT_TIMESTAMP FROM RDB$DataBase\n"
-                            + e.toString());
+            VRLogger.warning("コネクションテスト(isAvailableDBConnection)失敗:\nSQL:SELECT CURRENT_TIMESTAMP FROM RDB$DataBase\n"
+                    + e.toString());
             throw e;
         } catch (NullPointerException e) {
         } finally {

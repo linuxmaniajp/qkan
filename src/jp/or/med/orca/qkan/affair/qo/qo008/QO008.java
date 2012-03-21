@@ -29,62 +29,28 @@
 
 package jp.or.med.orca.qkan.affair.qo.qo008;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.text.Format;
+import java.util.Map;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import javax.swing.event.ListSelectionEvent;
 
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.hyphenation.TernaryTree.Iterator;
-
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRLinkedHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 定型文編集(QO008)
@@ -104,8 +70,10 @@ public class QO008 extends QO008Event {
     /**
      * 初期化処理を行ないます。
      * 
-     * @param affair 業務情報
-     * @throws Exception 処理例外
+     * @param affair
+     *            業務情報
+     * @throws Exception
+     *             処理例外
      */
     protected void initAction(ACAffairInfo affair) throws Exception {
         // 画面初期化を行う。
@@ -113,8 +81,8 @@ public class QO008 extends QO008Event {
 
         // データを検索し、画面に展開する。
         doFind();
-        
-        //初期化
+
+        // 初期化
         setDataChangeFlag(0);
 
     }
@@ -141,13 +109,13 @@ public class QO008 extends QO008Event {
 
                 }
                 return true;
-                
-            //いいえ選択時
+
+                // いいえ選択時
             case ACMessageBox.RESULT_NO:
-                //前画面に遷移する
+                // 前画面に遷移する
                 return true;
-                
-            //キャンセル選択時
+
+                // キャンセル選択時
             case ACMessageBox.RESULT_CANCEL:
                 // 処理を中断する（何もしない）。
                 return false;
@@ -164,7 +132,7 @@ public class QO008 extends QO008Event {
         if (!super.canClose()) {
             return false;
         }
-        
+
         // 最後に保存されてから変更されているかどうかチェックする。
         if (getDataChangeFlag() == 1) {
             // 最後に保存されてから変更されている場合（dataChangeFlag == 1）
@@ -181,7 +149,7 @@ public class QO008 extends QO008Event {
             // 処理を中断する（何もしない）。
             // システムを終了する。
         }
-        
+
         return true;
     }
 
@@ -190,8 +158,10 @@ public class QO008 extends QO008Event {
     /**
      * 「更新処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void updateActionPerformed(ActionEvent e) throws Exception {
         int fixedRow = -1;
@@ -239,8 +209,10 @@ public class QO008 extends QO008Event {
     /**
      * 「表示データ切り替え処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormTableSelectionChanged(ListSelectionEvent e)
             throws Exception {
@@ -249,7 +221,7 @@ public class QO008 extends QO008Event {
         // 選択されていない場合
         if (getFixedFormTable().getSelectedModelRow() == -1) {
             // fixedFormTableModelにlistを設定する。
-//            getFixedFormTableModel().setAdaptee(list);
+            // getFixedFormTableModel().setAdaptee(list);
 
             // 画面の状態を設定する。
             // ・状態ID：UNEDITABLE
@@ -261,13 +233,14 @@ public class QO008 extends QO008Event {
             VRMap map = (VRMap) getFixedFormTable().getSelectedModelRowValue();
             setFixedFormId(ACCastUtilities.toInt(map.getData("FIXED_FORM_ID")));
             setTableType(ACCastUtilities.toInt(map.getData("TABLE_TYPE")));
-            
+
             // 現在選択中の分類に紐づく詳細項目群を取得する。
             if (getListGroupMap() != null) {
-                list = (VRList) getListGroupMap().getData(getTableType()+"-"+getFixedFormId());
+                list = (VRList) getListGroupMap().getData(
+                        getTableType() + "-" + getFixedFormId());
             }
             // fixedFormTableModelにlistを設定する。
-            if(list.size() >= 0){
+            if (list.size() >= 0) {
                 getFixedFormTableModel().setAdaptee(list);
             }
             // 画面の状態を設定する。
@@ -289,8 +262,10 @@ public class QO008 extends QO008Event {
     /**
      * 「定型文表示処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditItemTableSelectionChanged(ListSelectionEvent e)
             throws Exception {
@@ -324,8 +299,10 @@ public class QO008 extends QO008Event {
     /**
      * 「定型文追加処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditInsertActionPerformed(ActionEvent e)
             throws Exception {
@@ -344,10 +321,9 @@ public class QO008 extends QO008Event {
         // VRList listを生成する。
         VRList list = new VRArrayList();
         // fixedFormTableModelに設定されているレコード集合をVRList listに格納する。
-        list = (VRList) getListGroupMap().getData(getTableType()+"-"
-                +getFixedFormId());
-        
-        
+        list = (VRList) getListGroupMap().getData(
+                getTableType() + "-" + getFixedFormId());
+
         // 追加可能なデータかどうかチェックする。
         for (int i = 0; i < list.size(); i++) {
             VRMap checkMap = (VRMap) list.getData(i);
@@ -357,9 +333,9 @@ public class QO008 extends QO008Event {
                 return;
             }
         }
-        
+
         int maxSort = 0;
-        
+
         // mapに以下のKEY/VALUEを設定する。
         // KEY：SQL_MODE VALUE：SQL_MODE_INSERT
         // KEY：TABLE_TYPE VALUE：TABLE_TYPE_FIXED_FORM
@@ -386,8 +362,10 @@ public class QO008 extends QO008Event {
     /**
      * 「定型文更新処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditUpdateActionPerformed(ActionEvent e)
             throws Exception {
@@ -411,11 +389,11 @@ public class QO008 extends QO008Event {
             map.setData("SQL_MODE", new Integer(SQL_MODE_INSERT_TO_UPDATE));
             // 新規＋更新モード以外だった場合
         } else if (!new Integer(SQL_MODE_INSERT_TO_UPDATE).equals(map
-                .getData("SQL_MODE"))) {            
+                .getData("SQL_MODE"))) {
             // KEY：SQL_MODE VALUE：SQL_MODE_UPDATE
             map.setData("SQL_MODE", new Integer(SQL_MODE_UPDATE));
         }
-        
+
         map.putAll(applyMap);
         // dataChangeFlagに1を代入する。
         setDataChangeFlag(1);
@@ -428,15 +406,17 @@ public class QO008 extends QO008Event {
     /**
      * 「定型文削除処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditDeleteActionPerformed(ActionEvent e)
             throws Exception {
-        if(getFixedFormEditItemTable().getSelectedModelRow()==-1){
+        if (getFixedFormEditItemTable().getSelectedModelRow() == -1) {
             return;
         }
-        
+
         // 選択行のレコードのSQL_MODEの値によって分岐する。
         VRMap map = (VRMap) getFixedFormEditItemTable()
                 .getSelectedModelRowValue();
@@ -451,9 +431,11 @@ public class QO008 extends QO008Event {
         } else {
             if (!new Integer(SQL_MODE_DELETE).equals(map.getData("SQL_MODE"))) {
                 // 現在処理中の項目リストを取得
-                //// 2008/01/07 [Masahiko_Higuchi] edit - begin version 5.3.8 対応漏れエラー対応
-                VRList list = (VRList) getListGroupMap().getData(getTableType() + "-" + getFixedFormId());
-                //// 2008/01/07 [Masahiko_Higuchi] edit - end
+                // // 2008/01/07 [Masahiko_Higuchi] edit - begin version 5.3.8
+                // 対応漏れエラー対応
+                VRList list = (VRList) getListGroupMap().getData(
+                        getTableType() + "-" + getFixedFormId());
+                // // 2008/01/07 [Masahiko_Higuchi] edit - end
                 // SQL_MODE_INSERTもしくはSQL_MODE_INSERT_TO_UPDATEの場合;
                 if (new Integer(SQL_MODE_INSERT)
                         .equals(map.getData("SQL_MODE"))
@@ -467,14 +449,15 @@ public class QO008 extends QO008Event {
                     getFixedFormEditItemTable()
                             .setSelectedSortedRowOnAfterDelete(selectRow);
 
-                    //SQL_MODEがSQL_MODE_UPDATEだった場合
+                    // SQL_MODEがSQL_MODE_UPDATEだった場合
                 } else if (new Integer(SQL_MODE_UPDATE).equals(map
                         .getData("SQL_MODE"))) {
                     // KEY：SQL_MODE VALUE：SQL_MODE_UPDATE_TO_DELETE
                     map.setData("SQL_MODE", new Integer(
                             SQL_MODE_UPDATE_TO_DELETE));
                     // SQL_MODE_UPDATE_TO_DELETE以外だった場合
-                } else if(!new Integer(SQL_MODE_UPDATE_TO_DELETE).equals(map.getData("SQL_MODE"))){
+                } else if (!new Integer(SQL_MODE_UPDATE_TO_DELETE).equals(map
+                        .getData("SQL_MODE"))) {
                     map.setData("SQL_MODE", new Integer(SQL_MODE_DELETE));
                 }
 
@@ -493,8 +476,10 @@ public class QO008 extends QO008Event {
     /**
      * 「定型文削除取消処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditCancelDeleteActionPerformed(ActionEvent e)
             throws Exception {
@@ -524,8 +509,10 @@ public class QO008 extends QO008Event {
     /**
      * 「順番繰り上げ処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditItemManipulateButtonUpActionPerformed(
             ActionEvent e) throws Exception {
@@ -535,16 +522,16 @@ public class QO008 extends QO008Event {
         }
         // コピーに使用するMap
         VRMap cloneMap = new VRHashMap();
-        
+
         VRMap map = (VRMap) getFixedFormEditItemTable()
                 .getSelectedModelRowValue();
-        //現在選択中の分類に紐づく項目を取得
-        VRList list = (VRList) getListGroupMap().getData(getTableType()+"-"
-                +getFixedFormId());
-        //選択行の１つ上のレコードを取得する。
+        // 現在選択中の分類に紐づく項目を取得
+        VRList list = (VRList) getListGroupMap().getData(
+                getTableType() + "-" + getFixedFormId());
+        // 選択行の１つ上のレコードを取得する。
         VRMap upRowMap = (VRMap) list.getData(getFixedFormEditItemTable()
                 .getSelectedModelRow() - 1);
-        
+
         // 選択行のレコードをコピーする。
         cloneMap = (VRMap) map.clone();
         // 選択行のレコードを選択行の1つ上のレコードで上書きする。
@@ -558,8 +545,8 @@ public class QO008 extends QO008Event {
         // 繰り上げたレコードを選択状態にする
         getFixedFormEditItemTable().setSelectedModelRow(
                 getFixedFormEditItemTable().getSelectedModelRow() - 1);
-        
-        //dataChangeflgに1設定する
+
+        // dataChangeflgに1設定する
         setDataChangeFlag(1);
 
     }
@@ -567,20 +554,22 @@ public class QO008 extends QO008Event {
     /**
      * 「順番繰り下げ処理」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void fixedFormEditItemManipulateButtonDownActionPerformed(
             ActionEvent e) throws Exception {
         // 選択行がテーブルの最終行でない場合
-        VRList list = (VRList) getListGroupMap().getData(getTableType()+"-"
-                +getFixedFormId());
+        VRList list = (VRList) getListGroupMap().getData(
+                getTableType() + "-" + getFixedFormId());
         if (getFixedFormEditItemTable().getSelectedModelRow() >= list.size() - 1) {
             return;
         }
-        
+
         VRMap cloneMap = new VRHashMap();
-        //選択行のレコードを取得する
+        // 選択行のレコードを取得する
         VRMap map = (VRMap) getFixedFormEditItemTable()
                 .getSelectedModelRowValue();
 
@@ -594,15 +583,15 @@ public class QO008 extends QO008Event {
         map.putAll(downRowMap);
         // 選択行の1つ下のレコードを選択行のレコードで上書きする。
         downRowMap.putAll(cloneMap);
-        
+
         getFixedFormEditItemTable().revalidate();
         getFixedFormEditItemTable().repaint();
-        
-        //繰り下げたレコードを選択状態にする。
+
+        // 繰り下げたレコードを選択状態にする。
         getFixedFormEditItemTable().setSelectedModelRow(
                 getFixedFormEditItemTable().getSelectedModelRow() + 1);
-        
-        //dataChangeflgに1設定する
+
+        // dataChangeflgに1設定する
         setDataChangeFlag(1);
     }
 
@@ -621,7 +610,8 @@ public class QO008 extends QO008Event {
     /**
      * 「画面初期化」に関する処理を行ないます。
      * 
-     * @throws Exception 処理例外
+     * @throws Exception
+     *             処理例外
      */
     public void initialize() throws Exception {
         // ※画面初期化処理
@@ -630,8 +620,8 @@ public class QO008 extends QO008Event {
         setAffairTitle(AFFAIR_ID, getButtons());
 
         setPASSIVE_CHECK_KEY(new ACPassiveKey("FIXED_FORM", new String[] {
-                "TABLE_TYPE", "FIXED_FORM_ID", "CONTENT_KEY" }, new Format[] { null, null, null },
-                "LAST_TIME", "LAST_TIME"));
+                "TABLE_TYPE", "FIXED_FORM_ID", "CONTENT_KEY" }, new Format[] {
+                null, null, null }, "LAST_TIME", "LAST_TIME"));
 
         // ※テーブルモデルの設定
         // fixedFormGroupTableModelを生成する。
@@ -662,7 +652,8 @@ public class QO008 extends QO008Event {
     /**
      * 「検索処理」に関する処理を行ないます。
      * 
-     * @throws Exception 処理例外
+     * @throws Exception
+     *             処理例外
      */
     public void doFind() throws Exception {
         // ※検索処理および画面展開
@@ -675,17 +666,9 @@ public class QO008 extends QO008Event {
         // sqlParamを引数として、定型文分類情報取得用SQL文を取得する。
         // 取得したSQL文を実行し、定型文分類情報を取得する。
         VRList list = new VRArrayList();
-        
-        //医療系非表示対応 fujihara.shin 2009.1.15 edit start
-        //list = (VRList) getDBManager().executeQuery(
-        //        getSQL_GET_FIXED_FORM_GROUP(sqlParam));
-        if (QkanCommon.isShowOldIryo()){
-        	list = (VRList) getDBManager().executeQuery(getSQL_GET_FIXED_FORM_GROUP(sqlParam));
-        } else {
-        	list = (VRList) getDBManager().executeQuery(getSQL_GET_FIXED_FORM_GROUP_WITHOUT_IRYO(sqlParam));
-        }
-        //医療系非表示対応 fujihara.shin 2009.1.15 edit end
-        
+        list = (VRList) getDBManager().executeQuery(
+                getSQL_GET_FIXED_FORM_GROUP_WITHOUT_IRYO(sqlParam));
+
         // 取得した定型文分類情報をfixedFormGroupTableModelに設定する。
         // setAdaptee(fixedFormGroupTableModel, 取得したデータ);
         getFixedFormGroupTableModel().setAdaptee(list);
@@ -699,35 +682,36 @@ public class QO008 extends QO008Event {
 
         // 種類ごとにまとめたMapを生成する。
         createGroupMap(getFixedFormList());
-        
-        //定型文が空だった場合のエラートラップ
+
+        // 定型文が空だった場合のエラートラップ
         VRMap map = new VRHashMap();
-        for(int i=1; i<=2; i++){
-            for(int j=1; j<=2; j++){
-                String key = i+"-"+j;
-                if(getListGroupMap().getData(key) == null){
-                    //listGroupMapにマージする。
-                    map.setData(key,new VRArrayList());
+        for (int i = 1; i <= 2; i++) {
+            for (int j = 1; j <= 2; j++) {
+                String key = i + "-" + j;
+                if (getListGroupMap().getData(key) == null) {
+                    // listGroupMapにマージする。
+                    map.setData(key, new VRArrayList());
                 }
             }
         }
         getListGroupMap().putAll(map);
-//        if(getListGroupMap().getData("1") == null|| getListGroupMap().getData("2") == null){
-//            VRList list1 = new VRArrayList();
-//            VRList list2 = new VRArrayList();
-//            VRMap map = new VRHashMap();
-//            //nullの場合は初期値を追加する。
-//            if(getListGroupMap().getData("1") == null){
-//                map.setData("1",list1);
-//            }
-//            //nullの場合は初期値を追加する。
-//            if(getListGroupMap().getData("2") == null){
-//                map.setData("2",list2);
-//            }
-//            //listGroupMapにマージする。
-//            getListGroupMap().putAll(map);
-//       }
-        
+        // if(getListGroupMap().getData("1") == null||
+        // getListGroupMap().getData("2") == null){
+        // VRList list1 = new VRArrayList();
+        // VRList list2 = new VRArrayList();
+        // VRMap map = new VRHashMap();
+        // //nullの場合は初期値を追加する。
+        // if(getListGroupMap().getData("1") == null){
+        // map.setData("1",list1);
+        // }
+        // //nullの場合は初期値を追加する。
+        // if(getListGroupMap().getData("2") == null){
+        // map.setData("2",list2);
+        // }
+        // //listGroupMapにマージする。
+        // getListGroupMap().putAll(map);
+        // }
+
         // fixedFormTableの1行目を選択した状態に設定する。
         getFixedFormTable().setSelectedSortedFirstRow();
 
@@ -738,13 +722,13 @@ public class QO008 extends QO008Event {
         getPassiveChecker().reservedPassive(getPASSIVE_CHECK_KEY(),
                 getFixedFormList());
 
-        
     }
 
     /**
      * 「入力チェック」に関する処理を行ないます。
      * 
-     * @throws Exception 処理例外
+     * @throws Exception
+     *             処理例外
      */
     public boolean isValidInput() throws Exception {
         // ※入力チェック
@@ -771,7 +755,8 @@ public class QO008 extends QO008Event {
     /**
      * 「保存処理」に関する処理を行ないます。
      * 
-     * @throws Exception 処理例外
+     * @throws Exception
+     *             処理例外
      */
     public boolean doSave() throws Exception {
         // ※保存処理
@@ -787,7 +772,7 @@ public class QO008 extends QO008Event {
             getPassiveChecker().addPassiveDeleteTask(getPASSIVE_CHECK_KEY());
             // パッシブチェックを実行する。
             if (!getPassiveChecker().passiveCheck(getDBManager())) {
-                //テーブルロック解除のためロールバック
+                // テーブルロック解除のためロールバック
                 getDBManager().rollbackTransaction();
                 // パッシブエラーがある場合
                 // パッシブエラーメッセージを表示する。※メッセージID = ERROR_OF_PASSIVE_CHECK_ON_UPDATE
@@ -886,14 +871,14 @@ public class QO008 extends QO008Event {
      */
     public void createGroupMap(VRList list) throws Exception {
         VRList adder;
-        //新規にMapを生成する。
+        // 新規にMapを生成する。
         VRMap initializeMap = new VRHashMap();
         setListGroupMap(initializeMap);
         for (int i = 0; i < list.size(); i++) {
             // リストから１つMapを取得
-            VRMap map = (VRMap) list.getData(i);                        
+            VRMap map = (VRMap) list.getData(i);
             map.setData("SQL_MODE", new Integer(SQL_MODE_DEFAULT));
-            
+
             String key = ACCastUtilities.toString(map.getData("TABLE_TYPE"))
                     + "-"
                     + ACCastUtilities.toString(map.getData("FIXED_FORM_ID"));
@@ -907,7 +892,7 @@ public class QO008 extends QO008Event {
             } else {
                 // 新規にリストを生成
                 adder = new VRArrayList();
-                // リストに追加                
+                // リストに追加
                 adder.add(map);
                 // 新規のキー名で格納
                 getListGroupMap().setData(key, adder);

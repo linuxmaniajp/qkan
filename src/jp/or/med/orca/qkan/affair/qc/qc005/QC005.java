@@ -44,7 +44,6 @@ import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
-import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.text.ACSQLSafeDateFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -850,27 +849,6 @@ public class QC005 extends QC005Event {
         //バインド用のMap
         VRMap bindMap = new VRHashMap();
 
-        //利用者の主治医情報を取得する。
-        VRList doctorList = getDBManager().executeQuery(
-                getSQL_GET_PATIENT_STATION_HISTORY(sqlParam)); 
-        //利用者の主治医が登録されていた場合
-        if(doctorList != null && doctorList.size() > 0){
-            VRMap map = (VRMap)doctorList.getData();
-            //展開用に設定する。
-            bindMap.setData("DOCTOR_NAME",map.getData("DOCTOR_NAME"));
-            //ラベル印字用に設定する。
-            if(map.getData("DOCTOR_NAME") != null && !"".equals(map.getData("DOCTOR_NAME"))){
-                bindMap.setData("YOUR_DOCTOR_NAME",map.getData("DOCTOR_NAME"));
-            }
-            //利用者登録医療機関と取得した医療機関とで一致するものを取得する
-            VRMap medicalMap = ACCommon.getInstance().getMatchRowFromMap(
-                    ListMedicalInstitusion, "MEDICAL_FACILITY_ID", map);
-            //Mapをマージする
-            if(medicalMap != null){
-                bindMap.putAll(medicalMap);
-            }
-            
-        }
         //ログイン事業所とコンボ内の選択肢で一致しているレコードを取得する
 		VRMap providerMap = ACCommon.getInstance().getMatchRowFromValue(ListProvider,
                 "PROVIDER_ID",

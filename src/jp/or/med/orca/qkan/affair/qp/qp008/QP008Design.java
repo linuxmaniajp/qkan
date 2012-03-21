@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2006/04/13  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2012/02/29  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定／請求書出力 (P)
@@ -28,57 +28,27 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp008;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.text.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACRadioButtonItem;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.util.adapter.ACListModelAdapter;
+import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.affair.QkanAffairDialog;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 /**
  * フォルダ選択画面項目デザイン(QP008) 
  */
@@ -483,15 +453,15 @@ public class QP008Design extends QkanAffairDialog {
   }
 
   /**
-   * FDを取得します。
-   * @return FD
+   * FD/CD-Rを取得します。
+   * @return FD/CD-R
    */
   public ACRadioButtonItem getMediumDivisionRadioItem1(){
     if(mediumDivisionRadioItem1==null){
 
       mediumDivisionRadioItem1 = new ACRadioButtonItem();
 
-      mediumDivisionRadioItem1.setText("FD");
+      mediumDivisionRadioItem1.setText("FD/CD-R");
 
       mediumDivisionRadioItem1.setGroup(getMediumDivisionRadio());
 
@@ -862,7 +832,7 @@ public class QP008Design extends QkanAffairDialog {
   }
 
   /**
-   * FDに内部項目を追加します。
+   * FD/CD-Rに内部項目を追加します。
    */
   protected void addMediumDivisionRadioItem1(){
 

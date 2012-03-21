@@ -30,27 +30,22 @@
 package jp.or.med.orca.qkan.affair.qm.qm002;
 
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import jp.nichicom.ac.component.ACEditorPane;
 import jp.nichicom.ac.component.mainmenu.ACFilterableMainMenuTree;
 import jp.nichicom.ac.component.mainmenu.ACFilterableMainMenuTreeNode;
 import jp.nichicom.ac.component.mainmenu.ACMainMenuTreeNodePanel;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001;
-import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
@@ -78,8 +73,10 @@ public class QM002 extends QM002Event {
     /**
      * 初期化処理を行ないます。
      * 
-     * @param affair 業務情報
-     * @throws Exception 処理例外
+     * @param affair
+     *            業務情報
+     * @throws Exception
+     *             処理例外
      */
     protected void initAction(ACAffairInfo affair) throws Exception {
         // ※自身の遷移パラメータをチェックし、初期展開時の処理を行う
@@ -90,15 +87,15 @@ public class QM002 extends QM002Event {
         params = affair.getParameters();
 
         getMenuTree().setTransfer(this);
-        //TODO メニューの有効項目を制限する場合、コメントアウトを外す
-        //getMenuList().setFactoryAssistant(this);
-        
-        //  2008/01/07 [Masahiko Higuchi] add - begin バージョンアップお知らせ機能
+        // TODO メニューの有効項目を制限する場合、コメントアウトを外す
+        // getMenuList().setFactoryAssistant(this);
+
+        // 2008/01/07 [Masahiko Higuchi] add - begin バージョンアップお知らせ機能
         QM002HtmlPageReader reader = new QM002HtmlPageReader();
         // 別スレッドで読込み開始
         reader.start(getEditor());
-        //  2008/01/07 [Masahiko Higuchi] add - end
-        
+        // 2008/01/07 [Masahiko Higuchi] add - end
+
         // ※メニューの展開
         // システムの「メニューツリー」を取得する。
         if (QkanSystemInformation.getInstance().getMenuTree() != null) {
@@ -123,16 +120,19 @@ public class QM002 extends QM002Event {
             loginProviderMap.setData("LOGIN_PROVIDER_ID", QkanSystemInformation
                     .getInstance().getLoginProviderID());
 
-            //医療系非表示対応 fujihara.shin 2009.1.15 edit start
-            //VRList menuTreeList = getDBManager().executeQuery(
-            //        getSQL_GET_MENU_TREE(loginProviderMap));
             VRList menuTreeList = null;
-            if (QkanCommon.isShowOldIryo()){
-            	menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE(loginProviderMap));
+            
+            // FIXME H24.03出荷時点では、実績集計を使用不可とする
+            // 設定ファイルを読み込み、画面の初期状態を設定する。
+            if (hasProperty("FullServicePrint") && ACCastUtilities.toBoolean(getProperty("FullServicePrint"), false)) {
+                // 問答無用で全件メニュー表示
+                menuTreeList = getDBManager().executeQuery(getSQL_GET_M_MENU(loginProviderMap));
+                
             } else {
-            	menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE_WITHOUT_IRYO(loginProviderMap));
+                // 実績集計非表示の制限付き
+                menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE(loginProviderMap));
             }
-            //医療系非表示対応 fujihara.shin 2009.1.15 edit end
+            // 医療系非表示対応 fujihara.shin 2009.1.15 edit end
 
             // 取得件数が0件より多い場合
             if (menuTreeList.size() > 0) {
@@ -173,7 +173,7 @@ public class QM002 extends QM002Event {
             }
             // 何もしない。
         }
-        
+
         // ※ウィンドウタイトル・業務ボタンバーの設定
         // 業務情報レコードを取得する。
         // ウィンドウタイトルに、取得レコードのKEY : WINDOW_TITLEのVALUEを設定する。
@@ -193,9 +193,11 @@ public class QM002 extends QM002Event {
 
             case ACFilterableMainMenuTree.TREE_MODE_NODE_ONLY:
                 // ツリーで選択されているノードパスを取得
-                path = new TreePath(((DefaultMutableTreeNode) params
-                        .getData("TREE_HISTORY")).getParent());
-                selectPath = new TreePath((DefaultMutableTreeNode)params.getData("TREE_HISTORY"));
+                path = new TreePath(
+                        ((DefaultMutableTreeNode) params
+                                .getData("TREE_HISTORY")).getParent());
+                selectPath = new TreePath(
+                        (DefaultMutableTreeNode) params.getData("TREE_HISTORY"));
                 break;
 
             case ACFilterableMainMenuTree.TREE_MODE_NODE_AND_ALL_LEAF:
@@ -208,8 +210,9 @@ public class QM002 extends QM002Event {
                 // ((DefaultMutableTreeNode)params.getData("TREE_HISTORY")).getParent();
                 // TreePath paths = new
                 // TreePath(((DefaultMutableTreeNode)params.getData("TREE_HISTORY")));
-                path = new TreePath(((DefaultMutableTreeNode) params
-                        .getData("TREE_HISTORY")).getParent());
+                path = new TreePath(
+                        ((DefaultMutableTreeNode) params
+                                .getData("TREE_HISTORY")).getParent());
 
                 break;
             }
@@ -218,40 +221,40 @@ public class QM002 extends QM002Event {
             getMenuTree().setSelectionPath(path);
             ACFrame.getInstance().removeNowAffairParameter("TREE_HISTORY");
         }
-        
+
         ACAffairInfo nowAffair = ACFrame.getInstance().getNowAffair();
         if (nowAffair != null) {
             // 初回起動だけはスプラッシュを表示させるため、自分自身のスプラッシュを切る
             nowAffair.setSplashed(false);
         }
 
-
-        //Macの場合はツリーの高さを直接指定する
-        final String osName = String.valueOf(System.getProperty("os.name")).toLowerCase();
+        // Macの場合はツリーの高さを直接指定する
+        final String osName = String.valueOf(System.getProperty("os.name"))
+                .toLowerCase();
         if (osName.indexOf("mac") >= 0) {
             getMenuTree().setRowHeight(0);
-            //getMenuTree().setRowHeight(48);
+            // getMenuTree().setRowHeight(48);
         }
 
-        
-        if(!getEditor().isVisible()){
-        	getMenuTree().setPreferredSize(null);
+        if (!getEditor().isVisible()) {
+            getMenuTree().setPreferredSize(null);
         }
-        
-    	getContents().revalidate();
-    	getContents().repaint();
-    	getContents().paintImmediately(getContents().getX(),
-				getContents().getY(), getContents().getWidth(),
-				getContents().getHeight());
-        
+
+        getContents().revalidate();
+        getContents().repaint();
+        getContents().paintImmediately(getContents().getX(),
+                getContents().getY(), getContents().getWidth(),
+                getContents().getHeight());
+
     }
-    
 
     /**
      * 「ログアウト」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void logoutActionPerformed(ActionEvent e) throws Exception {
         // システムの、ログイン事業所メニュー情報をクリアする。
@@ -289,7 +292,6 @@ public class QM002 extends QM002Event {
         // TODO 自動生成されたメソッド・スタブ
         String nextAffair = "";
         String affairDistinctionItem = "";
-        String nextKey = "";
 
         if (((DefaultMutableTreeNode) node).getUserObject() instanceof VRMap) {
 
@@ -323,13 +325,6 @@ public class QM002 extends QM002Event {
 
             }
 
-            // 遷移パラメーターのKEYを取得
-            if (VRBindPathParser.has("PARAMETER_KEY", userObjectMap)) {
-                nextKey = String
-                        .valueOf(userObjectMap.getData("PARAMETER_KEY"));
-
-            }
-
             // 遷移パラメーターを取得
             if (VRBindPathParser.has("PARAMETER_VALUE", userObjectMap)) {
                 affairDistinctionItem = String.valueOf(userObjectMap
@@ -341,7 +336,7 @@ public class QM002 extends QM002Event {
             }
 
             // 次画面に遷移するための情報を格納する。
-            transferParameter.setData(nextKey, affairDistinctionItem);
+            transferParameter.setData("NEXT_AFFAIR", affairDistinctionItem);
 
             ACAffairInfo affair = null;
             affair = new ACAffairInfo(nextAffair, transferParameter);
@@ -352,8 +347,10 @@ public class QM002 extends QM002Event {
     /**
      * 「バージョン情報」イベントです。
      * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
+     * @param e
+     *            イベント情報
+     * @throws Exception
+     *             処理例外
      */
     protected void showVersionActionPerformed(ActionEvent e) throws Exception {
         new QV001().setVisible(true);
@@ -365,7 +362,7 @@ public class QM002 extends QM002Event {
         if (parameter instanceof VRMap) {
             VRMap childMap = (VRMap) parameter;
             // 次画面のクラス名を設定
-            //  請求系の業務である場合はボタンを制御し操作不能にする
+            // 請求系の業務である場合はボタンを制御し操作不能にする
             String next = String.valueOf(VRBindPathParser.get("NEXT_CLASS",
                     childMap));
             if (QP001.class.getName().equals(next)
@@ -375,5 +372,5 @@ public class QM002 extends QM002Event {
             }
         }
     }
-    
+
 }

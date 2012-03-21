@@ -17,29 +17,31 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 堤 瑞樹
- * 作成日: 2006/01/17  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 開発者: 田中　統蔵
+ * 作成日: 2009/03/27  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム サービスパターン訪問看護（介護) (QS001005)
+ * プログラム 集計明細画面 (QS001030)
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qs.qs001;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 
 /**
- * サービスパターン訪問看護（介護)イベント定義(QS001005) 
+ * 集計明細画面イベント定義(QS001030) 
  */
-public abstract class QS001005Event extends QS001005State implements QS001Service {
+@SuppressWarnings("serial")
+public abstract class QS001005Event extends QS001005SQL {
   /**
    * コンストラクタです。
    */
@@ -50,7 +52,7 @@ public abstract class QS001005Event extends QS001005State implements QS001Servic
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
-    getHoumonKangoKaigoFacilityType().addActionListener(new ActionListener(){
+    getClose().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -58,56 +60,8 @@ public abstract class QS001005Event extends QS001005State implements QS001Servic
             }
             lockFlag = true;
             try {
-                houmonKangoKaigoFacilityTypeActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getHoumonKangoKaigoBeginTime().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                houmonKangoKaigoBeginTimeActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getHoumonKangoKaigoTimeZone().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                houmonKangoKaigoTimeZoneActionPerformed(e);
-            }catch(Exception ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
-    getHoumonKangoKaigoTime().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                houmonKangoKaigoTimeActionPerformed(e);
-            }catch(Exception ex){
+                closeActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -119,32 +73,11 @@ public abstract class QS001005Event extends QS001005State implements QS001Servic
   //コンポーネントイベント
 
   /**
-   * 「訪問看護指導書の加算の設定」イベントです。
+   * 「閉じる」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void houmonKangoKaigoFacilityTypeActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「開始時間変更」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void houmonKangoKaigoBeginTimeActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「時間帯変更時」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void houmonKangoKaigoTimeZoneActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「訪問看護時間区分変更」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void houmonKangoKaigoTimeActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void closeActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
@@ -153,52 +86,27 @@ public abstract class QS001005Event extends QS001005State implements QS001Servic
   //内部関数
 
   /**
-   * 「初期化」に関する処理を行ないます。
+   * 「初期設定」に関する処理を行ないます。
    *
+   * @param inLimitAmout CareServiceUnitCalcurateResult
+   * @param insureInfo VRMap
+   * @param procesType int
+   * @param calcurater, VRList services CareServiceCodeCalcurater
    * @throws Exception 処理例外
    *
    */
-  public abstract void initialize() throws Exception;
+  public abstract void showModal(CareServiceUnitCalcurateResult inLimitAmout, VRMap insureInfo, int procesType, CareServiceCodeCalcurater calcurater, VRList services) throws Exception;
 
   /**
-   * 「事業所コンボ変更時関数」に関する処理を行ないます。
+   * 「利用者負担額概算算出」に関する処理を行ないます。
    *
-   * @param provider VRMap
+   * @param calcurater CareServiceCodeCalcurater
+   * @param services VRList
+   * @param inLimitAmout CareServiceUnitCalcurateResult
+   * @param outLimitAmout CareServiceUnitCalcurateResult
    * @throws Exception 処理例外
    *
    */
-  public abstract void providerSelected(VRMap provider) throws Exception;
-
-  /**
-   * 「訪問看護時間の取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return int
-   */
-  public abstract int getKaigoTime() throws Exception;
-
-  /**
-   * 「入力内容の不備を検査」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return VRMap
-   */
-  public abstract VRMap getValidData() throws Exception;
-
-  /**
-   * 「事業所情報の必要性を取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean isUseProvider() throws Exception;
-
-  /**
-   * 「終了時間のチェック」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   *
-   */
-  public abstract void checkEndTime() throws Exception;
+  public abstract void checkInLimitAmount(CareServiceCodeCalcurater calcurater, VRList services, CareServiceUnitCalcurateResult inLimitAmout, CareServiceUnitCalcurateResult outLimitAmout) throws Exception;
 
 }

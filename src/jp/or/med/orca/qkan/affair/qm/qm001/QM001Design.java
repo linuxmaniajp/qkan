@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/05/25  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2012/02/03  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -139,6 +139,8 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel dbVersionError;
 
+  private ACLabel dbSchemaError;
+
   private ACPanel goSettingButtons1;
 
   private ACButton goSetting1;
@@ -214,7 +216,7 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       contents = new ACPanel();
 
-      contents.setBackground(new Color(0,51,153));
+      contents.setBackground(QkanConstants.COLOR_QKAN_THEMA);
 
       addContents();
     }
@@ -231,7 +233,7 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       titles = new ACPanel();
 
-      titles.setBackground(new Color(0,51,153));
+      titles.setBackground(QkanConstants.COLOR_QKAN_THEMA);
 
       addTitles();
     }
@@ -296,7 +298,7 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       clients.setLayout(getClientsLayout());
 
-      clients.setBackground(new Color(0,51,153));
+      clients.setBackground(QkanConstants.COLOR_QKAN_THEMA);
 
       addClients();
     }
@@ -412,7 +414,7 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       mains = new ACPanel();
 
-      mains.setBackground(new Color(0,51,153));
+      mains.setBackground(QkanConstants.COLOR_QKAN_THEMA);
 
       addMains();
     }
@@ -705,6 +707,27 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
       addDbVersionError();
     }
     return dbVersionError;
+
+  }
+
+  /**
+   * スキーマバージョンエラーメッセージを取得します。
+   * @return スキーマバージョンエラーメッセージ
+   */
+  public ACLabel getDbSchemaError(){
+    if(dbSchemaError==null){
+
+      dbSchemaError = new ACLabel();
+
+      dbSchemaError.setText("データベースへの接続に失敗しました。旧バージョンのデータベースファイルが指定されています。" + ACConstants.LINE_SEPARATOR + "データベースは給管鳥V6以降のものを指定する必要があります。" + ACConstants.LINE_SEPARATOR + "「設定変更」画面でデータベースの設定を行ってください。");
+
+      dbSchemaError.setIconPath(ACConstants.ICON_PATH_STOP_16);
+
+      dbSchemaError.setAutoWrap(true);
+
+      addDbSchemaError();
+    }
+    return dbSchemaError;
 
   }
 
@@ -1239,7 +1262,7 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       copyrights = new ACPanel();
 
-      copyrights.setBackground(new Color(0,51,153));
+      copyrights.setBackground(QkanConstants.COLOR_QKAN_THEMA);
 
       addCopyrights();
     }
@@ -1504,6 +1527,8 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
     dbErros.add(getDbVersionError(), VRLayout.CLIENT);
 
+    dbErros.add(getDbSchemaError(), VRLayout.CLIENT);
+
     dbErros.add(getGoSettingButtons1(), VRLayout.EAST);
   }
 
@@ -1525,6 +1550,13 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
    * DBバージョンエラーメッセージに内部項目を追加します。
    */
   protected void addDbVersionError(){
+
+  }
+
+  /**
+   * スキーマバージョンエラーメッセージに内部項目を追加します。
+   */
+  protected void addDbSchemaError(){
 
   }
 

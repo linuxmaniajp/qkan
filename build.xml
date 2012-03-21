@@ -3,40 +3,25 @@
 	<property name="SourceDir" value="src" />
 	<property name="ClassDir" value="bin" />
 	<property name="JarNameOfMain" value="Qkan.jar" />
-	<property name="JarNameOfConvert" value="convert_csv.jar" />
 	<property name="JarNameOfCSVViewer" value="csv_viewer.jar" />
-	<property name="JarNameOfCopayCheck" value="copaycheck.jar" />
 	<property name="JarNameOfUpdate" value="update.jar" />
 	<!-- コンパイルに必要なクラスパス -->
 	<path id="BuildClasspath">
-		<pathelement path="lib/firebirdsql-full.jar" />
-		<pathelement path="lib/iText.jar" />
+		<pathelement path="lib/jaybird-full-2.1.6.jar" />
+		<pathelement path="lib/iText-5.0.6.jar" />
 		<pathelement path="lib/iTextAsian.jar" />
-		<pathelement path="lib/build.jar" />
+		<pathelement path="lib/bridge.jar" />
+		<pathelement path="lib/ac.jar" />
+		<pathelement path="lib/vr.jar" />
 	</path>
 	<target name="compile">
 		<!-- コンパイル -->
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
-			<include name="jp/or/med/orca/qkan/*" />
-			<include name="jp/or/med/orca/qkan/lib/**/*" />
-			<include name="jp/or/med/orca/qkan/text/**/*" />
-			<include name="jp/or/med/orca/qkan/component/**/*" />
-			<include name="jp/or/med/orca/qkan/convert/**/*" />
-			<include name="jp/or/med/orca/qkan/viewer/**/*" />
-			<include name="jp/or/med/orca/qkan/affair/*" />
-			<include name="jp/or/med/orca/qkan/affair/qc/**/*" />
-			<include name="jp/or/med/orca/qkan/affair/qm/**/*" />
-		</javac>
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
-			<include name="jp/or/med/orca/qkan/affair/qo/**/*" />
-			<include name="jp/or/med/orca/qkan/affair/qp/**/*" />
-			<include name="jp/or/med/orca/qkan/affair/qu/**/*" />
-			<include name="jp/or/med/orca/qkan/affair/qv/**/*" />
-		</javac>
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
-			<include name="jp/or/med/orca/qkan/affair/qs/**/*" />
+		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+			<include name="jp/**/*.java" />
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 		</javac>
 		<!-- リソース複写 -->
 		<copy todir="${ClassDir}" >
@@ -45,76 +30,76 @@
 			</fileset>
 		</copy>
 		<!-- Jar生成 -->
-		<delete file="${JarNameOfMain}" />
-		<jar jarfile="${JarNameOfMain}" basedir="${ClassDir}">
+		<delete file="Qkan.jar" />
+		<jar jarfile="Qkan.jar" basedir="${ClassDir}">
 			<include name="jp/or/**/*" />
 			<exclude name="**/*.java" />
+			<exclude name="jp/nichicom/ac/lib/**/*" />
 			<exclude name="jp/or/med/orca/qkan/convert/**/*" />
 			<exclude name="jp/or/med/orca/qkan/viewer/**/*" />
 			<manifest>
-				<attribute name="Main-Class" value="jp.or.med.orca.qkan.affair.QkanStarter" />
-				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+				<attribute name="Main-Class" value="jp.or.med.orca.qkan.affair.qm.qm001.QM001" />
+				<attribute name="Class-Path" value=". lib/ac.jar lib/vr.jar lib/bridge.jar lib/iText-5.0.6.jar lib/iTextAsian.jar lib/jaybird-full-2.1.6.jar" />
 			</manifest>
 		</jar>
-		<delete file="${JarNameOfConvert}" />
-		<jar jarfile="${JarNameOfConvert}" basedir="${ClassDir}">
-			<include name="jp/or/med/orca/qkan/convert/**/*" />
-			<exclude name="**/*.java" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.or.med.orca.qkan.convert.QkanMacCSVImportStarter" />
-				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
-			</manifest>
-		</jar>
-		<delete file="${JarNameOfCSVViewer}" />
-		<jar jarfile="${JarNameOfCSVViewer}" basedir="${ClassDir}">
+		<delete file="csv_viewer.jar" />
+		<jar jarfile="csv_viewer.jar" basedir="${ClassDir}">
 			<include name="jp/or/med/orca/qkan/viewer/**/*" />
 			<exclude name="**/*.java" />
 			<manifest>
-				<attribute name="Main-Class" value="jp.or.med.orca.qkan.viewer.QkanCSVViewerStarter" />
-				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
-			</manifest>
-		</jar>
-		<delete file="${JarNameOfUpdate}" />
-		<jar jarfile="${JarNameOfUpdate}" basedir="${ClassDir}">
-			<include name="jp/nichicom/update/**/*" />
-			<exclude name="**/*.java" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.nichicom.update.MainFrame" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
-			</manifest>
-		</jar>
-		<delete file="${JarNameOfCopayCheck}" />
-		<jar jarfile="${JarNameOfCopayCheck}" basedir="${ClassDir}">
-			<include name="jp/nichicom/copaychecker/**/*" />
-			<exclude name="**/*.java" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.nichicom.copaychecker.MainFrame" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
+				<attribute name="Main-Class" value="jp.or.med.orca.qkan.viewer.qo.qo012.QO012" />
+				<attribute name="Class-Path" value=". lib/ac.jar lib/vr.jar lib/bridge.jar lib/iText-5.0.6.jar lib/iTextAsian.jar lib/jaybird-full-2.1.6.jar Qkan.jar" />
 			</manifest>
 		</jar>
 		<delete dir="${ClassDir}" />
 	</target>
 	<target name="onlineUpdater">
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/update/**/*" />
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<!-- オンラインアップデート -->
+		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
+			<include name="jp/nichicom/update/**/*" />
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+		</javac>
+		<copy todir="${ClassDir}" >
+			<fileset dir="${SourceDir}">
+				<include name="jp/nichicom/update/**/*" />
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
 		<delete file="update.jar" />
-		<jar jarfile="update.jar" basedir="${ClassDir}">
+		<jar jarfile="update.jar" basedir="${ClassDir}" >
 			<include name="jp/nichicom/update/**/*" />
 			<exclude name="**/*.java" />
 			<manifest>
 				<attribute name="Main-Class" value="jp.nichicom.update.MainFrame" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
+				<attribute name="Class-Path" value=". lib/jaybird-full-2.1.6.jar" />
 			</manifest>
 		</jar>
 	</target>
-	<target name="copaychecker">
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/copaychecker/**/*" />
-		<delete file="copaycheck.jar" />
-		<jar jarfile="copaycheck.jar" basedir="${ClassDir}">
-			<include name="jp/nichicom/copaychecker/**/*" />
+	<target name="convert_tool">
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<!-- データ移行ツール -->
+		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
+			<include name="jp/nichicom/convert/**/*" />
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+		</javac>
+		<copy todir="${ClassDir}" >
+			<fileset dir="${SourceDir}">
+				<include name="jp/nichicom/convert/**/*" />
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		<delete file="qkan_convert.jar" />
+		<jar jarfile="qkan_convert.jar" basedir="${ClassDir}" >
+			<include name="jp/nichicom/convert/**/*" />
 			<exclude name="**/*.java" />
 			<manifest>
-				<attribute name="Main-Class" value="jp.nichicom.copaychecker.MainFrame" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
+				<attribute name="Main-Class" value="jp.nichicom.convert.MainFrame" />
+				<attribute name="Class-Path" value=". lib/jaybird-full-2.1.6.jar" />
 			</manifest>
 		</jar>
 	</target>

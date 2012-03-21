@@ -17,20 +17,21 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 堤 瑞樹
- * 作成日: 2006/01/26  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 開発者: 田中　統蔵
+ * 作成日: 2006/05/08  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム サービスパターン訪問看護(介護) (QS001005)
+ * プログラム 集計明細画面 (QS001030)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 /**
- * サービスパターン訪問看護(介護)状態定義(QS001005) 
+ * 集計明細画面状態定義(QS001030) 
  */
+@SuppressWarnings("serial")
 public class QS001005State extends QS001005Design {
   /**
    * コンストラクタです。
@@ -39,62 +40,34 @@ public class QS001005State extends QS001005Design {
   }
 
   /**
-   * 「理学療法士又は作業療法士・有効」の状態に設定します。
+   * 「予定モード」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_VALID_HOMON_KANGO_PTOT() throws Exception {
+  public void setState_PROCESS_TYPE_PLAN() throws Exception {
 
-        getHoumonKangoKaigoClass3().setEnabled(true);
+        getDetailsTableColumn4().setVisible(true);
+
+        getDetailsTableColumn5().setVisible(true);
+
+        getOuterTableColumn4().setVisible(true);
+
+        getOuterTableColumn5().setVisible(true);
 
   }
 
   /**
-   * 「理学療法士又は作業療法士・無効」の状態に設定します。
+   * 「実績モード」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INVALID_HOMON_KANGO_PTOT() throws Exception {
+  public void setState_PROCESS_TYPE_RESULT() throws Exception {
 
-        getHoumonKangoKaigoClass3().setEnabled(false);
+        getDetailsTableColumn4().setVisible(false);
 
-  }
+        getDetailsTableColumn5().setVisible(false);
 
-  /**
-   * 「緊急時訪問看護加算・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_VALID_URGENT_TIME_RADIO() throws Exception {
+        getOuterTableColumn4().setVisible(false);
 
-        getHoumonKangoKaigoUrgentTimeRadio().setEnabled(true);
-
-  }
-
-  /**
-   * 「緊急時訪問看護加算・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_INVALID_URGENT_TIME_RADIO() throws Exception {
-
-        getHoumonKangoKaigoUrgentTimeRadio().setEnabled(false);
-
-  }
-
-  /**
-   * 「特別管理体制・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_VALID_SPECIAL_MANAGE_RADIO() throws Exception {
-
-        getHoumonKangoKaigoSpecialManageRadio().setEnabled(true);
-
-  }
-
-  /**
-   * 「特別管理体制・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_INVALID_SPECIAL_MANAGE_RADIO() throws Exception {
-
-        getHoumonKangoKaigoSpecialManageRadio().setEnabled(false);
+        getOuterTableColumn5().setVisible(false);
 
   }
 

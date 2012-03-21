@@ -28,56 +28,12 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo003;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.text.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
+import java.util.Stack;
+
+import jp.nichicom.ac.text.ACSQLSafeDateFormat;
+import jp.nichicom.ac.text.ACSQLSafeStringFormat;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRMap;
 
 /**
  * éñã∆èäàÍóóSQLíËã`(QO003P01) 
@@ -97,7 +53,7 @@ public class QO003P01SQL  {
    * @return SQLï∂
    */
   public String getSQL_GET_SERVICE_CALENDAR_NAME(VRMap sqlParam) throws Exception{
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     Object[] inValues;
     Stack conditionStack = new Stack();
     boolean firstCondition = true;

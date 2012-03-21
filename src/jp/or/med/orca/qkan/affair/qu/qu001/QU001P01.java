@@ -35,7 +35,6 @@ import java.util.Date;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
-import jp.nichicom.ac.text.ACNullToBlankFormat;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;

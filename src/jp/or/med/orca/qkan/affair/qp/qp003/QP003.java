@@ -29,62 +29,32 @@
 
 package jp.or.med.orca.qkan.affair.qp.qp003;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.lang.reflect.Array;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.text.Format;
+import java.util.Date;
 
+import javax.swing.event.ChangeEvent;
 
-import com.lowagie.text.pdf.PRAcroForm;
-
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
-import jp.or.med.orca.qkan.lib.*;
-import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
+import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
  * 利用者向け請求詳細編集(QP003)
@@ -1543,12 +1513,12 @@ public class QP003 extends QP003Event {
                     if(!serviceList.isEmpty()) {
                         for(int j=0; j<serviceList.size(); j++) {
                             String markServiceBitKey = "MARK" + ACCastUtilities.toString(j+1) +"_SERVICE_DATE_BIT";
-                            StringBuffer sbDateBit = new StringBuffer();
+                            StringBuilder sbDateBit = new StringBuilder();
                             // テーブルからデータを取得
                             VRMap record = (VRMap)serviceList.getData(j);
                             // ビットを作成する
                             if(dateManager.containsKey(markServiceBitKey)) {
-                                sbDateBit = (StringBuffer)dateManager.getData(markServiceBitKey);
+                                sbDateBit = (StringBuilder)dateManager.getData(markServiceBitKey);
                             }
                             // チェックの値を見つつBitに変換
                             if(ACCastUtilities.toBoolean(record.getData("CHECK"),false) == true) {
@@ -1569,7 +1539,7 @@ public class QP003 extends QP003Event {
             String markServiceBitKey = "MARK" + ACCastUtilities.toString(k) +"_SERVICE_DATE_BIT";
             int bit = 0;
             if(dateManager.containsKey(markServiceBitKey)) {
-                StringBuffer sbDateBit = (StringBuffer)dateManager.getData(markServiceBitKey);
+                StringBuilder sbDateBit = (StringBuilder)dateManager.getData(markServiceBitKey);
                 int dayIndex = 1;
                 // 日付のビットデータを元にして計算
                 for (int l = sbDateBit.length(); l > 0 ; l--) {

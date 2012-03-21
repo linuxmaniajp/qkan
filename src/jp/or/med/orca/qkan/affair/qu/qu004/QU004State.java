@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2009/01/20  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2011/11/16  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -28,59 +28,10 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu004;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.io.*;
-import java.sql.SQLException;
-import java.text.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import jp.nichicom.ac.*;
-import jp.nichicom.ac.bind.*;
-import jp.nichicom.ac.component.*;
-import jp.nichicom.ac.component.dnd.*;
-import jp.nichicom.ac.component.dnd.event.*;
-import jp.nichicom.ac.component.event.*;
-import jp.nichicom.ac.component.mainmenu.*;
-import jp.nichicom.ac.component.table.*;
-import jp.nichicom.ac.component.table.event.*;
-import jp.nichicom.ac.container.*;
-import jp.nichicom.ac.core.*;
-import jp.nichicom.ac.filechooser.*;
-import jp.nichicom.ac.io.*;
-import jp.nichicom.ac.lang.*;
-import jp.nichicom.ac.pdf.*;
-import jp.nichicom.ac.sql.*;
-import jp.nichicom.ac.text.*;
-import jp.nichicom.ac.util.*;
-import jp.nichicom.ac.util.adapter.*;
-import jp.nichicom.vr.*;
-import jp.nichicom.vr.bind.*;
-import jp.nichicom.vr.bind.event.*;
-import jp.nichicom.vr.border.*;
-import jp.nichicom.vr.component.*;
-import jp.nichicom.vr.component.event.*;
-import jp.nichicom.vr.component.table.*;
-import jp.nichicom.vr.container.*;
-import jp.nichicom.vr.focus.*;
-import jp.nichicom.vr.image.*;
-import jp.nichicom.vr.io.*;
-import jp.nichicom.vr.layout.*;
-import jp.nichicom.vr.text.*;
-import jp.nichicom.vr.text.parsers.*;
-import jp.nichicom.vr.util.*;
-import jp.nichicom.vr.util.adapter.*;
-import jp.nichicom.vr.util.logging.*;
-import jp.or.med.orca.qkan.*;
-import jp.or.med.orca.qkan.affair.*;
-import jp.or.med.orca.qkan.component.*;
 /**
  * 公費・社福軽減情報状態定義(QU004) 
  */
+@SuppressWarnings("serial")
 public class QU004State extends QU004Design {
   /**
    * コンストラクタです。
@@ -113,30 +64,6 @@ public class QU004State extends QU004Design {
   }
 
   /**
-   * 「医療公費編集不可」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_ENABLE_IRYO_BUTTON_FALSE() throws Exception {
-
-        getIryoInfoButtonConpile().setEnabled(false);
-
-        getIryoInfoButtonDelete().setEnabled(false);
-
-  }
-
-  /**
-   * 「医療公費編集可」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_ENABLE_IRYO_BUTTON_TRUE() throws Exception {
-
-        getIryoInfoButtonConpile().setEnabled(true);
-
-        getIryoInfoButtonDelete().setEnabled(true);
-
-  }
-
-  /**
    * 「業務ボタン設定（登録モードへ変更）」の状態に設定します。
    * @throws Exception 処理例外
    */
@@ -157,22 +84,6 @@ public class QU004State extends QU004Design {
         getInsert().setVisible(false);
 
         getUpdate().setVisible(true);
-
-  }
-
-  /**
-   * 「給付率編集不可」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_EDITABLE_BENEFIT_RATE_FALSE() throws Exception {
-
-  }
-
-  /**
-   * 「給付率編集可」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_EDITABLE_BENEFIT_RATE_TRUE() throws Exception {
 
   }
 
@@ -221,42 +132,6 @@ public class QU004State extends QU004Design {
         getKaigoInfoKohiNo().setEditable(true);
 
         getKaigoInfoServices().setVisible(true);
-
-  }
-
-  /**
-   * 「医療その他公費OFF」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_IRYO_OTHER_OFF() throws Exception {
-
-        getIryoInfoKohiNo().setEditable(false);
-
-        getIryoInfoServices().setVisible(false);
-
-  }
-
-  /**
-   * 「医療その他公費ON」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_IRYO_OTHER_ON() throws Exception {
-
-        getIryoInfoKohiNo().setEditable(true);
-
-        getIryoInfoServices().setVisible(true);
-
-  }
-
-  /**
-   * 「医療タブOFF」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_OLD_IRYO_OFF() throws Exception {
-
-        if(getPoints2().getParent()!=null){
-          getPoints2().getParent().remove(getPoints2());
-        }
 
   }
 

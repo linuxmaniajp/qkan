@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -18,16 +21,12 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import java.util.ArrayList;
-import java.io.*;
-
 import jp.nichicom.update.task.AbstractTask;
 import jp.nichicom.update.task.TaskProcesser;
 import jp.nichicom.update.task.TaskXMLParser;
 import jp.nichicom.update.util.HttpConnecter;
 import jp.nichicom.update.util.Log;
 import jp.nichicom.update.util.PropertyUtil;
-import jp.nichicom.update.util.XMLDocumentUtil;
 
 /**
  * 自動更新ツール
@@ -43,8 +42,8 @@ public class MainFrame extends JFrame implements ActionListener {
     /**
 	 * プログレスバー
 	 */
-	private JProgressBar progress;
-	private JLabel status;
+	public JProgressBar progress;
+	public JLabel status;
 
     private String lineSeparator = System.getProperty("line.separator");
 
@@ -81,6 +80,14 @@ public class MainFrame extends JFrame implements ActionListener {
 	public MainFrame() {
 		// スーパークラスのコンストラクタ呼び出し
 		super("アップデートツール");
+		
+        try {
+            Image img = Toolkit.getDefaultToolkit().createImage(
+                    MainFrame.class.getClassLoader().getResource(
+                            "jp/nichicom/update/image/flameicon.png"));
+            setIconImage(img);
+        } catch (Exception e) {
+        }
 		
 		//プロキシサーバ名称を設定する
 		HttpConnecter.setProxyHost(PropertyUtil.getProperty("http.proxyHost"));
@@ -168,9 +175,6 @@ public class MainFrame extends JFrame implements ActionListener {
         
         setEnabledButtons(getContentPane().getComponents(),false);
         try{
-            
-//            XMLDocumentUtil doc = new XMLDocumentUtil(PropertyUtil.getProperty("update.url"));
-//            ArrayList taskArray = doc.parseTask();
  
             status.setText("アップデート内容を取得中..");
             TaskXMLParser parser = new TaskXMLParser(PropertyUtil
@@ -185,38 +189,22 @@ public class MainFrame extends JFrame implements ActionListener {
             if (parser.getRunException() != null) {
                 throw parser.getRunException();
             }
-            ArrayList taskArray = parser.getTaskArray();
+            ArrayList<AbstractTask> taskArray = parser.getTaskArray();
 
             if ((taskArray == null) || (taskArray.isEmpty())) {
                 JOptionPane.showConfirmDialog(this, "既に最新バージョンです。",
                         "アップデートツール", JOptionPane.CLOSED_OPTION,
                         JOptionPane.INFORMATION_MESSAGE);
+                
+                clearFrame();
+                
             } else {
 
-                TaskProcesser tp = new TaskProcesser(taskArray, this, progress,
-                        status);
-                tp.start();
-                while (tp.isRun()) {
-                    ((JComponent) this.getContentPane())
-                            .paintImmediately(((JComponent) this
-                                    .getContentPane()).getVisibleRect());
-                    Thread.sleep(500);
-                }
-
-                if (tp.getRunException() != null) {
-                    throw tp.getRunException();
-                }
-
-                // 更新処理実行
-                if (tp.isUpdate()) {
-                    JOptionPane.showConfirmDialog(this, "アップデートが完了しました。",
-                            "アップデートツール", JOptionPane.CLOSED_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showConfirmDialog(this, "既に最新バージョンです。",
-                            "アップデートツール", JOptionPane.CLOSED_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
+                TaskProcesser tp = new TaskProcesser(taskArray, this);
+                
+                Thread thread = new Thread(tp);
+                thread.start();
+                
             }
         } catch(Exception e){
             Log.warning("アップデート実行エラー:" + e.getLocalizedMessage());
@@ -224,13 +212,43 @@ public class MainFrame extends JFrame implements ActionListener {
                     + lineSeparator + "処理を続行できません。" + lineSeparator
                     + "※インターネットに接続可能であるかご確認ください。", "アップデートツール",
                     JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
+            
+            clearFrame();
         }
+    }
+    
+    public void taskEnd(TaskProcesser tp) {
+        if (tp.getRunException() == null) {
+            
+            if (tp.isUpdate()) {
+                JOptionPane.showConfirmDialog(this, "アップデートが完了しました。",
+                        "アップデートツール", JOptionPane.CLOSED_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE);
+            
+            } else {
+                JOptionPane.showConfirmDialog(this, "既に最新バージョンです。",
+                        "アップデートツール", JOptionPane.CLOSED_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        } else {
+            Log.warning("アップデート実行エラー:" + tp.getRunException().getLocalizedMessage());
+            JOptionPane.showConfirmDialog(this, "アップデート実行時にエラーが発生しました。"
+                    + lineSeparator + "処理を続行できません。" + lineSeparator
+                    + "※インターネットに接続可能であるかご確認ください。", "アップデートツール",
+                    JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
+        }
+
+        clearFrame();
+    }
+    
+    private void clearFrame() {
         setEnabledButtons(getContentPane().getComponents(),true);
         progress.setValue(0);
         status.setText(" ");
     }
     
-
+    
     private void setEnabledButtons(Component[] comps,boolean enabled){
         for(int i = 0; i < comps.length; i++){
             if(comps[i] instanceof JButton){
@@ -239,39 +257,6 @@ public class MainFrame extends JFrame implements ActionListener {
                 setEnabledButtons( ((Container)comps[i]).getComponents(),enabled);
             }
         }
-        
-        
     }
-//    /**
-//	 * XMLファイルで記述されたアップデートタスクを実行する
-//	 *
-//	 */
-//	private void getTaskXML(){
-//		
-//		try{
-//			boolean update = false;
-//			XMLDocumentUtil doc = new XMLDocumentUtil(PropertyUtil.getProperty("update.url"));
-//			ArrayList taskArray = doc.parseTask();
-//			progress.setMaximum(taskArray.size() - 1);
-//			
-//			for(int i = 0; i < taskArray.size(); i++){
-//				AbstractTask task = (AbstractTask)taskArray.get(i);
-//				if(task.runTask()){
-//					update = true;
-//				}
-//				progress.setValue(i);
-//				progress.paintImmediately(progress.getVisibleRect());
-//			}
-//			//更新処理実行
-//			if(update){
-//				JOptionPane.showConfirmDialog(this,"アップデートが完了しました。","アップデートツール",JOptionPane.CLOSED_OPTION,JOptionPane.INFORMATION_MESSAGE);
-//			} else {
-//				JOptionPane.showConfirmDialog(this,"既に最新バージョンです。","アップデートツール",JOptionPane.CLOSED_OPTION,JOptionPane.INFORMATION_MESSAGE);
-//			}
-//		} catch(Exception e){
-//			Log.warning("アップデート実行エラー:" + e.getLocalizedMessage());
-//			JOptionPane.showConfirmDialog(this,"アップデート実行時にエラーが発生しました。\n処理を続行できません。","アップデートツール",JOptionPane.CLOSED_OPTION,JOptionPane.ERROR_MESSAGE);
-//		}
-//		progress.setValue(0);
-//	}
+
 }

@@ -23,7 +23,6 @@ import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.container.VRPanel;
-import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;

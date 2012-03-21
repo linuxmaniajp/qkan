@@ -35,10 +35,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
@@ -204,26 +202,6 @@ public class QO009 extends QO009Event {
 		sqlParam.setData("MEDICAL_FACILITY_ID", VRBindPathParser.get(
 				"MEDICAL_FACILITY_ID", MedicalFacilityIdMap));
 
-		// sqlParamを引数として、訪問看護ステーション履歴取得用のSQL文を取得する。
-		VRList StationHistoryList = getDBManager().executeQuery(
-				getSQL_GET_STATION_HISTORY(sqlParam));
-		// 取得したデータ件数が0件より多い場合
-		if (StationHistoryList.size() > 0) {
-			// String msgParamを生成する。
-			String msgParam = null;
-			// msgParamに"利用者情報"を代入する。
-			msgParam = "利用者情報";
-
-			// エラーメッセージを表示する。
-			int msgID = QkanMessageList.getInstance().ERROR_OF_DELETE_USED(
-					msgParam);
-			switch (msgID) {
-			case ACMessageBox.RESULT_OK:
-				// ・メッセージID：ERROR_OF_DELETE_USED
-				// 処理を終了する。
-				return;
-			}
-		}
 		
 		// 選択されているレコードのインデックスを格納するindexを定義する。
 		int index;
