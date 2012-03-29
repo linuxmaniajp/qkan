@@ -494,4 +494,14 @@ public class QS001_11311_201204 extends QS001_11311_201204Event {
         
     }
 
+    /**
+     * ƒoƒCƒ“ƒhŒãˆ—
+     * [ID:0000708][Masahiko.Higuchi] 2012/03
+     */
+    public void binded() throws Exception {
+        // ‰æ–Êó‘Ô‚ğÄ§Œä
+        checkState();
+        
+    }
+
 }

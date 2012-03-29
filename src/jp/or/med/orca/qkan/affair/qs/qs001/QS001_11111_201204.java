@@ -373,17 +373,27 @@ public class QS001_11111_201204 extends QS001_11111_201204Event {
         if (getHomonkaigoTeikyoTime().isEnabled()
                 && getHomonkaigoTeikyoTime().isSelected()) {
             // ★身体介護
-            if (getHoumonKaigoServicePattern().getSelectedIndex() == 2) {
-                // (選択番号+1)×30を返す。
-                addMinute += (getHomonkaigoTeikyoTime().getSelectedIndex() + 1) * 30;
+            // [ID:0000706][Shin Fujihara] 2012/03 delete begin 2012年度対応
+//            if (getHoumonKaigoServicePattern().getSelectedIndex() == 2) {
+//                // (選択番号+1)×30を返す。
+//                addMinute += (getHomonkaigoTeikyoTime().getSelectedIndex() + 1) * 30;
+//            } else {
+//                if (getHomonkaigoTeikyoTime().getSelectedIndex() == 0) {
+//                    addMinute += 20;
+//                } else {
+//                    // (選択番号+1)×30を返す。
+//                    addMinute += (getHomonkaigoTeikyoTime().getSelectedIndex()) * 30;
+//                }
+//            }
+            // [ID:0000706][Shin Fujihara] 2012/03 delete end 2012年度対応
+            // [ID:0000706][Shin Fujihara] 2012/03 add begin 2012年度対応
+            if (getHomonkaigoTeikyoTime().getSelectedIndex() == 0) {
+                addMinute += 20;
             } else {
-                if (getHomonkaigoTeikyoTime().getSelectedIndex() == 0) {
-                    addMinute += 20;
-                } else {
-                    // (選択番号+1)×30を返す。
-                    addMinute += (getHomonkaigoTeikyoTime().getSelectedIndex()) * 30;
-                }
+                // (選択番号+1)×30を返す。
+                addMinute += (getHomonkaigoTeikyoTime().getSelectedIndex()) * 30;
             }
+            // [ID:0000706][Shin Fujihara] 2012/03 add end 2012年度対応
         }
         if (getHoumonKaigoInTime().isEnabled()
                 && getHoumonKaigoInTime().isSelected()) {
@@ -396,12 +406,17 @@ public class QS001_11111_201204 extends QS001_11111_201204Event {
                 }
             } else {
                 // 身体生活
-                if (getHoumonKaigoInTime().getSelectedIndex() == 0) {
-                    addMinute += 20;
-                } else {
-                    addMinute += 20 + ((getHoumonKaigoInTime()
-                            .getSelectedIndex() * 25));
-                }
+                // [ID:0000705][Shin Fujihara] 2012/03 delete begin 2012年度対応
+//                if (getHoumonKaigoInTime().getSelectedIndex() == 0) {
+//                    addMinute += 20;
+//                } else {
+//                    addMinute += 20 + ((getHoumonKaigoInTime()
+//                            .getSelectedIndex() * 25));
+//                }
+                // [ID:0000705][Shin Fujihara] 2012/03 delete end 2012年度対応
+                // [ID:0000705][Shin Fujihara] 2012/03 add begin 2012年度対応
+                addMinute += 45 + ((getHoumonKaigoInTime().getSelectedIndex() * 25));
+                // [ID:0000705][Shin Fujihara] 2012/03 add end 2012年度対応
             }
         }
         return addMinute;

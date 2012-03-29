@@ -331,6 +331,17 @@ public class QS001_16511_201204 extends QS001_16511_201204Event {
                 }
             }
         }
+
+        // [ID:0000713][Masahiko.Higuchi] 2012/03 平成24年4月法改正対応 add begin
+        // 生活機能向上グループ活動加算がありである場合
+        if (getActivityAddRadio().getSelectedIndex() > 1) {
+            // なしに戻す
+            getMoveFunctionImprovementAddRadio().setSelectedIndex(1);
+            getNourishmentImprovementAddRadio().setSelectedIndex(1);
+            getMouthFunctionImprovementAddRadio().setSelectedIndex(1);
+        }
+        // [ID:0000713][Masahiko.Higuchi] 2012/03 平成24年4月法改正対応 add end
+
         checkOnDayCheckState();
     }
 
