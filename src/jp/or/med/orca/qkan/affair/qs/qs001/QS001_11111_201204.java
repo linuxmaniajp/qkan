@@ -400,9 +400,13 @@ public class QS001_11111_201204 extends QS001_11111_201204Event {
             if (getHoumonKaigoServicePattern().getSelectedIndex() == 1) {
                 // 生活援助の場合
                 if (getHoumonKaigoInTime().getSelectedIndex() == 0) {
-                    addMinute += 20;
-                } else {
+                    // [ID:0000718][Masahiko.Higuchi] 2012/04 edit begin 2012年度対応
                     addMinute += 45;
+                    // [ID:0000718][Masahiko.Higuchi] 2012/04 edit end
+                } else {
+                    // [ID:0000718][Masahiko.Higuchi] 2012/04 edit begin 2012年度対応
+                    addMinute += 70;
+                    // [ID:0000718][Masahiko.Higuchi] 2012/04 edit end
                 }
             } else {
                 // 身体生活

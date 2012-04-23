@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/22  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -405,6 +405,14 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
 
   private ACRadioButtonItem terminalRadioItem4;
 
+  private ACLabelContainer terminalDaysContainer;
+
+  private ACTextField terminalDays;
+
+  private ACLabel terminalDaysUnit;
+
+  private ACPanel tab5;
+
   private ACValueArrayRadioButtonGroup serviceAddProvisionStructuralRadioGroup;
 
   private ACLabelContainer serviceAddProvisionStructuralRadioGroupContainer;
@@ -418,8 +426,6 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem3;
 
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem4;
-
-  private ACPanel tab5;
 
   private ACValueArrayRadioButtonGroup enterHospitalPreConsultantRadio;
 
@@ -3780,6 +3786,92 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
   }
 
   /**
+   * ターミナルケア加算コンテナを取得します。
+   * @return ターミナルケア加算コンテナ
+   */
+  public ACLabelContainer getTerminalDaysContainer(){
+    if(terminalDaysContainer==null){
+
+      terminalDaysContainer = new ACLabelContainer();
+
+      terminalDaysContainer.setText("ターミナルケア加算日数");
+
+      terminalDaysContainer.setFollowChildEnabled(true);
+
+      addTerminalDaysContainer();
+    }
+    return terminalDaysContainer;
+
+  }
+
+  /**
+   * ターミナルケア加算日数を取得します。
+   * @return ターミナルケア加算日数
+   */
+  public ACTextField getTerminalDays(){
+    if(terminalDays==null){
+
+      terminalDays = new ACTextField();
+
+      terminalDays.setText("1");
+
+      terminalDays.setBindPath("1520150");
+
+      terminalDays.setColumns(2);
+
+      terminalDays.setCharType(VRCharType.ONLY_DIGIT);
+
+      terminalDays.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      terminalDays.setMaxLength(2);
+
+      addTerminalDays();
+    }
+    return terminalDays;
+
+  }
+
+  /**
+   * ターミナルケア加算日数単位を取得します。
+   * @return ターミナルケア加算日数単位
+   */
+  public ACLabel getTerminalDaysUnit(){
+    if(terminalDaysUnit==null){
+
+      terminalDaysUnit = new ACLabel();
+
+      terminalDaysUnit.setText("日");
+
+      addTerminalDaysUnit();
+    }
+    return terminalDaysUnit;
+
+  }
+
+  /**
+   * タブ5を取得します。
+   * @return タブ5
+   */
+  public ACPanel getTab5(){
+    if(tab5==null){
+
+      tab5 = new ACPanel();
+
+      tab5.setFollowChildEnabled(true);
+
+      tab5.setHgap(0);
+
+      tab5.setLabelMargin(0);
+
+      tab5.setVgap(0);
+
+      addTab5();
+    }
+    return tab5;
+
+  }
+
+  /**
    * サービス提供体制強化加算を取得します。
    * @return サービス提供体制強化加算
    */
@@ -3917,29 +4009,6 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
       addServiceAddProvisionStructuralRadioItem4();
     }
     return serviceAddProvisionStructuralRadioItem4;
-
-  }
-
-  /**
-   * タブ5を取得します。
-   * @return タブ5
-   */
-  public ACPanel getTab5(){
-    if(tab5==null){
-
-      tab5 = new ACPanel();
-
-      tab5.setFollowChildEnabled(true);
-
-      tab5.setHgap(0);
-
-      tab5.setLabelMargin(0);
-
-      tab5.setVgap(0);
-
-      addTab5();
-    }
-    return tab5;
 
   }
 
@@ -5548,7 +5617,7 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
 
     tab4.add(getTerminalRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    tab4.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    tab4.add(getTerminalDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -5744,6 +5813,48 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
   }
 
   /**
+   * ターミナルケア加算コンテナに内部項目を追加します。
+   */
+  protected void addTerminalDaysContainer(){
+
+    terminalDaysContainer.add(getTerminalDays(), VRLayout.FLOW);
+
+    terminalDaysContainer.add(getTerminalDaysUnit(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * ターミナルケア加算日数に内部項目を追加します。
+   */
+  protected void addTerminalDays(){
+
+  }
+
+  /**
+   * ターミナルケア加算日数単位に内部項目を追加します。
+   */
+  protected void addTerminalDaysUnit(){
+
+  }
+
+  /**
+   * タブ5に内部項目を追加します。
+   */
+  protected void addTab5(){
+
+    tab5.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab5.add(getEnterHospitalPreConsultantRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab5.add(getPneumoniaTreatmentRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab5.add(getLocalTreatmentPlanInfoAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab5.add(getKaigoHealthCareOfTheAgedCalculationDivisionRadioContainer(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
    * サービス提供体制強化加算に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroup(){
@@ -5798,21 +5909,6 @@ public class QS001_15211_201204Design extends QS001ServicePanel {
    * III型に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioItem4(){
-
-  }
-
-  /**
-   * タブ5に内部項目を追加します。
-   */
-  protected void addTab5(){
-
-    tab5.add(getEnterHospitalPreConsultantRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab5.add(getPneumoniaTreatmentRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab5.add(getLocalTreatmentPlanInfoAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab5.add(getKaigoHealthCareOfTheAgedCalculationDivisionRadioContainer(), VRLayout.FLOW_INSETLINE);
 
   }
 

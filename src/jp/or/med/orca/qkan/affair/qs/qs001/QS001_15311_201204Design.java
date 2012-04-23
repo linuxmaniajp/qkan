@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/01/31  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/03/26  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -2246,7 +2246,7 @@ public class QS001_15311_201204Design extends QS001ServicePanel {
 
       leavingHospitalPreConsultationAddition = new ACIntegerCheckBox();
 
-      leavingHospitalPreConsultationAddition.setText("退所前訪問指導加算");
+      leavingHospitalPreConsultationAddition.setText("退院前訪問指導加算");
 
       leavingHospitalPreConsultationAddition.setBindPath("3020109");
 
@@ -2269,7 +2269,7 @@ public class QS001_15311_201204Design extends QS001ServicePanel {
 
       leavingHospitalAfterConsultationAddition = new ACIntegerCheckBox();
 
-      leavingHospitalAfterConsultationAddition.setText("退所後訪問指導加算");
+      leavingHospitalAfterConsultationAddition.setText("退院後訪問指導加算");
 
       leavingHospitalAfterConsultationAddition.setBindPath("3020110");
 

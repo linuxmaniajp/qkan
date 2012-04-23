@@ -28,6 +28,8 @@
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 
+import javax.swing.event.ListSelectionEvent;
+
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
@@ -138,6 +140,9 @@ public class QS001_13211_201204 extends QS001_13211_201204Event {
             }
         }
 
+        // 画面状態制御
+        changeState();
+
         // ※展開
         // 自身(this)にdefaultMapに設定する。
         getThis().setSource(defaultMap);
@@ -196,6 +201,45 @@ public class QS001_13211_201204 extends QS001_13211_201204Event {
         // ※終了時刻入力用のコンボを返す。
         // 　関数の返り値として終了時間コンボを返す。
         return null;
+    }
+
+    @Override
+    protected void kaigoHealthCareOfTheAgedCalculationDivisionRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        changeState();
+    }
+
+    @Override
+    public void changeState() throws Exception {
+        // 算定区分が、加算のみ算定である場合
+        if (getKaigoHealthCareOfTheAgedCalculationDivisionRadio()
+                .getSelectedIndex() == 2) {
+            // 看取り介護加算の選択状況による制御
+            switch (getWatchKaigoAddRadioGroup().getSelectedIndex()) {
+            case 1: // なし選択時
+                setState_INVALID_TERMINAL();
+                break;
+            case 2:
+            case 3:
+            case 4:
+                setState_VALID_TERMINAL();
+                break;
+            }
+        } else {
+            setState_INVALID_TERMINAL();
+        }
+
+    }
+
+    @Override
+    public void binded() throws Exception {
+        changeState();
+    }
+
+    @Override
+    protected void watchKaigoAddRadioGroupSelectionChanged(ListSelectionEvent e)
+            throws Exception {
+        changeState();
     }
 
 }

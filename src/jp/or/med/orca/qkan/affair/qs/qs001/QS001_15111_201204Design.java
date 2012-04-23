@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -357,6 +357,12 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
 
   private ACRadioButtonItem kaigoWelfareFacilityTakingCareNursingAddRadioItem4;
 
+  private ACLabelContainer kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
+
+  private ACTextField kaigoWelfareFacilityTakingCareNursingAddDays;
+
+  private ACLabel kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
+
   private ACValueArrayRadioButtonGroup kaigoWelfareFacilityStayReturnSupportAddRadio;
 
   private ACLabelContainer kaigoWelfareFacilityStayReturnSupportAddRadioContainer;
@@ -426,12 +432,6 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
   private ACRadioButtonItem kaigoWelfareFacilityCalculationDivisionRadiloItem1;
 
   private ACRadioButtonItem kaigoWelfareFacilityCalculationDivisionRadiloItem2;
-
-  private ACLabelContainer kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
-
-  private ACTextField kaigoWelfareFacilityTakingCareNursingAddDays;
-
-  private ACLabel kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
 
   //getter
 
@@ -3295,6 +3295,69 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
   }
 
   /**
+   * 看取り介護加算コンテナを取得します。
+   * @return 看取り介護加算コンテナ
+   */
+  public ACLabelContainer getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
+    if(kaigoWelfareFacilityTakingCareNursingAddDaysContainer==null){
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysContainer = new ACLabelContainer();
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysContainer.setText("看取り介護加算日数");
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysContainer.setFollowChildEnabled(true);
+
+      addKaigoWelfareFacilityTakingCareNursingAddDaysContainer();
+    }
+    return kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
+
+  }
+
+  /**
+   * 看取り介護加算日数を取得します。
+   * @return 看取り介護加算日数
+   */
+  public ACTextField getKaigoWelfareFacilityTakingCareNursingAddDays(){
+    if(kaigoWelfareFacilityTakingCareNursingAddDays==null){
+
+      kaigoWelfareFacilityTakingCareNursingAddDays = new ACTextField();
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setText("1");
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setBindPath("1510132");
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setColumns(2);
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setCharType(VRCharType.ONLY_DIGIT);
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      kaigoWelfareFacilityTakingCareNursingAddDays.setMaxLength(2);
+
+      addKaigoWelfareFacilityTakingCareNursingAddDays();
+    }
+    return kaigoWelfareFacilityTakingCareNursingAddDays;
+
+  }
+
+  /**
+   * 看取り介護加算日数単位を取得します。
+   * @return 看取り介護加算日数単位
+   */
+  public ACLabel getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
+    if(kaigoWelfareFacilityTakingCareNursingAddDaysUnit==null){
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysUnit = new ACLabel();
+
+      kaigoWelfareFacilityTakingCareNursingAddDaysUnit.setText("日");
+
+      addKaigoWelfareFacilityTakingCareNursingAddDaysUnit();
+    }
+    return kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
+
+  }
+
+  /**
    * 在宅復帰支援機能加算を取得します。
    * @return 在宅復帰支援機能加算
    */
@@ -3968,69 +4031,6 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
       addKaigoWelfareFacilityCalculationDivisionRadiloItem2();
     }
     return kaigoWelfareFacilityCalculationDivisionRadiloItem2;
-
-  }
-
-  /**
-   * 看取り介護加算コンテナを取得します。
-   * @return 看取り介護加算コンテナ
-   */
-  public ACLabelContainer getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
-    if(kaigoWelfareFacilityTakingCareNursingAddDaysContainer==null){
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysContainer = new ACLabelContainer();
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysContainer.setText("看取り介護加算日数");
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysContainer.setFollowChildEnabled(true);
-
-      addKaigoWelfareFacilityTakingCareNursingAddDaysContainer();
-    }
-    return kaigoWelfareFacilityTakingCareNursingAddDaysContainer;
-
-  }
-
-  /**
-   * 看取り介護加算日数を取得します。
-   * @return 看取り介護加算日数
-   */
-  public ACTextField getKaigoWelfareFacilityTakingCareNursingAddDays(){
-    if(kaigoWelfareFacilityTakingCareNursingAddDays==null){
-
-      kaigoWelfareFacilityTakingCareNursingAddDays = new ACTextField();
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setText("1");
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setBindPath("1510132");
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setColumns(2);
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setCharType(VRCharType.ONLY_DIGIT);
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setHorizontalAlignment(SwingConstants.RIGHT);
-
-      kaigoWelfareFacilityTakingCareNursingAddDays.setMaxLength(2);
-
-      addKaigoWelfareFacilityTakingCareNursingAddDays();
-    }
-    return kaigoWelfareFacilityTakingCareNursingAddDays;
-
-  }
-
-  /**
-   * 看取り介護加算日数単位を取得します。
-   * @return 看取り介護加算日数単位
-   */
-  public ACLabel getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
-    if(kaigoWelfareFacilityTakingCareNursingAddDaysUnit==null){
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysUnit = new ACLabel();
-
-      kaigoWelfareFacilityTakingCareNursingAddDaysUnit.setText("日");
-
-      addKaigoWelfareFacilityTakingCareNursingAddDaysUnit();
-    }
-    return kaigoWelfareFacilityTakingCareNursingAddDaysUnit;
 
   }
 
@@ -5190,6 +5190,8 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
 
     tab4.add(getKaigoWelfareFacilityTakingCareNursingAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab4.add(getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     tab4.add(getKaigoWelfareFacilityStayReturnSupportAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab4.add(getKaigoWelfareFacilityHomeShareAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -5257,6 +5259,31 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
    * 死亡日に内部項目を追加します。
    */
   protected void addKaigoWelfareFacilityTakingCareNursingAddRadioItem4(){
+
+  }
+
+  /**
+   * 看取り介護加算コンテナに内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
+
+    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDays(), VRLayout.FLOW);
+
+    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 看取り介護加算日数に内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityTakingCareNursingAddDays(){
+
+  }
+
+  /**
+   * 看取り介護加算日数単位に内部項目を追加します。
+   */
+  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
 
   }
 
@@ -5482,8 +5509,6 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
 
     tab5.add(getKaigoWelfareFacilityCalculationDivisionRadiloContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    tab5.add(getKaigoWelfareFacilityTakingCareNursingAddDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
   }
 
   /**
@@ -5526,31 +5551,6 @@ public class QS001_15111_201204Design extends QS001ServicePanel {
    * 加算のみに内部項目を追加します。
    */
   protected void addKaigoWelfareFacilityCalculationDivisionRadiloItem2(){
-
-  }
-
-  /**
-   * 看取り介護加算コンテナに内部項目を追加します。
-   */
-  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysContainer(){
-
-    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDays(), VRLayout.FLOW);
-
-    kaigoWelfareFacilityTakingCareNursingAddDaysContainer.add(getKaigoWelfareFacilityTakingCareNursingAddDaysUnit(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 看取り介護加算日数に内部項目を追加します。
-   */
-  protected void addKaigoWelfareFacilityTakingCareNursingAddDays(){
-
-  }
-
-  /**
-   * 看取り介護加算日数単位に内部項目を追加します。
-   */
-  protected void addKaigoWelfareFacilityTakingCareNursingAddDaysUnit(){
 
   }
 

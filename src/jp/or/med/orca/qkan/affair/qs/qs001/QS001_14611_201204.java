@@ -213,8 +213,14 @@ public class QS001_14611_201204 extends QS001_14611_201204Event {
         // を使用し居宅介護支援事業所、小規模多機能居宅介護支援事業所、介護予防支援、介護予防小規模多機能型居宅介護支援を提供している事業所を取得する。
         // getProviderInfo(数値配列 14311,17311,14611,17511);
         // バインドパスPROVIDER_ID を 1460102 に振りなおす
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 del begin
+        //VRList list = (VRList) QkanCommon.getProviderInfo(getDBManager(),
+        //        new int[] { 14311, 17311, 14611, 17511 });
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 del end
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
         VRList list = (VRList) QkanCommon.getProviderInfo(getDBManager(),
-                new int[] { 14311, 17311, 14611, 17511 });
+                new int[] { 14311, 17311, 14611, 17511, 17711 });
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
 
         ACBindUtilities.copyBindPath(list, "PROVIDER_ID", "1460102");
         // 委託先事業所を設定

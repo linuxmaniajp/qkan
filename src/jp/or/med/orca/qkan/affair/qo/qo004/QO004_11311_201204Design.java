@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2012/02/06  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2012/03/22  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -790,15 +790,15 @@ public class QO004_11311_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 加算Iを取得します。
-   * @return 加算I
+   * イ及びロの場合を取得します。
+   * @return イ及びロの場合
    */
   public ACRadioButtonItem getServiceAddProvisionStructuralRadioItem2(){
     if(serviceAddProvisionStructuralRadioItem2==null){
 
       serviceAddProvisionStructuralRadioItem2 = new ACRadioButtonItem();
 
-      serviceAddProvisionStructuralRadioItem2.setText("加算I");
+      serviceAddProvisionStructuralRadioItem2.setText("イ及びロの場合");
 
       serviceAddProvisionStructuralRadioItem2.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
@@ -811,15 +811,15 @@ public class QO004_11311_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 加算IIを取得します。
-   * @return 加算II
+   * ハの場合を取得します。
+   * @return ハの場合
    */
   public ACRadioButtonItem getServiceAddProvisionStructuralRadioItem3(){
     if(serviceAddProvisionStructuralRadioItem3==null){
 
       serviceAddProvisionStructuralRadioItem3 = new ACRadioButtonItem();
 
-      serviceAddProvisionStructuralRadioItem3.setText("加算II");
+      serviceAddProvisionStructuralRadioItem3.setText("ハの場合");
 
       serviceAddProvisionStructuralRadioItem3.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
@@ -1356,14 +1356,14 @@ public class QO004_11311_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 加算Iに内部項目を追加します。
+   * イ及びロの場合に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioItem2(){
 
   }
 
   /**
-   * 加算IIに内部項目を追加します。
+   * ハの場合に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioItem3(){
 

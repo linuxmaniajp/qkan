@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2012/02/03  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2012/03/22  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -294,15 +294,15 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供責任者体制を取得します。
-   * @return サービス提供責任者体制
+   * サービス提供責任者体制の減算を取得します。
+   * @return サービス提供責任者体制の減算
    */
   public ACValueArrayRadioButtonGroup getSecondClassServiceRadioGroup(){
     if(secondClassServiceRadioGroup==null){
 
       secondClassServiceRadioGroup = new ACValueArrayRadioButtonGroup();
 
-      getSecondClassServiceRadioGroupContainer().setText("サービス提供責任者体制");
+      getSecondClassServiceRadioGroupContainer().setText("サービス提供責任者体制の減算");
 
       secondClassServiceRadioGroup.setBindPath("1110103");
 
@@ -325,8 +325,8 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供責任者体制コンテナを取得します。
-   * @return サービス提供責任者体制コンテナ
+   * サービス提供責任者体制の減算コンテナを取得します。
+   * @return サービス提供責任者体制の減算コンテナ
    */
   protected ACLabelContainer getSecondClassServiceRadioGroupContainer(){
     if(secondClassServiceRadioGroupContainer==null){
@@ -339,8 +339,8 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供責任者体制モデルを取得します。
-   * @return サービス提供責任者体制モデル
+   * サービス提供責任者体制の減算モデルを取得します。
+   * @return サービス提供責任者体制の減算モデル
    */
   protected ACListModelAdapter getSecondClassServiceRadioGroupModel(){
     if(secondClassServiceRadioGroupModel==null){
@@ -351,15 +351,15 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 減算なしを取得します。
-   * @return 減算なし
+   * なしを取得します。
+   * @return なし
    */
   public ACRadioButtonItem getSecondClassServiceRadioItem1(){
     if(secondClassServiceRadioItem1==null){
 
       secondClassServiceRadioItem1 = new ACRadioButtonItem();
 
-      secondClassServiceRadioItem1.setText("減算なし");
+      secondClassServiceRadioItem1.setText("なし");
 
       secondClassServiceRadioItem1.setGroup(getSecondClassServiceRadioGroup());
 
@@ -372,15 +372,15 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 減算ありを取得します。
-   * @return 減算あり
+   * ありを取得します。
+   * @return あり
    */
   public ACRadioButtonItem getSecondClassServiceRadioItem2(){
     if(secondClassServiceRadioItem2==null){
 
       secondClassServiceRadioItem2 = new ACRadioButtonItem();
 
-      secondClassServiceRadioItem2.setText("減算あり");
+      secondClassServiceRadioItem2.setText("あり");
 
       secondClassServiceRadioItem2.setGroup(getSecondClassServiceRadioGroup());
 
@@ -1142,14 +1142,14 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供責任者体制に内部項目を追加します。
+   * サービス提供責任者体制の減算に内部項目を追加します。
    */
   protected void addSecondClassServiceRadioGroup(){
 
   }
 
   /**
-   * サービス提供責任者体制モデルに内部項目を追加します。
+   * サービス提供責任者体制の減算モデルに内部項目を追加します。
    */
   protected void addSecondClassServiceRadioGroupModel(){
 
@@ -1164,14 +1164,14 @@ public class QO004_11111_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 減算なしに内部項目を追加します。
+   * なしに内部項目を追加します。
    */
   protected void addSecondClassServiceRadioItem1(){
 
   }
 
   /**
-   * 減算ありに内部項目を追加します。
+   * ありに内部項目を追加します。
    */
   protected void addSecondClassServiceRadioItem2(){
 

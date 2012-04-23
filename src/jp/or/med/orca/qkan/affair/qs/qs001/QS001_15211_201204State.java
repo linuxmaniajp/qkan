@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/03/08  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -357,6 +357,28 @@ public class QS001_15211_201204State extends QS001_15211_201204Design {
 
         getOralKeepAddRadioGroup().setEnabled(false);
         getOralKeepAddRadioGroup().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「看取り介護・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_TERMINAL() throws Exception {
+
+        getTerminalDays().setEnabled(true);
+        getTerminalDays().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「看取り介護・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_TERMINAL() throws Exception {
+
+        getTerminalDays().setEnabled(false);
+        getTerminalDays().getParent().setEnabled(false);
 
   }
 

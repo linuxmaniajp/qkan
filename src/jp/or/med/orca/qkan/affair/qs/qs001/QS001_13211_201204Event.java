@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -28,6 +28,10 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.vr.util.VRMap;
 
@@ -45,9 +49,55 @@ public abstract class QS001_13211_201204Event extends QS001_13211_201204State im
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
+    getKaigoHealthCareOfTheAgedCalculationDivisionRadio().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                kaigoHealthCareOfTheAgedCalculationDivisionRadioSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getWatchKaigoAddRadioGroup().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                watchKaigoAddRadioGroupSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
+
+  /**
+   * 「加算のみ算定」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void kaigoHealthCareOfTheAgedCalculationDivisionRadioSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「看取り介護の有効状態」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void watchKaigoAddRadioGroupSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 
@@ -103,5 +153,21 @@ public abstract class QS001_13211_201204Event extends QS001_13211_201204State im
    * @return ACComboBox
    */
   public abstract ACComboBox getEndTimeCombo() throws Exception;
+
+  /**
+   * 「画面状態制御」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void changeState() throws Exception;
+
+  /**
+   * 「バインド時の処理」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void binded() throws Exception;
 
 }

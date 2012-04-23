@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/17  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -31,9 +31,12 @@ package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.Component;
 
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACRadioButtonItem;
+import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.ACValueArrayRadioButtonGroup;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACPanel;
@@ -41,6 +44,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.util.adapter.ACListModelAdapter;
 import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 /**
@@ -153,6 +157,12 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
 
   private ACRadioButtonItem watchKaigoAddRadioItem4;
 
+  private ACLabelContainer kaigoHealthCareTakingCareNursingAddDaysContainer;
+
+  private ACTextField kaigoHealthCareTakingCareNursingAddDays;
+
+  private ACLabel kaigoHealthCareTakingCareNursingAddDaysUnit;
+
   private ACLabelContainer kaigoHealthCareOfTheAgedHijoAddition;
 
   private ACIntegerCheckBox leaveApartmentsSupportAdd;
@@ -170,6 +180,16 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem3;
 
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem4;
+
+  private ACValueArrayRadioButtonGroup kaigoHealthCareOfTheAgedCalculationDivisionRadio;
+
+  private ACLabelContainer kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer;
+
+  private ACListModelAdapter kaigoHealthCareOfTheAgedCalculationDivisionRadioModel;
+
+  private ACRadioButtonItem kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1;
+
+  private ACRadioButtonItem kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2;
 
   //getter
 
@@ -1164,6 +1184,69 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
   }
 
   /**
+   * 看取り介護加算コンテナを取得します。
+   * @return 看取り介護加算コンテナ
+   */
+  public ACLabelContainer getKaigoHealthCareTakingCareNursingAddDaysContainer(){
+    if(kaigoHealthCareTakingCareNursingAddDaysContainer==null){
+
+      kaigoHealthCareTakingCareNursingAddDaysContainer = new ACLabelContainer();
+
+      kaigoHealthCareTakingCareNursingAddDaysContainer.setText("看取り介護加算日数");
+
+      kaigoHealthCareTakingCareNursingAddDaysContainer.setFollowChildEnabled(true);
+
+      addKaigoHealthCareTakingCareNursingAddDaysContainer();
+    }
+    return kaigoHealthCareTakingCareNursingAddDaysContainer;
+
+  }
+
+  /**
+   * 看取り介護加算日数を取得します。
+   * @return 看取り介護加算日数
+   */
+  public ACTextField getKaigoHealthCareTakingCareNursingAddDays(){
+    if(kaigoHealthCareTakingCareNursingAddDays==null){
+
+      kaigoHealthCareTakingCareNursingAddDays = new ACTextField();
+
+      kaigoHealthCareTakingCareNursingAddDays.setText("1");
+
+      kaigoHealthCareTakingCareNursingAddDays.setBindPath("1320115");
+
+      kaigoHealthCareTakingCareNursingAddDays.setColumns(2);
+
+      kaigoHealthCareTakingCareNursingAddDays.setCharType(VRCharType.ONLY_DIGIT);
+
+      kaigoHealthCareTakingCareNursingAddDays.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      kaigoHealthCareTakingCareNursingAddDays.setMaxLength(2);
+
+      addKaigoHealthCareTakingCareNursingAddDays();
+    }
+    return kaigoHealthCareTakingCareNursingAddDays;
+
+  }
+
+  /**
+   * 看取り介護加算日数単位を取得します。
+   * @return 看取り介護加算日数単位
+   */
+  public ACLabel getKaigoHealthCareTakingCareNursingAddDaysUnit(){
+    if(kaigoHealthCareTakingCareNursingAddDaysUnit==null){
+
+      kaigoHealthCareTakingCareNursingAddDaysUnit = new ACLabel();
+
+      kaigoHealthCareTakingCareNursingAddDaysUnit.setText("日");
+
+      addKaigoHealthCareTakingCareNursingAddDaysUnit();
+    }
+    return kaigoHealthCareTakingCareNursingAddDaysUnit;
+
+  }
+
+  /**
    * 退所関連加算を取得します。
    * @return 退所関連加算
    */
@@ -1341,6 +1424,99 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
       addServiceAddProvisionStructuralRadioItem4();
     }
     return serviceAddProvisionStructuralRadioItem4;
+
+  }
+
+  /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACValueArrayRadioButtonGroup getKaigoHealthCareOfTheAgedCalculationDivisionRadio(){
+    if(kaigoHealthCareOfTheAgedCalculationDivisionRadio==null){
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadio = new ACValueArrayRadioButtonGroup();
+
+      getKaigoHealthCareOfTheAgedCalculationDivisionRadioContainer().setText("算定区分");
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadio.setBindPath("9");
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadio.setUseClearButton(false);
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadio.setModel(getKaigoHealthCareOfTheAgedCalculationDivisionRadioModel());
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadio.setValues(new int[]{1,2});
+
+      addKaigoHealthCareOfTheAgedCalculationDivisionRadio();
+    }
+    return kaigoHealthCareOfTheAgedCalculationDivisionRadio;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getKaigoHealthCareOfTheAgedCalculationDivisionRadioContainer(){
+    if(kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer==null){
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer = new ACLabelContainer();
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer.setFollowChildEnabled(true);
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer.setVAlignment(VRLayout.CENTER);
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer.add(getKaigoHealthCareOfTheAgedCalculationDivisionRadio(), null);
+    }
+    return kaigoHealthCareOfTheAgedCalculationDivisionRadioContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getKaigoHealthCareOfTheAgedCalculationDivisionRadioModel(){
+    if(kaigoHealthCareOfTheAgedCalculationDivisionRadioModel==null){
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioModel = new ACListModelAdapter();
+      addKaigoHealthCareOfTheAgedCalculationDivisionRadioModel();
+    }
+    return kaigoHealthCareOfTheAgedCalculationDivisionRadioModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getKaigoHealthCareOfTheAgedCalculationDivisionRadioItem1(){
+    if(kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1==null){
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1 = new ACRadioButtonItem();
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1.setText("通常");
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1.setGroup(getKaigoHealthCareOfTheAgedCalculationDivisionRadio());
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addKaigoHealthCareOfTheAgedCalculationDivisionRadioItem1();
+    }
+    return kaigoHealthCareOfTheAgedCalculationDivisionRadioItem1;
+
+  }
+
+  /**
+   * 加算のみを取得します。
+   * @return 加算のみ
+   */
+  public ACRadioButtonItem getKaigoHealthCareOfTheAgedCalculationDivisionRadioItem2(){
+    if(kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2==null){
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2 = new ACRadioButtonItem();
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2.setText("加算のみ");
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2.setGroup(getKaigoHealthCareOfTheAgedCalculationDivisionRadio());
+
+      kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addKaigoHealthCareOfTheAgedCalculationDivisionRadioItem2();
+    }
+    return kaigoHealthCareOfTheAgedCalculationDivisionRadioItem2;
 
   }
 
@@ -1724,9 +1900,13 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
 
     tab2.add(getWatchKaigoAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab2.add(getKaigoHealthCareTakingCareNursingAddDaysContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     tab2.add(getKaigoHealthCareOfTheAgedHijoAddition(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab2.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab2.add(getKaigoHealthCareOfTheAgedCalculationDivisionRadioContainer(), VRLayout.FLOW_INSETLINE);
 
   }
 
@@ -1785,6 +1965,31 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
    * 死亡日に内部項目を追加します。
    */
   protected void addWatchKaigoAddRadioItem4(){
+
+  }
+
+  /**
+   * 看取り介護加算コンテナに内部項目を追加します。
+   */
+  protected void addKaigoHealthCareTakingCareNursingAddDaysContainer(){
+
+    kaigoHealthCareTakingCareNursingAddDaysContainer.add(getKaigoHealthCareTakingCareNursingAddDays(), VRLayout.FLOW);
+
+    kaigoHealthCareTakingCareNursingAddDaysContainer.add(getKaigoHealthCareTakingCareNursingAddDaysUnit(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 看取り介護加算日数に内部項目を追加します。
+   */
+  protected void addKaigoHealthCareTakingCareNursingAddDays(){
+
+  }
+
+  /**
+   * 看取り介護加算日数単位に内部項目を追加します。
+   */
+  protected void addKaigoHealthCareTakingCareNursingAddDaysUnit(){
 
   }
 
@@ -1859,6 +2064,42 @@ public class QS001_13211_201204Design extends QS001ServicePanel {
    * III型に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioItem4(){
+
+  }
+
+  /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addKaigoHealthCareOfTheAgedCalculationDivisionRadio(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addKaigoHealthCareOfTheAgedCalculationDivisionRadioModel(){
+
+    getKaigoHealthCareOfTheAgedCalculationDivisionRadioItem1().setButtonIndex(1);
+
+    getKaigoHealthCareOfTheAgedCalculationDivisionRadioModel().add(getKaigoHealthCareOfTheAgedCalculationDivisionRadioItem1());
+
+    getKaigoHealthCareOfTheAgedCalculationDivisionRadioItem2().setButtonIndex(2);
+
+    getKaigoHealthCareOfTheAgedCalculationDivisionRadioModel().add(getKaigoHealthCareOfTheAgedCalculationDivisionRadioItem2());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addKaigoHealthCareOfTheAgedCalculationDivisionRadioItem1(){
+
+  }
+
+  /**
+   * 加算のみに内部項目を追加します。
+   */
+  protected void addKaigoHealthCareOfTheAgedCalculationDivisionRadioItem2(){
 
   }
 

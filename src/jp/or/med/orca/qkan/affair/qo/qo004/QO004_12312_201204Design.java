@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2012/02/03  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2012/03/22  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -605,15 +605,15 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 環境基準ラジオグループを取得します。
-   * @return 環境基準ラジオグループ
+   * 設備基準ラジオグループを取得します。
+   * @return 設備基準ラジオグループ
    */
   public ACValueArrayRadioButtonGroup getEquipmentStandard(){
     if(EquipmentStandard==null){
 
       EquipmentStandard = new ACValueArrayRadioButtonGroup();
 
-      getEquipmentStandardContainer().setText("環境基準");
+      getEquipmentStandardContainer().setText("設備基準");
 
       EquipmentStandard.setBindPath("1230218");
 
@@ -630,8 +630,8 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 環境基準ラジオグループコンテナを取得します。
-   * @return 環境基準ラジオグループコンテナ
+   * 設備基準ラジオグループコンテナを取得します。
+   * @return 設備基準ラジオグループコンテナ
    */
   protected ACLabelContainer getEquipmentStandardContainer(){
     if(EquipmentStandardContainer==null){
@@ -644,8 +644,8 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 環境基準ラジオグループモデルを取得します。
-   * @return 環境基準ラジオグループモデル
+   * 設備基準ラジオグループモデルを取得します。
+   * @return 設備基準ラジオグループモデル
    */
   protected ACListModelAdapter getEquipmentStandardModel(){
     if(EquipmentStandardModel==null){
@@ -1061,8 +1061,8 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供強化加算を取得します。
-   * @return サービス提供強化加算
+   * サービス提供体制強化加算を取得します。
+   * @return サービス提供体制強化加算
    */
   public ACValueArrayRadioButtonGroup getServiceAddProvisionStructuralRadioGroup(){
     if(serviceAddProvisionStructuralRadioGroup==null){
@@ -1092,8 +1092,8 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供強化加算コンテナを取得します。
-   * @return サービス提供強化加算コンテナ
+   * サービス提供体制強化加算コンテナを取得します。
+   * @return サービス提供体制強化加算コンテナ
    */
   protected ACLabelContainer getServiceAddProvisionStructuralRadioGroupContainer(){
     if(serviceAddProvisionStructuralRadioGroupContainer==null){
@@ -1106,8 +1106,8 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供強化加算モデルを取得します。
-   * @return サービス提供強化加算モデル
+   * サービス提供体制強化加算モデルを取得します。
+   * @return サービス提供体制強化加算モデル
    */
   protected ACListModelAdapter getServiceAddProvisionStructuralRadioGroupModel(){
     if(serviceAddProvisionStructuralRadioGroupModel==null){
@@ -2170,14 +2170,14 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * 環境基準ラジオグループに内部項目を追加します。
+   * 設備基準ラジオグループに内部項目を追加します。
    */
   protected void addEquipmentStandard(){
 
   }
 
   /**
-   * 環境基準ラジオグループモデルに内部項目を追加します。
+   * 設備基準ラジオグループモデルに内部項目を追加します。
    */
   protected void addEquipmentStandardModel(){
 
@@ -2348,14 +2348,14 @@ public class QO004_12312_201204Design extends QO004ProviderPanel {
   }
 
   /**
-   * サービス提供強化加算に内部項目を追加します。
+   * サービス提供体制強化加算に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroup(){
 
   }
 
   /**
-   * サービス提供強化加算モデルに内部項目を追加します。
+   * サービス提供体制強化加算モデルに内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroupModel(){
 

@@ -528,6 +528,24 @@ public class QS001_15211_201204 extends QS001_15211_201204Event {
         } else {
             setState_VALID_ORAL_CARE();
         }
+        
+        // 算定区分が、加算のみ算定である場合
+        if (getKaigoHealthCareOfTheAgedCalculationDivisionRadio()
+                .getSelectedIndex() == 2) {
+            // ターミナルケア加算の選択状況による制御
+            switch (getTerminalRadio().getSelectedIndex()) {
+            case 1: // なし選択時
+                setState_INVALID_TERMINAL();
+                break;
+            case 2:
+            case 3:
+            case 4:
+                setState_VALID_TERMINAL();
+                break;
+            }
+        } else {
+            setState_INVALID_TERMINAL();
+        }
 
         // 上記処理で有効になったコントロールでも、事業所体制で制約を受けるものは上書きで制御する。
         resetStateByRestrictBindPath();
@@ -544,6 +562,18 @@ public class QS001_15211_201204 extends QS001_15211_201204Event {
             ListSelectionEvent e) throws Exception {
         changeState();
 
+    }
+
+    @Override
+    protected void terminalRadioSelectionChanged(ListSelectionEvent e)
+            throws Exception {
+        changeState();
+    }
+
+    @Override
+    protected void kaigoHealthCareOfTheAgedCalculationDivisionRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        changeState();
     }
 
 }

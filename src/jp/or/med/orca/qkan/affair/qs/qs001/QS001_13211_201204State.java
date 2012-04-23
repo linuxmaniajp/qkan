@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -36,6 +36,28 @@ public class QS001_13211_201204State extends QS001_13211_201204Design {
    * コンストラクタです。
    */
   public QS001_13211_201204State(){
+  }
+
+  /**
+   * 「看取り介護・有効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_TERMINAL() throws Exception {
+
+        getKaigoHealthCareTakingCareNursingAddDays().setEnabled(true);
+        getKaigoHealthCareTakingCareNursingAddDays().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「看取り介護・無効」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_TERMINAL() throws Exception {
+
+        getKaigoHealthCareTakingCareNursingAddDays().setEnabled(false);
+        getKaigoHealthCareTakingCareNursingAddDays().getParent().setEnabled(false);
+
   }
 
 }

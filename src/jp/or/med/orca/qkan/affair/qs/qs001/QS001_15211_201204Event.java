@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/04/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -164,6 +164,38 @@ public abstract class QS001_15211_201204Event extends QS001_15211_201204State im
             }
         }
     });
+    getTerminalRadio().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                terminalRadioSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getKaigoHealthCareOfTheAgedCalculationDivisionRadio().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                kaigoHealthCareOfTheAgedCalculationDivisionRadioSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -216,6 +248,20 @@ public abstract class QS001_15211_201204Event extends QS001_15211_201204State im
    * @throws Exception 処理例外
    */
   protected abstract void oralKeepStructureAddRadioGroupSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「ターミナルケアの有効状態」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void terminalRadioSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「加算のみの有効状態」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void kaigoHealthCareOfTheAgedCalculationDivisionRadioSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 
