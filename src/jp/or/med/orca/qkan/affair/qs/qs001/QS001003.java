@@ -535,7 +535,12 @@ public class QS001003 extends QS001003Event {
         setAffairTitle("QS001003");
         // ※居宅サービス提供者
         // コンボのアイテムとして、居宅介護支援事業者を設定する。
-        setSupportProviders(QkanCommon.getProviderInfo(getDBManager(), new int[]{14311, 17311}));
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 del begin
+        //setSupportProviders(QkanCommon.getProviderInfo(getDBManager(), new int[]{14311, 17311}));
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 del end
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+        setSupportProviders(QkanCommon.getProviderInfo(getDBManager(), new int[]{14311, 17311, 17711}));
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
         setPreventSupportProviders(QkanCommon.getProviderInfo(getDBManager(), new int[]{14611, 17511}));
         
         getSupportProviderName().setModel(getSupportProviders());

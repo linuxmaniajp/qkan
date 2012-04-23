@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司 和善
- * 作成日: 2011/12/19  日本コンピューター株式会社 上司 和善 新規作成
+ * 作成日: 2012/04/10  日本コンピューター株式会社 上司 和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -51,7 +51,6 @@ import jp.or.med.orca.qkan.QkanConstants;
 /**
  * 利用者登録イベント定義(QU002) 
  */
-@SuppressWarnings("serial")
 public abstract class QU002Event extends QU002SQL {
   /**
    * コンストラクタです。
@@ -720,6 +719,7 @@ public abstract class QU002Event extends QU002SQL {
   public static final int SERVICE_TYPE_YOBOU_SHIEN = 14611;
   public static final int SERVICE_TYPE_SHOKIBO = 17311;
   public static final int SERVICE_TYPE_YOBOU_SHOKIBO = 17511;
+  public static final int SERVICE_TYPE_FUKUGOUGATA = 17711;
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
   public static final int YOUKAIGODO_HIGAITOU = 1;

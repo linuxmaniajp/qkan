@@ -2016,12 +2016,22 @@ public class QO004 extends QO004Event {
         // 対象レコードの取得
         VRMap map = getServiceInfos(getCurrentServiceType());
         
+        // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 del begin
+//        String[] stayParams = new String[] {
+//                "SYSTEM_SERVICE_KIND_DETAIL", "SERVICE_VALID_START", "SERVICE_VALID_END", "SERVICE_CODE_KIND",
+//                "SERVICE_NAME", "SERVICE_ABBREVIATION", "SERVICE_KIND_NAME", "SERVICE_CALENDAR_ABBREVIATION",
+//                "CLAIM_STYLE_TYPE", "BUSINESS_TYPE", "CALENDAR_PASTE_FLAG", "CHANGES_CONTENT_TYPE", "CLAIM_LAYER",
+//                "SERVICE_SORT", "PROVIDER_SERVICE_ID", "LAST_TIME", "PROVIDER_ID"
+//        };
+        // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 del end
+        // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
         String[] stayParams = new String[] {
-                "SYSTEM_SERVICE_KIND_DETAIL", "SERVICE_VALID_START", "SERVICE_VALID_END", "SERVICE_CODE_KIND",
+                "OFFER" ,"SYSTEM_SERVICE_KIND_DETAIL", "SERVICE_VALID_START", "SERVICE_VALID_END", "SERVICE_CODE_KIND",
                 "SERVICE_NAME", "SERVICE_ABBREVIATION", "SERVICE_KIND_NAME", "SERVICE_CALENDAR_ABBREVIATION",
                 "CLAIM_STYLE_TYPE", "BUSINESS_TYPE", "CALENDAR_PASTE_FLAG", "CHANGES_CONTENT_TYPE", "CLAIM_LAYER",
                 "SERVICE_SORT", "PROVIDER_SERVICE_ID", "LAST_TIME", "PROVIDER_ID"
         };
+        // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
         
         //処理に必要な値を退避
         VRMap stay = new VRHashMap();
@@ -2042,6 +2052,10 @@ public class QO004 extends QO004Event {
             // サービスを提供していなかった場合
             // 削除可能なサービスか判別する
             if (!doCheckDeleteService()) {
+                // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+                getOfferCheck().setValue(1);
+                setState_SERVICE_PANEL_ENABLE_TRUE();
+                // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
                 return false;
             } else {
                 // 削除可能だった場合

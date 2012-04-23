@@ -121,17 +121,7 @@ public class QM002 extends QM002Event {
                     .getInstance().getLoginProviderID());
 
             VRList menuTreeList = null;
-            
-            // FIXME H24.03出荷時点では、実績集計を使用不可とする
-            // 設定ファイルを読み込み、画面の初期状態を設定する。
-            if (hasProperty("FullServicePrint") && ACCastUtilities.toBoolean(getProperty("FullServicePrint"), false)) {
-                // 問答無用で全件メニュー表示
-                menuTreeList = getDBManager().executeQuery(getSQL_GET_M_MENU(loginProviderMap));
-                
-            } else {
-                // 実績集計非表示の制限付き
-                menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE(loginProviderMap));
-            }
+            menuTreeList = getDBManager().executeQuery(getSQL_GET_MENU_TREE(loginProviderMap));
             // 医療系非表示対応 fujihara.shin 2009.1.15 edit end
 
             // 取得件数が0件より多い場合

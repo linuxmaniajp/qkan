@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: メインメニュー
- * 作成日: 2012/02/24  日本コンピューター株式会社 メインメニュー 新規作成
+ * 作成日: 2012/03/14  日本コンピューター株式会社 メインメニュー 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -116,18 +116,6 @@ public class QM002SQL extends QM002State {
     sb.append(" =");
 
     sb.append(" M_MENU.MENU_ID");
-
-    sb.append(")");
-
-    sb.append("AND");
-
-    sb.append("(");
-
-    sb.append(" M_MENU.MENU_ID");
-
-    sb.append(" NOT IN");
-
-    sb.append(" (105, 106)");
 
     sb.append(")");
 

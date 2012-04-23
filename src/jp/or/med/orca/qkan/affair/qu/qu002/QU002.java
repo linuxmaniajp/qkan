@@ -4143,6 +4143,9 @@ public class QU002 extends QU002Event {
         VRList serviceKind = new VRArrayList();
         serviceKind.add(new Integer(SERVICE_TYPE_SHIEN));
         serviceKind.add(new Integer(SERVICE_TYPE_SHOKIBO));
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+        serviceKind.add(new Integer(SERVICE_TYPE_FUKUGOUGATA));
+        // [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
         setProviderListKaigoShien(QkanCommon.getProviderInfo(getDBManager(),
                 serviceKind));
 

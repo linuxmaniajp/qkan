@@ -4019,6 +4019,14 @@ public class QkanCommon {
             return lowVersion;
         case 13911: // 介護予防認知症対応型共同生活介護（短期利用）
             return lowVersion;
+        case 12711: // 特定施設入居者生活介護（短期利用）
+            return lowVersion;
+        case 17611: // 定期巡回・随時対応型訪問介護看護
+            return lowVersion;
+        case 12811: // 地域密着型特定施設入居者生活介護（短期利用）
+            return lowVersion;
+        case 17711: // 複合型サービス
+            return lowVersion;
         }
 
         return lowVersion;

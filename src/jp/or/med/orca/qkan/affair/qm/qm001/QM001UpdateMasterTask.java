@@ -1,15 +1,28 @@
+
 /*
- * 作成日: 2006/06/08
+ * Project code name "ORCA"
+ * 給付管理台帳ソフト QKANCHO（JMA care benefit management software）
+ * Copyright(C) 2002 JMA (Japan Medical Association)
  *
+ * This program is part of "QKANCHO (JMA care benefit management software)".
+ *
+ * This program is distributed in the hope that it will be useful
+ * for further advancement in medical care, according to JMA Open
+ * Source License, but WITHOUT ANY WARRANTY.
+ * Everyone is granted permission to use, copy, modify and
+ * redistribute this program, but only under the conditions described
+ * in the JMA Open Source License. You should have received a copy of
+ * this license along with this program. If not, stop using this
+ * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+ * 113-8621, Japan.
  */
+
 package jp.or.med.orca.qkan.affair.qm.qm001;
 
 import jp.nichicom.ac.sql.ACDBManager;
 
 /**
  * システムから登録可能なマスタの補正用タスククラス
- * 
- * @author n0153
  * 
  */
 public class QM001UpdateMasterTask {
@@ -38,8 +51,32 @@ public class QM001UpdateMasterTask {
     public void adjustTask(ACDBManager dbm) throws Exception {
 
         try {
-
+            // 予防版タスク
+            task1(dbm);
         } catch (Exception ex) {
+            throw ex;
+        }
+    }
+    
+    /**
+     * 郵便番号テーブルのPRIMARY KEY削除
+     * @param dbm DBManager
+     * @throws Exception
+     */
+    public void task1(ACDBManager dbm) throws Exception{
+
+        try{ 
+            QM001UpdateMasterOperation op = new QM001UpdateMasterOperation();
+            
+            // 郵便番号テーブルのPRIMARY KEY削除実行
+            op.dropPostPrimaryKey(dbm);
+            
+            // コミット
+            dbm.commitTransaction();
+                
+            
+        }catch(Exception ex){
+            dbm.rollbackTransaction();
             throw ex;
         }
     }

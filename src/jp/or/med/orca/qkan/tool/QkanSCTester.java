@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.*;
 
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.core.ACDBManagerCreatable;
@@ -27,10 +26,8 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
 import jp.nichicom.ac.sql.ACDBManager;
-import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.util.ACMessageBoxDialog;
 import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.text.VRDateFormat;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
@@ -285,7 +282,6 @@ public class QkanSCTester {
 	private Collection<VRMap> inputDataList;
 	private Qkan10011_ServiceUnitGetter ug;
 	private ACComboBox providerCombo;
-	private QS001ServiceKindList serviceList;
 
 	private QkanSCTester(Builder builder) {
 		servicePanel = (QS001ServicePanel) builder.servicePanel;
@@ -295,7 +291,6 @@ public class QkanSCTester {
 		targetDate = builder.targetDate;
 		inputDataList = builder.inputDataList;
 		providerCombo = builder.providerCombo;
-		serviceList = builder.serviceList;
 	}
 
 	public String execute() throws Exception {

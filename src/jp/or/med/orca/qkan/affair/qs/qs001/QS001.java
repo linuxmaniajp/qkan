@@ -1521,6 +1521,11 @@ public class QS001 extends QS001Event {
         // ■入力チェック
         final String[] SENMONIN_NO_TYPE = new String[] { "1430107", "1730104",
                 "1750104", "1460103", "1770116" };
+        
+        // 複数回チェックの防止
+        boolean doubleCheck_15111 = false;
+        boolean doubleCheck_15411 = false;
+        
         // 予防時対応（要望）
         // 2005/05/31
         // ※介護支援専門員番号が未入力の場合の未入力チェック
@@ -1594,7 +1599,7 @@ public class QS001 extends QS001Event {
             if ("15111".equals(ACCastUtilities.toString(VRBindPathParser.get(
                     "SYSTEM_SERVICE_KIND_DETAIL", row)))) {
                 // 日常生活継続支援
-                if (ACCastUtilities.toInt(row.getData("1510133"), 0) > 1) {
+                if (ACCastUtilities.toInt(row.getData("1510133"), 0) > 1 && !doubleCheck_15111) {
                     // サービス提供体制強化加算が算定されている
                     if (ACCastUtilities.toInt(row.getData("1510141"), 0) > 1) {
                         if (QkanMessageList.getInstance()
@@ -1604,13 +1609,14 @@ public class QS001 extends QS001Event {
                             return false;
 
                         }
+                        doubleCheck_15111 = true;
                     }
                 }
             } else if ("15411".equals(ACCastUtilities.toString(VRBindPathParser
                     .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
                 // 地域密着型介護老人福祉施設
                 // 日常生活継続支援
-                if (ACCastUtilities.toInt(row.getData("1540129"), 0) > 1) {
+                if (ACCastUtilities.toInt(row.getData("1540129"), 0) > 1 && !doubleCheck_15411) {
                     // サービス提供体制強化加算が算定されている
                     if (ACCastUtilities.toInt(row.getData("1540136"), 0) > 1) {
                         if (QkanMessageList.getInstance()
@@ -1620,6 +1626,7 @@ public class QS001 extends QS001Event {
                             return false;
 
                         }
+                        doubleCheck_15411 = true;
                     }
                 }
             }
@@ -1644,13 +1651,15 @@ public class QS001 extends QS001Event {
             switch (ACCastUtilities.toInt(VRBindPathParser.get(
                     BIND_PATH_OF_SYSTEM_SERVICE_KIND_DETAIL, row), 0)) {
             case 14311:
-                // サービスが居宅介護支援の場合
+                // [ID:0000702][Masahiko.Higuchi] 2012/03 平成24年4月法改正対応 edit begin
+                // サービスが居宅介護支援の場合 かつ 基本算定の場合
                 // countOf14311に1を加算する。
-                if (++countOf14311 >= 2) {
+                if ((ACCastUtilities.toInt(row.getData("9"),1) == 1) && ++countOf14311 >= 2) {
                     // countOf14311が2以上の場合
                     // errorServiceに"居宅介護支援"を代入する。
                     errorService = "居宅介護支援";
                 }
+                // [ID:0000702][Masahiko.Higuchi] 2012/03 edit end
                 break;
             case 14611:
                 // サービスが介護予防支援の場合

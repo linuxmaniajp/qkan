@@ -40,6 +40,7 @@ public class QkanTestHelper extends JDialog {
 		getContentPane().add(tabs, BorderLayout.CENTER);
 
 		tabs.addTab("—\’èEÀÑ", QkanTestHelperServiceTab.getInstance());
+		tabs.add("‚»‚Ì‘¼",QkanTestHelperOtherTab.getInstance());
 	}
 
 	static ACAffairable getNowPanel() {
