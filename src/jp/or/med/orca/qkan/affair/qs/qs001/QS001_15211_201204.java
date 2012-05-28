@@ -52,7 +52,7 @@ public class QS001_15211_201204 extends QS001_15211_201204Event {
      * コンストラクタです。
      */
     public QS001_15211_201204() {
-        
+
         // 必須の事業所設定項目
         putCheckProviderBindPath("介護職員処遇改善加算", "4");
 
@@ -468,7 +468,14 @@ public class QS001_15211_201204 extends QS001_15211_201204Event {
      */
     public void binded() throws Exception {
         // ※データバインド後の処理
-        if (getSpecialMedicalExpense().getDataModel().isEmpty()) {
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 del begin
+        // if (getSpecialMedicalExpense().getDataModel().isEmpty()) {
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 del end
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 add begin
+        if (getSpecialMedicalExpense().getDataModel().isEmpty()
+                || !getSpecialMedicalExpense().isEnabled()) {
+            getSpecialMedicalExpense().clearDataModel();
+            // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 add begin
             // 特別療養費ボタンのデータが空の場合
             // 特別療養費ラベルに「設定なし」と表示する。
             getSpecialMedicalExpenseLabel().setText("設定なし");
@@ -528,7 +535,7 @@ public class QS001_15211_201204 extends QS001_15211_201204Event {
         } else {
             setState_VALID_ORAL_CARE();
         }
-        
+
         // 算定区分が、加算のみ算定である場合
         if (getKaigoHealthCareOfTheAgedCalculationDivisionRadio()
                 .getSelectedIndex() == 2) {

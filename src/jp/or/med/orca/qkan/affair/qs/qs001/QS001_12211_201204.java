@@ -322,13 +322,13 @@ public class QS001_12211_201204 extends QS001_12211_201204Event {
         // ※入力内容に不備がないかをチェックし、サービスデータを返す。
         // 施設等の区分（体制）　
         // 日帰りショートステイの場合はエラーにしない
-//        if (getShortStayRecuperationHealthFacilityInstitutionDivisionRadio()
-//                .getSelectedIndex() != 3
-//                && getShortStayRecuperationHealthFacilityDivision()
-//                        .getSelectedIndex() < 1) {
-//            QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-//            return null;
-//        }
+        // if (getShortStayRecuperationHealthFacilityInstitutionDivisionRadio()
+        // .getSelectedIndex() != 3
+        // && getShortStayRecuperationHealthFacilityDivision()
+        // .getSelectedIndex() < 1) {
+        // QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+        // return null;
+        // }
         // 療養体制維持特別加算
         if (getShortStayRecuperationHealthFacilityRecuperationRadio()
                 .getSelectedIndex() < 1) {
@@ -413,8 +413,19 @@ public class QS001_12211_201204 extends QS001_12211_201204Event {
      * @throws Exception 処理例外
      */
     public void binded() throws Exception {
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 del begin
+        // if (getShortStayRecuperationHealthFacilitySpecialMedicalExpense()
+        // .getDataModel().isEmpty()) {
+        // [ID:0000739][Masahiko.Higuchi] del end
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 add begin
         if (getShortStayRecuperationHealthFacilitySpecialMedicalExpense()
-                .getDataModel().isEmpty()) {
+                .getDataModel().isEmpty()
+                || !getShortStayRecuperationHealthFacilitySpecialMedicalExpense()
+                        .isEnabled()) {
+            // バインド時にクリアする
+            getShortStayRecuperationHealthFacilitySpecialMedicalExpense()
+                    .clearDataModel();
+            // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 add begin
             // 特別療養費ボタンのデータが空の場合
             // 特別療養費ラベルに「設定なし」と表示する。
             getShortStayRecuperationHealthFacilitySpecialMedicalExpenseLabel()
@@ -520,14 +531,15 @@ public class QS001_12211_201204 extends QS001_12211_201204Event {
             // 認知症行動・心理症状緊急対応加算(dementiaActionAddRadioGroup)を有効にする。
             setState_VALID_DEMENTIA_ACTION();
         }
-        
+
         // 認定履歴を取得し、要介護度４または５の利用者であるか確認
         boolean overKaigodo4 = false;
         VRList ninteiList = getCalculater().getPatientInsureInfoHistoryList();
         for (int i = 0; i < ninteiList.size(); i++) {
-            VRMap nintei = (VRMap)ninteiList.get(i);
-            
-            switch (ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE", nintei), 0)) {
+            VRMap nintei = (VRMap) ninteiList.get(i);
+
+            switch (ACCastUtilities.toInt(
+                    VRBindPathParser.get("JOTAI_CODE", nintei), 0)) {
             case 24: // 要介護４
             case 25: // 要介護５
                 overKaigodo4 = true;
@@ -578,7 +590,7 @@ public class QS001_12211_201204 extends QS001_12211_201204Event {
             } else {
                 setState_INVALID_MEDICAL_MANAGEMENT();
             }
-        	break;
+            break;
         }
 
         // 上記処理で有効になったコントロールでも、事業所体制で制約を受けるものは上書きで制御する。

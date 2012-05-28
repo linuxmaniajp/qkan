@@ -55,7 +55,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     public QS001_12511_201204() {
         // 必須の事業所設定項目
         putCheckProviderBindPath("介護職員処遇改善加算", "4");
-        
+
         // 値を転記する事業所設定項目
         putImportProviderBindPath("施設等の区分", "1250101", "1250101");
         putImportProviderBindPath("人員配置区分（従来型）", "1250123", "1250124");
@@ -67,13 +67,13 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
         putImportProviderBindPath("療養体制維持特別加算", "1250117", "1250114");
         putImportProviderBindPath("夜勤職員配置加算", "1250118", "1250120");
         putImportProviderBindPath("サービス提供体制強化加算", "1250121", "1250117");
-        
+
         // 値により入力を禁止する事業所設定項目
         putRestrictProviderBindPath("ユニットケア体制", "1250104", "1250112");
         putRestrictProviderBindPath("リハビリテーション機能強化", "1250105", "1250105");
         putRestrictProviderBindPath("若年性認知症利用者受入加算", "1250119", "1250123");
         putRestrictProviderBindPath("療養食", "1250120", "1250108");
-        
+
     }
 
     // コンポーネントイベント
@@ -81,10 +81,8 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「施設区分選択時イベント」イベントです。
      * 
-     * @param e
-     *            イベント情報
-     * @throws Exception
-     *             処理例外
+     * @param e イベント情報
+     * @throws Exception 処理例外
      */
     protected void shortStayRecuperationHealthFacilityInstitutionDivisionRadioActionPerformed(
             ActionEvent e) throws Exception {
@@ -97,10 +95,8 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「食事提供選択」イベントです。
      * 
-     * @param e
-     *            イベント情報
-     * @throws Exception
-     *             処理例外
+     * @param e イベント情報
+     * @throws Exception 処理例外
      */
     protected void shortStayRecuperationHealthFacilityDinnerOfferActionPerformed(
             ActionEvent e) throws Exception {
@@ -125,10 +121,8 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「特別療養費設定」イベントです。
      * 
-     * @param e
-     *            イベント情報
-     * @throws Exception
-     *             処理例外
+     * @param e イベント情報
+     * @throws Exception 処理例外
      */
     protected void specialMedicalExpenseActionPerformed(ActionEvent e)
             throws Exception {
@@ -168,16 +162,17 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「初期化」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public void initialize() throws Exception {
 
         // ※画面展開時の初期設定
         getSpecialMedicalExpense().clearDataModel();
         // QS001200(特別療養費)よりサービス種類(SYSTEM_SERVICE_KIND_DETAIL)に応じたbindPath配列を取得し、特別療養費ボタンに設定する。
-        getSpecialMedicalExpense().setBindPathes(
-                QS001S02_201204.getTargetBindPathes(SYSTEM_SERVICE_KIND_DETAIL));
+        getSpecialMedicalExpense()
+                .setBindPathes(
+                        QS001S02_201204
+                                .getTargetBindPathes(SYSTEM_SERVICE_KIND_DETAIL));
         // ※コンボアイテムの設定
         // ※準備
         // コンボアイテム設定用のレコード comboItemMap を生成する。
@@ -215,8 +210,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「事業所コンボ変更時関数」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public void providerSelected(VRMap provider) throws Exception {
         // ※事業所コンボ変更時に呼ぶ関数
@@ -226,7 +220,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
             // ※準備
             // 事業所連動用のレコード defaultMap を生成する。
             VRMap defaultMap = getImportData();
-            
+
             // ※設定
             // ※事業所連動
             // 職員の欠員による減算の状況（事業所パネル）KEY：1250122の値をチェックする。
@@ -249,7 +243,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
                 VRBindPathParser.set("1250109", defaultMap, new Integer(3));
                 break;
             }
-            
+
             // 送迎体制（事業所パネル）KEY：1250106の値をチェックする。
             switch (ACCastUtilities.toInt(
                     VRBindPathParser.get("1250106", provider), 0)) {
@@ -264,7 +258,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
                 VRBindPathParser.set("6", defaultMap, new Integer(3));
                 break;
             }
-            
+
             // ※展開
             // 自身(this)にdefaultMapに設定する。
             getThis().setSource(defaultMap);
@@ -288,13 +282,13 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「入力内容の不備を検査」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public VRMap getValidData() throws Exception {
         // ※入力内容に不備がないかをチェックし、サービスデータを返す。
         // 施設等の区分（体制）が未入力の場合
-        if (getShortStayRecuperationHealthFacilityInstitutionDivisionRadio().getSelectedIndex() < 1) {
+        if (getShortStayRecuperationHealthFacilityInstitutionDivisionRadio()
+                .getSelectedIndex() < 1) {
             QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
             return null;
         }
@@ -334,8 +328,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「事業所情報の必要性を取得」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public boolean isUseProvider() throws Exception {
         // ※事業所情報が必要なサービスであるかを返す。
@@ -346,8 +339,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「開始時刻入力用のコンボ取得」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public ACComboBox getBeginTimeCombo() throws Exception {
         // ※開始時刻入力用のコンボを返す。
@@ -358,8 +350,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「終了時刻入力用のコンボ取得」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public ACComboBox getEndTimeCombo() throws Exception {
         // ※終了時刻入力用のコンボを返す。
@@ -370,8 +361,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「画面状態制御」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public void checkState() throws Exception {
         // ※画面状態の制御を行います。
@@ -411,7 +401,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
             setState_FACILITY_TYPE_6();
             break;
         }
-        
+
         // 事業所体制と同期
         resetStateByRestrictBindPath();
     }
@@ -419,8 +409,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「食事テキスト制御」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public void checkDinnerState() throws Exception {
         // ※食事テキストの制御を行う
@@ -441,8 +430,7 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「食事費用合計値」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public void checkMeatCost() throws Exception {
         // ※食事時期をもとに選択事業所における食事費用を返す。
@@ -518,11 +506,17 @@ public class QS001_12511_201204 extends QS001_12511_201204Event {
     /**
      * 「データバインド後の処理」に関する処理を行ないます。
      * 
-     * @throws Exception
-     *             処理例外
+     * @throws Exception 処理例外
      */
     public void binded() throws Exception {
-        if (getSpecialMedicalExpense().getDataModel().isEmpty()) {
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 del begin
+        // if (getSpecialMedicalExpense().getDataModel().isEmpty()) {
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 del end
+        // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 add begin
+        if (getSpecialMedicalExpense().getDataModel().isEmpty()
+                || !getSpecialMedicalExpense().isEnabled()) {
+            getSpecialMedicalExpense().clearDataModel();
+            // [ID:0000739][Masahiko.Higuchi] 2012/05 特別療養費項目のクリア処理 add end
             // 特別療養費ボタンのデータが空の場合
             // 特別療養費ラベルに「設定なし」と表示する。
             getSpecialMedicalExpenseLabel().setText("設定なし");
