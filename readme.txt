@@ -18,10 +18,10 @@
 【注意点】
 ・以下のファイルは同梱しておりません。
 　◇サードパーティ製ライブラリ
-　　→iText-5.0.6.jar、iTextAsian.jar、jaybird-full-2.1.6.jar
+　　→iText.jar、iTextAsian.jar、jaybird-full-2.1.6.jar
 　　※ビルドに必用であるため、バイナリモジュールから転用するか
 　　　当該ライブラリの公開サイトから入手してください。
 　◇実行に必用でもビルドには不要のリソースファイル
-　　→property.xml、calendar.xml、jarキックモジュール(*.exe、*.app)、
+　　→properity.xml、calendar.xml、jarキックモジュール(*.exe、*.app)、
 　　　formatフォルダ以下、licenceフォルダ以下、versionフォルダ以下等
 　　※必要に応じて、バイナリモジュールから転用してください。

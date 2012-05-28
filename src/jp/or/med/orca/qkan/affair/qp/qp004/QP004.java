@@ -561,6 +561,10 @@ public class QP004 extends QP004Event {
 					claimDataMap.setData("DETAIL_SUMMARY_MEMO", firstServiceCodeMaster.getData("SUMMARY_MEMO"));
 					claimDataMap.setData("CLASS_TYPE", firstServiceCodeMaster.getData("CLASS_TYPE"));
 					claimDataMap.setData("CODE_ID", firstServiceCodeMaster.getData("CODE_ID"));
+					
+					//[ID:0000737][Shin Fujihara] 2012/05 add begin 重度療養管理加算のコード変換
+					doChangeTekiyoForDisplayCategory3(claimDataMap);
+					//[ID:0000737][Shin Fujihara] 2012/05 add end
 
 					// 摘要欄記載事項一覧テーブルの行のコンポーネントの設定を行う。
 					// ・第一引数：HashMap（明細情報レコード）
@@ -622,6 +626,17 @@ public class QP004 extends QP004Event {
 				claimDataMap.setData("SPECIAL_CLINIC_SUMMARY_MEMO", firstServiceCodeMaster.getData("SUMMARY_MEMO"));
 				claimDataMap.setData("CLASS_TYPE", firstServiceCodeMaster.getData("CLASS_TYPE"));
 				claimDataMap.setData("CODE_ID", firstServiceCodeMaster.getData("CODE_ID"));
+				
+				//[ID:0000737][Shin Fujihara] 2012/05 add begin 短期入所療養介護で重度療養管理(35)の場合は、摘要欄を変更
+                switch (getClaimStyleType()){
+                case CLAIM_STYLE_TYPE41:
+                case CLAIM_STYLE_TYPE42:
+                    if ("35".equals(ACCastUtilities.toString(claimDataMap.getData(SPECIAL_CLINIC_FLAG_CODE), ""))) {
+                        claimDataMap.setData("CODE_ID", new Integer(286));
+                    }
+                    break;
+                }
+				//[ID:0000737][Shin Fujihara] 2012/05 add end
 
 				// 画面表示用にデータを変換する。
 				doChangeTekiyoForDisplay(claimDataMap);
@@ -911,6 +926,18 @@ public class QP004 extends QP004Event {
 					}
 					saveMap.remove("701008");
 				}
+				
+		        //[ID:0000737][Shin Fujihara] 2012/05 add begin 重度療養管理加算のコード変換
+		        //明細情報レコードがnulではない場合
+		        if (!(getClaimListDetail() == null || getClaimListDetail().isEmpty())) {
+		        	Iterator detailsIterator = getClaimListDetail().listIterator();
+		        	
+		        	while (detailsIterator.hasNext()) {
+		        		VRMap row = (VRMap) detailsIterator.next();
+		        		doChangeTekiyoForUpdateCategory3(row);
+		        	}
+		        }
+		        //[ID:0000737][Shin Fujihara] 2012/05 add end
 
 				// 特定診療費情報レコードがnullでない場合
 				if (!(getClaimListSpecialClinic() == null || getClaimListSpecialClinic().isEmpty())) {
@@ -1049,6 +1076,14 @@ public class QP004 extends QP004Event {
 			// レコードに以下のKEY/VALUEで設定する。
 			// ・KEY：501023 VALUE：6
 			claimDataMap.setData(TEKIYOU100_FLAG_CODE, new Integer(6));
+		//[ID:0000737][Shin Fujihara] 2012/05 add begin 短期入所療養介護で重度療養管理(35)の場合は、摘要欄を変更
+		} else if (("ト").equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
+		    claimDataMap.setData(TEKIYOU100_FLAG_CODE, new Integer(7));
+        } else if (("チ").equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
+            claimDataMap.setData(TEKIYOU100_FLAG_CODE, new Integer(8));
+        } else if (("リ").equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
+            claimDataMap.setData(TEKIYOU100_FLAG_CODE, new Integer(9));
+		//[ID:0000737][Shin Fujihara] 2012/05 add end
 		} else if (("").equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
 			// レコードのKEY：501023の値が""（空文字）の場合
 			// レコードに以下のKEY/VALUEで設定する。
@@ -1097,6 +1132,15 @@ public class QP004 extends QP004Event {
 			// レコードに以下のKEY/VALUEで設定する。
 			// ・KEY：501023 VALUE："ヘ"
 			claimDataMap.setData(TEKIYOU100_FLAG_CODE, "ヘ");
+			
+		//[ID:0000737][Shin Fujihara] 2012/05 add begin 短期入所療養介護で重度療養管理(35)の場合は、摘要欄を変更
+		} else if (new Integer(7).equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
+		    claimDataMap.setData(TEKIYOU100_FLAG_CODE, "ト");
+        } else if (new Integer(8).equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
+            claimDataMap.setData(TEKIYOU100_FLAG_CODE, "チ");
+        } else if (new Integer(9).equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
+            claimDataMap.setData(TEKIYOU100_FLAG_CODE, "リ");
+		//[ID:0000737][Shin Fujihara] 2012/05 add end
 		} else if (new Integer(0).equals(claimDataMap.getData(TEKIYOU100_FLAG_CODE))) {
 			// レコードのKEY：501023の値が"0"の場合
 			// レコードに以下のKEY/VALUEで設定する。
@@ -1591,6 +1635,18 @@ public class QP004 extends QP004Event {
         VRList copyClaimListSpecialClinic = QkanValidServiceCommon.deepCopyVRList(getClaimListSpecialClinic());
         VRList copyClaimListTotal = QkanValidServiceCommon.deepCopyVRList(getClaimListTotal());
         
+        //[ID:0000737][Shin Fujihara] 2012/05 add begin 重度療養管理加算のコード変換
+        //明細情報レコードがnulではない場合
+        if (!(copyClaimListDetail == null || copyClaimListDetail.isEmpty())) {
+        	Iterator detailsIterator = copyClaimListDetail.listIterator();
+        	
+        	while (detailsIterator.hasNext()) {
+        		VRMap row = (VRMap) detailsIterator.next();
+        		doChangeTekiyoForUpdateCategory3(row);
+        	}
+        }
+        //[ID:0000737][Shin Fujihara] 2012/05 add end
+        
 		// 特定診療費情報レコードがnullでない場合
 		if (!(copyClaimListSpecialClinic == null || copyClaimListSpecialClinic.isEmpty())) {
 			Iterator specialClinicIterator = copyClaimListSpecialClinic.listIterator();
@@ -1631,4 +1687,121 @@ public class QP004 extends QP004Event {
 	}
 	//[ID:0000545][Shin Fujihara] 2009/08 edit end 2009年度障害対応
 	
+	
+	//[ID:0000737][Shin Fujihara] 2012/05 add begin 重度療養管理加算のコード変換
+	/**
+	 * 「画面表示用にデータ変換」に関する処理を行ないます。
+	 * ※明細情報レコードの重度療養管理加算用
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public VRMap doChangeTekiyoForDisplayCategory3(VRMap claimDataMap) throws Exception {
+		// 画面表示用にデータ変換
+		
+		//重度療養管理加算の時のみ変換を行う
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286) {
+			return claimDataMap;
+		}
+		
+		String _301018 = ACCastUtilities.toString(claimDataMap.get("301018"), "");
+		
+		if (ACTextUtilities.isNullText(_301018)) {
+			return claimDataMap;
+		}
+		
+		if (_301018.length() != 1) {
+			return claimDataMap;
+		}
+		
+		//画面表示用に値を変換
+		switch(_301018.charAt(0)) {
+		case 'ｲ':
+			claimDataMap.setData("301018", "1");
+			break;
+		case 'ﾛ':
+			claimDataMap.setData("301018", "2");
+			break;
+		case 'ﾊ':
+			claimDataMap.setData("301018", "3");
+			break;
+		case 'ﾆ':
+			claimDataMap.setData("301018", "4");
+			break;
+		case 'ﾎ':
+			claimDataMap.setData("301018", "5");
+			break;
+		case 'ﾍ':
+			claimDataMap.setData("301018", "6");
+			break;
+		case 'ﾄ':
+			claimDataMap.setData("301018", "7");
+			break;
+		case 'ﾁ':
+			claimDataMap.setData("301018", "8");
+			break;
+		case 'ﾘ':
+			claimDataMap.setData("301018", "9");
+			break;
+		default:
+			claimDataMap.setData("301018", "");
+			break;
+		}
+		
+		return claimDataMap;
+	}
+
+	/**
+	 * 「DB更新用にデータ変換」に関する処理を行ないます。
+	 * ※明細情報レコードの重度療養管理加算用
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public VRMap doChangeTekiyoForUpdateCategory3(VRMap claimDataMap) throws Exception {
+		// DB更新用にデータ変換
+		
+		//重度療養管理加算の時のみ変換を行う
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286) {
+			return claimDataMap;
+		}
+		
+		int selectedCode = ACCastUtilities.toInt(claimDataMap.get("301018"), 0); 
+		String value = "";
+		
+		switch(selectedCode) {
+		case 1:
+			value = "ｲ";
+			break;
+		case 2:
+			value = "ﾛ";
+			break;
+		case 3:
+			value = "ﾊ";
+			break;
+		case 4:
+			value = "ﾆ";
+			break;
+		case 5:
+			value = "ﾎ";
+			break;
+		case 6:
+			value = "ﾍ";
+			break;
+		case 7:
+			value = "ﾄ";
+			break;
+		case 8:
+			value = "ﾁ";
+			break;
+		case 9:
+			value = "ﾘ";
+			break;
+		}
+		
+		claimDataMap.setData("301018", value);
+		
+		return claimDataMap;
+	}
+	//[ID:0000737][Shin Fujihara] 2012/05 add end
 }

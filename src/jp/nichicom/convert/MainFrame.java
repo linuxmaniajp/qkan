@@ -25,8 +25,6 @@ import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jp.nichicom.convert.util.DBConnect;
 import jp.nichicom.convert.util.Log;
@@ -122,7 +120,8 @@ public class MainFrame extends JFrame implements ActionListener {
         mp.setLayout(new BoxLayout(mp, BoxLayout.Y_AXIS));
 
         JPanel p = new JPanel();
-        p.setMaximumSize(new Dimension(500, 10));
+        //p.setMaximumSize(new Dimension(500, 10));
+        p.setMinimumSize(new Dimension(500, 10));
 
         p.setBorder(new CompoundBorder(new TitledBorder(
                 "１．移行元のデータベースファイルを指定してください（V5.5.0以上）"), new EmptyBorder(0, 0,
@@ -144,7 +143,8 @@ public class MainFrame extends JFrame implements ActionListener {
         BorderLayout layout = new BorderLayout();
         layout.setVgap(0);
         p.setLayout(layout);
-        p.setMaximumSize(new Dimension(500, 16));
+        //p.setMaximumSize(new Dimension(500, 16));
+        p.setMinimumSize(new Dimension(500, 16));
         Icon icon = new ImageIcon(MainFrame.class.getClassLoader().getResource(
                 "jp/nichicom/convert/image/arrow.png"));
 
@@ -152,7 +152,8 @@ public class MainFrame extends JFrame implements ActionListener {
         mp.add(p);
 
         p = new JPanel();
-        p.setMaximumSize(new Dimension(500, 10));
+        //p.setMaximumSize(new Dimension(500, 10));
+        p.setMinimumSize(new Dimension(500, 10));
         to = new JTextField(30);
         if (doc != null) {
             to.setText(doc.getNodeValue("DBConfig", "Path"));
@@ -168,12 +169,14 @@ public class MainFrame extends JFrame implements ActionListener {
                 "２．移行先のデータベースファイルを指定してください"), new EmptyBorder(0, 0, 0, 0)));
         mp.add(p);
         p = new JPanel();
-        p.setMaximumSize(new Dimension(500, 10));
+        //p.setMaximumSize(new Dimension(500, 10));
+        p.setMinimumSize(new Dimension(500, 10));
         p.add(new JLabel(icon));
         mp.add(p);
 
         p = new JPanel();
-        p.setMaximumSize(new Dimension(500, 10));
+        //p.setMaximumSize(new Dimension(500, 10));
+        p.setMinimumSize(new Dimension(500, 10));
         btn = new JButton("移行開始");
         btn.setActionCommand("run");
         btn.addActionListener(this);
@@ -256,8 +259,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private void doSelectFDBFile(JTextField t, String title) {
 
         JFileChooser filechooser = new JFileChooser();
-        FileFilter filter = new FileNameExtensionFilter("データベースファイル(.fdb)",
-                "fdb");
+        FDBFileFilter filter = new FDBFileFilter();
 
         filechooser.setDialogTitle(title);
         filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

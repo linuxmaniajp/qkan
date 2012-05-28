@@ -174,35 +174,48 @@ public class QS001005 extends QS001005Event {
         //※別表に記載しない給付管理対象外単位数の計算
         // 合算用の整数を宣言し、0で初期化する。
         int total = 0;
+        // [ID:0000745][Masahiko.Higuchi] 処遇改善加算を含む計算対応 del - begin
         // 集計単位計算用のマップ配列(Map[])を要素数2個の宣言時初期化で生成する。
-        Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
-        Iterator it = services.iterator();
-        while (it.hasNext()) {
-            // サービスを全走査する。
-            VRMap service = (VRMap) it.next();
-            if (CareServiceCommon.isLifeCare(service)||CareServiceCommon.isHomeMedicalAdvice(service)) {
-                //別表に記載されない生活介護/居宅療養管理指導サービスの単位数を加算する。
-                // 割引済み単位数を計算し、合算に加算する。
-                total += calcurater.getReductedUnit(service, true,
-                        CareServiceCodeCalcurater.CALC_MODE_OUT_LIMIT_AMOUNT,
-                        totalGroupingCache);
-            }
-        }
+        // Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
+        // Iterator it = services.iterator();
+        // while (it.hasNext()) {
+        // サービスを全走査する。
+        // VRMap service = (VRMap) it.next();
+        // if (CareServiceCommon.isLifeCare(service)||CareServiceCommon.isHomeMedicalAdvice(service)) {
+        //  //別表に記載されない生活介護/居宅療養管理指導サービスの単位数を加算する。
+        //  // 割引済み単位数を計算し、合算に加算する。
+        //  total += calcurater.getReductedUnit(service, true,
+        //  CareServiceCodeCalcurater.CALC_MODE_OUT_LIMIT_AMOUNT,
+        //  totalGroupingCache);
+        //  }
+        // }
+        // [ID:0000745][Masahiko.Higuchi] del - end
         
         //別表の集計ロジックを通して、別表に記載される給付管理対象外単位数と利用者負担額を取得する。
         CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
+        // [ID:0000745][Masahiko.Higuchi] 処遇改善加算を含む計算対応 add - begin
+        mng.setUltimateDebugFlag(true);
+        // [ID:0000745][Masahiko.Higuchi] add - end
         mng.initialize(calcurater);
         mng.parse(services);
         mng.setBuildDivedProvider(false);
-
+        
         int lastRow = mng.getUserSubTableRowCount();
         CareServicePrintParameter buildParam = new CareServicePrintParameter();
         buildParam.setPrintParameter(new VRHashMap());
         List list=new ArrayList();
         mng.buildUserSubTable(buildParam, list);
+        // [ID:0000745][Masahiko.Higuchi] 処遇改善加算を含む計算対応 add - begin
+        mng.setUltimateDebugFlag(false);
+        // [ID:0000745][Masahiko.Higuchi] add - end
         int patientCost = 0;
         int outLimitUnit = 0;
-        it = list.iterator();
+        // [ID:0000745][Masahiko.Higuchi] 処遇改善加算を含む計算対応 del - begin
+        // it = list.iterator();
+        // [ID:0000745][Masahiko.Higuchi] del - end
+        // [ID:0000745][Masahiko.Higuchi] 処遇改善加算を含む計算対応 add - begin
+        Iterator it = list.iterator();
+        // [ID:0000745][Masahiko.Higuchi] add - end
         while (it.hasNext()) {
             Iterator provIt = ((List) it.next()).iterator();
             while (provIt.hasNext()) {
@@ -219,6 +232,18 @@ public class QS001005 extends QS001005Event {
                         for (int i = 1; i < lastRow; i++) {
                             String unit = ACCastUtilities.toString(page
                                     .get("main.y" + i + ".x12"));
+                            // [ID:0000743][Masahiko.Higuchi] 限度額管理対象外単位数の合計仕様を修正 add - start
+                            String serviceCode = ACCastUtilities.toString(page.get("main.y" + i + ".x4"), "");
+                            String outPrintUnit = ACCastUtilities.toString(page.get("main.y" + i + ".x13"), "");
+                            if(!"".equals(serviceCode)) {
+                            	// サービスコードが空以外かつ単位に（がついている場合は限度額管理対象外
+                                if (!"".equals(outPrintUnit) && outPrintUnit.charAt(0) == '(') {
+                                    outLimitUnit += ACCastUtilities
+                                            .toInt(outPrintUnit.substring(1, outPrintUnit
+                                                    .length() - 1), 0);
+                                }
+                            }
+                            // [ID:0000743][Masahiko.Higuchi] add - end
                             if (!ACTextUtilities.isNullText(unit)) {
                                 if (unit.charAt(0) == '(') {
                                     outLimitUnit += ACCastUtilities

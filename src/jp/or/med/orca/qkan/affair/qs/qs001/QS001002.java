@@ -275,7 +275,20 @@ public class QS001002 extends QS001002Event {
             //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
             CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
             mng.initialize(getCalcurater());
-            mng.parse(getSchedule(useType, false));
+            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 del begin
+            //mng.parse(getSchedule(useType, false));
+            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 del end
+            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
+            List monthData = getSchedule(useType, false);
+            for(int i=monthData.size()-1; i >= 0; i--) {
+                // 30日超の処遇改善加算を無理やり別表に表示しているため強制的に調整する。
+                VRMap service = (VRMap)monthData.get(i);
+                if(CareServiceCommon.is30DayOver(service)) {
+                    monthData.remove(i);
+                }
+            }
+            mng.parse(monthData);
+            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add end
             mng.setBuildDivedProvider(false);
 
             CareServicePrintParameter buildParam = new CareServicePrintParameter();
