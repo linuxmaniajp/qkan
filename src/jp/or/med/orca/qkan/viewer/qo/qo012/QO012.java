@@ -1865,53 +1865,63 @@ public class QO012 extends QO012Event {
         return insurer_id;
     }
 
-    // FIXME
-
-    private static Set serviceCodeSet = new HashSet();
-    private static Set planCodeSet = new HashSet();
+    
+    
+    // •½¬24”N–@‰ü³‘Î‰
+    private static Set<String> serviceCodeSet = new HashSet<String>();
+    private static Set<String> planCodeSet = new HashSet<String>();
 
     static {
-        serviceCodeSet.add("11");
-        serviceCodeSet.add("12");
-        serviceCodeSet.add("13");
-        serviceCodeSet.add("14");
-        serviceCodeSet.add("15");
-        serviceCodeSet.add("16");
-        serviceCodeSet.add("17");
-        serviceCodeSet.add("21");
-        serviceCodeSet.add("22");
-        serviceCodeSet.add("23");
-        serviceCodeSet.add("31");
-        serviceCodeSet.add("32");
-        serviceCodeSet.add("33");
-        serviceCodeSet.add("36");
-        serviceCodeSet.add("38");
-        serviceCodeSet.add("51");
-        serviceCodeSet.add("52");
-        serviceCodeSet.add("53");
-        serviceCodeSet.add("54");
-        serviceCodeSet.add("71");
-        serviceCodeSet.add("72");
-        serviceCodeSet.add("73");
-        serviceCodeSet.add("61");
-        serviceCodeSet.add("62");
-        serviceCodeSet.add("63");
-        serviceCodeSet.add("64");
-        serviceCodeSet.add("65");
-        serviceCodeSet.add("66");
-        serviceCodeSet.add("67");
-        serviceCodeSet.add("24");
-        serviceCodeSet.add("25");
-        serviceCodeSet.add("26");
-        serviceCodeSet.add("34");
-        serviceCodeSet.add("35");
-        serviceCodeSet.add("74");
-        serviceCodeSet.add("75");
-        serviceCodeSet.add("37");
-        serviceCodeSet.add("39");
+        serviceCodeSet.add("11"); //–K–â‰îŒì
+        serviceCodeSet.add("12"); //–K–â“ü—‰îŒì
+        serviceCodeSet.add("13"); //–K–âŠÅŒì(‰îŒì•ÛŒ¯)
+        serviceCodeSet.add("14"); //–K–âƒŠƒnƒrƒŠƒe[ƒVƒ‡ƒ“
+        serviceCodeSet.add("15"); //’ÊŠ‰îŒì
+        serviceCodeSet.add("16"); //’ÊŠƒŠƒnƒrƒŠƒe[ƒVƒ‡ƒ“
+        serviceCodeSet.add("17"); //•Ÿƒ—p‹ï‘İ—^
+        serviceCodeSet.add("21"); //’ZŠú“üŠ¶Šˆ‰îŒì
+        serviceCodeSet.add("22"); //’ZŠú“üŠ—Ã—{‰îŒì(˜VŒ’)
+        serviceCodeSet.add("23"); //’ZŠú“üŠ—Ã—{‰îŒì(•a‰@Ef—ÃŠE”F’mÇ)
+        serviceCodeSet.add("31"); //‹‘î—Ã—{ŠÇ—w“±
+        serviceCodeSet.add("32"); //”F’mÇ‘Î‰Œ^‹¤“¯¶Šˆ‰îŒì(’ZŠú—˜—pˆÈŠO)
+        serviceCodeSet.add("33"); //“Á’è{İ“ü‹Ò¶Šˆ‰îŒì(’ZŠú—˜—pˆÈŠO)
+        serviceCodeSet.add("36"); //’nˆæ–§’…Œ^“Á’è{İ“ü‹Ò¶Šˆ‰îŒì(’ZŠú—˜—pˆÈŠO)
+        serviceCodeSet.add("38"); //”F’mÇ‘Î‰Œ^‹¤“¯¶Šˆ‰îŒì(’ZŠú—˜—p)
+        serviceCodeSet.add("51"); //‰îŒì˜Vl•Ÿƒ{İ
+        serviceCodeSet.add("52"); //‰îŒì˜Vl•ÛŒ’{İ
+        serviceCodeSet.add("53"); //‰îŒì—Ã—{Œ^ˆã—Ã{İ(•a‰@Ef—ÃŠE”F’mÇ)
+        serviceCodeSet.add("54"); //’nˆæ–§’…Œ^‰îŒì•Ÿƒ{İ
+        serviceCodeSet.add("71"); //–éŠÔ‘Î‰Œ^–K–â‰îŒì
+        serviceCodeSet.add("72"); //”F’mÇ‘Î‰Œ^’ÊŠ‰îŒì
+        serviceCodeSet.add("73"); //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        
+        serviceCodeSet.add("61"); //‰îŒì—\–h–K–â‰îŒì
+        serviceCodeSet.add("62"); //‰îŒì—\–h–K–â“ü—‰îŒì
+        serviceCodeSet.add("63"); //‰îŒì—\–h–K–âŠÅŒì
+        serviceCodeSet.add("64"); //‰îŒì—\–h–K–âƒŠƒnƒrƒŠƒe[ƒVƒ‡ƒ“
+        serviceCodeSet.add("65"); //‰îŒì—\–h’ÊŠ‰îŒì
+        serviceCodeSet.add("66"); //‰îŒì—\–h’ÊŠƒŠƒnƒrƒŠƒe[ƒVƒ‡ƒ“
+        serviceCodeSet.add("67"); //‰îŒì—\–h•Ÿƒ—p‹ï‘İ—^
+        serviceCodeSet.add("24"); //‰îŒì—\–h’ZŠú“üŠ¶Šˆ‰îŒì
+        serviceCodeSet.add("25"); //‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì(˜VŒ’)
+        serviceCodeSet.add("26"); //‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì(•a‰@Ef—ÃŠE•a‰@)
+        serviceCodeSet.add("34"); //‰îŒì—\–h‹‘î—Ã—{ŠÇ—w“±
+        serviceCodeSet.add("35"); //‰îŒì—\–h“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
+        serviceCodeSet.add("74"); //‰îŒì—\–h”F’mÇ‘Î‰Œ^’ÊŠ‰îŒì
+        serviceCodeSet.add("75"); //‰îŒì—\–h¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        serviceCodeSet.add("37"); //‰îŒì—\–h”F’mÇ‘Î‰Œ^‹¤“¯¶Šˆ‰îŒì(’ZŠú—˜—pˆÈŠO)
+        serviceCodeSet.add("39"); //‰îŒì—\–h”F’mÇ‘Î‰Œ^‹¤“¯¶Šˆ‰îŒì(’ZŠú—˜—p)
+        
+        //[ID:0000747][Shin Fujihara] 2012/06 add begin ‘Î‰˜R‚êƒR[ƒh’Ç‰Á
+        serviceCodeSet.add("27"); //“Á’è{İ“ü‹Ò¶Šˆ‰îŒìi’ZŠú—˜—pj 
+        serviceCodeSet.add("28"); //’nˆæ–§’…Œ^“Á’è{İ“ü‹Ò¶Šˆ‰îŒìi’ZŠú—˜—pj
+        serviceCodeSet.add("76"); //’èŠú„‰ñE‘Î‰Œ^–K–â‰îŒìŠÅŒì
+        serviceCodeSet.add("77"); //•¡‡Œ^ƒT[ƒrƒX
+        //[ID:0000747][Shin Fujihara] 2012/06 add end
+        
 
-        planCodeSet.add("43");
-        planCodeSet.add("46");
+        planCodeSet.add("43"); //‹‘î‰îŒìx‰‡
+        planCodeSet.add("46"); //‰îŒì—\–hx‰‡
     }
 
     private Integer getServiceCount(List list) {
@@ -1932,7 +1942,10 @@ public class QO012 extends QO012Event {
             Iterator rowIt = row.keySet().iterator();
             while (rowIt.hasNext()) {
                 String key = (String) rowIt.next();
-                if (serviceCodeSet.contains(key)) {
+                //[ID:0000747][Shin Fujihara] 2012/06 edit begin —\’è‚ÌŒ”•\¦áŠQ 
+                //if (serviceCodeSet.contains(key)) {
+                if (targetSet.contains(key)) {
+                //[ID:0000747][Shin Fujihara] 2012/06 add end 
                     if (MATRIX_ON.equals(row.get(key))) {
                         count++;
                     }

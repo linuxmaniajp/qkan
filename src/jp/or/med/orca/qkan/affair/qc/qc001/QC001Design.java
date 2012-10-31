@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/04/04  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2012/09/21  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -181,9 +181,11 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn planNotesColumn2;
 
+  private ACTableColumn planNotesColumn3;
+
   private ACGroupBox planNoteEdits;
 
-  private ACPanel Panel;
+  private ACPanel planPanel;
 
   private ACPanel planNoteEditDates;
 
@@ -191,9 +193,17 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabelContainer planNoteEditDateContainer;
 
+  private ACGroupBox planNoteEditComments;
+
   private ACTextArea planNoteEditComment;
 
   private ACLabelContainer planNoteEditCommentContainer;
+
+  private ACGroupBox planAssessmentEditComments;
+
+  private ACTextArea planAssessmentEditComment;
+
+  private ACLabelContainer planAssessmentEditCommentContainer;
 
   private ACPanel planNoteEditButtons;
 
@@ -1152,8 +1162,8 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * Tab1「問題点・解決策」を取得します。
-   * @return Tab1「問題点・解決策」
+   * Tab1「問題点・解決策/評価」を取得します。
+   * @return Tab1「問題点・解決策/評価」
    */
   public ACPanel getTabsNotes(){
     if(tabsNotes==null){
@@ -1167,8 +1177,8 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策領域を取得します。
-   * @return 問題点・解決策領域
+   * 問題点・解決策・評価領域を取得します。
+   * @return 問題点・解決策・評価領域
    */
   public ACPanel getPlanNoteAreas(){
     if(planNoteAreas==null){
@@ -1182,8 +1192,8 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策一覧を取得します。
-   * @return 問題点・解決策一覧
+   * 問題点・解決策・評価一覧を取得します。
+   * @return 問題点・解決策・評価一覧
    */
   public ACTable getPlanNotes(){
     if(planNotes==null){
@@ -1199,8 +1209,8 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策一覧カラムモデルを取得します。
-   * @return 問題点・解決策一覧カラムモデル
+   * 問題点・解決策・評価一覧カラムモデルを取得します。
+   * @return 問題点・解決策・評価一覧カラムモデル
    */
   protected VRTableColumnModel getPlanNotesColumnModel(){
     if(planNotesColumnModel==null){
@@ -1217,7 +1227,7 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPlanNotesColumn0(){
     if(planNotesColumn0==null){
 
-      planNotesColumn0 = new ACTableColumn(0);
+      planNotesColumn0 = new ACTableColumn();
 
       planNotesColumn0.setHeaderValue("No.");
 
@@ -1242,9 +1252,11 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPlanNotesColumn1(){
     if(planNotesColumn1==null){
 
-      planNotesColumn1 = new ACTableColumn(0);
+      planNotesColumn1 = new ACTableColumn();
 
       planNotesColumn1.setHeaderValue("年月日");
+
+      planNotesColumn1.setColumnName("NOTE_DATE");
 
       planNotesColumn1.setColumns(10);
 
@@ -1261,11 +1273,13 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   public ACTableColumn getPlanNotesColumn2(){
     if(planNotesColumn2==null){
 
-      planNotesColumn2 = new ACTableColumn(1);
+      planNotesColumn2 = new ACTableColumn();
 
       planNotesColumn2.setHeaderValue("問題点・解決策");
 
-      planNotesColumn2.setColumns(8);
+      planNotesColumn2.setColumnName("NOTE_COMMENT");
+
+      planNotesColumn2.setColumns(50);
 
       addPlanNotesColumn2();
     }
@@ -1274,15 +1288,36 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策編集領域を取得します。
-   * @return 問題点・解決策編集領域
+   * 列：評価を取得します。
+   * @return 列：評価
+   */
+  public ACTableColumn getPlanNotesColumn3(){
+    if(planNotesColumn3==null){
+
+      planNotesColumn3 = new ACTableColumn();
+
+      planNotesColumn3.setHeaderValue("評価");
+
+      planNotesColumn3.setColumnName("NOTE_ASSESSMENT");
+
+      planNotesColumn3.setColumns(8);
+
+      addPlanNotesColumn3();
+    }
+    return planNotesColumn3;
+
+  }
+
+  /**
+   * 問題点・解決策・評価編集領域を取得します。
+   * @return 問題点・解決策・評価編集領域
    */
   public ACGroupBox getPlanNoteEdits(){
     if(planNoteEdits==null){
 
       planNoteEdits = new ACGroupBox();
 
-      planNoteEdits.setText("問題点・解決策");
+      planNoteEdits.setText("問題点・解決策／評価");
 
       planNoteEdits.setHgap(0);
 
@@ -1300,22 +1335,22 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
    * パネルを取得します。
    * @return パネル
    */
-  public ACPanel getPanel(){
-    if(Panel==null){
+  public ACPanel getPlanPanel(){
+    if(planPanel==null){
 
-      Panel = new ACPanel();
+      planPanel = new ACPanel();
 
-      Panel.setAutoWrap(false);
+      planPanel.setAutoWrap(false);
 
-      Panel.setHgap(0);
+      planPanel.setHgap(0);
 
-      Panel.setLabelMargin(0);
+      planPanel.setLabelMargin(0);
 
-      Panel.setVgap(0);
+      planPanel.setVgap(0);
 
-      addPanel();
+      addPlanPanel();
     }
-    return Panel;
+    return planPanel;
 
   }
 
@@ -1370,6 +1405,23 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 問題点・解決策編集個別領域を取得します。
+   * @return 問題点・解決策編集個別領域
+   */
+  public ACGroupBox getPlanNoteEditComments(){
+    if(planNoteEditComments==null){
+
+      planNoteEditComments = new ACGroupBox();
+
+      planNoteEditComments.setText("問題点・解決策");
+
+      addPlanNoteEditComments();
+    }
+    return planNoteEditComments;
+
+  }
+
+  /**
    * 問題点・解決策編集/テキストを取得します。
    * @return 問題点・解決策編集/テキスト
    */
@@ -1380,7 +1432,7 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
 
       planNoteEditComment.setBindPath("NOTE_COMMENT");
 
-      planNoteEditComment.setColumns(86);
+      planNoteEditComment.setColumns(68);
 
       planNoteEditComment.setRows(5);
 
@@ -1410,6 +1462,66 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
       planNoteEditCommentContainer.add(getPlanNoteEditComment(), null);
     }
     return planNoteEditCommentContainer;
+  }
+
+  /**
+   * 評価編集個別領域を取得します。
+   * @return 評価編集個別領域
+   */
+  public ACGroupBox getPlanAssessmentEditComments(){
+    if(planAssessmentEditComments==null){
+
+      planAssessmentEditComments = new ACGroupBox();
+
+      planAssessmentEditComments.setText("評価");
+
+      addPlanAssessmentEditComments();
+    }
+    return planAssessmentEditComments;
+
+  }
+
+  /**
+   * 評価編集/テキストを取得します。
+   * @return 評価編集/テキスト
+   */
+  public ACTextArea getPlanAssessmentEditComment(){
+    if(planAssessmentEditComment==null){
+
+      planAssessmentEditComment = new ACTextArea();
+
+      planAssessmentEditComment.setBindPath("NOTE_ASSESSMENT");
+
+      planAssessmentEditComment.setColumns(20);
+
+      planAssessmentEditComment.setRows(5);
+
+      planAssessmentEditComment.setMaxRows(30);
+
+      planAssessmentEditComment.setIMEMode(InputSubset.KANJI);
+
+      planAssessmentEditComment.setMaxLength(3000);
+
+      planAssessmentEditComment.setLineWrap(true);
+
+      addPlanAssessmentEditComment();
+    }
+    return planAssessmentEditComment;
+
+  }
+
+  /**
+   * 評価編集/テキストコンテナを取得します。
+   * @return 評価編集/テキストコンテナ
+   */
+  protected ACLabelContainer getPlanAssessmentEditCommentContainer(){
+    if(planAssessmentEditCommentContainer==null){
+      planAssessmentEditCommentContainer = new ACLabelContainer();
+      planAssessmentEditCommentContainer.setFollowChildEnabled(true);
+      planAssessmentEditCommentContainer.setVAlignment(VRLayout.CENTER);
+      planAssessmentEditCommentContainer.add(getPlanAssessmentEditComment(), null);
+    }
+    return planAssessmentEditCommentContainer;
   }
 
   /**
@@ -1701,30 +1813,39 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   protected void addYokaigodoModel(){
 
     getYokaigodoRadioItem1().setButtonIndex(1);
+
     getYokaigodoModel().add(getYokaigodoRadioItem1());
 
-    getYokaigodoRadioItem2().setButtonIndex(2);
+    getYokaigodoRadioItem2().setButtonIndex(12);
+
     getYokaigodoModel().add(getYokaigodoRadioItem2());
 
-    getYokaigodoRadioItem3().setButtonIndex(3);
+    getYokaigodoRadioItem3().setButtonIndex(13);
+
     getYokaigodoModel().add(getYokaigodoRadioItem3());
 
-    getYokaigodoRadioItem4().setButtonIndex(4);
+    getYokaigodoRadioItem4().setButtonIndex(11);
+
     getYokaigodoModel().add(getYokaigodoRadioItem4());
 
-    getYokaigodoRadioItem5().setButtonIndex(5);
+    getYokaigodoRadioItem5().setButtonIndex(21);
+
     getYokaigodoModel().add(getYokaigodoRadioItem5());
 
-    getYokaigodoRadioItem6().setButtonIndex(6);
+    getYokaigodoRadioItem6().setButtonIndex(22);
+
     getYokaigodoModel().add(getYokaigodoRadioItem6());
 
-    getYokaigodoRadioItem7().setButtonIndex(7);
+    getYokaigodoRadioItem7().setButtonIndex(23);
+
     getYokaigodoModel().add(getYokaigodoRadioItem7());
 
-    getYokaigodoRadioItem8().setButtonIndex(8);
+    getYokaigodoRadioItem8().setButtonIndex(24);
+
     getYokaigodoModel().add(getYokaigodoRadioItem8());
 
-    getYokaigodoRadioItem9().setButtonIndex(9);
+    getYokaigodoRadioItem9().setButtonIndex(25);
+
     getYokaigodoModel().add(getYokaigodoRadioItem9());
 
   }
@@ -1854,7 +1975,7 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
 
     tabs.addTab("看護・リハビリテーションの目標／備考", getTabPurposes());
 
-    tabs.addTab("問題点・解決策", getTabsNotes());
+    tabs.addTab("問題点・解決策／評価", getTabsNotes());
 
   }
 
@@ -1902,7 +2023,7 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * Tab1「問題点・解決策」に内部項目を追加します。
+   * Tab1「問題点・解決策/評価」に内部項目を追加します。
    */
   protected void addTabsNotes(){
 
@@ -1911,7 +2032,7 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策領域に内部項目を追加します。
+   * 問題点・解決策・評価領域に内部項目を追加します。
    */
   protected void addPlanNoteAreas(){
 
@@ -1922,14 +2043,14 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策一覧に内部項目を追加します。
+   * 問題点・解決策・評価一覧に内部項目を追加します。
    */
   protected void addPlanNotes(){
 
   }
 
   /**
-   * 問題点・解決策一覧カラムモデルに内部項目を追加します。
+   * 問題点・解決策・評価一覧カラムモデルに内部項目を追加します。
    */
   protected void addPlanNotesColumnModel(){
 
@@ -1938,6 +2059,8 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
     getPlanNotesColumnModel().addColumn(getPlanNotesColumn1());
 
     getPlanNotesColumnModel().addColumn(getPlanNotesColumn2());
+
+    getPlanNotesColumnModel().addColumn(getPlanNotesColumn3());
 
   }
 
@@ -1963,22 +2086,33 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 問題点・解決策編集領域に内部項目を追加します。
+   * 列：評価に内部項目を追加します。
+   */
+  protected void addPlanNotesColumn3(){
+
+  }
+
+  /**
+   * 問題点・解決策・評価編集領域に内部項目を追加します。
    */
   protected void addPlanNoteEdits(){
 
-    planNoteEdits.add(getPanel(), VRLayout.FLOW);
+    planNoteEdits.add(getPlanPanel(), VRLayout.FLOW);
 
   }
 
   /**
    * パネルに内部項目を追加します。
    */
-  protected void addPanel(){
+  protected void addPlanPanel(){
 
-    Panel.add(getPlanNoteEditDates(), VRLayout.FLOW);
+    planPanel.add(getPlanNoteEditDates(), VRLayout.FLOW_RETURN);
 
-    Panel.add(getPlanNoteEditButtons(), VRLayout.FLOW);
+    planPanel.add(getPlanNoteEditComments(), VRLayout.FLOW);
+
+    planPanel.add(getPlanAssessmentEditComments(), VRLayout.FLOW_RETURN);
+
+    planPanel.add(getPlanNoteEditButtons(), VRLayout.FLOW);
 
   }
 
@@ -1987,9 +2121,7 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addPlanNoteEditDates(){
 
-    planNoteEditDates.add(getPlanNoteEditDateContainer(), VRLayout.FLOW_RETURN);
-
-    planNoteEditDates.add(getPlanNoteEditCommentContainer(), VRLayout.FLOW);
+    planNoteEditDates.add(getPlanNoteEditDateContainer(), VRLayout.FLOW);
 
   }
 
@@ -2001,9 +2133,34 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 問題点・解決策編集個別領域に内部項目を追加します。
+   */
+  protected void addPlanNoteEditComments(){
+
+    planNoteEditComments.add(getPlanNoteEditCommentContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
    * 問題点・解決策編集/テキストに内部項目を追加します。
    */
   protected void addPlanNoteEditComment(){
+
+  }
+
+  /**
+   * 評価編集個別領域に内部項目を追加します。
+   */
+  protected void addPlanAssessmentEditComments(){
+
+    planAssessmentEditComments.add(getPlanAssessmentEditCommentContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 評価編集/テキストに内部項目を追加します。
+   */
+  protected void addPlanAssessmentEditComment(){
 
   }
 
@@ -2012,13 +2169,13 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addPlanNoteEditButtons(){
 
-    planNoteEditButtons.add(getPlanNoteEditButtonAdd(), VRLayout.FLOW_RETURN);
+    planNoteEditButtons.add(getPlanNoteEditButtonAdd(), VRLayout.WEST);
 
-    planNoteEditButtons.add(getPlanNoteEditButtonEdit(), VRLayout.FLOW_RETURN);
+    planNoteEditButtons.add(getPlanNoteEditButtonEdit(), VRLayout.WEST);
 
-    planNoteEditButtons.add(getPlanNoteEditButtonDelete(), VRLayout.FLOW_RETURN);
+    planNoteEditButtons.add(getPlanNoteEditButtonDelete(), VRLayout.WEST);
 
-    planNoteEditButtons.add(getPlanNoteEditButtonClear(), VRLayout.FLOW);
+    planNoteEditButtons.add(getPlanNoteEditButtonClear(), VRLayout.WEST);
 
   }
 
@@ -2072,7 +2229,6 @@ public class QC001Design extends QkanAffairContainer implements ACAffairable {
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
-      ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
       ACFrame.debugStart(new ACAffairInfo(QC001Design.class.getName()));
     } catch (Exception e) {

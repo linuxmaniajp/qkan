@@ -198,16 +198,40 @@ public class QS001 extends QS001Event {
 
         // ※利用者情報(施設履歴情報)の設定
         // 利用者ID(patientID) を元に、利用者の施設履歴情報を取得する。
+        // [ID:0000749][Masahiko.Higuchi] del - begin 2012年度対応 施設情報の履歴管理に関する修正
+//        VRList specialFacilities = getDBManager().executeQuery(
+//                getSQL_GET_PATIENT_FACILITY_FLAG(getPatientInfo()));
+//        if (!specialFacilities.isEmpty()) {
+//            // 施設履歴情報の特定入所者フラグを内部変数(inSpecialFacilityFlag)に退避する。
+//            Object obj = ((Map) specialFacilities.getData())
+//                    .get("TOKUTEI_NYUSHO_FLAG");
+//            setInSpecialFacilityFlag(ACCastUtilities.toInt(obj, 0));
+//            obj = ((Map) specialFacilities.getData()).get("KYUSOCHI_FLAG");
+//            setOldFacilityUserFlag(ACCastUtilities.toInt(obj, 0));
+//        }
+        // [ID:0000749][Masahiko.Higuchi] del - end
+        // [ID:0000749][Masahiko.Higuchi] add - begin 2012年度対応 施設情報の履歴管理に関する修正
+        VRMap facilityParam = new VRHashMap();
+        facilityParam.setData("PATIENT_ID",getPatientInfo().getData("PATIENT_ID"));
+        facilityParam.setData("TARGET_DATE",getTargetDate());
+        
         VRList specialFacilities = getDBManager().executeQuery(
-                getSQL_GET_PATIENT_FACILITY_FLAG(getPatientInfo()));
+        		getSQL_GET_PATIENT_FACILITY_FLAG(facilityParam));
         if (!specialFacilities.isEmpty()) {
             // 施設履歴情報の特定入所者フラグを内部変数(inSpecialFacilityFlag)に退避する。
             Object obj = ((Map) specialFacilities.getData())
                     .get("TOKUTEI_NYUSHO_FLAG");
-            setInSpecialFacilityFlag(ACCastUtilities.toInt(obj, 0));
+            setInSpecialFacilityFlag(ACCastUtilities.toInt(obj, 1));
             obj = ((Map) specialFacilities.getData()).get("KYUSOCHI_FLAG");
-            setOldFacilityUserFlag(ACCastUtilities.toInt(obj, 0));
+            setOldFacilityUserFlag(ACCastUtilities.toInt(obj, 1));
+
+        } else {
+        	// 特定入所者フラグと旧措置フラグの初期値を設定
+        	setInSpecialFacilityFlag(1);
+        	setOldFacilityUserFlag(1);
+
         }
+        // [ID:0000749][Masahiko.Higuchi] add - end
 
         // ※利用者情報(要介護度情報)の設定
         // 要介護度履歴情報格納用のレコード集合 patientInsureInfoHistoryListを宣言する。

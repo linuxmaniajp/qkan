@@ -19,8 +19,12 @@
 
 package jp.or.med.orca.qkan.affair.qm.qm001;
 
+import java.text.DateFormat;
+
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.text.ACSQLSafeDateFormat;
+import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
 import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -34,6 +38,8 @@ import jp.nichicom.vr.util.VRMap;
  */
 public class QM001UpdateMasterOperation {
 
+	private ACSQLSafeDateFormat dateFormat = new ACSQLSafeDateFormat();
+	
     /**
      * コンストラクタ
      */
@@ -270,5 +276,125 @@ public class QM001UpdateMasterOperation {
         sb.append("CREATE INDEX IDX_M_POST ON M_POST (POST_CD)");
 
         return sb.toString();
-    }    
+    }
+    
+    /**
+     * 施設情報の履歴管理に伴い既存データのリカバリ
+     * 
+     * @param sqlParam
+     *            SQL構築に必要なパラメタを格納したハッシュマップ
+     * @throws Exception
+     *             処理例外
+     */
+    public String getSQL_UPDATE_SHISETSU_HISTORY_DATE(VRMap sqlParam) throws Exception {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("UPDATE");
+
+        sb.append(" PATIENT_SHISETSU_HISTORY");
+
+        sb.append(" SET");
+
+        sb.append(" SHISETSU_VALID_START");
+
+        sb.append(" =");
+
+        sb.append(dateFormat.format(VRBindPathParser.get("SHISETSU_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+        sb.append(",");
+
+        sb.append(" SHISETSU_VALID_END");
+
+        sb.append(" =");
+
+        sb.append(dateFormat.format(VRBindPathParser.get("SHISETSU_VALID_END", sqlParam), "yyyy-MM-dd"));
+        
+        sb.append(" WHERE");
+        
+        sb.append(" SHISETSU_HISTORY_ID");
+        
+        sb.append(" =");
+        
+        sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SHISETSU_HISTORY_ID", sqlParam)));
+        
+        sb.append(" AND");
+        
+        sb.append(" PATIENT_ID");
+        
+        sb.append(" =");
+        
+        sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+        
+        return sb.toString();
+    	
+    }
+    
+    /**
+     * 施設情報の日付が未設定のレコード数を取得します
+     * 
+     * @return SQL
+     * @throws Exception
+     */
+    public String getSQL_GET_SHISETSU_HISTORY() throws Exception {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SELECT");
+
+        sb.append(" *");
+        
+        sb.append(" FROM");
+        
+        sb.append(" PATIENT_SHISETSU_HISTORY");
+        
+    	sb.append(" WHERE");
+    
+    	sb.append(" SHISETSU_VALID_START IS NULL");
+    
+    	sb.append(" AND");
+    
+    	sb.append(" SHISETSU_VALID_END IS NULL");
+
+        return sb.toString();
+    	
+    }
+    
+    /**
+     * 施設履歴情報の未設定レコードを削除するSQL
+     * 
+     * @return SQL
+     * @throws Exception
+     */
+    public String getSQL_DELETE_SHISETSU_HISTORY() throws Exception {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("DELETE");
+        
+        sb.append(" FROM");
+        
+        sb.append(" PATIENT_SHISETSU_HISTORY");
+        
+        sb.append(" WHERE");
+        
+        sb.append(" TOKUTEI_NYUSHO_FLAG = 1");
+        
+        sb.append(" AND");
+        
+        sb.append(" KYUSOCHI_FLAG = 1");
+        
+        sb.append(" AND");
+        
+        sb.append(" DISEASE IS NULL");
+        
+        sb.append(" AND");
+        
+        sb.append(" SHISETSU_VALID_START IS NULL");
+        
+        sb.append(" AND");
+        
+        sb.append(" SHISETSU_VALID_END IS NULL");        
+        
+        
+        return sb.toString();
+    }
+    
 }

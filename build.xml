@@ -2,6 +2,17 @@
 <project basedir="." default="compile" name="コンパイル">
 	<property name="SourceDir" value="src" />
 	<property name="ClassDir" value="bin" />
+	<property name="Specification-Vendor" value="Nippon Computer Corporation. (http://www.nichicom.jp)" />
+	<property name="Implementation-Vendor" value="Nippon Computer Corporation." />
+	<property name="Implementation-Vendor-Id" value="http://www.nichicom.jp" />
+	<property name="VR-Title" value="VR Libraly" />
+	<property name="VR-Version" value="1.0" />
+	<property name="Bridge-Title" value="Bridge Libraly" />
+	<property name="Bridge-Version" value="1.0" />
+	<property name="AC-Title" value="AC Libraly" />
+	<property name="AC-Version" value="1.0" />
+	<property name="Build-Title" value="Build Libraly" />
+	<property name="Build-Version" value="1.0" />
 	<property name="JarNameOfMain" value="Qkan.jar" />
 	<property name="JarNameOfCSVViewer" value="csv_viewer.jar" />
 	<property name="JarNameOfUpdate" value="update.jar" />
@@ -10,18 +21,30 @@
 		<pathelement path="lib/jaybird-full-2.1.6.jar" />
 		<pathelement path="lib/iText-5.0.6.jar" />
 		<pathelement path="lib/iTextAsian.jar" />
-		<pathelement path="lib/bridge.jar" />
+	</path>
+	<path id="BuildQkanClasspath">
+		<pathelement path="lib/jaybird-full-2.1.6.jar" />
+		<pathelement path="lib/iText-5.0.6.jar" />
+		<pathelement path="lib/iTextAsian.jar" />
 		<pathelement path="lib/ac.jar" />
 		<pathelement path="lib/vr.jar" />
+		<pathelement path="lib/bridge.jar" />
 	</path>
-	<target name="compile">
+	
+	
+	<!-- Bridge -->
+	<target name="compile_lib-bridge">
 		<!-- コンパイル -->
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
-		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
-			<include name="jp/**/*.java" />
+		<!-- 文字コードを指定しつつLibraryのコンパイル -->
+		<javac encoding="UTF-8" source="1.5" target="1.5" srcdir="src" includeAntRuntime="true" destdir="bin" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
+			<include name="jp/nichicom/**" />
+			<exclude name="jp/nichicom/convert/**/*.java" />
+			<exclude name="jp/nichicom/update/**/*.java" />
+			<exclude name="jp/nichicom/ac/lib/care/**/*.java" />
 		</javac>
 		<!-- リソース複写 -->
 		<copy todir="${ClassDir}" >
@@ -29,7 +52,121 @@
 				<exclude name="**/*.java"/>
 			</fileset>
 		</copy>
-		<!-- Jar生成 -->
+		<delete file="lib/bridge.jar" />
+		<jar jarfile="lib/bridge.jar" basedir="bin">
+			<include name="jp/nichicom/bridge/**/*" />
+			<exclude name="**/*.java" />
+			<exclude name="**/licence.txt" />
+			<manifest>
+				<attribute name="Specification-Title" value="${Bridge-Title}" />
+				<attribute name="Specification-Version" value="${Bridge-Version}" />
+				<attribute name="Specification-Vendor" value="${Specification-Vendor}" />
+				<attribute name="Implementation-Title" value="${Bridge-Title}" />
+				<attribute name="Implementation-Version" value="${Bridge-Version}" />
+				<attribute name="Implementation-Vendor" value="${Implementation-Vendor}" />
+				<attribute name="Implementation-Vendor-Id" value="${Implementation-Vendor-Id}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- VR -->
+	<target name="compile_lib-vr">
+		<!-- コンパイル -->
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<!-- 文字コードを指定しつつLibraryのコンパイル -->
+		<javac encoding="UTF-8" source="1.5" target="1.5" srcdir="src" includeAntRuntime="true" destdir="bin" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+			<include name="jp/nichicom/**" />
+			<exclude name="jp/nichicom/convert/**/*.java" />
+			<exclude name="jp/nichicom/update/**/*.java" />
+			<exclude name="jp/nichicom/ac/lib/care/**/*.java" />
+		</javac>
+		<!-- リソース複写 -->
+		<copy todir="${ClassDir}" >
+			<fileset dir="${SourceDir}">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		<mkdir dir="lib" />
+		<delete file="lib/vr.jar" />
+		<jar jarfile="lib/vr.jar" basedir="bin">
+			<include name="jp/nichicom/vr/**/*" />
+			<exclude name="**/*.java" />
+			<include name="**/calendar.xml" />
+			<exclude name="**/licence.txt" />
+			<manifest>
+				<attribute name="Specification-Title" value="${VR-Title}" />
+				<attribute name="Specification-Version" value="${VR-Version}" />
+				<attribute name="Specification-Vendor" value="${Specification-Vendor}" />
+				<attribute name="Implementation-Title" value="${VR-Title}" />
+				<attribute name="Implementation-Version" value="${VR-Version}" />
+				<attribute name="Implementation-Vendor" value="${Implementation-Vendor}" />
+				<attribute name="Implementation-Vendor-Id" value="${Implementation-Vendor-Id}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!-- AC -->
+	<target name="compile_lib-ac">
+		<!-- コンパイル -->
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<!-- 文字コードを指定しつつLibraryのコンパイル -->
+		<javac encoding="UTF-8" source="1.5" target="1.5" srcdir="src" includeAntRuntime="true" destdir="bin" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+			<include name="jp/nichicom/**" />
+			<exclude name="jp/nichicom/convert/**/*.java" />
+			<exclude name="jp/nichicom/update/**/*.java" />
+			<exclude name="jp/nichicom/ac/lib/care/**/*.java" />
+		</javac>
+		<!-- 給管鳥の業務ACを含める -->
+		<javac encoding="ms932" source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+			<include name="jp/nichicom/ac/lib/care/claim/**" />
+		</javac>
+		<!-- 足りない画像をコピー -->
+		<copy todir="${ClassDir}" >
+			<fileset dir="${SourceDir}">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		<delete file="lib/ac.jar" />
+		<jar jarfile="lib/ac.jar" basedir="bin">
+			<include name="jp/nichicom/ac/**/*" />
+			<include name="jp/nichicom/ac/lib/**/*" />
+			<exclude name="**/*.java" />
+			<exclude name="**/licence.txt" />
+			<manifest>
+				<attribute name="Specification-Title" value="${AC-Title}" />
+				<attribute name="Specification-Version" value="${AC-Version}" />
+				<attribute name="Specification-Vendor" value="${Specification-Vendor}" />
+				<attribute name="Implementation-Title" value="${AC-Title}" />
+				<attribute name="Implementation-Version" value="${AC-Version}" />
+				<attribute name="Implementation-Vendor" value="${Implementation-Vendor}" />
+				<attribute name="Implementation-Vendor-Id" value="${Implementation-Vendor-Id}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="compile" depends="compile_lib-ac,compile_lib-vr,compile_lib-bridge">
+		
+		<!-- コンパイル -->
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<javac encoding="ms932" source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildQkanClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+			<include name="jp/or/med/orca/qkan/**" />
+		</javac>
+		<copy todir="${ClassDir}" >
+			<fileset dir="${SourceDir}">
+				<include name="**/*.png"/>
+			</fileset>
+		</copy>
 		<delete file="Qkan.jar" />
 		<jar jarfile="Qkan.jar" basedir="${ClassDir}">
 			<include name="jp/or/**/*" />
@@ -57,7 +194,7 @@
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
 		<!-- オンラインアップデート -->
-		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
+		<javac encoding="ms932" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
 			<include name="jp/nichicom/update/**/*" />
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
@@ -82,7 +219,7 @@
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
 		<!-- データ移行ツール -->
-		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
+		<javac encoding="ms932" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
 			<include name="jp/nichicom/convert/**/*" />
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />

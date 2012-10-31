@@ -17,29 +17,36 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 堤 瑞樹
- * 作成日: 2006/01/13  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2012/08/08  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 予定管理 (S)
- * プロセス サービスパターン通所介護 (001)
- * プログラム サービスパターン通所介護 (QS001008)
+ * サブシステム サービス予定 (S)
+ * プロセス カレンダー (001)
+ * プログラム 特定診療費・特別療養費集計 (QS001008)
  *
  *****************************************************************
  */
-
 package jp.or.med.orca.qkan.affair.qs.qs001;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 
 /**
- * サービスパターン通所介護イベント定義(QS001008) 
+ * 特定診療費・特別療養費集計イベント定義(QS001008) 
  */
-public abstract class QS001008Event extends QS001008State implements QS001Service {
+public abstract class QS001008Event extends QS001008State {
   /**
    * コンストラクタです。
    */
@@ -50,7 +57,7 @@ public abstract class QS001008Event extends QS001008State implements QS001Servic
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
-    getTsuusyoKaigoTimeBeginTime().addActionListener(new ActionListener(){
+    getClose().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -58,8 +65,56 @@ public abstract class QS001008Event extends QS001008State implements QS001Servic
             }
             lockFlag = true;
             try {
-                tsuusyoKaigoTimeBeginTimeActionPerformed(e);
-            }catch(Exception ex){
+                closeActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getServiceCombo().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                serviceComboActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getTokubetsuTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                tokubetsuTableSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getProviderCombo().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                providerComboActionPerformed(e);
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
@@ -71,57 +126,136 @@ public abstract class QS001008Event extends QS001008State implements QS001Servic
   //コンポーネントイベント
 
   /**
-   * 「終了時間変更」イベントです。
+   * 「閉じる」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void tsuusyoKaigoTimeBeginTimeActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void closeActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「サービス種類コンボ選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void serviceComboActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「特定診療費テーブル選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void tokubetsuTableSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「事業所コンボ選択時」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void providerComboActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
+  private ACTableModelAdapter mainTableModel;
+  private ACTableModelAdapter detailTableModel;
+  private VRMap providerService = new VRHashMap();
+  private VRMap providerDiagnosis = new VRHashMap();
+  private Date targetDate;
   //getter/setter
+
+  /**
+   * mainTableModelを返します。
+   * @return mainTableModel
+   */
+  protected ACTableModelAdapter getMainTableModel(){
+    return mainTableModel;
+  }
+  /**
+   * mainTableModelを設定します。
+   * @param mainTableModel mainTableModel
+   */
+  protected void setMainTableModel(ACTableModelAdapter mainTableModel){
+    this.mainTableModel = mainTableModel;
+  }
+
+  /**
+   * detailTableModelを返します。
+   * @return detailTableModel
+   */
+  protected ACTableModelAdapter getDetailTableModel(){
+    return detailTableModel;
+  }
+  /**
+   * detailTableModelを設定します。
+   * @param detailTableModel detailTableModel
+   */
+  protected void setDetailTableModel(ACTableModelAdapter detailTableModel){
+    this.detailTableModel = detailTableModel;
+  }
+
+  /**
+   * providerServiceを返します。
+   * @return providerService
+   */
+  protected VRMap getProviderService(){
+    return providerService;
+  }
+  /**
+   * providerServiceを設定します。
+   * @param providerService providerService
+   */
+  protected void setProviderService(VRMap providerService){
+    this.providerService = providerService;
+  }
+
+  /**
+   * providerDiagnosisを返します。
+   * @return providerDiagnosis
+   */
+  protected VRMap getProviderDiagnosis(){
+    return providerDiagnosis;
+  }
+  /**
+   * providerDiagnosisを設定します。
+   * @param providerDiagnosis providerDiagnosis
+   */
+  protected void setProviderDiagnosis(VRMap providerDiagnosis){
+    this.providerDiagnosis = providerDiagnosis;
+  }
+
+  /**
+   * targetDateを返します。
+   * @return targetDate
+   */
+  protected Date getTargetDate(){
+    return targetDate;
+  }
+  /**
+   * targetDateを設定します。
+   * @param targetDate targetDate
+   */
+  protected void setTargetDate(Date targetDate){
+    this.targetDate = targetDate;
+  }
 
   //内部関数
 
   /**
-   * 「初期化」に関する処理を行ないます。
+   * 「初期設定」に関する処理を行ないます。
    *
+   * @param Map> diagnosisDateMap Map<String,
+   * @param targetDate Date
    * @throws Exception 処理例外
    *
    */
-  public abstract void initialize() throws Exception;
+  public abstract void showModal(Map<String, Map> diagnosisDateMap, Date targetDate) throws Exception;
 
   /**
-   * 「事業所コンボ変更時関数」に関する処理を行ないます。
+   * 「特定診療費・特別療養費計算」に関する処理を行ないます。
    *
-   * @param provider VRMap
+   * @param ArrayList<Map>> tokuteiMap Map<String,
    * @throws Exception 処理例外
-   *
+   * @return VRList
    */
-  public abstract void providerSelected(VRMap provider) throws Exception;
-
-  /**
-   * 「入力内容の不備を検査」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return VRMap
-   */
-  public abstract VRMap getValidData() throws Exception;
-
-  /**
-   * 「事業所情報の必要性を取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return boolean
-   */
-  public abstract boolean isUseProvider() throws Exception;
-
-  /**
-   * 「時間区分の時間取得」に関する処理を行ないます。
-   *
-   * @throws Exception 処理例外
-   * @return int
-   */
-  public abstract int getKaigoTime() throws Exception;
+  public abstract VRList calcDiagnosis(Map<String, ArrayList<Map>> tokuteiMap) throws Exception;
 
 }

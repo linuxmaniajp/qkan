@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2011/12/19  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2012/08/06  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -28,51 +28,60 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu002;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
-
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACAffairButton;
-import jp.nichicom.ac.component.ACAffairButtonBar;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACKanaSendTextField;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.component.ACTimeTextField;
-import jp.nichicom.ac.component.table.ACTable;
-import jp.nichicom.ac.component.table.ACTableCellViewer;
-import jp.nichicom.ac.component.table.ACTableColumn;
-import jp.nichicom.ac.container.ACBackLabelContainer;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACAffairable;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.text.ACBorderBlankDateFormat;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.component.table.VRTableColumnModel;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.QkanConstants;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.component.QkanDateTextField;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 利用者登録画面項目デザイン(QU002) 
  */
-@SuppressWarnings("serial")
 public class QU002Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
 
@@ -406,77 +415,113 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn idouInfoTableColumn5;
 
-  private ACGroupBox institutionInfos;
+  private ACPanel shisetsuInfoPanel;
 
-  private VRLayout institutionInfoLayout;
+  private ACPanel shisetsuInputPanel;
 
-  private ACLabel institutionInfoBearMoneyInfos;
+  private ACPanel shisetsuInfSyokuhiPanel;
 
-  private ACLabel institutionInfoSpace1;
+  private ACGroupBox shisetsuInfoSyokuhiGroup;
 
-  private ACIntegerCheckBox institutionInfoTokuteiNyusho;
+  private VRLayout shisetsuInfoSyokuhiLayout;
 
-  private ACLabel institutionInfoSpace2;
+  private ACLabel shisetsuInfoSpaceLabel;
 
-  private ACLabelContainer institutionInfoDinnerBearLimitMoneyContena;
+  private ACIntegerCheckBox shisetsuInfoTokuteiCheck;
 
-  private ACTextField institutionInfoDinnerBearLimitMoneyText;
+  private ACLabelContainer shisetsuInfoDinnerBearLimitMoneyContena;
 
-  private ACLabel institutionInfoDinnerBearLimitMoneyLabel;
+  private ACTextField shisetsuInfoDinnerBearLimitMoneyText;
 
-  private ACLabelContainer institutionInfoUnitRoomLimitMoneyContena;
+  private ACLabel shisetsuInfoDinnerBearLimitMoneyLabel;
 
-  private ACTextField institutionInfoUnitRoomLimitMoneyText;
+  private ACLabelContainer shisetsuInfoUnitRoomLimitMoneyContena;
 
-  private ACLabel institutionInfoUnitRoomLimitMoneyLabel;
+  private ACTextField shisetsuInfoUnitRoomLimitMoneyText;
 
-  private ACLabelContainer institutionInfoUnitSemiRoomLimitMoneyContena;
+  private ACLabel shisetsuInfoUnitRoomLimitMoneyLabel;
 
-  private ACTextField institutionInfoUnitSemiRoomLimitMoneyText;
+  private ACLabelContainer shisetsuInfoUnitSemiRoomLimitMoneyContena;
 
-  private ACLabel institutionInfoUnitSemiRoomLimitMoneyLabel;
+  private ACTextField shisetsuInfoUnitSemiRoomLimitMoneyText;
 
-  private ACLabelContainer institutionInfoNormalRoomLimitMoneyContena;
+  private ACLabel shisetsuInfoUnitSemiRoomLimitMoneyLabel;
 
-  private ACTextField institutionInfoNormalRoomLimitMoneyText;
+  private ACLabelContainer shisetsuInfoNormalRoomLimitMoneyContena;
 
-  private ACLabel institutionInfoNormalRoomLimitMoneyLabel;
+  private ACTextField shisetsuInfoNormalRoomLimitMoneyText;
 
-  private ACLabelContainer institutionInfoNormalRoomLimitMoneyContena2;
+  private ACLabel shisetsuInfoNormalRoomLimitMoneyLabel;
 
-  private ACTextField institutionInfoNormalRoomLimitMoneyText2;
+  private ACLabelContainer shisetsuInfoNormalRoomLimitMoneyContena2;
 
-  private ACLabel institutionInfoNormalRoomLimitMoneyLabel2;
+  private ACTextField shisetsuInfoNormalRoomLimitMoneyText2;
 
-  private ACLabelContainer institutionInfoTasyoRoomLimitMoneyContena;
+  private ACLabel shisetsuInfoNormalRoomLimitMoneyLabel2;
 
-  private ACTextField institutionInfoTasyoRoomLimitMoneyText;
+  private ACLabelContainer shisetsuInfoTasyoRoomLimitMoneyContena;
 
-  private ACLabel institutionInfoTasyoRoomLimitMoneyLabel;
+  private ACTextField shisetsuInfoTasyoRoomLimitMoneyText;
 
-  private ACLabel institutionInfoCareOldPersonLabel;
+  private ACLabel shisetsuInfoTasyoRoomLimitMoneyLabel;
 
-  private ACLabel institutionInfoSpace3;
+  private ACPanel shisetsuInfRigthtPanel;
 
-  private ACIntegerCheckBox institutionInfoOldStep;
+  private ACGroupBox shisetsuInfoCareOldPersonGroup;
 
-  private ACLabel institutionInfoCareOldPersonInsuranceLabel;
+  private ACIntegerCheckBox shisetsuInfoOldStep;
 
-  private ACLabel institutionInfoSpace4;
+  private ACGroupBox shisetsuInfoCareOldPersonInsuranceGroup;
 
-  private ACTextField institutionInfoMainDisease;
+  private ACTextField shisetsuInfoMainDisease;
 
-  private ACLabelContainer institutionInfoMainDiseaseContainer;
+  private ACLabelContainer shisetsuInfoMainDiseaseContainer;
 
-  private ACLabel institutionInfoSpace5;
+  private ACGroupBox shisetsuInfoExplanationGroup;
 
-  private ACGroupBox institutionInfoExplanationGroup;
+  private ACLabel shisetsuInfoExplanationLabel1;
 
-  private ACLabel institutionInfoExplanationLabel1;
+  private ACLabel shisetsuInfoExplanationLabel2;
 
-  private ACLabel institutionInfoExplanationLabel2;
+  private ACPanel shisetsuInfoOtherPanel;
 
-  private ACLabel institutionInfoExplanationLabel3;
+  private VRLayout shisetsuInfoOtherLayout;
+
+  private ACPanel shisetsuInfoLimitPanel;
+
+  private ACLabelContainer shisetsuInfoValidLimitContainer;
+
+  private QkanDateTextField shisetsuInfoValidLimitDateStart;
+
+  private ACLabel shisetsuInfoValidLimitLabel;
+
+  private QkanDateTextField shisetsuInfoValidLimitDateEnd;
+
+  private ACPanel shisetsuInfoButtons;
+
+  private ACButton shisetsuInfoButtonClear;
+
+  private ACButton shisetsuInfoButtonInsert;
+
+  private ACButton shisetsuInfoButtonEdit;
+
+  private ACButton shisetsuInfoButtonDelete;
+
+  private ACTable shisetsuInfoTable;
+
+  private VRTableColumnModel shisetsuInfoTableColumnModel;
+
+  private ACTableColumn shisetsuInfoTableColumn0;
+
+  private ACTableColumn shisetsuInfoTableColumn1;
+
+  private ACTableColumn shisetsuInfoTableColumn2;
+
+  private ACTableColumn shisetsuInfoTableColumn3;
+
+  private ACTableColumn shisetsuInfoTableColumn4;
+
+  private ACTableColumn shisetsuInfoTableColumn5;
 
   //getter
 
@@ -3601,76 +3646,108 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (施設情報・領域・グループ)を取得します。
-   * @return (施設情報・領域・グループ)
+   * 特定入所者情報・パネルを取得します。
+   * @return 特定入所者情報・パネル
    */
-  public ACGroupBox getInstitutionInfos(){
-    if(institutionInfos==null){
+  public ACPanel getShisetsuInfoPanel(){
+    if(shisetsuInfoPanel==null){
 
-      institutionInfos = new ACGroupBox();
+      shisetsuInfoPanel = new ACPanel();
 
-      institutionInfos.setText("施設情報");
-
-      institutionInfos.setLayout(getInstitutionInfoLayout());
-
-      addInstitutionInfos();
+      addShisetsuInfoPanel();
     }
-    return institutionInfos;
+    return shisetsuInfoPanel;
 
   }
 
   /**
-   * (施設情報領域・レイアウト)を取得します。
-   * @return (施設情報領域・レイアウト)
+   * 特定入所者入力領域・パネルを取得します。
+   * @return 特定入所者入力領域・パネル
    */
-  public VRLayout getInstitutionInfoLayout(){
-    if(institutionInfoLayout==null){
+  public ACPanel getShisetsuInputPanel(){
+    if(shisetsuInputPanel==null){
 
-      institutionInfoLayout = new VRLayout();
+      shisetsuInputPanel = new ACPanel();
 
-      institutionInfoLayout.setAutoWrap(false);
-
-      institutionInfoLayout.setVgap(5);
-
-      institutionInfoLayout.setHgrid(200);
-
-      addInstitutionInfoLayout();
+      addShisetsuInputPanel();
     }
-    return institutionInfoLayout;
+    return shisetsuInputPanel;
 
   }
 
   /**
-   * 利用者負担限度額ラベルを取得します。
-   * @return 利用者負担限度額ラベル
+   * 食費居住費・パネルを取得します。
+   * @return 食費居住費・パネル
    */
-  public ACLabel getInstitutionInfoBearMoneyInfos(){
-    if(institutionInfoBearMoneyInfos==null){
+  public ACPanel getShisetsuInfSyokuhiPanel(){
+    if(shisetsuInfSyokuhiPanel==null){
 
-      institutionInfoBearMoneyInfos = new ACLabel();
+      shisetsuInfSyokuhiPanel = new ACPanel();
 
-      institutionInfoBearMoneyInfos.setText("利用者負担限度額");
-
-      addInstitutionInfoBearMoneyInfos();
+      addShisetsuInfSyokuhiPanel();
     }
-    return institutionInfoBearMoneyInfos;
+    return shisetsuInfSyokuhiPanel;
 
   }
 
   /**
-   * スペース1を取得します。
-   * @return スペース1
+   * 食費居住費・グループを取得します。
+   * @return 食費居住費・グループ
    */
-  public ACLabel getInstitutionInfoSpace1(){
-    if(institutionInfoSpace1==null){
+  public ACGroupBox getShisetsuInfoSyokuhiGroup(){
+    if(shisetsuInfoSyokuhiGroup==null){
 
-      institutionInfoSpace1 = new ACLabel();
+      shisetsuInfoSyokuhiGroup = new ACGroupBox();
 
-      institutionInfoSpace1.setText(" ");
+      shisetsuInfoSyokuhiGroup.setText("利用者負担限度額");
 
-      addInstitutionInfoSpace1();
+      shisetsuInfoSyokuhiGroup.setLayout(getShisetsuInfoSyokuhiLayout());
+
+      addShisetsuInfoSyokuhiGroup();
     }
-    return institutionInfoSpace1;
+    return shisetsuInfoSyokuhiGroup;
+
+  }
+
+  /**
+   * 食費・居住費領域・レイアウトを取得します。
+   * @return 食費・居住費領域・レイアウト
+   */
+  public VRLayout getShisetsuInfoSyokuhiLayout(){
+    if(shisetsuInfoSyokuhiLayout==null){
+
+      shisetsuInfoSyokuhiLayout = new VRLayout();
+
+      shisetsuInfoSyokuhiLayout.setAutoWrap(false);
+
+      shisetsuInfoSyokuhiLayout.setHgap(0);
+
+      shisetsuInfoSyokuhiLayout.setLabelMargin(0);
+
+      shisetsuInfoSyokuhiLayout.setVgap(5);
+
+      shisetsuInfoSyokuhiLayout.setHgrid(150);
+
+      addShisetsuInfoSyokuhiLayout();
+    }
+    return shisetsuInfoSyokuhiLayout;
+
+  }
+
+  /**
+   * 特定入所スペーサーを取得します。
+   * @return 特定入所スペーサー
+   */
+  public ACLabel getShisetsuInfoSpaceLabel(){
+    if(shisetsuInfoSpaceLabel==null){
+
+      shisetsuInfoSpaceLabel = new ACLabel();
+
+      shisetsuInfoSpaceLabel.setText("　");
+
+      addShisetsuInfoSpaceLabel();
+    }
+    return shisetsuInfoSpaceLabel;
 
   }
 
@@ -3678,56 +3755,39 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 特定入所者チェックを取得します。
    * @return 特定入所者チェック
    */
-  public ACIntegerCheckBox getInstitutionInfoTokuteiNyusho(){
-    if(institutionInfoTokuteiNyusho==null){
+  public ACIntegerCheckBox getShisetsuInfoTokuteiCheck(){
+    if(shisetsuInfoTokuteiCheck==null){
 
-      institutionInfoTokuteiNyusho = new ACIntegerCheckBox();
+      shisetsuInfoTokuteiCheck = new ACIntegerCheckBox();
 
-      institutionInfoTokuteiNyusho.setText("特定入所者");
+      shisetsuInfoTokuteiCheck.setText("特定入所者");
 
-      institutionInfoTokuteiNyusho.setBindPath("TOKUTEI_NYUSHO_FLAG");
+      shisetsuInfoTokuteiCheck.setBindPath("TOKUTEI_NYUSHO_FLAG");
 
-      institutionInfoTokuteiNyusho.setSelectValue(2);
+      shisetsuInfoTokuteiCheck.setSelectValue(2);
 
-      institutionInfoTokuteiNyusho.setUnSelectValue(1);
+      shisetsuInfoTokuteiCheck.setUnSelectValue(1);
 
-      addInstitutionInfoTokuteiNyusho();
+      addShisetsuInfoTokuteiCheck();
     }
-    return institutionInfoTokuteiNyusho;
+    return shisetsuInfoTokuteiCheck;
 
   }
 
   /**
-   * スペース2を取得します。
-   * @return スペース2
+   * 食費負担限度額・コンテナを取得します。
+   * @return 食費負担限度額・コンテナ
    */
-  public ACLabel getInstitutionInfoSpace2(){
-    if(institutionInfoSpace2==null){
+  public ACLabelContainer getShisetsuInfoDinnerBearLimitMoneyContena(){
+    if(shisetsuInfoDinnerBearLimitMoneyContena==null){
 
-      institutionInfoSpace2 = new ACLabel();
+      shisetsuInfoDinnerBearLimitMoneyContena = new ACLabelContainer();
 
-      institutionInfoSpace2.setText("　　　　　　　　　　　");
+      shisetsuInfoDinnerBearLimitMoneyContena.setText("食費");
 
-      addInstitutionInfoSpace2();
+      addShisetsuInfoDinnerBearLimitMoneyContena();
     }
-    return institutionInfoSpace2;
-
-  }
-
-  /**
-   * （食費負担限度額・コンテナ）を取得します。
-   * @return （食費負担限度額・コンテナ）
-   */
-  public ACLabelContainer getInstitutionInfoDinnerBearLimitMoneyContena(){
-    if(institutionInfoDinnerBearLimitMoneyContena==null){
-
-      institutionInfoDinnerBearLimitMoneyContena = new ACLabelContainer();
-
-      institutionInfoDinnerBearLimitMoneyContena.setText("食費");
-
-      addInstitutionInfoDinnerBearLimitMoneyContena();
-    }
-    return institutionInfoDinnerBearLimitMoneyContena;
+    return shisetsuInfoDinnerBearLimitMoneyContena;
 
   }
 
@@ -3735,26 +3795,26 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 食費負担限度額・テキストを取得します。
    * @return 食費負担限度額・テキスト
    */
-  public ACTextField getInstitutionInfoDinnerBearLimitMoneyText(){
-    if(institutionInfoDinnerBearLimitMoneyText==null){
+  public ACTextField getShisetsuInfoDinnerBearLimitMoneyText(){
+    if(shisetsuInfoDinnerBearLimitMoneyText==null){
 
-      institutionInfoDinnerBearLimitMoneyText = new ACTextField();
+      shisetsuInfoDinnerBearLimitMoneyText = new ACTextField();
 
-      institutionInfoDinnerBearLimitMoneyText.setBindPath("LIMIT_SHOKUHI");
+      shisetsuInfoDinnerBearLimitMoneyText.setBindPath("LIMIT_SHOKUHI");
 
-      institutionInfoDinnerBearLimitMoneyText.setColumns(4);
+      shisetsuInfoDinnerBearLimitMoneyText.setColumns(4);
 
-      institutionInfoDinnerBearLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
+      shisetsuInfoDinnerBearLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
 
-      institutionInfoDinnerBearLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+      shisetsuInfoDinnerBearLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 
-      institutionInfoDinnerBearLimitMoneyText.setIMEMode(InputSubset.LATIN);
+      shisetsuInfoDinnerBearLimitMoneyText.setIMEMode(InputSubset.LATIN);
 
-      institutionInfoDinnerBearLimitMoneyText.setMaxLength(4);
+      shisetsuInfoDinnerBearLimitMoneyText.setMaxLength(4);
 
-      addInstitutionInfoDinnerBearLimitMoneyText();
+      addShisetsuInfoDinnerBearLimitMoneyText();
     }
-    return institutionInfoDinnerBearLimitMoneyText;
+    return shisetsuInfoDinnerBearLimitMoneyText;
 
   }
 
@@ -3762,33 +3822,33 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 食費負担限度額・ラベルを取得します。
    * @return 食費負担限度額・ラベル
    */
-  public ACLabel getInstitutionInfoDinnerBearLimitMoneyLabel(){
-    if(institutionInfoDinnerBearLimitMoneyLabel==null){
+  public ACLabel getShisetsuInfoDinnerBearLimitMoneyLabel(){
+    if(shisetsuInfoDinnerBearLimitMoneyLabel==null){
 
-      institutionInfoDinnerBearLimitMoneyLabel = new ACLabel();
+      shisetsuInfoDinnerBearLimitMoneyLabel = new ACLabel();
 
-      institutionInfoDinnerBearLimitMoneyLabel.setText("（円）");
+      shisetsuInfoDinnerBearLimitMoneyLabel.setText("（円）");
 
-      addInstitutionInfoDinnerBearLimitMoneyLabel();
+      addShisetsuInfoDinnerBearLimitMoneyLabel();
     }
-    return institutionInfoDinnerBearLimitMoneyLabel;
+    return shisetsuInfoDinnerBearLimitMoneyLabel;
 
   }
 
   /**
-   * （ユニット型個室負担限度額・コンテナ）を取得します。
-   * @return （ユニット型個室負担限度額・コンテナ）
+   * ユニット型個室負担限度額・コンテナを取得します。
+   * @return ユニット型個室負担限度額・コンテナ
    */
-  public ACLabelContainer getInstitutionInfoUnitRoomLimitMoneyContena(){
-    if(institutionInfoUnitRoomLimitMoneyContena==null){
+  public ACLabelContainer getShisetsuInfoUnitRoomLimitMoneyContena(){
+    if(shisetsuInfoUnitRoomLimitMoneyContena==null){
 
-      institutionInfoUnitRoomLimitMoneyContena = new ACLabelContainer();
+      shisetsuInfoUnitRoomLimitMoneyContena = new ACLabelContainer();
 
-      institutionInfoUnitRoomLimitMoneyContena.setText("ユニット型個室");
+      shisetsuInfoUnitRoomLimitMoneyContena.setText("ユニット型個室");
 
-      addInstitutionInfoUnitRoomLimitMoneyContena();
+      addShisetsuInfoUnitRoomLimitMoneyContena();
     }
-    return institutionInfoUnitRoomLimitMoneyContena;
+    return shisetsuInfoUnitRoomLimitMoneyContena;
 
   }
 
@@ -3796,26 +3856,26 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * ユニット型個室負担限度額・テキストを取得します。
    * @return ユニット型個室負担限度額・テキスト
    */
-  public ACTextField getInstitutionInfoUnitRoomLimitMoneyText(){
-    if(institutionInfoUnitRoomLimitMoneyText==null){
+  public ACTextField getShisetsuInfoUnitRoomLimitMoneyText(){
+    if(shisetsuInfoUnitRoomLimitMoneyText==null){
 
-      institutionInfoUnitRoomLimitMoneyText = new ACTextField();
+      shisetsuInfoUnitRoomLimitMoneyText = new ACTextField();
 
-      institutionInfoUnitRoomLimitMoneyText.setBindPath("LIMIT_UNIT_KOSHITSU");
+      shisetsuInfoUnitRoomLimitMoneyText.setBindPath("LIMIT_UNIT_KOSHITSU");
 
-      institutionInfoUnitRoomLimitMoneyText.setColumns(4);
+      shisetsuInfoUnitRoomLimitMoneyText.setColumns(4);
 
-      institutionInfoUnitRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
+      shisetsuInfoUnitRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
 
-      institutionInfoUnitRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+      shisetsuInfoUnitRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 
-      institutionInfoUnitRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
+      shisetsuInfoUnitRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
 
-      institutionInfoUnitRoomLimitMoneyText.setMaxLength(4);
+      shisetsuInfoUnitRoomLimitMoneyText.setMaxLength(4);
 
-      addInstitutionInfoUnitRoomLimitMoneyText();
+      addShisetsuInfoUnitRoomLimitMoneyText();
     }
-    return institutionInfoUnitRoomLimitMoneyText;
+    return shisetsuInfoUnitRoomLimitMoneyText;
 
   }
 
@@ -3823,33 +3883,33 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * ユニット型個室負担限度額・ラベルを取得します。
    * @return ユニット型個室負担限度額・ラベル
    */
-  public ACLabel getInstitutionInfoUnitRoomLimitMoneyLabel(){
-    if(institutionInfoUnitRoomLimitMoneyLabel==null){
+  public ACLabel getShisetsuInfoUnitRoomLimitMoneyLabel(){
+    if(shisetsuInfoUnitRoomLimitMoneyLabel==null){
 
-      institutionInfoUnitRoomLimitMoneyLabel = new ACLabel();
+      shisetsuInfoUnitRoomLimitMoneyLabel = new ACLabel();
 
-      institutionInfoUnitRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoUnitRoomLimitMoneyLabel.setText("（円）");
 
-      addInstitutionInfoUnitRoomLimitMoneyLabel();
+      addShisetsuInfoUnitRoomLimitMoneyLabel();
     }
-    return institutionInfoUnitRoomLimitMoneyLabel;
+    return shisetsuInfoUnitRoomLimitMoneyLabel;
 
   }
 
   /**
-   * （ユニット型準個室負担限度額・コンテナ）を取得します。
-   * @return （ユニット型準個室負担限度額・コンテナ）
+   * ユニット型準個室負担限度額・コンテナを取得します。
+   * @return ユニット型準個室負担限度額・コンテナ
    */
-  public ACLabelContainer getInstitutionInfoUnitSemiRoomLimitMoneyContena(){
-    if(institutionInfoUnitSemiRoomLimitMoneyContena==null){
+  public ACLabelContainer getShisetsuInfoUnitSemiRoomLimitMoneyContena(){
+    if(shisetsuInfoUnitSemiRoomLimitMoneyContena==null){
 
-      institutionInfoUnitSemiRoomLimitMoneyContena = new ACLabelContainer();
+      shisetsuInfoUnitSemiRoomLimitMoneyContena = new ACLabelContainer();
 
-      institutionInfoUnitSemiRoomLimitMoneyContena.setText("ユニット型準個室");
+      shisetsuInfoUnitSemiRoomLimitMoneyContena.setText("ユニット型準個室");
 
-      addInstitutionInfoUnitSemiRoomLimitMoneyContena();
+      addShisetsuInfoUnitSemiRoomLimitMoneyContena();
     }
-    return institutionInfoUnitSemiRoomLimitMoneyContena;
+    return shisetsuInfoUnitSemiRoomLimitMoneyContena;
 
   }
 
@@ -3857,26 +3917,26 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * ユニット型準個室負担限度額・テキストを取得します。
    * @return ユニット型準個室負担限度額・テキスト
    */
-  public ACTextField getInstitutionInfoUnitSemiRoomLimitMoneyText(){
-    if(institutionInfoUnitSemiRoomLimitMoneyText==null){
+  public ACTextField getShisetsuInfoUnitSemiRoomLimitMoneyText(){
+    if(shisetsuInfoUnitSemiRoomLimitMoneyText==null){
 
-      institutionInfoUnitSemiRoomLimitMoneyText = new ACTextField();
+      shisetsuInfoUnitSemiRoomLimitMoneyText = new ACTextField();
 
-      institutionInfoUnitSemiRoomLimitMoneyText.setBindPath("LIMIT_UNIT_JUNKOSHITSU");
+      shisetsuInfoUnitSemiRoomLimitMoneyText.setBindPath("LIMIT_UNIT_JUNKOSHITSU");
 
-      institutionInfoUnitSemiRoomLimitMoneyText.setColumns(4);
+      shisetsuInfoUnitSemiRoomLimitMoneyText.setColumns(4);
 
-      institutionInfoUnitSemiRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
+      shisetsuInfoUnitSemiRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
 
-      institutionInfoUnitSemiRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+      shisetsuInfoUnitSemiRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 
-      institutionInfoUnitSemiRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
+      shisetsuInfoUnitSemiRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
 
-      institutionInfoUnitSemiRoomLimitMoneyText.setMaxLength(4);
+      shisetsuInfoUnitSemiRoomLimitMoneyText.setMaxLength(4);
 
-      addInstitutionInfoUnitSemiRoomLimitMoneyText();
+      addShisetsuInfoUnitSemiRoomLimitMoneyText();
     }
-    return institutionInfoUnitSemiRoomLimitMoneyText;
+    return shisetsuInfoUnitSemiRoomLimitMoneyText;
 
   }
 
@@ -3884,155 +3944,155 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * ユニット型準個室負担限度額・ラベルを取得します。
    * @return ユニット型準個室負担限度額・ラベル
    */
-  public ACLabel getInstitutionInfoUnitSemiRoomLimitMoneyLabel(){
-    if(institutionInfoUnitSemiRoomLimitMoneyLabel==null){
+  public ACLabel getShisetsuInfoUnitSemiRoomLimitMoneyLabel(){
+    if(shisetsuInfoUnitSemiRoomLimitMoneyLabel==null){
 
-      institutionInfoUnitSemiRoomLimitMoneyLabel = new ACLabel();
+      shisetsuInfoUnitSemiRoomLimitMoneyLabel = new ACLabel();
 
-      institutionInfoUnitSemiRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoUnitSemiRoomLimitMoneyLabel.setText("（円）");
 
-      addInstitutionInfoUnitSemiRoomLimitMoneyLabel();
+      addShisetsuInfoUnitSemiRoomLimitMoneyLabel();
     }
-    return institutionInfoUnitSemiRoomLimitMoneyLabel;
+    return shisetsuInfoUnitSemiRoomLimitMoneyLabel;
 
   }
 
   /**
-   * （従来型個室（特養等）負担限度額・コンテナ）を取得します。
-   * @return （従来型個室（特養等）負担限度額・コンテナ）
+   * 従来型個室特養等負担限度額・コンテナを取得します。
+   * @return 従来型個室特養等負担限度額・コンテナ
    */
-  public ACLabelContainer getInstitutionInfoNormalRoomLimitMoneyContena(){
-    if(institutionInfoNormalRoomLimitMoneyContena==null){
+  public ACLabelContainer getShisetsuInfoNormalRoomLimitMoneyContena(){
+    if(shisetsuInfoNormalRoomLimitMoneyContena==null){
 
-      institutionInfoNormalRoomLimitMoneyContena = new ACLabelContainer();
+      shisetsuInfoNormalRoomLimitMoneyContena = new ACLabelContainer();
 
-      institutionInfoNormalRoomLimitMoneyContena.setText("従来型個室(特養等)");
+      shisetsuInfoNormalRoomLimitMoneyContena.setText("従来型個室(特養等)");
 
-      addInstitutionInfoNormalRoomLimitMoneyContena();
+      addShisetsuInfoNormalRoomLimitMoneyContena();
     }
-    return institutionInfoNormalRoomLimitMoneyContena;
+    return shisetsuInfoNormalRoomLimitMoneyContena;
 
   }
 
   /**
-   * 従来型個室（特養等）負担限度額・テキストを取得します。
-   * @return 従来型個室（特養等）負担限度額・テキスト
+   * 従来型個室特養等負担限度額・テキストを取得します。
+   * @return 従来型個室特養等負担限度額・テキスト
    */
-  public ACTextField getInstitutionInfoNormalRoomLimitMoneyText(){
-    if(institutionInfoNormalRoomLimitMoneyText==null){
+  public ACTextField getShisetsuInfoNormalRoomLimitMoneyText(){
+    if(shisetsuInfoNormalRoomLimitMoneyText==null){
 
-      institutionInfoNormalRoomLimitMoneyText = new ACTextField();
+      shisetsuInfoNormalRoomLimitMoneyText = new ACTextField();
 
-      institutionInfoNormalRoomLimitMoneyText.setBindPath("LIMIT_JURAIGATA1");
+      shisetsuInfoNormalRoomLimitMoneyText.setBindPath("LIMIT_JURAIGATA1");
 
-      institutionInfoNormalRoomLimitMoneyText.setColumns(4);
+      shisetsuInfoNormalRoomLimitMoneyText.setColumns(4);
 
-      institutionInfoNormalRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
+      shisetsuInfoNormalRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
 
-      institutionInfoNormalRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+      shisetsuInfoNormalRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 
-      institutionInfoNormalRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
+      shisetsuInfoNormalRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
 
-      institutionInfoNormalRoomLimitMoneyText.setMaxLength(4);
+      shisetsuInfoNormalRoomLimitMoneyText.setMaxLength(4);
 
-      addInstitutionInfoNormalRoomLimitMoneyText();
+      addShisetsuInfoNormalRoomLimitMoneyText();
     }
-    return institutionInfoNormalRoomLimitMoneyText;
+    return shisetsuInfoNormalRoomLimitMoneyText;
 
   }
 
   /**
-   * 従来型個室（特養等）負担限度額・ラベルを取得します。
-   * @return 従来型個室（特養等）負担限度額・ラベル
+   * 従来型個室特養等負担限度額・ラベルを取得します。
+   * @return 従来型個室特養等負担限度額・ラベル
    */
-  public ACLabel getInstitutionInfoNormalRoomLimitMoneyLabel(){
-    if(institutionInfoNormalRoomLimitMoneyLabel==null){
+  public ACLabel getShisetsuInfoNormalRoomLimitMoneyLabel(){
+    if(shisetsuInfoNormalRoomLimitMoneyLabel==null){
 
-      institutionInfoNormalRoomLimitMoneyLabel = new ACLabel();
+      shisetsuInfoNormalRoomLimitMoneyLabel = new ACLabel();
 
-      institutionInfoNormalRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoNormalRoomLimitMoneyLabel.setText("（円）");
 
-      addInstitutionInfoNormalRoomLimitMoneyLabel();
+      addShisetsuInfoNormalRoomLimitMoneyLabel();
     }
-    return institutionInfoNormalRoomLimitMoneyLabel;
+    return shisetsuInfoNormalRoomLimitMoneyLabel;
 
   }
 
   /**
-   * （従来型個室（老健・療養等）負担限度額・コンテナ）を取得します。
-   * @return （従来型個室（老健・療養等）負担限度額・コンテナ）
+   * 従来型個室老健・療養等負担限度額・コンテナを取得します。
+   * @return 従来型個室老健・療養等負担限度額・コンテナ
    */
-  public ACLabelContainer getInstitutionInfoNormalRoomLimitMoneyContena2(){
-    if(institutionInfoNormalRoomLimitMoneyContena2==null){
+  public ACLabelContainer getShisetsuInfoNormalRoomLimitMoneyContena2(){
+    if(shisetsuInfoNormalRoomLimitMoneyContena2==null){
 
-      institutionInfoNormalRoomLimitMoneyContena2 = new ACLabelContainer();
+      shisetsuInfoNormalRoomLimitMoneyContena2 = new ACLabelContainer();
 
-      institutionInfoNormalRoomLimitMoneyContena2.setText("従来型個室(老健・療養等)");
+      shisetsuInfoNormalRoomLimitMoneyContena2.setText("従来型個室(老健・療養等)");
 
-      addInstitutionInfoNormalRoomLimitMoneyContena2();
+      addShisetsuInfoNormalRoomLimitMoneyContena2();
     }
-    return institutionInfoNormalRoomLimitMoneyContena2;
+    return shisetsuInfoNormalRoomLimitMoneyContena2;
 
   }
 
   /**
-   * 従来型個室（老健・療養等）負担限度額・テキストを取得します。
-   * @return 従来型個室（老健・療養等）負担限度額・テキスト
+   * 従来型個室老健・療養等負担限度額・テキストを取得します。
+   * @return 従来型個室老健・療養等負担限度額・テキスト
    */
-  public ACTextField getInstitutionInfoNormalRoomLimitMoneyText2(){
-    if(institutionInfoNormalRoomLimitMoneyText2==null){
+  public ACTextField getShisetsuInfoNormalRoomLimitMoneyText2(){
+    if(shisetsuInfoNormalRoomLimitMoneyText2==null){
 
-      institutionInfoNormalRoomLimitMoneyText2 = new ACTextField();
+      shisetsuInfoNormalRoomLimitMoneyText2 = new ACTextField();
 
-      institutionInfoNormalRoomLimitMoneyText2.setBindPath("LIMIT_JURAIGATA2");
+      shisetsuInfoNormalRoomLimitMoneyText2.setBindPath("LIMIT_JURAIGATA2");
 
-      institutionInfoNormalRoomLimitMoneyText2.setColumns(4);
+      shisetsuInfoNormalRoomLimitMoneyText2.setColumns(4);
 
-      institutionInfoNormalRoomLimitMoneyText2.setCharType(VRCharType.ONLY_DIGIT);
+      shisetsuInfoNormalRoomLimitMoneyText2.setCharType(VRCharType.ONLY_DIGIT);
 
-      institutionInfoNormalRoomLimitMoneyText2.setHorizontalAlignment(SwingConstants.RIGHT);
+      shisetsuInfoNormalRoomLimitMoneyText2.setHorizontalAlignment(SwingConstants.RIGHT);
 
-      institutionInfoNormalRoomLimitMoneyText2.setIMEMode(InputSubset.LATIN);
+      shisetsuInfoNormalRoomLimitMoneyText2.setIMEMode(InputSubset.LATIN);
 
-      institutionInfoNormalRoomLimitMoneyText2.setMaxLength(4);
+      shisetsuInfoNormalRoomLimitMoneyText2.setMaxLength(4);
 
-      addInstitutionInfoNormalRoomLimitMoneyText2();
+      addShisetsuInfoNormalRoomLimitMoneyText2();
     }
-    return institutionInfoNormalRoomLimitMoneyText2;
+    return shisetsuInfoNormalRoomLimitMoneyText2;
 
   }
 
   /**
-   * 従来型個室（老健・療養等）負担限度額・ラベルを取得します。
-   * @return 従来型個室（老健・療養等）負担限度額・ラベル
+   * 従来型個室老健・療養等負担限度額・ラベルを取得します。
+   * @return 従来型個室老健・療養等負担限度額・ラベル
    */
-  public ACLabel getInstitutionInfoNormalRoomLimitMoneyLabel2(){
-    if(institutionInfoNormalRoomLimitMoneyLabel2==null){
+  public ACLabel getShisetsuInfoNormalRoomLimitMoneyLabel2(){
+    if(shisetsuInfoNormalRoomLimitMoneyLabel2==null){
 
-      institutionInfoNormalRoomLimitMoneyLabel2 = new ACLabel();
+      shisetsuInfoNormalRoomLimitMoneyLabel2 = new ACLabel();
 
-      institutionInfoNormalRoomLimitMoneyLabel2.setText("（円）");
+      shisetsuInfoNormalRoomLimitMoneyLabel2.setText("（円）");
 
-      addInstitutionInfoNormalRoomLimitMoneyLabel2();
+      addShisetsuInfoNormalRoomLimitMoneyLabel2();
     }
-    return institutionInfoNormalRoomLimitMoneyLabel2;
+    return shisetsuInfoNormalRoomLimitMoneyLabel2;
 
   }
 
   /**
-   * （多床室負担限度額・コンテナ）を取得します。
-   * @return （多床室負担限度額・コンテナ）
+   * 多床室負担限度額・コンテナを取得します。
+   * @return 多床室負担限度額・コンテナ
    */
-  public ACLabelContainer getInstitutionInfoTasyoRoomLimitMoneyContena(){
-    if(institutionInfoTasyoRoomLimitMoneyContena==null){
+  public ACLabelContainer getShisetsuInfoTasyoRoomLimitMoneyContena(){
+    if(shisetsuInfoTasyoRoomLimitMoneyContena==null){
 
-      institutionInfoTasyoRoomLimitMoneyContena = new ACLabelContainer();
+      shisetsuInfoTasyoRoomLimitMoneyContena = new ACLabelContainer();
 
-      institutionInfoTasyoRoomLimitMoneyContena.setText("多床室");
+      shisetsuInfoTasyoRoomLimitMoneyContena.setText("多床室");
 
-      addInstitutionInfoTasyoRoomLimitMoneyContena();
+      addShisetsuInfoTasyoRoomLimitMoneyContena();
     }
-    return institutionInfoTasyoRoomLimitMoneyContena;
+    return shisetsuInfoTasyoRoomLimitMoneyContena;
 
   }
 
@@ -4040,26 +4100,26 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 多床室負担限度額・テキストを取得します。
    * @return 多床室負担限度額・テキスト
    */
-  public ACTextField getInstitutionInfoTasyoRoomLimitMoneyText(){
-    if(institutionInfoTasyoRoomLimitMoneyText==null){
+  public ACTextField getShisetsuInfoTasyoRoomLimitMoneyText(){
+    if(shisetsuInfoTasyoRoomLimitMoneyText==null){
 
-      institutionInfoTasyoRoomLimitMoneyText = new ACTextField();
+      shisetsuInfoTasyoRoomLimitMoneyText = new ACTextField();
 
-      institutionInfoTasyoRoomLimitMoneyText.setBindPath("LIMIT_TASHOSHITSU");
+      shisetsuInfoTasyoRoomLimitMoneyText.setBindPath("LIMIT_TASHOSHITSU");
 
-      institutionInfoTasyoRoomLimitMoneyText.setColumns(4);
+      shisetsuInfoTasyoRoomLimitMoneyText.setColumns(4);
 
-      institutionInfoTasyoRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
+      shisetsuInfoTasyoRoomLimitMoneyText.setCharType(VRCharType.ONLY_DIGIT);
 
-      institutionInfoTasyoRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
+      shisetsuInfoTasyoRoomLimitMoneyText.setHorizontalAlignment(SwingConstants.RIGHT);
 
-      institutionInfoTasyoRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
+      shisetsuInfoTasyoRoomLimitMoneyText.setIMEMode(InputSubset.LATIN);
 
-      institutionInfoTasyoRoomLimitMoneyText.setMaxLength(4);
+      shisetsuInfoTasyoRoomLimitMoneyText.setMaxLength(4);
 
-      addInstitutionInfoTasyoRoomLimitMoneyText();
+      addShisetsuInfoTasyoRoomLimitMoneyText();
     }
-    return institutionInfoTasyoRoomLimitMoneyText;
+    return shisetsuInfoTasyoRoomLimitMoneyText;
 
   }
 
@@ -4067,50 +4127,48 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 多床室負担限度額・ラベルを取得します。
    * @return 多床室負担限度額・ラベル
    */
-  public ACLabel getInstitutionInfoTasyoRoomLimitMoneyLabel(){
-    if(institutionInfoTasyoRoomLimitMoneyLabel==null){
+  public ACLabel getShisetsuInfoTasyoRoomLimitMoneyLabel(){
+    if(shisetsuInfoTasyoRoomLimitMoneyLabel==null){
 
-      institutionInfoTasyoRoomLimitMoneyLabel = new ACLabel();
+      shisetsuInfoTasyoRoomLimitMoneyLabel = new ACLabel();
 
-      institutionInfoTasyoRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoTasyoRoomLimitMoneyLabel.setText("（円）");
 
-      addInstitutionInfoTasyoRoomLimitMoneyLabel();
+      addShisetsuInfoTasyoRoomLimitMoneyLabel();
     }
-    return institutionInfoTasyoRoomLimitMoneyLabel;
+    return shisetsuInfoTasyoRoomLimitMoneyLabel;
 
   }
 
   /**
-   * 介護老人福祉施設・ラベルを取得します。
-   * @return 介護老人福祉施設・ラベル
+   * 右パネルを取得します。
+   * @return 右パネル
    */
-  public ACLabel getInstitutionInfoCareOldPersonLabel(){
-    if(institutionInfoCareOldPersonLabel==null){
+  public ACPanel getShisetsuInfRigthtPanel(){
+    if(shisetsuInfRigthtPanel==null){
 
-      institutionInfoCareOldPersonLabel = new ACLabel();
+      shisetsuInfRigthtPanel = new ACPanel();
 
-      institutionInfoCareOldPersonLabel.setText("介護老人福祉施設");
-
-      addInstitutionInfoCareOldPersonLabel();
+      addShisetsuInfRigthtPanel();
     }
-    return institutionInfoCareOldPersonLabel;
+    return shisetsuInfRigthtPanel;
 
   }
 
   /**
-   * スペース3を取得します。
-   * @return スペース3
+   * 介護老人福祉施設・グループを取得します。
+   * @return 介護老人福祉施設・グループ
    */
-  public ACLabel getInstitutionInfoSpace3(){
-    if(institutionInfoSpace3==null){
+  public ACGroupBox getShisetsuInfoCareOldPersonGroup(){
+    if(shisetsuInfoCareOldPersonGroup==null){
 
-      institutionInfoSpace3 = new ACLabel();
+      shisetsuInfoCareOldPersonGroup = new ACGroupBox();
 
-      institutionInfoSpace3.setText(" ");
+      shisetsuInfoCareOldPersonGroup.setText("介護老人福祉施設");
 
-      addInstitutionInfoSpace3();
+      addShisetsuInfoCareOldPersonGroup();
     }
-    return institutionInfoSpace3;
+    return shisetsuInfoCareOldPersonGroup;
 
   }
 
@@ -4118,54 +4176,39 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 旧措置入所者特例を取得します。
    * @return 旧措置入所者特例
    */
-  public ACIntegerCheckBox getInstitutionInfoOldStep(){
-    if(institutionInfoOldStep==null){
+  public ACIntegerCheckBox getShisetsuInfoOldStep(){
+    if(shisetsuInfoOldStep==null){
 
-      institutionInfoOldStep = new ACIntegerCheckBox();
+      shisetsuInfoOldStep = new ACIntegerCheckBox();
 
-      institutionInfoOldStep.setText("旧措置入所者特例");
+      shisetsuInfoOldStep.setText("旧措置入所者特例");
 
-      institutionInfoOldStep.setBindPath("KYUSOCHI_FLAG");
+      shisetsuInfoOldStep.setBindPath("KYUSOCHI_FLAG");
 
-      institutionInfoOldStep.setSelectValue(2);
+      shisetsuInfoOldStep.setSelectValue(2);
 
-      institutionInfoOldStep.setUnSelectValue(1);
+      shisetsuInfoOldStep.setUnSelectValue(1);
 
-      addInstitutionInfoOldStep();
+      addShisetsuInfoOldStep();
     }
-    return institutionInfoOldStep;
+    return shisetsuInfoOldStep;
 
   }
 
   /**
-   * 介護老人保健施設・介護療養型医療施設を取得します。
-   * @return 介護老人保健施設・介護療養型医療施設
+   * 介護老人保健施設・介護療養型医療施設・グループを取得します。
+   * @return 介護老人保健施設・介護療養型医療施設・グループ
    */
-  public ACLabel getInstitutionInfoCareOldPersonInsuranceLabel(){
-    if(institutionInfoCareOldPersonInsuranceLabel==null){
+  public ACGroupBox getShisetsuInfoCareOldPersonInsuranceGroup(){
+    if(shisetsuInfoCareOldPersonInsuranceGroup==null){
 
-      institutionInfoCareOldPersonInsuranceLabel = new ACLabel();
+      shisetsuInfoCareOldPersonInsuranceGroup = new ACGroupBox();
 
-      institutionInfoCareOldPersonInsuranceLabel.setText("介護老人保健施設・介護療養型医療施設");
+      shisetsuInfoCareOldPersonInsuranceGroup.setText("介護老人保健施設・介護療養型医療施設");
 
-      addInstitutionInfoCareOldPersonInsuranceLabel();
+      addShisetsuInfoCareOldPersonInsuranceGroup();
     }
-    return institutionInfoCareOldPersonInsuranceLabel;
-
-  }
-
-  /**
-   * スペース4を取得します。
-   * @return スペース4
-   */
-  public ACLabel getInstitutionInfoSpace4(){
-    if(institutionInfoSpace4==null){
-
-      institutionInfoSpace4 = new ACLabel();
-
-      addInstitutionInfoSpace4();
-    }
-    return institutionInfoSpace4;
+    return shisetsuInfoCareOldPersonInsuranceGroup;
 
   }
 
@@ -4173,24 +4216,24 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 主傷病を取得します。
    * @return 主傷病
    */
-  public ACTextField getInstitutionInfoMainDisease(){
-    if(institutionInfoMainDisease==null){
+  public ACTextField getShisetsuInfoMainDisease(){
+    if(shisetsuInfoMainDisease==null){
 
-      institutionInfoMainDisease = new ACTextField();
+      shisetsuInfoMainDisease = new ACTextField();
 
-      getInstitutionInfoMainDiseaseContainer().setText("主傷病");
+      getShisetsuInfoMainDiseaseContainer().setText("主傷病");
 
-      institutionInfoMainDisease.setBindPath("DISEASE");
+      shisetsuInfoMainDisease.setBindPath("DISEASE");
 
-      institutionInfoMainDisease.setColumns(15);
+      shisetsuInfoMainDisease.setColumns(20);
 
-      institutionInfoMainDisease.setIMEMode(InputSubset.KANJI);
+      shisetsuInfoMainDisease.setIMEMode(InputSubset.KANJI);
 
-      institutionInfoMainDisease.setMaxLength(64);
+      shisetsuInfoMainDisease.setMaxLength(64);
 
-      addInstitutionInfoMainDisease();
+      addShisetsuInfoMainDisease();
     }
-    return institutionInfoMainDisease;
+    return shisetsuInfoMainDisease;
 
   }
 
@@ -4198,49 +4241,32 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 主傷病コンテナを取得します。
    * @return 主傷病コンテナ
    */
-  protected ACLabelContainer getInstitutionInfoMainDiseaseContainer(){
-    if(institutionInfoMainDiseaseContainer==null){
-      institutionInfoMainDiseaseContainer = new ACLabelContainer();
-      institutionInfoMainDiseaseContainer.setFollowChildEnabled(true);
-      institutionInfoMainDiseaseContainer.setVAlignment(VRLayout.CENTER);
-      institutionInfoMainDiseaseContainer.add(getInstitutionInfoMainDisease(), null);
+  protected ACLabelContainer getShisetsuInfoMainDiseaseContainer(){
+    if(shisetsuInfoMainDiseaseContainer==null){
+      shisetsuInfoMainDiseaseContainer = new ACLabelContainer();
+      shisetsuInfoMainDiseaseContainer.setFollowChildEnabled(true);
+      shisetsuInfoMainDiseaseContainer.setVAlignment(VRLayout.CENTER);
+      shisetsuInfoMainDiseaseContainer.add(getShisetsuInfoMainDisease(), null);
     }
-    return institutionInfoMainDiseaseContainer;
+    return shisetsuInfoMainDiseaseContainer;
   }
 
   /**
-   * スペース5を取得します。
-   * @return スペース5
+   * 説明文グループを取得します。
+   * @return 説明文グループ
    */
-  public ACLabel getInstitutionInfoSpace5(){
-    if(institutionInfoSpace5==null){
+  public ACGroupBox getShisetsuInfoExplanationGroup(){
+    if(shisetsuInfoExplanationGroup==null){
 
-      institutionInfoSpace5 = new ACLabel();
+      shisetsuInfoExplanationGroup = new ACGroupBox();
 
-      institutionInfoSpace5.setText("　");
+      shisetsuInfoExplanationGroup.setAutoWrap(true);
 
-      addInstitutionInfoSpace5();
+      shisetsuInfoExplanationGroup.setHgap(0);
+
+      addShisetsuInfoExplanationGroup();
     }
-    return institutionInfoSpace5;
-
-  }
-
-  /**
-   * (説明文グループ)を取得します。
-   * @return (説明文グループ)
-   */
-  public ACGroupBox getInstitutionInfoExplanationGroup(){
-    if(institutionInfoExplanationGroup==null){
-
-      institutionInfoExplanationGroup = new ACGroupBox();
-
-      institutionInfoExplanationGroup.setAutoWrap(true);
-
-      institutionInfoExplanationGroup.setHgap(0);
-
-      addInstitutionInfoExplanationGroup();
-    }
-    return institutionInfoExplanationGroup;
+    return shisetsuInfoExplanationGroup;
 
   }
 
@@ -4248,18 +4274,18 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 説明文ラベル1を取得します。
    * @return 説明文ラベル1
    */
-  public ACLabel getInstitutionInfoExplanationLabel1(){
-    if(institutionInfoExplanationLabel1==null){
+  public ACLabel getShisetsuInfoExplanationLabel1(){
+    if(shisetsuInfoExplanationLabel1==null){
 
-      institutionInfoExplanationLabel1 = new ACLabel();
+      shisetsuInfoExplanationLabel1 = new ACLabel();
 
-      institutionInfoExplanationLabel1.setText("入院・入所日の設定方法");
+      shisetsuInfoExplanationLabel1.setText("入院・入所日の設定方法");
 
-      institutionInfoExplanationLabel1.setIconPath(ACConstants.ICON_PATH_INFORMATION_24);
+      shisetsuInfoExplanationLabel1.setIconPath(ACConstants.ICON_PATH_INFORMATION_24);
 
-      addInstitutionInfoExplanationLabel1();
+      addShisetsuInfoExplanationLabel1();
     }
-    return institutionInfoExplanationLabel1;
+    return shisetsuInfoExplanationLabel1;
 
   }
 
@@ -4267,33 +4293,409 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 説明文ラベル2を取得します。
    * @return 説明文ラベル2
    */
-  public ACLabel getInstitutionInfoExplanationLabel2(){
-    if(institutionInfoExplanationLabel2==null){
+  public ACLabel getShisetsuInfoExplanationLabel2(){
+    if(shisetsuInfoExplanationLabel2==null){
 
-      institutionInfoExplanationLabel2 = new ACLabel();
+      shisetsuInfoExplanationLabel2 = new ACLabel();
 
-      institutionInfoExplanationLabel2.setText("　異動情報にて施設系サービスを選択し、設定を　");
+      shisetsuInfoExplanationLabel2.setText("　異動情報にて施設系サービスを選択し、設定を行ってください。");
 
-      addInstitutionInfoExplanationLabel2();
+      addShisetsuInfoExplanationLabel2();
     }
-    return institutionInfoExplanationLabel2;
+    return shisetsuInfoExplanationLabel2;
 
   }
 
   /**
-   * 説明文ラベル3を取得します。
-   * @return 説明文ラベル3
+   * 施設情報・その他パネルを取得します。
+   * @return 施設情報・その他パネル
    */
-  public ACLabel getInstitutionInfoExplanationLabel3(){
-    if(institutionInfoExplanationLabel3==null){
+  public ACPanel getShisetsuInfoOtherPanel(){
+    if(shisetsuInfoOtherPanel==null){
 
-      institutionInfoExplanationLabel3 = new ACLabel();
+      shisetsuInfoOtherPanel = new ACPanel();
 
-      institutionInfoExplanationLabel3.setText("　行ってください。");
+      shisetsuInfoOtherPanel.setLayout(getShisetsuInfoOtherLayout());
 
-      addInstitutionInfoExplanationLabel3();
+      addShisetsuInfoOtherPanel();
     }
-    return institutionInfoExplanationLabel3;
+    return shisetsuInfoOtherPanel;
+
+  }
+
+  /**
+   * 施設情報その他領域・レイアウトを取得します。
+   * @return 施設情報その他領域・レイアウト
+   */
+  public VRLayout getShisetsuInfoOtherLayout(){
+    if(shisetsuInfoOtherLayout==null){
+
+      shisetsuInfoOtherLayout = new VRLayout();
+
+      shisetsuInfoOtherLayout.setAutoWrap(false);
+
+      shisetsuInfoOtherLayout.setVgap(5);
+
+      addShisetsuInfoOtherLayout();
+    }
+    return shisetsuInfoOtherLayout;
+
+  }
+
+  /**
+   * 有効期間領域・パネルを取得します。
+   * @return 有効期間領域・パネル
+   */
+  public ACPanel getShisetsuInfoLimitPanel(){
+    if(shisetsuInfoLimitPanel==null){
+
+      shisetsuInfoLimitPanel = new ACPanel();
+
+      addShisetsuInfoLimitPanel();
+    }
+    return shisetsuInfoLimitPanel;
+
+  }
+
+  /**
+   * 有効期間・コンテナを取得します。
+   * @return 有効期間・コンテナ
+   */
+  public ACLabelContainer getShisetsuInfoValidLimitContainer(){
+    if(shisetsuInfoValidLimitContainer==null){
+
+      shisetsuInfoValidLimitContainer = new ACLabelContainer();
+
+      shisetsuInfoValidLimitContainer.setText("有効期間");
+
+      addShisetsuInfoValidLimitContainer();
+    }
+    return shisetsuInfoValidLimitContainer;
+
+  }
+
+  /**
+   * 有効期間・テキスト1を取得します。
+   * @return 有効期間・テキスト1
+   */
+  public QkanDateTextField getShisetsuInfoValidLimitDateStart(){
+    if(shisetsuInfoValidLimitDateStart==null){
+
+      shisetsuInfoValidLimitDateStart = new QkanDateTextField();
+
+      shisetsuInfoValidLimitDateStart.setBindPath("SHISETSU_VALID_START");
+
+      addShisetsuInfoValidLimitDateStart();
+    }
+    return shisetsuInfoValidLimitDateStart;
+
+  }
+
+  /**
+   * 有効期間・ラベルを取得します。
+   * @return 有効期間・ラベル
+   */
+  public ACLabel getShisetsuInfoValidLimitLabel(){
+    if(shisetsuInfoValidLimitLabel==null){
+
+      shisetsuInfoValidLimitLabel = new ACLabel();
+
+      shisetsuInfoValidLimitLabel.setText(" から ");
+
+      addShisetsuInfoValidLimitLabel();
+    }
+    return shisetsuInfoValidLimitLabel;
+
+  }
+
+  /**
+   * 有効期間・テキスト2を取得します。
+   * @return 有効期間・テキスト2
+   */
+  public QkanDateTextField getShisetsuInfoValidLimitDateEnd(){
+    if(shisetsuInfoValidLimitDateEnd==null){
+
+      shisetsuInfoValidLimitDateEnd = new QkanDateTextField();
+
+      shisetsuInfoValidLimitDateEnd.setBindPath("SHISETSU_VALID_END");
+
+      addShisetsuInfoValidLimitDateEnd();
+    }
+    return shisetsuInfoValidLimitDateEnd;
+
+  }
+
+  /**
+   * 特定入所者情報・ボタン領域を取得します。
+   * @return 特定入所者情報・ボタン領域
+   */
+  public ACPanel getShisetsuInfoButtons(){
+    if(shisetsuInfoButtons==null){
+
+      shisetsuInfoButtons = new ACPanel();
+
+      addShisetsuInfoButtons();
+    }
+    return shisetsuInfoButtons;
+
+  }
+
+  /**
+   * クリアを取得します。
+   * @return クリア
+   */
+  public ACButton getShisetsuInfoButtonClear(){
+    if(shisetsuInfoButtonClear==null){
+
+      shisetsuInfoButtonClear = new ACButton();
+
+      shisetsuInfoButtonClear.setText("クリア");
+
+      shisetsuInfoButtonClear.setToolTipText("異動情報をクリアします。");
+
+      shisetsuInfoButtonClear.setIconPath(ACConstants.ICON_PATH_CLEAR_16);
+
+      addShisetsuInfoButtonClear();
+    }
+    return shisetsuInfoButtonClear;
+
+  }
+
+  /**
+   * 追加を取得します。
+   * @return 追加
+   */
+  public ACButton getShisetsuInfoButtonInsert(){
+    if(shisetsuInfoButtonInsert==null){
+
+      shisetsuInfoButtonInsert = new ACButton();
+
+      shisetsuInfoButtonInsert.setText("追加");
+
+      shisetsuInfoButtonInsert.setToolTipText("異動情報を追加します。");
+
+      shisetsuInfoButtonInsert.setIconPath(ACConstants.ICON_PATH_RECORD_DOWNLOAD_16);
+
+      addShisetsuInfoButtonInsert();
+    }
+    return shisetsuInfoButtonInsert;
+
+  }
+
+  /**
+   * 書替を取得します。
+   * @return 書替
+   */
+  public ACButton getShisetsuInfoButtonEdit(){
+    if(shisetsuInfoButtonEdit==null){
+
+      shisetsuInfoButtonEdit = new ACButton();
+
+      shisetsuInfoButtonEdit.setText("書替");
+
+      shisetsuInfoButtonEdit.setToolTipText("異動情報を編集します。");
+
+      shisetsuInfoButtonEdit.setIconPath(ACConstants.ICON_PATH_STATE_UPDATE_16);
+
+      addShisetsuInfoButtonEdit();
+    }
+    return shisetsuInfoButtonEdit;
+
+  }
+
+  /**
+   * 削除を取得します。
+   * @return 削除
+   */
+  public ACButton getShisetsuInfoButtonDelete(){
+    if(shisetsuInfoButtonDelete==null){
+
+      shisetsuInfoButtonDelete = new ACButton();
+
+      shisetsuInfoButtonDelete.setText("削除");
+
+      shisetsuInfoButtonDelete.setToolTipText("異動情報を削除します。");
+
+      shisetsuInfoButtonDelete.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addShisetsuInfoButtonDelete();
+    }
+    return shisetsuInfoButtonDelete;
+
+  }
+
+  /**
+   * 特定入所者情報・テーブル領域を取得します。
+   * @return 特定入所者情報・テーブル領域
+   */
+  public ACTable getShisetsuInfoTable(){
+    if(shisetsuInfoTable==null){
+
+      shisetsuInfoTable = new ACTable();
+
+      shisetsuInfoTable.setColumnModel(getShisetsuInfoTableColumnModel());
+
+      addShisetsuInfoTable();
+    }
+    return shisetsuInfoTable;
+
+  }
+
+  /**
+   * 特定入所者情報・テーブル領域カラムモデルを取得します。
+   * @return 特定入所者情報・テーブル領域カラムモデル
+   */
+  protected VRTableColumnModel getShisetsuInfoTableColumnModel(){
+    if(shisetsuInfoTableColumnModel==null){
+      shisetsuInfoTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addShisetsuInfoTableColumnModel();
+    }
+    return shisetsuInfoTableColumnModel;
+  }
+
+  /**
+   * №を取得します。
+   * @return №
+   */
+  public ACTableColumn getShisetsuInfoTableColumn0(){
+    if(shisetsuInfoTableColumn0==null){
+
+      shisetsuInfoTableColumn0 = new ACTableColumn();
+
+      shisetsuInfoTableColumn0.setHeaderValue("No.");
+
+      shisetsuInfoTableColumn0.setColumnName("SHOW_FLAG");
+
+      shisetsuInfoTableColumn0.setColumns(3);
+
+      shisetsuInfoTableColumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      shisetsuInfoTableColumn0.setSortable(false);
+
+      addShisetsuInfoTableColumn0();
+    }
+    return shisetsuInfoTableColumn0;
+
+  }
+
+  /**
+   * 有効期間開始を取得します。
+   * @return 有効期間開始
+   */
+  public ACTableColumn getShisetsuInfoTableColumn1(){
+    if(shisetsuInfoTableColumn1==null){
+
+      shisetsuInfoTableColumn1 = new ACTableColumn();
+
+      shisetsuInfoTableColumn1.setHeaderValue("有効期間開始");
+
+      shisetsuInfoTableColumn1.setColumnName("SHISETSU_VALID_START");
+
+      shisetsuInfoTableColumn1.setColumns(10);
+
+      shisetsuInfoTableColumn1.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addShisetsuInfoTableColumn1();
+    }
+    return shisetsuInfoTableColumn1;
+
+  }
+
+  /**
+   * 有効期間終了を取得します。
+   * @return 有効期間終了
+   */
+  public ACTableColumn getShisetsuInfoTableColumn2(){
+    if(shisetsuInfoTableColumn2==null){
+
+      shisetsuInfoTableColumn2 = new ACTableColumn();
+
+      shisetsuInfoTableColumn2.setHeaderValue("有効期間終了");
+
+      shisetsuInfoTableColumn2.setColumnName("SHISETSU_VALID_END");
+
+      shisetsuInfoTableColumn2.setColumns(10);
+
+      shisetsuInfoTableColumn2.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addShisetsuInfoTableColumn2();
+    }
+    return shisetsuInfoTableColumn2;
+
+  }
+
+  /**
+   * 特定入所者を取得します。
+   * @return 特定入所者
+   */
+  public ACTableColumn getShisetsuInfoTableColumn3(){
+    if(shisetsuInfoTableColumn3==null){
+
+      shisetsuInfoTableColumn3 = new ACTableColumn();
+
+      shisetsuInfoTableColumn3.setHeaderValue("特定入所者");
+
+      shisetsuInfoTableColumn3.setColumnName("TOKUTEI_NYUSHO_FLAG");
+
+      shisetsuInfoTableColumn3.setColumns(7);
+
+      shisetsuInfoTableColumn3.setHorizontalAlignment(SwingConstants.CENTER);
+
+      shisetsuInfoTableColumn3.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
+
+      shisetsuInfoTableColumn3.setSortable(false);
+
+      addShisetsuInfoTableColumn3();
+    }
+    return shisetsuInfoTableColumn3;
+
+  }
+
+  /**
+   * 旧措置入所者特例を取得します。
+   * @return 旧措置入所者特例
+   */
+  public ACTableColumn getShisetsuInfoTableColumn4(){
+    if(shisetsuInfoTableColumn4==null){
+
+      shisetsuInfoTableColumn4 = new ACTableColumn();
+
+      shisetsuInfoTableColumn4.setHeaderValue("旧措置入所者特例");
+
+      shisetsuInfoTableColumn4.setColumnName("KYUSOCHI_FLAG");
+
+      shisetsuInfoTableColumn4.setColumns(10);
+
+      shisetsuInfoTableColumn4.setHorizontalAlignment(SwingConstants.CENTER);
+
+      shisetsuInfoTableColumn4.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
+
+      shisetsuInfoTableColumn4.setSortable(false);
+
+      addShisetsuInfoTableColumn4();
+    }
+    return shisetsuInfoTableColumn4;
+
+  }
+
+  /**
+   * 主傷病名を取得します。
+   * @return 主傷病名
+   */
+  public ACTableColumn getShisetsuInfoTableColumn5(){
+    if(shisetsuInfoTableColumn5==null){
+
+      shisetsuInfoTableColumn5 = new ACTableColumn();
+
+      shisetsuInfoTableColumn5.setHeaderValue("主傷病名");
+
+      shisetsuInfoTableColumn5.setColumnName("DISEASE");
+
+      shisetsuInfoTableColumn5.setColumns(15);
+
+      addShisetsuInfoTableColumn5();
+    }
+    return shisetsuInfoTableColumn5;
 
   }
 
@@ -4738,7 +5140,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     tabs.addTab("介護保険情報", getKaigoInfoAndIdouInfos());
 
-    tabs.addTab("異動・施設情報", getIdouInfoAndInstitutionInfoPanel());
+    tabs.addTab("異動情報", getIdouInfoAndInstitutionInfoPanel());
+
+    tabs.addTab("施設情報", getShisetsuInfoPanel());
 
   }
 
@@ -5384,7 +5788,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     idouInfoAndInstitutionInfoPanel.add(getIdouInfoAndInstitutionInfos(), VRLayout.CLIENT);
 
-    idouInfoAndInstitutionInfoPanel.add(getInstitutionInfos(), VRLayout.EAST);
   }
 
   /**
@@ -5510,10 +5913,14 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addIdouInfoButtons(){
 
-    idouInfoButtons.add(getIdouInfoButtonDelete(), VRLayout.EAST);
-    idouInfoButtons.add(getIdouInfoButtonEdit(), VRLayout.EAST);
-    idouInfoButtons.add(getIdouInfoButtonInsert(), VRLayout.EAST);
-    idouInfoButtons.add(getIdouInfoButtonClear(), VRLayout.EAST);
+    idouInfoButtons.add(getIdouInfoButtonClear(), VRLayout.WEST);
+
+    idouInfoButtons.add(getIdouInfoButtonInsert(), VRLayout.WEST);
+
+    idouInfoButtons.add(getIdouInfoButtonEdit(), VRLayout.WEST);
+
+    idouInfoButtons.add(getIdouInfoButtonDelete(), VRLayout.WEST);
+
   }
 
   /**
@@ -5613,313 +6020,471 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (施設情報・領域・グループ)に内部項目を追加します。
+   * 特定入所者情報・パネルに内部項目を追加します。
    */
-  protected void addInstitutionInfos(){
+  protected void addShisetsuInfoPanel(){
 
-    institutionInfos.add(getInstitutionInfoBearMoneyInfos(), VRLayout.FLOW_RETURN);
+    shisetsuInfoPanel.add(getShisetsuInputPanel(), VRLayout.NORTH);
 
-    institutionInfos.add(getInstitutionInfoSpace1(), VRLayout.FLOW);
+    shisetsuInfoPanel.add(getShisetsuInfoButtons(), VRLayout.NORTH);
 
-    institutionInfos.add(getInstitutionInfoTokuteiNyusho(), VRLayout.FLOW_RETURN);
-
-    institutionInfos.add(getInstitutionInfoSpace2(), VRLayout.FLOW);
-
-    institutionInfos.add(getInstitutionInfoDinnerBearLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    institutionInfos.add(getInstitutionInfoUnitRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    institutionInfos.add(getInstitutionInfoUnitSemiRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    institutionInfos.add(getInstitutionInfoNormalRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    institutionInfos.add(getInstitutionInfoNormalRoomLimitMoneyContena2(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    institutionInfos.add(getInstitutionInfoTasyoRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    institutionInfos.add(getInstitutionInfoCareOldPersonLabel(), VRLayout.FLOW_RETURN);
-
-    institutionInfos.add(getInstitutionInfoSpace3(), VRLayout.FLOW);
-
-    institutionInfos.add(getInstitutionInfoOldStep(), VRLayout.FLOW_RETURN);
-
-    institutionInfos.add(getInstitutionInfoCareOldPersonInsuranceLabel(), VRLayout.FLOW_RETURN);
-
-    institutionInfos.add(getInstitutionInfoSpace4(), VRLayout.FLOW);
-
-    institutionInfos.add(getInstitutionInfoMainDiseaseContainer(), VRLayout.FLOW_RETURN);
-
-    institutionInfos.add(getInstitutionInfoSpace5(), VRLayout.FLOW_RETURN);
-
-    institutionInfos.add(getInstitutionInfoExplanationGroup(), VRLayout.FLOW);
+    shisetsuInfoPanel.add(getShisetsuInfoTable(), VRLayout.CLIENT);
 
   }
 
   /**
-   * (施設情報領域・レイアウト)に内部項目を追加します。
+   * 特定入所者入力領域・パネルに内部項目を追加します。
    */
-  protected void addInstitutionInfoLayout(){
+  protected void addShisetsuInputPanel(){
+
+    shisetsuInputPanel.add(getShisetsuInfSyokuhiPanel(), VRLayout.NORTH);
+
+    shisetsuInputPanel.add(getShisetsuInfoOtherPanel(), VRLayout.NORTH);
+
+    shisetsuInputPanel.add(getShisetsuInfoLimitPanel(), VRLayout.NORTH);
 
   }
 
   /**
-   * 利用者負担限度額ラベルに内部項目を追加します。
+   * 食費居住費・パネルに内部項目を追加します。
    */
-  protected void addInstitutionInfoBearMoneyInfos(){
+  protected void addShisetsuInfSyokuhiPanel(){
+
+    shisetsuInfSyokuhiPanel.add(getShisetsuInfoSyokuhiGroup(), VRLayout.WEST);
+
+    shisetsuInfSyokuhiPanel.add(getShisetsuInfRigthtPanel(), VRLayout.WEST);
 
   }
 
   /**
-   * スペース1に内部項目を追加します。
+   * 食費居住費・グループに内部項目を追加します。
    */
-  protected void addInstitutionInfoSpace1(){
+  protected void addShisetsuInfoSyokuhiGroup(){
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoSpaceLabel(), VRLayout.FLOW);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoTokuteiCheck(), VRLayout.FLOW_RETURN);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoDinnerBearLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoUnitRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoUnitSemiRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoNormalRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoNormalRoomLimitMoneyContena2(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoTasyoRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
+
+  }
+
+  /**
+   * 食費・居住費領域・レイアウトに内部項目を追加します。
+   */
+  protected void addShisetsuInfoSyokuhiLayout(){
+
+  }
+
+  /**
+   * 特定入所スペーサーに内部項目を追加します。
+   */
+  protected void addShisetsuInfoSpaceLabel(){
 
   }
 
   /**
    * 特定入所者チェックに内部項目を追加します。
    */
-  protected void addInstitutionInfoTokuteiNyusho(){
+  protected void addShisetsuInfoTokuteiCheck(){
 
   }
 
   /**
-   * スペース2に内部項目を追加します。
+   * 食費負担限度額・コンテナに内部項目を追加します。
    */
-  protected void addInstitutionInfoSpace2(){
+  protected void addShisetsuInfoDinnerBearLimitMoneyContena(){
 
-  }
+    shisetsuInfoDinnerBearLimitMoneyContena.add(getShisetsuInfoDinnerBearLimitMoneyText(), null);
 
-  /**
-   * （食費負担限度額・コンテナ）に内部項目を追加します。
-   */
-  protected void addInstitutionInfoDinnerBearLimitMoneyContena(){
-
-    institutionInfoDinnerBearLimitMoneyContena.add(getInstitutionInfoDinnerBearLimitMoneyText(), null);
-
-    institutionInfoDinnerBearLimitMoneyContena.add(getInstitutionInfoDinnerBearLimitMoneyLabel(), null);
+    shisetsuInfoDinnerBearLimitMoneyContena.add(getShisetsuInfoDinnerBearLimitMoneyLabel(), null);
 
   }
 
   /**
    * 食費負担限度額・テキストに内部項目を追加します。
    */
-  protected void addInstitutionInfoDinnerBearLimitMoneyText(){
+  protected void addShisetsuInfoDinnerBearLimitMoneyText(){
 
   }
 
   /**
    * 食費負担限度額・ラベルに内部項目を追加します。
    */
-  protected void addInstitutionInfoDinnerBearLimitMoneyLabel(){
+  protected void addShisetsuInfoDinnerBearLimitMoneyLabel(){
 
   }
 
   /**
-   * （ユニット型個室負担限度額・コンテナ）に内部項目を追加します。
+   * ユニット型個室負担限度額・コンテナに内部項目を追加します。
    */
-  protected void addInstitutionInfoUnitRoomLimitMoneyContena(){
+  protected void addShisetsuInfoUnitRoomLimitMoneyContena(){
 
-    institutionInfoUnitRoomLimitMoneyContena.add(getInstitutionInfoUnitRoomLimitMoneyText(), null);
+    shisetsuInfoUnitRoomLimitMoneyContena.add(getShisetsuInfoUnitRoomLimitMoneyText(), null);
 
-    institutionInfoUnitRoomLimitMoneyContena.add(getInstitutionInfoUnitRoomLimitMoneyLabel(), null);
+    shisetsuInfoUnitRoomLimitMoneyContena.add(getShisetsuInfoUnitRoomLimitMoneyLabel(), null);
 
   }
 
   /**
    * ユニット型個室負担限度額・テキストに内部項目を追加します。
    */
-  protected void addInstitutionInfoUnitRoomLimitMoneyText(){
+  protected void addShisetsuInfoUnitRoomLimitMoneyText(){
 
   }
 
   /**
    * ユニット型個室負担限度額・ラベルに内部項目を追加します。
    */
-  protected void addInstitutionInfoUnitRoomLimitMoneyLabel(){
+  protected void addShisetsuInfoUnitRoomLimitMoneyLabel(){
 
   }
 
   /**
-   * （ユニット型準個室負担限度額・コンテナ）に内部項目を追加します。
+   * ユニット型準個室負担限度額・コンテナに内部項目を追加します。
    */
-  protected void addInstitutionInfoUnitSemiRoomLimitMoneyContena(){
+  protected void addShisetsuInfoUnitSemiRoomLimitMoneyContena(){
 
-    institutionInfoUnitSemiRoomLimitMoneyContena.add(getInstitutionInfoUnitSemiRoomLimitMoneyText(), null);
+    shisetsuInfoUnitSemiRoomLimitMoneyContena.add(getShisetsuInfoUnitSemiRoomLimitMoneyText(), null);
 
-    institutionInfoUnitSemiRoomLimitMoneyContena.add(getInstitutionInfoUnitSemiRoomLimitMoneyLabel(), null);
+    shisetsuInfoUnitSemiRoomLimitMoneyContena.add(getShisetsuInfoUnitSemiRoomLimitMoneyLabel(), null);
 
   }
 
   /**
    * ユニット型準個室負担限度額・テキストに内部項目を追加します。
    */
-  protected void addInstitutionInfoUnitSemiRoomLimitMoneyText(){
+  protected void addShisetsuInfoUnitSemiRoomLimitMoneyText(){
 
   }
 
   /**
    * ユニット型準個室負担限度額・ラベルに内部項目を追加します。
    */
-  protected void addInstitutionInfoUnitSemiRoomLimitMoneyLabel(){
+  protected void addShisetsuInfoUnitSemiRoomLimitMoneyLabel(){
 
   }
 
   /**
-   * （従来型個室（特養等）負担限度額・コンテナ）に内部項目を追加します。
+   * 従来型個室特養等負担限度額・コンテナに内部項目を追加します。
    */
-  protected void addInstitutionInfoNormalRoomLimitMoneyContena(){
+  protected void addShisetsuInfoNormalRoomLimitMoneyContena(){
 
-    institutionInfoNormalRoomLimitMoneyContena.add(getInstitutionInfoNormalRoomLimitMoneyText(), null);
+    shisetsuInfoNormalRoomLimitMoneyContena.add(getShisetsuInfoNormalRoomLimitMoneyText(), null);
 
-    institutionInfoNormalRoomLimitMoneyContena.add(getInstitutionInfoNormalRoomLimitMoneyLabel(), null);
+    shisetsuInfoNormalRoomLimitMoneyContena.add(getShisetsuInfoNormalRoomLimitMoneyLabel(), null);
 
   }
 
   /**
-   * 従来型個室（特養等）負担限度額・テキストに内部項目を追加します。
+   * 従来型個室特養等負担限度額・テキストに内部項目を追加します。
    */
-  protected void addInstitutionInfoNormalRoomLimitMoneyText(){
+  protected void addShisetsuInfoNormalRoomLimitMoneyText(){
 
   }
 
   /**
-   * 従来型個室（特養等）負担限度額・ラベルに内部項目を追加します。
+   * 従来型個室特養等負担限度額・ラベルに内部項目を追加します。
    */
-  protected void addInstitutionInfoNormalRoomLimitMoneyLabel(){
+  protected void addShisetsuInfoNormalRoomLimitMoneyLabel(){
 
   }
 
   /**
-   * （従来型個室（老健・療養等）負担限度額・コンテナ）に内部項目を追加します。
+   * 従来型個室老健・療養等負担限度額・コンテナに内部項目を追加します。
    */
-  protected void addInstitutionInfoNormalRoomLimitMoneyContena2(){
+  protected void addShisetsuInfoNormalRoomLimitMoneyContena2(){
 
-    institutionInfoNormalRoomLimitMoneyContena2.add(getInstitutionInfoNormalRoomLimitMoneyText2(), null);
+    shisetsuInfoNormalRoomLimitMoneyContena2.add(getShisetsuInfoNormalRoomLimitMoneyText2(), null);
 
-    institutionInfoNormalRoomLimitMoneyContena2.add(getInstitutionInfoNormalRoomLimitMoneyLabel2(), null);
+    shisetsuInfoNormalRoomLimitMoneyContena2.add(getShisetsuInfoNormalRoomLimitMoneyLabel2(), null);
 
   }
 
   /**
-   * 従来型個室（老健・療養等）負担限度額・テキストに内部項目を追加します。
+   * 従来型個室老健・療養等負担限度額・テキストに内部項目を追加します。
    */
-  protected void addInstitutionInfoNormalRoomLimitMoneyText2(){
+  protected void addShisetsuInfoNormalRoomLimitMoneyText2(){
 
   }
 
   /**
-   * 従来型個室（老健・療養等）負担限度額・ラベルに内部項目を追加します。
+   * 従来型個室老健・療養等負担限度額・ラベルに内部項目を追加します。
    */
-  protected void addInstitutionInfoNormalRoomLimitMoneyLabel2(){
+  protected void addShisetsuInfoNormalRoomLimitMoneyLabel2(){
 
   }
 
   /**
-   * （多床室負担限度額・コンテナ）に内部項目を追加します。
+   * 多床室負担限度額・コンテナに内部項目を追加します。
    */
-  protected void addInstitutionInfoTasyoRoomLimitMoneyContena(){
+  protected void addShisetsuInfoTasyoRoomLimitMoneyContena(){
 
-    institutionInfoTasyoRoomLimitMoneyContena.add(getInstitutionInfoTasyoRoomLimitMoneyText(), null);
+    shisetsuInfoTasyoRoomLimitMoneyContena.add(getShisetsuInfoTasyoRoomLimitMoneyText(), null);
 
-    institutionInfoTasyoRoomLimitMoneyContena.add(getInstitutionInfoTasyoRoomLimitMoneyLabel(), null);
+    shisetsuInfoTasyoRoomLimitMoneyContena.add(getShisetsuInfoTasyoRoomLimitMoneyLabel(), null);
 
   }
 
   /**
    * 多床室負担限度額・テキストに内部項目を追加します。
    */
-  protected void addInstitutionInfoTasyoRoomLimitMoneyText(){
+  protected void addShisetsuInfoTasyoRoomLimitMoneyText(){
 
   }
 
   /**
    * 多床室負担限度額・ラベルに内部項目を追加します。
    */
-  protected void addInstitutionInfoTasyoRoomLimitMoneyLabel(){
+  protected void addShisetsuInfoTasyoRoomLimitMoneyLabel(){
 
   }
 
   /**
-   * 介護老人福祉施設・ラベルに内部項目を追加します。
+   * 右パネルに内部項目を追加します。
    */
-  protected void addInstitutionInfoCareOldPersonLabel(){
+  protected void addShisetsuInfRigthtPanel(){
+
+    shisetsuInfRigthtPanel.add(getShisetsuInfoCareOldPersonGroup(), VRLayout.NORTH);
+
+    shisetsuInfRigthtPanel.add(getShisetsuInfoCareOldPersonInsuranceGroup(), VRLayout.NORTH);
+
+    shisetsuInfRigthtPanel.add(getShisetsuInfoExplanationGroup(), VRLayout.NORTH);
 
   }
 
   /**
-   * スペース3に内部項目を追加します。
+   * 介護老人福祉施設・グループに内部項目を追加します。
    */
-  protected void addInstitutionInfoSpace3(){
+  protected void addShisetsuInfoCareOldPersonGroup(){
+
+    shisetsuInfoCareOldPersonGroup.add(getShisetsuInfoOldStep(), VRLayout.FLOW);
 
   }
 
   /**
    * 旧措置入所者特例に内部項目を追加します。
    */
-  protected void addInstitutionInfoOldStep(){
+  protected void addShisetsuInfoOldStep(){
 
   }
 
   /**
-   * 介護老人保健施設・介護療養型医療施設に内部項目を追加します。
+   * 介護老人保健施設・介護療養型医療施設・グループに内部項目を追加します。
    */
-  protected void addInstitutionInfoCareOldPersonInsuranceLabel(){
+  protected void addShisetsuInfoCareOldPersonInsuranceGroup(){
 
-  }
-
-  /**
-   * スペース4に内部項目を追加します。
-   */
-  protected void addInstitutionInfoSpace4(){
+    shisetsuInfoCareOldPersonInsuranceGroup.add(getShisetsuInfoMainDiseaseContainer(), VRLayout.FLOW);
 
   }
 
   /**
    * 主傷病に内部項目を追加します。
    */
-  protected void addInstitutionInfoMainDisease(){
+  protected void addShisetsuInfoMainDisease(){
 
   }
 
   /**
-   * スペース5に内部項目を追加します。
+   * 説明文グループに内部項目を追加します。
    */
-  protected void addInstitutionInfoSpace5(){
+  protected void addShisetsuInfoExplanationGroup(){
 
-  }
+    shisetsuInfoExplanationGroup.add(getShisetsuInfoExplanationLabel1(), VRLayout.NORTH);
 
-  /**
-   * (説明文グループ)に内部項目を追加します。
-   */
-  protected void addInstitutionInfoExplanationGroup(){
-
-    institutionInfoExplanationGroup.add(getInstitutionInfoExplanationLabel1(), VRLayout.NORTH);
-
-    institutionInfoExplanationGroup.add(getInstitutionInfoExplanationLabel2(), VRLayout.NORTH);
-
-    institutionInfoExplanationGroup.add(getInstitutionInfoExplanationLabel3(), VRLayout.NORTH);
+    shisetsuInfoExplanationGroup.add(getShisetsuInfoExplanationLabel2(), VRLayout.NORTH);
 
   }
 
   /**
    * 説明文ラベル1に内部項目を追加します。
    */
-  protected void addInstitutionInfoExplanationLabel1(){
+  protected void addShisetsuInfoExplanationLabel1(){
 
   }
 
   /**
    * 説明文ラベル2に内部項目を追加します。
    */
-  protected void addInstitutionInfoExplanationLabel2(){
+  protected void addShisetsuInfoExplanationLabel2(){
 
   }
 
   /**
-   * 説明文ラベル3に内部項目を追加します。
+   * 施設情報・その他パネルに内部項目を追加します。
    */
-  protected void addInstitutionInfoExplanationLabel3(){
+  protected void addShisetsuInfoOtherPanel(){
+
+  }
+
+  /**
+   * 施設情報その他領域・レイアウトに内部項目を追加します。
+   */
+  protected void addShisetsuInfoOtherLayout(){
+
+  }
+
+  /**
+   * 有効期間領域・パネルに内部項目を追加します。
+   */
+  protected void addShisetsuInfoLimitPanel(){
+
+    shisetsuInfoLimitPanel.add(getShisetsuInfoValidLimitContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間・コンテナに内部項目を追加します。
+   */
+  protected void addShisetsuInfoValidLimitContainer(){
+
+    shisetsuInfoValidLimitContainer.add(getShisetsuInfoValidLimitDateStart(), VRLayout.FLOW);
+
+    shisetsuInfoValidLimitContainer.add(getShisetsuInfoValidLimitLabel(), VRLayout.FLOW);
+
+    shisetsuInfoValidLimitContainer.add(getShisetsuInfoValidLimitDateEnd(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間・テキスト1に内部項目を追加します。
+   */
+  protected void addShisetsuInfoValidLimitDateStart(){
+
+  }
+
+  /**
+   * 有効期間・ラベルに内部項目を追加します。
+   */
+  protected void addShisetsuInfoValidLimitLabel(){
+
+  }
+
+  /**
+   * 有効期間・テキスト2に内部項目を追加します。
+   */
+  protected void addShisetsuInfoValidLimitDateEnd(){
+
+  }
+
+  /**
+   * 特定入所者情報・ボタン領域に内部項目を追加します。
+   */
+  protected void addShisetsuInfoButtons(){
+
+    shisetsuInfoButtons.add(getShisetsuInfoButtonClear(), VRLayout.WEST);
+
+    shisetsuInfoButtons.add(getShisetsuInfoButtonInsert(), VRLayout.WEST);
+
+    shisetsuInfoButtons.add(getShisetsuInfoButtonEdit(), VRLayout.WEST);
+
+    shisetsuInfoButtons.add(getShisetsuInfoButtonDelete(), VRLayout.WEST);
+
+  }
+
+  /**
+   * クリアに内部項目を追加します。
+   */
+  protected void addShisetsuInfoButtonClear(){
+
+  }
+
+  /**
+   * 追加に内部項目を追加します。
+   */
+  protected void addShisetsuInfoButtonInsert(){
+
+  }
+
+  /**
+   * 書替に内部項目を追加します。
+   */
+  protected void addShisetsuInfoButtonEdit(){
+
+  }
+
+  /**
+   * 削除に内部項目を追加します。
+   */
+  protected void addShisetsuInfoButtonDelete(){
+
+  }
+
+  /**
+   * 特定入所者情報・テーブル領域に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTable(){
+
+  }
+
+  /**
+   * 特定入所者情報・テーブル領域カラムモデルに内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumnModel(){
+
+    getShisetsuInfoTableColumnModel().addColumn(getShisetsuInfoTableColumn0());
+
+    getShisetsuInfoTableColumnModel().addColumn(getShisetsuInfoTableColumn1());
+
+    getShisetsuInfoTableColumnModel().addColumn(getShisetsuInfoTableColumn2());
+
+    getShisetsuInfoTableColumnModel().addColumn(getShisetsuInfoTableColumn3());
+
+    getShisetsuInfoTableColumnModel().addColumn(getShisetsuInfoTableColumn4());
+
+    getShisetsuInfoTableColumnModel().addColumn(getShisetsuInfoTableColumn5());
+
+  }
+
+  /**
+   * №に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumn0(){
+
+  }
+
+  /**
+   * 有効期間開始に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumn1(){
+
+  }
+
+  /**
+   * 有効期間終了に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumn2(){
+
+  }
+
+  /**
+   * 特定入所者に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumn3(){
+
+  }
+
+  /**
+   * 旧措置入所者特例に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumn4(){
+
+  }
+
+  /**
+   * 主傷病名に内部項目を追加します。
+   */
+  protected void addShisetsuInfoTableColumn5(){
 
   }
 

@@ -2,6 +2,8 @@ package jp.or.med.orca.qkan.affair;
 
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.core.ACAffairContainer;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACBrowseLogWritable;
 import jp.nichicom.ac.core.ACDBManagerCreatable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
@@ -26,7 +28,10 @@ import jp.or.med.orca.qkan.QkanConstants;
  * @author Tozo Tanaka
  * @version 1.0 2005/12/01
  */
-public class QkanAffairContainer extends ACAffairContainer {
+//[ID:0000751][Shin Fujihara] 2012/09 edit begin 2012年度対応 閲覧ログ出力機能
+//public class QkanAffairContainer extends ACAffairContainer {
+public class QkanAffairContainer extends ACAffairContainer implements ACBrowseLogWritable {
+//[ID:0000751][Shin Fujihara] 2012/09 edit end 2012年度対応 閲覧ログ出力機能
     private ACPassiveCheck passiveChecker = new ACPassiveCheck();
     private ACSnapshot snapshot = new ACSnapshot();
     private ACDBManager dbm;
@@ -220,5 +225,12 @@ public class QkanAffairContainer extends ACAffairContainer {
         }
         return null;
     }
+
+    //[ID:0000751][Shin Fujihara] 2012/09 edit begin 2012年度対応 閲覧ログ出力機能
+	@Override
+	public void writeBrowseLog(ACAffairInfo affair) {
+		QkanBrowseLogger.log(affair);
+	}
+	//[ID:0000751][Shin Fujihara] 2012/09 edit end 2012年度対応 閲覧ログ出力機能
 
 }

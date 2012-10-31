@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2006/06/05  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2012/07/03  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -28,21 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 週間表画面項目デザイン(QS001002) 
  */
@@ -82,6 +118,8 @@ public class QS001002Design extends ACPanel {
   private ACButton coordinatePrivateExpenses;
 
   private ACButton detailsbutton;
+
+  private ACButton tokubetuButton;
 
   private ACPanel addInfomations;
 
@@ -161,7 +199,7 @@ public class QS001002Design extends ACPanel {
 
       limit.setEditable(false);
 
-      limit.setColumns(6);
+      limit.setColumns(5);
 
       limit.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -198,7 +236,7 @@ public class QS001002Design extends ACPanel {
 
       limitAmount.setEditable(false);
 
-      limitAmount.setColumns(6);
+      limitAmount.setColumns(5);
 
       limitAmount.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -235,7 +273,7 @@ public class QS001002Design extends ACPanel {
 
       over.setEditable(false);
 
-      over.setColumns(6);
+      over.setColumns(5);
 
       over.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -291,7 +329,7 @@ public class QS001002Design extends ACPanel {
 
       afterAdjustment.setEditable(false);
 
-      afterAdjustment.setColumns(6);
+      afterAdjustment.setColumns(5);
 
       afterAdjustment.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -328,7 +366,7 @@ public class QS001002Design extends ACPanel {
 
       adjustment.setEditable(false);
 
-      adjustment.setColumns(6);
+      adjustment.setColumns(5);
 
       adjustment.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -404,6 +442,25 @@ public class QS001002Design extends ACPanel {
       addDetailsbutton();
     }
     return detailsbutton;
+
+  }
+
+  /**
+   * 特定診療・特別療養費画面を取得します。
+   * @return 特定診療・特別療養費画面
+   */
+  public ACButton getTokubetuButton(){
+    if(tokubetuButton==null){
+
+      tokubetuButton = new ACButton();
+
+      tokubetuButton.setText("特定診療・特別療養費");
+
+      tokubetuButton.setToolTipText("サービス毎の特定診療費・特別療養費を表示します。");
+
+      addTokubetuButton();
+    }
+    return tokubetuButton;
 
   }
 
@@ -595,7 +652,9 @@ public class QS001002Design extends ACPanel {
 
     buttons.add(getCoordinatePrivateExpenses(), VRLayout.FLOW_RETURN);
 
-    buttons.add(getDetailsbutton(), VRLayout.FLOW);
+    buttons.add(getDetailsbutton(), VRLayout.FLOW_RETURN);
+
+    buttons.add(getTokubetuButton(), VRLayout.FLOW);
 
   }
 
@@ -610,6 +669,13 @@ public class QS001002Design extends ACPanel {
    * 集計明細画面に内部項目を追加します。
    */
   protected void addDetailsbutton(){
+
+  }
+
+  /**
+   * 特定診療・特別療養費画面に内部項目を追加します。
+   */
+  protected void addTokubetuButton(){
 
   }
 

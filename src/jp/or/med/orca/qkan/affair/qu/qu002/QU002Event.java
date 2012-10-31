@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司 和善
- * 作成日: 2012/04/10  日本コンピューター株式会社 上司 和善 新規作成
+ * 作成日: 2012/08/03  日本コンピューター株式会社 上司 和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -28,25 +28,58 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu002;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.util.Date;
-
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.sql.ACPassiveKey;
-import jp.nichicom.ac.util.ACSnapshot;
-import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
-import jp.nichicom.vr.util.VRArrayList;
-import jp.nichicom.vr.util.VRHashMap;
-import jp.nichicom.vr.util.VRList;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.QkanConstants;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
  * 利用者登録イベント定義(QU002) 
@@ -462,7 +495,7 @@ public abstract class QU002Event extends QU002SQL {
             }
         }
     });
-    getInstitutionInfoTokuteiNyusho().addActionListener(new ActionListener(){
+    getShisetsuInfoTokuteiCheck().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -470,7 +503,87 @@ public abstract class QU002Event extends QU002SQL {
             }
             lockFlag = true;
             try {
-                institutionInfoTokuteiNyushoActionPerformed(e);
+                shisetsuInfoTokuteiCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getShisetsuInfoButtonClear().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                shisetsuInfoButtonClearActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getShisetsuInfoButtonInsert().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                shisetsuInfoButtonInsertActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getShisetsuInfoButtonEdit().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                shisetsuInfoButtonEditActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getShisetsuInfoButtonDelete().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                shisetsuInfoButtonDeleteActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getShisetsuInfoTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                shisetsuInfoTableSelectionChanged(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -662,7 +775,42 @@ public abstract class QU002Event extends QU002SQL {
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void institutionInfoTokuteiNyushoActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void shisetsuInfoTokuteiCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「特定入所-クリアボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void shisetsuInfoButtonClearActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「特定入所-追加ボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void shisetsuInfoButtonInsertActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「特定入所-書換ボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void shisetsuInfoButtonEditActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「特定入所-削除ボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void shisetsuInfoButtonDeleteActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「対象レコードを表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void shisetsuInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 
@@ -671,6 +819,7 @@ public abstract class QU002Event extends QU002SQL {
   private int processMode = QkanConstants.PROCESS_MODE_INSERT;
   private int idouTableChangeFlg;
   private int kaigoTableChangeFlg;
+  private int shisetsuTableChangeFlg;
   private int kaigoDataFlg;
   private int idouDataFlg;
   private int shisetsuDataFlg;
@@ -739,8 +888,10 @@ public abstract class QU002Event extends QU002SQL {
   private VRList providerListYobouShien = new VRArrayList();
   private ACTableModelAdapter kaigoTableModel;
   private ACTableModelAdapter idouTableModel;
+  private ACTableModelAdapter shisetsuTableModel;
   private ACSnapshot snapShotKaigo = new ACSnapshot();
   private ACSnapshot snapShotIdou = new ACSnapshot();
+  private ACSnapshot snapShotShisetsu = new ACSnapshot();
   //getter/setter
 
   /**
@@ -816,6 +967,21 @@ public abstract class QU002Event extends QU002SQL {
    */
   protected void setKaigoTableChangeFlg(int kaigoTableChangeFlg){
     this.kaigoTableChangeFlg = kaigoTableChangeFlg;
+  }
+
+  /**
+   * shisetsuTableChangeFlgを返します。
+   * @return shisetsuTableChangeFlg
+   */
+  protected int getShisetsuTableChangeFlg(){
+    return shisetsuTableChangeFlg;
+  }
+  /**
+   * shisetsuTableChangeFlgを設定します。
+   * @param shisetsuTableChangeFlg shisetsuTableChangeFlg
+   */
+  protected void setShisetsuTableChangeFlg(int shisetsuTableChangeFlg){
+    this.shisetsuTableChangeFlg = shisetsuTableChangeFlg;
   }
 
   /**
@@ -1074,6 +1240,21 @@ public abstract class QU002Event extends QU002SQL {
   }
 
   /**
+   * shisetsuTableModelを返します。
+   * @return shisetsuTableModel
+   */
+  protected ACTableModelAdapter getShisetsuTableModel(){
+    return shisetsuTableModel;
+  }
+  /**
+   * shisetsuTableModelを設定します。
+   * @param shisetsuTableModel shisetsuTableModel
+   */
+  protected void setShisetsuTableModel(ACTableModelAdapter shisetsuTableModel){
+    this.shisetsuTableModel = shisetsuTableModel;
+  }
+
+  /**
    * snapShotKaigoを返します。
    * @return snapShotKaigo
    */
@@ -1101,6 +1282,21 @@ public abstract class QU002Event extends QU002SQL {
    */
   protected void setSnapShotIdou(ACSnapshot snapShotIdou){
     this.snapShotIdou = snapShotIdou;
+  }
+
+  /**
+   * snapShotShisetsuを返します。
+   * @return snapShotShisetsu
+   */
+  protected ACSnapshot getSnapShotShisetsu(){
+    return snapShotShisetsu;
+  }
+  /**
+   * snapShotShisetsuを設定します。
+   * @param snapShotShisetsu snapShotShisetsu
+   */
+  protected void setSnapShotShisetsu(ACSnapshot snapShotShisetsu){
+    this.snapShotShisetsu = snapShotShisetsu;
   }
 
   //内部関数
@@ -1225,5 +1421,22 @@ public abstract class QU002Event extends QU002SQL {
    *
    */
   public abstract void casualInitialize() throws Exception;
+
+  /**
+   * 「状態設定」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void changeShisetsuState() throws Exception;
+
+  /**
+   * 「施設情報入力チェック」に関する処理を行ないます。
+   *
+   * @param checkMode int
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean isValidInputShisetsu(int checkMode) throws Exception;
 
 }

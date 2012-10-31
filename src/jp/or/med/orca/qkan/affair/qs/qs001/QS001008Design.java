@@ -17,859 +17,534 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 小笠　貴志
- * 作成日: 2006/02/14  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2012/08/08  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム サービス予定作成/変更 (S)
- * プロセス サービス予定週間 (001)
- * プログラム サービスパターン通所介護 (QS001008)
+ * サブシステム サービス管理 (S)
+ * プロセス 特定診療費・特別療養費集計 (001)
+ * プログラム 特定診療費・特別療養費集計画面 (QS001008)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
 
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import javax.swing.SwingConstants;
+import javax.swing.table.TableColumn;
+
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTimeComboBox;
-import jp.nichicom.ac.container.ACBackLabelContainer;
+import jp.nichicom.ac.component.table.ACTable;
+import jp.nichicom.ac.component.table.ACTableCellViewer;
+import jp.nichicom.ac.component.table.ACTableColumn;
+import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.text.ACBorderBlankDateFormat;
 import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
+import jp.nichicom.vr.component.table.VRTableColumnModel;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.affair.QkanAffairDialog;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 /**
- * サービスパターン通所介護画面項目デザイン(QS001008) 
+ * 特定診療費・特別療養費集計画面画面項目デザイン(QS001008) 
  */
-public class QS001008Design extends QS001ServicePanel {
+public class QS001008Design extends QkanAffairDialog {
   //GUIコンポーネント
 
-  private ACPanel tsuusyoKaigoPatterns;
+  private ACPanel contents;
 
-  private ACBackLabelContainer tsuusyoKaigoTimeContena;
+  private ACGroupBox tokubetsuGroup;
 
-  private ACTimeComboBox tsuusyoKaigoTimeBeginTime;
+  private VRLayout tokubetsuGroupLayout;
 
-  private ACLabelContainer tsuusyoKaigoTimeBeginTimeContainer;
+  private ACPanel servicePanel;
 
-  private ACComboBoxModelAdapter tsuusyoKaigoTimeBeginTimeModel;
+  private VRLayout servicePanelLayout;
 
-  private ACTimeComboBox tsuusyoKaigoTimeEndTime;
+  private ACComboBox providerCombo;
 
-  private ACLabelContainer tsuusyoKaigoTimeEndTimeContainer;
+  private ACLabelContainer providerComboContainer;
 
-  private ACComboBoxModelAdapter tsuusyoKaigoTimeEndTimeModel;
+  private ACComboBoxModelAdapter providerComboModel;
 
-  private ACClearableRadioButtonGroup tsuusyoKaigoTimeContenaFacilityDivision;
+  private ACComboBox serviceCombo;
 
-  private ACLabelContainer tsuusyoKaigoTimeContenaFacilityDivisionContainer;
+  private ACLabelContainer serviceComboContainer;
 
-  private ACListModelAdapter tsuusyoKaigoTimeContenaFacilityDivisionModel;
+  private ACComboBoxModelAdapter serviceComboModel;
 
-  private ACRadioButtonItem tsuusyoKaigoSingle;
+  private ACTable tokubetsuTable;
 
-  private ACRadioButtonItem tsuusyoKaigoDouble;
+  private VRTableColumnModel tokubetsuTableColumnModel;
 
-  private ACRadioButtonItem tsuusyoKaigoDementiaSingle;
+  private ACTableColumn tokubetsuTableColumn1;
 
-  private ACRadioButtonItem tsuusyoKaigoDementiaDouble;
+  private ACTableColumn tokubetsuTableColumn2;
 
-  private ACComboBox tsuusyoKaigoTimeDivision;
+  private ACTableColumn tokubetsuTableColumn3;
 
-  private ACLabelContainer tsuusyoKaigoTimeDivisionContainer;
+  private ACGroupBox dayDetailGroup;
 
-  private ACComboBoxModelAdapter tsuusyoKaigoTimeDivisionModel;
+  private ACTable dayDetailTable;
 
-  private ACClearableRadioButtonGroup tsuusyoKaigoAdditionFunctionTrainingRadio;
+  private VRTableColumnModel dayDetailTableColumnModel;
 
-  private ACLabelContainer tsuusyoKaigoAdditionFunctionTrainingRadioContainer;
+  private ACTableColumn dayDetailTableColumn1;
 
-  private ACListModelAdapter tsuusyoKaigoAdditionFunctionTrainingRadioModel;
+  private ACTableColumn dayDetailTableColumn2;
 
-  private ACRadioButtonItem tsuusyoKaigoAdditionFunctionTrainingRadioItem1;
+  private ACPanel buttons;
 
-  private ACRadioButtonItem tsuusyoKaigoAdditionFunctionTrainingRadioItem2;
-
-  private ACClearableRadioButtonGroup tsuusyoKaigoAdditionFunctionBathRadio;
-
-  private ACLabelContainer tsuusyoKaigoAdditionFunctionBathRadioContainer;
-
-  private ACListModelAdapter tsuusyoKaigoAdditionFunctionBathRadioModel;
-
-  private ACRadioButtonItem tsuusyoKaigoAdditionFunctionBathRadioItem1;
-
-  private ACRadioButtonItem tsuusyoKaigoAdditionFunctionBathRadioItem2;
-
-  private ACRadioButtonItem tsuusyoKaigoAdditionFunctionBathRadioItem3;
-
-  private ACClearableRadioButtonGroup tsuusyoKaigoMeetingAndSendingOff;
-
-  private ACLabelContainer tsuusyoKaigoMeetingAndSendingOffContainer;
-
-  private ACListModelAdapter tsuusyoKaigoMeetingAndSendingOffModel;
-
-  private ACRadioButtonItem tsuusyoKaigoMeetingAndSendingOffNone;
-
-  private ACRadioButtonItem tsuusyoKaigoMeetingAndSendingOffOneWay;
-
-  private ACRadioButtonItem tsuusyoKaigoMeetingAndSendingOffRoundTrip;
-
-  private ACClearableRadioButtonGroup tsuusyoKaigoSubtraction;
-
-  private ACLabelContainer tsuusyoKaigoSubtractionContainer;
-
-  private ACListModelAdapter tsuusyoKaigoSubtractionModel;
-
-  private ACRadioButtonItem tsuusyoKaigoSubtractionNot;
-
-  private ACRadioButtonItem tsuusyoKaigoSubtractionExcess;
-
-  private ACRadioButtonItem tsuusyoKaigoSubtractionLack;
+  private ACButton close;
 
   //getter
 
   /**
-   * 通所介護パターン領域を取得します。
-   * @return 通所介護パターン領域
+   * クライアント領域を取得します。
+   * @return クライアント領域
    */
-  public ACPanel getTsuusyoKaigoPatterns(){
-    if(tsuusyoKaigoPatterns==null){
+  public ACPanel getContents(){
+    if(contents==null){
 
-      tsuusyoKaigoPatterns = new ACPanel();
+      contents = new ACPanel();
 
-      tsuusyoKaigoPatterns.setHgap(0);
-
-      addTsuusyoKaigoPatterns();
+      addContents();
     }
-    return tsuusyoKaigoPatterns;
+    return contents;
 
   }
 
   /**
-   * 提供時間コンテナを取得します。
-   * @return 提供時間コンテナ
+   * 特定診療費・特別療養費グループを取得します。
+   * @return 特定診療費・特別療養費グループ
    */
-  public ACBackLabelContainer getTsuusyoKaigoTimeContena(){
-    if(tsuusyoKaigoTimeContena==null){
+  public ACGroupBox getTokubetsuGroup(){
+    if(tokubetsuGroup==null){
 
-      tsuusyoKaigoTimeContena = new ACBackLabelContainer();
+      tokubetsuGroup = new ACGroupBox();
 
-      addTsuusyoKaigoTimeContena();
+      tokubetsuGroup.setText("特定診療費・特別療養費");
+
+      tokubetsuGroup.setLayout(getTokubetsuGroupLayout());
+
+      tokubetsuGroup.setFollowChildEnabled(true);
+
+      addTokubetsuGroup();
     }
-    return tsuusyoKaigoTimeContena;
+    return tokubetsuGroup;
 
   }
 
   /**
-   * 開始時刻コンボを取得します。
-   * @return 開始時刻コンボ
+   * グループレイアウトを取得します。
+   * @return グループレイアウト
    */
-  public ACTimeComboBox getTsuusyoKaigoTimeBeginTime(){
-    if(tsuusyoKaigoTimeBeginTime==null){
+  public VRLayout getTokubetsuGroupLayout(){
+    if(tokubetsuGroupLayout==null){
 
-      tsuusyoKaigoTimeBeginTime = new ACTimeComboBox();
+      tokubetsuGroupLayout = new VRLayout();
 
-      getTsuusyoKaigoTimeBeginTimeContainer().setText("開始時刻");
+      tokubetsuGroupLayout.setHgap(2);
 
-      tsuusyoKaigoTimeBeginTime.setBindPath("3");
+      tokubetsuGroupLayout.setLabelMargin(0);
 
-      tsuusyoKaigoTimeBeginTime.setModelBindPath("3");
+      tokubetsuGroupLayout.setVgap(0);
 
-      tsuusyoKaigoTimeBeginTime.setModel(getTsuusyoKaigoTimeBeginTimeModel());
-
-      tsuusyoKaigoTimeBeginTime.setRenderBindPath("CONTENT");
-
-      addTsuusyoKaigoTimeBeginTime();
+      addTokubetsuGroupLayout();
     }
-    return tsuusyoKaigoTimeBeginTime;
+    return tokubetsuGroupLayout;
 
   }
 
   /**
-   * 開始時刻コンボコンテナを取得します。
-   * @return 開始時刻コンボコンテナ
+   * サービス種類領域を取得します。
+   * @return サービス種類領域
    */
-  protected ACLabelContainer getTsuusyoKaigoTimeBeginTimeContainer(){
-    if(tsuusyoKaigoTimeBeginTimeContainer==null){
-      tsuusyoKaigoTimeBeginTimeContainer = new ACLabelContainer();
-      tsuusyoKaigoTimeBeginTimeContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoTimeBeginTimeContainer.add(getTsuusyoKaigoTimeBeginTime(), null);
+  public ACPanel getServicePanel(){
+    if(servicePanel==null){
+
+      servicePanel = new ACPanel();
+
+      servicePanel.setLayout(getServicePanelLayout());
+
+      servicePanel.setFollowChildEnabled(true);
+
+      addServicePanel();
     }
-    return tsuusyoKaigoTimeBeginTimeContainer;
-  }
-
-  /**
-   * 開始時刻コンボモデルを取得します。
-   * @return 開始時刻コンボモデル
-   */
-  protected ACComboBoxModelAdapter getTsuusyoKaigoTimeBeginTimeModel(){
-    if(tsuusyoKaigoTimeBeginTimeModel==null){
-      tsuusyoKaigoTimeBeginTimeModel = new ACComboBoxModelAdapter();
-      addTsuusyoKaigoTimeBeginTimeModel();
-    }
-    return tsuusyoKaigoTimeBeginTimeModel;
-  }
-
-  /**
-   * 終了時刻コンボを取得します。
-   * @return 終了時刻コンボ
-   */
-  public ACTimeComboBox getTsuusyoKaigoTimeEndTime(){
-    if(tsuusyoKaigoTimeEndTime==null){
-
-      tsuusyoKaigoTimeEndTime = new ACTimeComboBox();
-
-      getTsuusyoKaigoTimeEndTimeContainer().setText("終了時刻");
-
-      tsuusyoKaigoTimeEndTime.setBindPath("4");
-
-      tsuusyoKaigoTimeEndTime.setModelBindPath("4");
-
-      tsuusyoKaigoTimeEndTime.setModel(getTsuusyoKaigoTimeEndTimeModel());
-
-      tsuusyoKaigoTimeEndTime.setRenderBindPath("CONTENT");
-
-      addTsuusyoKaigoTimeEndTime();
-    }
-    return tsuusyoKaigoTimeEndTime;
+    return servicePanel;
 
   }
 
   /**
-   * 終了時刻コンボコンテナを取得します。
-   * @return 終了時刻コンボコンテナ
+   * サービス種類レイアウトを取得します。
+   * @return サービス種類レイアウト
    */
-  protected ACLabelContainer getTsuusyoKaigoTimeEndTimeContainer(){
-    if(tsuusyoKaigoTimeEndTimeContainer==null){
-      tsuusyoKaigoTimeEndTimeContainer = new ACLabelContainer();
-      tsuusyoKaigoTimeEndTimeContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoTimeEndTimeContainer.add(getTsuusyoKaigoTimeEndTime(), null);
+  public VRLayout getServicePanelLayout(){
+    if(servicePanelLayout==null){
+
+      servicePanelLayout = new VRLayout();
+
+      servicePanelLayout.setHgap(0);
+
+      servicePanelLayout.setLabelMargin(0);
+
+      servicePanelLayout.setVgap(0);
+
+      addServicePanelLayout();
     }
-    return tsuusyoKaigoTimeEndTimeContainer;
-  }
-
-  /**
-   * 終了時刻コンボモデルを取得します。
-   * @return 終了時刻コンボモデル
-   */
-  protected ACComboBoxModelAdapter getTsuusyoKaigoTimeEndTimeModel(){
-    if(tsuusyoKaigoTimeEndTimeModel==null){
-      tsuusyoKaigoTimeEndTimeModel = new ACComboBoxModelAdapter();
-      addTsuusyoKaigoTimeEndTimeModel();
-    }
-    return tsuusyoKaigoTimeEndTimeModel;
-  }
-
-  /**
-   * 施設区分を取得します。
-   * @return 施設区分
-   */
-  public ACClearableRadioButtonGroup getTsuusyoKaigoTimeContenaFacilityDivision(){
-    if(tsuusyoKaigoTimeContenaFacilityDivision==null){
-
-      tsuusyoKaigoTimeContenaFacilityDivision = new ACClearableRadioButtonGroup();
-
-      getTsuusyoKaigoTimeContenaFacilityDivisionContainer().setText("施設区分");
-
-      tsuusyoKaigoTimeContenaFacilityDivision.setBindPath("1150103");
-
-      tsuusyoKaigoTimeContenaFacilityDivision.setModel(getTsuusyoKaigoTimeContenaFacilityDivisionModel());
-
-      tsuusyoKaigoTimeContenaFacilityDivision.setUseClearButton(false);
-
-      addTsuusyoKaigoTimeContenaFacilityDivision();
-    }
-    return tsuusyoKaigoTimeContenaFacilityDivision;
+    return servicePanelLayout;
 
   }
 
   /**
-   * 施設区分コンテナを取得します。
-   * @return 施設区分コンテナ
+   * 事業所コンボを取得します。
+   * @return 事業所コンボ
    */
-  protected ACLabelContainer getTsuusyoKaigoTimeContenaFacilityDivisionContainer(){
-    if(tsuusyoKaigoTimeContenaFacilityDivisionContainer==null){
-      tsuusyoKaigoTimeContenaFacilityDivisionContainer = new ACLabelContainer();
-      tsuusyoKaigoTimeContenaFacilityDivisionContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoTimeContenaFacilityDivisionContainer.add(getTsuusyoKaigoTimeContenaFacilityDivision(), null);
+  public ACComboBox getProviderCombo(){
+    if(providerCombo==null){
+
+      providerCombo = new ACComboBox();
+
+      getProviderComboContainer().setText("事業所");
+
+      providerCombo.setBindPath("PROVIDER_ID");
+
+      providerCombo.setEditable(false);
+
+      providerCombo.setColumns(20);
+
+      providerCombo.setModelBindPath("PROVIDER");
+
+      providerCombo.setRenderBindPath("PROVIDER_NAME");
+
+      providerCombo.setBlankable(false);
+
+      providerCombo.setModel(getProviderComboModel());
+
+      addProviderCombo();
     }
-    return tsuusyoKaigoTimeContenaFacilityDivisionContainer;
-  }
-
-  /**
-   * 施設区分モデルを取得します。
-   * @return 施設区分モデル
-   */
-  protected ACListModelAdapter getTsuusyoKaigoTimeContenaFacilityDivisionModel(){
-    if(tsuusyoKaigoTimeContenaFacilityDivisionModel==null){
-      tsuusyoKaigoTimeContenaFacilityDivisionModel = new ACListModelAdapter();
-      addTsuusyoKaigoTimeContenaFacilityDivisionModel();
-    }
-    return tsuusyoKaigoTimeContenaFacilityDivisionModel;
-  }
-
-  /**
-   * 単独型を取得します。
-   * @return 単独型
-   */
-  public ACRadioButtonItem getTsuusyoKaigoSingle(){
-    if(tsuusyoKaigoSingle==null){
-
-      tsuusyoKaigoSingle = new ACRadioButtonItem();
-
-      tsuusyoKaigoSingle.setText("単独型");
-
-      tsuusyoKaigoSingle.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
-
-      tsuusyoKaigoSingle.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoSingle();
-    }
-    return tsuusyoKaigoSingle;
+    return providerCombo;
 
   }
 
   /**
-   * 併設型を取得します。
-   * @return 併設型
+   * 事業所コンボコンテナを取得します。
+   * @return 事業所コンボコンテナ
    */
-  public ACRadioButtonItem getTsuusyoKaigoDouble(){
-    if(tsuusyoKaigoDouble==null){
-
-      tsuusyoKaigoDouble = new ACRadioButtonItem();
-
-      tsuusyoKaigoDouble.setText("併設型");
-
-      tsuusyoKaigoDouble.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
-
-      tsuusyoKaigoDouble.setConstraints(VRLayout.FLOW_RETURN);
-
-      addTsuusyoKaigoDouble();
+  protected ACLabelContainer getProviderComboContainer(){
+    if(providerComboContainer==null){
+      providerComboContainer = new ACLabelContainer();
+      providerComboContainer.setFollowChildEnabled(true);
+      providerComboContainer.setVAlignment(VRLayout.CENTER);
+      providerComboContainer.add(getProviderCombo(), null);
     }
-    return tsuusyoKaigoDouble;
+    return providerComboContainer;
+  }
+
+  /**
+   * 事業所コンボモデルを取得します。
+   * @return 事業所コンボモデル
+   */
+  protected ACComboBoxModelAdapter getProviderComboModel(){
+    if(providerComboModel==null){
+      providerComboModel = new ACComboBoxModelAdapter();
+      addProviderComboModel();
+    }
+    return providerComboModel;
+  }
+
+  /**
+   * サービス種類名コンボを取得します。
+   * @return サービス種類名コンボ
+   */
+  public ACComboBox getServiceCombo(){
+    if(serviceCombo==null){
+
+      serviceCombo = new ACComboBox();
+
+      getServiceComboContainer().setText("サービス種類");
+
+      serviceCombo.setBindPath("SERVICE_TYPE");
+
+      serviceCombo.setEditable(false);
+
+      serviceCombo.setColumns(20);
+
+      serviceCombo.setModelBindPath("SERVICE");
+
+      serviceCombo.setRenderBindPath("SERVICE_ABBREVIATION");
+
+      serviceCombo.setBlankable(false);
+
+      serviceCombo.setModel(getServiceComboModel());
+
+      addServiceCombo();
+    }
+    return serviceCombo;
 
   }
 
   /**
-   * 痴呆専用単独型を取得します。
-   * @return 痴呆専用単独型
+   * サービス種類名コンボコンテナを取得します。
+   * @return サービス種類名コンボコンテナ
    */
-  public ACRadioButtonItem getTsuusyoKaigoDementiaSingle(){
-    if(tsuusyoKaigoDementiaSingle==null){
-
-      tsuusyoKaigoDementiaSingle = new ACRadioButtonItem();
-
-      tsuusyoKaigoDementiaSingle.setText("認知症専用単独型");
-
-      tsuusyoKaigoDementiaSingle.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
-
-      tsuusyoKaigoDementiaSingle.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoDementiaSingle();
+  protected ACLabelContainer getServiceComboContainer(){
+    if(serviceComboContainer==null){
+      serviceComboContainer = new ACLabelContainer();
+      serviceComboContainer.setFollowChildEnabled(true);
+      serviceComboContainer.setVAlignment(VRLayout.CENTER);
+      serviceComboContainer.add(getServiceCombo(), null);
     }
-    return tsuusyoKaigoDementiaSingle;
+    return serviceComboContainer;
+  }
+
+  /**
+   * サービス種類名コンボモデルを取得します。
+   * @return サービス種類名コンボモデル
+   */
+  protected ACComboBoxModelAdapter getServiceComboModel(){
+    if(serviceComboModel==null){
+      serviceComboModel = new ACComboBoxModelAdapter();
+      addServiceComboModel();
+    }
+    return serviceComboModel;
+  }
+
+  /**
+   * 特定診療費・特別療養費明細テーブルを取得します。
+   * @return 特定診療費・特別療養費明細テーブル
+   */
+  public ACTable getTokubetsuTable(){
+    if(tokubetsuTable==null){
+
+      tokubetsuTable = new ACTable();
+
+      tokubetsuTable.setColumnModel(getTokubetsuTableColumnModel());
+
+      tokubetsuTable.setPreferredSize(new Dimension(370,150));
+
+      addTokubetsuTable();
+    }
+    return tokubetsuTable;
 
   }
 
   /**
-   * 痴呆専用併設型を取得します。
-   * @return 痴呆専用併設型
+   * 特定診療費・特別療養費明細テーブルカラムモデルを取得します。
+   * @return 特定診療費・特別療養費明細テーブルカラムモデル
    */
-  public ACRadioButtonItem getTsuusyoKaigoDementiaDouble(){
-    if(tsuusyoKaigoDementiaDouble==null){
-
-      tsuusyoKaigoDementiaDouble = new ACRadioButtonItem();
-
-      tsuusyoKaigoDementiaDouble.setText("認知症専用併設型");
-
-      tsuusyoKaigoDementiaDouble.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
-
-      tsuusyoKaigoDementiaDouble.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoDementiaDouble();
+  protected VRTableColumnModel getTokubetsuTableColumnModel(){
+    if(tokubetsuTableColumnModel==null){
+      tokubetsuTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addTokubetsuTableColumnModel();
     }
-    return tsuusyoKaigoDementiaDouble;
+    return tokubetsuTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getTokubetsuTableColumn1(){
+    if(tokubetsuTableColumn1==null){
+
+      tokubetsuTableColumn1 = new ACTableColumn();
+
+      tokubetsuTableColumn1.setHeaderValue("No.");
+
+      tokubetsuTableColumn1.setColumnName("NAME");
+
+      tokubetsuTableColumn1.setColumns(2);
+
+      tokubetsuTableColumn1.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      tokubetsuTableColumn1.setSortable(false);
+
+      addTokubetsuTableColumn1();
+    }
+    return tokubetsuTableColumn1;
 
   }
 
   /**
-   * 時間区分を取得します。
-   * @return 時間区分
+   * サービス名を取得します。
+   * @return サービス名
    */
-  public ACComboBox getTsuusyoKaigoTimeDivision(){
-    if(tsuusyoKaigoTimeDivision==null){
+  public ACTableColumn getTokubetsuTableColumn2(){
+    if(tokubetsuTableColumn2==null){
 
-      tsuusyoKaigoTimeDivision = new ACComboBox();
+      tokubetsuTableColumn2 = new ACTableColumn();
 
-      getTsuusyoKaigoTimeDivisionContainer().setText("時間区分");
+      tokubetsuTableColumn2.setHeaderValue("サービス名");
 
-      tsuusyoKaigoTimeDivision.setBindPath("1150104");
+      tokubetsuTableColumn2.setColumnName("NAME");
 
-      tsuusyoKaigoTimeDivision.setEditable(false);
+      tokubetsuTableColumn2.setColumns(22);
 
-      tsuusyoKaigoTimeDivision.setModelBindPath("1150104");
-
-      tsuusyoKaigoTimeDivision.setModel(getTsuusyoKaigoTimeDivisionModel());
-
-      tsuusyoKaigoTimeDivision.setRenderBindPath("CONTENT");
-
-      addTsuusyoKaigoTimeDivision();
+      addTokubetsuTableColumn2();
     }
-    return tsuusyoKaigoTimeDivision;
+    return tokubetsuTableColumn2;
 
   }
 
   /**
-   * 時間区分コンテナを取得します。
-   * @return 時間区分コンテナ
+   * 回数を取得します。
+   * @return 回数
    */
-  protected ACLabelContainer getTsuusyoKaigoTimeDivisionContainer(){
-    if(tsuusyoKaigoTimeDivisionContainer==null){
-      tsuusyoKaigoTimeDivisionContainer = new ACLabelContainer();
-      tsuusyoKaigoTimeDivisionContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoTimeDivisionContainer.add(getTsuusyoKaigoTimeDivision(), null);
+  public ACTableColumn getTokubetsuTableColumn3(){
+    if(tokubetsuTableColumn3==null){
+
+      tokubetsuTableColumn3 = new ACTableColumn();
+
+      tokubetsuTableColumn3.setHeaderValue("回数");
+
+      tokubetsuTableColumn3.setColumnName("TOTAL_COUNT");
+
+      tokubetsuTableColumn3.setColumns(5);
+
+      tokubetsuTableColumn3.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addTokubetsuTableColumn3();
     }
-    return tsuusyoKaigoTimeDivisionContainer;
-  }
-
-  /**
-   * 時間区分モデルを取得します。
-   * @return 時間区分モデル
-   */
-  protected ACComboBoxModelAdapter getTsuusyoKaigoTimeDivisionModel(){
-    if(tsuusyoKaigoTimeDivisionModel==null){
-      tsuusyoKaigoTimeDivisionModel = new ACComboBoxModelAdapter();
-      addTsuusyoKaigoTimeDivisionModel();
-    }
-    return tsuusyoKaigoTimeDivisionModel;
-  }
-
-  /**
-   * 機能訓練指導加算を取得します。
-   * @return 機能訓練指導加算
-   */
-  public ACClearableRadioButtonGroup getTsuusyoKaigoAdditionFunctionTrainingRadio(){
-    if(tsuusyoKaigoAdditionFunctionTrainingRadio==null){
-
-      tsuusyoKaigoAdditionFunctionTrainingRadio = new ACClearableRadioButtonGroup();
-
-      getTsuusyoKaigoAdditionFunctionTrainingRadioContainer().setText("機能訓練加算");
-
-      tsuusyoKaigoAdditionFunctionTrainingRadio.setBindPath("1150105");
-
-      tsuusyoKaigoAdditionFunctionTrainingRadio.setModel(getTsuusyoKaigoAdditionFunctionTrainingRadioModel());
-
-      tsuusyoKaigoAdditionFunctionTrainingRadio.setUseClearButton(false);
-
-      addTsuusyoKaigoAdditionFunctionTrainingRadio();
-    }
-    return tsuusyoKaigoAdditionFunctionTrainingRadio;
+    return tokubetsuTableColumn3;
 
   }
 
   /**
-   * 機能訓練指導加算コンテナを取得します。
-   * @return 機能訓練指導加算コンテナ
+   * 詳細情報領域を取得します。
+   * @return 詳細情報領域
    */
-  protected ACLabelContainer getTsuusyoKaigoAdditionFunctionTrainingRadioContainer(){
-    if(tsuusyoKaigoAdditionFunctionTrainingRadioContainer==null){
-      tsuusyoKaigoAdditionFunctionTrainingRadioContainer = new ACLabelContainer();
-      tsuusyoKaigoAdditionFunctionTrainingRadioContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoAdditionFunctionTrainingRadioContainer.add(getTsuusyoKaigoAdditionFunctionTrainingRadio(), null);
+  public ACGroupBox getDayDetailGroup(){
+    if(dayDetailGroup==null){
+
+      dayDetailGroup = new ACGroupBox();
+
+      dayDetailGroup.setText("詳細情報");
+
+      dayDetailGroup.setFollowChildEnabled(true);
+
+      addDayDetailGroup();
     }
-    return tsuusyoKaigoAdditionFunctionTrainingRadioContainer;
-  }
-
-  /**
-   * 機能訓練指導加算モデルを取得します。
-   * @return 機能訓練指導加算モデル
-   */
-  protected ACListModelAdapter getTsuusyoKaigoAdditionFunctionTrainingRadioModel(){
-    if(tsuusyoKaigoAdditionFunctionTrainingRadioModel==null){
-      tsuusyoKaigoAdditionFunctionTrainingRadioModel = new ACListModelAdapter();
-      addTsuusyoKaigoAdditionFunctionTrainingRadioModel();
-    }
-    return tsuusyoKaigoAdditionFunctionTrainingRadioModel;
-  }
-
-  /**
-   * なしを取得します。
-   * @return なし
-   */
-  public ACRadioButtonItem getTsuusyoKaigoAdditionFunctionTrainingRadioItem1(){
-    if(tsuusyoKaigoAdditionFunctionTrainingRadioItem1==null){
-
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem1 = new ACRadioButtonItem();
-
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem1.setText("なし");
-
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem1.setGroup(getTsuusyoKaigoAdditionFunctionTrainingRadio());
-
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem1.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoAdditionFunctionTrainingRadioItem1();
-    }
-    return tsuusyoKaigoAdditionFunctionTrainingRadioItem1;
+    return dayDetailGroup;
 
   }
 
   /**
-   * ありを取得します。
-   * @return あり
+   * 詳細情報テーブルを取得します。
+   * @return 詳細情報テーブル
    */
-  public ACRadioButtonItem getTsuusyoKaigoAdditionFunctionTrainingRadioItem2(){
-    if(tsuusyoKaigoAdditionFunctionTrainingRadioItem2==null){
+  public ACTable getDayDetailTable(){
+    if(dayDetailTable==null){
 
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem2 = new ACRadioButtonItem();
+      dayDetailTable = new ACTable();
 
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem2.setText("あり");
+      dayDetailTable.setColumnModel(getDayDetailTableColumnModel());
 
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem2.setGroup(getTsuusyoKaigoAdditionFunctionTrainingRadio());
+      dayDetailTable.setPreferredSize(new Dimension(100,50));
 
-      tsuusyoKaigoAdditionFunctionTrainingRadioItem2.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoAdditionFunctionTrainingRadioItem2();
+      addDayDetailTable();
     }
-    return tsuusyoKaigoAdditionFunctionTrainingRadioItem2;
+    return dayDetailTable;
 
   }
 
   /**
-   * 入浴加算を取得します。
-   * @return 入浴加算
+   * 詳細情報テーブルカラムモデルを取得します。
+   * @return 詳細情報テーブルカラムモデル
    */
-  public ACClearableRadioButtonGroup getTsuusyoKaigoAdditionFunctionBathRadio(){
-    if(tsuusyoKaigoAdditionFunctionBathRadio==null){
-
-      tsuusyoKaigoAdditionFunctionBathRadio = new ACClearableRadioButtonGroup();
-
-      getTsuusyoKaigoAdditionFunctionBathRadioContainer().setText("入浴加算");
-
-      tsuusyoKaigoAdditionFunctionBathRadio.setBindPath("1150106");
-
-      tsuusyoKaigoAdditionFunctionBathRadio.setModel(getTsuusyoKaigoAdditionFunctionBathRadioModel());
-
-      tsuusyoKaigoAdditionFunctionBathRadio.setUseClearButton(false);
-
-      addTsuusyoKaigoAdditionFunctionBathRadio();
+  protected VRTableColumnModel getDayDetailTableColumnModel(){
+    if(dayDetailTableColumnModel==null){
+      dayDetailTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addDayDetailTableColumnModel();
     }
-    return tsuusyoKaigoAdditionFunctionBathRadio;
+    return dayDetailTableColumnModel;
+  }
+
+  /**
+   * 設定日を取得します。
+   * @return 設定日
+   */
+  public ACTableColumn getDayDetailTableColumn1(){
+    if(dayDetailTableColumn1==null){
+
+      dayDetailTableColumn1 = new ACTableColumn();
+
+      dayDetailTableColumn1.setHeaderValue("設定日");
+
+      dayDetailTableColumn1.setColumnName("SERVICE_DATE");
+
+      dayDetailTableColumn1.setColumns(12);
+
+      dayDetailTableColumn1.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addDayDetailTableColumn1();
+    }
+    return dayDetailTableColumn1;
 
   }
 
   /**
-   * 入浴加算コンテナを取得します。
-   * @return 入浴加算コンテナ
+   * 回数を取得します。
+   * @return 回数
    */
-  protected ACLabelContainer getTsuusyoKaigoAdditionFunctionBathRadioContainer(){
-    if(tsuusyoKaigoAdditionFunctionBathRadioContainer==null){
-      tsuusyoKaigoAdditionFunctionBathRadioContainer = new ACLabelContainer();
-      tsuusyoKaigoAdditionFunctionBathRadioContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoAdditionFunctionBathRadioContainer.add(getTsuusyoKaigoAdditionFunctionBathRadio(), null);
+  public ACTableColumn getDayDetailTableColumn2(){
+    if(dayDetailTableColumn2==null){
+
+      dayDetailTableColumn2 = new ACTableColumn();
+
+      dayDetailTableColumn2.setHeaderValue("回数");
+
+      dayDetailTableColumn2.setColumnName("DAY_IN_COUNT");
+
+      dayDetailTableColumn2.setColumns(6);
+
+      dayDetailTableColumn2.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addDayDetailTableColumn2();
     }
-    return tsuusyoKaigoAdditionFunctionBathRadioContainer;
-  }
-
-  /**
-   * 入浴加算モデルを取得します。
-   * @return 入浴加算モデル
-   */
-  protected ACListModelAdapter getTsuusyoKaigoAdditionFunctionBathRadioModel(){
-    if(tsuusyoKaigoAdditionFunctionBathRadioModel==null){
-      tsuusyoKaigoAdditionFunctionBathRadioModel = new ACListModelAdapter();
-      addTsuusyoKaigoAdditionFunctionBathRadioModel();
-    }
-    return tsuusyoKaigoAdditionFunctionBathRadioModel;
-  }
-
-  /**
-   * なしを取得します。
-   * @return なし
-   */
-  public ACRadioButtonItem getTsuusyoKaigoAdditionFunctionBathRadioItem1(){
-    if(tsuusyoKaigoAdditionFunctionBathRadioItem1==null){
-
-      tsuusyoKaigoAdditionFunctionBathRadioItem1 = new ACRadioButtonItem();
-
-      tsuusyoKaigoAdditionFunctionBathRadioItem1.setText("なし");
-
-      tsuusyoKaigoAdditionFunctionBathRadioItem1.setGroup(getTsuusyoKaigoAdditionFunctionBathRadio());
-
-      tsuusyoKaigoAdditionFunctionBathRadioItem1.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoAdditionFunctionBathRadioItem1();
-    }
-    return tsuusyoKaigoAdditionFunctionBathRadioItem1;
+    return dayDetailTableColumn2;
 
   }
 
   /**
-   * 通常を取得します。
-   * @return 通常
+   * ボタン領域を取得します。
+   * @return ボタン領域
    */
-  public ACRadioButtonItem getTsuusyoKaigoAdditionFunctionBathRadioItem2(){
-    if(tsuusyoKaigoAdditionFunctionBathRadioItem2==null){
+  public ACPanel getButtons(){
+    if(buttons==null){
 
-      tsuusyoKaigoAdditionFunctionBathRadioItem2 = new ACRadioButtonItem();
+      buttons = new ACPanel();
 
-      tsuusyoKaigoAdditionFunctionBathRadioItem2.setText("通常入浴");
-
-      tsuusyoKaigoAdditionFunctionBathRadioItem2.setGroup(getTsuusyoKaigoAdditionFunctionBathRadio());
-
-      tsuusyoKaigoAdditionFunctionBathRadioItem2.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoAdditionFunctionBathRadioItem2();
+      addButtons();
     }
-    return tsuusyoKaigoAdditionFunctionBathRadioItem2;
+    return buttons;
 
   }
 
   /**
-   * 特別入浴を取得します。
-   * @return 特別入浴
+   * 閉じるを取得します。
+   * @return 閉じる
    */
-  public ACRadioButtonItem getTsuusyoKaigoAdditionFunctionBathRadioItem3(){
-    if(tsuusyoKaigoAdditionFunctionBathRadioItem3==null){
+  public ACButton getClose(){
+    if(close==null){
 
-      tsuusyoKaigoAdditionFunctionBathRadioItem3 = new ACRadioButtonItem();
+      close = new ACButton();
 
-      tsuusyoKaigoAdditionFunctionBathRadioItem3.setText("特別入浴");
+      close.setText("閉じる(C)");
 
-      tsuusyoKaigoAdditionFunctionBathRadioItem3.setGroup(getTsuusyoKaigoAdditionFunctionBathRadio());
+      close.setMnemonic('C');
 
-      tsuusyoKaigoAdditionFunctionBathRadioItem3.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoAdditionFunctionBathRadioItem3();
+      addClose();
     }
-    return tsuusyoKaigoAdditionFunctionBathRadioItem3;
-
-  }
-
-  /**
-   * 送迎区分を取得します。
-   * @return 送迎区分
-   */
-  public ACClearableRadioButtonGroup getTsuusyoKaigoMeetingAndSendingOff(){
-    if(tsuusyoKaigoMeetingAndSendingOff==null){
-
-      tsuusyoKaigoMeetingAndSendingOff = new ACClearableRadioButtonGroup();
-
-      getTsuusyoKaigoMeetingAndSendingOffContainer().setText("送迎加算");
-
-      tsuusyoKaigoMeetingAndSendingOff.setBindPath("6");
-
-      tsuusyoKaigoMeetingAndSendingOff.setModel(getTsuusyoKaigoMeetingAndSendingOffModel());
-
-      tsuusyoKaigoMeetingAndSendingOff.setUseClearButton(false);
-
-      addTsuusyoKaigoMeetingAndSendingOff();
-    }
-    return tsuusyoKaigoMeetingAndSendingOff;
-
-  }
-
-  /**
-   * 送迎区分コンテナを取得します。
-   * @return 送迎区分コンテナ
-   */
-  protected ACLabelContainer getTsuusyoKaigoMeetingAndSendingOffContainer(){
-    if(tsuusyoKaigoMeetingAndSendingOffContainer==null){
-      tsuusyoKaigoMeetingAndSendingOffContainer = new ACLabelContainer();
-      tsuusyoKaigoMeetingAndSendingOffContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoMeetingAndSendingOffContainer.add(getTsuusyoKaigoMeetingAndSendingOff(), null);
-    }
-    return tsuusyoKaigoMeetingAndSendingOffContainer;
-  }
-
-  /**
-   * 送迎区分モデルを取得します。
-   * @return 送迎区分モデル
-   */
-  protected ACListModelAdapter getTsuusyoKaigoMeetingAndSendingOffModel(){
-    if(tsuusyoKaigoMeetingAndSendingOffModel==null){
-      tsuusyoKaigoMeetingAndSendingOffModel = new ACListModelAdapter();
-      addTsuusyoKaigoMeetingAndSendingOffModel();
-    }
-    return tsuusyoKaigoMeetingAndSendingOffModel;
-  }
-
-  /**
-   * 送迎なしを取得します。
-   * @return 送迎なし
-   */
-  public ACRadioButtonItem getTsuusyoKaigoMeetingAndSendingOffNone(){
-    if(tsuusyoKaigoMeetingAndSendingOffNone==null){
-
-      tsuusyoKaigoMeetingAndSendingOffNone = new ACRadioButtonItem();
-
-      tsuusyoKaigoMeetingAndSendingOffNone.setText("送迎なし");
-
-      tsuusyoKaigoMeetingAndSendingOffNone.setGroup(getTsuusyoKaigoMeetingAndSendingOff());
-
-      tsuusyoKaigoMeetingAndSendingOffNone.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoMeetingAndSendingOffNone();
-    }
-    return tsuusyoKaigoMeetingAndSendingOffNone;
-
-  }
-
-  /**
-   * 送迎片道を取得します。
-   * @return 送迎片道
-   */
-  public ACRadioButtonItem getTsuusyoKaigoMeetingAndSendingOffOneWay(){
-    if(tsuusyoKaigoMeetingAndSendingOffOneWay==null){
-
-      tsuusyoKaigoMeetingAndSendingOffOneWay = new ACRadioButtonItem();
-
-      tsuusyoKaigoMeetingAndSendingOffOneWay.setText("送迎片道");
-
-      tsuusyoKaigoMeetingAndSendingOffOneWay.setGroup(getTsuusyoKaigoMeetingAndSendingOff());
-
-      tsuusyoKaigoMeetingAndSendingOffOneWay.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoMeetingAndSendingOffOneWay();
-    }
-    return tsuusyoKaigoMeetingAndSendingOffOneWay;
-
-  }
-
-  /**
-   * 送迎往復を取得します。
-   * @return 送迎往復
-   */
-  public ACRadioButtonItem getTsuusyoKaigoMeetingAndSendingOffRoundTrip(){
-    if(tsuusyoKaigoMeetingAndSendingOffRoundTrip==null){
-
-      tsuusyoKaigoMeetingAndSendingOffRoundTrip = new ACRadioButtonItem();
-
-      tsuusyoKaigoMeetingAndSendingOffRoundTrip.setText("送迎往復");
-
-      tsuusyoKaigoMeetingAndSendingOffRoundTrip.setGroup(getTsuusyoKaigoMeetingAndSendingOff());
-
-      tsuusyoKaigoMeetingAndSendingOffRoundTrip.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoMeetingAndSendingOffRoundTrip();
-    }
-    return tsuusyoKaigoMeetingAndSendingOffRoundTrip;
-
-  }
-
-  /**
-   * 人員減算を取得します。
-   * @return 人員減算
-   */
-  public ACClearableRadioButtonGroup getTsuusyoKaigoSubtraction(){
-    if(tsuusyoKaigoSubtraction==null){
-
-      tsuusyoKaigoSubtraction = new ACClearableRadioButtonGroup();
-
-      getTsuusyoKaigoSubtractionContainer().setText("人員減算");
-
-      tsuusyoKaigoSubtraction.setBindPath("1150108");
-
-      tsuusyoKaigoSubtraction.setModel(getTsuusyoKaigoSubtractionModel());
-
-      tsuusyoKaigoSubtraction.setUseClearButton(false);
-
-      addTsuusyoKaigoSubtraction();
-    }
-    return tsuusyoKaigoSubtraction;
-
-  }
-
-  /**
-   * 人員減算コンテナを取得します。
-   * @return 人員減算コンテナ
-   */
-  protected ACLabelContainer getTsuusyoKaigoSubtractionContainer(){
-    if(tsuusyoKaigoSubtractionContainer==null){
-      tsuusyoKaigoSubtractionContainer = new ACLabelContainer();
-      tsuusyoKaigoSubtractionContainer.setFollowChildEnabled(true);
-      tsuusyoKaigoSubtractionContainer.add(getTsuusyoKaigoSubtraction(), null);
-    }
-    return tsuusyoKaigoSubtractionContainer;
-  }
-
-  /**
-   * 人員減算モデルを取得します。
-   * @return 人員減算モデル
-   */
-  protected ACListModelAdapter getTsuusyoKaigoSubtractionModel(){
-    if(tsuusyoKaigoSubtractionModel==null){
-      tsuusyoKaigoSubtractionModel = new ACListModelAdapter();
-      addTsuusyoKaigoSubtractionModel();
-    }
-    return tsuusyoKaigoSubtractionModel;
-  }
-
-  /**
-   * なしを取得します。
-   * @return なし
-   */
-  public ACRadioButtonItem getTsuusyoKaigoSubtractionNot(){
-    if(tsuusyoKaigoSubtractionNot==null){
-
-      tsuusyoKaigoSubtractionNot = new ACRadioButtonItem();
-
-      tsuusyoKaigoSubtractionNot.setText("なし");
-
-      tsuusyoKaigoSubtractionNot.setGroup(getTsuusyoKaigoSubtraction());
-
-      tsuusyoKaigoSubtractionNot.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoSubtractionNot();
-    }
-    return tsuusyoKaigoSubtractionNot;
-
-  }
-
-  /**
-   * 定員超過を取得します。
-   * @return 定員超過
-   */
-  public ACRadioButtonItem getTsuusyoKaigoSubtractionExcess(){
-    if(tsuusyoKaigoSubtractionExcess==null){
-
-      tsuusyoKaigoSubtractionExcess = new ACRadioButtonItem();
-
-      tsuusyoKaigoSubtractionExcess.setText("定員超過");
-
-      tsuusyoKaigoSubtractionExcess.setGroup(getTsuusyoKaigoSubtraction());
-
-      tsuusyoKaigoSubtractionExcess.setConstraints(VRLayout.FLOW_RETURN);
-
-      addTsuusyoKaigoSubtractionExcess();
-    }
-    return tsuusyoKaigoSubtractionExcess;
-
-  }
-
-  /**
-   * 看護・介護職員の不足を取得します。
-   * @return 看護・介護職員の不足
-   */
-  public ACRadioButtonItem getTsuusyoKaigoSubtractionLack(){
-    if(tsuusyoKaigoSubtractionLack==null){
-
-      tsuusyoKaigoSubtractionLack = new ACRadioButtonItem();
-
-      tsuusyoKaigoSubtractionLack.setText("看護・介護職員の不足");
-
-      tsuusyoKaigoSubtractionLack.setGroup(getTsuusyoKaigoSubtraction());
-
-      tsuusyoKaigoSubtractionLack.setConstraints(VRLayout.FLOW);
-
-      addTsuusyoKaigoSubtractionLack();
-    }
-    return tsuusyoKaigoSubtractionLack;
+    return close;
 
   }
 
@@ -878,10 +553,32 @@ public class QS001008Design extends QS001ServicePanel {
    */
   public QS001008Design() {
 
+    super(ACFrame.getInstance(), true);
+    this.getContentPane().setLayout(new VRLayout());
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
     try {
       initialize();
 
-      initAffair(null);
+      setSize(400, 450);
+
+      // ウィンドウを中央に配置
+      Point pos;
+      try{
+          pos= ACFrame.getInstance().getLocationOnScreen();
+      }catch(Exception ex){
+          pos = new Point(0,0);
+      }
+      Dimension screenSize = ACFrame.getInstance().getSize();
+      Dimension frameSize = this.getSize();
+      if (frameSize.height > screenSize.height) {
+          frameSize.height = screenSize.height;
+      }
+      if (frameSize.width > screenSize.width) {
+          frameSize.width = screenSize.width;
+      }
+      this.setLocation((int)(pos.getX()+(screenSize.width - frameSize.width) / 2),
+              (int)(pos.getY()+(screenSize.height - frameSize.height) / 2));
 
     }
     catch (Exception e) {
@@ -900,301 +597,180 @@ public class QS001008Design extends QS001ServicePanel {
    */
   protected void addThis(){
 
-    this.add(getTsuusyoKaigoPatterns(), VRLayout.WEST);
+    this.getContentPane().add(getContents(), VRLayout.CLIENT);
 
   }
 
   /**
-   * 通所介護パターン領域に内部項目を追加します。
+   * クライアント領域に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoPatterns(){
+  protected void addContents(){
 
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoTimeContena(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
+    contents.add(getTokubetsuGroup(), VRLayout.NORTH);
 
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoTimeContenaFacilityDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    contents.add(getDayDetailGroup(), VRLayout.CLIENT);
 
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoTimeDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    contents.add(getButtons(), VRLayout.SOUTH);
+  }
 
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoAdditionFunctionTrainingRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+  /**
+   * 特定診療費・特別療養費グループに内部項目を追加します。
+   */
+  protected void addTokubetsuGroup(){
 
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoAdditionFunctionBathRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    tokubetsuGroup.add(getServicePanel(), VRLayout.FLOW_RETURN);
 
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoMeetingAndSendingOffContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tsuusyoKaigoPatterns.add(getTsuusyoKaigoSubtractionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    tokubetsuGroup.add(getTokubetsuTable(), VRLayout.FLOW_RETURN);
 
   }
 
   /**
-   * 提供時間コンテナに内部項目を追加します。
+   * グループレイアウトに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeContena(){
-
-    tsuusyoKaigoTimeContena.add(getTsuusyoKaigoTimeBeginTimeContainer(), VRLayout.FLOW);
-
-    tsuusyoKaigoTimeContena.add(getTsuusyoKaigoTimeEndTimeContainer(), VRLayout.FLOW);
+  protected void addTokubetsuGroupLayout(){
 
   }
 
   /**
-   * 開始時刻コンボに内部項目を追加します。
+   * サービス種類領域に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeBeginTime(){
+  protected void addServicePanel(){
+
+    servicePanel.add(getProviderComboContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    servicePanel.add(getServiceComboContainer(), VRLayout.FLOW_INSETLINE);
 
   }
 
   /**
-   * 開始時刻コンボモデルに内部項目を追加します。
+   * サービス種類レイアウトに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeBeginTimeModel(){
+  protected void addServicePanelLayout(){
 
   }
 
   /**
-   * 終了時刻コンボに内部項目を追加します。
+   * 事業所コンボに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeEndTime(){
+  protected void addProviderCombo(){
 
   }
 
   /**
-   * 終了時刻コンボモデルに内部項目を追加します。
+   * 事業所コンボモデルに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeEndTimeModel(){
+  protected void addProviderComboModel(){
 
   }
 
   /**
-   * 施設区分に内部項目を追加します。
+   * サービス種類名コンボに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeContenaFacilityDivision(){
+  protected void addServiceCombo(){
 
   }
 
   /**
-   * 施設区分モデルに内部項目を追加します。
+   * サービス種類名コンボモデルに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeContenaFacilityDivisionModel(){
-
-    getTsuusyoKaigoSingle().setButtonIndex(1);
-    getTsuusyoKaigoTimeContenaFacilityDivisionModel().add(getTsuusyoKaigoSingle());
-
-    getTsuusyoKaigoDouble().setButtonIndex(2);
-    getTsuusyoKaigoTimeContenaFacilityDivisionModel().add(getTsuusyoKaigoDouble());
-
-    getTsuusyoKaigoDementiaSingle().setButtonIndex(3);
-    getTsuusyoKaigoTimeContenaFacilityDivisionModel().add(getTsuusyoKaigoDementiaSingle());
-
-    getTsuusyoKaigoDementiaDouble().setButtonIndex(4);
-    getTsuusyoKaigoTimeContenaFacilityDivisionModel().add(getTsuusyoKaigoDementiaDouble());
+  protected void addServiceComboModel(){
 
   }
 
   /**
-   * 単独型に内部項目を追加します。
+   * 特定診療費・特別療養費明細テーブルに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoSingle(){
+  protected void addTokubetsuTable(){
 
   }
 
   /**
-   * 併設型に内部項目を追加します。
+   * 特定診療費・特別療養費明細テーブルカラムモデルに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoDouble(){
+  protected void addTokubetsuTableColumnModel(){
+
+    getTokubetsuTableColumnModel().addColumn(getTokubetsuTableColumn1());
+
+    getTokubetsuTableColumnModel().addColumn(getTokubetsuTableColumn2());
+
+    getTokubetsuTableColumnModel().addColumn(getTokubetsuTableColumn3());
 
   }
 
   /**
-   * 痴呆専用単独型に内部項目を追加します。
+   * No.に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoDementiaSingle(){
+  protected void addTokubetsuTableColumn1(){
 
   }
 
   /**
-   * 痴呆専用併設型に内部項目を追加します。
+   * サービス名に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoDementiaDouble(){
+  protected void addTokubetsuTableColumn2(){
 
   }
 
   /**
-   * 時間区分に内部項目を追加します。
+   * 回数に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeDivision(){
+  protected void addTokubetsuTableColumn3(){
 
   }
 
   /**
-   * 時間区分モデルに内部項目を追加します。
+   * 詳細情報領域に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoTimeDivisionModel(){
+  protected void addDayDetailGroup(){
+
+    dayDetailGroup.add(getDayDetailTable(), VRLayout.CLIENT);
 
   }
 
   /**
-   * 機能訓練指導加算に内部項目を追加します。
+   * 詳細情報テーブルに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoAdditionFunctionTrainingRadio(){
+  protected void addDayDetailTable(){
 
   }
 
   /**
-   * 機能訓練指導加算モデルに内部項目を追加します。
+   * 詳細情報テーブルカラムモデルに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoAdditionFunctionTrainingRadioModel(){
+  protected void addDayDetailTableColumnModel(){
 
-    getTsuusyoKaigoAdditionFunctionTrainingRadioItem1().setButtonIndex(1);
-    getTsuusyoKaigoAdditionFunctionTrainingRadioModel().add(getTsuusyoKaigoAdditionFunctionTrainingRadioItem1());
+    getDayDetailTableColumnModel().addColumn(getDayDetailTableColumn1());
 
-    getTsuusyoKaigoAdditionFunctionTrainingRadioItem2().setButtonIndex(2);
-    getTsuusyoKaigoAdditionFunctionTrainingRadioModel().add(getTsuusyoKaigoAdditionFunctionTrainingRadioItem2());
+    getDayDetailTableColumnModel().addColumn(getDayDetailTableColumn2());
 
   }
 
   /**
-   * なしに内部項目を追加します。
+   * 設定日に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoAdditionFunctionTrainingRadioItem1(){
+  protected void addDayDetailTableColumn1(){
 
   }
 
   /**
-   * ありに内部項目を追加します。
+   * 回数に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoAdditionFunctionTrainingRadioItem2(){
+  protected void addDayDetailTableColumn2(){
 
   }
 
   /**
-   * 入浴加算に内部項目を追加します。
+   * ボタン領域に内部項目を追加します。
    */
-  protected void addTsuusyoKaigoAdditionFunctionBathRadio(){
+  protected void addButtons(){
 
+    buttons.add(getClose(), VRLayout.EAST);
   }
 
   /**
-   * 入浴加算モデルに内部項目を追加します。
+   * 閉じるに内部項目を追加します。
    */
-  protected void addTsuusyoKaigoAdditionFunctionBathRadioModel(){
-
-    getTsuusyoKaigoAdditionFunctionBathRadioItem1().setButtonIndex(1);
-    getTsuusyoKaigoAdditionFunctionBathRadioModel().add(getTsuusyoKaigoAdditionFunctionBathRadioItem1());
-
-    getTsuusyoKaigoAdditionFunctionBathRadioItem2().setButtonIndex(2);
-    getTsuusyoKaigoAdditionFunctionBathRadioModel().add(getTsuusyoKaigoAdditionFunctionBathRadioItem2());
-
-    getTsuusyoKaigoAdditionFunctionBathRadioItem3().setButtonIndex(3);
-    getTsuusyoKaigoAdditionFunctionBathRadioModel().add(getTsuusyoKaigoAdditionFunctionBathRadioItem3());
-
-  }
-
-  /**
-   * なしに内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoAdditionFunctionBathRadioItem1(){
-
-  }
-
-  /**
-   * 通常に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoAdditionFunctionBathRadioItem2(){
-
-  }
-
-  /**
-   * 特別入浴に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoAdditionFunctionBathRadioItem3(){
-
-  }
-
-  /**
-   * 送迎区分に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoMeetingAndSendingOff(){
-
-  }
-
-  /**
-   * 送迎区分モデルに内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoMeetingAndSendingOffModel(){
-
-    getTsuusyoKaigoMeetingAndSendingOffNone().setButtonIndex(1);
-    getTsuusyoKaigoMeetingAndSendingOffModel().add(getTsuusyoKaigoMeetingAndSendingOffNone());
-
-    getTsuusyoKaigoMeetingAndSendingOffOneWay().setButtonIndex(2);
-    getTsuusyoKaigoMeetingAndSendingOffModel().add(getTsuusyoKaigoMeetingAndSendingOffOneWay());
-
-    getTsuusyoKaigoMeetingAndSendingOffRoundTrip().setButtonIndex(3);
-    getTsuusyoKaigoMeetingAndSendingOffModel().add(getTsuusyoKaigoMeetingAndSendingOffRoundTrip());
-
-  }
-
-  /**
-   * 送迎なしに内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoMeetingAndSendingOffNone(){
-
-  }
-
-  /**
-   * 送迎片道に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoMeetingAndSendingOffOneWay(){
-
-  }
-
-  /**
-   * 送迎往復に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoMeetingAndSendingOffRoundTrip(){
-
-  }
-
-  /**
-   * 人員減算に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoSubtraction(){
-
-  }
-
-  /**
-   * 人員減算モデルに内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoSubtractionModel(){
-
-    getTsuusyoKaigoSubtractionNot().setButtonIndex(1);
-    getTsuusyoKaigoSubtractionModel().add(getTsuusyoKaigoSubtractionNot());
-
-    getTsuusyoKaigoSubtractionExcess().setButtonIndex(2);
-    getTsuusyoKaigoSubtractionModel().add(getTsuusyoKaigoSubtractionExcess());
-
-    getTsuusyoKaigoSubtractionLack().setButtonIndex(3);
-    getTsuusyoKaigoSubtractionModel().add(getTsuusyoKaigoSubtractionLack());
-
-  }
-
-  /**
-   * なしに内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoSubtractionNot(){
-
-  }
-
-  /**
-   * 定員超過に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoSubtractionExcess(){
-
-  }
-
-  /**
-   * 看護・介護職員の不足に内部項目を追加します。
-   */
-  protected void addTsuusyoKaigoSubtractionLack(){
+  protected void addClose(){
 
   }
 
@@ -1210,18 +786,30 @@ public class QS001008Design extends QS001ServicePanel {
     return true;
   }
   public Component getFirstFocusComponent() {
+
     return null;
+
   }
   public void initAffair(ACAffairInfo affair) throws Exception {
   }
 
+  public void setVisible(boolean visible){
+    if(visible){
+      try{
+        initAffair(null);
+      }catch(Throwable ex){
+        ACCommon.getInstance().showExceptionMessage(ex);
+      }
+    }
+    super.setVisible(visible);
+  }
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     try {
       ACFrame.setVRLookAndFeel();
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
-      ACFrame.getInstance().getContentPane().add(new QS001008Design());
-      ACFrame.getInstance().setVisible(true);
+      new QS001008Design().setVisible(true);
+      System.exit(0);
     } catch (Exception e) {
       e.printStackTrace();
     }

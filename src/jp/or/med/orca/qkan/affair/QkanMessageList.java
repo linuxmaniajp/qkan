@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2012/02/16  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2012/10/17  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  *
  *****************************************************************
@@ -4362,6 +4362,34 @@ public class QkanMessageList {
   public int QS001_ERROR_OF_TEKIYOU_INPUT_8() throws Exception{
 
     return ACMessageBox.show("摘要欄に値を設定する場合は、数字8桁を設定してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「利用者負担限度額の有効期間が切れています。＜改行＞新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、期間内の施設情報がなければ表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_SHISETSU() throws Exception{
+
+    return ACMessageBox.show("利用者負担限度額の有効期間が切れています。" + ACConstants.LINE_SEPARATOR + "新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「要介護度の有効期間が切れているか、登録されていません。＜改行＞有効期間外のサービスは集計できません。＜改行＞新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞利用者負担限度額の有効期間が切れています。＜改行＞新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、期間内の要介護度がない、かつ有効な施設情報がない場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_YOKAIGODO_AND_SHISETSU() throws Exception{
+
+    return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が切れています。" + ACConstants.LINE_SEPARATOR + "新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
 

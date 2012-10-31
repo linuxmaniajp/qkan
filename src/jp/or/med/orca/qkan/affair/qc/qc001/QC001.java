@@ -699,6 +699,10 @@ public class QC001 extends QC001Event {
         getPlanNoteEditDate().setText("");
         // 問題点・解決策コメント（planNoteEditComment）に""を設定する。
         getPlanNoteEditComment().setText("");
+        
+        //[ID:0000758][Shin Fujihara] 2012/09 edit begin 2012年度対応 評価項目の追加
+        getPlanAssessmentEditComment().setText("");
+        //[ID:0000758][Shin Fujihara] 2012/09 edit end 2012年度対応 評価項目の追加
 
     }
 
@@ -717,18 +721,25 @@ public class QC001 extends QC001Event {
             // 現在選択中のレコードを取得する
             VRMap selectMap = (VRMap) getPlanNoteData().getData(
                     getPlanNotes().getSelectedModelRow());
-
+            
+            //[ID:0000758][Shin Fujihara] 2012/09 edit begin 2012年度対応 評価項目の追加
             // 取得したレコードをセットする
-            getPlanNoteEditDates().setSource(selectMap);
-
+            //getPlanNoteEditDates().setSource(selectMap);
             // レコード中の PLAN_DATE と PLAN_COMMENT をテキストに表示する。
             // セットしたレコードを展開する
-            getPlanNoteEditDates().bindSource();
+            //getPlanNoteEditDates().bindSource();
+            
+            getPlanPanel().setSource(selectMap);
+            getPlanPanel().bindSource();
+            //[ID:0000758][Shin Fujihara] 2012/09 edit end 2012年度対応 評価項目の追加
 
         } else {
             // クリアする
             getPlanNoteEditDate().setText("");
             getPlanNoteEditComment().setText("");
+            //[ID:0000758][Shin Fujihara] 2012/09 add begin 2012年度対応 評価項目の追加
+            getPlanAssessmentEditComment().setText("");
+            //[ID:0000758][Shin Fujihara] 2012/09 add end 2012年度対応 評価項目の追加
         }
 
     }
@@ -967,8 +978,11 @@ public class QC001 extends QC001Event {
         // 取得件数が0件より多い場合
         // テーブルモデルを作成し設定する。
         ACTableModelAdapter planTableModel = new ACTableModelAdapter();
-
-        planTableModel.setColumns(new String[] { "NOTE_DATE", "NOTE_COMMENT" });
+        
+        //[ID:0000758][Shin Fujihara] 2012/09 edit begin 2012年度対応 評価項目の追加
+        //planTableModel.setColumns(new String[] { "NOTE_DATE", "NOTE_COMMENT" });
+        planTableModel.setColumns(new String[] { "NOTE_DATE", "NOTE_COMMENT", "NOTE_ASSESSMENT" });
+        //[ID:0000758][Shin Fujihara] 2012/09 edit end 2012年度対応 評価項目の追加
 
         if (getPlanNoteData().getDataSize() > 0) {
 

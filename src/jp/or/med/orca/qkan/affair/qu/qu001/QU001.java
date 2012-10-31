@@ -1459,22 +1459,88 @@ public class QU001 extends QU001Event {
 		Date targetDate = getTargetDate().getDate();
 		VRList list = QkanCommon.getPatientInsureInfoOnEndOfMonth(
 				getDBManager(), targetDate, patientId);
-
-		if ((list.size() == 0)
-				|| !(QkanCommon.isFullDecisionPatientInsureInfo(getDBManager(),
-						targetDate, patientId))) {
+		
+		//[ID:0000749][Shin Fujihara] 2012/09 edit begin 2012年度対応 施設情報有効期間切れのチェック
+//		if ((list.size() == 0)
+//				|| !(QkanCommon.isFullDecisionPatientInsureInfo(getDBManager(),
+//						targetDate, patientId))) {
+//			// 要介護度情報が取得できなかった場合
+//			// もしくは申請中の要介護情報が存在する場合
+//
+//			// 処理続行確認メッセージを表示する。※メッセージID = QU001_HAS_NO_YOKAIGODO
+//			if (QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO() == ACMessageBox.RESULT_CANCEL) {
+//				// キャンセル選択時(処理中断時)
+//
+//				// 処理を中断する。
+//				return false;
+//
+//			}
+//		}
+		
+		
+		int msgFlag = 0;
+		int msgResult = ACMessageBox.RESULT_OK;
+		
+		// 要介護度の有効期間切れチェック
+		if ((list.size() == 0) || !(QkanCommon.isFullDecisionPatientInsureInfo(getDBManager(), targetDate, patientId))) {
 			// 要介護度情報が取得できなかった場合
 			// もしくは申請中の要介護情報が存在する場合
-
-			// 処理続行確認メッセージを表示する。※メッセージID = QU001_HAS_NO_YOKAIGODO
-			if (QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO() == ACMessageBox.RESULT_CANCEL) {
-				// キャンセル選択時(処理中断時)
-
-				// 処理を中断する。
-				return false;
-
+			msgFlag += 1;
+		}
+		
+		// 施設情報の有効期間切れチェック
+		VRMap sqlParam = new VRHashMap();
+		VRBindPathParser.set("PATIENT_ID", sqlParam, ACCastUtilities.toString(patientId));
+		list = getDBManager().executeQuery(getSQL_GET_SHISETSU_HISTORY_ALL(sqlParam));
+		
+		if (list.size() > 0) {
+			
+			msgFlag += 2;
+			
+			for (int i = 0; i < list.size(); i++) {
+				VRMap row = (VRMap)list.get(i);
+				
+				Date validStart = ACCastUtilities.toDate(row.get("SHISETSU_VALID_START"), null);
+				Date validEnd = ACCastUtilities.toDate(row.get("SHISETSU_VALID_END"), null);
+				
+				if ((validStart == null) || (validEnd == null)) {
+					continue;
+				}
+				
+				int diff = ACDateUtilities.getDuplicateTermCheck(validStart, validEnd, targetDate, targetDate);
+				
+				//「重ならない」以外の結果であれば有効データあり
+				if (diff != ACDateUtilities.DUPLICATE_NONE) {
+					msgFlag -= 2;
+					break;
+				}
 			}
 		}
+		
+		
+		switch(msgFlag) {
+		case 0: //エラーなし
+			return true;
+			
+		case 1: //要介護度期間切れ
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO();
+			break;
+			
+		case 2: //施設情報期間切れ
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU();
+			break;
+			
+		case 3: //要介護度期間切れ、かつ施設情報期間切れ
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU();
+			break;
+		}
+		
+		//キャンセル押下時は、処理中断
+		if (msgResult == ACMessageBox.RESULT_CANCEL) {
+			return false;
+		}
+		
+		//[ID:0000749][Shin Fujihara] 2012/09 edit end 2012年度対応 施設情報有効期間切れのチェック
 
 		return true;
 

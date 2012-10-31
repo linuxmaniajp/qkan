@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 計画書情報入力
- * 作成日: 2011/12/19  日本コンピューター株式会社 計画書情報入力 新規作成
+ * 作成日: 2012/09/21  日本コンピューター株式会社 計画書情報入力 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
@@ -137,6 +137,8 @@ public class QC001SQL extends QC001State {
     sb.append(",NOTE_COMMENT");
 
     sb.append(",LAST_TIME");
+
+    sb.append(",NOTE_ASSESSMENT");
 
     sb.append(" FROM");
 
@@ -408,6 +410,8 @@ public class QC001SQL extends QC001State {
 
     sb.append(",LAST_TIME");
 
+    sb.append(",NOTE_ASSESSMENT");
+
     sb.append(")VALUES(");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
@@ -427,6 +431,10 @@ public class QC001SQL extends QC001State {
     sb.append(",");
 
     sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("NOTE_ASSESSMENT", sqlParam)));
 
     sb.append(")");
 

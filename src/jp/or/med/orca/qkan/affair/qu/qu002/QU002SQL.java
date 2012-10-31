@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者登録
- * 作成日: 2006/03/06  日本コンピューター株式会社 利用者登録 新規作成
+ * 作成日: 2012/09/25  日本コンピューター株式会社 利用者登録 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -28,13 +28,56 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu002;
-import java.util.Stack;
-
-import jp.nichicom.ac.text.ACSQLSafeDateFormat;
-import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
-import jp.nichicom.ac.text.ACSQLSafeStringFormat;
-import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.util.VRMap;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.text.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
 
 /**
  * 利用者登録SQL定義(QU002) 
@@ -56,8 +99,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_PATIENT_KAIGO(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -136,8 +179,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_PATIENT_CHANGES(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -194,8 +237,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_PATIENT_SHISETSU(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -224,6 +267,10 @@ public class QU002SQL extends QU002State {
 
     sb.append(",LAST_TIME");
 
+    sb.append(",SHISETSU_VALID_START");
+
+    sb.append(",SHISETSU_VALID_END");
+
     sb.append(" FROM");
 
     sb.append(" PATIENT_SHISETSU_HISTORY");
@@ -242,9 +289,9 @@ public class QU002SQL extends QU002State {
 
     sb.append(" ORDER BY");
 
-    sb.append(" SHISETSU_HISTORY_ID");
+    sb.append(" SHISETSU_VALID_START");
 
-    sb.append(" ASC");
+    sb.append(" DESC");
 
     return sb.toString();
   }
@@ -258,8 +305,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_INSERT_PATIENT(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -404,8 +451,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_UPDATE_PATIENT(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("UPDATE");
@@ -564,8 +611,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_INSERT_CHANGES_HISTORY(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -642,8 +689,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_INSERT_NINTEI_HISTORY(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -786,8 +833,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_INSERT_SHISETSU_HISTORY(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("INSERT INTO");
@@ -819,6 +866,10 @@ public class QU002SQL extends QU002State {
     sb.append(",DISEASE");
 
     sb.append(",LAST_TIME");
+
+    sb.append(",SHISETSU_VALID_START");
+
+    sb.append(",SHISETSU_VALID_END");
 
     sb.append(")VALUES(");
 
@@ -868,6 +919,14 @@ public class QU002SQL extends QU002State {
 
     sb.append(" CURRENT_TIMESTAMP");
 
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SHISETSU_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SHISETSU_VALID_END", sqlParam), "yyyy-MM-dd"));
+
     sb.append(")");
 
     return sb.toString();
@@ -882,8 +941,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_DELETE_CHANGES_HISTORY(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("DELETE FROM");
@@ -914,8 +973,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_DELETE_NINTEI_HISTORY(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("DELETE FROM");
@@ -946,8 +1005,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_DELETE_SHISETSU_HISTORY(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("DELETE FROM");
@@ -978,8 +1037,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_PATIENT_RESERVED_SERVICE(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1018,7 +1077,7 @@ public class QU002SQL extends QU002State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -1043,7 +1102,7 @@ public class QU002SQL extends QU002State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -1064,7 +1123,7 @@ public class QU002SQL extends QU002State {
         firstCondition = false;
 
       }else{
-        sb.append("AND");
+        sb.append(" AND");
 
       }
 
@@ -1092,8 +1151,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_OFFICIAL_LIMIT_RATE(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1254,8 +1313,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_INSURER_LIMIT_RATE(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");
@@ -1416,8 +1475,8 @@ public class QU002SQL extends QU002State {
   public String getSQL_GET_NEW_PATIENT_ID(VRMap sqlParam) throws Exception{
     StringBuilder sb = new StringBuilder();
     Object[] inValues;
-    Stack conditionStack = new Stack();
-    boolean firstCondition = true;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
     Object obj;
 
     sb.append("SELECT");

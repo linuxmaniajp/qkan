@@ -17,19 +17,19 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 堤 瑞樹
- * 作成日: 2006/01/13  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2012/08/08  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 予定管理 (S)
- * プロセス サービスパターン通所介護 (001)
- * プログラム サービスパターン通所介護 (QS001008)
+ * サブシステム サービス予定 (S)
+ * プロセス カレンダー (001)
+ * プログラム 特定診療費・特別療養費集計 (QS001008)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 /**
- * サービスパターン通所介護状態定義(QS001008) 
+ * 特定診療費・特別療養費集計状態定義(QS001008) 
  */
 public class QS001008State extends QS001008Design {
   /**
@@ -39,82 +39,46 @@ public class QS001008State extends QS001008Design {
   }
 
   /**
-   * 「機能訓練・有効」の状態に設定します。
+   * 「ダイアログ無効」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_VALID_FUNCTION_TRAINING() throws Exception {
+  public void setState_ENABLE_DIALOG_FALSE() throws Exception {
 
-        getTsuusyoKaigoAdditionFunctionTrainingRadio().setEnabled(true);
+        getTokubetsuGroup().setEnabled(false);
+
+        getDayDetailGroup().setEnabled(false);
+
+        getTokubetsuTable().setEnabled(false);
+
+        getDayDetailTable().setEnabled(false);
+
+        getProviderCombo().setEnabled(false);
+        getProviderCombo().getParent().setEnabled(false);
+
+        getServiceCombo().setEnabled(false);
+        getServiceCombo().getParent().setEnabled(false);
 
   }
 
   /**
-   * 「機能訓練・無効」の状態に設定します。
+   * 「ダイアログ有効」の状態に設定します。
    * @throws Exception 処理例外
    */
-  protected void setState_INVALID_FUNCTION_TRAINING() throws Exception {
+  public void setState_ENABLE_DIALOG_TRUE() throws Exception {
 
-        getTsuusyoKaigoAdditionFunctionTrainingRadio().setEnabled(false);
+        getTokubetsuGroup().setEnabled(true);
 
-  }
+        getDayDetailGroup().setEnabled(true);
 
-  /**
-   * 「送迎加算・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_VALID_MEETING_AND_SENDING_OFF() throws Exception {
+        getTokubetsuTable().setEnabled(true);
 
-        getTsuusyoKaigoMeetingAndSendingOff().setEnabled(true);
+        getDayDetailTable().setEnabled(true);
 
-  }
+        getProviderCombo().setEnabled(true);
+        getProviderCombo().getParent().setEnabled(true);
 
-  /**
-   * 「送迎加算・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_INVALID_MEETING_AND_SENDING_OFF() throws Exception {
-
-        getTsuusyoKaigoMeetingAndSendingOff().setEnabled(false);
-
-  }
-
-  /**
-   * 「入浴加算・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_VALID_ADD_BATH() throws Exception {
-
-        getTsuusyoKaigoAdditionFunctionBathRadioItem2().setEnabled(true);
-
-  }
-
-  /**
-   * 「入浴加算・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_INVALID_ADD_BATH() throws Exception {
-
-        getTsuusyoKaigoAdditionFunctionBathRadioItem2().setEnabled(false);
-
-  }
-
-  /**
-   * 「特別入浴加算・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_VALID_ADD_SPECIAL_BATH() throws Exception {
-
-        getTsuusyoKaigoAdditionFunctionBathRadioItem3().setEnabled(true);
-
-  }
-
-  /**
-   * 「特別入浴加算・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  protected void setState_INVALID_ADD_SPECIAL_BATH() throws Exception {
-
-        getTsuusyoKaigoAdditionFunctionBathRadioItem3().setEnabled(false);
+        getServiceCombo().setEnabled(true);
+        getServiceCombo().getParent().setEnabled(true);
 
   }
 

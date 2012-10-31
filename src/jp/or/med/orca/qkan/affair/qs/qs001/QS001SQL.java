@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: サービス予定
- * 作成日: 2012/04/10  日本コンピューター株式会社 サービス予定 新規作成
+ * 作成日: 2012/10/05  日本コンピューター株式会社 サービス予定 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -599,6 +599,30 @@ public class QS001SQL extends QS001State {
     sb.append(" =");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_SHISETSU_HISTORY.SHISETSU_VALID_START");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_SHISETSU_HISTORY.SHISETSU_VALID_END");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
 
     sb.append(")");
 

@@ -45,6 +45,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrecomputed;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSchedulePrintManager;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
@@ -678,5 +679,35 @@ public class QS001002 extends QS001002Event {
     public void setServicePlanUnits(VRMap services) throws Exception {
         setPlanUnits(services);
     }
+
+	@Override
+	protected void tokubetuButtonActionPerformed(ActionEvent e)
+			throws Exception {
+		// TODO 自動生成されたメソッド・スタブ
+
+        int useType=0;
+        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
+        // サービス予定の場合
+        // 取得対象を月間予定(SERVICE_DETAIL_GET_PLAN)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_PLAN;
+        }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
+        // サービス実績の場合
+            //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
+        }        
+        VRList list = getSchedule(useType, false);
+		VRMap regulationMap = new VRHashMap();
+		VRMap diagnosisMap = new VRHashMap();
+		
+        QS001008 form = new QS001008();
+        
+        // 解析処理
+        CareServicePrecomputed mng = new CareServicePrecomputed();
+        mng.setPrecomputedResult(getDBManager(), list, regulationMap, diagnosisMap);
+        
+        // 計画単位数表示画面を「決定」ボタンで閉じた場合
+        form.showModal(mng.getDiagnosisDateMap(), getCalcurater().getTargetDate());
+		
+	}
 
 }

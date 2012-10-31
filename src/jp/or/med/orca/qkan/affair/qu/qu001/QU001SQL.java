@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者一覧
- * 作成日: 2011/12/15  日本コンピューター株式会社 利用者一覧 新規作成
+ * 作成日: 2012/10/17  日本コンピューター株式会社 利用者一覧 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -995,6 +995,44 @@ public class QU001SQL extends QU001State {
     sb.append(" FROM");
 
     sb.append(" PATIENT_NINTEI_HISTORY");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「施設情報の全履歴を取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_SHISETSU_HISTORY_ALL(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT_SHISETSU_HISTORY.SHISETSU_VALID_START");
+
+    sb.append(",PATIENT_SHISETSU_HISTORY.SHISETSU_VALID_END");
+
+    sb.append(" FROM");
+
+    sb.append(" PATIENT_SHISETSU_HISTORY");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_SHISETSU_HISTORY.PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
 
     return sb.toString();
   }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2011/12/19  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2012/08/03  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -28,10 +28,59 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qu.qu002;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
 /**
  * 利用者登録状態定義(QU002) 
  */
-@SuppressWarnings("serial")
 public class QU002State extends QU002Design {
   /**
    * コンストラクタです。
@@ -250,41 +299,41 @@ public class QU002State extends QU002Design {
    */
   public void setState_ENABLE_TOKUTEI_NYUSHO_FALSE() throws Exception {
 
-        getInstitutionInfoDinnerBearLimitMoneyText().setEnabled(false);
+        getShisetsuInfoDinnerBearLimitMoneyText().setEnabled(false);
 
-        getInstitutionInfoUnitRoomLimitMoneyText().setEnabled(false);
+        getShisetsuInfoUnitRoomLimitMoneyText().setEnabled(false);
 
-        getInstitutionInfoUnitSemiRoomLimitMoneyText().setEnabled(false);
+        getShisetsuInfoUnitSemiRoomLimitMoneyText().setEnabled(false);
 
-        getInstitutionInfoNormalRoomLimitMoneyText().setEnabled(false);
+        getShisetsuInfoNormalRoomLimitMoneyText().setEnabled(false);
 
-        getInstitutionInfoNormalRoomLimitMoneyText2().setEnabled(false);
+        getShisetsuInfoNormalRoomLimitMoneyText2().setEnabled(false);
 
-        getInstitutionInfoTasyoRoomLimitMoneyText().setEnabled(false);
+        getShisetsuInfoTasyoRoomLimitMoneyText().setEnabled(false);
 
-        getInstitutionInfoDinnerBearLimitMoneyContena().setEnabled(false);
+        getShisetsuInfoDinnerBearLimitMoneyContena().setEnabled(false);
 
-        getInstitutionInfoDinnerBearLimitMoneyLabel().setEnabled(false);
+        getShisetsuInfoDinnerBearLimitMoneyLabel().setEnabled(false);
 
-        getInstitutionInfoUnitRoomLimitMoneyContena().setEnabled(false);
+        getShisetsuInfoUnitRoomLimitMoneyContena().setEnabled(false);
 
-        getInstitutionInfoUnitRoomLimitMoneyLabel().setEnabled(false);
+        getShisetsuInfoUnitRoomLimitMoneyLabel().setEnabled(false);
 
-        getInstitutionInfoUnitSemiRoomLimitMoneyContena().setEnabled(false);
+        getShisetsuInfoUnitSemiRoomLimitMoneyContena().setEnabled(false);
 
-        getInstitutionInfoUnitSemiRoomLimitMoneyLabel().setEnabled(false);
+        getShisetsuInfoUnitSemiRoomLimitMoneyLabel().setEnabled(false);
 
-        getInstitutionInfoNormalRoomLimitMoneyContena().setEnabled(false);
+        getShisetsuInfoNormalRoomLimitMoneyContena().setEnabled(false);
 
-        getInstitutionInfoNormalRoomLimitMoneyLabel().setEnabled(false);
+        getShisetsuInfoNormalRoomLimitMoneyLabel().setEnabled(false);
 
-        getInstitutionInfoNormalRoomLimitMoneyContena2().setEnabled(false);
+        getShisetsuInfoNormalRoomLimitMoneyContena2().setEnabled(false);
 
-        getInstitutionInfoNormalRoomLimitMoneyLabel2().setEnabled(false);
+        getShisetsuInfoNormalRoomLimitMoneyLabel2().setEnabled(false);
 
-        getInstitutionInfoTasyoRoomLimitMoneyContena().setEnabled(false);
+        getShisetsuInfoTasyoRoomLimitMoneyContena().setEnabled(false);
 
-        getInstitutionInfoTasyoRoomLimitMoneyLabel().setEnabled(false);
+        getShisetsuInfoTasyoRoomLimitMoneyLabel().setEnabled(false);
 
   }
 
@@ -294,41 +343,65 @@ public class QU002State extends QU002Design {
    */
   public void setState_ENABLE_TOKUTEI_NYUSHO_TRUE() throws Exception {
 
-        getInstitutionInfoDinnerBearLimitMoneyText().setEnabled(true);
+        getShisetsuInfoDinnerBearLimitMoneyText().setEnabled(true);
 
-        getInstitutionInfoUnitRoomLimitMoneyText().setEnabled(true);
+        getShisetsuInfoUnitRoomLimitMoneyText().setEnabled(true);
 
-        getInstitutionInfoUnitSemiRoomLimitMoneyText().setEnabled(true);
+        getShisetsuInfoUnitSemiRoomLimitMoneyText().setEnabled(true);
 
-        getInstitutionInfoNormalRoomLimitMoneyText().setEnabled(true);
+        getShisetsuInfoNormalRoomLimitMoneyText().setEnabled(true);
 
-        getInstitutionInfoNormalRoomLimitMoneyText2().setEnabled(true);
+        getShisetsuInfoNormalRoomLimitMoneyText2().setEnabled(true);
 
-        getInstitutionInfoTasyoRoomLimitMoneyText().setEnabled(true);
+        getShisetsuInfoTasyoRoomLimitMoneyText().setEnabled(true);
 
-        getInstitutionInfoDinnerBearLimitMoneyContena().setEnabled(true);
+        getShisetsuInfoDinnerBearLimitMoneyContena().setEnabled(true);
 
-        getInstitutionInfoDinnerBearLimitMoneyLabel().setEnabled(true);
+        getShisetsuInfoDinnerBearLimitMoneyLabel().setEnabled(true);
 
-        getInstitutionInfoUnitRoomLimitMoneyContena().setEnabled(true);
+        getShisetsuInfoUnitRoomLimitMoneyContena().setEnabled(true);
 
-        getInstitutionInfoUnitRoomLimitMoneyLabel().setEnabled(true);
+        getShisetsuInfoUnitRoomLimitMoneyLabel().setEnabled(true);
 
-        getInstitutionInfoUnitSemiRoomLimitMoneyContena().setEnabled(true);
+        getShisetsuInfoUnitSemiRoomLimitMoneyContena().setEnabled(true);
 
-        getInstitutionInfoUnitSemiRoomLimitMoneyLabel().setEnabled(true);
+        getShisetsuInfoUnitSemiRoomLimitMoneyLabel().setEnabled(true);
 
-        getInstitutionInfoNormalRoomLimitMoneyContena().setEnabled(true);
+        getShisetsuInfoNormalRoomLimitMoneyContena().setEnabled(true);
 
-        getInstitutionInfoNormalRoomLimitMoneyLabel().setEnabled(true);
+        getShisetsuInfoNormalRoomLimitMoneyLabel().setEnabled(true);
 
-        getInstitutionInfoNormalRoomLimitMoneyContena2().setEnabled(true);
+        getShisetsuInfoNormalRoomLimitMoneyContena2().setEnabled(true);
 
-        getInstitutionInfoNormalRoomLimitMoneyLabel2().setEnabled(true);
+        getShisetsuInfoNormalRoomLimitMoneyLabel2().setEnabled(true);
 
-        getInstitutionInfoTasyoRoomLimitMoneyContena().setEnabled(true);
+        getShisetsuInfoTasyoRoomLimitMoneyContena().setEnabled(true);
 
-        getInstitutionInfoTasyoRoomLimitMoneyLabel().setEnabled(true);
+        getShisetsuInfoTasyoRoomLimitMoneyLabel().setEnabled(true);
+
+  }
+
+  /**
+   * 「施設情報編集不可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_ENABLE_SHISETSU_BUTTON_FALSE() throws Exception {
+
+        getShisetsuInfoButtonEdit().setEnabled(false);
+
+        getShisetsuInfoButtonDelete().setEnabled(false);
+
+  }
+
+  /**
+   * 「施設情報編集可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_ENABLE_SHISETSU_BUTTON_TRUE() throws Exception {
+
+        getShisetsuInfoButtonEdit().setEnabled(true);
+
+        getShisetsuInfoButtonDelete().setEnabled(true);
 
   }
 

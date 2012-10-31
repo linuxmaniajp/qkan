@@ -48,6 +48,10 @@ import jp.nichicom.vr.util.VRMap;
 
 /**
  * 訪問看護計画書(QC00101) 帳票定義体ファイル名 ： QC00101.xml
+ * 
+ * [ID:0000758][Shin Fujihara] 2012/09 edit 2012年度対応 評価項目の追加
+ * 大幅に修正したため、履歴コメントは残していません。
+ * CVSの履歴を参照してください。
  */
 public class QC001P01 extends QC001P01Event {
     /**
@@ -458,51 +462,32 @@ public class QC001P01 extends QC001P01Event {
         // ・
 
         // 渡りパラメータprintParamのKEY:CREATE_DATEのVALUEを取得する。
-        VRList chotaList = null;
-        chotaList = new VRArrayList();
-
-        int k = 2;
-        chotaList = printList;
-
-        // ページ単位のデータから1クラス取り出す
-        for (int j = 0; j < chotaList.size(); j++) {
-
+        for (int i = 0; i < printList.size(); i++) {
+        	
+        	String rowHeader = "note.note" + (i + 2) + ".";
+        	
             // クラスから取り出したデータを格納する。
-            PrintData prinData = (PrintData) chotaList.getData(j);
-
+        	PrintDataRow prinData = (PrintDataRow) printList.getData(i);
             // 日付を取得する
             Date noteDate = prinData.getNoteDate();
-
-            // 表示用日付格納用変数
-            String formatNoteDate = "";
-
-            // 日付がnullでないかチェックする
-            if (null != noteDate) {
+            
+            // 日付がnullでない場合は、印字する
+            if (noteDate != null) {
                 VRDateFormat vf = new VRDateFormat("ggge年MM月dd日");
-
-                formatNoteDate = vf.format(noteDate);
+                ACChotarouXMLUtilities.setValue(writer, rowHeader + "ymd", vf.format(noteDate));
             }
-
-            // 複数行のコメントを取得する
-            List recordList = prinData.getNoteComment();
-
-            // リスト状のコメントを取得する
-            // List commentList = (List)recordList.get(0);
-
-            // 日付印字
-            ACChotarouXMLUtilities.setValue(writer, "note.note" + k + ".ymd",
-                    formatNoteDate);
-
-            for (int i = 0; i < recordList.size(); i++) {
-                // 行数分印字
-                ACChotarouXMLUtilities.setValue(writer, "note.note" + k
-                        + ".comment", recordList.get(i));
-
-                // 帳票太郎の印刷行数のカウントを＋１
-                k++;
+            
+            // 問題点・解決策がnullでなければ印字する
+            if (prinData.getNoteComment() != null) {
+            	ACChotarouXMLUtilities.setValue(writer, rowHeader + "comment", prinData.getNoteComment());
             }
-
+        	
+            // 評価がnullでなければ印字する
+            if (prinData.getNoteAssessment() != null) {
+            	ACChotarouXMLUtilities.setValue(writer, rowHeader + "assessment", prinData.getNoteAssessment());
+            }
         }
+        
 
         // 取得した値を和暦に変換する。
 
@@ -546,200 +531,100 @@ public class QC001P01 extends QC001P01Event {
         // }
 
     }
-
+    
+    @SuppressWarnings("unchecked")
     private VRList calcPagePrint(VRList list) throws Exception {
+    	
+    	// 戻り値を格納する
+    	VRList result = new VRArrayList();
+    	// 1ページ分のコメントデータ
+    	VRList pageList = new VRArrayList();
+    	
+    	// 初期ページを設定
+    	result.add(pageList);
+    	
+    	//listが設定されていない場合は処理終了
+    	if (list == null) {
+    		return result;
+    	}
+    	
+    	//一旦、改ページを加味しないリストを作成
+    	for (int i = 0; i < list.size(); i++) {
+    		VRMap map = (VRMap) list.getData(i);
+    		
+    		pageList = splitComments(result, pageList, map);
+    	}
+    	
+    	return result;
 
-        // 戻り値を格納する
-        VRList result = new VRArrayList();
-        // 1ページ分
-        VRList pageList = new VRArrayList();
-        // 1レコードを表すクラス
-        PrintData pdClass = new PrintData();
-        // 日付を格納する変数
-        Date noteDate = new Date();
-        // コメントを格納する変数
-        String comment = new String();
-        // 行数ごとに分割した文字列を保存する配列
-        String[] slComment = null;
-        // 1枚目かどうかを判別するフラグ
-        boolean gyouCheckFlag = true;
-        // 合計行数を記録する変数
-        int currentCount = 0;
-        // 11行であるか判別する 11行であった場合はtrue
-        boolean countOver11 = false;
-        // 最終ページの行数が11行調度であるか判別する 11行であった場合はtrue
-        boolean lastPageGyou = false;
-
-        if (list != null) {
-
-            for (int i = 0; i < list.size(); i++) {
-                // 1レコード分データを取得する
-                VRMap record = (VRMap) list.getData(i);
-                // 問題点・解決策のデータを取得する
-                comment = String.valueOf(VRBindPathParser.get("NOTE_COMMENT",
-                        record));
-                // 問題点・解決策の日付を取得する
-                noteDate = (Date) VRBindPathParser.get("NOTE_DATE", record);
-                // 改行、規定文字数で区切った配列を取得する。
-                slComment = ACTextUtilities.separateLineWrapOnByte(comment, 86);
-
-                List sList = Arrays.asList(slComment);
-
-                // コメントの行数
-                int len = sList.size();
-                // 最終追加時判断用
-                // 初期化
-                countOver11 = false;
-                // 自分自身が11行以上の場合
-                if (len >= 11) {
-                    // 1枚目以外であった場合
-                    if (!gyouCheckFlag) {
-                        // 11行であった場合
-                        if (!lastPageGyou) {
-                            result.add(pageList);
-                        }
-                    }
-
-                    lastPageGyou = false;
-
-                    int end = len / 11;
-                    int lastCount = 0;
-                    currentCount = 0;
-
-                    // クラスに追加
-                    pdClass.setNoteDate(noteDate);
-
-                    // 11行単位で分割
-                    for (int j = 0; j < end; j += 1) {
-                        // 新規頁生成
-                        pageList = new VRArrayList();
-                        // 新たに追加する行数を保持
-                        lastCount += 11;
-                        // クラスに追加
-                        pdClass
-                                .setNoteComment(sList
-                                        .subList(j * 11, lastCount));
-                        // 新規頁Arrayに追加
-                        pageList.add(pdClass);
-                        // 11件追加
-                        result.add(pageList);
-                        // 新規頁生成
-                        pageList = new VRArrayList();
-                        // クラス初期化
-                        pdClass = new PrintData();
-
-                    }
-                    if (len % 11 != 0) {
-                        // 11行追加した後の処理
-                        // 残り行数を追加
-                        pdClass.setNoteComment(sList.subList(lastCount, len));
-                        // クラスに追加 (1ページ分のデータは保持する）
-                        pageList.add(pdClass);
-                        // 追加した行数を保持(全件数-件数)
-                        currentCount = len - lastCount;
-                        // クラス初期化
-                        pdClass = new PrintData();
-                        lastCount = 0;
-
-                    } else {
-                        // 合計が11行になった場合
-                        countOver11 = true;
-                        lastPageGyou = true;
-
-                    }
-                    // 自分自身が11行以内の場合
-                } else {
-
-                    // 追加行数が11行以内であれば追加
-                    if (currentCount + len < 11) {
-                        pdClass = new PrintData();
-                        // クラスに追加
-                        pdClass.setNoteComment(sList);
-                        pdClass.setNoteDate(noteDate);
-                        // 1ページ分のデータに追加
-                        pageList.add(pdClass);
-                        // クラス初期化
-                        pdClass = new PrintData();
-                        // 件数を保持
-                        currentCount += len;
-                        // 11行以外
-                        lastPageGyou = false;
-
-                    } else if (currentCount + len == 11) {
-                        // クラス追加
-                        pdClass.setNoteComment(sList.subList(0, len));
-                        pdClass.setNoteDate(noteDate);
-                        // 1ページ分追加
-                        pageList.add(pdClass);
-                        // 11行追加
-                        result.add(pageList);
-                        // 新規頁生成
-                        pageList = new VRArrayList();
-                        pdClass = new PrintData();
-                        // 初期化
-                        currentCount = 0;
-                        // 11行以上を保持
-                        // 最終追加時に使用
-                        countOver11 = true;
-                        lastPageGyou = true;
-
-                        // 追加行数が11行以上の場合は、11行になるよう追加
-                    } else {
-                        // int check = currentCount;
-                        // クラスの追加
-                        pdClass.setNoteComment(sList.subList(0,
-                                11 - currentCount));
-                        pdClass.setNoteDate(noteDate);
-
-                        pageList.add(pdClass);
-                        // 11行追加
-                        result.add(pageList);
-                        // 新規頁生成
-                        pageList = new VRArrayList();
-                        pdClass = new PrintData();
-                        // 追加行数の算出
-                        int addLen = 11 - currentCount;
-                        // 残りの行数を追加
-                        pdClass.setNoteComment(sList.subList(addLen, len));
-                        // ページに追加
-                        pageList.add(pdClass);
-                        // クラス初期化
-                        pdClass = new PrintData();
-                        // 追加行数
-                        int nokori = len - addLen;
-                        currentCount = nokori;
-
-                    }
-                    // 追加した行数が11行であった場合は追加させない
-                    if (!lastPageGyou) {
-                        gyouCheckFlag = false;
-                    }
-                }
-                // 追加した行数が11行であった場合は追加させない
-                if (!lastPageGyou) {
-                    gyouCheckFlag = false;
-                }
-
-            }
-
-            // 最終ページ追加
-            // 追加行数が11行である場合は追加しない
-            if (!countOver11) {
-                // 初期化
-                countOver11 = false;
-                // 戻り値として追加
-                result.add(pageList);
-            }
-        }
-        return result;
+    }
+    
+    private VRList splitComments(VRList result, VRList pageList, VRMap map) throws Exception {
+    	
+    	PrintDataRow row = new PrintDataRow();
+    	
+		//問題点・解決策の日付を取得する
+		row.setNoteDate((Date) VRBindPathParser.get("NOTE_DATE", map));
+		pageList = addPageList(result, pageList, row);
+		
+		String[] comments = new String[]{};
+		String[] assessments = new String[]{};
+		
+		if (VRBindPathParser.get("NOTE_COMMENT",map) != null) {
+			String comment = String.valueOf(VRBindPathParser.get("NOTE_COMMENT",map));
+			comments = ACTextUtilities.separateLineWrapOnByte(comment, 68);
+		}
+		if (VRBindPathParser.get("NOTE_ASSESSMENT",map) != null) {
+			String assessment = String.valueOf(VRBindPathParser.get("NOTE_ASSESSMENT",map));
+			assessments = ACTextUtilities.separateLineWrapOnByte(assessment, 20);
+		}
+		
+		int commentCount = comments.length;
+		int assessmentCount = assessments.length;
+		
+		int maxLength = Math.max(commentCount, assessmentCount);
+		
+		for (int i = 0; i < maxLength; i++) {
+			
+			if (i != 0) {
+				row = new PrintDataRow();
+				pageList = addPageList(result, pageList, row);
+			}
+			
+			if (i < commentCount) {
+				row.setNoteComment(comments[i]);
+			}
+			
+			if (i < assessmentCount) {
+				row.setNoteAssessment(assessments[i]);
+			}
+		}
+		
+		return pageList;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private VRList addPageList(VRList result, VRList pageList, PrintDataRow row) {
+    	
+    	// 1ページ11行とし、ページ単位のリストに分割
+		if (11 <= pageList.size()) {
+			pageList = new VRArrayList();
+			result.add(pageList);
+		}
+    	
+    	pageList.add(row);
+    	
+    	return pageList;
     }
 
-    protected class PrintData {
+    protected class PrintDataRow {
 
-        // コメントの日付
-        private Date noteDate;
-        // 複数行の文字列
-        private List noteComment;
+        // 評価の日付
+        private Date noteDate = null;
+        // 問題点・解決策の一行分
+        private String noteComment = null;
+        // 評価の一行分
+        private String noteAssessment = null;
 
         Date getNoteDate() {
             return noteDate;
@@ -749,14 +634,22 @@ public class QC001P01 extends QC001P01Event {
             this.noteDate = noteDate;
         }
 
-        List getNoteComment() {
+        String getNoteComment() {
             return noteComment;
         }
 
-        void setNoteComment(List noteComment) {
+        void setNoteComment(String noteComment) {
             this.noteComment = noteComment;
         }
-
+        
+        String getNoteAssessment() {
+        	return noteAssessment;
+        }
+        
+        void setNoteAssessment(String noteAssessment) {
+        	this.noteAssessment = noteAssessment;
+        }
+        
     }
 
 }
