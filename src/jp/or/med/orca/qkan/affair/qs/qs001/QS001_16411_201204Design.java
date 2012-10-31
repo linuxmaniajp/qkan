@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/10  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2012/08/09  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -28,21 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.Component;
-
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTimeComboBox;
-import jp.nichicom.ac.component.ACValueArrayRadioButtonGroup;
-import jp.nichicom.ac.container.ACBackLabelContainer;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * サービスパターン介護予防訪問リハビリテーション画面項目デザイン(QS001_16411_201204) 
  */
@@ -110,6 +146,16 @@ public class QS001_16411_201204Design extends QS001ServicePanel {
   private ACRadioButtonItem providerAddMountainousAreaItem1;
 
   private ACRadioButtonItem providerAddMountainousAreaItem2;
+
+  private ACValueArrayRadioButtonGroup calculationDivision;
+
+  private ACLabelContainer calculationDivisionContainer;
+
+  private ACListModelAdapter calculationDivisionModel;
+
+  private ACRadioButtonItem calculationDivisionNormal;
+
+  private ACRadioButtonItem calculationDivisionAddOnly;
 
   private ACBackLabelContainer houmonRehabilitationTimeContena;
 
@@ -707,6 +753,99 @@ public class QS001_16411_201204Design extends QS001ServicePanel {
   }
 
   /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACValueArrayRadioButtonGroup getCalculationDivision(){
+    if(calculationDivision==null){
+
+      calculationDivision = new ACValueArrayRadioButtonGroup();
+
+      getCalculationDivisionContainer().setText("算定区分");
+
+      calculationDivision.setBindPath("9");
+
+      calculationDivision.setUseClearButton(false);
+
+      calculationDivision.setModel(getCalculationDivisionModel());
+
+      calculationDivision.setValues(new int[]{1,2});
+
+      addCalculationDivision();
+    }
+    return calculationDivision;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getCalculationDivisionContainer(){
+    if(calculationDivisionContainer==null){
+      calculationDivisionContainer = new ACLabelContainer();
+      calculationDivisionContainer.setFollowChildEnabled(true);
+      calculationDivisionContainer.setVAlignment(VRLayout.CENTER);
+      calculationDivisionContainer.add(getCalculationDivision(), null);
+    }
+    return calculationDivisionContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getCalculationDivisionModel(){
+    if(calculationDivisionModel==null){
+      calculationDivisionModel = new ACListModelAdapter();
+      addCalculationDivisionModel();
+    }
+    return calculationDivisionModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getCalculationDivisionNormal(){
+    if(calculationDivisionNormal==null){
+
+      calculationDivisionNormal = new ACRadioButtonItem();
+
+      calculationDivisionNormal.setText("通常");
+
+      calculationDivisionNormal.setGroup(getCalculationDivision());
+
+      calculationDivisionNormal.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionNormal();
+    }
+    return calculationDivisionNormal;
+
+  }
+
+  /**
+   * 加算のみを取得します。
+   * @return 加算のみ
+   */
+  public ACRadioButtonItem getCalculationDivisionAddOnly(){
+    if(calculationDivisionAddOnly==null){
+
+      calculationDivisionAddOnly = new ACRadioButtonItem();
+
+      calculationDivisionAddOnly.setText("加算のみ");
+
+      calculationDivisionAddOnly.setGroup(getCalculationDivision());
+
+      calculationDivisionAddOnly.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionAddOnly();
+    }
+    return calculationDivisionAddOnly;
+
+  }
+
+  /**
    * 提供時間コンテナを取得します。
    * @return 提供時間コンテナ
    */
@@ -870,6 +1009,8 @@ public class QS001_16411_201204Design extends QS001ServicePanel {
     houmonRehabilitationPatterns.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     houmonRehabilitationPatterns.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    houmonRehabilitationPatterns.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     houmonRehabilitationPatterns.add(getHoumonRehabilitationTimeContena(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
 
@@ -1088,6 +1229,42 @@ public class QS001_16411_201204Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addProviderAddMountainousAreaItem2(){
+
+  }
+
+  /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addCalculationDivision(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addCalculationDivisionModel(){
+
+    getCalculationDivisionNormal().setButtonIndex(1);
+
+    getCalculationDivisionModel().add(getCalculationDivisionNormal());
+
+    getCalculationDivisionAddOnly().setButtonIndex(2);
+
+    getCalculationDivisionModel().add(getCalculationDivisionAddOnly());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addCalculationDivisionNormal(){
+
+  }
+
+  /**
+   * 加算のみに内部項目を追加します。
+   */
+  protected void addCalculationDivisionAddOnly(){
 
   }
 
