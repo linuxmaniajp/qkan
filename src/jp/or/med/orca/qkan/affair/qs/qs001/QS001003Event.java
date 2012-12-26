@@ -17,36 +17,73 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 堤 瑞樹
- * 作成日: 2006/05/07  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2012/11/30  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定・実績 (001)
- * プログラム 利用・提供票印刷 (QS001031)
+ * プログラム 利用・提供票印刷 (QS001003)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Date;
-import java.util.HashMap;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
-import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
-import jp.nichicom.vr.util.VRArrayList;
-import jp.nichicom.vr.util.VRList;
-import jp.nichicom.vr.util.VRMap;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
- * 利用・提供票印刷イベント定義(QS001031) 
+ * 利用・提供票印刷イベント定義(QS001003) 
  */
-@SuppressWarnings("serial")
 public abstract class QS001003Event extends QS001003SQL {
   /**
    * コンストラクタです。
@@ -375,5 +412,14 @@ public abstract class QS001003Event extends QS001003SQL {
    *
    */
   public abstract void print(ACChotarouXMLWriter writer, CareServicePrintParameter buildParam, boolean printMain, String mainFormat, List mainInsuredPages, HashMap allTexts, boolean printSub, String subFormat, List subInsuredPages) throws Exception;
+
+  /**
+   * 「短期入所日数取得用SQL」に関する処理を行ないます。
+   *
+   * @param sqlParam VRMap
+   * @throws Exception 処理例外
+   * @return int
+   */
+  public abstract int getPreviewShortStay(VRMap sqlParam) throws Exception;
 
 }

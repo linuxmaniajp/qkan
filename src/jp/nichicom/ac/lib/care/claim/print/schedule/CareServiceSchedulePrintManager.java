@@ -284,7 +284,9 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     page.parse(service, insureInfo);
                 }
 
-                if (CareServiceCommon.isShortStay(service)) {
+                // [ID:0000764][Masahiko.Higuchi] edit - begin 30日超の別表印字障害対応
+                if (CareServiceCommon.isShortStay(service) && !CareServiceCommon.is30DayOver(service)) {
+                // [ID:0000764][Masahiko.Higuchi] edit - end
                     shortStayCount++;
                 }
             }
@@ -2410,8 +2412,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     }
                 }
                 
+                // [ID:0000764][Masahiko.Higuchi] edit - begin 30日超の別表印字障害対応
+                if(!isOver30Days) {
                 // 自費調整分を合算
-                addRedulationRate(totals, services, regulationCache);
+                	addRedulationRate(totals, services, regulationCache);
+                }
+                // [ID:0000764][Masahiko.Higuchi] edit - end
                 
                 // 特別地域加算と処遇改善加算で変更されているので自己負担分を再度差し戻す
                 rec.setData("REGULATION_RATE", mainRegulationRate);
@@ -4181,6 +4187,13 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // 区分支給限度基準を超える単位数
                 int overUnit = totals[INDEX_OF_LIMIT_OVER_UNIT_FOR_DETAIL];
 
+                // [ID:0000764][Masahiko.Higuchi] add - begin 30日超サービスの印字障害
+                if(isOver30Days) {
+                    //30日超の場合は超過単位数を初期化する
+                    overUnit = 0;
+                }
+                // [ID:0000764][Masahiko.Higuchi] add - end
+                
                 // 区分支給限度基準内単位数
                 int totalUnit = totals[INDEX_OF_SERVICE_UNIT_FOR_DETAIL]
                         - overUnit;
@@ -4242,12 +4255,14 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // [ID:0000441][Masahiko Higuchi] del end
                 
                 int overCost = 0;
+                // [ID:0000764][Masahiko.Higuchi] del - begin　30日超サービスの印字障害
                 // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
-                if(isOver30Days) {
-                    //30日超の場合は超過単位数を初期化する
-                    overUnit = 0;
-                }
+                //if(isOver30Days) {
+                //    //30日超の場合は超過単位数を初期化する
+                //    overUnit = 0;
+                //}
                 // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add end
+                // [ID:0000764][Masahiko.Higuchi] del - end
                 if (overUnit > 0) {
 
                     // 区分支給限度基準を超える単位数が設定されているとき

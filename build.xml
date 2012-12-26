@@ -123,7 +123,7 @@
 			<exclude name="jp/nichicom/ac/lib/care/**/*.java" />
 		</javac>
 		<!-- 給管鳥の業務ACを含める -->
-		<javac encoding="ms932" source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+		<javac source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
 			<include name="jp/nichicom/ac/lib/care/claim/**" />
@@ -157,7 +157,7 @@
 		<!-- コンパイル -->
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
-		<javac encoding="ms932" source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildQkanClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+		<javac source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildQkanClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
 			<include name="jp/or/med/orca/qkan/**" />
@@ -194,7 +194,7 @@
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
 		<!-- オンラインアップデート -->
-		<javac encoding="ms932" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
+		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
 			<include name="jp/nichicom/update/**/*" />
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
@@ -219,7 +219,7 @@
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
 		<!-- データ移行ツール -->
-		<javac encoding="ms932" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
+		<javac srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" fork="true">
 			<include name="jp/nichicom/convert/**/*" />
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
