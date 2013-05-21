@@ -246,6 +246,16 @@ public class QO012SQL extends QO012Design {
     
     sb.append(")");
     //[ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
+    
+    //[ID:0000769][Shin Fujihara] 2013/05 add begin 2013年度対応
+    sb.append("AND");
+    
+    sb.append("(");
+    
+    sb.append(" PATIENT.DELETE_FLAG = 0");
+    
+    sb.append(")");
+    //[ID:0000769][Shin Fujihara] 2013/05 add end 2013年度対応
 
     sb.append(")");
 
@@ -323,6 +333,16 @@ public class QO012SQL extends QO012Design {
 
     sb.append(")");
     //[ID:0000623][Shin Fujihara] 2010/11 add end 2010年度対応
+    
+    //[ID:0000769][Shin Fujihara] 2013/05 add begin 2013年度対応
+    sb.append("AND");
+    
+    sb.append("(");
+    
+    sb.append(" PATIENT.DELETE_FLAG = 0");
+    
+    sb.append(")");
+    //[ID:0000769][Shin Fujihara] 2013/05 add end 2013年度対応
 
     return sb.toString();
   }
