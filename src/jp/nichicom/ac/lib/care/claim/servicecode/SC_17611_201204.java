@@ -111,6 +111,13 @@ public class SC_17611_201204 extends Qkan10011_ServiceUnitGetter {
             if (_1760107 > 1) {
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6100");
             }
+            
+            // [ID:0000768][Masahiko.Higuchi] add - begin ‰Šú‰ÁZ‚Ì‰ÁZ‚Ì‚İ‘Î‰
+            // 1760104 ‰Šú‰ÁZ
+            if (_1760104 > 1) {
+                putSystemServiceCodeItem(sysSvcCdItems, "Z4002");
+            }
+            // [ID:0000768][Masahiko.Higuchi] add - end
 
             // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
             switch (_17) {
