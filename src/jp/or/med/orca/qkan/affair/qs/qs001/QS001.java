@@ -1443,6 +1443,28 @@ public class QS001 extends QS001Event {
                         service.put("REGULATION_RATE", new Integer(rate));
                     }
                 }
+                
+                
+                // 2013/10/12 [Shinobu_Hitaka] add - begin
+                // 同日同サービスがリストの下にある時、SERVICE_IDをクリアして順位を保持する（登録時にIDを振りなおさせる為）
+                VRList selServices = getSelectedServiceListBox().getSchedule();
+                int selServicesIndex = getSelectedServiceListBox().getSelectedIndex();
+                Date srcDate = ACCastUtilities.toDate(service.get("SERVICE_DATE"));
+                String srcSystemServiceKindDetail = ACCastUtilities.toString(service.get("SYSTEM_SERVICE_KIND_DETAIL"), "");
+                // 配列の後方を検索
+                for (int i = selServicesIndex+1; i < selServices.size(); i++) {
+                    VRMap destService = (VRMap) selServices.get(i);
+                    Date destDate = ACCastUtilities.toDate(destService.get("SERVICE_DATE"));
+                    String destSystemServiceKindDetail = ACCastUtilities.toString(destService.get("SYSTEM_SERVICE_KIND_DETAIL"), "");
+                    // 日付とサービス種類コードが同じ場合
+                    if (srcDate.equals(destDate) && srcSystemServiceKindDetail.equals(destSystemServiceKindDetail)){
+                    	// サービスIDを削除
+                    	destService.remove("SERVICE_ID");
+                    }
+                }
+                // 2013/10/12 [Shinobu_Hitaka] add - end
+                
+                
                 // 2008/01/25 [Masahiko_Higuchi] del - begin
                 // サービスパターン設定ボタン操作実行時エラー対応
                 // setServiceModify(true);

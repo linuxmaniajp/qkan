@@ -1535,6 +1535,10 @@ public class QP001 extends QP001Event {
                         patient_id);
                 // 2008/01/07 [Masahiko Higuchi] add - end
 
+                // 2013/10/06 [Shinobu Hitaka] add - begin 自己負担調整対応 (V6.1.6)
+                //サービス提供日で並び替え
+                Collections.sort(servicePlanList, new DateComparator());
+                // 2013/10/06 [Shinobu Hitaka] add - end
                 
                 //サービス提供日で並び替え
                 Collections.sort(serviceDetailList, new DateComparator());
