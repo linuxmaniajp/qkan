@@ -434,7 +434,7 @@ public class QC003Design extends QkanAffairContainer implements ACAffairable {
 
       print.setText("印刷(P)");
 
-      print.setToolTipText("「訪問看護の情報提供所」を印刷します。");
+      print.setToolTipText("「訪問看護の情報提供書」を印刷します。");
 
       print.setMnemonic('P');
 

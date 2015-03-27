@@ -103,7 +103,7 @@ public class QC002 extends QC002Event {
                 new String[] { "PATIENT_ID", "TARGET_DATE" }, new Format[] {
                         null, new ACSQLSafeDateFormat("yyyy/M/d") },
                 "LAST_TIME", "LAST_TIME"));
-        // 「訪問看護計画書・訪問日TABLE(HOMONKANGO_RESULT_CALENDAR)」(当月分)のパッシブチェックのキーを定義する。
+        // 「訪問看護報告書・訪問日TABLE(HOMONKANGO_RESULT_CALENDAR)」(当月分)のパッシブチェックのキーを定義する。
         // テーブル:HOMONKANGO_RESULT_CALENDAR
         // キー:PATIENT_ID, NOTE_ID
         // フォーマット:数値,年月日
@@ -114,7 +114,7 @@ public class QC002 extends QC002Event {
                         "VISIT_DATE" }, new Format[] { null,
                         new ACSQLSafeDateFormat("yyyy/M/d") }, "LAST_TIME",
                 "LAST_TIME"));
-        // 「訪問看護計画書・訪問日TABLE(HOMONKANGO_RESULT_CALENDAR)」(翌月分)のパッシブチェックのキーを定義する。
+        // 「訪問看護報告書・訪問日TABLE(HOMONKANGO_RESULT_CALENDAR)」(翌月分)のパッシブチェックのキーを定義する。
         // テーブル:HOMONKANGO_RESULT_CALENDAR
         // キー:PATIENT_ID, NOTE_ID
         // フォーマット:数値,年月日
@@ -303,11 +303,11 @@ public class QC002 extends QC002Event {
             if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
                 // 登録用メッセージを作成する
                 msgID = QkanMessageList.getInstance().WARNING_OF_DO_PRINT("登録",
-                        "訪問看護計画書");
+                        "訪問看護報告書");
             } else if (getProcessMode() == QkanConstants.PROCESS_MODE_UPDATE) {
                 // 更新用メッセージIDを作成する
                 msgID = QkanMessageList.getInstance().WARNING_OF_DO_PRINT("更新",
-                        "訪問看護計画書");
+                        "訪問看護報告書");
             }
 
             // 保存確認

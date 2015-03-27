@@ -35,6 +35,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.table.ACCheckBoxTableColumnPopupMenu;
 import jp.nichicom.ac.component.table.event.ACCheckBoxTableColumnPopupMenuAdapter;
@@ -164,17 +167,61 @@ public abstract class QP001Event extends QP001SQL {
             }
             lockFlag = true;
             try {
-                infoTableSelectionChanged(e);
                 if (e.getClickCount() == 2) {
-                    infoTableSelectionchangedDouble(e);
+                	infoTableSelectionchangedDouble(e);
                 }
-            }catch(Exception ex){
+            }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
                 lockFlag = false;
             }
         }
     });
+    getInfoTableColumn3().addCellEditorListener(new CellEditorListener(){
+        private boolean lockFlag = false;
+        public void editingStopped(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void editingCanceled(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void cellEditing(ChangeEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	infoTableSelectionChanged(null);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getInfoTableColumn4().addCellEditorListener(new CellEditorListener(){
+        private boolean lockFlag = false;
+        public void editingStopped(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void editingCanceled(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void cellEditing(ChangeEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	infoTableSelectionChanged(null);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+
     getInsurerNoText().addFocusListener(new FocusAdapter(){
         private boolean lockFlag = false;
         public void focusLost(FocusEvent e) {
@@ -399,6 +446,8 @@ public abstract class QP001Event extends QP001SQL {
    * @throws Exception èàóùó·äO
    */
   protected abstract void infoTableColumn4CheckMenuActionPerformed(ActionEvent e) throws Exception;
+  
+  
   protected abstract void infoTableSelectionChanged(MouseEvent e) throws Exception;
   
   protected abstract void infoTableSelectionchangedDouble(MouseEvent e) throws Exception;

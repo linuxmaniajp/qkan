@@ -392,11 +392,11 @@ public class QC003 extends QC003Event {
             if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
                 // 登録用メッセージを作成する
                 msgID = QkanMessageList.getInstance().WARNING_OF_DO_PRINT("登録",
-                        "訪問看護計画書");
+                        "訪問看護情報提供書");
             } else if (getProcessMode() == QkanConstants.PROCESS_MODE_UPDATE) {
                 // 更新用メッセージIDを作成する
                 msgID = QkanMessageList.getInstance().WARNING_OF_DO_PRINT("更新",
-                        "訪問看護計画書");
+                        "訪問看護情報提供書");
             }
 
         }

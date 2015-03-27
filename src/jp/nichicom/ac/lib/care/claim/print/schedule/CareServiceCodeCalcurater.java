@@ -729,8 +729,12 @@ public class CareServiceCodeCalcurater {
             VRMap service = (VRMap) it.next();
             int reductedUnit = getReductedUnit(service, true, mode,
                     totalGroupingCache);
+            
+            // [CCCX:1626][Shinobu Hitaka] 2014/05/08 replace begin 減算の単位数対応（定期巡回通所利用減算・複合型訪問看護など）
+            //if (reductedUnit > 0) {
+            if (reductedUnit != 0) {
+            // [CCCX:1626][Shinobu Hitaka] 2014/05/08 replace begin 減算の単位数対応
 
-            if (reductedUnit > 0) {
                 // 管理対象内のサービスのみ以降の処理を実行する
                 Object key = service.getData("SYSTEM_SERVICE_KIND_DETAIL");
                 Object order = key;

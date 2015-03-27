@@ -3358,7 +3358,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 Map code = (Map) it.next();
                 if (getCalcurater().isInSpecialFacility(code)) {
                     // 特定施設入居者に関するコードは除外
-                    return;
+                    // [CCCX:1647][Shinobu Hitaka] 2014/05/08 replace begin 他科受診・外泊加算等の計上
+                    //return;
+                    continue;
+                    // [CCCX:1647][Shinobu Hitaka] 2014/05/08 replace end   他科受診・外泊加算等の計上
                 }
 
                 // 別表用階層解析

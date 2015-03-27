@@ -19,7 +19,7 @@
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
  * 作成日: 2009/08/27  日本コンピューター株式会社 堤 瑞樹 新規作成
- * 更新日: ----/--/--
+ * 更新日: 2014/06/03  MIS九州株式会社  日高  自立度の項目追加
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (C)
  * プロセス 居宅療養管理指導書 (005)
@@ -128,7 +128,7 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel patients2;
 
-  private ACClearableRadioButtonGroup shogaiJiritsudo;
+  private ACValueArrayRadioButtonGroup shogaiJiritsudo;
 
   private ACLabelContainer shogaiJiritsudoContainer;
 
@@ -138,13 +138,21 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem shogaiJiritsudoRadioItem2;
 
+  private ACRadioButtonItem shogaiJiritsudoRadioItem22;
+
   private ACRadioButtonItem shogaiJiritsudoRadioItem3;
+
+  private ACRadioButtonItem shogaiJiritsudoRadioItem32;
 
   private ACRadioButtonItem shogaiJiritsudoRadioItem4;
 
+  private ACRadioButtonItem shogaiJiritsudoRadioItem42;
+
   private ACRadioButtonItem shogaiJiritsudoRadioItem5;
 
-  private ACClearableRadioButtonGroup ninchishoJiritsudo;
+  private ACRadioButtonItem shogaiJiritsudoRadioItem52;
+
+  private ACValueArrayRadioButtonGroup ninchishoJiritsudo;
 
   private ACLabelContainer ninchishoJiritsudoContainer;
 
@@ -156,7 +164,11 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem ninchishoJiritsudoRadioItem3;
 
+  private ACRadioButtonItem ninchishoJiritsudoRadioItem3b;
+
   private ACRadioButtonItem ninchishoJiritsudoRadioItem4;
+
+  private ACRadioButtonItem ninchishoJiritsudoRadioItem4b;
 
   private ACRadioButtonItem ninchishoJiritsudoRadioItem5;
 
@@ -933,10 +945,10 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
    * 障害老人日常生活自立度を取得します。
    * @return 障害老人日常生活自立度
    */
-  public ACClearableRadioButtonGroup getShogaiJiritsudo(){
+  public ACValueArrayRadioButtonGroup getShogaiJiritsudo(){
     if(shogaiJiritsudo==null){
 
-      shogaiJiritsudo = new ACClearableRadioButtonGroup();
+      shogaiJiritsudo = new ACValueArrayRadioButtonGroup();
 
       getShogaiJiritsudoContainer().setText("障害高齢者の日常生活自立度");
 
@@ -945,6 +957,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
       shogaiJiritsudo.setUseClearButton(true);
 
       shogaiJiritsudo.setModel(getShogaiJiritsudoModel());
+
+      shogaiJiritsudo.setValues(new int[]{1,2,6,3,7,4,8,5,9});
 
       addShogaiJiritsudo();
     }
@@ -1006,13 +1020,32 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       shogaiJiritsudoRadioItem2 = new ACRadioButtonItem();
 
-      shogaiJiritsudoRadioItem2.setText("Ｊ");
+      shogaiJiritsudoRadioItem2.setText("Ｊ1");
 
       shogaiJiritsudoRadioItem2.setGroup(getShogaiJiritsudo());
 
       addShogaiJiritsudoRadioItem2();
     }
     return shogaiJiritsudoRadioItem2;
+
+  }
+
+  /**
+   * 障害老人日常生活自立度22を取得します。
+   * @return 障害老人日常生活自立度22
+   */
+  public ACRadioButtonItem getShogaiJiritsudoRadioItem22(){
+    if(shogaiJiritsudoRadioItem22==null){
+
+      shogaiJiritsudoRadioItem22 = new ACRadioButtonItem();
+
+      shogaiJiritsudoRadioItem22.setText("Ｊ2");
+
+      shogaiJiritsudoRadioItem22.setGroup(getShogaiJiritsudo());
+
+      addShogaiJiritsudoRadioItem22();
+    }
+    return shogaiJiritsudoRadioItem22;
 
   }
 
@@ -1025,13 +1058,32 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       shogaiJiritsudoRadioItem3 = new ACRadioButtonItem();
 
-      shogaiJiritsudoRadioItem3.setText("Ａ");
+      shogaiJiritsudoRadioItem3.setText("Ａ1");
 
       shogaiJiritsudoRadioItem3.setGroup(getShogaiJiritsudo());
 
       addShogaiJiritsudoRadioItem3();
     }
     return shogaiJiritsudoRadioItem3;
+
+  }
+
+  /**
+   * 障害老人日常生活自立度32を取得します。
+   * @return 障害老人日常生活自立度32
+   */
+  public ACRadioButtonItem getShogaiJiritsudoRadioItem32(){
+    if(shogaiJiritsudoRadioItem32==null){
+
+      shogaiJiritsudoRadioItem32 = new ACRadioButtonItem();
+
+      shogaiJiritsudoRadioItem32.setText("Ａ2");
+
+      shogaiJiritsudoRadioItem32.setGroup(getShogaiJiritsudo());
+
+      addShogaiJiritsudoRadioItem32();
+    }
+    return shogaiJiritsudoRadioItem32;
 
   }
 
@@ -1044,13 +1096,32 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       shogaiJiritsudoRadioItem4 = new ACRadioButtonItem();
 
-      shogaiJiritsudoRadioItem4.setText("Ｂ");
+      shogaiJiritsudoRadioItem4.setText("Ｂ1");
 
       shogaiJiritsudoRadioItem4.setGroup(getShogaiJiritsudo());
 
       addShogaiJiritsudoRadioItem4();
     }
     return shogaiJiritsudoRadioItem4;
+
+  }
+
+  /**
+   * 障害老人日常生活自立度42を取得します。
+   * @return 障害老人日常生活自立度42
+   */
+  public ACRadioButtonItem getShogaiJiritsudoRadioItem42(){
+    if(shogaiJiritsudoRadioItem42==null){
+
+      shogaiJiritsudoRadioItem42 = new ACRadioButtonItem();
+
+      shogaiJiritsudoRadioItem42.setText("Ｂ2");
+
+      shogaiJiritsudoRadioItem42.setGroup(getShogaiJiritsudo());
+
+      addShogaiJiritsudoRadioItem42();
+    }
+    return shogaiJiritsudoRadioItem42;
 
   }
 
@@ -1063,7 +1134,7 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       shogaiJiritsudoRadioItem5 = new ACRadioButtonItem();
 
-      shogaiJiritsudoRadioItem5.setText("Ｃ");
+      shogaiJiritsudoRadioItem5.setText("Ｃ1");
 
       shogaiJiritsudoRadioItem5.setGroup(getShogaiJiritsudo());
 
@@ -1074,13 +1145,32 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 障害老人日常生活自立度52を取得します。
+   * @return 障害老人日常生活自立度52
+   */
+  public ACRadioButtonItem getShogaiJiritsudoRadioItem52(){
+    if(shogaiJiritsudoRadioItem52==null){
+
+      shogaiJiritsudoRadioItem52 = new ACRadioButtonItem();
+
+      shogaiJiritsudoRadioItem52.setText("Ｃ2");
+
+      shogaiJiritsudoRadioItem52.setGroup(getShogaiJiritsudo());
+
+      addShogaiJiritsudoRadioItem52();
+    }
+    return shogaiJiritsudoRadioItem52;
+
+  }
+
+  /**
    * 認知症老人日常生活自立度を取得します。
    * @return 認知症老人日常生活自立度
    */
-  public ACClearableRadioButtonGroup getNinchishoJiritsudo(){
+  public ACValueArrayRadioButtonGroup getNinchishoJiritsudo(){
     if(ninchishoJiritsudo==null){
 
-      ninchishoJiritsudo = new ACClearableRadioButtonGroup();
+      ninchishoJiritsudo = new ACValueArrayRadioButtonGroup();
 
       getNinchishoJiritsudoContainer().setText("認知症高齢者の日常生活自立度");
 
@@ -1089,6 +1179,8 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
       ninchishoJiritsudo.setUseClearButton(true);
 
       ninchishoJiritsudo.setModel(getNinchishoJiritsudoModel());
+
+      ninchishoJiritsudo.setValues(new int[]{1,2,3,7,4,8,5,6});
 
       addNinchishoJiritsudo();
     }
@@ -1169,13 +1261,32 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       ninchishoJiritsudoRadioItem3 = new ACRadioButtonItem();
 
-      ninchishoJiritsudoRadioItem3.setText("II");
+      ninchishoJiritsudoRadioItem3.setText("IIa");
 
       ninchishoJiritsudoRadioItem3.setGroup(getNinchishoJiritsudo());
 
       addNinchishoJiritsudoRadioItem3();
     }
     return ninchishoJiritsudoRadioItem3;
+
+  }
+
+  /**
+   * 認知症老人日常生活自立度3bを取得します。
+   * @return 認知症老人日常生活自立度3b
+   */
+  public ACRadioButtonItem getNinchishoJiritsudoRadioItem3b(){
+    if(ninchishoJiritsudoRadioItem3b==null){
+
+      ninchishoJiritsudoRadioItem3b = new ACRadioButtonItem();
+
+      ninchishoJiritsudoRadioItem3b.setText("IIb");
+
+      ninchishoJiritsudoRadioItem3b.setGroup(getNinchishoJiritsudo());
+
+      addNinchishoJiritsudoRadioItem3b();
+    }
+    return ninchishoJiritsudoRadioItem3b;
 
   }
 
@@ -1188,13 +1299,32 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
       ninchishoJiritsudoRadioItem4 = new ACRadioButtonItem();
 
-      ninchishoJiritsudoRadioItem4.setText("III");
+      ninchishoJiritsudoRadioItem4.setText("IIIa");
 
       ninchishoJiritsudoRadioItem4.setGroup(getNinchishoJiritsudo());
 
       addNinchishoJiritsudoRadioItem4();
     }
     return ninchishoJiritsudoRadioItem4;
+
+  }
+
+  /**
+   * 認知症老人日常生活自立度4bを取得します。
+   * @return 認知症老人日常生活自立度4b
+   */
+  public ACRadioButtonItem getNinchishoJiritsudoRadioItem4b(){
+    if(ninchishoJiritsudoRadioItem4b==null){
+
+      ninchishoJiritsudoRadioItem4b = new ACRadioButtonItem();
+
+      ninchishoJiritsudoRadioItem4b.setText("IIIb");
+
+      ninchishoJiritsudoRadioItem4b.setGroup(getNinchishoJiritsudo());
+
+      addNinchishoJiritsudoRadioItem4b();
+    }
+    return ninchishoJiritsudoRadioItem4b;
 
   }
 
@@ -3397,17 +3527,33 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem2());
 
+    getShogaiJiritsudoRadioItem22().setButtonIndex(6);
+
+    getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem22());
+
     getShogaiJiritsudoRadioItem3().setButtonIndex(3);
 
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem3());
+
+    getShogaiJiritsudoRadioItem32().setButtonIndex(7);
+
+    getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem32());
 
     getShogaiJiritsudoRadioItem4().setButtonIndex(4);
 
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem4());
 
+    getShogaiJiritsudoRadioItem42().setButtonIndex(8);
+
+    getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem42());
+
     getShogaiJiritsudoRadioItem5().setButtonIndex(5);
 
     getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem5());
+
+    getShogaiJiritsudoRadioItem52().setButtonIndex(9);
+
+    getShogaiJiritsudoModel().add(getShogaiJiritsudoRadioItem52());
 
   }
 
@@ -3426,9 +3572,23 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 障害老人日常生活自立度22に内部項目を追加します。
+   */
+  protected void addShogaiJiritsudoRadioItem22(){
+
+  }
+
+  /**
    * 障害老人日常生活自立度3に内部項目を追加します。
    */
   protected void addShogaiJiritsudoRadioItem3(){
+
+  }
+
+  /**
+   * 障害老人日常生活自立度32に内部項目を追加します。
+   */
+  protected void addShogaiJiritsudoRadioItem32(){
 
   }
 
@@ -3440,9 +3600,23 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 障害老人日常生活自立度42に内部項目を追加します。
+   */
+  protected void addShogaiJiritsudoRadioItem42(){
+
+  }
+
+  /**
    * 障害老人日常生活自立度5に内部項目を追加します。
    */
   protected void addShogaiJiritsudoRadioItem5(){
+
+  }
+
+  /**
+   * 障害老人日常生活自立度52に内部項目を追加します。
+   */
+  protected void addShogaiJiritsudoRadioItem52(){
 
   }
 
@@ -3470,9 +3644,17 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
 
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem3());
 
+    getNinchishoJiritsudoRadioItem3b().setButtonIndex(7);
+
+    getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem3b());
+
     getNinchishoJiritsudoRadioItem4().setButtonIndex(4);
 
     getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem4());
+
+    getNinchishoJiritsudoRadioItem4b().setButtonIndex(8);
+
+    getNinchishoJiritsudoModel().add(getNinchishoJiritsudoRadioItem4b());
 
     getNinchishoJiritsudoRadioItem5().setButtonIndex(5);
 
@@ -3506,9 +3688,23 @@ public class QC005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 認知症老人日常生活自立度3bに内部項目を追加します。
+   */
+  protected void addNinchishoJiritsudoRadioItem3b(){
+
+  }
+
+  /**
    * 認知症老人日常生活自立度4に内部項目を追加します。
    */
   protected void addNinchishoJiritsudoRadioItem4(){
+
+  }
+
+  /**
+   * 認知症老人日常生活自立度4bに内部項目を追加します。
+   */
+  protected void addNinchishoJiritsudoRadioItem4b(){
 
   }
 

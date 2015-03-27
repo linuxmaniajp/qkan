@@ -1546,4 +1546,21 @@ public class QP001PatientState {
         return result;
     }
 	//[ID:0000682][Shin Fujihara] add end y–@‰ü³‘Î‰z‰îŒìEˆõˆ‹ö‰ü‘P‰ÁZ
+    
+    
+    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
+    /**
+     * Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
+     * @param kohiType
+     * @param pay
+     * @throws Exception
+     */
+    protected void setKohiSelfPay(String kohiType, int pay) throws Exception {
+        if(kohiSelfPay.containsKey(kohiType)){
+            int value = ((Integer)kohiSelfPay.get(kohiType)).intValue();
+            value = pay;
+            kohiSelfPay.put(kohiType,new Integer(value));
+        }
+    }
+    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
 }

@@ -343,8 +343,9 @@ public class QC005P02 extends QC005P02Event {
             break;
         }
     // ※障害老人日常生活自立度の設定
-        // 渡りパラメータから KEY : SHOGAI_JIRITSUDO の VALUE を取得する。(数値)
-        // 取得した値をチェックする。
+    // 渡りパラメータから KEY : SHOGAI_JIRITSUDO の VALUE を取得する。(数値)
+    // 取得した値をチェックする。
+    // [CCCX:1844][Shinobu Hitaka] 2014/06/03 add 自立度J2,A2,B2,C2を追加
         switch (ACCastUtilities.toInt(VRBindPathParser.get("SHOGAI_JIRITSUDO",
                 printParam))) {
         case 1:
@@ -357,6 +358,14 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
             // 「C」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
             break;
         case 2:
             // 2の場合
@@ -368,6 +377,14 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
             // 「C」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
             break;
         case 3:
             // 3の場合
@@ -379,6 +396,14 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
             // 「C」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
             break;
         case 4:
             // 4の場合
@@ -390,6 +415,14 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
             // 「C」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
             break;
         case 5:
             // 5の場合
@@ -401,24 +434,113 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
             // 「B」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
+            break;
+        case 6:
+            // 「自立」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo1");
+            // 「J1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo2");
+            // 「A1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
+            // 「B1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
+            // 「C1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
+            break;
+        case 7:
+            // 「自立」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo1");
+            // 「J1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo2");
+            // 「A1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
+            // 「B1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
+            // 「C1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
+            break;
+        case 8:
+            // 「自立」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo1");
+            // 「J1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo2");
+            // 「A1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
+            // 「B1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
+            // 「C1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
+            break;
+        case 9:
+            // 「自立」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo1");
+            // 「J1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo2");
+            // 「A1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
+            // 「B1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
+            // 「C1」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
             break;
         case 0:
             // 0の場合
             // 「自立」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo1");
-            // 「Ｊ」のシェイプを非表示にする。
+            // 「J1」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo2");
-            // 「Ａ」のシェイプを非表示にする。
+            // 「A1」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo3");
-            // 「B」のシェイプを非表示にする。
+            // 「B1」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo4");
-            // 「C」のシェイプを非表示にする。
+            // 「C1」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo5");
+            // 「J2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo22");
+            // 「A2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo32");
+            // 「B2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo42");
+            // 「C2」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "shogaiJiritsudo52");
             break;
         }
     // ※認知症老人日常生活自立度の設定
-        // 渡りパラメータから KEY : NINCHISHO_JIRITSUDO の VALUE を取得する。(数値)
-        // 取得した値をチェックする。
+    // 渡りパラメータから KEY : NINCHISHO_JIRITSUDO の VALUE を取得する。(数値)
+    // 取得した値をチェックする。
+    // [CCCX:1844][Shinobu Hitaka] 2014/06/03 add 自立度IIb,IIIbを追加
         switch (ACCastUtilities.toInt(VRBindPathParser.get(
                 "NINCHISHO_JIRITSUDO", printParam))) {
         case 1:
@@ -433,6 +555,10 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
             // 「M」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         case 2:
             // 2の場合
@@ -446,6 +572,10 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
             // 「M」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         case 3:
             // 3の場合
@@ -459,6 +589,10 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
             // 「M」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         case 4:
             // 4の場合
@@ -472,6 +606,10 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
             // 「M」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         case 5:
             // 5の場合
@@ -485,6 +623,10 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4");
             // 「M」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         case 6:
             // 6の場合
@@ -498,6 +640,48 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4");
             // 「IV」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
+            break;
+        case 7:
+            // 7の場合
+            // 「自立」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo1");
+            // 「I」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo2");
+            // 「II」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3");
+            // 「III」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4");
+            // 「IV」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
+            // 「Ｍ」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            //ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
+            break;
+        case 8:
+            // 8の場合
+            // 「自立」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo1");
+            // 「I」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo2");
+            // 「II」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3");
+            // 「III」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4");
+            // 「IV」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
+            // 「Ｍ」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            //ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         case 0:
             // 0の場合
@@ -513,6 +697,10 @@ public class QC005P02 extends QC005P02Event {
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo5");
             // 「Ｍ」のシェイプを非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo6");
+            // 「IIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo3b");
+            // 「IIIb」のシェイプを非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "ninchishoJiritsudo4b");
             break;
         }
         

@@ -93,6 +93,11 @@ public class QP001ReTotal {
 
     /** 利用者情報 */
     private QP001PatientState patientState = null;
+    
+    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start 処遇改善有＋公費自己負担有の再集計
+    /** 利用者情報の自己負担額保存用(処遇改善計算後の再集計用) **/
+    private int[] kohiSelfPay = new int[] { 0, 0, 0 };
+    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
 
     /** 基本情報レコードに設定する緊急時、特定診療費情報 */
     private VRMap baseCache = new VRHashMap();
@@ -821,6 +826,13 @@ public class QP001ReTotal {
             
         }
         
+        //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start 処遇改善有＋公費自己負担有の再集計
+        // 再計算の前に利用した自己負担額を戻す
+        patientState.setKohiSelfPay(getKohiType(1), kohiSelfPay[0]);
+        patientState.setKohiSelfPay(getKohiType(2), kohiSelfPay[1]);
+        patientState.setKohiSelfPay(getKohiType(3), kohiSelfPay[2]);
+        //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
+        
         // 処遇改善の値を編集したので、集計情報レコードを再作成
         parseType();
         
@@ -1242,6 +1254,12 @@ public class QP001ReTotal {
             // 公費１の適用あり
             if (getKohiRate(1) != 0) {
                 selfPay = patientState.getKohiSelfPay(getKohiType(1), 1);
+                
+                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start 処遇改善有＋公費自己負担有の再集計
+                // 処遇改善計算後のための保存
+                kohiSelfPay[0] = selfPay;
+                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
+                
                 if (selfPay != 0) {
                     // 様式第八、第九、第十の場合で且つ生保単独者で無い場合は、自己負担額の使用に制限をかける
                     kohiCost = 0;
@@ -1275,6 +1293,12 @@ public class QP001ReTotal {
             // 公費２の本人負担額を取得
             if (getKohiRate(2) != 0) {
                 selfPay = patientState.getKohiSelfPay(getKohiType(2), 1);
+
+                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start 処遇改善有＋公費自己負担有の再集計
+                // 処遇改善計算後のための保存
+                kohiSelfPay[1] = selfPay;
+                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
+                
                 if (selfPay != 0) {
                     kohiCost = 0;
                     if (nursingTotal != null) {
@@ -1306,6 +1330,12 @@ public class QP001ReTotal {
                 // 公費３の本人負担額を取得
                 if (getKohiRate(3) != 0) {
                     selfPay = patientState.getKohiSelfPay(getKohiType(3), 1);
+
+                    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start 処遇改善有＋公費自己負担有の再集計
+                    // 処遇改善計算後のための保存
+                    kohiSelfPay[2] = selfPay;
+                    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
+                    
                     if (selfPay != 0) {
                         kohiCost = 0;
                         if (nursingTotal != null) {
