@@ -478,7 +478,10 @@ public class QS001_11111_201204Design extends QS001ServicePanel {
 
       houmonKaigoClassOther = new ACRadioButtonItem();
 
-      houmonKaigoClassOther.setText("2‹‰ˆÈŠO");
+      //2014/03/03 [Shinobu Hitaka] edit - begin yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
+      //houmonKaigoClassOther.setText("2‹‰ˆÈŠO");
+      houmonKaigoClassOther.setText("‰”CˆÈŠO");
+      //2014/03/03 [Shinobu Hitaka] edit - end   yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
 
       houmonKaigoClassOther.setGroup(getHoumonKaigoClass());
 
@@ -497,7 +500,10 @@ public class QS001_11111_201204Design extends QS001ServicePanel {
 
       houmonKaigoClass3 = new ACRadioButtonItem();
 
-      houmonKaigoClass3.setText("2‹‰");
+      //2014/03/03 [Shinobu Hitaka] edit - begin yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
+      //houmonKaigoClass3.setText("2‹‰");
+      houmonKaigoClass3.setText("‰”C");
+      //2014/03/03 [Shinobu Hitaka] edit - end   yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
 
       houmonKaigoClass3.setGroup(getHoumonKaigoClass());
 

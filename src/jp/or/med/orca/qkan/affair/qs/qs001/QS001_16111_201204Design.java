@@ -334,8 +334,11 @@ public class QS001_16111_201204Design extends QS001ServicePanel {
 
       classEmploymentAddRadioItem1 = new ACRadioButtonItem();
 
-      classEmploymentAddRadioItem1.setText("2‹‰ˆÈŠO");
-
+      //2014/03/03 [Shinobu Hitaka] edit - begin yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
+      //classEmploymentAddRadioItem1.setText("2‹‰ˆÈŠO");
+      classEmploymentAddRadioItem1.setText("‰”CˆÈŠO");
+      //2014/03/03 [Shinobu Hitaka] edit - end   yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
+      
       classEmploymentAddRadioItem1.setGroup(getClassEmploymentAddRadio());
 
       classEmploymentAddRadioItem1.setConstraints(VRLayout.FLOW);
@@ -355,7 +358,10 @@ public class QS001_16111_201204Design extends QS001ServicePanel {
 
       classEmploymentAddRadioItem2 = new ACRadioButtonItem();
 
-      classEmploymentAddRadioItem2.setText("2‹‰");
+      //2014/03/03 [Shinobu Hitaka] edit - begin yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
+      //classEmploymentAddRadioItem2.setText("2‹‰");
+      classEmploymentAddRadioItem2.setText("‰”C");
+      //2014/03/03 [Shinobu Hitaka] edit - end   yƒz[ƒ€ƒwƒ‹ƒp[2‹‰¨‰îŒìEˆõ‰”CÒŒ¤Cz
 
       classEmploymentAddRadioItem2.setGroup(getClassEmploymentAddRadio());
 
