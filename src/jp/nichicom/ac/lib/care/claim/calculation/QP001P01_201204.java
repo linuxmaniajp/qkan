@@ -37,10 +37,12 @@ import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * 給付管理票(様式第一) 帳票定義体ファイル名 ： QP001P010_YYYYMM.xml
@@ -80,9 +82,17 @@ public class QP001P01_201204 extends QP001PrintEvent {
         VRMap style = (VRMap)styles.get(0);
         VRMap provider = (VRMap)providerMap.get(style.get("101003"));
         
-        ACChotarouXMLUtilities.addFormat(writer, "QP001P010_201204", "QP001P010_201204.xml");
-        writer.beginPageEdit("QP001P010_201204");
-        
+        // [2015年1月改正][Shinobu Hitaka] 2014/11/11 edit start 公費54追加に伴う様式修正に対応
+        //ACChotarouXMLUtilities.addFormat(writer, "QP001P010_201204", "QP001P010_201204.xml");
+        //writer.beginPageEdit("QP001P010_201204");
+        Date targetDt = ACCastUtilities.toDate(VRBindPathParser.get("101002",style) + "01");
+        String formatName = "QP001P010_201204";
+        if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2701, targetDt) < 1) {
+            formatName = "QP001P010_201501";
+        }
+        ACChotarouXMLUtilities.addFormat(writer, formatName, formatName + ".xml");
+        writer.beginPageEdit(formatName);
+        // [2015年1月改正][Shinobu Hitaka] 2014/11/11 edit end
         
         // 印刷用情報格納用のVRArrayList printArrayを定義する。
         //様式番号の表示設定
@@ -338,6 +348,19 @@ public class QP001P01_201204 extends QP001PrintEvent {
             ACChotarouXMLUtilities.setValue(writer, "kohiseikyu.h8.w5", getFormatData(style, "101009"));
             //(サービス費用)公費請求額を設定する。
             ACChotarouXMLUtilities.setValue(writer, "kohiseikyu.h8.w6", getFormatData(style, "101011"));
+            total += ACCastUtilities.toInt(style.get("101011"),0);
+        }
+        //難病 [2015年1月改正][Shinobu Hitaka] 2014/11/11 add　※出力場所の修正が必要
+        style = getTargetRecord(styles,"54","00");
+        if(style != null){
+            //(サービス費用)件数を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "kohiseikyu.h17.w3", getFormatData(style, "101007"));
+            //(サービス費用)単位数・点数を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "kohiseikyu.h17.w4", getFormatData(style, "101008"));
+            //(サービス費用)費用合計を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "kohiseikyu.h17.w5", getFormatData(style, "101009"));
+            //(サービス費用)公費請求額を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "kohiseikyu.h17.w6", getFormatData(style, "101011"));
             total += ACCastUtilities.toInt(style.get("101011"),0);
         }
         //障害者・支援措置

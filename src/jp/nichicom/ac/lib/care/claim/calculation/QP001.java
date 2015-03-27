@@ -437,6 +437,12 @@ public class QP001 extends QP001Event {
         param.put("PATIENT_ID", map.get("PATIENT_ID"));
         // KEY :
         param.put("CLAIM_DATE", map.get("CLAIM_DATE"));
+        
+        // [ID:][Shinobu Hitaka] 2014/11/04 add begin NULLの場合は処理を中断
+        if(map.get("PATIENT_ID") == null || map.get("CLAIM_DATE") == null){
+            return;
+        }
+        // [ID:][Shinobu Hitaka] 2014/11/04 add end   NULLの場合は処理を中断
 
         // 下記パラメータにてaffairを生成する。
         //className : QP002.class.getName();
@@ -594,7 +600,10 @@ public class QP001 extends QP001Event {
             
             //それ以外は通常通り
             } else {
-            	printer.setPatientList(getPatientData());
+                //[2014年要望][Shinobu Hitaka] 2014/10/22 edit begin 明細書も画面に表示されている順で印字する
+            	//printer.setPatientList(getPatientData());
+            	printer.setPatientList(getSortedTableList());
+            	//[2014年要望][Shinobu Hitaka] 2014/10/22 edit end   明細書も画面に表示されている順で印字する
             }
             //printer.setPatientList(getPatientData());
             //2009/1/6 fujihara edit end
@@ -1389,7 +1398,13 @@ public class QP001 extends QP001Event {
         }
     }
 
-    private void setButtonState() throws Exception {
+    /**
+     * 業務ボタンの表示／非表示を設定する
+     * @param なし
+     * @throws Exception
+     * [ID:][Shinobu Hitaka] 2014/12/11 edit 「private → protected」へ変更（一覧クリックEventからも呼ばれる）
+     */
+    protected void setButtonState() throws Exception {
         //選択列番号を取得
         int select = getInfoTable().getSelectedModelRow();
         //未選択であれば処理を中断

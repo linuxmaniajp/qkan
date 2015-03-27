@@ -82,11 +82,11 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
 
   private VRTableColumnModel fixedFormTableColumnModel;
 
-  private ACTableColumn fixedFormTableColumn‚P;
+  private ACTableColumn fixedFormTableColumn1;
 
-  private ACTableColumn fixedFormTableColumn‚Q;
+  private ACTableColumn fixedFormTableColumn2;
 
-  private ACTableColumn fixedFormTableColumn‚R;
+  private ACTableColumn fixedFormTableColumn3;
 
   private ACPanel fixedFormEdits;
 
@@ -342,22 +342,22 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
    * ƒe[ƒuƒ‹FNo.‚ğæ“¾‚µ‚Ü‚·B
    * @return ƒe[ƒuƒ‹FNo.
    */
-  public ACTableColumn getFixedFormTableColumn‚P(){
-    if(fixedFormTableColumn‚P==null){
+  public ACTableColumn getFixedFormTableColumn1(){
+    if(fixedFormTableColumn1==null){
 
-      fixedFormTableColumn‚P = new ACTableColumn(0);
+      fixedFormTableColumn1 = new ACTableColumn(0);
 
-      fixedFormTableColumn‚P.setHeaderValue("No.");
+      fixedFormTableColumn1.setHeaderValue("No.");
 
-      fixedFormTableColumn‚P.setColumns(4);
+      fixedFormTableColumn1.setColumns(4);
 
-      fixedFormTableColumn‚P.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+      fixedFormTableColumn1.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
 
-      fixedFormTableColumn‚P.setSortable(false);
+      fixedFormTableColumn1.setSortable(false);
 
-      addFixedFormTableColumn‚P();
+      addFixedFormTableColumn1();
     }
-    return fixedFormTableColumn‚P;
+    return fixedFormTableColumn1;
 
   }
 
@@ -365,18 +365,18 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
    * ƒe[ƒuƒ‹F•ª—Ş‚ğæ“¾‚µ‚Ü‚·B
    * @return ƒe[ƒuƒ‹F•ª—Ş
    */
-  public ACTableColumn getFixedFormTableColumn‚Q(){
-    if(fixedFormTableColumn‚Q==null){
+  public ACTableColumn getFixedFormTableColumn2(){
+    if(fixedFormTableColumn2==null){
 
-      fixedFormTableColumn‚Q = new ACTableColumn();
+      fixedFormTableColumn2 = new ACTableColumn();
 
-      fixedFormTableColumn‚Q.setHeaderValue("•ª—Ş");
+      fixedFormTableColumn2.setHeaderValue("•ª—Ş");
 
-      fixedFormTableColumn‚Q.setColumns(14);
+      fixedFormTableColumn2.setColumns(14);
 
-      addFixedFormTableColumn‚Q();
+      addFixedFormTableColumn2();
     }
-    return fixedFormTableColumn‚Q;
+    return fixedFormTableColumn2;
 
   }
 
@@ -384,18 +384,18 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
    * ƒe[ƒuƒ‹F€–Ú‚ğæ“¾‚µ‚Ü‚·B
    * @return ƒe[ƒuƒ‹F€–Ú
    */
-  public ACTableColumn getFixedFormTableColumn‚R(){
-    if(fixedFormTableColumn‚R==null){
+  public ACTableColumn getFixedFormTableColumn3(){
+    if(fixedFormTableColumn3==null){
 
-      fixedFormTableColumn‚R = new ACTableColumn(1);
+      fixedFormTableColumn3 = new ACTableColumn(1);
 
-      fixedFormTableColumn‚R.setHeaderValue("€–Ú");
+      fixedFormTableColumn3.setHeaderValue("€–Ú");
 
-      fixedFormTableColumn‚R.setColumns(10);
+      fixedFormTableColumn3.setColumns(10);
 
-      addFixedFormTableColumn‚R();
+      addFixedFormTableColumn3();
     }
-    return fixedFormTableColumn‚R;
+    return fixedFormTableColumn3;
 
   }
 
@@ -1082,32 +1082,32 @@ public class QO008Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addFixedFormTableColumnModel(){
 
-    getFixedFormTableColumnModel().addColumn(getFixedFormTableColumn‚P());
+    getFixedFormTableColumnModel().addColumn(getFixedFormTableColumn1());
 
-    getFixedFormTableColumnModel().addColumn(getFixedFormTableColumn‚Q());
+    getFixedFormTableColumnModel().addColumn(getFixedFormTableColumn2());
 
-    getFixedFormTableColumnModel().addColumn(getFixedFormTableColumn‚R());
+    getFixedFormTableColumnModel().addColumn(getFixedFormTableColumn3());
 
   }
 
   /**
    * ƒe[ƒuƒ‹FNo.‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
-  protected void addFixedFormTableColumn‚P(){
+  protected void addFixedFormTableColumn1(){
 
   }
 
   /**
    * ƒe[ƒuƒ‹F•ª—Ş‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
-  protected void addFixedFormTableColumn‚Q(){
+  protected void addFixedFormTableColumn2(){
 
   }
 
   /**
    * ƒe[ƒuƒ‹F€–Ú‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
-  protected void addFixedFormTableColumn‚R(){
+  protected void addFixedFormTableColumn3(){
 
   }
 

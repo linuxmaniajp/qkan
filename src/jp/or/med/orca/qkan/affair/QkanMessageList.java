@@ -3609,6 +3609,7 @@ public class QkanMessageList {
 
            );
   }
+  
   /**
    * メッセージ「印刷済みの[reportName]です。＜改行＞更新すると印刷済みでなくなります。＜改行＞更新してもよろしいですか？＜改行＞（印刷済みにする場合は再度印刷を行う必要があります。）」を表示します。
    * <p>
@@ -3635,6 +3636,55 @@ public class QkanMessageList {
   }
 
   /**
+   * メッセージ「同じ作成年月日の居宅療養管理指導書情報があります。＜改行＞上書きしてもよろしいですか？」を表示します。
+   * <p>
+   * 居宅療養管理指導書の編集業務において、同一対象年月・同一作成年月日が既に存在する場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_WARNING_OF_HISTORY_KYOTAKU_RYOYO() throws Exception {
+
+      return ACMessageBox.show("同じ作成年月日の居宅療養管理指導書情報があります。" + ACConstants.LINE_SEPARATOR + "上書きしてもよろしいですか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「今月登録できる居宅療養管理指導書の最大値を超えました。これ以上登録できません。」を表示します。
+   * <p>
+   * 居宅療養管理指導書の編集業務において、対象年月の日数以上にデータを登録しようとした場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_ERROR_OF_MAX_KYOTAKU_RYOYO() throws Exception {
+
+    return ACMessageBox.show("今月登録できる居宅療養管理指導書の最大値を超えました。これ以上登録できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「作成年月日が対象年月と異なります。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 居宅療養管理指導書の編集業務において、対象年月と作成年月が異なる場合
+   * </p>
+   * @param param パラメタ
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_WARNING_OF_CREATE_DATE() throws Exception {
+
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("作成年月日が対象年月と異なります。" + ACConstants.LINE_SEPARATOR + "よろしいですか？");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
    * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞[reportName]の情報を保存することで印刷することが可能です。」を表示します。
    * <p>
    * 印刷不可能な場合
@@ -3650,6 +3700,7 @@ public class QkanMessageList {
 
            );
   }
+  
   /**
    * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞[reportName]の情報を保存することで印刷することが可能です。」を表示します。
    * <p>
@@ -3676,6 +3727,26 @@ public class QkanMessageList {
     sb.append("の情報を保存することで印刷することが可能です。");
 
     return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「印刷済の居宅療養管理指導書を含めずに印刷します。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 居宅療養管理指導書の一括印刷で印刷対象を確認する場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_PRINT_MODE() throws Exception{
+
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("印刷済の居宅療養管理指導書を含めずに印刷します。");
+
+    sb.append("" + ACConstants.LINE_SEPARATOR + "よろしいですか？");
+
+    return ACMessageBox.showYesNoCancel(sb.toString(), "印刷済を含めない(Y)", 'Y', "全て印刷する(N)", 'N', ACMessageBox.FOCUS_YES);
 
   }
 

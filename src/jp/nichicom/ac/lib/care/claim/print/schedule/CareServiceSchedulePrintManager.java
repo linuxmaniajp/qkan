@@ -135,17 +135,21 @@ public class CareServiceSchedulePrintManager extends HashMap {
     // [ID:0000745][Masahiko.Higuchi] add - end
 
     //2006/06/09 tozo TANAKA begin-replace 別表法改正のため
-     private int userSubTableRowCount = 17;
-     //2006/06/09 tozo TANAKA end-replace 別表法改正のため
+    private int userSubTableRowCount = 17;
+    //2006/06/09 tozo TANAKA end-replace 別表法改正のため
      
-     // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
-     private Map<String,Integer> regulationHash = null; // 自己負担額
-     private Map<String,Integer> diagnosisHash = null; //特定診療費・特別療養費
-     // [ID:0000682] 2012/01 end
-     // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
-     private VRMap over30UnitSyoguHash = null; //30日超の処遇改善対象単位数ハッシュ
-     // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
-
+    // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
+    private Map<String,Integer> regulationHash = null; // 自己負担額
+    private Map<String,Integer> diagnosisHash = null; //特定診療費・特別療養費
+    // [ID:0000682] 2012/01 end
+    // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+    private VRMap over30UnitSyoguHash = null; //30日超の処遇改善対象単位数ハッシュ
+    // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+    
+    // [2014年要望][Shinobu Hitaka] 2014/10/23 add begin 敬称表示
+    private String printKeisyo = "";
+    // [2014年要望][Shinobu Hitaka] 2014/10/23 add end   敬称表示
+    
     private ACBorderBlankDateFormat yearMonthFormat = new ACBorderBlankDateFormat(
             "ggge年MM月");
 
@@ -497,10 +501,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
 
         VRMap patient = getCalcurater().getPatientInfo();
         if (patient != null) {
+            // [2014年要望][Shinobu Hitaka] 2014/10/23 add begin 敬称表示
             // 被保険者氏名
+            //formPage.put("upper.h5.w15", QkanCommon.toFullName(patient
+            //        .get("PATIENT_FAMILY_NAME"), patient
+            //        .get("PATIENT_FIRST_NAME")));
             formPage.put("upper.h5.w15", QkanCommon.toFullName(patient
                     .get("PATIENT_FAMILY_NAME"), patient
-                    .get("PATIENT_FIRST_NAME")));
+                    .get("PATIENT_FIRST_NAME")) + this.printKeisyo);
+            // [2014年要望][Shinobu Hitaka] 2014/10/23 add end   敬称表示
+            
             // カナ氏名
             formPage.put("upper.h4.w15", ACKanaConvert.toKatakana(QkanCommon
                     .toFullName(patient.get("PATIENT_FAMILY_KANA"), patient
@@ -612,10 +622,15 @@ public class CareServiceSchedulePrintManager extends HashMap {
         VRMap formPage = new VRHashMap();
         VRMap patient = getCalcurater().getPatientInfo();
         if (patient != null) {
+            // [2014年要望][Shinobu Hitaka] 2014/10/23 add begin 敬称表示
             // 被保険者氏名
+            //formPage.put("insured.h1.insuredName", QkanCommon.toFullName(
+            //        patient.get("PATIENT_FAMILY_NAME"), patient
+            //                .get("PATIENT_FIRST_NAME")));
             formPage.put("insured.h1.insuredName", QkanCommon.toFullName(
                     patient.get("PATIENT_FAMILY_NAME"), patient
-                            .get("PATIENT_FIRST_NAME")));
+                            .get("PATIENT_FIRST_NAME")) + this.printKeisyo);
+            // [2014年要望][Shinobu Hitaka] 2014/10/23 add end   敬称表示
         }
 
         // 対象年月
@@ -4318,4 +4333,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
         }
 
     }
+    
+    // [2014年要望][Shinobu Hitaka] 2014/10/23 add begin 敬称表示
+    /**
+     * 被保険者名の敬称を設定します。
+     * 
+     * @param printKeisyo 敬称（様、殿　など）
+     */
+    public void setPrintKeisyo(String printKeisyo) {
+        this.printKeisyo = printKeisyo;
+    }
+    // [2014年要望][Shinobu Hitaka] 2014/10/23 add end 敬称表示
+
 }

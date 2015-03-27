@@ -121,8 +121,8 @@ public class QC005 extends QC005Event {
 			setTargetDate((Date) VRBindPathParser
 					.get("TARGET_DATE", parameters));
 
-		}
-
+        }
+		
 		// ※初期状態の設定
 		// 画面の初期状態を設定する。
 		
@@ -146,12 +146,20 @@ public class QC005 extends QC005Event {
 			return true;
 		}
 
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+		parameters.setData("PATIENT_ID", getPatientID());
+		parameters.setData("TARGET_DATE", getTargetDate());
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 add end
+		
 		// ※スナップショットチェック
 		// スナップショットの更新チェックを行う。
 		if (!getSnapshot().isModified()) {
 			// 更新されていない場合
 			// 前画面に戻る。
-			parameters.setData("QU001.class", parameters);
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+			//parameters.setData("QU001.class", parameters);
+			parameters.setData("QC006.class", this.getClass().getName());
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 edit end
 
 			// 前画面に遷移してもよければtrueを返す
 			return true;
@@ -196,38 +204,44 @@ public class QC005 extends QC005Event {
 			return false;
 		}
 
-		// ※入力チェック
-		// 入力チェックを行う。
-		if (!checkValidInput()) {
-			// エラーがある場合
-			// 処理を中断する。
-			return false;
-		}
-
-        
-		// 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
-        // 印刷対象のものを確認する
-        if(isPrintFinish()){
-            msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
-            // 更新しない場合
-            if(msgID != ACMessageBox.RESULT_YES){
-                return false;
-            }
-        }
-        // 2007/12/25 [Masahiko Higuchi] add - end        
-        
-		// エラーがない場合
-		// 処理を継続する。
-		// ※保存処理
-		// 保存処理を行う。
-		boolean saveState = false;
-
-		if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
-			saveState = doInsert();
-		} else {
-			saveState = doUpdate();
-		}
-
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+		//--del begin
+//		// ※入力チェック
+//		// 入力チェックを行う。
+//		if (!checkValidInput()) {
+//			// エラーがある場合
+//			// 処理を中断する。
+//			return false;
+//		}
+//		
+//		// 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
+//		 印刷対象のものを確認する
+//		if(isPrintFinish()){
+//		    msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
+//		    // 更新しない場合
+//		    if(msgID != ACMessageBox.RESULT_YES){
+//		        return false;
+//		    }
+//		}
+//		// 2007/12/25 [Masahiko Higuchi] add - end        
+//		
+//		// エラーがない場合
+//		// 処理を継続する。
+//		// ※保存処理
+//		// 保存処理を行う。
+//		boolean saveState = false;
+//		
+//		if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
+//			saveState = doInsert();
+//		} else {
+//			saveState = doUpdate();
+//		}
+		//--del end
+		//--add begin
+		boolean saveState = doInsertOrUpdate(false);
+		//--add end
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 edit end   居宅療養管理指導書の対象年月に複数登録対応
+		
 		if (!saveState) {
 			// 保存処理が異常終了した場合
 			// 処理を中断する。
@@ -313,25 +327,37 @@ public class QC005 extends QC005Event {
         boolean isPrinted = isPrintFinish();
         // 2007/12/25 [Masahiko Higuchi] add - end
         
-			// ※入力チェック
-			// 入力チェックを行う。
-			if (!checkValidInput()) {
-				// エラーがある場合
-				// 処理を中断する。
-				return;
-			}
-      
-			// エラーがない場合
-			// 処理を継続する。
-			// ※保存処理
-			// 保存処理を行う。
-			boolean saveState = false;
-
-			if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
-				saveState = doInsert();
-			} else {
-				saveState = doUpdate();
-			}
+			// [2014年要望][Shinobu Hitaka] 2015/01/05 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+			//--del begin
+//			// ※入力チェック
+//			// 入力チェックを行う。
+//			if (!checkValidInput()) {
+//				// エラーがある場合
+//				// 処理を中断する。
+//				return;
+//			}
+//			
+//			// エラーがない場合
+//			// 処理を継続する。
+//			// ※保存処理
+//			// 保存処理を行う。
+//			boolean saveState = false;
+//			
+//			if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
+//				saveState = doInsert();
+//			} else {
+//				saveState = doUpdate();
+//			}
+			//--del end
+			//--add begin
+			// 完了メッセージを表示しない
+        	boolean saveState = true;
+			if (getSnapshot().isModified()) {
+				saveState = doInsertOrUpdate(false);
+				isPrinted = false;
+	        }
+			//--add end
+			// [2014年要望][Shinobu Hitaka] 2015/01/05 edit end   居宅療養管理指導書の対象年月に複数登録対応
 
 			if (!saveState) {
 				// 保存処理が異常終了した場合
@@ -515,8 +541,11 @@ public class QC005 extends QC005Event {
 		// KEY : PATIENT_ID, VALUE : patientID (退避した渡りパラメータ)
 		sqlParam.setData("PATIENT_ID", new Integer(getPatientID()));
 		// KEY : TARGET_DATE, VALUE : targetDate (退避した渡りパラメータ)
-		sqlParam.setData("TARGET_DATE", getTargetDate());
-
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+		//sqlParam.setData("TARGET_DATE", getTargetDate());
+		sqlParam.setData("TARGET_DATE", ACDateUtilities.toLastDayOfMonth(getTargetDate()));
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 edit end   居宅療養管理指導書の対象年月に複数登録対応
+		
 		// 過去の直近の情報を取得するためのSQL文を取得する。
 		// 取得したSQL文を発行する。
 		VRList lastKyotakuData = getDBManager().executeQuery(
@@ -690,25 +719,32 @@ public class QC005 extends QC005Event {
 	 *             処理例外
 	 */
 	protected void insertActionPerformed(ActionEvent e) throws Exception {
-		// ※データをDBに登録
-		// ※入力チェック
-		// 入力チェックを行う。
-		if (!checkValidInput()) {
-			// エラーがある場合
-			// 処理を中断する。
-			return;
-		}
-		// エラーがない場合
-		// 処理を継続する。
-		// ※登録処理
-		// 登録処理を行う。
-        //処理が正常終了した場合
-		if(doInsert()){
-            // 処理完了通知メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
-            QkanMessageList.getInstance().INSERT_SUCCESSED();
-        }else{
-            return;
-        }
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+		//--del begin
+//		// ※データをDBに登録
+//		// ※入力チェック
+//		// 入力チェックを行う。
+//		if (!checkValidInput()) {
+//			// エラーがある場合
+//			// 処理を中断する。
+//			return;
+//		}
+//		// エラーがない場合
+//		// 処理を継続する。
+//		// ※登録処理
+//		// 登録処理を行う。
+//        //処理が正常終了した場合
+//		if(doInsert()){
+//            // 処理完了通知メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
+//            QkanMessageList.getInstance().INSERT_SUCCESSED();
+//        }else{
+//            return;
+//        }
+		//--del end
+		//--add begin
+		doInsertOrUpdate(true);
+		//--add end
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 edit end   居宅療養管理指導書の対象年月に複数登録対応
 
 	}
 
@@ -721,38 +757,46 @@ public class QC005 extends QC005Event {
 	 *             処理例外
 	 */
 	protected void updateActionPerformed(ActionEvent e) throws Exception {
-		// ※データをDBに更新
-		// ※入力チェック
-		// 入力チェックを行う。
-		if (!checkValidInput()) {
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+		//--del begin
+//		// ※データをDBに更新
+//		// ※入力チェック
+//		// 入力チェックを行う。
+//		if (!checkValidInput()) {
+//
+//			// エラーがある場合
+//			// 処理を中断する。
+//			return;
+//		}
+//        
+//        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
+//        // 印刷対象のものを確認する
+//        if(isPrintFinish()){
+//            int msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
+//            // 更新しない場合
+//            if(msgID != ACMessageBox.RESULT_YES){
+//                return;
+//            }
+//        }
+//        // 2007/12/25 [Masahiko Higuchi] add - end
+//        
+//		// エラーがない場合
+//		// 処理を継続する。
+//		// ※更新処理
+//		// 更新処理を行う。
+//        //正常に終了した場合
+//		if(doUpdate()){
+//            // 処理完了通知メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
+//            QkanMessageList.getInstance().UPDATE_SUCCESSED();
+//        }else{
+//            return;
+//        }
+		//--del end
+		//--add begin
+		doInsertOrUpdate(true);
+		//--add end
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 edit end   居宅療養管理指導書の対象年月に複数登録対応
 
-			// エラーがある場合
-			// 処理を中断する。
-			return;
-		}
-        
-        // 2007/12/25 [Masahiko Higuchi] add - begin Ver 5.4.1対応
-        // 印刷対象のものを確認する
-        if(isPrintFinish()){
-            int msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
-            // 更新しない場合
-            if(msgID != ACMessageBox.RESULT_YES){
-                return;
-            }
-        }
-        // 2007/12/25 [Masahiko Higuchi] add - end
-        
-		// エラーがない場合
-		// 処理を継続する。
-		// ※更新処理
-		// 更新処理を行う。
-        //正常に終了した場合
-		if(doUpdate()){
-            // 処理完了通知メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
-            QkanMessageList.getInstance().UPDATE_SUCCESSED();
-        }else{
-            return;
-        }
 	}
 
 	/**
@@ -1483,6 +1527,28 @@ public class QC005 extends QC005Event {
 			return false;
 		}
 
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 add begin 居宅療養管理指導書の対象年月に複数登録対応
+		// ※作成年月日・不正チェック（対象年月と異なる作成年月の場合）
+		// 画面の「作成年月日(createDateKyotaku)」の値をチェックする。
+		String strCreateDateYM = VRDateParser.format(getCreateDateKyotaku().getDate(), "yyyy/MM");
+		String strTargetDateYM = VRDateParser.format(getTargetDate(), "yyyy/MM");
+		if (strCreateDateYM.compareTo(strTargetDateYM) == 0) {
+			// 正常値の場合
+			// 処理を継続する。
+		} else {
+			// 異常値の場合
+			// ワーニングメッセージを表示する。
+		    if (QkanMessageList.getInstance().QC005_WARNING_OF_CREATE_DATE() != ACMessageBox.RESULT_OK) {
+				// createDateKyotakuにフォーカスを当てる。
+	            getTabsArea().setSelectedIndex(2);
+	            getKyotakuPoints().setSelectedIndex(0);
+				getCreateDateKyotaku().requestFocus();
+				// 戻り値としてfalseを返し、処理を中断する。
+				return false;
+		    }
+		}
+		// [2014年要望][Shinobu Hitaka] 2015/01/05 add end   居宅療養管理指導書の対象年月に複数登録対応
+		
 		// ※今月の訪問日1・不正チェック
 		// 画面の「今月の訪問日1(visitThisMonth1)」の値が入力されているかチェックする。
 		if (ACTextUtilities.isNullText(getVisitThisMonth1().getText())) {
@@ -1863,5 +1929,235 @@ public class QC005 extends QC005Event {
         }
         
     }
+
+    /**
+     * 「居宅療養管理指導書情報取得」に関する処理を行ないます。
+     * 利用者と対象年月から入力した作成年月日情報が存在するかをチェックします。
+     * @throws Exception
+     *             処理例外
+     * @author Shinobu Hitaka
+     * @since Ver.6.2.3
+     */
+    protected Date getUpdateTargetDate() throws Exception {
+    	
+    	Date targetDate = null;
+    	
+        // 居宅療養管理指導履歴情報取得を行う。
+
+        // 取得のためにHashMap：paramを生成し、以下のKEY/VALUEを設定する。
+        VRMap sqlParam = new VRHashMap();
+
+        // KEY：PATIENT_ID　VALUE：patientId
+        VRBindPathParser.set("PATIENT_ID", sqlParam,
+                new Integer(getPatientID()));
+        // KEY：TARGET_DATE_START VALUE：targetDate の月初
+        sqlParam.setData("TARGET_DATE_START",
+                ACDateUtilities.toFirstDayOfMonth(getTargetDate()));
+        // KEY：TARGET_DATE_START VALUE：targetDate の月末
+        sqlParam.setData("TARGET_DATE_END",
+                ACDateUtilities.toLastDayOfMonth(getTargetDate()));
+
+		// kyotakuDataに、画面から抽出した情報を格納する。
+        VRMap kyotakuData = getKyotakuData();
+		getContents().setSource(kyotakuData);
+		getContents().applySource();
+		
+        // CREATE_DATE_KYOTAKU VALUE：createDate
+        sqlParam.setData("CREATE_DATE_KYOTAKU",
+        		kyotakuData.getData("CREATE_DATE_KYOTAKU"));
+
+        // 居宅療養管理指導履歴情報を取得し存在有無を返す。
+        String strSql = getSQL_GET_KYOTAKU_RYOYO_CREATEDATE(sqlParam);
+        VRList kyotakuList = getDBManager().executeQuery(strSql);
+        
+        if(kyotakuList != null && kyotakuList.size() > 0){
+            for(int i = 0; i < kyotakuList.size(); i++){
+                VRMap map = new VRHashMap();
+                map = (VRMap)kyotakuList.getData(i);
+                //キーとなる対象年月日を取得する
+                targetDate = ACCastUtilities.toDate(map.getData("TARGET_DATE"));
+            }
+            if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
+    			// パッシブキーを登録する。
+    			// reservedPassive(PASSIVE_CHECK_KEY, (取得したレコード集合));
+    			getPassiveChecker().clearReservedPassive();
+    			getPassiveChecker().reservedPassive(getPASSIVE_CHECK_KEY(), kyotakuList);
+            }
+        }
+        
+        return targetDate;
+    }
+    
+    /**
+     * 「居宅療養管理指導書情報取得」に関する処理を行ないます。
+     * 利用者と対象年月から入力した作成年月日情報が存在するかをチェックします。
+     * @throws Exception
+     *             処理例外
+     * @author Shinobu Hitaka
+     * @since Ver.6.2.3
+     */
+    protected Date getInsertTargetDate() throws Exception {
+        // 新規登録用の対象年月日を取得する
+    	
+        // 居宅療養管理指導履歴情報取得を行う。
+
+        // 取得のためにHashMap：paramを生成し、以下のKEY/VALUEを設定する。
+        VRMap sqlParam = new VRHashMap();
+
+        // KEY：PATIENT_ID　VALUE：patientId
+        VRBindPathParser.set("PATIENT_ID", sqlParam,
+                new Integer(getPatientID()));
+        // KEY：TARGET_DATE_START VALUE：targetDate の月初
+        sqlParam.setData("TARGET_DATE_START",
+                ACDateUtilities.toFirstDayOfMonth(getTargetDate()));
+        // KEY：TARGET_DATE_START VALUE：targetDate の月末
+        sqlParam.setData("TARGET_DATE_END",
+                ACDateUtilities.toLastDayOfMonth(getTargetDate()));
+
+        // 居宅療養管理指導履歴情報を取得し存在有無を返す。
+        String strSql = getSQL_GET_KYOTAKU_RYOYO_CREATEDATE(sqlParam);
+        VRList kyotakuList = getDBManager().executeQuery(strSql);
+        
+        // 登録されていない日付を取得する。
+        int maxDay = ACDateUtilities.getDayOfMonth(ACDateUtilities.toLastDayOfMonth(getTargetDate()));
+        int targetDay = 1;
+        int cnt = 0;
+        
+        // 対象年月日の最大＋１を取得する
+        if(kyotakuList != null && kyotakuList.size() > 0){
+            for(int i = 0; i < kyotakuList.size(); i++){
+                //キーとなる対象年月日を取得する
+                int listDay = ACDateUtilities.getDayOfMonth(
+                        ACCastUtilities.toDate(VRBindPathParser.get("TARGET_DATE", (VRMap) kyotakuList.getData(i))));
+                if (listDay > targetDay) {
+                	targetDay = listDay;
+                }
+            }
+	        targetDay = targetDay + 1;
+	    	
+	    	// 月末を超えたら途中の登録されていない日を探す
+	    	if (targetDay > maxDay) {
+		    	targetDay = 1;
+		    	cnt = 0;
+		        for (cnt = 1; cnt <= maxDay; cnt++) {
+		        	boolean findFlg = false;
+		        	for(int i = 0; i < kyotakuList.size(); i++){
+		                int listDay = ACDateUtilities.getDayOfMonth(
+		                        ACCastUtilities.toDate(VRBindPathParser.get("TARGET_DATE", (VRMap) kyotakuList.getData(i))));
+		                if (listDay == cnt) {
+		                	findFlg = true;
+		                    break;
+		                }
+		            }
+		        	if (!findFlg) {
+		        		break;
+		        	}
+		        }
+		        targetDay = cnt;
+	    	}
+        }
+        
+        // 対象月の日数分を最大登録可能件数とするため、それ以上は新規登録できない。
+        if (targetDay > maxDay) {
+            return null;
+        } else {
+        	Date targetDate = ACDateUtilities.createDate(
+                    ACDateUtilities.getYear(getTargetDate()), ACDateUtilities.getMonth(getTargetDate()), targetDay);
+        	return targetDate;
+        }
+
+    }
+
+    /**
+     * 「居宅療養管理指導書情報登録または更新」に関する処理を行ないます。
+     * 利用者と対象年月から入力した作成年月日情報が存在するかをチェックします。
+     * 　存在する場合　：更新確認画面を表示し、更新処理を行います。
+     * 　存在しない場合：新規登録処理を行います。
+     * ※一覧から遷移した時の状態に関わらず、作成年月日の有無で処理を決定します。
+	 * @param bDispMsg 完了メッセージ表示有無（true:表示／false:非表示）
+     * @throws Exception
+     *             処理例外
+     * @author Shinobu Hitaka
+     * @since Ver.6.2.3
+     */
+    protected boolean doInsertOrUpdate(boolean bDispMsg) throws Exception {
+    	
+		// ※データをDBに更新
+		// ※入力チェック
+		// 入力チェックを行う。
+		if (!checkValidInput()) {
+
+			// エラーがある場合
+			// 処理を中断する。
+			return false;
+		}
+        
+		//同じ対象年月、作成年月日の情報存在チェック
+		Date wkTargetDate = getUpdateTargetDate();
+		if(wkTargetDate != null) {
+			//現在編集中の情報は確認画面を表示しない
+			if(ACDateUtilities.compareOnDay(getTargetDate(),wkTargetDate) != 0) {
+				//更新
+				//更新確認画面を表示する。
+				int msgID = QkanMessageList.getInstance().QC005_WARNING_OF_HISTORY_KYOTAKU_RYOYO();
+				if(msgID != ACMessageBox.RESULT_YES){
+					// 更新しない場合
+					return false;
+				}
+				
+				//対象年月日を更新用に設定する
+				setTargetDate(wkTargetDate);
+				setProcessMode(QkanConstants.PROCESS_MODE_UPDATE);
+				
+			}
+			// 印刷完了を確認する
+			if(isPrintFinish()){
+				int msgID = QkanMessageList.getInstance().QC005_WARNING_OF_PRINTED_KYOTAKU_RYOYO("居宅療養管理指導書");
+				// 更新しない場合
+				if(msgID != ACMessageBox.RESULT_YES){
+					return false;
+				}
+			}
+		} else {
+			//新規
+			//対象年月日を新規用に設定する
+			wkTargetDate = getInsertTargetDate();
+			if (wkTargetDate != null) {
+				setTargetDate(wkTargetDate);
+				setProcessMode(QkanConstants.PROCESS_MODE_INSERT);
+			}else{
+				QkanMessageList.getInstance().QC005_ERROR_OF_MAX_KYOTAKU_RYOYO();
+				return false;
+			}
+		}
+		
+		// エラーがない場合
+		// 処理を継続する。
+		// ※更新処理
+		// 更新処理を行う。
+        //正常に終了した場合
+		if (getProcessMode() == QkanConstants.PROCESS_MODE_INSERT) {
+			if(doInsert()){
+				// 処理完了通知メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
+				if (bDispMsg == true) {
+					QkanMessageList.getInstance().INSERT_SUCCESSED();
+				}
+			}else{
+				return false;
+			}
+		} else {
+			if(doUpdate()){
+				// 処理完了通知メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
+				if (bDispMsg == true) {
+					QkanMessageList.getInstance().UPDATE_SUCCESSED();
+				}
+			}else{
+				return false;
+			}
+		}
+		
+		return true;
+    }
+    
 
 }

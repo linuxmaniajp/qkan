@@ -68,6 +68,8 @@ public class QP001Style1{
     private QP001RecordCareSupplyClaim publicExpense19 = new QP001RecordCareSupplyClaim();
     //“Á’è¾Š³“™¡—ÃŒ¤‹†
     private QP001RecordCareSupplyClaim publicExpense51 = new QP001RecordCareSupplyClaim();
+    //“ï•a [2015”N1Œ‰ü³][Shinobu Hitaka] 2014/11/11 add
+    private QP001RecordCareSupplyClaim publicExpense54 = new QP001RecordCareSupplyClaim();
     //áŠQÒEx‰‡‘[’u
     private QP001RecordCareSupplyClaim publicExpense57 = new QP001RecordCareSupplyClaim();
     //”í”šÒ•¬
@@ -373,6 +375,11 @@ public class QP001Style1{
                 publicExpense51.parseKohi(map,2,"51","00",kohiPosition);
                 break;
                 
+            //“ï•a [2015”N1Œ‰ü³][Shinobu Hitaka] 2014/11/11 add
+            case 54:
+                publicExpense54.parseKohi(map,2,"54","00",kohiPosition);
+                break;
+                    
             //áŠQÒEx‰‡‘[’u
             case 57:
                 publicExpense57.parseKohi(map,2,"57","00",kohiPosition);
@@ -471,6 +478,11 @@ public class QP001Style1{
             //“Á’è¾Š³“™¡—ÃŒ¤‹†”ï
             case 51:
                 publicExpense51.parseCategory7(map);
+                break;
+                
+            //“ï•a [2015”N1Œ‰ü³][Shinobu Hitaka] 2014/11/11 add
+            case 54:
+                publicExpense54.parseCategory7(map);
                 break;
                 
             //áŠQÒEx‰‡‘[’u
@@ -583,6 +595,11 @@ public class QP001Style1{
         //“Á’è¾Š³“™¡—ÃŒ¤‹†
         if(!publicExpense51.isNew()){
             list.add(publicExpense51.getRecord());
+        }
+        
+        //“ï•a [2015”N1Œ‰ü³][Shinobu Hitaka] 2014/11/11 add
+        if(!publicExpense54.isNew()){
+            list.add(publicExpense54.getRecord());
         }
         
         //áŠQÒEx‰‡‘[’u

@@ -624,8 +624,14 @@ public interface QkanConstants {
      * 平成20年5月1日の定数です。
      */
     public static final Date H2005 = ACDateUtilities.createDate(2008, 5, 1);
-
+    /**
+     * 平成21年4月1日の定数です。
+     */
     public static final Date H2104 = ACDateUtilities.createDate(2009, 4, 1);
+    /**
+     * 平成27年1月1日の定数です。
+     */
+    public static final Date H2701 = ACDateUtilities.createDate(2015, 1, 1);
 
     /**
      * 20090401-サービスの法改正区分における[平成21年4月1日以降]を表す定数です。

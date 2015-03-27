@@ -342,6 +342,8 @@ public class QP001InformationProcessing {
 		case 165602:
 		case 165603:
 		case 165604:
+		//[CCCX:1616,2096][Shinobu Hitaka] 2014/11/25 add 「16 5610：通所リハ重度療養管理加算」を追加
+		case 165610:
 		//小規模多機能　事業所開始時加算
 		case 736139:
 		case 736140:
@@ -505,6 +507,15 @@ public class QP001InformationProcessing {
 	private void reflect4details(VRMap map) throws Exception {
 		//多床室
 		setMultiRoom(map);
+		
+		//[CCCX:1616,2096][Shinobu Hitaka] 2014/12/11 add begin「22 6278，22 6278：短期入所療養介護（老健）の重度療養管理加算１，２」を追加
+		switch(getServiceCode(map)) {
+		case 226278:
+		case 226279:
+			setSameDetails(map);
+			break;
+		}
+		//[CCCX:1616,2096][Shinobu Hitaka] 2014/12/11 add end  「22 6278，22 6278：短期入所療養介護（老健）の重度療養管理加算１，２」を追加
 	}
 	
 	/**

@@ -167,6 +167,7 @@ public abstract class QP001Event extends QP001SQL {
             }
             lockFlag = true;
             try {
+            	setButtonState();	// 2014.12.11 Hitaka add
                 if (e.getClickCount() == 2) {
                 	infoTableSelectionchangedDouble(e);
                 }
@@ -453,6 +454,15 @@ public abstract class QP001Event extends QP001SQL {
   protected abstract void infoTableSelectionchangedDouble(MouseEvent e) throws Exception;
   protected abstract void printListActionPerformed(ActionEvent e) throws Exception;
   protected abstract void claimDateChangePermitPerformed(ActionEvent e) throws Exception;
+  
+  /**
+   * 一覧の行選択（マウスクリック）時の業務ボタン表示設定処理」イベントです。
+   * 2014.12.11 Shinobu Hitaka add
+   * @param なし
+   * @throws Exception 処理例外
+   */
+  protected abstract void setButtonState() throws Exception;
+  
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_KEY;

@@ -1325,4 +1325,162 @@ public class QC005SQL extends QC005State {
     return sb.toString();
   }
 
+  /**
+   * 利用者、対象年月、作成日が一致するデータを取得するためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_KYOTAKU_RYOYO_CREATEDATE(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",TARGET_DATE");
+
+    sb.append(",JOTAI_CODE");
+
+    sb.append(",SHOGAI_JIRITSUDO");
+
+    sb.append(",NINCHISHO_JIRITSUDO");
+
+    sb.append(",PATIENT_ADDRESS");
+
+    sb.append(",PATIENT_TEL_FIRST");
+
+    sb.append(",PATIENT_TEL_SECOND");
+
+    sb.append(",PATIENT_TEL_THIRD");
+
+    sb.append(",CREATE_DATE_ZAITAKU");
+
+    sb.append(",VISIT_THIS_MONTH_NO1");
+
+    sb.append(",VISIT_THIS_MONTH_NO2");
+
+    sb.append(",VISIT_THIS_MONTH_NO3");
+
+    sb.append(",VISIT_THIS_MONTH_NO4");
+
+    sb.append(",VISIT_THIS_MONTH_NO5");
+
+    sb.append(",VISIT_THIS_MONTH_NO6");
+
+    sb.append(",VISIT_NEXT_MONTH_NO1");
+
+    sb.append(",VISIT_NEXT_MONTH_NO2");
+
+    sb.append(",VISIT_NEXT_MONTH_NO3");
+
+    sb.append(",VISIT_NEXT_MONTH_NO4");
+
+    sb.append(",VISIT_NEXT_MONTH_NO5");
+
+    sb.append(",VISIT_NEXT_MONTH_NO6");
+
+    sb.append(",ADVICE_MONTH");
+
+    sb.append(",ADVICE");
+
+    sb.append(",MEDICAL_FACILITY_NAME");
+
+    sb.append(",DOCTOR_NAME");
+
+    sb.append(",MEDICAL_FACILITY_ADDRESS");
+
+    sb.append(",MEDICAL_FACILITY_TEL_FIRST");
+
+    sb.append(",MEDICAL_FACILITY_TEL_SECOND");
+
+    sb.append(",MEDICAL_FACILITY_TEL_THIRD");
+
+    sb.append(",SENMONIN");
+
+    sb.append(",PROVIDER_NAME");
+
+    sb.append(",CREATE_DATE_KYOTAKU");
+
+    sb.append(",CONDITION");
+
+    sb.append(",CONDITION_PASSAGE");
+
+    sb.append(",NOTE_OF_KAIGO_SERVICE");
+
+    sb.append(",NOTE_OF_DAILY_LIFE");
+
+    sb.append(",REMARKS");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(" FROM");
+
+    sb.append(" KYOTAKU_RYOYO");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    if (VRBindPathParser.get("CREATE_DATE_KYOTAKU", sqlParam) != null) {
+
+        sb.append("AND");
+
+        sb.append("(");
+
+        sb.append(" CREATE_DATE_KYOTAKU");
+
+        sb.append(" =");
+
+        sb.append(dateFormat.format(VRBindPathParser.get("CREATE_DATE_KYOTAKU", sqlParam), "yyyy-MM-dd"));
+
+        sb.append(")");
+
+    }
+
+    sb.append(" ORDER BY");
+
+    sb.append(" TARGET_DATE");
+
+    sb.append(" ASC");
+
+    return sb.toString();
+  }
+  
 }

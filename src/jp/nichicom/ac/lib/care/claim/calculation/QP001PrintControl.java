@@ -766,6 +766,14 @@ public class QP001PrintControl {
                 continue;
             }
             
+            // [2015年1月改正][Shinobu Hitaka] 2014/12/11 add start 公費54追加に伴う様式修正に対応
+            // １行目の対象年月でマスタ取得しているので異なる対象年月になったら再取得する
+            Date targetDate = ACCastUtilities.toDate(map.get("TARGET_DATE"));
+            if (ACDateUtilities.compareOnDay(manager.getTargetDate(), targetDate) != 0){
+                manager = new QP001Manager(dbm, targetDate);
+            }
+            // [2015年1月改正][Shinobu Hitaka] 2014/12/11 add end   公費54追加に伴う様式修正に対応
+            
             // 介護給付費請求書(QP00102)のデータを設定する。
             String style1Target = QP001Style1.getSerialId(claimList);
             // 既に設定している場合

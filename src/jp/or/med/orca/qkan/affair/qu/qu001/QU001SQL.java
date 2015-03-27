@@ -33,6 +33,7 @@ import java.util.Stack;
 import jp.nichicom.ac.text.ACSQLSafeDateFormat;
 import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
 import jp.nichicom.ac.text.ACSQLSafeStringFormat;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRMap;
 
@@ -796,6 +797,20 @@ public class QU001SQL extends QU001State {
 
     firstCondition = ((Boolean)conditionStack.pop()).booleanValue();
 
+    sb.append(" ORDER BY");
+
+    sb.append(" PATIENT.PATIENT_FAMILY_KANA");
+
+    sb.append(" ASC");
+
+    sb.append(",PATIENT.PATIENT_FIRST_KANA");
+
+    sb.append(" ASC");
+
+    sb.append(",KYOTAKU_RYOYO.CREATE_DATE_KYOTAKU");
+
+    sb.append(" ASC");
+
     return sb.toString();
   }
 
@@ -950,15 +965,45 @@ public class QU001SQL extends QU001State {
 
     sb.append("AND");
 
-    sb.append("(");
+    // [2014”N—v–]][Shinobu Hitaka] 2014/12/02 add begin ‹‘î—Ã—{ŠÇ—Žw“±‘‚Ì‘ÎÛ”NŒŽ‚É•¡”“o˜^‘Î‰ž
+    if (ACTextUtilities.isNullText(VRBindPathParser.get("TARGET_DATE_START", sqlParam))) {
 
-    sb.append(" TARGET_DATE");
+        sb.append("(");
 
-    sb.append(" =");
+        sb.append(" TARGET_DATE");
 
-    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+        sb.append(" =");
 
-    sb.append(")");
+        sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+
+        sb.append(")");
+
+    } else {
+
+        sb.append("(");
+
+        sb.append(" TARGET_DATE");
+
+        sb.append(" >=");
+
+        sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
+
+        sb.append(")");
+
+        sb.append("AND");
+
+        sb.append("(");
+
+        sb.append(" TARGET_DATE");
+
+        sb.append(" <=");
+
+        sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
+
+        sb.append(")");
+
+    }
+    // [2014”N—v–]][Shinobu Hitaka] 2014/12/02 add end   ‹‘î—Ã—{ŠÇ—Žw“±‘‚Ì‘ÎÛ”NŒŽ‚É•¡”“o˜^‘Î‰ž
 
     return sb.toString();
   }

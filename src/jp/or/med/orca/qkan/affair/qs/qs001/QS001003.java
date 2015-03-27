@@ -18,11 +18,11 @@
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
  * 作成日: 2006/02/15  日本コンピューター株式会社 堤 瑞樹 新規作成
- * 更新日: ----/--/--
+ * 更新日: 2014/10/23  MIS九州株式会社 日高 しのぶ
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定・実績 (001)
- * プログラム 利用・提供票印刷 (QS001031)
+ * プログラム 利用・提供票印刷 (QS001003)
  *
  *****************************************************************
  */
@@ -251,6 +251,22 @@ public class QS001003 extends QS001003Event {
 		mng.initialize(getCalcurater());
 		mng.parse(getServiceData());
 		mng.setBuildDivedProvider(divedProvider);
+		
+		// [2014年要望][Shinobu Hitaka] 2014/10/23 add begin 敬称表示
+		switch (getSlitKeisyo().getSelectedIndex()) {
+		case 1:
+		    mng.setPrintKeisyo("　様");
+		    break;
+		case 2:
+		    mng.setPrintKeisyo("　殿");
+		    break;
+		default:
+		    mng.setPrintKeisyo("");
+		    break;
+		}
+		setProperty("PrintConfig/KeishoRadio", String.valueOf(getSlitKeisyo().getSelectedIndex()));
+		saveProperty();
+		// [2014年要望][Shinobu Hitaka] 2014/10/23 add end   敬称表示
 
 		CareServicePrintParameter buildParam = new CareServicePrintParameter();
 		buildParam.setPrintParameter(printParam);
@@ -846,6 +862,21 @@ public class QS001003 extends QS001003Event {
 		// ※印刷する帳票の種類
 		getSlitType().setSelectedIndex(1);
 		getSlitKind().setSelectedIndex(1);
+		
+		//[2014年要望][Shinobu Hitaka] 2014/10/23 add begin 敬称を印字する
+		// 設定ファイルのPrintConfig-KeishoRadioが1の場合
+		int keisyoIndex = 1;
+		if (ACFrame.getInstance().hasProperty("PrintConfig/KeishoRadio")) {
+			String strKeisyo = getProperty("PrintConfig/KeishoRadio");
+			if ("2".equals(strKeisyo)) {
+				keisyoIndex = 2;
+			} else if ("3".equals(strKeisyo)) {
+				keisyoIndex = 3;
+			}
+		}
+		getSlitKeisyo().setSelectedIndex(keisyoIndex);
+		//getKeisyo().setVisible(false);
+		//[2014年要望][Shinobu Hitaka] 2014/10/23 add end   敬称を印字する
 
 	}
 

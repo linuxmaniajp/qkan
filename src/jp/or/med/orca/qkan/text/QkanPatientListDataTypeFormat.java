@@ -137,6 +137,10 @@ public class QkanPatientListDataTypeFormat extends Format {
         }else if("QC005".equals(nextAffair)){
             code = 1;
             
+        // [2014”N—v–]][Shinobu Hitaka] 2014/12/02 add begin ‹‘î—Ã—{ŠÇ—w“±‘‚Ì‘ÎÛ”NŒ‚É•¡”“o˜^‘Î‰
+        }else if("QC006".equals(nextAffair)){
+            code = 1;
+        // [2014”N—v–]][Shinobu Hitaka] 2014/12/02 add end   ‹‘î—Ã—{ŠÇ—w“±‘‚Ì‘ÎÛ”NŒ‚É•¡”“o˜^‘Î‰
         }else if("QS001".equals(nextAffair)){
             code = 0;
             

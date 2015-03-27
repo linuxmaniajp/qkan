@@ -19,15 +19,16 @@
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
  * 作成日: 2006/06/09  日本コンピューター株式会社 小笠　貴志 新規作成
- * 更新日: ----/--/--
+ * 更新日: 2014/10/23  MIS九州株式会社 日高 しのぶ
  * システム 給付管理台帳 (Q)
  * サブシステム サービス作成/変更 (S)
  * プロセス サービス予定・実績 (001)
- * プログラム 利用・提供票印刷 (QS001031)
+ * プログラム 利用・提供票印刷 (QS001003)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -57,7 +58,7 @@ import jp.or.med.orca.qkan.affair.QkanAffairDialog;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.component.QkanDateTextField;
 /**
- * 利用・提供票印刷画面項目デザイン(QS001031) 
+ * 利用・提供票印刷画面項目デザイン(QS001003) 
  */
 @SuppressWarnings("serial")
 public class QS001003Design extends QkanAffairDialog {
@@ -184,6 +185,18 @@ public class QS001003Design extends QkanAffairDialog {
   private ACRadioButtonItem useVoteKind;
 
   private ACRadioButtonItem attachedTable;
+
+  private ACGroupBox slitKeisyos;
+
+  private ACClearableRadioButtonGroup slitKeisyo;
+
+  private ACListModelAdapter slitKeisyoModel;
+
+  private ACRadioButtonItem sama;
+
+  private ACRadioButtonItem dono;
+
+  private ACRadioButtonItem nashi;
 
   private ACPanel printButtonArea;
 
@@ -1273,6 +1286,115 @@ public class QS001003Design extends QkanAffairDialog {
   }
 
   /**
+   * 敬称種類選択フレームを取得します。
+   * @return 敬称種類選択フレーム
+   */
+  public ACGroupBox getSlitKeisyos(){
+    if(slitKeisyos==null){
+
+      slitKeisyos = new ACGroupBox();
+
+      slitKeisyos.setText("印刷する利用者の敬称");
+
+      addSlitKeisyos();
+    }
+    return slitKeisyos;
+
+  }
+
+  /**
+   * 種類選択を取得します。
+   * @return 種類選択
+   */
+  public ACClearableRadioButtonGroup getSlitKeisyo(){
+    if(slitKeisyo==null){
+
+      slitKeisyo = new ACClearableRadioButtonGroup();
+
+      slitKeisyo.setBindPath("SLIT_KEISYO");
+
+      slitKeisyo.setUseClearButton(false);
+
+      slitKeisyo.setModel(getSlitKeisyoModel());
+
+      /** @TODO H26年度追加 */
+
+      addSlitKeisyo();
+    }
+    return slitKeisyo;
+
+  }
+
+  /**
+   * 種類選択モデルを取得します。
+   * @return 種類選択モデル
+   */
+  protected ACListModelAdapter getSlitKeisyoModel(){
+    if(slitKeisyoModel==null){
+      slitKeisyoModel = new ACListModelAdapter();
+      addSlitKeisyoModel();
+    }
+    return slitKeisyoModel;
+  }
+
+  /**
+   * 様を取得します。
+   * @return 様
+   */
+  public ACRadioButtonItem getSama(){
+    if(sama==null){
+
+      sama = new ACRadioButtonItem();
+
+      sama.setText("様");
+
+      sama.setGroup(getSlitKeisyo());
+
+      addSama();
+    }
+    return sama;
+
+  }
+
+  /**
+   * 殿を取得します。
+   * @return 殿
+   */
+  public ACRadioButtonItem getDono(){
+    if(dono==null){
+
+      dono = new ACRadioButtonItem();
+
+      dono.setText("殿");
+
+      dono.setGroup(getSlitKeisyo());
+
+      addDono();
+    }
+    return dono;
+
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getNashi(){
+    if(nashi==null){
+
+      nashi = new ACRadioButtonItem();
+
+      nashi.setText("なし");
+
+      nashi.setGroup(getSlitKeisyo());
+
+      addNashi();
+    }
+    return nashi;
+
+  }
+
+  /**
    * パネルを取得します。
    * @return パネル
    */
@@ -1782,6 +1904,8 @@ public class QS001003Design extends QkanAffairDialog {
 
     lowers.add(getSlitKinds(), VRLayout.WEST);
 
+    lowers.add(getSlitKeisyos(), VRLayout.WEST);
+
     lowers.add(getPrintButtonArea(), VRLayout.CLIENT);
 
   }
@@ -1884,6 +2008,62 @@ public class QS001003Design extends QkanAffairDialog {
    * 別表に内部項目を追加します。
    */
   protected void addAttachedTable(){
+
+  }
+
+  /**
+   * 敬称種類選択フレームに内部項目を追加します。
+   */
+  protected void addSlitKeisyos(){
+
+    slitKeisyos.add(getSlitKeisyo(), null);
+
+  }
+
+  /**
+   * 種類選択に内部項目を追加します。
+   */
+  protected void addSlitKeisyo(){
+
+  }
+
+  /**
+   * 種類選択モデルに内部項目を追加します。
+   */
+  protected void addSlitKeisyoModel(){
+
+    getSama().setButtonIndex(1);
+
+    getSlitKeisyoModel().add(getSama());
+
+    getDono().setButtonIndex(2);
+
+    getSlitKeisyoModel().add(getDono());
+
+    getNashi().setButtonIndex(3);
+
+    getSlitKeisyoModel().add(getNashi());
+
+  }
+
+  /**
+   * 様に内部項目を追加します。
+   */
+  protected void addSama(){
+
+  }
+
+  /**
+   * 殿に内部項目を追加します。
+   */
+  protected void addDono(){
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addNashi(){
 
   }
 

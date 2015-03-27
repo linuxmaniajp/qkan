@@ -38,10 +38,12 @@ import java.util.Date;
 import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
@@ -70,6 +72,7 @@ import jp.or.med.orca.qkan.affair.qc.qc004.QC004;
 import jp.or.med.orca.qkan.affair.qc.qc005.QC005;
 import jp.or.med.orca.qkan.affair.qc.qc005.QC005P01;
 import jp.or.med.orca.qkan.affair.qc.qc005.QC005P02;
+import jp.or.med.orca.qkan.affair.qc.qc006.QC006;
 import jp.or.med.orca.qkan.affair.qs.qs001.QS001;
 import jp.or.med.orca.qkan.affair.qu.qu002.QU002;
 import jp.or.med.orca.qkan.text.QkanPatientListDataTypeFormat;
@@ -753,7 +756,11 @@ public class QU001 extends QU001Event {
 					.setMinimumDate(ACCastUtilities.toDate("2006/04/01"));
 			// [ID:0000667][Masahiko.Higuchi] 2012/12 add end
 
-		} else if ("QC005".equals(getNextAffair())) {
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 add - begin 居宅療養管理指導書一覧追加
+		//} else if ("QC005".equals(getNextAffair())) {
+		} else if ("QC005".equals(getNextAffair()) || "QC006".equals(getNextAffair())) {
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 add - end   居宅療養管理指導書一覧追加
+			
 			// 「QC005」の場合
 
 			// 2008/01/07 [Masahiko Higuchi] del - begin 居宅療養管理指導書一括印刷
@@ -770,7 +777,7 @@ public class QU001 extends QU001Event {
 					.setMinimumDate(ACCastUtilities.toDate("2006/04/01"));
 			// [ID:0000667][Masahiko.Higuchi] 2012/12 add end
 
-		}
+        }
 
 		// ※対象年月の設定
 		// システムから、「システム日付」を取得する。
@@ -905,8 +912,12 @@ public class QU001 extends QU001Event {
 		VRList patientData = new VRArrayList();
 		patientData = getDBManager().executeQuery(strSql);
 
+        // [2014年要望][Shinobu Hitaka] 2014/12/02 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+		// "QC006"を条件に追加
+		//
 		// 2008/01/07 [Masahiko Higuchi] add - begin 居宅療養管理指導書の一括印刷
-		if ("QC005".equals(getNextAffair())) {
+		// if ("QC005".equals(getNextAffair())) {
+	    if ("QC005".equals(getNextAffair()) || "QC006".equals(getNextAffair())) {
 			// 業務独自検索処理
 			patientData = doFindQC005(patientData, sqlParam);
 			if (patientData == null) {
@@ -915,7 +926,9 @@ public class QU001 extends QU001Event {
 			}
 		}
 		// 2008/01/07 [Masahiko Higuchi] add - end
-
+		//
+	    // [2014年要望][Shinobu Hitaka] 2014/12/02 edit end   居宅療養管理指導書の対象年月に複数登録対応
+		
 		// patientDataを退避する。
 		setPatientData(patientData);
 
@@ -1344,6 +1357,23 @@ public class QU001 extends QU001Event {
 			// className : QC005.class.getName(), parameters : param
 			affair = new ACAffairInfo(QC005.class.getName(), param);
 
+		} else if ("QC006".equals(getNextAffair())) {
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+			// 「QC006」の場合
+			
+			// paramに下記パラメータを設定する。
+			// KEY : PATIENT_ID, VALUE : (取得した利用者ID)
+			// KEY : TARGET_DATE, VALUE : (画面「対象年月(targetDate)」の値)
+			VRBindPathParser.set("PATIENT_ID", param, new Integer(patientId));
+			VRBindPathParser.set("TARGET_DATE", param, getTargetDate()
+					.getDate());
+			
+			// 下記パラメータにてaffairを生成する。
+			// className : QC006.class.getName(), parameters : param
+			affair = new ACAffairInfo(QC006.class.getName(), param);
+			
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+
 		} else if ("QS001".equals(getNextAffair())) {
 			// 「QS001」の場合
 
@@ -1564,7 +1594,12 @@ public class QU001 extends QU001Event {
 	 * 
 	 */
 	protected void printReportActionPerformed(ActionEvent e) throws Exception {
-		if ("QC005".equals(getNextAffair())) {
+		
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+	    //if ("QC005".equals(getNextAffair())) {
+		if ("QC005".equals(getNextAffair()) || "QC006".equals(getNextAffair())) {
+		// [2014年要望][Shinobu Hitaka] 2014/12/02 edit end   居宅療養管理指導書の対象年月に複数登録対応
+			
 			// テーブルよりデータを取得
 			VRList patientList = (VRList) getPatientTableModel().getAdaptee();
 			// 印刷前チェック
@@ -1572,10 +1607,30 @@ public class QU001 extends QU001Event {
 			// 印刷対象データ格納要
 			VRList printData = new VRArrayList();
 			ACSplash splash = null;
+			
+			// [2014年要望][Shinobu Hitaka] 2015/01/05 add begin 居宅療養管理指導書の対象年月に複数登録対応
+			// 印刷対象が「印刷済を含めない」または「全て」かを確認する
+			int printMode = 0;
+			if (result == PRINT_NORMAL || result == PRINT_EMPTY_AND_TARGET || result == PRINT_NO_SELECT){
+				int msgID = QkanMessageList.getInstance().QU001_WARNING_OF_PRINT_MODE();
+				if (msgID == ACMessageBox.RESULT_CANCEL) {
+					return;
+				} else if (msgID == ACMessageBox.RESULT_YES) {
+					printMode = 0;
+				} else {
+					printMode = 1;
+				}
+			}
+			// [2014年要望][Shinobu Hitaka] 2015/01/05 add end   居宅療養管理指導書の対象年月に複数登録対応
+			
 			switch (result) {
 			case PRINT_NORMAL: // 正常
 			case PRINT_EMPTY_AND_TARGET: // データ混合（印刷続行）
 				try {
+					// [2014年要望][Shinobu Hitaka] 2015/01/05 add begin 居宅療養管理指導書の対象年月に複数登録対応
+					boolean isPrint = false;
+					// [2014年要望][Shinobu Hitaka] 2015/01/05 add end
+					
 					// スプラッシュの生成
 					splash = (ACSplash) ACFrame.getInstance()
 							.getFrameEventProcesser()
@@ -1587,10 +1642,42 @@ public class QU001 extends QU001Event {
 								"CHOISE", editMap))) {
 							// 居宅療養管理指導データ
 							if (VRBindPathParser.has("TARGET_DATE", editMap)) {
-								printData.add(editMap);
+								
+								// [2014年要望][Shinobu Hitaka] 2015/01/05 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+								// 検索時に保持した居宅療養管理指導情報より利用者と印刷未完了で絞り込み印刷する
+								//--del begin
+								// 検索時に保持した居宅療養管理指導情報より利用者で絞り込み全て印刷する
+								//printData.add(editMap);
+								//--del end
+								//--add begin
+								//印刷確定フラグを保持する
+								int finishFlag = ACCastUtilities.toInt(editMap.getData("FINISH_FLAG"),0);
+								//複数の居宅療養管理指導書を取得する
+								VRList kyotakuData = doFindPrintDataQC006(editMap, printMode);
+								for (int k = 0; k < kyotakuData.size(); k++) {
+									VRMap kyotakuMap = new VRHashMap();
+									kyotakuMap = (VRMap) kyotakuData.get(k);
+									editMap.putAll(kyotakuMap);
+									printData.add(QkanValidServiceCommon.deepCopyVRMap(editMap));
+									
+									// 印刷対象あり
+									isPrint = true;
+								}
+								//印刷確定フラグを元に戻す
+								VRBindPathParser.set("FINISH_FLAG", editMap, finishFlag);
+								//--add end
+								// [2014年要望][Shinobu Hitaka] 2015/01/05 edit end   居宅療養管理指導書の対象年月に複数登録対応
 							}
 						}
 					}
+					// [2014年要望][Shinobu Hitaka] 2015/01/05 add begin 居宅療養管理指導書の対象年月に複数登録対応
+					// 印刷対象が存在しない場合
+					if (!isPrint) {
+						QkanMessageList.getInstance()
+								.QU001_ERROR_OF_NO_PRINT_DATA("居宅療養管理指導書");
+						return;
+					}
+					// [2014年要望][Shinobu Hitaka] 2015/01/05 add end 
 					// 印刷処理
 					if (!doPrintQC005(printData)) {
 						// 印刷失敗時
@@ -1618,17 +1705,43 @@ public class QU001 extends QU001Event {
 							// 選択ありに設定する。
 							VRBindPathParser.set("CHOISE", editMap,
 									new Boolean(true));
-							printData.add(editMap);
+							
+							// [2014年要望][Shinobu Hitaka] 2014/12/02 edit begin 居宅療養管理指導書の対象年月に複数登録対応
+							// 検索時に保持した居宅療養管理指導情報より利用者と印刷未完了で絞り込み印刷する
+							//--del begin
+							// 検索時に保持した居宅療養管理指導情報より利用者で絞り込み全て印刷する
+							//printData.add(editMap);
+							//--del end
+							//--add begin
+							//印刷確定フラグを保持する
+							int finishFlag = ACCastUtilities.toInt(editMap.getData("FINISH_FLAG"),0);
+							//複数の居宅療養管理指導書を取得する
+							VRList kyotakuData = doFindPrintDataQC006(editMap, printMode);
+							for (int k = 0; k < kyotakuData.size(); k++) {
+								VRMap kyotakuMap = new VRHashMap();
+								kyotakuMap = (VRMap) kyotakuData.get(k);
+								editMap.putAll(kyotakuMap);
+								printData.add(QkanValidServiceCommon.deepCopyVRMap(editMap));
+
+								// 印刷対象あり
+								isPrint = true;
+							}
+							//印刷確定フラグを元に戻す
+							VRBindPathParser.set("FINISH_FLAG", editMap, finishFlag);
+							//--add end
+							//--del begin
 							// 最低でも1件は印刷データがある。
-							isPrint = true;
+							//isPrint = true;
+							//--del end
+							// [2014年要望][Shinobu Hitaka] 2014/12/02 edit end   居宅療養管理指導書の対象年月に複数登録対応
 						}
 					}
 					// 印刷対象が存在しない場合
 					if (!isPrint) {
 						QkanMessageList.getInstance()
 								.QU001_ERROR_OF_NO_PRINT_DATA("居宅療養管理指導書");
+						return;
 					}
-
 					// 印刷処理
 					if (!doPrintQC005(printData)) {
 						// 印刷失敗時
@@ -1677,6 +1790,13 @@ public class QU001 extends QU001Event {
 									updateMap.getData("PATIENT_ID"));
 							updateParam.setData("TARGET_DATE",
 									updateMap.getData("TARGET_DATE"));
+							// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+							updateParam.setData("TARGET_DATE_START",
+									ACDateUtilities.toFirstDayOfMonth(ACCastUtilities.toDate(updateMap.getData("TARGET_DATE"))));
+							updateParam.setData("TARGET_DATE_END",
+									ACDateUtilities.toLastDayOfMonth(ACCastUtilities.toDate(updateMap.getData("TARGET_DATE"))));
+							setFinishFlagQC006(updateMap.getData("PATIENT_ID"));
+							// [2014年要望][Shinobu Hitaka] 2014/12/02 add end   居宅療養管理指導書の対象年月に複数登録対応
 							// 更新処理
 							getDBManager()
 									.executeUpdate(
@@ -1802,6 +1922,11 @@ public class QU001 extends QU001Event {
 			// 格納用データ群
 			VRList kyotakuData = new VRArrayList();
 			kyotakuData = getDBManager().executeQuery(strKyotakuSql);
+			
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+			setKyotakuData(kyotakuData);
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+			
 			// データ数ループ処理
 			for (int j = 0; j < patientData.size(); j++) {
 				VRMap patientMap = new VRHashMap();
@@ -1816,11 +1941,16 @@ public class QU001 extends QU001Event {
 									kyotakuMap.getData("PATIENT_ID"))) {
 						// 選択有
 						patientMap.setData("REPORT", new Integer(1));
+						
+						// [2014年要望][Shinobu Hitaka] 2014/12/02 del begin 居宅療養管理指導書の対象年月に複数登録対応
+						// 　　　　　　　　　　　　　　　　　　　　　　　　　印刷状態は、複数あるので最後に設定する
 						// 印刷状態
-						patientMap.setData(
-								"FINISH_FLAG",
-								ACCastUtilities.toInteger(
-										kyotakuMap.getData("FINISH_FLAG"), 0));
+						//patientMap.setData(
+						//		"FINISH_FLAG",
+						//		ACCastUtilities.toInteger(
+						//				kyotakuMap.getData("FINISH_FLAG"), 0));
+						// [2014年要望][Shinobu Hitaka] 2014/12/02 del end   居宅療養管理指導書の対象年月に複数登録対応
+						
 						// 選択チェックのフラグが入っていない場合
 						if (!patientMap.containsKey("CHOISE")) {
 							patientMap.setData("CHOISE", new Boolean(false));
@@ -1828,6 +1958,12 @@ public class QU001 extends QU001Event {
 						// 全ての帳票データを持たせておく
 						patientMap.putAll(kyotakuMap);
 						// 一致した場合は次の対象者へ
+						
+						// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+						//-- 全ての印字済ならON、それ以外はOFFとする
+						patientMap.setData("FINISH_FLAG", getFinishFlagQC006(kyotakuMap));
+						// [2014年要望][Shinobu Hitaka] 2014/12/02 add end   居宅療養管理指導書の対象年月に複数登録対応
+						
 						break;
 					} else {
 						// 帳票が未選択の場合のみ
@@ -1840,8 +1976,11 @@ public class QU001 extends QU001Event {
 			}
 			// 手動検索処理
 			String[] keys = { "PROVIDER_NAME", "SENMONIN" };
-			patientData = doMultiFind(patientData, sqlParam, keys);
-
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 add begin 居宅療養管理指導書の対象年月に複数登録対応
+			//patientData = doMultiFind(patientData, sqlParam, keys);
+			patientData = doMultiFindQC006(patientData, sqlParam, keys);
+			// [2014年要望][Shinobu Hitaka] 2014/12/02 edit end   居宅療養管理指導書の対象年月に複数登録対応
+			
 			return patientData;
 
 		} else {
@@ -1866,6 +2005,12 @@ public class QU001 extends QU001Event {
 		QC005P01 pageCreater1 = new QC005P01();
 		QC005P02 pageCreater2 = new QC005P02();
 		ACChotarouXMLWriter writer = new ACChotarouXMLWriter();
+		
+		// 印刷対象がなければエラー 2015/01/04 add Hitaka
+		if (printData.size() == 0) {
+			return false;
+		}
+		
 		// 印刷開始
 		writer.beginPrintEdit();
 
@@ -2082,4 +2227,161 @@ public class QU001 extends QU001Event {
 			throws Exception {
 
 	}
+	
+	/**
+	 * 居宅療養管理指導の印刷済判定処理
+     * [2014年要望] 居宅療養管理指導書の対象年月に複数登録対応
+	 * 
+     * @since version 6.2.3
+     * @author Shinobu Hitaka 2014/12/02
+	 */
+	public int getFinishFlagQC006(VRMap param) throws Exception {
+		
+		// 利用者一覧検索時に取得した居宅療養管理指導書情報より手動で指定利用者のデータを検索する
+		// 利用者IDはInt型のため、検索キーとして一致しない。文字列に変換して検索キーとする。
+		// 指定利用者の居宅療養管理指導書情報が全て印字済=1、それ以外=0を返す
+		int finishFlag = 1;
+		String[] keys = { "PATIENT_ID" };
+		VRMap dataMap = new VRHashMap();
+		VRBindPathParser.set("PATIENT_ID", dataMap,
+				ACCastUtilities.toString(VRBindPathParser.get("PATIENT_ID", param)));
+		VRList kyotakuData = doMultiFind(getKyotakuData(), dataMap, keys);
+		for (int i = 0; i < kyotakuData.size(); i++) {
+			VRMap kyotakuMap = new VRHashMap();
+			kyotakuMap = (VRMap) kyotakuData.get(i);
+			// 印刷状態
+			if (ACCastUtilities.toInteger(
+									kyotakuMap.getData("FINISH_FLAG"), 0) == 0) {
+				finishFlag = 0;
+				break;
+			}
+		}
+
+		return finishFlag;
+
+	}
+
+	/**
+	 * 居宅療養管理指導の印刷済設定処理
+     * [2014年要望] 居宅療養管理指導書の対象年月に複数登録対応
+	 * 
+     * @since version 6.2.3
+     * @author Shinobu Hitaka 2015/01/05
+	 */
+	public void setFinishFlagQC006(Object patientId) throws Exception {
+		
+		// 利用者一覧検索時に取得した居宅療養管理指導書情報より手動で指定利用者のデータを検索する
+		// 利用者IDはInt型のため、検索キーとして一致しない。文字列に変換して検索キーとする。
+		// 印字済=1を設定する
+		String[] keys = { "PATIENT_ID" };
+		VRMap dataMap = new VRHashMap();
+		VRBindPathParser.set("PATIENT_ID", dataMap, ACCastUtilities.toString(patientId));
+		VRList kyotakuData = doMultiFind(getKyotakuData(), dataMap, keys);
+		for (int i = 0; i < kyotakuData.size(); i++) {
+			VRMap kyotakuMap = new VRHashMap();
+			kyotakuMap = (VRMap) kyotakuData.get(i);
+			kyotakuMap.setData("FINISH_FLAG", 1);
+		}
+
+		return;
+
+	}
+
+	/**
+	 * 居宅療養管理指導の印刷用データ検索処理
+     * [2014年要望] 居宅療養管理指導書の対象年月に複数登録対応
+	 * 
+     * @since version 6.2.3
+     * @author Shinobu Hitaka 2014/12/02
+	 * @param param 検索条件（利用者ID、印刷完了フラグ）
+	 * @param printMode 0：印刷済を含めない、1：全て印刷
+	 */
+	public VRList doFindPrintDataQC006(VRMap param, int printMode) throws Exception {
+		
+		VRMap dataMap = new VRHashMap();
+		VRList kyotakuData = new VRArrayList();
+		
+		// 利用者一覧検索時に取得した居宅療養管理指導書情報より手動で指定利用者のデータを検索する
+		if (printMode == 0) {
+			//印刷未確定のみ
+			// 利用者ID、印刷完了フラグを指定する。
+			// Int型のため、検索キーとして一致しない。文字列に変換して検索キーとする。
+			String[] keys = { "PATIENT_ID", "FINISH_FLAG" };
+			VRBindPathParser.set("PATIENT_ID", dataMap,
+					ACCastUtilities.toString(VRBindPathParser.get("PATIENT_ID", param)));
+			VRBindPathParser.set("FINISH_FLAG", dataMap, "0");
+			kyotakuData = doMultiFind(getKyotakuData(), dataMap, keys);
+		} else if (printMode == 1) {
+			//全印刷
+			// 利用者IDを指定する。
+			String[] keys = { "PATIENT_ID" };
+			VRBindPathParser.set("PATIENT_ID", dataMap,
+					ACCastUtilities.toString(VRBindPathParser.get("PATIENT_ID", param)));
+			kyotakuData = doMultiFind(getKyotakuData(), dataMap, keys);
+		}
+
+		return kyotakuData;
+
+	}
+	
+	/**
+	 * データを手動検索します。
+	 * [2014年要望] 居宅療養管理指導書の対象年月に複数登録対応
+	 * 
+	 * @param targetList
+	 * @param findParam
+	 * @param keys
+	 * @return
+	 * @throws Exception
+	 */
+	public VRList doMultiFindQC006(VRList targetList, VRMap findParam, String[] keys)
+			throws Exception {
+		// 不正な値が引数なので初期値で返す
+		if (targetList == null || targetList.isEmpty()) {
+			return new VRArrayList();
+		}
+		boolean isFindKey = false;
+		// 検索キーの存在の有無
+		for (int i = 0; i < keys.length; i++) {
+			if (findParam.containsKey(keys[i])) {
+				// 存在有の場合はループを終了
+				isFindKey = true;
+				break;
+			}
+		}
+		// パラメーターが不正もしくは検索キーは未入力
+		if (findParam == null || !isFindKey) {
+			// 何もせずに返す
+			return targetList;
+		}
+		
+		// 居宅療養管理指導全てより検索
+		// 利用者
+		// 事業所等名
+		// 介護支援専門員
+		// 印刷完了フラグ
+		VRList kyotakuData = doMultiFind(getKyotakuData(), findParam, keys);
+		
+		// 利用者一覧と居宅療養管理指導書検索結果を比較し一致する利用者を結果として返す。
+		VRMap searchMap = new VRHashMap();
+		VRList searchList = new VRArrayList();
+		VRList resultList = new VRArrayList();
+		
+		for (int m = 0; m < targetList.size(); m++) {
+			VRMap targetMap = new VRHashMap();
+			targetMap = (VRMap) targetList.get(m);
+			String patientId = ACCastUtilities.toString(targetMap.getData("PATIENT_ID"));
+			
+			VRBindPathParser.set("PATIENT_ID", searchMap, patientId);
+			searchList = filterData(kyotakuData, searchMap, "PATIENT_ID");
+			// 結果リストへ追加
+			if (searchList.size() > 0) {
+				resultList.addData(targetMap);
+			}
+		}
+		targetList = resultList;
+		
+		return targetList;
+	}
+
 }

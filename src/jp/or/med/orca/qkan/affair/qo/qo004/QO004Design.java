@@ -490,8 +490,11 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
       providerId.setColumns(8);
 
-      providerId.setCharType(VRCharType.ONLY_DIGIT);
-
+      // [2014年度改正][Shinobu Hitaka] 2014/10/25 edit begin 英数字化
+      //providerId.setCharType(VRCharType.ONLY_DIGIT);
+      providerId.setCharType(VRCharType.ONLY_ALNUM);
+      // [2014年度改正][Shinobu Hitaka] 2014/10/25 edit begin 英数字化
+      
       providerId.setHorizontalAlignment(SwingConstants.LEFT);
 
       providerId.setIMEMode(InputSubset.LATIN);

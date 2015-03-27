@@ -634,14 +634,33 @@ public class QP001Recapitulation {
          * 165603
          * 165604
          * のものを計上
+         * ・重度療養管理加算を算定する場合
+         * 165610
          */
         //前月の請求の摘要欄に記載がある場合には、それを採用する。
         if("16".equals(serviceCodeKind)){
-            if("5602".equals(serviceCodeItem) || "5603".equals(serviceCodeItem) || "5604".equals(serviceCodeItem)){
+            //[CCCX:1616,2096][Shinobu Hitaka] 2014/11/25 add 「5610：重度療養管理加算」を追加
+            //if("5602".equals(serviceCodeItem) || "5603".equals(serviceCodeItem) || "5604".equals(serviceCodeItem)){
+            if("5602".equals(serviceCodeItem) || "5603".equals(serviceCodeItem) || "5604".equals(serviceCodeItem) || "5610".equals(serviceCodeItem)){
             	result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
             }
         }
         
+        //[CCCX:1616,2096][Shinobu Hitaka] 2014/11/25 add begin 「6278：重度療養管理加算1、6279：重度療養管理加算2」を追加
+        /*
+         * ■短期入所療養介護（老健）
+         * ・重度療養管理加算を算定する場合
+         * 
+         * 利用者（要介護４又は要介護５）の状態（イからリまで）を記載すること。
+         */
+        //前月の請求の摘要欄に記載がある場合には、それを採用する。
+        if("22".equals(serviceCodeKind)){
+        	if("6278".equals(serviceCodeItem) || "6279".equals(serviceCodeItem)){
+        		//重度療養管理加算１、重度療養管理加算２
+        		result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
+        	}
+        }
+        //[CCCX:1616,2096][Shinobu Hitaka] 2014/11/25 add end   「6278：重度療養管理加算1、6279：重度療養管理加算2」を追加
         
         /*
          * ■短期入所生活介護
