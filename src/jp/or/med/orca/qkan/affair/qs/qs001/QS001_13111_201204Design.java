@@ -409,8 +409,11 @@ public class QS001_13111_201204Design extends QS001ServicePanel {
 
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadio = new ACValueArrayRadioButtonGroup();
 
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
       getRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioContainer().setText("医学総合管理料");
-
+      //getRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioContainer().setText("<html>医学総合<br>管理料<html>");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
+      
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadio.setBindPath("1310104");
 
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadio.setUseClearButton(false);
@@ -452,15 +455,20 @@ public class QS001_13111_201204Design extends QS001ServicePanel {
   }
 
   /**
-   * なし（指導料（I） 500単位）を取得します。
-   * @return なし（指導料（I） 500単位）
+   * なし（指導料（I） 503単位）を取得します。
+   * @return なし（指導料（I） 503単位）
    */
   public ACRadioButtonItem getRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1(){
     if(recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1==null){
 
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1 = new ACRadioButtonItem();
 
-      recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1.setText("なし（指導料 ( I ) 500単位）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1.setText("なし（指導料 ( I ) 500単位）");
+      //recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1.setText("なし（指導料 ( I ) 503単位）");
+      //recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1.setText("<html>なし<br>指導料 ( I) 503単位／452単位 (同一建物居住者)<html>");
+      recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1.setText("なし（指導費 ( I ) ）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1.setGroup(getRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadio());
 
@@ -473,15 +481,20 @@ public class QS001_13111_201204Design extends QS001ServicePanel {
   }
 
   /**
-   * あり（指導料（II） 290単位）を取得します。
-   * @return あり（指導料（II） 290単位）
+   * あり（指導料（II） 292単位）を取得します。
+   * @return あり（指導料（II） 292単位）
    */
   public ACRadioButtonItem getRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2(){
     if(recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2==null){
 
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2 = new ACRadioButtonItem();
 
-      recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2.setText("あり（指導料 ( II ) 290単位）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2.setText("あり（指導料 ( II ) 290単位）");
+      //recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2.setText("あり（指導料 ( II ) 292単位）");
+      //recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2.setText("<html>あり<br>指導料 (II) 292単位／262単位 (同一建物居住者)<html>");
+      recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2.setText("あり（指導費 ( II ) ）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       recuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2.setGroup(getRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadio());
 
@@ -667,7 +680,10 @@ public class QS001_13111_201204Design extends QS001ServicePanel {
 
       patientRadioItem1 = new ACRadioButtonItem();
 
-      patientRadioItem1.setText("同一建物居住者以外");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //patientRadioItem1.setText("同一建物居住者以外");
+      patientRadioItem1.setText("<html>同一建物居住者以外<br>（指導費：( I ) 503単位／( II ) 292単位）<html>");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       patientRadioItem1.setGroup(getPatientRadioGroup());
 
@@ -688,7 +704,10 @@ public class QS001_13111_201204Design extends QS001ServicePanel {
 
       patientRadioItem2 = new ACRadioButtonItem();
 
-      patientRadioItem2.setText("同一建物居住者");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //patientRadioItem2.setText("同一建物居住者");
+      patientRadioItem2.setText("<html>同一建物居住者<br>（指導費：( I ) 452単位／( II ) 262単位）<html>");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       patientRadioItem2.setGroup(getPatientRadioGroup());
 
@@ -1132,14 +1151,14 @@ public class QS001_13111_201204Design extends QS001ServicePanel {
   }
 
   /**
-   * なし（指導料（I） 500単位）に内部項目を追加します。
+   * なし（指導料（I） 503単位）に内部項目を追加します。
    */
   protected void addRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem1(){
 
   }
 
   /**
-   * あり（指導料（II） 290単位）に内部項目を追加します。
+   * あり（指導料（II） 292単位）に内部項目を追加します。
    */
   protected void addRecuperationManagementGuidanceOccupationalCategoryZaiSouShinRadioItem2(){
 

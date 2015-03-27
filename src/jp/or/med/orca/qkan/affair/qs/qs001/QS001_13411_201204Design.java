@@ -411,7 +411,10 @@ public class QS001_13411_201204Design extends QS001ServicePanel {
 
       medicineManagementRadioGroup = new ACValueArrayRadioButtonGroup();
 
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
       getMedicineManagementRadioGroupContainer().setText("医学総合管理料");
+      //getMedicineManagementRadioGroupContainer().setText("<html>医学総合<br>管理料<html>");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       medicineManagementRadioGroup.setBindPath("1340102");
 
@@ -454,15 +457,20 @@ public class QS001_13411_201204Design extends QS001ServicePanel {
   }
 
   /**
-   * なし（指導料 ( I ) 500単位）を取得します。
-   * @return なし（指導料 ( I ) 500単位）
+   * なし（指導料 ( I ) 503単位）を取得します。
+   * @return なし（指導料 ( I ) 503単位）
    */
   public ACRadioButtonItem getMedicineManagementRadioItem1(){
     if(medicineManagementRadioItem1==null){
 
       medicineManagementRadioItem1 = new ACRadioButtonItem();
 
-      medicineManagementRadioItem1.setText("なし（指導料 ( I ) 500単位）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //medicineManagementRadioItem1.setText("なし（指導料 ( I ) 500単位）");
+      //medicineManagementRadioItem1.setText("なし（指導料 ( I ) 503単位）");
+      //medicineManagementRadioItem1.setText("<html>なし<br>指導料 ( I) 503単位／452単位 (同一建物居住者)<html>");
+      medicineManagementRadioItem1.setText("なし（指導費 ( I ) ）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       medicineManagementRadioItem1.setGroup(getMedicineManagementRadioGroup());
 
@@ -475,15 +483,20 @@ public class QS001_13411_201204Design extends QS001ServicePanel {
   }
 
   /**
-   * あり（指導料 ( II ) 290単位）を取得します。
-   * @return あり（指導料 ( II ) 290単位）
+   * あり（指導料 ( II ) 292単位）を取得します。
+   * @return あり（指導料 ( II ) 292単位）
    */
   public ACRadioButtonItem getMedicineManagementRadioItem2(){
     if(medicineManagementRadioItem2==null){
 
       medicineManagementRadioItem2 = new ACRadioButtonItem();
 
-      medicineManagementRadioItem2.setText("あり（指導料 ( II ) 290単位）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //medicineManagementRadioItem2.setText("あり（指導料 ( II ) 290単位）");
+      //medicineManagementRadioItem2.setText("あり（指導料 ( II ) 292単位）");
+      //medicineManagementRadioItem2.setText("<html>あり<br>指導料 (II) 292単位／262単位 (同一建物居住者)<html>");
+      medicineManagementRadioItem2.setText("あり（指導費 ( II ) ）");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       medicineManagementRadioItem2.setGroup(getMedicineManagementRadioGroup());
 
@@ -669,7 +682,10 @@ public class QS001_13411_201204Design extends QS001ServicePanel {
 
       patientDivisionRadioItem1 = new ACRadioButtonItem();
 
-      patientDivisionRadioItem1.setText("同一建物居住者以外");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //patientDivisionRadioItem1.setText("同一建物居住者以外");
+      patientDivisionRadioItem1.setText("<html>同一建物居住者以外<br>（指導費：( I ) 503単位／( II ) 292単位）<html>");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       patientDivisionRadioItem1.setGroup(getPatientDivisionRadio());
 
@@ -690,7 +706,10 @@ public class QS001_13411_201204Design extends QS001ServicePanel {
 
       patientDivisionRadioItem2 = new ACRadioButtonItem();
 
-      patientDivisionRadioItem2.setText("同一建物居住者");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - start H26.4法改正対応
+      //patientDivisionRadioItem2.setText("同一建物居住者");
+      patientDivisionRadioItem2.setText("<html>同一建物居住者<br>（指導費：( I ) 452単位／( II ) 262単位）<html>");
+      //[CCCX:1735][Shinobu Hitaka] 2014/03/31 edit - end   H26.4法改正対応
 
       patientDivisionRadioItem2.setGroup(getPatientDivisionRadio());
 
@@ -1134,14 +1153,14 @@ public class QS001_13411_201204Design extends QS001ServicePanel {
   }
 
   /**
-   * なし（指導料 ( I ) 500単位）に内部項目を追加します。
+   * なし（指導料 ( I ) 503単位）に内部項目を追加します。
    */
   protected void addMedicineManagementRadioItem1(){
 
   }
 
   /**
-   * あり（指導料 ( II ) 290単位）に内部項目を追加します。
+   * あり（指導料 ( II ) 292単位）に内部項目を追加します。
    */
   protected void addMedicineManagementRadioItem2(){
 
