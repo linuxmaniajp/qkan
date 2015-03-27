@@ -157,7 +157,7 @@
 		<!-- ƒRƒ“ƒpƒCƒ‹ -->
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
-		<javac source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildQkanClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true" encoding="ms932">
+		<javac source="1.5" target="1.5" srcdir="${SourceDir}" includeAntRuntime="true" destdir="${ClassDir}" nowarn="on" classpathref="BuildQkanClasspath" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
 			<compilerarg value="-Xlint:deprecation" />
 			<compilerarg value="-Xlint:unchecked" />
 			<include name="jp/or/med/orca/qkan/**" />

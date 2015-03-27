@@ -777,6 +777,33 @@ public class QP001ReTotal {
             int _301016 = CareServiceCommon.calcSyogu(unitArray[2], serviceUnit, serviceStaffUnit);
             int _301017 = CareServiceCommon.calcSyogu(unitArray[3], serviceUnit, serviceStaffUnit);
             
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - start ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+            //Œö”ï1`3‚É˜VŒ’‚Ìˆê•”Œö”ï‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡
+            //‡Œv’PˆÊ”ƒŒö”ï1{2{3@‚Ìê‡ÅŒã‚ÌŒö”ï‚Å’PˆÊ”‚ð’²®‚·‚é
+            String systemServiceKindDetail = ACCastUtilities.toString(row.get("301021"));
+            if ((CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, getKohiType(1)) && _301015 > 0) ||
+                (CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, getKohiType(2)) && _301016 > 0) ||
+                (CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, getKohiType(3)) && _301017 > 0)
+                ) {
+                //Œö”ï110Š´õÇ‚ª“K—p‚³‚ê‚Ä‚¢‚éê‡AŠ´õÇŒö”ïˆÈŠO‚Ì’PˆÊ”‚ð’²®‚·‚é
+                if ("1001".equals(getKohiType(1)) && _301015 > 0) {
+                    if (_301017 != 0) {
+                        _301017 = _301014 - _301016;
+                    }
+                } else {
+                    if (_301014 < (_301015 + _301016 + _301017)) {
+                        if (_301017 != 0) {
+                            _301017 = _301014 - (_301015 + _301016);
+                        } else if (_301016 != 0) {
+                            _301016 = _301014 - _301015;
+                        } else if (_301015 != 0) {
+                            _301015 = _301014;
+                        }
+                    }
+                }
+            }
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - end   ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+
             //’PˆÊ”‚ÌÄÝ’è
             row.put("301014", _301014);
             row.put("301009", _301014);
@@ -1072,40 +1099,133 @@ public class QP001ReTotal {
 
             boolean kohiEnd = false;
 
+            //˜VŒ’Œö”ï“K—pƒtƒ‰ƒO add 2014/02/08
+            boolean roukenFlg = false;
+            int unit = 0;
+            
             // Œö”ï‚P‚Ì“K—p‚ ‚è
             if ((getKohiRate(1) != 0) && (toInt(map, "701018") != 0)) {
-                kohiClaim = getKohiClaim(map, toInt(map, "701018"),
-                        getKohiRate(1), 0, usedRate);
+                
+                //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - start Š´õÇŒö”ï‚Ìˆ‹ö‰ü‘P‰ÁŽZ‘Î‰ž
+                //del - start
+                //kohiClaim = getKohiClaim(map, toInt(map, "701018"),
+                //        getKohiRate(1), 0, usedRate);
+                //del - end
+                //add - start
+                unit = toInt(map, "701018");
+                if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                    if (base.size() > 0) {
+                        unit = toInt((VRMap) base.get(0), "201039");
+                    }
+                }
+                kohiClaim = getKohiClaim(map, unit, getKohiRate(1), 0, usedRate);
+                //add - end
+                //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - start Š´õÇŒö”ï‚Ìˆ‹ö‰ü‘P‰ÁŽZ‘Î‰ž
+                
                 reduction += kohiClaim;
                 // ((Œö”ï1)¿‹Šz)‚É’l‚ðÝ’è‚·‚éB
                 map.put("701019",
                         String.valueOf(toInt(map, "701019") + kohiClaim));
                 // “K—p‚µ‚½Œö”ï‚ð‘Þ”ð‚·‚éB
                 usedRate = getKohiRate(1);
+                
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                //˜VŒ’ˆê•”“K—pŒö”ï‚Ìê‡‚Íˆ—‚ðI—¹‚µ‚È‚¢
                 // Œö”ï1‚Ì‹‹•t—¦‚ª100%‚Ìê‡ˆ—‚ðI—¹‚·‚éB
-                if (getKohiRate(1) == 100)
+                //if (getKohiRate(1) == 100)
+                //    kohiEnd = true;
+                roukenFlg = CareServiceCommon.isKouhiService(toString(map, "701007"), getKohiType(1));
+                if (!roukenFlg && (getKohiRate(1) == 100))
                     kohiEnd = true;
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                
+                
             }
             // Œö”ï‚Q‚Ì“K—p‚ ‚è
             if (!kohiEnd && (getKohiRate(2) != 0)
                     && (toInt(map, "701021") != 0)) {
-                if (getKohiRate(2) > usedRate) {
+                
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/07 add - start ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                if(roukenFlg){
                     kohiClaim = getKohiClaim(map, toInt(map, "701021"),
-                            getKohiRate(2), reduction, usedRate);
+                            getKohiRate(2), reduction, getRate());
                     reduction += kohiClaim;
                     // ((Œö”ï2)¿‹Šz)‚É’l‚ðÝ’è‚·‚éB
                     map.put("701022",
                             String.valueOf(toInt(map, "701022") + kohiClaim));
                     // “K—p‚µ‚½Œö”ï‚ð‘Þ”ð‚·‚éB
                     usedRate = getKohiRate(2);
-                    if (getKohiRate(2) == 100)
+                    //˜VŒ’ˆê•”“K—pŒö”ï‚Ìê‡‚Íˆ—‚ðI—¹‚µ‚È‚¢
+                    roukenFlg = CareServiceCommon.isKouhiService(toString(map, "701007"), getKohiType(2));
+                    if (!roukenFlg && (getKohiRate(2) == 100))
                         kohiEnd = true;
+                }
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/07 add - end ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                
+                //Œö”ï‚P‚æ‚è‚àŒö”ï‚Q‚ÌŠ„‡‚ª’á‚¢ê‡‚ðl—¶
+                if (getKohiRate(2) > usedRate) {
+                    
+                    //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - start Š´õÇŒö”ï‚Ìˆ‹ö‰ü‘P‰ÁŽZ‘Î‰ž
+                    //Œö”ï1=10Š´õÇAŒö”ï2=˜VŒ’ˆê•”Œö”ï‚Ìê‡AŒö”ï‹‹•t—¦‚ð‰Šú‰»‚·‚é
+                    //kohiClaim = getKohiClaim(map, toInt(map, "701021"),
+                    //        getKohiRate(2), reduction, usedRate);
+                    roukenFlg = CareServiceCommon.isKouhiService(toString(map, "701007"), getKohiType(2));
+                    unit = toInt(map, "701021");
+                    if (roukenFlg && ("1001".equals(getKohiType(1)))){
+                        usedRate = getRate();
+                        if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                            if (base.size() > 0) {
+                                unit = toInt((VRMap) base.get(0), "201045");
+                            }
+                        }
+                    }
+                    kohiClaim = getKohiClaim(map, unit, getKohiRate(2), reduction, usedRate);
+                    //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - end   Š´õÇŒö”ï‚Ìˆ‹ö‰ü‘P‰ÁŽZ‘Î‰ž
+                    
+                    reduction += kohiClaim;
+                    // ((Œö”ï2)¿‹Šz)‚É’l‚ðÝ’è‚·‚éB
+                    map.put("701022",
+                            String.valueOf(toInt(map, "701022") + kohiClaim));
+                    // “K—p‚µ‚½Œö”ï‚ð‘Þ”ð‚·‚éB
+                    usedRate = getKohiRate(2);
+
+                    //[CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                    //˜VŒ’ˆê•”“K—pŒö”ï‚Ìê‡‚Íˆ—‚ðI—¹‚µ‚È‚¢
+                    // Œö”ï2‚Ì‹‹•t—¦‚ª100%‚Ìê‡ˆ—‚ðI—¹‚·‚éB
+                    //if (getKohiRate(2) == 100)
+                    //    kohiEnd = true;
+                    if (!roukenFlg && (getKohiRate(2) == 100))
+                        kohiEnd = true;
+                    //[CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+
                 }
             }
 
             // Œö”ï‚R‚Ì“K—p‚ ‚è
             if (!kohiEnd && (getKohiRate(3) != 0)
                     && (toInt(map, "701024") != 0)) {
+                
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/07 add - start ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                unit = toInt(map, "701024");
+                if(roukenFlg){
+                    //Œö”ï1=10Š´õÇAŒö”ï2=˜VŒ’ˆê•”Œö”ï‚Ìê‡A¿‹Šz‚ð’²®‚·‚é
+                    if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                        if (base.size() > 0) {
+                            unit = toInt((VRMap) base.get(0), "201051");
+                        }
+                        kohiClaim = getKohiClaim(map, unit, getKohiRate(3), reduction, getRate());
+                        if (kohiClaim > 0) kohiClaim -= toInt(map, "701019");
+                    } else {
+                        kohiClaim = getKohiClaim(map, unit, getKohiRate(3), reduction, getRate());
+                    }
+                    reduction += kohiClaim;
+                    // ((Œö”ï3)¿‹Šz)‚É’l‚ðÝ’è‚·‚éB
+                    map.put("701025",
+                            String.valueOf(toInt(map, "701025") + kohiClaim));
+                }
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/07 add - end ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰ž
+                
+                
                 if (getKohiRate(3) > usedRate) {
                     kohiClaim = getKohiClaim(map, toInt(map, "701024"),
                             getKohiRate(3), reduction, usedRate);

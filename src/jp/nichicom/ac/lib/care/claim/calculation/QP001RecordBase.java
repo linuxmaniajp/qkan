@@ -1700,8 +1700,50 @@ public class QP001RecordBase extends QP001RecordAbstract {
 //                //外泊日数は設定されている値を参照する。
 //                set_201027(String.valueOf(type.getOutEntranceRealDays().size()));
 //            }
+            
+            //[CCCX:1456][Shinobu Hitaka] 2014/01/21 edit - begin GHの外泊日数取得対応
+            //GH外泊は加算がないので外泊日数が集計されていなかった
+            //----- del - begin
             //外泊日数は設定されている値を参照する。
-            set_201027(String.valueOf(type.getOutEntranceRealDays().size()));
+            //set_201027(String.valueOf(type.getOutEntranceRealDays().size()));
+            //----- del - end
+            //----- add - begin
+            //様式六　　（32：認知症対応型共同生活介護_短期利用以外）
+            //様式六の二（37：認知症対応型共同生活介護_短期利用以外）
+            //様式六の三（33：特定施設入居者生活介護_短期利用以外，36：地域密着型特定施設入居者生活介護_短期利用以外）
+            //様式六の四（35：介護予防特定施設入居者生活介護）
+            if (QP001StyleAbstract.IDENTIFICATION_NO_6_201204.equals(type.get_701001()) 
+                    || QP001StyleAbstract.IDENTIFICATION_NO_6_2_201204.equals(type.get_701001())
+                    || QP001StyleAbstract.IDENTIFICATION_NO_6_3_201204.equals(type.get_701001())
+                    || QP001StyleAbstract.IDENTIFICATION_NO_6_4_201204.equals(type.get_701001())
+                    ) {
+                //nullチェック
+                if(entryDate != null){
+                    //入所日が当月以前であれば
+                    if(ACDateUtilities.compareOnMonth(entryDate,nowDate) < 0){
+                        if(endDate == null){
+                            set_201027(String.valueOf(ACDateUtilities.getLastDayOfMonth(nowDate) - dateCount));
+                        } else {
+                            set_201027(String.valueOf(ACDateUtilities.getDifferenceOnTotalDay(endDate,nowDate) - dateCount + 1));
+                        }
+                    } else {
+                        //外泊日数2桁
+                        if(endDate == null){
+                            set_201027(String.valueOf(ACDateUtilities.getLastDayOfMonth(entryDate) - ACDateUtilities.getDayOfMonth(entryDate) - dateCount + 1));
+                        } else {
+                            set_201027(String.valueOf(ACDateUtilities.getDifferenceOnTotalDay(endDate,entryDate) - dateCount + 1));
+                        }
+                    }
+                } else {
+                    //外泊日数は設定されている値を参照する。
+                    set_201027(String.valueOf(type.getOutEntranceRealDays().size()));
+                }
+            } else {
+                //外泊日数は設定されている値を参照する。
+                set_201027(String.valueOf(type.getOutEntranceRealDays().size()));
+            }
+            //----- add - end
+            //[CCCX:1456][Shinobu Hitaka] 2014/01/21 edit - end GHの外泊日数取得対応（GH外泊は加算がないので外泊日数が集計されていなかった）
         }
     }
 	

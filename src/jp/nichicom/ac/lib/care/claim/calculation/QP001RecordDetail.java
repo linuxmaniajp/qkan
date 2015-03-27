@@ -1285,7 +1285,11 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         set_301014(get_301009() * get_301010());
         
         // 公費１の適用があるか確認
-        if ((kohi[0] != null) && (!"".equals(kohi[0]))) {
+        // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start 老健の一部公費対象の対応（対象サービスかのチェックを追加）
+        // if ((kohi[0] != null) && (!"".equals(kohi[0]))) {
+        if ((kohi[0] != null) && (!"".equals(kohi[0])) && isKouhiService(kohi[0])) {
+        // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end 老健の一部公費対象の対応
+            
             // 適用がある場合
             // 公費1対象日数・回数2桁を設定する。
             set_301011(kohiManager.getKohiCount(kohi[0]));
@@ -1309,7 +1313,11 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             
         }
         // 公費２の適用があるか確認
-        if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1]))) {
+        // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start 老健の一部公費対象の対応（対象サービスかのチェックを追加）
+        // if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1]))) {
+        if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1])) && isKouhiService(kohi[1])) {
+        // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end 老健の一部公費対象の対応
+
             // 適用がある場合
             // 公費2対象日数・回数2桁を設定する。
             set_301012(kohiManager.getKohiCount(kohi[1]));
@@ -1332,7 +1340,11 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             }
         }
         // 公費３の適用があるか確認
-        if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2]))) {
+        // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start 老健の一部公費対象の対応（対象サービスかのチェックを追加）
+        // if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2]))) {
+        if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2])) && isKouhiService(kohi[2])) {
+        // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end 老健の一部公費対象の対応
+
             // 適用がある場合
             // 公費3対象日数・回数2桁を設定する。
             set_301013(kohiManager.getKohiCount(kohi[2]));
@@ -1535,5 +1547,40 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         result.append("[301025=" + get_301025() + "]\n");
         result.append(kohiManager);
         return result.toString();
+    }
+    
+    /**
+     * [CCCX:1470][Shinobu Hitaka] 2014/02/07 add 老健の一部公費対象の対応
+     * 公費対象のサービスかをチェックする
+     * 介護老人保健施設で下記公費の場合は、緊急時施設療養費・所定疾患施設療養費のみ公費対象
+     * 8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿
+     * 基本サービスは公費対象外とする
+     * 
+     * @param String kohi（公費タイプ）
+     * @return 公費対象：true／公費対象外：false
+     */
+    public boolean isKouhiService(String kohi) {
+        boolean bFlg = true;
+        
+        //介護老人保健施設
+        if ("15211".equals(get_301021())) {
+            //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+            if ("8801".equals(kohi) || "8802".equals(kohi) || "8701".equals(kohi) || "6601".equals(kohi)) {
+                //緊急時施設療養費・所定疾患施設療養費か？
+                if ("Z6000".equals(get_301022())) {
+                    //緊急時治療管理２
+                } else if ("Z6100".equals(get_301022())) {
+                    //所定疾患施設療養費２
+                } else if ("Z9000".equals(get_301022())) {
+                    //緊急時治療管理１
+                } else if ("Z9100".equals(get_301022())) {
+                    //所定疾患施設療養費１
+                } else {
+                    //上記以外は、公費対象外
+                    bFlg = false;
+                }
+            }
+        }
+        return  bFlg;
     }
 }

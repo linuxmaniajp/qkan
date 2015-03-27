@@ -43,6 +43,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanConstants;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;//add 20140210
 
 /**
  * 特定診療費情報レコード
@@ -730,34 +731,61 @@ public class QP001RecordDiagnosis extends QP001RecordAbstract {
 
         // 公費１の適用があるか確認
         if ((kohi[0] != null) && (!"".equals(kohi[0]))) {
-            // 適用がある場合
-            // 公費１対象日数を設定する。
-            set_501014(kohiManager.getKohiCount(kohi[0]));
-            // (公費1)サービス単位数6桁
-            set_501015(get_501010() * get_501014());
             
-            // 給付率が100%になったら処理を終了する。
-            kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",1)) == 100);
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - start 老健の一部公費対象の対応
+            //老健の一部公費対象（88,87,66）の場合は公費設定をしない
+            //以下IF文を追加
+            if (!CareServiceCommon.isKouhiSystemService(get_501027(), kohi[0])) {
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - end   老健の一部公費対象の対応
+                
+                // 適用がある場合
+                // 公費１対象日数を設定する。
+                set_501014(kohiManager.getKohiCount(kohi[0]));
+                // (公費1)サービス単位数6桁
+                set_501015(get_501010() * get_501014());
+                
+                // 給付率が100%になったら処理を終了する。
+                kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",1)) == 100);
+            
+            }
         }
         // 公費２の適用があるか確認
         if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1]))) {
-            // 適用がある場合
-            // 公費２対象日数を設定する。
-            set_501017(kohiManager.getKohiCount(kohi[1]));
-            // (公費2)サービス単位数6桁
-            set_501018(get_501010() * get_501017());
             
-            // 給付率が100%になったら処理を終了する。
-            kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[1],"BENEFIT_RATE",1)) == 100);
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - start 老健の一部公費対象の対応
+            //老健の一部公費対象（88,87,66）の場合は公費設定をしない
+            //以下IF文を追加
+            if (!CareServiceCommon.isKouhiSystemService(get_501027(), kohi[1])) {
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - end   老健の一部公費対象の対応
+                
+                // 適用がある場合
+                // 公費２対象日数を設定する。
+                set_501017(kohiManager.getKohiCount(kohi[1]));
+                // (公費2)サービス単位数6桁
+                set_501018(get_501010() * get_501017());
+                
+                // 給付率が100%になったら処理を終了する。
+                kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[1],"BENEFIT_RATE",1)) == 100);
+            
+            }
             
         }
         // 公費３の適用があるか確認
         if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2]))) {
-            // 適用がある場合
-            // 公費３対象日数を設定する。
-            set_501020(kohiManager.getKohiCount(kohi[1]));
-            // (公費3)サービス単位数6桁
-            set_501021(get_501010() * get_501020());
+            
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - start 老健の一部公費対象の対応
+            //老健の一部公費対象（88,87,66）の場合は公費設定をしない
+            //以下IF文を追加
+            if (!CareServiceCommon.isKouhiSystemService(get_501027(), kohi[2])) {
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - end   老健の一部公費対象の対応
+                
+                // 適用がある場合
+                // 公費３対象日数を設定する。
+                set_501020(kohiManager.getKohiCount(kohi[2]));
+                // (公費3)サービス単位数6桁
+                set_501021(get_501010() * get_501020());
+                
+            }
         }
         
     }
@@ -781,28 +809,54 @@ public class QP001RecordDiagnosis extends QP001RecordAbstract {
 
         // 公費１の適用があるか確認
         if ((kohi[0] != null) && (!"".equals(kohi[0]))) {
-            // 適用がある場合
-            // (公費1)サービス単位数6桁
-            set_501015(get_501010() * get_501014());
             
-            // 給付率が100%になったら処理を終了する。
-            kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",1)) == 100);
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - start 老健の一部公費対象の対応
+            //老健の一部公費対象（88,87,66）の場合は公費設定をしない
+            //以下IF文を追加
+            if (!CareServiceCommon.isKouhiSystemService(get_501027(), kohi[0])) {
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - end   老健の一部公費対象の対応
+                
+                // 適用がある場合
+                // (公費1)サービス単位数6桁
+                set_501015(get_501010() * get_501014());
+                
+                // 給付率が100%になったら処理を終了する。
+                kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",1)) == 100);
+
+            }
         }
         // 公費２の適用があるか確認
         if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1]))) {
-            // 適用がある場合
-            // (公費2)サービス単位数6桁
-            set_501018(get_501010() * get_501017());
+
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - start 老健の一部公費対象の対応
+            //老健の一部公費対象（88,87,66）の場合は公費設定をしない
+            //以下IF文を追加
+            if (!CareServiceCommon.isKouhiSystemService(get_501027(), kohi[1])) {
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - end   老健の一部公費対象の対応
+                
+                // 適用がある場合
+                // (公費2)サービス単位数6桁
+                set_501018(get_501010() * get_501017());
+                
+                // 給付率が100%になったら処理を終了する。
+                kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[1],"BENEFIT_RATE",1)) == 100);
             
-            // 給付率が100%になったら処理を終了する。
-            kohiLimit = (ACCastUtilities.toInt(patientState.getKohiData(kohi[1],"BENEFIT_RATE",1)) == 100);
-            
+            }
         }
         // 公費３の適用があるか確認
         if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2]))) {
-            // 適用がある場合
-            // (公費3)サービス単位数6桁
-            set_501021(get_501010() * get_501020());
+
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - start 老健の一部公費対象の対応
+            //老健の一部公費対象（88,87,66）の場合は公費設定をしない
+            //以下IF文を追加
+            if (!CareServiceCommon.isKouhiSystemService(get_501027(), kohi[2])) {
+            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 edit - end   老健の一部公費対象の対応
+                
+                // 適用がある場合
+                // (公費3)サービス単位数6桁
+                set_501021(get_501010() * get_501020());
+                
+            }
         }
         
         //摘要欄の設定を行う。

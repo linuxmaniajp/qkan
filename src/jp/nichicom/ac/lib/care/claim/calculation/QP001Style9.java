@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
@@ -267,6 +268,46 @@ public class QP001Style9 extends QP001StyleAbstract {
             VRMap temp = (VRMap) kohiRank.get(it.next());
             kohiTypes[count] = ACCastUtilities.toString(VRBindPathParser.get(
                     "KOHI_TYPE", temp));
+            
+            // [CCCX:1470][Shinobu Hitaka] 2014/03/13 add - start ˜VŒ’‚Ìˆê•”Œö”ï
+            // ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚ÅA‹Ù‹}ŽžŽ{Ý—Ã—{”ïEŠ’èŽ¾Š³Ž{Ý—Ã—{”ï‚ª‚È‚¢ê‡‚ÍŒö”ïƒŠƒXƒg‚©‚çœŠO
+            if (CareServiceCommon.isKouhiService("52", kohiTypes[count])) {
+                boolean kohiFlg = false;
+                if (emergencyOwnFacility.get_1701018() == 0 && emergencyOwnFacility.get_1701019() == 0 && 
+                    emergencyOwnFacility.get_1701053() == 0 && emergencyOwnFacility.get_1701054() == 0) {
+                    // (1) Ý’è‚È‚µ
+                    kohiFlg = false;
+                } else {
+                    // (2) Ý’è‚ ‚è‚ÅŒö”ïŒŽ“r’†ŠJŽnEI—¹‚ÅŠúŠÔŠOi–¾×‚ÉŒö”ï“K—p‚ª‚È‚¢j
+                    // –¾×‚ÌŒö”ï“K—pó‹µ‚ðŠm”F
+                    Iterator itDetail = detailMap.keySet().iterator();
+                    while (itDetail.hasNext()) {
+                        detail = (QP001RecordDetail) detailMap.get(itDetail.next());
+                        // ‹Ù‹}ŽžŽ{Ý—Ã—{”ïEŠ’èŽ¾Š³Ž{Ý—Ã—{”ï‚Ìê‡
+                        if ("Z6000".equals(detail.get_301022()) || "Z6100".equals(detail.get_301022()) || "Z9000".equals(detail.get_301022()) || "Z9100".equals(detail.get_301022())) {
+                            // –¾×‚É“¯‚¶Œö”ï‚ª“K—p‚³‚ê‚½ê‡‚Í‘ÎÛ‚Æ‚·‚é
+                            kohiMap = detail.getKohiList();
+                            Iterator itKohi = kohiMap.keySet().iterator();
+                            while (itKohi.hasNext()) {
+                                Object key = itKohi.next();
+                                VRMap detailKohiMap = (VRMap) kohiMap.get(key);
+                                if (kohiTypes[count].equals(ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE", detailKohiMap)))) {
+                                    kohiFlg = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (kohiFlg) break;
+                    }
+                }
+                // ˆê’v‚·‚é‚à‚Ì‚ª‚È‚¯‚ê‚ÎŒö”ïƒŠƒXƒg‚©‚çœŠO
+                if (!kohiFlg) {
+                    kohiTypes[count] = null;
+                    continue;
+                }
+            }
+            // [CCCX:1470][Shinobu Hitaka] 2014/03/13 add - end ˜VŒ’‚Ìˆê•”Œö”ï
+            
             count++;
             if (count > kohiTypes.length - 1)
                 break;

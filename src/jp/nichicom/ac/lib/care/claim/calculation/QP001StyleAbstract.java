@@ -42,6 +42,7 @@ import java.util.TreeMap;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanConstants;
@@ -465,7 +466,7 @@ public abstract class QP001StyleAbstract {
         target.set_301017(_301017);
     }
     
-    private void definitionTreatmentImprovement(QP001RecordDetail target) {
+    private void definitionTreatmentImprovement(QP001RecordDetail target) throws Exception {
         
         //[ID:0000730][Shin Fujihara] add begin  yƒT[ƒrƒX—˜—p•[•Ê•\EÀÑWŒvz©ŒÈ•‰’S”­¶‚Ì“Œn‰ÁZ‚ÌŒvZ‚É‚Â‚¢‚Ä
         //ˆ‹ö‰ü‘P‰ÁZ‚Ìª‹’’PˆÊ”‚ğ‘Ş”ğ
@@ -486,6 +487,44 @@ public abstract class QP001StyleAbstract {
         //Œö”ï3‘ÎÛƒT[ƒrƒX’PˆÊ”6Œ…
         target.set_301017(CareServiceCommon.calcSyogu(target.get_301017(), target.getServiceUnit(), target.getServiceStaffUnit()));
         
+        //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - start ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰
+        //Œö”ï1`3‚É˜VŒ’‚Ìˆê•”Œö”ï‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡
+        //‡Œv’PˆÊ”ƒŒö”ï1{2{3@‚Ìê‡ÅŒã‚ÌŒö”ï‚Å’PˆÊ”‚ğ’²®‚·‚é
+        Iterator itKohi = target.getKohiList().keySet().iterator();
+        String[] kohiTypes = new String[3];
+        int count = 0;
+        while(itKohi.hasNext()) {
+            Object kohiKey = itKohi.next();
+            Map kohiData = (Map)target.getKohiList().get(kohiKey);
+            kohiTypes[count] = ACCastUtilities.toString(kohiData.get("KOHI_TYPE"));
+            count++;
+            if (count > kohiTypes.length - 1)
+                break;
+        }
+        String systemServiceKindDetail = ACCastUtilities.toString(target.get_301021());
+        if (CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, kohiTypes[0]) ||
+            CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, kohiTypes[1]) ||
+            CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, kohiTypes[2])
+            ) {
+            
+            //Œö”ï110Š´õÇ‚ª“K—p‚³‚ê‚Ä‚¢‚éê‡AŠ´õÇŒö”ïˆÈŠO‚Ì’PˆÊ”‚ğ’²®‚·‚é
+            if ("1001".equals(target.get_301023()) && target.get_301015() > 0) {
+                if (target.get_301017() != 0) {
+                    target.set_301017(target.get_301014() - target.get_301016());
+                }
+            } else {
+                if (target.get_301014() < (target.get_301015() + target.get_301016() + target.get_301017())) {
+                    if (target.get_301017() != 0) {
+                        target.set_301017(target.get_301014() - (target.get_301015() + target.get_301016()));
+                    } else if (target.get_301016() != 0) {
+                        target.set_301016(target.get_301014() - target.get_301015());
+                    } else if (target.get_301015() != 0) {
+                        target.set_301015(target.get_301014());
+                    }
+                }
+            }
+        }
+        //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - end   ˜VŒ’‚Ìˆê•”Œö”ï‘ÎÛ‚Ì‘Î‰
         
         // Œö”ï1‰ñ”
         if (0 < target.get_301015()) {

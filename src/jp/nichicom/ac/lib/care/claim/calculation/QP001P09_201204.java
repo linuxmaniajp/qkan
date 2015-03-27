@@ -215,14 +215,24 @@ public class QP001P09_201204 extends QP001P02_10Event {
                 //[ID:0000447][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
                 
                 //明細件数分ループする。※5件を超える場合は、次ページに印字
-                if(isDetailListShow(kohiCount)){
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
+                //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
+                //if(isDetailListShow(kohiCount)){
+                if(isDetailListShowStyle9(kohiCount,baseMap)){
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
+                    
                     //[ID:0000447][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
                     //setDetailList(detailList,6,kohiCount);
                     setDetailList(detailList, detailsRecordCount + 1, kohiCount);
                     //[ID:0000447][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
                 }
                 
-                if(isDiagnosisListShow(kohiCount,diagnosisLastMap)){
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
+                //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
+                //if(isDiagnosisListShow(kohiCount,diagnosisLastMap)){
+                if(isDiagnosisListShowStyle9(kohiCount,diagnosisLastMap,baseMap)){
+                //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - end   老健の一部公費対象の対応
+                    
                     // 特定診療費件数分ループする。※2件を超える場合は、次ページに印字
                     for (int j = 1; j < 3; j++) {
                         if (diagnosisList.getDataSize() == 0)
@@ -340,7 +350,12 @@ public class QP001P09_201204 extends QP001P02_10Event {
 
                 // 1ページ目のみ印字する
                 if (i == 0) {
-                    if(isDetailListShow(kohiCount)){
+                    //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
+                    //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
+                    //if(isDetailListShow(kohiCount)){
+                    if(isDetailListShowStyle9(kohiCount,baseMap)){
+                    //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
+                            
                         //サービス単位数合計を設定する。　※サービス単位数の合算を設定。
                         ACChotarouXMLUtilities.setValue(writer,"servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),5));
                         //公費対象単位数合計を設定する。　※公費対象単位数の合算を設定。
@@ -500,7 +515,12 @@ public class QP001P09_201204 extends QP001P02_10Event {
                         ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701017","emergency3.h15.w21");
                     }
                     
-                    if(isDiagnosisListShow(kohiCount,diagnosisLastMap)){
+                    //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
+                    //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
+                    //if(isDiagnosisListShow(kohiCount,diagnosisLastMap)){
+                    if(isDiagnosisListShowStyle9(kohiCount,diagnosisLastMap,baseMap)){
+                    //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - end   老健の一部公費対象の対応
+                        
                         // 特定診療費情報レコード順次番号が01のレコードの傷病名を設定する。
                         // 01のレコードがない場合は99のレコードの値を採用する。
                         ACChotarouXMLUtilities.setValue(writer, diagnosisFirstMap,"501008", "tokuteishinryo.syoubyo.w4");
@@ -526,7 +546,12 @@ public class QP001P09_201204 extends QP001P02_10Event {
                         }
                     }
                     
-                    if(isDetailListShow(kohiCount)){
+                    //[CCCX:1470][Shinobu Hitaka] 2014/03/13 edit - start 老健の一部公費対象の対応
+                    //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
+                    //if(isDetailListShow(kohiCount)){
+                    if(isDetailListShowStyle9(kohiCount,baseMap)){
+                    //[CCCX:1470][Shinobu Hitaka] 2014/03/13 edit - start 老健の一部公費対象の対応
+                        
                         //請求額集計欄 保険分====================================
                         // 給付点数・単位数（保険分）を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "hokentani", pad(typeMap.get("701014"),6));
@@ -619,7 +644,7 @@ public class QP001P09_201204 extends QP001P02_10Event {
                         }
                         break;
                     case 2:
-                        if(ACCastUtilities.toInt(typeMap.get("701033"),0) != 0){
+                        if(ACCastUtilities.toInt(typeMap.get("701036"),0) != 0){
                             // 給付点数・単位数（公費分特定治療）を設定する。
                             ACChotarouXMLUtilities.setValue(writer, "kohitokuteitani", pad(typeMap.get("701036"),6));
                             //給付率（公費分特定治療）を設定する。
@@ -692,4 +717,166 @@ public class QP001P09_201204 extends QP001P02_10Event {
         return true;
     }
     
+    /**
+     * 給付費明細欄を表示するかのフラグを返却します。<br>
+     * 老健専用
+     * @param kohiCount
+     * @return
+     * @throws Exception
+     */
+    protected boolean isDetailListShowStyle9(int kohiCount, VRMap baseMap) throws Exception {
+        
+        switch(kohiCount){
+            //公費１印刷時
+            case 0:
+                // 公費負担者番号を確認
+                //公費負担者番号が存在し
+                if(!ACTextUtilities.isNullText(baseMap.get("201007"))){
+                    if(ACCastUtilities.toString(baseMap.get("201007")).startsWith("10")){
+                        return true;
+                    }
+                    
+                    //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+                    //一部公費適用のため、公費総計がなくても表示する
+                    if (ACCastUtilities.toString(baseMap.get("201007")).startsWith("88") ||
+                            ACCastUtilities.toString(baseMap.get("201007")).startsWith("87") || 
+                            ACCastUtilities.toString(baseMap.get("201007")).startsWith("66")) {
+                        return true;
+                    }
+                    
+                    //公費総計が0の場合は表示を中断する。
+                    if(getKohiTotal1() == 0){
+                        return false;
+                    }
+                }
+                break;
+            //公費２印刷時
+            case 1:
+                if(!ACTextUtilities.isNullText(baseMap.get("201009"))){
+                    if(ACCastUtilities.toString(baseMap.get("201009")).startsWith("10")){
+                        return true;
+                    }
+                    
+                    //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+                    //一部公費適用のため、公費総計がなくても表示する
+                    if (ACCastUtilities.toString(baseMap.get("201009")).startsWith("88") ||
+                            ACCastUtilities.toString(baseMap.get("201009")).startsWith("87") || 
+                            ACCastUtilities.toString(baseMap.get("201009")).startsWith("66")) {
+                        return true;
+                    }
+                    
+                    //公費総計が0の場合は表示を中断する。
+                    if(getKohiTotal2() == 0){
+                        return false;
+                    }
+                }
+                break;
+            //公費３印刷時
+            case 2:
+                if(!ACTextUtilities.isNullText(baseMap.get("201011"))){
+                    if(ACCastUtilities.toString(baseMap.get("201011")).startsWith("10")){
+                        return true;
+                    }
+                    
+                    //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+                    //一部公費適用のため、公費総計がなくても表示する
+                    if (ACCastUtilities.toString(baseMap.get("201011")).startsWith("88") ||
+                            ACCastUtilities.toString(baseMap.get("201011")).startsWith("87") || 
+                            ACCastUtilities.toString(baseMap.get("201011")).startsWith("66")) {
+                        return true;
+                    }
+
+                    //公費総計が0の場合は表示を中断する。
+                    if(getKohiTotal3() == 0){
+                        return false;
+                    }
+                }
+                break;
+        }
+        return true;
+    }
+    
+    /**
+     * 特定診療費明細欄を表示するかのフラグを返却します。
+     * 老健専用
+     * @param kohiCount
+     * @param diagnosisLastMap
+     * @return
+     * @throws Exception
+     */
+    protected boolean isDiagnosisListShowStyle9(int kohiCount,VRMap diagnosisLastMap, VRMap baseMap) throws Exception {
+        
+        if(diagnosisLastMap == null){
+            return true;
+        }
+        switch(kohiCount){
+            //公費１印刷時
+            case 0:
+                // 公費負担者番号を確認
+                //公費負担者番号が存在し
+                if(!ACTextUtilities.isNullText(baseMap.get("201007"))){
+                    if(ACCastUtilities.toString(baseMap.get("201007")).startsWith("10")){
+                        return true;
+                    }
+
+                    //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+                    //一部公費適用のため、公費総計がなくても表示する
+                    if (ACCastUtilities.toString(baseMap.get("201007")).startsWith("88") ||
+                            ACCastUtilities.toString(baseMap.get("201007")).startsWith("87") || 
+                            ACCastUtilities.toString(baseMap.get("201007")).startsWith("66")) {
+                        return true;
+                    }
+                    
+                    //公費総計が0の場合は表示を中断する。
+                    if(ACCastUtilities.toInt(diagnosisLastMap.get("501016"),0) == 0){
+                        return false;
+                    }
+                }
+                break;
+            //公費２印刷時
+            case 1:
+                if(!ACTextUtilities.isNullText(baseMap.get("201009"))){
+                    if(ACCastUtilities.toString(baseMap.get("201009")).startsWith("10")){
+                        return true;
+                    }
+                    
+                    //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+                    //一部公費適用のため、公費総計がなくても表示する
+                    if (ACCastUtilities.toString(baseMap.get("201009")).startsWith("88") ||
+                            ACCastUtilities.toString(baseMap.get("201009")).startsWith("87") || 
+                            ACCastUtilities.toString(baseMap.get("201009")).startsWith("66")) {
+                        return true;
+                    }
+                    
+                    //公費総計が0の場合は表示を中断する。
+                    if(ACCastUtilities.toInt(diagnosisLastMap.get("501019"),0) == 0){
+                        return false;
+                    }
+                }
+                break;
+            //公費３印刷時
+            case 2:
+                if(!ACTextUtilities.isNullText(baseMap.get("201011"))){
+                    if(ACCastUtilities.toString(baseMap.get("201011")).startsWith("10")){
+                        return true;
+                    }
+                    
+                    //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+                    //一部公費適用のため、公費総計がなくても表示する
+                    if (ACCastUtilities.toString(baseMap.get("201011")).startsWith("88") ||
+                            ACCastUtilities.toString(baseMap.get("201011")).startsWith("87") || 
+                            ACCastUtilities.toString(baseMap.get("201011")).startsWith("66")) {
+                        return true;
+                    }
+                    
+                    //公費総計が0の場合は表示を中断する。
+                    if(ACCastUtilities.toInt(diagnosisLastMap.get("501022"),0) == 0){
+                        return false;
+                    }
+                }
+                break;
+        }
+        return true;
+    }
+
 }

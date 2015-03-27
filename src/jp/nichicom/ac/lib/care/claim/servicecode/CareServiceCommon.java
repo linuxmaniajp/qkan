@@ -1636,4 +1636,47 @@ public class CareServiceCommon {
         return totalSyogu - totalAdjust;
     }
 
+    /**
+     * 介護老人保健施設で下記公費かどうか判定する
+     * 8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿
+     * @param String serviceCodeKind：サービス種類コード(SERVICE_CODE_KIND)
+     * @param String kohi：公費タイプ
+     * @return 該当する：true／該当しない：false
+     * [CCCX:1470][Shinobu Hitaka] 2014/02/07 add 老健の一部公費対象の対応
+     */
+    public static boolean isKouhiService(String serviceCodeKind, String kohi) {
+        boolean bFlg = false;
+        
+        //介護老人保健施設
+        if (serviceCodeKind.indexOf("52") != -1) {
+            //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+            if ("8801".equals(kohi) || "8802".equals(kohi) || "8701".equals(kohi) || "6601".equals(kohi)) {
+                //一部公費適用のため、次の公費計算が必要
+                bFlg = true;
+            }
+        }
+        return  bFlg;
+    }
+    
+    /**
+     * 介護老人保健施設で下記公費かどうか判定する
+     * 8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿
+     * @param String systemServiceKindDetail：システム内サービス種類コード(SYSTEM_SERVICE_KIND_DETAIL)
+     * @param String kohi：公費タイプ
+     * @return 該当する：true／該当しない：false
+     * [CCCX:1470][Shinobu Hitaka] 2014/02/10 add 老健の一部公費対象の対応
+     */
+    public static boolean isKouhiSystemService(String systemServiceKindDetail, String kohi) {
+        boolean bFlg = false;
+        
+        //介護老人保健施設
+        if (systemServiceKindDetail.indexOf("15211") != -1) {
+            //公費が8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿　の場合
+            if ("8801".equals(kohi) || "8802".equals(kohi) || "8701".equals(kohi) || "6601".equals(kohi)) {
+                //一部公費適用のため、次の公費計算が必要
+                bFlg = true;
+            }
+        }
+        return  bFlg;
+    }
 }

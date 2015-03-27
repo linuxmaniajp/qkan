@@ -1108,7 +1108,29 @@ public class QkanCommon {
             return new VRArrayList();
         }
 
-        return filterNotCorrespond(dbm.executeQuery(sb.toString()));
+        //2014/01/24 [Shinobu Hitaka] edit - begin y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z
+        //—˜—pÒ–ˆ‚ÌŒÀ“xŠz‚ğA‘ÎÛ”NŒ‚ÌŒú¶˜J“­È‹K’è‚Ì‹æ•ªx‹‹ŒÀ“xŠz‚É·‚µ‘Ö‚¦‚é
+        //del - begin
+        //return filterNotCorrespond(dbm.executeQuery(sb.toString()));
+        //del - end
+        VRList list = dbm.executeQuery(sb.toString());
+        for (int j = 0; j < list.size(); j++) {
+            VRMap record = (VRMap) list.get(j);
+            int limitRate = -1;
+            
+            // Œú¶˜J“­È‹K’è‚Ì‹æ•ªx‹‹ŒÀ“xŠz‚ğæ“¾‚·‚éB
+            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), record.getData("JOTAI_CODE").toString());
+            if (limitRate > 0) {
+                record.setData("LIMIT_RATE", limitRate);
+            }
+            // Œú¶˜J“­È‹K’è‚ÌŠO•”—˜—pŒ^‹‹•tãŒÀ’PˆÊ”‚ğæ“¾‚·‚éB
+            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(2), record.getData("JOTAI_CODE").toString());
+            if (limitRate > 0) {
+                record.setData("EXTERNAL_USE_LIMIT", limitRate);
+            }
+        }
+        return filterNotCorrespond(list);
+        //2014/01/24 [Shinobu Hitaka] edit - end y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z
 
     }
 
@@ -1187,7 +1209,29 @@ public class QkanCommon {
         sb.append(" ORDER BY");
         sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START DESC");
 
-        return filterNotCorrespond(dbm.executeQuery(sb.toString()));
+        //2014/01/24 [Shinobu Hitaka] edit - begin y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z
+        //—˜—pÒ–ˆ‚ÌŒÀ“xŠz‚ğA‘ÎÛ”NŒ‚ÌŒú¶˜J“­È‹K’è‚Ì‹æ•ªx‹‹ŒÀ“xŠz‚É·‚µ‘Ö‚¦‚é
+        //del - begin
+        //return filterNotCorrespond(dbm.executeQuery(sb.toString()));
+        //del - end
+        VRList list = dbm.executeQuery(sb.toString());
+        for (int j = 0; j < list.size(); j++) {
+            VRMap record = (VRMap) list.get(j);
+            int limitRate = -1;
+            
+            // Œú¶˜J“­È‹K’è‚Ì‹æ•ªx‹‹ŒÀ“xŠz‚ğæ“¾‚·‚éB
+            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), record.getData("JOTAI_CODE").toString());
+            if (limitRate > 0) {
+                record.setData("LIMIT_RATE", limitRate);
+            }
+            // Œú¶˜J“­È‹K’è‚ÌŠO•”—˜—pŒ^‹‹•tãŒÀ’PˆÊ”‚ğæ“¾‚·‚éB
+            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(2), record.getData("JOTAI_CODE").toString());
+            if (limitRate > 0) {
+                record.setData("EXTERNAL_USE_LIMIT", limitRate);
+            }
+        }
+        return filterNotCorrespond(list);
+        //2014/01/24 [Shinobu Hitaka] edit - end y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z
     }
 
     /**
@@ -4081,6 +4125,56 @@ public class QkanCommon {
         }
         
         return true;
+    }
+    
+    /**
+     * Œú˜JÈ‹K’è‚Ìx‹‹ŒÀ“xŠzEŠO•”—˜—pŒ^‹‹•tãŒÀ’PˆÊ”‚ğæ“¾‚·‚é
+     * @param dbm
+     * @param targetDate    ‘ÎÛ”NŒ
+     * @param limitRateType x‹‹ŒÀ“xŠz‹æ•ªi1:x‹‹ŒÀ“xŠzA2:ŠO•”—˜—pŒ^j
+     * @param jotaiCode     ‰îŒì“x
+     * @throws Exception ˆ——áŠO
+     * @return SQL•¶
+     * 2014/01/24 [Shinobu Hitaka] y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z‚Ì‚½‚ß’Ç‰Á
+     */
+    public static int getOfficialLimitRate(ACDBManager dbm, Date targetDate, int limitRateType, String jotaiCode) throws Exception{
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(targetDate);
+        String ym = VRDateParser.format(cal, "yyyy/MM");
+
+        StringBuilder sb = new StringBuilder();
+
+        //‘ÎÛ”NŒ‚ÌŠJnI—¹“ú‚ğİ’è
+        String targetDateBegin = ym + "/01";
+        String targetDateEnd = ym + "/" + cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        //SQLì¬
+        sb.append("SELECT");
+        sb.append(" LIMIT_RATE_VALUE");
+        sb.append(" FROM");
+        sb.append(" M_LIMIT_RATE_DETAIL");
+        sb.append(" WHERE");
+        sb.append("     (M_LIMIT_RATE_DETAIL.JOTAI_CODE = " + jotaiCode + ")");
+        sb.append(" AND (M_LIMIT_RATE_DETAIL.LIMIT_RATE_TYPE = " + ACCastUtilities.toString(limitRateType) + ")");
+        sb.append(" AND (M_LIMIT_RATE_DETAIL.LIMIT_RATE_HISTORY_ID = ");
+        sb.append(" (SELECT");
+        sb.append("  MAX(M_LIMIT_RATE.LIMIT_RATE_HISTORY_ID)");
+        sb.append("  FROM");
+        sb.append("  M_LIMIT_RATE");
+        sb.append("  WHERE");
+        sb.append("      (M_LIMIT_RATE.LIMIT_RATE_TYPE =" + ACCastUtilities.toString(limitRateType) + ")");
+        sb.append("  AND (M_LIMIT_RATE.LIMIT_RATE_VALID_START <='" + targetDateEnd + "')");
+        sb.append("  AND (M_LIMIT_RATE.LIMIT_RATE_VALID_END >='" + targetDateBegin + "')");
+        sb.append(" ))");
+        
+        VRList limitList = dbm.executeQuery(sb.toString());
+        int limitRate = -1;
+        if (!(limitList == null || limitList.size() == 0)) {
+            limitRate = ACCastUtilities.toInt(VRBindPathParser.get(
+                    "LIMIT_RATE_VALUE", (VRMap) limitList.get(0)));
+        }
+        return limitRate;
     }
 
 }

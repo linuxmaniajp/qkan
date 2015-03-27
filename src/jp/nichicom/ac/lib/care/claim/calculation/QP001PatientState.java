@@ -196,6 +196,22 @@ public class QP001PatientState {
 		
 		ninteiHistory = dbm.executeQuery(sb.toString());
 		
+        //2014/01/24 [Shinobu Hitaka] add - begin y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z
+        //—˜—pÒ–ˆ‚ÌŒÀ“xŠz‚ğA‘ÎÛ”NŒ‚ÌŒú¶˜J“­È‹K’è‚Ì‹æ•ªx‹‹ŒÀ“xŠz‚É·‚µ‘Ö‚¦‚é
+		VRMap map;
+        for (int i = 0; i < ninteiHistory.getDataSize(); i++) {
+            map = (VRMap) ninteiHistory.getData(i);
+            int limitRate = -1;
+            
+            // Œú¶˜J“­È‹K’è‚Ì‹æ•ªx‹‹ŒÀ“xŠz‚ğæ“¾‚·‚éB
+            limitRate = QkanCommon.getOfficialLimitRate(dbm, targetDateEnd, new Integer(1), map.get("JOTAI_CODE").toString());
+            if (limitRate > 0) {
+                map.setData("LIMIT_RATE", limitRate);
+            }
+            // Œú¶˜J“­È‹K’è‚ÌŠO•”—˜—pŒ^‹‹•tãŒÀ’PˆÊ”‚ÍAã‹L‚ÌSQL‚Åæ“¾‚µ‚Ä‚¢‚é‚Ì‚Å‰½‚à‚µ‚È‚¢
+        }
+        //2014/01/24 [Shinobu Hitaka] add - end y2014.4 ‹æ•ªx‹‹ŒÀ“xŠz‰ü’è‘Î‰z
+		
 	}
 	
 	/**
