@@ -28,6 +28,9 @@
  */
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.util.Arrays;
+import java.util.List;
+
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -50,38 +53,60 @@ public class QP001P021_201204 extends QP001P02_201204{
         setDetailList(detailList,11,kohiCount);
     }
     
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+    @Override
+    public void doPrintDetailJushotiTokureiList(
+    		VRList detailJushotiTokureiList, int kohiCount) throws Exception {
+    	setDetailJushotiTokureiList(detailJushotiTokureiList, 4, kohiCount);
+    }
+ // 2015/1/14 [Yoichiro Kamei] add - end
+    
     @Override
     public double getDetailRowCount() {
         return 10d;
     }
 
     public void doPrintReductionList(VRList reductionList) throws Exception {
-        
-        if (reductionList.getDataSize() > 0) {
-            //軽減率を設定する。
-            ACChotarouXMLUtilities.setValue(writer, "keigenritsu",
-                    pad(VRBindPathParser.get("901007",
-                            (VRMap) reductionList.getData(0)), 4));
-
+ // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - begin
+    	//出力対象となるサービス種類
+    	List<String> targetKindList = Arrays.asList(new String[]{"11", "15", "76", "71", "72", "73", "77"});
+    	if (reductionList.getDataSize() > 0) {
+    		//サービス種類コードが対象に含まれていなければ除く
             for (int j = 0; j < reductionList.getDataSize(); j++) {
                 VRMap reduction = (VRMap) reductionList.getData(j);
-                
                 String kind = ACCastUtilities.toString(VRBindPathParser.get("901008", reduction));
-                
-                //kindがサービス種類コード
-                //11:訪問介護、15:通所介護、76:定期巡回、71:夜間対応型、72:認知症対応型
-                //73:小規模多機能、77:複合型
-                
-                //利用者負担額の総額を設定
-                ACChotarouXMLUtilities.setValue(writer, "jyuryo" + kind, pad(VRBindPathParser.get("901009", reduction), 6));
-                //軽減額を設定
-                ACChotarouXMLUtilities.setValue(writer, "keigen" + kind, pad(VRBindPathParser .get("901010", reduction), 6));
-                //軽減後利用者負担額を設定
-                ACChotarouXMLUtilities.setValue(writer, "keigengo" + kind, pad(VRBindPathParser.get("901011", reduction), 6));
-                //備考
-                ACChotarouXMLUtilities.setValue(writer, "syafuku.h" + kind + ".biko", VRBindPathParser.get("901012", reduction));
+                if (!targetKindList.contains(kind)) {
+                	reductionList.remove(j);
+                }
             }
-        }
+    		setReductionList(reductionList, 4);
+    	}
+//        if (reductionList.getDataSize() > 0) {
+//            //軽減率を設定する。
+//            ACChotarouXMLUtilities.setValue(writer, "keigenritsu",
+//                    pad(VRBindPathParser.get("901007",
+//                            (VRMap) reductionList.getData(0)), 4));
+//
+//            for (int j = 0; j < reductionList.getDataSize(); j++) {
+//                VRMap reduction = (VRMap) reductionList.getData(j);
+//                
+//                String kind = ACCastUtilities.toString(VRBindPathParser.get("901008", reduction));
+//                
+//                //kindがサービス種類コード
+//                //11:訪問介護、15:通所介護、76:定期巡回、71:夜間対応型、72:認知症対応型
+//                //73:小規模多機能、77:複合型
+//                
+//                //利用者負担額の総額を設定
+//                ACChotarouXMLUtilities.setValue(writer, "jyuryo" + kind, pad(VRBindPathParser.get("901009", reduction), 6));
+//                //軽減額を設定
+//                ACChotarouXMLUtilities.setValue(writer, "keigen" + kind, pad(VRBindPathParser .get("901010", reduction), 6));
+//                //軽減後利用者負担額を設定
+//                ACChotarouXMLUtilities.setValue(writer, "keigengo" + kind, pad(VRBindPathParser.get("901011", reduction), 6));
+//                //備考
+//                ACChotarouXMLUtilities.setValue(writer, "syafuku.h" + kind + ".biko", VRBindPathParser.get("901012", reduction));
+//            }
+//        }
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - end
     }
 
 }

@@ -220,13 +220,23 @@ public class QS001ServicePatternListCellRenderer extends
 
         // 対象年月の法改正区分
         int targetLowVer = 0;
+        // [H27.4改正対応][Shinobu Hitaka] 2015/02/20 edit begin 平成27年4月の初期設定対応
+//        if (getTargetDate() != null) {
+//            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2404,
+//                    getTargetDate()) < 1) {
+//                // 平成24年4月以降
+//                targetLowVer = QkanConstants.SERVICE_LOW_VERSION_H2404;
+//            }
+//        }
         if (getTargetDate() != null) {
-            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2404,
+            if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2704,
                     getTargetDate()) < 1) {
-                // 平成24年4月以降
-                targetLowVer = QkanConstants.SERVICE_LOW_VERSION_H2404;
+                // 平成27年4月以降
+                targetLowVer = QkanConstants.SERVICE_LOW_VERSION_H2704;
             }
         }
+        // [H27.4改正対応][Shinobu Hitaka] 2015/02/20 edit end
+        
         // [ID:0000444][Tozo TANAKA] 2009/03/14 add end
 
         VRMap map = null;

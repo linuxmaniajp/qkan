@@ -1035,6 +1035,10 @@ public class QU001SQL extends QU001State {
 
     sb.append(",INSURE_VALID_END");
 
+    sb.append(",SYSTEM_INSURE_VALID_START");
+
+    sb.append(",SYSTEM_INSURE_VALID_END");
+
     sb.append(",PROVIDER_ID");
 
     sb.append(" FROM");
@@ -1082,4 +1086,113 @@ public class QU001SQL extends QU001State {
     return sb.toString();
   }
 
+  /**
+   * 「利用者公費情報を取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_PATIENT_KOHI(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",KOHI_ID");
+
+    sb.append(",KOHI_VALID_START");
+
+    sb.append(",KOHI_VALID_END");
+
+    sb.append(" FROM");
+
+    sb.append(" PATIENT_KOHI");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" KOHI_VALID_END");
+
+    sb.append(" >=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" KOHI_VALID_END");
+
+    sb.append(" <=");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" KOHI_TYPE NOT IN(");
+
+    sb.append(" SELECT");
+
+    sb.append(" KOHI_TYPE");
+
+    sb.append(" FROM");
+
+    sb.append(" PATIENT_KOHI");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append(" AND");
+
+    sb.append("(");
+
+    sb.append(" KOHI_VALID_END");
+
+    sb.append(" >");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(")");
+
+    sb.append(" GROUP BY KOHI_TYPE");
+
+    sb.append(")");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
 }

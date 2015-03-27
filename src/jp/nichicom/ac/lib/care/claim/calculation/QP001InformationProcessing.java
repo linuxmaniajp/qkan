@@ -330,6 +330,8 @@ public class QP001InformationProcessing {
 	 */
 	private void reflect2details(VRMap map) throws Exception {
 		
+		// [H27.4改正対応][Shinobu Hitaka] 2015/2/27 edit - begin 廃止＆追加コード対応
+		/*
 		int serviceCode = getServiceCode(map);
 		boolean changed = false;
 		
@@ -350,7 +352,23 @@ public class QP001InformationProcessing {
 			changed = setSameDetails(map);
 			break;
 		}
+		*/
 		
+		String serviceCode = getServiceCode(map);
+		boolean changed = false;
+		
+		//集計保持機能
+		//訪問リハ　　　145001:短期集中加算１　　　145002:短期集中加算２
+		//通所リハ　　　165602:廃止　165603:廃止　165604:廃止　165610:重度療養管理加算
+		//　　　　　　　165613:通所リハ短期集中個別リハ加算（追加）
+		//小規模多機能　736139:事業所開始時加算　　736140:廃止
+		if ("145001".equals(serviceCode) || "145002".equals(serviceCode)
+			|| "165610".equals(serviceCode) || "165613".equals(serviceCode)
+			|| "736139".equals(serviceCode)) {
+			changed = setSameDetails(map);
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/2/27 edit - end
+
 		if (changed) {
 			return;
 		}
@@ -366,7 +384,10 @@ public class QP001InformationProcessing {
 		16 5602 通所リハ短期集中リハ加算１⇒16 5603 通所リハ短期集中リハ加算２
 		*/
 		
+		// [H27.4改正対応][Shinobu Hitaka] 2015/2/27 edit - begin 廃止によりコメント化
+		/*
 		Object _301018 = null;
+		
 		switch(serviceCode) {
 		//短期集中リハビリテーション加算
 		case 145002:
@@ -377,10 +398,12 @@ public class QP001InformationProcessing {
 			_301018 = patient.getLastRecapitulationCategory3("165602");
 			break;
 		}
+		
 		if (!ACTextUtilities.isNullText(_301018)){
 			map.put("301018", _301018);
 		}
-		
+		*/
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/27 edit - end
 	}
 	
 	/**
@@ -432,6 +455,8 @@ public class QP001InformationProcessing {
 	 * @throws Exception
 	 */
 	private void reflect22details(VRMap map) throws Exception {
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
+		/*
 		switch(getServiceCode(map)) {
 		//短期集中リハビリテーション加算
 		case 645001:
@@ -441,6 +466,13 @@ public class QP001InformationProcessing {
 			setSameDetails(map);
 			break;
 		}
+		*/
+		String serviceCode = getServiceCode(map);
+		//短期集中リハビリテーション加算、小規模多機能　事業所開始時加算
+		if ("645001".equals(serviceCode) || "756139".equals(serviceCode) || "756140".equals(serviceCode)) {
+			setSameDetails(map);
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
 	}
 	
 	/**
@@ -508,6 +540,8 @@ public class QP001InformationProcessing {
 		//多床室
 		setMultiRoom(map);
 		
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
+		/*
 		//[CCCX:1616,2096][Shinobu Hitaka] 2014/12/11 add begin「22 6278，22 6278：短期入所療養介護（老健）の重度療養管理加算１，２」を追加
 		switch(getServiceCode(map)) {
 		case 226278:
@@ -516,6 +550,16 @@ public class QP001InformationProcessing {
 			break;
 		}
 		//[CCCX:1616,2096][Shinobu Hitaka] 2014/12/11 add end  「22 6278，22 6278：短期入所療養介護（老健）の重度療養管理加算１，２」を追加
+		*/
+		String serviceCode = getServiceCode(map);
+		
+		//集計保持機能
+		//短期入所療養介護（老健）　226278:重度療養管理加算１　226279:重度療養管理加算２
+		if ("226278".equals(serviceCode) || "226279".equals(serviceCode)) {
+			setSameDetails(map);
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
+
 	}
 	
 	/**
@@ -849,6 +893,8 @@ public class QP001InformationProcessing {
 			return;
 		}
 		
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
+		/*
 		switch(getServiceCode(map)) {
 		//短期集中リハビリテーション実施加算
 		case 526252:
@@ -857,6 +903,15 @@ public class QP001InformationProcessing {
 			setSameDetails(map);
 			break;
 		}
+		*/
+		String serviceCode = getServiceCode(map);
+		
+		//集計保持機能
+		//老健　526252:短期集中リハビリテーション実施加算　526253:認知症短期集中リハビリテーション実施加算
+		if ("526252".equals(serviceCode) || "526253".equals(serviceCode)) {
+			setSameDetails(map);
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
 	}
 
 	/**
@@ -1370,6 +1425,8 @@ public class QP001InformationProcessing {
 				&& serviceKindListThisMonth.contains("75"));
 	}
 	
+	// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin 
+	/* サービスコード英数化に伴い、返り値を数値から文字列へ変更
 	private int getServiceCode(VRMap map) throws Exception {
 		int code = 0;
 		
@@ -1384,6 +1441,22 @@ public class QP001InformationProcessing {
 		
 		return ACCastUtilities.toInt(String.valueOf(map.get("301007")) + String.valueOf(map.get("301008")), 0);
 	}
+	*/
+	private String getServiceCode(VRMap map) throws Exception {
+		String code = "";
+		
+		//サービス種類コード
+		if (!map.containsKey("301007")) {
+			return code;
+		}
+		//サービス項目コード
+		if (!map.containsKey("301008")) {
+			return code;
+		}
+		
+		return String.valueOf(map.get("301007")) + String.valueOf(map.get("301008"));
+	}
+	// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
 	
 	private boolean isValueExist(VRMap map, String key, int conditions) {
 		//空白以外チェック

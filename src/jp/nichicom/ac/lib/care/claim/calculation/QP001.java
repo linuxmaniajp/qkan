@@ -1445,7 +1445,11 @@ public class QP001 extends QP001Event {
      *             処理例外
      */
     public void doTotal() throws Exception {
-
+    	
+    	// [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add
+    	// H27.4開始の68,69,79短期利用サービスについて、請求開始が7月より前だった場合警告表示する
+    	String errorTargetPatient = null;
+    	
         // 集計の確認メッセージを表示する。
         if (QkanMessageList.getInstance().QP001_CONFIRMATION_PRINT() == ACMessageBox.RESULT_CANCEL) {
             return;
@@ -1563,6 +1567,64 @@ public class QP001 extends QP001Event {
                 int result = doTotalDetail(patient, servicePlanList, serviceDetailList,manager, errors);
                 //[ID:0000561][Shin Fujihara] 2009/12/14 edit end 2009年度対応
                 
+                // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可
+                // 対象年月が4月・5月、かつ、システム日付が7月より前の場合チェックする
+                if ((ACDateUtilities.getDifferenceOnMonth(getTargetDate().getDate(),ACDateUtilities.createDate(2015, 6)) < 0)
+                		&& ACDateUtilities.getDifferenceOnMonth(getClaimDateUpdate().getDate(), ACDateUtilities.createDate(2015, 7)) < 0) {
+        	        // 予定月間表上のサービスを全走査する。
+        	        Iterator it = servicePlanList.iterator();
+        	        errorTargetPatient = null;
+        	        while (it.hasNext()) {
+        	            VRMap row = (VRMap) it.next();
+        	            //予定データがログイン事業所のものであるか確認する。
+        	            if(!QkanSystemInformation.getInstance().getLoginProviderID().equals(String.valueOf(row.get("PROVIDER_ID")))){
+        	                continue;
+        	            }
+        	            // エラーとなった利用者コードを設定する。
+        	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+        	            		"SYSTEM_SERVICE_KIND_DETAIL", row), 0)) {
+        	            case 16811:
+        	            case 16911:
+        	            case 17911:
+        	            	if (errorTargetPatient != null) {
+        	            		errorTargetPatient += ", " + ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+        	            	} else {
+        	            		errorTargetPatient = ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+        	            	}
+        	            }
+    	            	if (errorTargetPatient != null) {
+        	            	break;
+    	            	}
+        	        }
+        	        // 実績月間表上のサービスを全走査する。既に予定で見つかった場合は省略する。
+        	        if (errorTargetPatient == null) {
+	        	        it = serviceDetailList.iterator();
+	        	        while (it.hasNext()) {
+	        	            VRMap row = (VRMap) it.next();
+	        	            //実績データがログイン事業所のものであるか確認する。
+	        	            if(!QkanSystemInformation.getInstance().getLoginProviderID().equals(String.valueOf(row.get("PROVIDER_ID")))){
+	        	                continue;
+	        	            }
+	        	            // エラーとなった利用者コードを設定する。
+	        	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+	        	            		"SYSTEM_SERVICE_KIND_DETAIL", row), 0)) {
+	        	            case 16811:
+	        	            case 16911:
+	        	            case 17911:
+	        	            	if (errorTargetPatient != null) {
+	        	            		errorTargetPatient += ", " + ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+	        	            	} else {
+	        	            		errorTargetPatient = ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+	        	            	}
+	        	            }
+	    	            	if (errorTargetPatient != null) {
+	        	            	break;
+	    	            	}
+	        	        }
+        	        }
+        	    }
+                // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
+                
                 // 介護保険分の実績集計を行なう。
                 if(result == 0){
                     //集計済にフラグを変更する。
@@ -1610,6 +1672,14 @@ public class QP001 extends QP001Event {
         	errors.show();
         }
         //[ID:0000561][Shin Fujihara] 2009/12/14 edit end 2009年度対応
+        
+        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可
+        if (errorTargetPatient != null) {
+	        if (QkanMessageList.getInstance()
+	                .QS001_WARNING_OF_CLAIM_STARTDATE2() == ACMessageBox.RESULT_OK) {
+	        }
+        }
+        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
         
         // 集計が終了したことを示すメッセージを表示する。
         QkanMessageList.getInstance().QP001_INSERT_SUCCESSED();

@@ -53,8 +53,10 @@ public class MainFrame extends JFrame implements ActionListener {
     private XMLDocumentUtil doc = null;
 
     private String lineSeparator = System.getProperty("line.separator");
-    private static String TITLE = "給管鳥Ver.6.0.0 データ移行ツール";
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//    private static String TITLE = "給管鳥Ver.6.0.0 データ移行ツール";
+    private static String TITLE = "給管鳥Ver.7.0.0 データ移行ツール";
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
     /**
      * LookAndFeelの設定
      */
@@ -122,11 +124,14 @@ public class MainFrame extends JFrame implements ActionListener {
         JPanel p = new JPanel();
         //p.setMaximumSize(new Dimension(500, 10));
         p.setMinimumSize(new Dimension(500, 10));
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//        p.setBorder(new CompoundBorder(new TitledBorder(
+//                "１．移行元のデータベースファイルを指定してください（V5.5.0以上）"), new EmptyBorder(0, 0,
+//                0, 0)));
         p.setBorder(new CompoundBorder(new TitledBorder(
-                "１．移行元のデータベースファイルを指定してください（V5.5.0以上）"), new EmptyBorder(0, 0,
+                "１．移行元のデータベースファイルを指定してください（V6.1.2以上）"), new EmptyBorder(0, 0,
                 0, 0)));
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
         from = new JTextField(30);
         from.setText("");
         JButton btn = new JButton("開く");
@@ -307,15 +312,25 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         // 一旦コネクションを貼り、データベースバージョンのチェック
-        if (!checkVersion(from.getText(), 5)) {
+        
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//        if (!checkVersion(from.getText(), 5)) {
+//            from.requestFocus();
+//            return false;
+//        }
+//        if (!checkVersion(to.getText(), 6)) {
+//            to.requestFocus();
+//            return false;
+//        }
+        if (!checkVersion(from.getText(), 6)) {
             from.requestFocus();
             return false;
         }
-        if (!checkVersion(to.getText(), 6)) {
+        if (!checkVersion(to.getText(), 7)) {
             to.requestFocus();
             return false;
         }
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
         return true;
     }
 
@@ -332,48 +347,65 @@ public class MainFrame extends JFrame implements ActionListener {
             String scv = con
                     .execQuerySingle("SELECT SCHEME_VERSION FROM M_QKAN_VERSION");
 
-            StringBuffer sql = new StringBuffer();
-            sql.append("SELECT COUNT(*) AS T_EXIST FROM RDB$RELATIONS");
-            sql.append(" WHERE");
-            sql.append(" (RDB$FLAGS = 1)");
-            sql.append(" AND (RDB$RELATION_NAME = 'M_PARAMETER')");
-
-            String maiExists = con.execQuerySingle(sql.toString());
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//            StringBuffer sql = new StringBuffer();
+//            sql.append("SELECT COUNT(*) AS T_EXIST FROM RDB$RELATIONS");
+//            sql.append(" WHERE");
+//            sql.append(" (RDB$FLAGS = 1)");
+//            sql.append(" AND (RDB$RELATION_NAME = 'M_PARAMETER')");
+//
+//            String maiExists = con.execQuerySingle(sql.toString());
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
             String[] ary = scv.split("\\.");
             int majer = Integer.parseInt(ary[0]);
             int miner = Integer.parseInt(ary[1]);
-            int maii = 6;
-
-            if (Integer.parseInt(maiExists) == 1) {
-                maii = 5;
-            }
-
-            if (majer != maii) {
-                showError("データベースの不整合を検出しました。" + lineSeparator
-                        + "バージョン情報とテーブルの形式が一致しません。");
-                return false;
-            }
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+            int rev = Integer.parseInt(ary[2]);
+//            int maii = 6;
+//
+//            if (Integer.parseInt(maiExists) == 1) {
+//                maii = 5;
+//            }
+//
+//            if (majer != maii) {
+//                showError("データベースの不整合を検出しました。" + lineSeparator
+//                        + "バージョン情報とテーブルの形式が一致しません。");
+//                return false;
+//            }
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
             if (majer != targetVersion) {
 
-                if (targetVersion == 5) {
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//                if (targetVersion == 5) {
+                if (targetVersion == 6) {
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
                     showError("移行元のデータベースファイルに、新しいバージョンの給管鳥用データベースファイルが指定されています。");
                 } else {
                     showError("移行先のデータベースファイルに、古いバージョンの給管鳥用データベースファイルが指定されています。");
                 }
 
                 return false;
-
-            } else if (targetVersion == 5) {
-                // 旧バージョンは、スキーマバージョン V5.5.0を要求
-                if ((majer != 5) || (miner != 5)) {
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//            } else if (targetVersion == 5) {
+//                // 旧バージョンは、スキーマバージョン V5.5.0を要求
+//                if ((majer != 5) || (miner != 5)) {
+//                    showError("移行元のデータベースファイルを最新バージョンにアップデートしてください。"
+//                            + lineSeparator + "要求バージョン：5.5.0" + lineSeparator
+//                            + "指定されたデータベースファイルのバージョン：" + scv);
+//                    return false;
+//                }
+            } else if (targetVersion == 6) {
+                // 旧バージョンは、スキーマバージョン V6.1.2を要求
+                if ( !(    ((majer == 6) && (miner == 1) && (rev >= 2))
+                		|| ((majer == 6) && (miner > 1))
+                	  )
+                ) {
                     showError("移行元のデータベースファイルを最新バージョンにアップデートしてください。"
-                            + lineSeparator + "要求バージョン：5.5.0" + lineSeparator
+                            + lineSeparator + "要求バージョン：6.1.2" + lineSeparator
                             + "指定されたデータベースファイルのバージョン：" + scv);
                     return false;
                 }
-
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
             }
 
             return true;

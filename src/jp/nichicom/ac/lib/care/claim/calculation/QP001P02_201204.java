@@ -67,7 +67,12 @@ public class QP001P02_201204 extends QP001P02_10Event {
         VRList typeList = getTypeList();
         // 社福減免レコード
         VRList reductionList = getReductionList();
-
+        
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+        // 明細情報（住所地特例）レコード集合
+        VRList detailJushotiTokureiList = getDetailJushotiTokureiList();
+ // 2015/1/14 [Yoichiro Kamei] add - end
+        
         // 印刷頁数を算出する。（1頁あたりの明細情報は14件、集計情報は4件)
         // ※複数公費の受給を受けている場合は、受給公費分帳票を出力する。
         int pageCount = 1;
@@ -84,6 +89,18 @@ public class QP001P02_201204 extends QP001P02_10Event {
             if (pageTemp > pageCount)
                 pageCount = pageTemp;
         }
+ // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - begin
+        if (detailJushotiTokureiList.getDataSize() > 0) {
+        	pageTemp = (int) Math.ceil((double) detailJushotiTokureiList.getDataSize() / getDetailJushotiTokureiRowCount());
+            if (pageTemp > pageCount)
+                pageCount = pageTemp;
+        }
+        if (reductionList.getDataSize() > 0) {
+        	pageTemp = (int) Math.ceil((double) reductionList.getDataSize() / 3d);
+            if (pageTemp > pageCount)
+                pageCount = pageTemp;
+        }
+ // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - end
 
         // 公費件数ループ
         for (int kohiCount = 0; kohiCount < kohiCountTotal; kohiCount++) {
@@ -97,7 +114,11 @@ public class QP001P02_201204 extends QP001P02_10Event {
             typeList = getTypeList();
             // 社福減免レコード
             reductionList = getReductionList();
-
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+            // 明細情報レコード
+            detailJushotiTokureiList = getDetailJushotiTokureiList();
+ // 2015/1/14 [Yoichiro Kamei] add - end
+            
             // 印刷ループ
             for (int i = 0; i < pageCount; i++) {
                 // ページ開始
@@ -117,9 +138,18 @@ public class QP001P02_201204 extends QP001P02_10Event {
 //                setDetailList(detailList,13,kohiCount);
                 doPrintDetailList(detailList,kohiCount);
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+                doPrintDetailJushotiTokureiList(detailJushotiTokureiList, kohiCount);
+// 2015/1/14 [Yoichiro Kamei] add - end
+                
                 // 集計件数分ループする。※4件を超える場合は、次ページに印字
                 setTypeList(typeList,5,kohiCount);
 
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - begin
+                // 社福軽減を設定
+                doPrintReductionList(reductionList);
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - end
+                
                 // 用紙が一枚めの場合
                 if (i == 0) {
                     
@@ -191,9 +221,10 @@ public class QP001P02_201204 extends QP001P02_10Event {
                         break;
                     }
                     
-                    //印刷の拡張ポイントをコールする。
-                    doPrintReductionList(reductionList);
-
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - begin 可変となったため上に移動
+//                    //印刷の拡張ポイントをコールする。
+//                    doPrintReductionList(reductionList);
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - end
 
                 }
 
@@ -233,7 +264,234 @@ public class QP001P02_201204 extends QP001P02_10Event {
     public void doPrintDetailList(VRList detailList,int kohiCount) throws Exception {
         
     }
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+    /**
+     * 明細情報（住所地特例）欄の印刷データ設定を行う
+     * @param detailJushotiTokureiList
+     * @param kohiCount
+     * @throws Exception
+     */
+    public void doPrintDetailJushotiTokureiList(VRList detailJushotiTokureiList, int kohiCount) throws Exception {
+        
+    }
+    /**
+     * 明細情報（住所地特例）欄の１ページあたりの出力行数を取得する
+     */
+    public double getDetailJushotiTokureiRowCount() {
+        return 3d;
+    }
+    
+    
+    //[H27.4改正]サービス単位数５桁⇒６桁出力の対応のため、オーバーライドして定義
+    /**
+     * 明細情報を設定する。
+     * @param detailList
+     * @param loopCount
+     * @param kohiCount
+     * @throws Exception
+     */
+    protected void setDetailList(VRList detailList,int loopCount,int kohiCount) throws Exception {
+        // 明細件数分ループする。
+        for (int j = 1; j < loopCount; j++) {
+            if (detailList.getDataSize() == 0)
+                break;
+            VRMap detail = (VRMap) detailList.get(0);
+            // サービス内容を設定する。
+            ACChotarouXMLUtilities.setValue(writer, detail, "301019",
+                    "meisai.h" + j + ".w2");
+            // サービスコードを設定する。
+            ACChotarouXMLUtilities.setValue(writer, "servicecode" + j,
+                    ACCastUtilities.toString(VRBindPathParser.get(
+                            "301007", detail))
+                            + ACCastUtilities.toString(VRBindPathParser
+                                    .get("301008", detail)));
 
+            //単位数を表示するサービスでなければ単位数単価を表示する。
+            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")))){
+                // 単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "tani" + j, pad(
+                        VRBindPathParser.get("301009", detail), 4));
+            }
+
+            // 日数・回数を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "times" + j, pad(
+                    VRBindPathParser.get("301010", detail), 2));
+            
+            // サービス単位数を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "servicetime" + j,
+                    pad(VRBindPathParser.get("301014", detail), 6));
+
+            
+            switch (kohiCount) {
+            // 公費1
+            case 0:
+                // 公費分回数を設定する。
+                ACChotarouXMLUtilities.setValue(writer,
+                        "kohitimes" + j, pad(VRBindPathParser.get(
+                                "301011", detail), 2));
+                
+                // 公費対象単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
+                        pad(VRBindPathParser.get("301015", detail), 6));
+                break;
+            // 公費2
+            case 1:
+                // 公費分回数を設定する。
+                ACChotarouXMLUtilities.setValue(writer,
+                        "kohitimes" + j, pad(VRBindPathParser.get(
+                                "301012", detail), 2));
+                
+                // 公費対象単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
+                        pad(VRBindPathParser.get("301016", detail), 6));
+
+                break;
+            // 公費3
+            case 2:
+                // 公費分回数を設定する。
+                ACChotarouXMLUtilities.setValue(writer,
+                        "kohitimes" + j, pad(VRBindPathParser.get(
+                                "301013", detail), 2));
+                // 公費対象単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
+                        pad(VRBindPathParser.get("301017", detail), 6));
+                break;
+            }
+
+            // 摘要を設定する。
+            ACChotarouXMLUtilities.setValue(writer, detail, "301018",
+                    "meisai.h" + j + ".tekiyo");
+            detailList.remove(0);
+        }
+    }
+    
+    /**
+     * 明細情報（住所地特例）を設定する。
+     * @param detailList
+     * @param loopCount
+     * @param kohiCount
+     * @throws Exception
+     */
+    protected void setDetailJushotiTokureiList(VRList detailList,int loopCount,int kohiCount) throws Exception {
+        // 明細件数分ループする。
+        for (int j = 1; j < loopCount; j++) {
+            if (detailList.getDataSize() == 0)
+                break;
+            VRMap detail = (VRMap) detailList.get(0);
+            // サービス内容を設定する。
+            ACChotarouXMLUtilities.setValue(writer, detail, "1801020",
+                    "j_meisai.h" + j + ".w2");
+            // サービスコードを設定する。
+            ACChotarouXMLUtilities.setValue(writer, "j_servicecode" + j,
+                    ACCastUtilities.toString(VRBindPathParser.get(
+                            "1801007", detail))
+                            + ACCastUtilities.toString(VRBindPathParser
+                                    .get("1801008", detail)));
+
+            //単位数を表示するサービスでなければ単位数単価を表示する。
+            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("1801007")),String.valueOf(detail.get("1801008")))){
+                // 単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "j_tani" + j, pad(
+                        VRBindPathParser.get("1801009", detail), 4));
+            }
+
+            // 日数・回数を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "j_times" + j, pad(
+                    VRBindPathParser.get("1801010", detail), 2));
+            // サービス単位数を設定する。
+            ACChotarouXMLUtilities.setValue(writer, "j_servicetime" + j,
+                    pad(VRBindPathParser.get("1801014", detail), 6));
+
+            switch (kohiCount) {
+            // 公費1
+            case 0:
+                // 公費分回数を設定する。
+                ACChotarouXMLUtilities.setValue(writer,
+                        "j_kohitimes" + j, pad(VRBindPathParser.get(
+                                "1801011", detail), 2));
+                // 公費対象単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "j_kohitani" + j,
+                        pad(VRBindPathParser.get("1801015", detail), 6));
+                break;
+            // 公費2
+            case 1:
+                // 公費分回数を設定する。
+                ACChotarouXMLUtilities.setValue(writer,
+                        "j_kohitimes" + j, pad(VRBindPathParser.get(
+                                "1801012", detail), 2));
+                // 公費対象単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "j_kohitani" + j,
+                        pad(VRBindPathParser.get("1801016", detail), 6));
+                break;
+            // 公費3
+            case 2:
+                // 公費分回数を設定する。
+                ACChotarouXMLUtilities.setValue(writer,
+                        "j_kohitimes" + j, pad(VRBindPathParser.get(
+                                "1801013", detail), 2));
+                // 公費対象単位数を設定する。
+                ACChotarouXMLUtilities.setValue(writer, "j_kohitani" + j,
+                        pad(VRBindPathParser.get("1801017", detail), 6));
+                break;
+            }
+            
+            // 施設所在保険者番号を設定する。
+            ACChotarouXMLUtilities.setValue(writer, detail, "1801018",
+                    "j_meisai.h" + j + ".w10");
+            
+            // 摘要を設定する。
+            ACChotarouXMLUtilities.setValue(writer, detail, "1801019",
+                    "j_meisai.h" + j + ".tekiyo");
+            detailList.remove(0);
+        }
+    }
+ // 2015/1/14 [Yoichiro Kamei] add - end
+    
+ // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - begin
+    /**
+     * 社福軽減を設定する。
+     * @param reductionList
+     * @param loopCount
+     * @throws Exception
+     */
+    protected void setReductionList(VRList reductionList, int loopCount) throws Exception {
+        if (reductionList.getDataSize() == 0) {
+        	return;
+        }
+        //軽減率を設定する。
+        ACChotarouXMLUtilities.setValue(writer, "keigenritsu",
+                pad(VRBindPathParser.get("901007",
+                        (VRMap) reductionList.getData(0)), 4));
+        
+        // 明細件数分ループする。
+        for (int j = 1; j < loopCount; j++) {
+            if (reductionList.getDataSize() == 0) {
+            	break;
+            }
+            VRMap reduction = (VRMap) reductionList.get(0);
+            String kind = ACCastUtilities.toString(VRBindPathParser.get("901008", reduction));
+            
+            //サービス種類コード
+            ACChotarouXMLUtilities.setValue(writer, "syafuku.h" + j + ".kind", kind);
+            
+            //サービス名称
+            VRMap service = (VRMap) getServiceName().get(kind);
+            ACChotarouXMLUtilities.setValue(writer, service, "SERVICE_KIND_NAME", "syafuku.h" + j + ".service");
+                        
+            //利用者負担額の総額を設定
+            ACChotarouXMLUtilities.setValue(writer, "jyuryo" + j, pad(VRBindPathParser.get("901009", reduction), 6));
+            //軽減額を設定
+            ACChotarouXMLUtilities.setValue(writer, "keigen" + j, pad(VRBindPathParser .get("901010", reduction), 6));
+            //軽減後利用者負担額を設定
+            ACChotarouXMLUtilities.setValue(writer, "keigengo" + j, pad(VRBindPathParser.get("901011", reduction), 6));
+            //備考
+            ACChotarouXMLUtilities.setValue(writer, "syafuku.h" + j + ".biko", VRBindPathParser.get("901012", reduction));
+            
+            reductionList.remove(0); //設定済みなので対象から除外
+        }
+    }
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - end
+    
     public void addFormat() throws Exception {
         // TODO 自動生成されたメソッド・スタブ
         

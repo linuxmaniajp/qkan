@@ -78,7 +78,6 @@ public class CareServiceSchedulePrintManager extends HashMap {
      * 別表用の配列個数定数です。
      */
     public final static int INDEX_OF_TOTAL_ARRAY_SIZE = 10;
-    
     /**
      * 費用総額をあらわす添字定数です。
      */
@@ -87,17 +86,14 @@ public class CareServiceSchedulePrintManager extends HashMap {
      * 利用者負担（全額対象分）をあらわす添字定数です。
      */
     public final static int INDEX_OF_USER_COST_ON_FULL = 8;
-
     /**
      * 利用者負担（保険対象分）をあらわす添字定数です。
      */
     public final static int INDEX_OF_USER_COST_ON_INSURE = 7;
-
     /**
      * 直後に小計を出力すべき明細をあらわすサービス内容状態定数です。
      */
     public final static int ITEM_STATE_MULTI_LAST = 3;
-
     /**
      * 明細をあらわすサービス内容状態定数です。
      */
@@ -113,15 +109,40 @@ public class CareServiceSchedulePrintManager extends HashMap {
 
     private CareServiceCodeCalcurater calcurater;
 
+    /**
+     * 事業所単位に分割して出力するか
+     */
     private boolean buildDivedProvider = true;
-
+    /**
+     * 施設系サービスを本表に印刷するか
+     */
     private boolean printFacilities;
-
+    /**
+     * グループホーム/特定施設系サービスを本表に印刷するか
+     */
     private boolean printLifeCare;
-
+    /**
+     * 本票の自費に△を記載するか
+     */
     private boolean printTriangle;
-
+    /**
+     * 居宅療養管理指導を本表に印刷するか
+     */
     private boolean printHomeMedicalAdvice = false;
+    // [H27.4改正対応][Shinobu Hitaka] 2015/3/16 add - begin
+    /**
+     * 特別地域加算・小規模事業所加算を本表に印刷するか
+     */
+    private boolean printSpecialArea = false;
+    /**
+     * 中山間地域等提供加算を本表に印刷するか
+     */
+    private boolean printChusankanArea = false;
+    /**
+     * 介護職員処遇改善加算を本表に印刷するか
+     */
+    private boolean printSyoguKaizen = false;
+    // [H27.4改正対応][Shinobu Hitaka] 2015/3/16 add - end
 
     private boolean subParse = true;
 
@@ -135,9 +156,13 @@ public class CareServiceSchedulePrintManager extends HashMap {
     // [ID:0000745][Masahiko.Higuchi] add - end
 
     //2006/06/09 tozo TANAKA begin-replace 別表法改正のため
-    private int userSubTableRowCount = 17;
+    //private int userSubTableRowCount = 17;
     //2006/06/09 tozo TANAKA end-replace 別表法改正のため
-     
+    
+    // [H27.4改正対応][Shinobu Hitaka] 2015/1/23 edit - begin 別表様式変更
+    private int userSubTableRowCount = 19;
+    // [H27.4改正対応][Shinobu Hitaka] 2015/1/23 edit - end    
+    
     // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
     private Map<String,Integer> regulationHash = null; // 自己負担額
     private Map<String,Integer> diagnosisHash = null; //特定診療費・特別療養費
@@ -409,6 +434,30 @@ public class CareServiceSchedulePrintManager extends HashMap {
             setPrintHomeMedicalAdvice(false);
         }
 
+        // 特別地域加算・小規模事業所加算を本表に記載するかの設定をチェック
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintSpecialArea")) {
+            setPrintSpecialArea(!"0".equals(ACFrame.getInstance().getProperty(
+                    "PrintConfig/PrintSpecialArea")));
+        } else {
+            setPrintHomeMedicalAdvice(false);
+        }
+        
+        // 中山間地域等提供加算を本表に記載するかの設定をチェック
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintChusankanArea")) {
+            setPrintChusankanArea(!"0".equals(ACFrame.getInstance().getProperty(
+                    "PrintConfig/PrintChusankanArea")));
+        } else {
+            setPrintHomeMedicalAdvice(false);
+        }
+        
+        // 介護職員処遇改善加算を本表に記載するかの設定をチェック
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintSyoguKaizen")) {
+            setPrintSyoguKaizen(!"0".equals(ACFrame.getInstance().getProperty(
+                    "PrintConfig/PrintSyoguKaizen")));
+        } else {
+            setPrintHomeMedicalAdvice(false);
+        }
+        
         // 本票の自費に△を記載するかの設定をチェック
         if (ACFrame.getInstance().hasProperty("PrintConfig/PrivateExpenses")) {
             setPrintTriangle(!"0".equals(ACFrame.getInstance().getProperty(
@@ -739,6 +788,54 @@ public class CareServiceSchedulePrintManager extends HashMap {
         this.printHomeMedicalAdvice = printHomeMedicalAdvice;
     }
 
+    // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - begin 
+    /**
+     * 特別地域加算・小規模事業所加算を本表に印刷するか を返します。
+     * @return 特別地域加算・小規模事業所加算を本表に印刷するか
+     */
+    protected boolean isPrintSpecialArea() {
+        return printSpecialArea;
+    }
+
+    /**
+     * 特別地域加算・小規模事業所加算を本表に印刷するか を返します。
+     * @param printSpecialArea 特別地域加算・小規模事業所加算を本表に印刷するか
+     */
+    protected void setPrintSpecialArea(boolean printSpecialArea) {
+        this.printSpecialArea = printSpecialArea;
+    }
+    /**
+     * 中山間地域等提供加算を本表に印刷するか を返します。
+     * @return 中山間地域等提供加算を本表に印刷するか
+     */
+    protected boolean isPrintChusankanArea() {
+        return printChusankanArea;
+    }
+
+    /**
+     * 中山間地域等提供加算を本表に印刷するか を返します。
+     * @param printChusankanArea 中山間地域等提供加算を本表に印刷するか
+     */
+    protected void setPrintChusankanArea(boolean printChusankanArea) {
+        this.printChusankanArea = printChusankanArea;
+    }
+    /**
+     * 介護職員処遇改善加算を本表に印刷するか を返します。
+     * @return 介護職員処遇改善加算を本表に印刷するか
+     */
+    protected boolean isPrintSyoguKaizen() {
+        return printSyoguKaizen;
+    }
+
+    /**
+     * 介護職員処遇改善加算を本表に印刷するか を返します。
+     * @param printSyoguKaizen 介護職員処遇改善加算を本表に印刷するか
+     */
+    protected void setPrintSyoguKaizen(boolean printSyoguKaizen) {
+        this.printSyoguKaizen = printSyoguKaizen;
+    }
+    // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - end
+    
     /**
      * 別表情報としても解析するか を返します。
      * 
@@ -3327,7 +3424,8 @@ public class CareServiceSchedulePrintManager extends HashMap {
          * 
          * @return 本表へ印字可能なサービスであるか
          */
-        protected boolean isMainFormatPrintable(VRMap service, Map code) {
+        protected boolean isMainFormatPrintable(VRMap service, Map code)
+        		throws Exception {
             
             // [ID:0000532][Masahiko Higuchi] 2009/08 add begin 2009年度対応
             boolean isNotPrint = false;
@@ -3349,12 +3447,36 @@ public class CareServiceSchedulePrintManager extends HashMap {
             }
             // [ID:0000532][Masahiko Higuchi] 2009/08 add end
             
+            // TODO
+            // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 edit - begin 区分支給基準限度額管理対象外の印字ON/OFFに対応。
             // 施設系/準施設系サービスか給付管理限度額対象内の場合は本表に印字する。
             // ※施設系や居宅療養管理指導を印字しない場合は、parseの時点で削られている。
-            return CareServiceCommon.isServiceUseTableMainFormatPrintableCode(code)
-                    || CareServiceCommon.isFacility(service)
-                    || CareServiceCommon.isLifeCare(service)
-                    || CareServiceCommon.isHomeMedicalAdvice(service);
+            // del - begin
+            //return CareServiceCommon.isServiceUseTableMainFormatPrintableCode(code)
+            //        || CareServiceCommon.isFacility(service)
+            //        || CareServiceCommon.isLifeCare(service)
+            //        || CareServiceCommon.isHomeMedicalAdvice(service)
+            //        ;
+            // del - end
+            // add - start
+            // 以下を印刷対象とする。
+            // 支給限度額管理対象外・緊急時訪問看護加算・特別管理加算・ターミナルケア加算・緊急時治療管理
+            // ただし、以下は設定画面のON/OFFに従う
+            // 特別地域加算・小規模事業所加算、中山間地域提供加算、介護職員処遇改善加算
+            return (!CareServiceCommon.isAddSpecialAreaOfWelfareEquipment(code)	// 福祉用具の特別地域加算以外
+                    && !CareServiceCommon.isAddPercentageForSimple(code)		// 特別地域加算・小規模事業所加算以外
+                    && !CareServiceCommon.isAddPercentageForArea(code))			// 中山間地域提供加算以外
+                    && !CareServiceCommon.isAddPercentageForSyogu(code)			// 介護職員処遇改善加算以外
+                    || (CareServiceCommon.isAddSpecialAreaOfWelfareEquipment(code) && isPrintSpecialArea())	// 福祉用具の特別地域加算
+                    || (CareServiceCommon.isAddPercentageForSimple(code) && isPrintSpecialArea())			// 特別地域加算・小規模事業所加算
+                    || (CareServiceCommon.isAddPercentageForArea(code) && isPrintChusankanArea())			// 中山間地域提供加算
+                    || (CareServiceCommon.isAddPercentageForSyogu(code) && isPrintSyoguKaizen())			// 介護職員処遇改善加算
+                    || CareServiceCommon.isFacility(service)			// 施設
+                    || CareServiceCommon.isLifeCare(service)			// 準施設
+                    || CareServiceCommon.isHomeMedicalAdvice(service)	// 居宅療養管理指導
+                    ;
+            // add - end
+            // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 edit - end 
         }
 
         /**

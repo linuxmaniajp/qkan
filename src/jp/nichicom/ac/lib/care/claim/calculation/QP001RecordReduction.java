@@ -506,6 +506,8 @@ public class QP001RecordReduction extends QP001RecordAbstract {
 
         
         //社福減免対象のサービスで無い場合
+        // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
+        /*
         //様式第二
         int code_kind =ACCastUtilities.toInt(serviceCode.get("SERVICE_CODE_KIND"));
         switch(code_kind){
@@ -541,7 +543,35 @@ public class QP001RecordReduction extends QP001RecordAbstract {
 //            }
 //            break;
         }
-
+        */
+        String serviceCodeKind =ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
+        if ("11".equals(serviceCodeKind) || 	//様式2-1
+        	"15".equals(serviceCodeKind) || 	//様式2-1
+        	"21".equals(serviceCodeKind) || 	//様式3-1
+        	"24".equals(serviceCodeKind) || 	//様式3-2
+        	"51".equals(serviceCodeKind) || 	//様式8
+        	"54".equals(serviceCodeKind) || 	//様式8
+        	"61".equals(serviceCodeKind) || 	//様式2-2
+        	"65".equals(serviceCodeKind) || 	//様式2-2
+        	"71".equals(serviceCodeKind) || 	//様式2-1
+        	"72".equals(serviceCodeKind) || 	//様式2-1
+        	"73".equals(serviceCodeKind) || 	//様式2-1(小規模多機能型居宅介護)
+        	"74".equals(serviceCodeKind) || 	//様式2-2
+        	"75".equals(serviceCodeKind) || 	//様式2-2
+        	"76".equals(serviceCodeKind) || 	//様式2-2(定期巡回)
+        	"77".equals(serviceCodeKind)    	//様式2-2(複合型)
+        	) {
+            if (patientState.getKohiRatio(targetDate,
+                    String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")),
+                    "1",1,
+                    manager.getProviderMedicalFlag(String.valueOf(serviceDetail.get("PROVIDER_ID"))),manager) == 100) {
+                //処理を終了する。
+                return false;
+            }
+            return true;
+        }
+        // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end   サービスコード英数化
+        
         return false;
     }
     

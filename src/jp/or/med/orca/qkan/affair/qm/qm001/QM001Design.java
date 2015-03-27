@@ -449,7 +449,11 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
       subTitle.setText("@ƒƒOƒCƒ“‰æ–Ê");
 
       subTitle.setOpaque(true);
-      subTitle.setBackground(new Color(20,80,20));
+      
+      // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/28 edit - begin
+      //subTitle.setBackground(new Color(20,80,20));
+      subTitle.setBackground(new Color(119,74,142));
+      // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/28 edit - end
 
       subTitle.setForeground(Color.white);
 

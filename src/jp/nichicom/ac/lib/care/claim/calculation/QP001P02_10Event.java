@@ -117,6 +117,11 @@ public class QP001P02_10Event extends QP001PrintEvent {
 
     // 社会福祉法人軽減額情報レコード（複数レコード）
     private VRList reductionList = null;
+    
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+ // 明細情報（住所地特例）レコード（複数レコード）
+    private VRList detailJushotiTokureiList = null;
+ // 2015/1/14 [Yoichiro Kamei] add - end
 
     // サービス単位数合計
     private int serviceUnitTotal = 0;
@@ -298,6 +303,9 @@ public class QP001P02_10Event extends QP001PrintEvent {
         typeList = new VRArrayList();
         nursingList = new VRArrayList();
         reductionList = new VRArrayList();
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+        detailJushotiTokureiList = new VRArrayList();
+ // 2015/1/14 [Yoichiro Kamei] add - end
 
         VRMap map = null;
         int categoryNo = 0;
@@ -351,8 +359,14 @@ public class QP001P02_10Event extends QP001PrintEvent {
                     emergencyOwnFacilityList.add(map);
                 }
                 break;
-                
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+            // 明細情報レコード
+            case 18:
+            	detailJushotiTokureiList.add(map);
+                break;            
+// 2015/1/14 [Yoichiro Kamei] add - end
             }
+
         }
         
         Collections.sort(detailList,new RecordComparator());
@@ -362,7 +376,9 @@ public class QP001P02_10Event extends QP001PrintEvent {
         Collections.sort(typeList,new RecordComparator());
         Collections.sort(nursingList,new RecordComparator());
         Collections.sort(reductionList,new RecordComparator());
-        
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+        Collections.sort(detailJushotiTokureiList,new RecordComparator());
+// 2015/1/14 [Yoichiro Kamei] add - end
         
 
     }
@@ -1192,10 +1208,12 @@ public class QP001P02_10Event extends QP001PrintEvent {
             // 日数・回数を設定する。
             ACChotarouXMLUtilities.setValue(writer, "times" + j, pad(
                     VRBindPathParser.get("301010", detail), 2));
+            
             // サービス単位数を設定する。
             ACChotarouXMLUtilities.setValue(writer, "servicetime" + j,
                     pad(VRBindPathParser.get("301014", detail), 5));
 
+            
             switch (kohiCount) {
             // 公費1
             case 0:
@@ -1203,9 +1221,11 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setValue(writer,
                         "kohitimes" + j, pad(VRBindPathParser.get(
                                 "301011", detail), 2));
+                
                 // 公費対象単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
                         pad(VRBindPathParser.get("301015", detail), 5));
+
                 break;
             // 公費2
             case 1:
@@ -1213,9 +1233,11 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setValue(writer,
                         "kohitimes" + j, pad(VRBindPathParser.get(
                                 "301012", detail), 2));
+                
                 // 公費対象単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
                         pad(VRBindPathParser.get("301016", detail), 5));
+
                 break;
             // 公費3
             case 2:
@@ -1223,9 +1245,11 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setValue(writer,
                         "kohitimes" + j, pad(VRBindPathParser.get(
                                 "301013", detail), 2));
+
                 // 公費対象単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
                         pad(VRBindPathParser.get("301017", detail), 5));
+
                 break;
             }
 
@@ -1235,6 +1259,12 @@ public class QP001P02_10Event extends QP001PrintEvent {
             detailList.remove(0);
         }
     }
+
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - begin
+    public VRMap getServiceName() {
+        return serviceName;
+    }
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - end
     
     protected void setTypeList(VRList typeList,int loopCount,int kohiCount) throws Exception {
         for (int j = 1; j < loopCount; j++) {
@@ -1610,7 +1640,15 @@ public class QP001P02_10Event extends QP001PrintEvent {
     protected VRList getDetailList() {
         return getStyleList(detailList);
     }
-
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - begin 住所地特例対応
+    /**
+     * 明細情報（住所地特例）レコードリストを取得します。
+     * @return
+     */
+    protected VRList getDetailJushotiTokureiList() {
+        return getStyleList(detailJushotiTokureiList);
+    }
+// 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - end
     /**
      * 明細情報レコードを取得します。
      * @return
@@ -1950,6 +1988,17 @@ public class QP001P02_10Event extends QP001PrintEvent {
                         //緊急時施設療養情報レコード順次番号でソート
                         values[i] = String.valueOf(maps[i].get("1701007"));
                         break;
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+                    // 明細情報（住所地特例）レコード
+                    case 18:
+                        //サービスコードでソート
+                    	values[i] = String.valueOf(maps[i].get("1801007")) + "-"
+                                + String.valueOf(maps[i].get("1801008")) + "-"
+                                + String.valueOf(maps[i].get("1801009")) + "-"
+                                + String.valueOf(maps[i].get("1801014")) + "-"
+                                + String.valueOf(maps[i].get("1801019"));
+                        break;
+// 2015/1/14 [Yoichiro Kamei] add - end
                     }
             	}
             } catch(Exception e){

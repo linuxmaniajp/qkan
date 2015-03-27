@@ -282,14 +282,39 @@ public class QS001 extends QS001Event {
                     .getData(patientInsureInfoHistoryList.size() - 1);
             // 月初、月末共に、履歴レコードから要介護度(フィールドJOTAI_CODE)を取得し、日本語名に変換する。
             // 画面の「要介護度(yokaigodo)」には、「(月初の要介護度名)→(月末の要介護度名)」を設定する。
-            getYokaigodo().setText(
-                    QkanJotaiCodeUnapplicableFormat.getInstance().format(
-                            VRBindPathParser.get("JOTAI_CODE",
-                                    patientInsureInfoFirst))
-                            + "→"
-                            + QkanJotaiCodeUnapplicableFormat.getInstance()
-                                    .format(VRBindPathParser.get("JOTAI_CODE",
-                                            patientInsureInfoLast)));
+            
+// 2015/03/06 [Yoichiro Kamei] mod - begin システム有効期間対応 
+// 月初と月末の要介護度名が違う場合のみ「(月初の要介護度名)→(月末の要介護度名)」を設定
+//          getYokaigodo().setText(
+//          QkanJotaiCodeUnapplicableFormat.getInstance().format(
+//                  VRBindPathParser.get("JOTAI_CODE",
+//                          patientInsureInfoFirst))
+//                  + "→"
+//                  + QkanJotaiCodeUnapplicableFormat.getInstance()
+//                          .format(VRBindPathParser.get("JOTAI_CODE",
+//                                  patientInsureInfoLast)));
+            
+            String beginYokaigodo = ACCastUtilities.toString(VRBindPathParser.get(
+                    "JOTAI_CODE", patientInsureInfoFirst));
+            String endYokaigodo = ACCastUtilities.toString(VRBindPathParser.get(
+                    "JOTAI_CODE", patientInsureInfoLast));
+            if (ACTextUtilities.isNullText(endYokaigodo) || beginYokaigodo.equals(endYokaigodo)) {
+                getYokaigodo().setText(
+                        QkanJotaiCodeUnapplicableFormat.getInstance().format(
+                                VRBindPathParser.get("JOTAI_CODE",
+                                		patientInsureInfoFirst)));
+            } else {
+                getYokaigodo().setText(
+                QkanJotaiCodeUnapplicableFormat.getInstance().format(
+                        VRBindPathParser.get("JOTAI_CODE",
+                            patientInsureInfoFirst))
+                    + "→"
+                    + QkanJotaiCodeUnapplicableFormat.getInstance()
+                            .format(VRBindPathParser.get("JOTAI_CODE",
+                                    patientInsureInfoLast)));
+            }
+// 2015/03/06 [Yoichiro Kamei] mod - end
+
             // 画面の「被保険者番号(patientInsuredID)」には、「(月初の被保険者番号)→(月末の被保険者番号)」を設定する。
             String beginID = ACCastUtilities.toString(VRBindPathParser.get(
                     "INSURED_ID", patientInsureInfoFirst));
@@ -1619,12 +1644,18 @@ public class QS001 extends QS001Event {
 
                 }
             }
-
             int lowVer = CareServiceCommon.getServiceLowVersion(row);
-            // 平成24年4月以降の場合
+            
+// 2014/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
+//            // 平成24年4月以降の場合
+//            // 法改正区分による過去データの判別
+//            if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H2404) {
+//                // 法改正区分が20090401以外のサービスの場合
+            // 平成27年4月以降の場合
             // 法改正区分による過去データの判別
-            if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H2404) {
-                // 法改正区分が20090401以外のサービスの場合
+            if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H2704) {
+                // 法改正区分が20150401以外のサービスの場合
+// 2014/1/9 [Yoichiro Kamei] mod - end
                 Date serviceDate = ACCastUtilities.toDate(
                         VRBindPathParser.get("SERVICE_DATE", row), null);
                 String dayOfMonth = "";
@@ -2073,6 +2104,37 @@ public class QS001 extends QS001Event {
                 }
             }
         }
+        
+        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可 TODO
+        // 対象年月が4月・5月、かつ、システム日付が7月より前の場合チェックする
+        if ((ACDateUtilities.getDifferenceOnMonth(getTargetDate(),ACDateUtilities.createDate(2015, 6)) < 0)
+        		&& ACDateUtilities.getDifferenceOnMonth(QkanSystemInformation.getInstance().getSystemDate(), ACDateUtilities.createDate(2015, 7)) < 0) {
+	        // 月間表上のサービスを全走査する。
+	        it = list.iterator();
+	        int errorServiceKind = 0;
+	        while (it.hasNext()) {
+	            VRMap row = (VRMap) it.next();
+	            // エラーとなった場合フラグをたてる。
+	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+	                    BIND_PATH_OF_SYSTEM_SERVICE_KIND_DETAIL, row), 0)) {
+	            case 16811:
+	            case 16911:
+	            case 17911:
+	            	errorServiceKind = 1;
+	            	break;
+	            }
+	        }
+	        if (errorServiceKind != 0) {
+		        if (QkanMessageList.getInstance()
+		                .QS001_WARNING_OF_CLAIM_STARTDATE() == ACMessageBox.RESULT_OK) {
+		        	// OK押下時は処理続行
+		        } else {
+		            // キャンセル・×ボタン押下時
+		            return false;
+		        }
+	        }
+        }
+        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
 
         it = list.iterator();
 
@@ -2197,6 +2259,7 @@ public class QS001 extends QS001Event {
                 return false;
             }
         }
+        
     }
 
     /**

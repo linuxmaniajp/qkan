@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2012/08/03  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2015/01/14  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -402,6 +402,30 @@ public class QU002State extends QU002Design {
         getShisetsuInfoButtonEdit().setEnabled(true);
 
         getShisetsuInfoButtonDelete().setEnabled(true);
+
+  }
+
+  /**
+   * 「住所地特例情報編集不可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_ENABLE_JUSHOTI_TOKUREI_BUTTON_FALSE() throws Exception {
+
+        getJushotiTokureiInfoButtonEdit().setEnabled(false);
+
+        getJushotiTokureiInfoButtonDelete().setEnabled(false);
+
+  }
+
+  /**
+   * 「住所地特例情報編集可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_ENABLE_JUSHOTI_TOKUREI_BUTTON_TRUE() throws Exception {
+
+        getJushotiTokureiInfoButtonEdit().setEnabled(true);
+
+        getJushotiTokureiInfoButtonDelete().setEnabled(true);
 
   }
 

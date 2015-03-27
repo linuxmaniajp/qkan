@@ -48,26 +48,30 @@ public class QP001P032_201204 extends QP001P03_201204{
     public void doPrintReductionList(VRMap reductionMap) throws Exception {
         
         if (reductionMap != null) {
-            //
-            if (ACCastUtilities.toInt(VRBindPathParser.get(
-                    "901008", reductionMap)) == 24) {
+        	// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化
+            //if (ACCastUtilities.toInt(VRBindPathParser.get(
+            //        "901008", reductionMap)) == 24) {
+            String serviceCodeKind = ACCastUtilities.toString(VRBindPathParser.get("901008", reductionMap));
+            if ("24".equals(serviceCodeKind)) {
+            // [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化
+            	
                 //軽減率を設定する。
                 ACChotarouXMLUtilities.setValue(writer,
                         "keigenritsu", pad(VRBindPathParser.get(
                                 "901007", reductionMap), 4));
-                //短期入所生活介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+                //介護予防短期入所生活介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が24のレコードが対象
                 ACChotarouXMLUtilities.setValue(writer,
                         "tankijyuryo", pad(VRBindPathParser.get(
                                 "901009", reductionMap), 6));
-                //短期入所生活介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+                //介護予防短期入所生活介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が24のレコードが対象
                 ACChotarouXMLUtilities.setValue(writer,
                         "tankikeigen", pad(VRBindPathParser.get(
                                 "901010", reductionMap), 6));
-                //短期入所生活介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+                //介護予防短期入所生活介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が24のレコードが対象
                 ACChotarouXMLUtilities.setValue(writer,
                         "tankikeigengo", pad(VRBindPathParser.get(
                                 "901011", reductionMap), 6));
-                //短期入所生活介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+                //介護予防短期入所生活介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が24のレコードが対象
                 ACChotarouXMLUtilities.setValue(writer,
                         "syafuku.h8.w2", VRBindPathParser.get(
                                 "901012", reductionMap));

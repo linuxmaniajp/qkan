@@ -1564,16 +1564,25 @@ public class QP001PrintControl {
         sb.append(" WHERE");
         sb.append(" (PATIENT_ID = " + sqlParam.get("PATIENT_ID") + ")");
         if (target != null) {
-            sb.append(" AND(INSURE_VALID_START <= '"
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND(INSURE_VALID_START <= '"
+            sb.append(" AND(SYSTEM_INSURE_VALID_START <= '"
+// 2014/12/17 [Yoichiro Kamei] mod - end
                     + VRDateParser.format(
                             ACDateUtilities.toLastDayOfMonth(target),
                             "yyyy/MM/dd") + "')");
-            sb.append(" AND(INSURE_VALID_END >= '"
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND(INSURE_VALID_END >= '"
+            sb.append(" AND(SYSTEM_INSURE_VALID_END >= '"
+//2014/12/17 [Yoichiro Kamei] mod - end
                     + VRDateParser.format(
                             ACDateUtilities.toFirstDayOfMonth(target),
                             "yyyy/MM/dd") + "')");
         }
-        sb.append(" ORDER BY INSURE_VALID_END DESC");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//        sb.append(" ORDER BY INSURE_VALID_END DESC");
+        sb.append(" ORDER BY SYSTEM_INSURE_VALID_END DESC");
+//2014/12/17 [Yoichiro Kamei] mod - end
         return sb.toString();
     }
 

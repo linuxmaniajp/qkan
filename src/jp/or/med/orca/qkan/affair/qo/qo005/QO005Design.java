@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/02/29  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2015/03/16  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -28,33 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo005;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACAffairButton;
-import jp.nichicom.ac.component.ACAffairButtonBar;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACAffairable;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 設定変更・メンテナンス画面項目デザイン(QO005) 
  */
@@ -125,6 +149,12 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACIntegerCheckBox ninchishoTokuteiShisetsu;
 
   private ACIntegerCheckBox shisetsuService;
+
+  private ACIntegerCheckBox printSyoguKaizen;
+
+  private ACIntegerCheckBox printSpecialArea;
+
+  private ACIntegerCheckBox printChusankanArea;
 
   private ACIntegerCheckBox privateExpenses;
 
@@ -752,6 +782,63 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 介護職員処遇改善加算を取得します。
+   * @return 介護職員処遇改善加算
+   */
+  public ACIntegerCheckBox getPrintSyoguKaizen(){
+    if(printSyoguKaizen==null){
+
+      printSyoguKaizen = new ACIntegerCheckBox();
+
+      printSyoguKaizen.setText("介護職員処遇改善加算");
+
+      printSyoguKaizen.setBindPath("PRINT_SYOGU_KAIZEN");
+
+      addPrintSyoguKaizen();
+    }
+    return printSyoguKaizen;
+
+  }
+
+  /**
+   * 特別地域加算・小規模事業所加算を取得します。
+   * @return 特別地域加算・小規模事業所加算
+   */
+  public ACIntegerCheckBox getPrintSpecialArea(){
+    if(printSpecialArea==null){
+
+      printSpecialArea = new ACIntegerCheckBox();
+
+      printSpecialArea.setText("特別地域加算・小規模事業所加算");
+
+      printSpecialArea.setBindPath("PRINT_SPECIAL_AREA");
+
+      addPrintSpecialArea();
+    }
+    return printSpecialArea;
+
+  }
+
+  /**
+   * 中山間地域等提供加算を取得します。
+   * @return 中山間地域等提供加算
+   */
+  public ACIntegerCheckBox getPrintChusankanArea(){
+    if(printChusankanArea==null){
+
+      printChusankanArea = new ACIntegerCheckBox();
+
+      printChusankanArea.setText("中山間地域等提供加算");
+
+      printChusankanArea.setBindPath("PRINT_CHUSANKAN_AREA");
+
+      addPrintChusankanArea();
+    }
+    return printChusankanArea;
+
+  }
+
+  /**
    * 自費項目に△をつけるを取得します。
    * @return 自費項目に△をつける
    */
@@ -854,6 +941,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       taxContainer = new ACLabelContainer();
 
       taxContainer.setText("消費税率");
+
+      taxContainer.setVisible(false);
 
       addTaxContainer();
     }
@@ -1259,6 +1348,12 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     riyohyos.add(getShisetsuService(), VRLayout.FLOW);
 
+    riyohyos.add(getPrintSyoguKaizen(), VRLayout.FLOW_RETURN);
+
+    riyohyos.add(getPrintSpecialArea(), VRLayout.FLOW);
+
+    riyohyos.add(getPrintChusankanArea(), VRLayout.FLOW_RETURN);
+
     riyohyos.add(getPrivateExpenses(), VRLayout.FLOW_RETURN);
 
   }
@@ -1281,6 +1376,27 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 51～53施設サービスに内部項目を追加します。
    */
   protected void addShisetsuService(){
+
+  }
+
+  /**
+   * 介護職員処遇改善加算に内部項目を追加します。
+   */
+  protected void addPrintSyoguKaizen(){
+
+  }
+
+  /**
+   * 特別地域加算・小規模事業所加算に内部項目を追加します。
+   */
+  protected void addPrintSpecialArea(){
+
+  }
+
+  /**
+   * 中山間地域等提供加算に内部項目を追加します。
+   */
+  protected void addPrintChusankanArea(){
 
   }
 

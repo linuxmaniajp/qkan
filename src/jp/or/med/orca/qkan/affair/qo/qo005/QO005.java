@@ -886,6 +886,39 @@ public class QO005 extends QO005Event {
                     CHECKBOX_OFF));
         }
 
+        // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - begin
+        // 特別地域加算・小規模事業所加算
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintSpecialArea")) {
+            // paramsの KEY : PRINT_SPECIAL_AREA のVALUEに、設定ファイルの ID :
+            // PrintConfig/PrintSpecialArea の値を設定する。
+            params.setData("PRINT_SPECIAL_AREA",
+                    getProperty("PrintConfig/PrintSpecialArea"));
+        } else {
+            params.setData("PRINT_SPECIAL_AREA", new Integer(
+                    CHECKBOX_OFF));
+        }
+        // 中山間地域等提供加算
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintChusankanArea")) {
+            // paramsの KEY : PRINT_CHUSANKAN_AREA のVALUEに、設定ファイルの ID :
+            // PrintConfig/PrintChusankanArea の値を設定する。
+            params.setData("PRINT_CHUSANKAN_AREA",
+                    getProperty("PrintConfig/PrintChusankanArea"));
+        } else {
+            params.setData("PRINT_CHUSANKAN_AREA", new Integer(
+                    CHECKBOX_OFF));
+        }
+        // 介護職員処遇改善加算
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintSyoguKaizen")) {
+            // paramsの KEY : PRINT_SYOGU_KAIZEN のVALUEに、設定ファイルの ID :
+            // PrintConfig/PrintSyoguKaizen の値を設定する。
+            params.setData("PRINT_SYOGU_KAIZEN",
+                    getProperty("PrintConfig/PrintSyoguKaizen"));
+        } else {
+            params.setData("PRINT_SYOGU_KAIZEN", new Integer(
+                    CHECKBOX_OFF));
+        }
+        // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - end
+
         if (ACFrame.getInstance().hasProperty("PrintConfig/OncePerMonth")) {
             // paramsの KEY : ONCE_PER_MONTH のVALUEに、設定ファイルの ID :
             // PrintConfig/oncePerMonth の値を設定する。
@@ -1027,6 +1060,22 @@ public class QO005 extends QO005Event {
             // PRINT_HOME_MEDICAL_ADVICE のVALUEを設定する。
             setProperty("PrintConfig/HomeMedicalAdvice",
                     String.valueOf(params.getData("PRINT_HOME_MEDICAL_ADVICE")));
+            
+            // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - begin
+            // 設定ファイルの ID : PrintConfig/PrintSpecialArea の値に、paramsの KEY :
+            // PRINT_SPECIAL_AREA のVALUEを設定する。
+            setProperty("PrintConfig/PrintSpecialArea",
+                    String.valueOf(params.getData("PRINT_SPECIAL_AREA")));
+            // 設定ファイルの ID : PrintConfig/PrintChusankanArea の値に、paramsの KEY :
+            // PRINT_CHUSANKAN_AREA のVALUEを設定する。
+            setProperty("PrintConfig/PrintChusankanArea",
+                    String.valueOf(params.getData("PRINT_CHUSANKAN_AREA")));
+            // 設定ファイルの ID : PrintConfig/PrintSyoguKaizen の値に、paramsの KEY :
+            // PRINT_SYOGU_KAIZEN のVALUEを設定する。
+            setProperty("PrintConfig/PrintSyoguKaizen",
+                    String.valueOf(params.getData("PRINT_SYOGU_KAIZEN")));
+            // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - begin
+            
             // 設定ファイルの ID : PrintConfig/oncePerMonth の値に、paramsの KEY :
             // ONCE_PER_MONTH のVALUEを設定する。
             setProperty("PrintConfig/OncePerMonth",

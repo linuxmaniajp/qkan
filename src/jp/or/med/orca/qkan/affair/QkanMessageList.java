@@ -2917,20 +2917,6 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「CSV出力可能なフォルダが指定されていません。＜改行＞「任意のフォルダ」を押下して出力先を指定してください。」を表示します。
-   * <p>
-   * CSV出力先として有効なフォルダ以外を指定した場合
-   * </p>
-   * @throws Exception 処理例外
-   * @return 選択したボタンID
-   */
-  public int QP008_ERROR_OF_INVALID_FOLDER() throws Exception{
-
-    return ACMessageBox.show("CSV出力可能なフォルダが指定されていません。" + ACConstants.LINE_SEPARATOR + "「任意のフォルダ」を押下して出力先を指定してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
-
-  }
-
-  /**
    * メッセージ「媒体区分が選択されていません。」を表示します。
    * <p>
    * CSV出力時に媒体区分が選択されていない場合
@@ -3609,7 +3595,7 @@ public class QkanMessageList {
 
            );
   }
-  
+
   /**
    * メッセージ「印刷済みの[reportName]です。＜改行＞更新すると印刷済みでなくなります。＜改行＞更新してもよろしいですか？＜改行＞（印刷済みにする場合は再度印刷を行う必要があります。）」を表示します。
    * <p>
@@ -3636,55 +3622,6 @@ public class QkanMessageList {
   }
 
   /**
-   * メッセージ「同じ作成年月日の居宅療養管理指導書情報があります。＜改行＞上書きしてもよろしいですか？」を表示します。
-   * <p>
-   * 居宅療養管理指導書の編集業務において、同一対象年月・同一作成年月日が既に存在する場合
-   * </p>
-   * @param param パラメタ
-   * @throws Exception 処理例外
-   * @return 選択したボタンID
-   */
-  public int QC005_WARNING_OF_HISTORY_KYOTAKU_RYOYO() throws Exception {
-
-      return ACMessageBox.show("同じ作成年月日の居宅療養管理指導書情報があります。" + ACConstants.LINE_SEPARATOR + "上書きしてもよろしいですか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
-
-  }
-
-  /**
-   * メッセージ「今月登録できる居宅療養管理指導書の最大値を超えました。これ以上登録できません。」を表示します。
-   * <p>
-   * 居宅療養管理指導書の編集業務において、対象年月の日数以上にデータを登録しようとした場合
-   * </p>
-   * @param param パラメタ
-   * @throws Exception 処理例外
-   * @return 選択したボタンID
-   */
-  public int QC005_ERROR_OF_MAX_KYOTAKU_RYOYO() throws Exception {
-
-    return ACMessageBox.show("今月登録できる居宅療養管理指導書の最大値を超えました。これ以上登録できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
-
-  }
-
-  /**
-   * メッセージ「作成年月日が対象年月と異なります。＜改行＞よろしいですか？」を表示します。
-   * <p>
-   * 居宅療養管理指導書の編集業務において、対象年月と作成年月が異なる場合
-   * </p>
-   * @param param パラメタ
-   * @throws Exception 処理例外
-   * @return 選択したボタンID
-   */
-  public int QC005_WARNING_OF_CREATE_DATE() throws Exception {
-
-    StringBuffer sb = new StringBuffer();
-
-    sb.append("作成年月日が対象年月と異なります。" + ACConstants.LINE_SEPARATOR + "よろしいですか？");
-
-    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
-
-  }
-
-  /**
    * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞[reportName]の情報を保存することで印刷することが可能です。」を表示します。
    * <p>
    * 印刷不可能な場合
@@ -3700,7 +3637,7 @@ public class QkanMessageList {
 
            );
   }
-  
+
   /**
    * メッセージ「印刷可能な[reportName]が選択されていません。＜改行＞[reportName]の情報を保存することで印刷することが可能です。」を表示します。
    * <p>
@@ -3727,26 +3664,6 @@ public class QkanMessageList {
     sb.append("の情報を保存することで印刷することが可能です。");
 
     return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
-
-  }
-
-  /**
-   * メッセージ「印刷済の居宅療養管理指導書を含めずに印刷します。＜改行＞よろしいですか？」を表示します。
-   * <p>
-   * 居宅療養管理指導書の一括印刷で印刷対象を確認する場合
-   * </p>
-   * @throws Exception 処理例外
-   * @return 選択したボタンID
-   */
-  public int QU001_WARNING_OF_PRINT_MODE() throws Exception{
-
-    StringBuffer sb = new StringBuffer();
-
-    sb.append("印刷済の居宅療養管理指導書を含めずに印刷します。");
-
-    sb.append("" + ACConstants.LINE_SEPARATOR + "よろしいですか？");
-
-    return ACMessageBox.showYesNoCancel(sb.toString(), "印刷済を含めない(Y)", 'Y', "全て印刷する(N)", 'N', ACMessageBox.FOCUS_YES);
 
   }
 
@@ -4475,6 +4392,216 @@ public class QkanMessageList {
   public int QU001_HAS_NO_YOKAIGODO_AND_SHISETSU() throws Exception{
 
     return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が切れています。" + ACConstants.LINE_SEPARATOR + "新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「CSV出力可能なフォルダが指定されていません。＜改行＞「任意のフォルダ」を押下して出力先を指定してください。」を表示します。
+   * <p>
+   * CSV出力先として有効なフォルダ以外を指定した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP008_ERROR_OF_INVALID_FOLDER() throws Exception{
+
+    return ACMessageBox.show("CSV出力可能なフォルダが指定されていません。" + ACConstants.LINE_SEPARATOR + "「任意のフォルダ」を押下して出力先を指定してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「有効期間が、登録されているシステム有効期間と重なっています。」を表示します。
+   * <p>
+   * システム有効期間が重複した場合に表示する。（有効期間を自動で調整できない場合）
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU002_ERROR_OF_DUPLICATE_SYSTEM_VALID() throws Exception{
+
+    return ACMessageBox.show("有効期間が、登録されているシステム有効期間と重なっています。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+  
+  /**
+   * メッセージ「有効期間が、登録されている住所地特例の有効期間と重なっています。」を表示します。
+   * <p>
+   * 住所地特例の有効期間が重複した場合に表示する。（有効期間を自動で調整できない場合）
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU002_ERROR_OF_DUPLICATE_JUSHOTI_TOKUREI_VALID() throws Exception{
+
+    return ACMessageBox.show("有効期間が、登録されている住所地特例の有効期間と重なっています。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+  
+  /**
+   * メッセージ「システム有効期間は、認定有効期間の期間内で入力してください。＜改行＞期間内となるよう設定してもよろしいですか？」を表示します。
+   * <p>
+   * システム有効期間が認定有効期間の期間外の場合に表示する。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU002_WARNING_OF_INVALID_SYSTEM_VALID() throws Exception{
+
+    return ACMessageBox.show("システム有効期間は、認定有効期間の期間内で入力してください。" + ACConstants.LINE_SEPARATOR + "期間内となるよう設定してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「システム有効期間が未入力です。＜改行＞認定有効期間と同じ期間を設定してもよろしいですか？」を表示します。
+   * <p>
+   * システム有効期間が未入力の場合に表示する。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU002_WARNING_OF_NEED_CHECK_OF_INPUT_SYSTEM_VALID() throws Exception{
+
+    return ACMessageBox.show("システム有効期間が未入力です。" + ACConstants.LINE_SEPARATOR + "認定有効期間と同じ期間を設定してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「同じ作成年月日の居宅療養管理指導書情報があります。＜改行＞上書きしてもよろしいですか？」を表示します。
+   * <p>
+   * 居宅療養管理指導書の編集業務において、同一対象年月・同一作成年月日が既に存在する場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_WARNING_OF_HISTORY_KYOTAKU_RYOYO() throws Exception {
+
+      return ACMessageBox.show("同じ作成年月日の居宅療養管理指導書情報があります。" + ACConstants.LINE_SEPARATOR + "上書きしてもよろしいですか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「今月登録できる居宅療養管理指導書の最大値を超えました。これ以上登録できません。」を表示します。
+   * <p>
+   * 居宅療養管理指導書の編集業務において、対象年月の日数以上にデータを登録しようとした場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_ERROR_OF_MAX_KYOTAKU_RYOYO() throws Exception {
+
+    return ACMessageBox.show("今月登録できる居宅療養管理指導書の最大値を超えました。これ以上登録できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「作成年月日が対象年月と異なります。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 居宅療養管理指導書の編集業務において、対象年月と作成年月が異なる場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QC005_WARNING_OF_CREATE_DATE() throws Exception {
+
+    return ACMessageBox.show("作成年月日が対象年月と異なります。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「印刷済の居宅療養管理指導書を含めずに印刷します。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 居宅療養管理指導書の一括印刷で印刷対象を確認する場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_WARNING_OF_PRINT_MODE() throws Exception{
+
+    return ACMessageBox.showYesNoCancel("印刷済の居宅療養管理指導書を含めずに印刷します。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", "印刷済を含めない(Y)", 'Y', "全て印刷する(N)", 'N', ACMessageBox.FOCUS_YES);
+
+  }
+
+  /**
+   * メッセージ「68：小規模多機能型居宅介護（短期利用）、69：介護予防小規模多機能型居宅介護（短期利用）、＜改行＞79：複合型サービス（看護小規模多機能型居宅介護・短期利用）＜改行＞の平成27年4月および5月サービス分は、平成27年7月以降に国保連へ請求をおこなうことになりました。＜改行＞6月以前に請求をおこなうと返戻になりますので、ご注意ください。＜改行＞＜改行＞利用票が必要な場合のみサービスの登録は可能ですが、＜改行＞発行後、サービスを削除し、改めて7月以降に請求をおこなってください。＜改行＞このまま登録してもよろしいですか？」を表示します。
+   * <p>
+   * H27年4月に追加されるサービス（68：小規模多機能型居宅介護（短期利用）、69：介護予防小規模多機能型居宅介護（短期利用）、79：複合型サービス（短期利用））は、平成27年4月、5月分について平成27年7月以降に国保連へ請求をおこなうため、システム日付が7月より前に対象年月が4月、5月の場合、このサービスが含まれている場合に表示する。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_CLAIM_STARTDATE() throws Exception{
+
+    return ACMessageBox.show("68：小規模多機能型居宅介護（短期利用）、69：介護予防小規模多機能型居宅介護（短期利用）、" + ACConstants.LINE_SEPARATOR + "79：複合型サービス（看護小規模多機能型居宅介護・短期利用）のサービスが含まれています。" + ACConstants.LINE_SEPARATOR + "このサービスの平成27年4月および5月分は、平成27年7月以降に国保連へ請求をおこなうことになりました。" + ACConstants.LINE_SEPARATOR + "6月以前に請求をおこなうと返戻になりますので、ご注意ください。" + ACConstants.LINE_SEPARATOR + ACConstants.LINE_SEPARATOR + "利用票が必要な場合のみサービスの登録は可能ですが、" + ACConstants.LINE_SEPARATOR + "発行後、サービスを削除し、改めて7月以降に請求をおこなってください。" + ACConstants.LINE_SEPARATOR + "このまま登録してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「68：小規模多機能型居宅介護（短期利用）、69：介護予防小規模多機能型居宅介護（短期利用）、79：複合型サービス（看護小規模多機能型居宅介護・短期利用）のサービスが含まれている利用者がいます。＜改行＞このサービスは、平成27年7月以降に国保連へ請求をおこなうことになりました。＜改行＞6月以前に請求をおこなうと返戻になりますので、ご注意ください。＜改行＞＜改行＞利用票が必要な場合のみサービスの登録は可能ですが、＜改行＞発行後、サービスを削除し、改めて7月以降に請求をおこなってください。」を表示します。
+   * <p>
+   * H27年4月に追加されるサービス（68：小規模多機能型居宅介護（短期利用）、69：介護予防小規模多機能型居宅介護（短期利用）、79：複合型サービス（短期利用））は、平成27年4月、5月分について平成27年7月以降に国保連へ請求をおこなうため、請求日付が7月より前に対象年月が4月、5月の場合、このサービスが含まれている場合に表示する。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_CLAIM_STARTDATE2() throws Exception{
+
+    return ACMessageBox.show("68：小規模多機能型居宅介護（短期利用）、69：介護予防小規模多機能型居宅介護（短期利用）、" + ACConstants.LINE_SEPARATOR + "79：複合型サービス（看護小規模多機能型居宅介護・短期利用）のサービスが含まれている利用者がいます。" + ACConstants.LINE_SEPARATOR + "このサービスは、平成27年7月以降に国保連へ請求をおこなうことになりました。" + ACConstants.LINE_SEPARATOR + "6月以前に請求をおこなうと返戻になりますので、ご注意ください。" + ACConstants.LINE_SEPARATOR + ACConstants.LINE_SEPARATOR + "利用票が必要な場合のみサービスの登録は可能ですが、" + ACConstants.LINE_SEPARATOR + "発行後、サービスを削除し、改めて7月以降に請求をおこなってください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_NO);
+
+  }
+
+  /**
+   * メッセージ「公費の有効期間が前月または今月に切れています。＜改行＞利用者情報詳細画面で公費の有効期間を確認してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、前月・今月に公費の有効期間がきれる場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_KOHI() throws Exception{
+
+    return ACMessageBox.show("公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「要介護度の有効期間が切れているか、登録されていません。＜改行＞有効期間外のサービスは集計できません。＜改行＞新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞公費の有効期間が前月または今月に切れています。＜改行＞利用者情報詳細画面で公費の有効期間を確認してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、期間内の要介護度がない、かつ前月・今月に公費の有効期間がきれる場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_YOKAIGODO_AND_KOHI() throws Exception{
+
+    return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「利用者負担限度額の有効期間が切れています。＜改行＞新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞公費の有効期間が前月または今月に切れています。＜改行＞利用者情報詳細画面で公費の有効期間を確認してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、有効な施設情報がない、かつ前月・今月に公費の有効期間がきれる場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_SHISETSU_AND_KOHI() throws Exception{
+
+    return ACMessageBox.show("利用者負担限度額の有効期間が切れています。" + ACConstants.LINE_SEPARATOR + "新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「要介護度の有効期間が切れているか、登録されていません。＜改行＞有効期間外のサービスは集計できません。＜改行＞新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞利用者負担限度額の有効期間が切れています。＜改行＞新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞公費の有効期間が前月または今月に切れています。＜改行＞利用者情報詳細画面で公費の有効期間を確認してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、期間内の要介護度がない、かつ有効な施設情報がない、かつ前月・今月に公費の有効期間がきれる場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_YOKAIGODO_AND_SHISETSU_AND_KOHI() throws Exception{
+
+    return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が切れています。" + ACConstants.LINE_SEPARATOR + "新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
 

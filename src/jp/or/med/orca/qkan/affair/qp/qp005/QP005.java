@@ -54,6 +54,7 @@ import jp.nichicom.ac.lib.care.claim.calculation.QP001ReTotal;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACCharacterConverter;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -64,6 +65,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
@@ -181,6 +183,19 @@ public class QP005 extends QP005Event {
 		}
 		//[ID:0000567][Shin Fujihara] 2009/12/10 add end 2009年度対応
 		
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		if (getTableClaimList8().size() < 2) {
+			//削除ボタンを使用不可能にする
+			setState_TYPE13();
+		} else {
+			setState_TYPE12();
+		}
+		// H2704以降でなければ、明細情報（住所地特例）タブを表示しない
+		//if (!(ACDateUtilities.getDifferenceOnDay(QkanConstants.H2704,
+		//        getTargetDate()) < 1)) {
+		//	getEtcInfoTabs().remove(getDetailsJushotiTokureiInfos());
+		//}
+// 2014/12/24 [Yoichiro Kamei] add - end
 		
 		//[ID:0000429][Shin Fujihara] 2009/07 add begin 2009年度対応
 		//スナップショット取得
@@ -479,6 +494,16 @@ public class QP005 extends QP005Event {
     }
     //[H20.5 法改正対応] fujihara add end/
 	
+ // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+    protected void detailsJushotiTokureiInfoTableSelectionChanged(ListSelectionEvent e) throws Exception {
+		// 明細情報（住所地特例）テーブルで選択されている行のレコードを詳細テーブルに表示する。
+		// ・第一引数："DETAIL_JUSHOTI_TOKUREI"
+		if (getDetailsJushotiTokureiInfoTable().isSelected()) {
+			doShowClaimDetail("DETAIL_JUSHOTI_TOKUREI");
+		}
+    }
+ // 2014/12/24 [Yoichiro Kamei] add - end
+    
 	/**
 	 * 「データ切り替え処理」イベントです。
 	 * 
@@ -951,6 +976,69 @@ public class QP005 extends QP005Event {
     }
     //[H20.5 法改正対応] fujihara add end
 
+ // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+	/**
+	 * 「データ切り替え処理」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+    protected void detailsJushotiTokureiInfoRevisionCheckActionPerformed(ActionEvent e) throws Exception {
+		if (getDetailsJushotiTokureiInfoRevisionCheck().isSelected()) {
+			// 明細情報領域（detailsJushotiTokureiInfos）のEnableがtrueの場合
+			if (getDetailsJushotiTokureiInfos().isEnabled()) {
+				// ※項目名列の設定
+				// columnList8NameをdetailsJushotiTokureiInfoRevisionTablecolumn1に設定する。
+				getDetailsJushotiTokureiInfoRevisionTablecolumn1().setCustomCells(getColumnList8Name());
+				// ※設定値列の設定
+				// columnList8ValueをdetailsJushotiTokureiInfoRevisionTablecolumn2に設定する。
+				getDetailsJushotiTokureiInfoRevisionTablecolumn2().setCustomCells(getColumnList8Value());
+				// ※コメント列の設定
+				// columnList8CommentをdetailsJushotiTokureiInfoRevisionTablecolumn3に設定する。
+				getDetailsJushotiTokureiInfoRevisionTablecolumn3().setCustomCells(getColumnList8Comment());
+
+				// 明細情報テーブルのVisibleがtrueの場合
+				// 明細情報テーブルでレコードが選択されている場合
+				if (getDetailsJushotiTokureiInfoTable().isVisible() && getDetailsJushotiTokureiInfoTable().isSelected()) {
+					// 明細情報テーブルで選択されているレコードを明細情報詳細テーブルに表示する。
+					// ・第一引数："DETAIL_JUSHOTI_TOKUREI"
+					doShowClaimDetail("DETAIL_JUSHOTI_TOKUREI");
+				}
+			}
+			getDetailsJushotiTokureiInfoRevisionCheck().setSelected(true);
+		} else {
+			// チェックボックスがオフの場合
+			// 明細情報領域（detailsInfos）のEnableがtrueの場合
+			if (getDetailsJushotiTokureiInfos().isEnabled()) {
+				// ※項目名列の設定
+				// columnList8NameよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をdetailsJushotiTokureiInfoRevisionTablecolumn1に設定する。
+				getDetailsJushotiTokureiInfoRevisionTablecolumn1().setCustomCells(getColumnList8NameSimple());
+				// ※設定値列の設定
+				// columnList8ValueよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をdetailsJushotiTokureiInfoRevisionTablecolumn2に設定する。
+				getDetailsJushotiTokureiInfoRevisionTablecolumn2().setCustomCells(getColumnList8ValueSimple());
+				// ※コメント列の設定
+				// columnList8CommentよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をdetailsJushotiTokureiInfoRevisionTablecolumn3に設定する。
+				getDetailsJushotiTokureiInfoRevisionTablecolumn3().setCustomCells(getColumnList8CommentSimple());
+				// 明細情報テーブルのVisibleがtrueの場合
+				// 明細情報テーブルでレコードが選択されている場合
+				if (getDetailsJushotiTokureiInfoTable().isVisible() && getDetailsJushotiTokureiInfoTable().isSelected()) {
+					// 明細情報テーブルで選択されているレコードを明細情報詳細テーブルに表示する。
+					// ・第一引数："DETAIL"
+					doShowClaimDetail("DETAIL_JUSHOTI_TOKUREI");
+				}
+			}
+			getDetailsJushotiTokureiInfoRevisionCheck().setSelected(false);
+		}
+		getDetailsJushotiTokureiInfoTable().validate();
+		getDetailsJushotiTokureiInfoTable().repaint();
+    }
+ // 2014/12/24 [Yoichiro Kamei] add - end
+    
 	/**
 	 * 「データ変更時処理」イベントです。
 	 * 
@@ -1742,11 +1830,21 @@ public class QP005 extends QP005Event {
 				// claimStyleTypeの値が10211の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001010（2進数表記）
-				doSetTableModel(202);
+// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				doSetTableModel(202);
+				
+				//・第一引数：10011001010（2進数表記）
+				doSetTableModel(1226);
+// 2014/12/24 [Yoichiro Kamei] mod - end
 
 				// テーブルの各行の設定を行う。
 				// ・第一引数：11001010（2進数表記）
-				doSetTableRow(202);
+// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				doSetTableRow(202);
+				
+				//・第一引数：10011001010（2進数表記）
+				doSetTableRow(1226);
+// 2014/12/24 [Yoichiro Kamei] mod - end
 
 				break;
 
@@ -1754,12 +1852,20 @@ public class QP005 extends QP005Event {
 				// claimStyleTypeの値が10212の場合
 				// テーブルモデルの設定を行う。
 				// ・第一引数：11001010（2進数表記）
-				doSetTableModel(202);
-
+// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				doSetTableModel(202);
+				//・第一引数：10011001010（2進数表記）
+				doSetTableModel(1226);
+// 2014/12/24 [Yoichiro Kamei] mod - end
+				
 				// テーブルの各行の設定を行う。
 				// ・第一引数：11001010（2進数表記）
-				doSetTableRow(202);
-
+// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				doSetTableRow(202);
+				//・第一引数：10011001010（2進数表記）
+				doSetTableRow(1226);
+// 2014/12/24 [Yoichiro Kamei] mod - end
+				
 				break;
 
 							
@@ -2066,7 +2172,13 @@ public class QP005 extends QP005Event {
 				// tableClaimList2にrecordを追加する。
 				getTableClaimList2().addData(claimDataMap);
 				break;
-
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+			case 18:
+				// categoryNoの値が18の場合
+				// tableClaimList8にrecordを追加する。
+				getTableClaimList8().addData(claimDataMap);
+				break;
+// 2014/12/24 [Yoichiro Kamei] add - end
 			default:
 				break;
 		}
@@ -2633,6 +2745,59 @@ public class QP005 extends QP005Event {
             getParticularInfoRevision().setText("特定治療費情報");
 		}
 
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		// 第一引数と10000000000（2進数表記）の論理積の値が0でない場合
+		if (!((firstArg & 1024) == 0)) {
+			// ※明細情報テーブルと明細情報詳細テーブルのテーブルモデルの設定。
+			// tableModelList8を以下のフィールドで設定する。
+
+			String[] tableModelList8 = new String[13];
+			tableModelList8[0] = "1801007+''+1801008"; // "1801007+1801008"
+			tableModelList8[1] = "1801020"; // "1801020（サービス名称）"
+			tableModelList8[2] = "1801009"; // "1801009（単位数）"
+			tableModelList8[3] = "1801010"; // "1801010（日数･回数）"
+			tableModelList8[4] = "1801011"; // "1801011（公費1対象日数・回数）"
+			tableModelList8[5] = "1801012"; // "1801012（公費2対象日数・回数）"
+			tableModelList8[6] = "1801013"; // "1801013（公費3対象日数・回数）"
+			tableModelList8[7] = "1801014"; // "1801014（サービス単位数）"
+			tableModelList8[8] = "1801015"; // "1801015（公費1対象サービス単位数）"
+			tableModelList8[9] = "1801016"; // "1801016（公費2対象サービス単位数）"
+			tableModelList8[10] = "1801017"; // "1801017（公費3対象サービス単位数）"
+			tableModelList8[11] = "1801018"; // "1801018（施設所在保険者番号）"
+			tableModelList8[12] = "1801019"; // "1801019（摘要）"
+
+			// 格納
+			setTableModelList8(new ACTableModelAdapter());
+			getTableModelList8().setColumns(tableModelList8);
+
+			// tableModelList8を明細情報テーブル（detailsJushotiTokureiInfoTable）に設定する。
+			getDetailsJushotiTokureiInfoTable().setModel(getTableModelList8());
+
+			// tableModelDetail8を以下のフィールドで設定する。
+			// "DETAIL_NAME" "DETAIL_VALUE" "COMMENT"
+			String[] tableModelDetail8 = new String[3];
+			tableModelDetail8[0] = "DETAIL_NAME";
+			tableModelDetail8[1] = "DETAIL_VALUE";
+			tableModelDetail8[2] = "COMMENT";
+
+			// 格納
+			setTableModelDetail8(new ACTableModelAdapter());
+			getTableModelDetail8().setColumns(tableModelDetail8);
+
+			// tableModelDetail8を明細情報詳細テーブル（detailsInfoRevisionTable）に設定する。
+			getDetailsJushotiTokureiInfoRevisionTable().setModel(getTableModelDetail8());
+
+			// ※キャプションの設定
+			// 以下のラベルのキャプションに "明細情報" を設定する。
+			// detailsInfos
+			// detailsInfoLabel
+			// detailsInfoRevision
+			getEtcInfoTabs().setTitleAt(6, "明細情報（住所地特例）");
+			getDetailsJushotiTokureiLabel().setText("明細情報（住所地特例）");
+			getDetailsJushotiTokureiInfoRevision().setText("明細情報（住所地特例）");
+		}
+// 2014/12/24 [Yoichiro Kamei] add - end 
+		
 	}
 
 	/**
@@ -3007,6 +3172,44 @@ public class QP005 extends QP005Event {
             getParticularInfoRevisionTablecolumn3().setCustomCells(getColumnList3CommentSimple());
         }
 		
+ // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+     	// 第一引数と10000000000（2進数表記）の論理積の値が0でない場合
+		if (!((firstArg & 1024) == 0)) {
+			// ※明細情報詳細テーブルの各行の設定。
+			// 各行のコンポーネントを生成し、引数のArrayListに格納する。
+			// doMakeComponent();
+			// ・第一引数：3
+			// ・第二引数：detailList8
+			// ・第三引数：columnList8Name
+			// ・第四引数：columnList8Value
+			// ・第五引数：columnList8Comment
+			setDetailList8(new VRArrayList());
+			setColumnList8Name(new VRArrayList());
+			setColumnList8Value(new VRArrayList());
+			setColumnList8Comment(new VRArrayList());
+			setColumnList8NameSimple(new VRArrayList());
+			setColumnList8ValueSimple(new VRArrayList());
+			setColumnList8CommentSimple(new VRArrayList());
+
+			doMakeComponent(CATEGORY_NO18, getDetailList8(), getColumnList8Name(), getColumnList8Value(), getColumnList8Comment(), getColumnList8NameSimple(), getColumnList8ValueSimple(), getColumnList8CommentSimple());
+
+			// ※項目名列の設定
+			// columnList2NameよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をdetailsJushotiTokureiInfoRevisionTablecolumn1に設定する。
+			getDetailsJushotiTokureiInfoRevisionTablecolumn1().setCustomCells(getColumnList8NameSimple());
+
+			// ※設定値列の設定
+			// columnList2ValueよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をdetailsJushotiTokureiInfoRevisionTablecolumn2に設定する。
+			getDetailsJushotiTokureiInfoRevisionTablecolumn2().setCustomCells(getColumnList8ValueSimple());
+
+			// ※コメント列の設定
+			// columnList2CommentよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をdetailsJushotiTokureiInfoRevisionTablecolumn3に設定する。
+			getDetailsJushotiTokureiInfoRevisionTablecolumn3().setCustomCells(getColumnList8CommentSimple());
+		}
+// 2014/12/24 [Yoichiro Kamei] add - end
+		
 	}
 
 	/**
@@ -3339,6 +3542,27 @@ public class QP005 extends QP005Event {
 		}
 		//[H20.5 法改正対応] fujihara add end
 
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		if (!getTableClaimList8().isEmpty()) {
+			// tableClaimList8がnullでない場合
+			// ソートする。
+			switch(getClaimStyleType()){
+			case FORMAT_STYLE7:
+			case FORMAT_STYLE72:
+				break;
+			default:
+				// 301007 サービス種類コード + 301008 サービス項目コード
+				String[] keys = new String[]{"1801007", "1801008", "1801009", "1801014"};
+				int[] digits = new int[]{0, 0, 4, 6};
+				setTableClaimList8(getSortedData(getTableClaimList8(), keys, digits));
+				break;
+			}
+			// tableClaimList8をtableModelList8に設定する。
+			getTableModelList8().setAdaptee(getTableClaimList8());
+			// バインド先のDetailsJushotiTokureiInfoTableの1行目を選択した状態にする。
+			getDetailsJushotiTokureiInfoTable().setSelectedSortedFirstRow();
+		}
+// 2014/12/24 [Yoichiro Kamei] add - end
 	}
 
 	/**
@@ -3818,6 +4042,40 @@ public class QP005 extends QP005Event {
 		}
 		//[H20.5 法改正対応] fujihara add end
 
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		// 渡された引数の値が"DETAIL_JUSHOTI_TOKUREI"の場合
+		if (recordDataType.equals("DETAIL_JUSHOTI_TOKUREI")) {
+			// 明細情報テーブルで選択されている行のレコード（以下、選択レコード）を取得する。
+			
+			if (getDetailsJushotiTokureiInfoRevisionCheck().isSelected()) {
+				// 全ての情報を表示チェックボックス（detailsJushotiTokureiInfoRevisionCheck）がオンになっている場合
+				// 詳細テーブルに表示するために、詳細テーブル表示用のデータを作成する。
+				if (!(getDetailList8().isEmpty())) {
+					
+					doMakeDetailTableList((VRMap) getDetailsJushotiTokureiInfoTable().getSelectedModelRowValue(), getDetailList8());
+					// ・第一引数：選択レコード
+					// ・第二引数：detailList8
+
+					// detailList8をテーブルモデル（tableModelDetail8）に設定する。
+					getTableModelDetail8().setAdaptee(getDetailList8());
+				}
+
+			} else {
+				// 全ての情報を表示チェックボックス（detailsJushotiTokureiInfoRevisionCheck）がオフになっている場合
+				// detailList8よりKEY：SHOW_FLAGの値が1のレコードを取得する。（以下、tempList）
+				if (!(getDetailList8().isEmpty())) {
+					VRList tempList = (VRList) ACBindUtilities.getMatchListFromValue(getDetailList8(), "SHOW_FLAG", ACCastUtilities.toInteger(ON));
+					// 詳細テーブルに表示するために、詳細テーブル表示用のデータを作成する。
+					doMakeDetailTableList((VRMap) getDetailsJushotiTokureiInfoTable().getSelectedModelRowValue(), tempList);
+					// ・第一引数：選択レコード
+					// ・第二引数：tempList
+
+					// tempListをテーブルモデル（tableModelDetail8）に設定する。
+					getTableModelDetail8().setAdaptee(tempList);
+				}
+			}
+		}
+// 2014/12/24 [Yoichiro Kamei] add - end
 	}
 
 	/**
@@ -3853,6 +4111,10 @@ public class QP005 extends QP005Event {
 				allList.addAll(getTableClaimList7());
 				//[H20.5 法改正対応] fujihara add end
 
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+				allList.addAll(getTableClaimList8());
+// 2014/12/24 [Yoichiro Kamei] add - end
+				
 				// DBを更新するためのWHERE句を作成する。
 				// WHERE句
 				String whereStr = "(PATIENT_ID = " + getPatientId() + ") AND (INSURED_ID = '" + getInsuredId() + "') AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') AND (PROVIDER_ID = '" + getProviderId() + "') AND (CLAIM_STYLE_TYPE =" + getClaimStyleType() + ")";
@@ -3915,7 +4177,10 @@ public class QP005 extends QP005Event {
 	
 	
 	private void doRecount(boolean isPlanOverwrite) throws Exception {
-		VRList[] list = new VRArrayList[7];
+// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+//		VRList[] list = new VRArrayList[7];
+		VRList[] list = new VRArrayList[8];
+// 2014/12/24 [Yoichiro Kamei] mod - end
 		list[0] = getTableClaimList1();
 		list[1] = getTableClaimList2();
 		list[2] = getTableClaimList3();
@@ -3923,7 +4188,9 @@ public class QP005 extends QP005Event {
 		list[4] = getTableClaimList5();
 		list[5] = getTableClaimList6();
 		list[6] = getTableClaimList7();
-		
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		list[7] = getTableClaimList8();
+// 2014/12/24 [Yoichiro Kamei] add - end
 		dump(list, "before.txt");
 		
 		//再集計実行！
@@ -3942,6 +4209,9 @@ public class QP005 extends QP005Event {
 		repaintTable(getNyushoInfoTable(), "NYUSHO", getTableClaimList5());
 		repaintTable(getShahukuInfoTable(), "SHAHUKU", getTableClaimList6());
 		repaintTable(getRecuperationInfoTable(), "RYOYO", getTableClaimList7());
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		repaintTable(getDetailsJushotiTokureiInfoTable(), "DETAIL_JUSHOTI_TOKUREI", getTableClaimList8());
+// 2014/12/24 [Yoichiro Kamei] add - end
 		
 		repaintTable(getTableModelList1());
 		repaintTable(getTableModelList2());
@@ -3950,6 +4220,9 @@ public class QP005 extends QP005Event {
 		repaintTable(getTableModelList5());
 		repaintTable(getTableModelList6());
 		repaintTable(getTableModelList7());
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		repaintTable(getTableModelList8());
+// 2014/12/24 [Yoichiro Kamei] add - end
 	}
 	
 	private void repaintTable(ACTableModelAdapter ta) throws Exception {
@@ -4116,6 +4389,9 @@ public class QP005 extends QP005Event {
 		list.add(deepCopy(getTableClaimList5()));
 		list.add(deepCopy(getTableClaimList6()));
 		list.add(deepCopy(getTableClaimList7()));
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		list.add(deepCopy(getTableClaimList8()));
+// 2014/12/24 [Yoichiro Kamei] add - end
 		
 		setSnapList(list);
 	}
@@ -4156,7 +4432,10 @@ public class QP005 extends QP005Event {
 		list.add(getTableClaimList5());
 		list.add(getTableClaimList6());
 		list.add(getTableClaimList7());
-		
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+		list.add(getTableClaimList8());
+// 2014/12/24 [Yoichiro Kamei] add - end
+				
 		if (getSnapList().size() != list.size()) {
 			return true;
 		}
@@ -4279,4 +4558,30 @@ public class QP005 extends QP005Event {
 	 * [ID:0000563][ID:0000576][Shin Fujihara] 2009/07 add end 2009年度対応
 	 * =================================================================
 	 */
+	
+// 2014/12/26 [Yoichiro Kamei] mod - begin 住所地特例対応
+	protected void detailsJushotiTokureiDelButtonActionPerformed(ActionEvent e) throws Exception {
+		if (QkanMessageList.getInstance().WARNING_OF_DELETE_SELECTION() != ACMessageBox.RESULT_OK){
+			return;
+		}
+		
+		int deleteRow = getDetailsJushotiTokureiInfoTable().getSelectedRow();
+		VRMap map = (VRMap) getDetailsJushotiTokureiInfoTable().getSelectedModelRowValue();
+		
+		getTableClaimList8().remove(map);
+		//削除行の一行上を選択状態にする
+		getDetailsJushotiTokureiInfoTable().setSelectedSortedRowOnAfterDelete(deleteRow);
+		
+		if (getTableClaimList8().size() < 2) {
+			//削除ボタンを使用不可能にする
+			setState_TYPE13();
+		}
+		
+		//[ID:0000576]サービス削除後、再集計を実行する
+		//このときの再集計では、計画単位数を上書きする
+		doRecount(true);
+		
+	}
+// 2014/12/26 [Yoichiro Kamei] mod - end
+
 }

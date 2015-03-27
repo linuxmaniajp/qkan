@@ -18,7 +18,7 @@
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
  * 作成日: 2006/01/24  日本コンピューター株式会社 藤原　伸 新規作成
- * 更新日: ----/--/--
+ * 更新日: 2015/01/23  MIS九州　日高　様式変更対応
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
  * プロセス 給付管理票 (001)
@@ -268,6 +268,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
                 //要支援１
@@ -286,6 +288,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
                 //要支援２
                 case 13:
@@ -303,6 +307,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
                 // 「21-要介護１」の場合
                 case 21:
@@ -320,6 +326,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
                 // 「22-要介護２」の場合
@@ -338,6 +346,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
                 // 「23-要介護３」の場合
@@ -356,6 +366,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
                 // 「24-要介護４」の場合
@@ -374,6 +386,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo3");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
                 // 「25-要介護５」の場合
@@ -392,6 +406,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo3");
                     // 要介護４の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
                 // 上記以外の場合
@@ -412,6 +428,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
                     // 要介護５の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    // 事業対象者の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
                 }
             }

@@ -72,6 +72,11 @@ public class QP001PatientState {
 	private VRList changesHistory;
     //移動履歴情報（全て）
     private VRList changesHistoryAll;
+    
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+    private VRList jushotiTokureiHistory;
+ // 2015/1/14 [Yoichiro Kamei] add - end
+ 		
 	//対象の利用者データ
 	private VRMap patient;
     //公費自己負担額管理用Map
@@ -125,6 +130,10 @@ public class QP001PatientState {
 		//異動履歴情報を初期化
         initChangeHistory(dbm,patient_id,target);
 		
+ // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+        initJushotiTokureiHistory(dbm,patient_id,target);
+ // 2015/1/14 [Yoichiro Kamei] add - end
+
 		//摘要欄引継ぎ対応
 		//前月分の請求情報を取得
 		initLastMonthClaim(dbm,patient_id,targetDate);
@@ -170,6 +179,10 @@ public class QP001PatientState {
 		sb.append(" h.NINTEI_DATE,");
 		sb.append(" h.INSURE_VALID_START,");
 		sb.append(" h.INSURE_VALID_END,");
+// 2014/12/17 [Yoichiro Kamei] add - begin システム有効期間対応
+		sb.append(" h.SYSTEM_INSURE_VALID_START,");
+		sb.append(" h.SYSTEM_INSURE_VALID_END,");
+// 2014/12/17 [Yoichiro Kamei] add - end
 		sb.append(" h.STOP_DATE,");
 		sb.append(" h.STOP_REASON,");
 		sb.append(" h.REPORTED_DATE,");
@@ -184,8 +197,12 @@ public class QP001PatientState {
 		sb.append(" (h.PATIENT_ID = " + patient_id + ")");
 		sb.append(" AND (h.CHANGE_CODE = 0)");
 		sb.append(" AND (h.JOTAI_CODE <> 1)");
-		sb.append(" AND (h.INSURE_VALID_START  <= '" + valid_end + "')");
-		sb.append(" AND (h.INSURE_VALID_END >= '" + valid_start + "')");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//		sb.append(" AND (h.INSURE_VALID_START  <= '" + valid_end + "')");
+//		sb.append(" AND (h.INSURE_VALID_END >= '" + valid_start + "')");
+		sb.append(" AND (h.SYSTEM_INSURE_VALID_START  <= '" + valid_end + "')");
+		sb.append(" AND (h.SYSTEM_INSURE_VALID_END >= '" + valid_start + "')");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 		sb.append(" AND (lr_ex.LIMIT_RATE_TYPE = lrd_ex.LIMIT_RATE_TYPE)");
 		sb.append(" AND (lr_ex.LIMIT_RATE_HISTORY_ID = lrd_ex.LIMIT_RATE_HISTORY_ID)");
 		sb.append(" AND (lr_ex.LIMIT_RATE_VALID_START <= '" + valid_end + "')");
@@ -345,6 +362,38 @@ public class QP001PatientState {
         changesHistoryAll = dbm.executeQuery(sb.toString());
 	}
 	
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+	/**
+	 * 住所地特例履歴情報を初期化します。
+	 * @param dbm DBコネクション
+	 * @param patient_id 検索対象の利用者ID
+	 * @param targetDate　対象日付(月まで有効)
+	 */
+	private void initJushotiTokureiHistory(ACDBManager dbm,int patient_id, String targetDate) throws Exception{
+		Date targetDateEnd = ACDateUtilities.toLastDayOfMonth(ACCastUtilities.toDate(targetDate + "/01"));
+		
+		String valid_start = targetDate + "/01";
+		String valid_end = VRDateParser.format(targetDateEnd,"yyyy/MM/dd") ;
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT");
+		sb.append(" PATIENT_ID,");
+		sb.append(" JUSHOTI_HISTORY_ID,");
+		sb.append(" JUSHOTI_VALID_START,");
+        sb.append(" JUSHOTI_VALID_END,");
+		sb.append(" JUSHOTI_INSURER_ID");
+		sb.append(" FROM");
+		sb.append(" PATIENT_JUSHOTI_TOKUREI");
+		sb.append(" WHERE");
+		sb.append(" (PATIENT_ID = " + patient_id + ")");
+		sb.append(" AND (JUSHOTI_VALID_START  <= '" + valid_end + "')");
+		sb.append(" AND (JUSHOTI_VALID_END >= '" + valid_start + "')");
+		sb.append(" ORDER BY JUSHOTI_HISTORY_ID ASC");
+		
+		jushotiTokureiHistory = dbm.executeQuery(sb.toString());
+	}
+// 2015/1/14 [Yoichiro Kamei] add - end
+	
 	/**
 	 * 利用者の先月分の請求情報を取得する。
 	 * @param dbm DB操作クラス
@@ -443,6 +492,18 @@ public class QP001PatientState {
 		return getNinteiData(targetDate,"INSURED_ID");
 	}
 	
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+	/**
+	 * 指定された日付の住所地特例の施設所在保険者番号を取得する。
+	 * データが存在しない場合は、空文字を返す。
+	 * @param targetDate
+	 * @return
+	 * @throws Exception
+	 */
+	protected String getJushotiTokureiInsurerId(Object targetDate) throws Exception{
+		return getJushotiTokureiData(targetDate,"JUSHOTI_INSURER_ID");
+	}
+// 2015/1/14 [Yoichiro Kamei] add - end
 	
 	/**
 	 * 指定された日付の社会福祉減免の割合を取得する。
@@ -702,8 +763,12 @@ public class QP001PatientState {
                 } else {
                     
                     //有効期間開始を比較する。
-                    if (ACDateUtilities.compareOnDay(ACCastUtilities.toDate(resultMap.get("INSURE_VALID_START")),
-                            ACCastUtilities.toDate(map.get("INSURE_VALID_START"))) < 0) {
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//                    if (ACDateUtilities.compareOnDay(ACCastUtilities.toDate(resultMap.get("INSURE_VALID_START")),
+//                            ACCastUtilities.toDate(map.get("INSURE_VALID_START"))) < 0) {
+                    if (ACDateUtilities.compareOnDay(ACCastUtilities.toDate(resultMap.get("SYSTEM_INSURE_VALID_START")),
+                            ACCastUtilities.toDate(map.get("SYSTEM_INSURE_VALID_START"))) < 0) {
+// 2014/12/17 [Yoichiro Kamei] mod - end
                         resultMap = (VRMap) ninteiHistory.getData(i);
                     }
                 }
@@ -789,9 +854,12 @@ public class QP001PatientState {
 		
 		for(int i = 0; i < ninteiHistory.getDataSize(); i++){
 			map = (VRMap)ninteiHistory.getData(i);
-			startYMD = getInt("INSURE_VALID_START",map);
-			endYMD = getInt("INSURE_VALID_END",map);
-			
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//			startYMD = getInt("INSURE_VALID_START",map);
+//			endYMD = getInt("INSURE_VALID_END",map);
+			startYMD = getInt("SYSTEM_INSURE_VALID_START",map);
+			endYMD = getInt("SYSTEM_INSURE_VALID_END",map);
+// 2014/12/17 [Yoichiro Kamei] mod - end
 			if((startYMD <= targetDateTemp) && (targetDateTemp <= endYMD)){
 				break;
 			}
@@ -811,6 +879,44 @@ public class QP001PatientState {
 		return result;
 		
 	}
+	
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+	/**
+	 * 指定された日付に該当する住所地特例情報の取得を行います。
+	 * @param targetDate 対象の日付
+	 * @param key 取得するキー
+	 * @return 取得データ
+	 * @throws Exception
+	 */
+	public String getJushotiTokureiData(Object targetDate,String key) throws Exception{
+		targetDate = toDateString(targetDate);
+		
+		String result = "";
+		String target = toDateString(String.valueOf(targetDate));
+		if(target == null) return result;
+		
+		if(jushotiTokureiHistory == null) return result;
+		int startYMD = 0;
+		int endYMD = 0;
+		VRMap map = null;		
+		int targetDateTemp = Integer.parseInt(target);
+		
+		for(int i = 0; i < jushotiTokureiHistory.getDataSize(); i++){
+			map = (VRMap)jushotiTokureiHistory.getData(i);
+			startYMD = getInt("JUSHOTI_VALID_START",map);
+			endYMD = getInt("JUSHOTI_VALID_END",map);
+
+			if((startYMD <= targetDateTemp) && (targetDateTemp <= endYMD)){
+				break;
+			}
+		}
+		if(map == null) return result;
+		
+		result = String.valueOf(VRBindPathParser.get(key,map));
+		
+		return result;
+	}
+// 2015/1/14 [Yoichiro Kamei] add - end
 	
 	/**
 	 * 異動履歴情報を取得する。

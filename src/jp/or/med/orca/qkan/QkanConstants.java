@@ -25,7 +25,7 @@ public interface QkanConstants {
     /**
      * 給管鳥システムのバージョン情報を管理します。
      */
-    public static final String QKAN_SYSTEM_VERSION = "6.0.0";
+    public static final String QKAN_SYSTEM_VERSION = "7.0.0";
 
     // アイコン
     /**
@@ -42,43 +42,60 @@ public interface QkanConstants {
     public static final String ICON_PATH_IKENSHO_24 = "jp/or/med/orca/qkan/images/icon/pix24/btn_103.png";
 
     // 色設定
-    /*
-    //紫
+    
+/*    //赤紫
     public static final Color COLOR_QKAN_THEMA = new Color(71, 30, 71);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(111, 69, 78);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(161, 99, 148);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(191, 139, 173);
     
-    // 紫系背景
+    // 赤紫系背景
     public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_1 = new ColorUIResource(150, 120, 120);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_2 = new ColorUIResource(220, 200, 200);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_3 = new ColorUIResource(250, 230, 230);
     
-    // 紫系コンテナ背景色
+    // 赤紫系コンテナ背景色
     public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(255, 183, 173);
-    */
+*/    
     
-    //紫
+/* 
+    // 緑 V6.0.0
     public static final Color COLOR_QKAN_THEMA = new Color(51,102,51);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(91 ,141 ,58);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(141 ,171 ,128);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(171 ,211 ,153);
     
+    // 緑系背景-->未使用
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_1 = new ColorUIResource(150, 120, 120);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_2 = new ColorUIResource(220, 200, 200);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_3 = new ColorUIResource(250, 230, 230);
+    
+    // 緑系コンテナ背景色
+    public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(130, 201, 82);
+*/    
+    
+/*    // 青
+    public static final Color COLOR_QKAN_THEMA = new Color(0, 51, 153);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(40, 90, 160);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(90, 120, 230);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(120, 160, 255);
+    */
+
+    // [H27.4改正対応][Shinobu Hitaka] 2015/1/28 add - begin 
+    // 紫系 V7.0.0
+    public static final Color COLOR_QKAN_THEMA = new Color(102,51,153);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(119,74,142);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(152,116,170);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(200,172,214);
+    
     // 紫系背景
     public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_1 = new ColorUIResource(150, 120, 120);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_2 = new ColorUIResource(220, 200, 200);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_SECONDARY_3 = new ColorUIResource(250, 230, 230);
     
     // 紫系コンテナ背景色
-    public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(130, 201, 82);
-    
-    
-    /*
-    public static final Color COLOR_QKAN_THEMA = new Color(0, 51, 153);
-    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(40, 90, 160);
-    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(90, 120, 230);
-    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(120, 160, 255);
-    */
+    public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(186,127,207);
+    // [H27.4改正対応][Shinobu Hitaka] 2015/1/28 add - end 
 
     // フォーマッタ
     /**
@@ -589,7 +606,13 @@ public interface QkanConstants {
      */
     public static final Integer CATEGORY_NO_RECORD_EMERGENCY_OWN_FACILITY_INSTITUTION = new Integer(
             17);
-
+ // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+    /**
+     * 18：明細情報（住所地特例）レコードを表す分類の情報定数です。
+     */
+    public static final Integer CATEGORY_NO_RECORD_DETAILED_JUSHOTI_TOKUREI = new Integer(18);
+ // 2014/12/24 [Yoichiro Kamei] add - end
+    
     // スケジュールカレンダへのドロップ許可フラグ
     /**
      * 1.ドロップ不可を表すドロップ許可フラグ定数です。
@@ -633,6 +656,13 @@ public interface QkanConstants {
      */
     public static final Date H2701 = ACDateUtilities.createDate(2015, 1, 1);
 
+ // 2014/1/9 [Yoichiro Kamei] add - begin H27.4改正対応
+    /**
+     * 平成27年4月1日の定数です。
+     */
+    public static final Date H2704 = ACDateUtilities.createDate(2015, 4, 1);
+ // 2014/1/9 [Yoichiro Kamei] add - end
+    
     /**
      * 20090401-サービスの法改正区分における[平成21年4月1日以降]を表す定数です。
      */
@@ -644,6 +674,13 @@ public interface QkanConstants {
      */
     public static final int SERVICE_LOW_VERSION_H2404 = 20120401;
 
+ // 2014/1/9 [Yoichiro Kamei] add - begin H27.4改正対応
+    /**
+     * 20150401-サービスの法改正区分における[平成27年4月1日以降]を表す定数です。
+     */
+    public static final int SERVICE_LOW_VERSION_H2704 = 20150401;
+ // 2014/1/9 [Yoichiro Kamei] add - end
+    
     /**
      * 平成24年5月1日の定数です。
      */

@@ -599,6 +599,9 @@ public class QO012 extends QO012Event {
      * 
      * @throws Exception 処理例外
      */
+    /**
+     * @throws Exception
+     */
     public void dataMapping() throws Exception {
 
         // 上部レコード情報部分をbindする
@@ -662,13 +665,23 @@ public class QO012 extends QO012Event {
          * csvDataTableSchema[44] = "UNIT_TOTAL";
          */
 
+        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 edit begin 68,69,79サービス種類追加
+//        String[] csvDataTableSchema = new String[] { "YEAR_AND_MONTH",
+//                "INSURED_ID", "NAME", "CARE_LEVEL", "11", "12", "13", "14",
+//                "15", "16", "17", "21", "22", "23", "31", "32", "33", "27",
+//                "36", "29", "38", "51", "52", "53", "54", "71", "72", "76",
+//                "77", "73", "43", "61", "62", "63", "64", "65", "66", "67",
+//                "24", "25", "26", "34", "35", "28", "46", "74", "75", "37",
+//                "39", "UNIT_TOTAL" };
+        
         String[] csvDataTableSchema = new String[] { "YEAR_AND_MONTH",
                 "INSURED_ID", "NAME", "CARE_LEVEL", "11", "12", "13", "14",
                 "15", "16", "17", "21", "22", "23", "31", "32", "33", "27",
-                "36", "29", "38", "51", "52", "53", "54", "71", "72", "76",
-                "77", "73", "43", "61", "62", "63", "64", "65", "66", "67",
-                "24", "25", "26", "34", "35", "28", "46", "74", "75", "37",
-                "39", "UNIT_TOTAL" };
+                "36", "28", "38", "51", "52", "53", "54", "71", "72", "76",
+                "77", "79", "73", "68", "43", "61", "62", "63", "64", "65",
+                "66", "67", "24", "25", "26", "34", "35", "46", "74", "75", 
+                "69", "37", "39", "UNIT_TOTAL" };
+        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 edit end
 
         // 格納
         ACTableModelAdapter csvDataTableModel = new ACTableModelAdapter();
@@ -1009,7 +1022,14 @@ public class QO012 extends QO012Event {
                 return false;
             }
             break;
-
+//[H27.4 改正対応][Yoichiro Kamei] 2015/03 add begin 住所地特例レコード追加
+        case 14:
+            // レコードタイプ14(明細情報（住所地特例）)
+            if (!dataType711Paser02(rowIndex, returnDataMap)) {
+                return false;
+            }
+            break;
+//[H27.4 改正対応][Yoichiro Kamei] 2015/03 add begin
         default:
             // それ以外の場合
             break;
@@ -1900,7 +1920,7 @@ public class QO012 extends QO012Event {
         serviceCodeSet.add("54"); //地域密着型介護福祉施設
         serviceCodeSet.add("71"); //夜間対応型訪問介護
         serviceCodeSet.add("72"); //認知症対応型通所介護
-        serviceCodeSet.add("73"); //小規模多機能型居宅介護
+        serviceCodeSet.add("73"); //小規模多機能型居宅介護(短期利用以外)
         
         serviceCodeSet.add("61"); //介護予防訪問介護
         serviceCodeSet.add("62"); //介護予防訪問入浴介護
@@ -1915,7 +1935,7 @@ public class QO012 extends QO012Event {
         serviceCodeSet.add("34"); //介護予防居宅療養管理指導
         serviceCodeSet.add("35"); //介護予防特定施設入居者生活介護
         serviceCodeSet.add("74"); //介護予防認知症対応型通所介護
-        serviceCodeSet.add("75"); //介護予防小規模多機能型居宅介護
+        serviceCodeSet.add("75"); //介護予防小規模多機能型居宅介護(短期利用以外)
         serviceCodeSet.add("37"); //介護予防認知症対応型共同生活介護(短期利用以外)
         serviceCodeSet.add("39"); //介護予防認知症対応型共同生活介護(短期利用)
         
@@ -1923,10 +1943,16 @@ public class QO012 extends QO012Event {
         serviceCodeSet.add("27"); //特定施設入居者生活介護（短期利用） 
         serviceCodeSet.add("28"); //地域密着型特定施設入居者生活介護（短期利用）
         serviceCodeSet.add("76"); //定期巡回・随時対応型訪問介護看護
-        serviceCodeSet.add("77"); //複合型サービス
+        serviceCodeSet.add("77"); //複合型サービス(短期利用以外)
         //[ID:0000747][Shin Fujihara] 2012/06 add end
         
+        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 add begin サービス種類追加
+        serviceCodeSet.add("68"); //小規模多機能型居宅介護(短期利用)
+        serviceCodeSet.add("69"); //介護予防小規模多機能型居宅介護(短期利用)
+        serviceCodeSet.add("79"); //複合型サービス(短期利用)
+        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 add end
 
+        
         planCodeSet.add("43"); //居宅介護支援
         planCodeSet.add("46"); //介護予防支援
     }

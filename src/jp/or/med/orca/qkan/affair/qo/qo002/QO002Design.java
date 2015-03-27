@@ -1887,10 +1887,12 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
     insurerInfos.add(getInsurerTelConteinar(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    insurerInfos.add(getInsurerTypeContainer(), VRLayout.FLOW_INSETLINE);
-
-    insurerInfos.add(getInsurerTypeInfomation(), VRLayout.FLOW_RETURN);
-
+// 2015/02/12 Shinobu Hitaka del - start 訪問看護（医療）の請求はできない為設定不要ということで非表示
+//    insurerInfos.add(getInsurerTypeContainer(), VRLayout.FLOW_INSETLINE);
+//
+//    insurerInfos.add(getInsurerTypeInfomation(), VRLayout.FLOW_RETURN);
+// 2015/02/12 Shinobu Hitaka del - end
+    
   }
 
   /**

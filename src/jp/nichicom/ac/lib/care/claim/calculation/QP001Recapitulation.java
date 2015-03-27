@@ -641,7 +641,9 @@ public class QP001Recapitulation {
         if("16".equals(serviceCodeKind)){
             //[CCCX:1616,2096][Shinobu Hitaka] 2014/11/25 add 「5610：重度療養管理加算」を追加
             //if("5602".equals(serviceCodeItem) || "5603".equals(serviceCodeItem) || "5604".equals(serviceCodeItem)){
-            if("5602".equals(serviceCodeItem) || "5603".equals(serviceCodeItem) || "5604".equals(serviceCodeItem) || "5610".equals(serviceCodeItem)){
+            // [H27.4改正対応][Shinobu Hitaka] 2015/2/27 edit - begin 廃止＆追加コード対応
+            //if("5602".equals(serviceCodeItem) || "5603".equals(serviceCodeItem) || "5604".equals(serviceCodeItem) || "5610".equals(serviceCodeItem)){
+            if("5613".equals(serviceCodeItem) || "5610".equals(serviceCodeItem)){
             	result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
             }
         }

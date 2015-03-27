@@ -341,30 +341,52 @@ public class QP001P08_201204 extends QP001P02_10Event {
                         
                         for (int j = 0; j < reductionList.getDataSize(); j++) {
                             VRMap reduction = (VRMap) reductionList.getData(j);
-                            switch (ACCastUtilities.toInt(VRBindPathParser.get(
-                                    "901008", reduction))) {
-                            case 51:
-                                //施設介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "jyuryo51",pad(reduction.get("901009"),6));
-                                //施設介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "keigen51", pad(reduction.get("901010"),6));
-                                //施設介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "keigengo51", pad(reduction.get("901011"),6));
-                                //施設介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "syafuku.h2.w27", pad(reduction.get("901012"),6));
-                                break;
-                            case 54:
-                                //施設介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "jyuryo54",pad(reduction.get("901009"),6));
-                                //施設介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "keigen54", pad(reduction.get("901010"),6));
-                                //施設介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "keigengo54", pad(reduction.get("901011"),6));
-                                //施設介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
-                                ACChotarouXMLUtilities.setValue(writer, "syafuku.h3.w27", pad(reduction.get("901012"),6));
-                                break;
-                            }
-                            
+                            // [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化
+//                            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+//                                    "901008", reduction))) {
+//                            case 51:
+//                                //施設介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "jyuryo51",pad(reduction.get("901009"),6));
+//                                //施設介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "keigen51", pad(reduction.get("901010"),6));
+//                                //施設介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "keigengo51", pad(reduction.get("901011"),6));
+//                                //施設介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "syafuku.h2.w27", pad(reduction.get("901012"),6));
+//                                break;
+//                            case 54:
+//                                //施設介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "jyuryo54",pad(reduction.get("901009"),6));
+//                                //施設介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "keigen54", pad(reduction.get("901010"),6));
+//                                //施設介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "keigengo54", pad(reduction.get("901011"),6));
+//                                //施設介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+//                                ACChotarouXMLUtilities.setValue(writer, "syafuku.h3.w27", pad(reduction.get("901012"),6));
+//                                break;
+//                            }
+                            String serviceCodeKind = ACCastUtilities.toString(VRBindPathParser.get("901008", reduction));
+                        	if ("51".equals(serviceCodeKind)) {
+								//施設介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+								ACChotarouXMLUtilities.setValue(writer, "jyuryo51",pad(reduction.get("901009"),6));
+								//施設介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+								ACChotarouXMLUtilities.setValue(writer, "keigen51", pad(reduction.get("901010"),6));
+								//施設介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+								ACChotarouXMLUtilities.setValue(writer, "keigengo51", pad(reduction.get("901011"),6));
+								//施設介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+								ACChotarouXMLUtilities.setValue(writer, "syafuku.h2.w27", pad(reduction.get("901012"),6));
+                        	}
+                        	if ("54".equals(serviceCodeKind)) {
+	                            //施設介護サービス費の利用者負担額の総額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+	                            ACChotarouXMLUtilities.setValue(writer, "jyuryo54",pad(reduction.get("901009"),6));
+	                            //施設介護サービス費の軽減額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+	                            ACChotarouXMLUtilities.setValue(writer, "keigen54", pad(reduction.get("901010"),6));
+	                            //施設介護サービス費の軽減後利用者負担額を設定する。 ※サービス種類レコード(901008)が51のレコードが対象
+	                            ACChotarouXMLUtilities.setValue(writer, "keigengo54", pad(reduction.get("901011"),6));
+	                            //施設介護サービス費の備考を設定する。 ※サービス種類レコード(901008)が21のレコードが対象
+	                            ACChotarouXMLUtilities.setValue(writer, "syafuku.h3.w27", pad(reduction.get("901012"),6));
+                        	}
+                            // [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - end   サービスコード英数化
                             
                         }
                         

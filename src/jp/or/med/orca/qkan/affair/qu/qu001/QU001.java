@@ -785,7 +785,17 @@ public class QU001 extends QU001Event {
 			// 渡りパラメータとして、TARGET_DATEが渡されていない場合
 
 			Date sysDate = QkanSystemInformation.getInstance().getSystemDate();
-			// [ID:0000667][Masahiko.Higuchi] 2012/04 edit begin 平成24年4月の初期設定対応
+			
+			// [H27.4改正対応][Shinobu Hitaka] 2015/02/20 edit begin 平成27年4月の初期設定対応
+			if (("QS001".equals(getNextAffair()) || "QR001"
+					.equals(getNextAffair()))
+					&& (ACDateUtilities.compareOnDay(sysDate,
+							QkanConstants.H2704) < 0)) {
+				sysDate = QkanConstants.H2704;
+			}
+			// [H27.4改正対応][Shinobu Hitaka] 2015/02/20 edit end
+
+			// [ID:0000667][Masahiko.Higuchi] 2012/04 edit begin 平成27年4月の初期設定対応
 			if (("QS001".equals(getNextAffair()) || "QR001"
 					.equals(getNextAffair()))
 					&& (ACDateUtilities.compareOnDay(sysDate,
@@ -1096,10 +1106,12 @@ public class QU001 extends QU001Event {
 			// 日付1 < 日付2 → 0より小さい値
 			// 日付1 > 日付2 → 0より大きい値
 			// 日付1 = 日付2 → 0
-
-			Date start = (Date) row.get("INSURE_VALID_START");
-			Date end = (Date) row.get("INSURE_VALID_END");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//			Date start = (Date) row.get("INSURE_VALID_START");
+//			Date end = (Date) row.get("INSURE_VALID_END");
+			Date start = (Date) row.get("SYSTEM_INSURE_VALID_START");
+			Date end = (Date) row.get("SYSTEM_INSURE_VALID_END");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 			// 期間範囲内
 			if ((ACDateUtilities.compareOnDay(start, now) <= 0)
 					&& (ACDateUtilities.compareOnDay(end, now) >= 0)) {
@@ -1133,7 +1145,10 @@ public class QU001 extends QU001Event {
 
 				// 入っているデータとどちらが近未来か比較
 				// 入っているデータより今のデータが小さい場合は設定
-				Date fur = (Date) target.get("INSURE_VALID_START");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//				Date fur = (Date) target.get("INSURE_VALID_START");
+				Date fur = (Date) target.get("SYSTEM_INSURE_VALID_START");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				if (ACDateUtilities.compareOnDay(start, fur) < 0) {
 					row.put("marge_state", new Integer(1));
 					result.put(id, row);
@@ -1159,7 +1174,10 @@ public class QU001 extends QU001Event {
 
 				// 入っているデータとどちらが今に近いか比較
 				// 入っているデータより今のデータが小さい場合は設定
-				Date pas = (Date) target.get("INSURE_VALID_END");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//				Date pas = (Date) target.get("INSURE_VALID_END");
+				Date pas = (Date) target.get("SYSTEM_INSURE_VALID_END");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				if (ACDateUtilities.compareOnDay(pas, end) < 0) {
 					row.put("marge_state", new Integer(2));
 					result.put(id, row);
@@ -1547,6 +1565,16 @@ public class QU001 extends QU001Event {
 			}
 		}
 		
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add - begin
+		// 公費情報の有効期間切れチェック
+		VRBindPathParser.set("PATIENT_ID", sqlParam, ACCastUtilities.toString(patientId));
+		VRBindPathParser.set("TARGET_DATE_START", sqlParam, ACDateUtilities.addMonth(targetDate, -1));
+		VRBindPathParser.set("TARGET_DATE_END", sqlParam, ACDateUtilities.toLastDayOfMonth(targetDate));
+		list = getDBManager().executeQuery(getSQL_GET_PATIENT_KOHI(sqlParam));
+		if (list.size() > 0) {
+			msgFlag += 4;
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add - begin
 		
 		switch(msgFlag) {
 		case 0: //エラーなし
@@ -1562,6 +1590,22 @@ public class QU001 extends QU001Event {
 			
 		case 3: //要介護度期間切れ、かつ施設情報期間切れ
 			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU();
+			break;
+			
+		case 4: //公費情報期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_KOHI();
+			break;
+			
+		case 5: //公費情報期間切れ、かつ要介護度期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_KOHI();
+			break;
+			
+		case 6: //公費情報期間切れ、かつ施設情報期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU_AND_KOHI();
+			break;
+			
+		case 7: //公費情報期間切れ、かつ要介護度期間切れ、かつ施設情報期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
+			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU_AND_KOHI();
 			break;
 		}
 		

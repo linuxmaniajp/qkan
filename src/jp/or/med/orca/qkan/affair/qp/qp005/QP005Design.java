@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/12/10  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2015/03/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -28,29 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp005;
-import java.awt.Component;
-
-import javax.swing.JTabbedPane;
-import javax.swing.table.TableColumn;
-
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACAffairButton;
-import jp.nichicom.ac.component.ACAffairButtonBar;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.table.ACTable;
-import jp.nichicom.ac.component.table.ACTableCellViewer;
-import jp.nichicom.ac.component.table.ACTableColumn;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACAffairable;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.vr.component.table.VRTableColumnModel;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 明細書詳細編集画面項目デザイン(QP005) 
  */
@@ -588,6 +616,66 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn recuperationInfoRevisionTablecolumn2;
 
   private ACTableColumn recuperationInfoRevisionTablecolumn3;
+
+  private ACPanel detailsJushotiTokureiInfos;
+
+  private ACPanel detailsJushotiTokureiPanel;
+
+  private ACLabel detailsJushotiTokureiLabel;
+
+  private ACButton detailsJushotiTokureiDelButton;
+
+  private ACTable detailsJushotiTokureiInfoTable;
+
+  private VRTableColumnModel detailsJushotiTokureiInfoTableColumnModel;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn0;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn1;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn2;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn3;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn4;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn5;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn6;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn7;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn8;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn9;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn10;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn11;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn12;
+
+  private ACTableColumn detailsJushotiTokureiInfoTablecolumn13;
+
+  private ACPanel detailsJushotiTokureiInfoRevisionPanel;
+
+  private ACLabel detailsJushotiTokureiInfoRevisionLabel;
+
+  private ACLabel detailsJushotiTokureiInfoRevision;
+
+  private ACIntegerCheckBox detailsJushotiTokureiInfoRevisionCheck;
+
+  private ACTable detailsJushotiTokureiInfoRevisionTable;
+
+  private VRTableColumnModel detailsJushotiTokureiInfoRevisionTableColumnModel;
+
+  private ACTableColumn detailsJushotiTokureiInfoRevisionTablecolumn0;
+
+  private ACTableColumn detailsJushotiTokureiInfoRevisionTablecolumn1;
+
+  private ACTableColumn detailsJushotiTokureiInfoRevisionTablecolumn2;
+
+  private ACTableColumn detailsJushotiTokureiInfoRevisionTablecolumn3;
 
   //getter
 
@@ -5178,6 +5266,524 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 明細情報（住所地特例）領域を取得します。
+   * @return 明細情報（住所地特例）領域
+   */
+  public ACPanel getDetailsJushotiTokureiInfos(){
+    if(detailsJushotiTokureiInfos==null){
+
+      detailsJushotiTokureiInfos = new ACPanel();
+
+      addDetailsJushotiTokureiInfos();
+    }
+    return detailsJushotiTokureiInfos;
+
+  }
+
+  /**
+   * 明細情報（住所地特例）パネルを取得します。
+   * @return 明細情報（住所地特例）パネル
+   */
+  public ACPanel getDetailsJushotiTokureiPanel(){
+    if(detailsJushotiTokureiPanel==null){
+
+      detailsJushotiTokureiPanel = new ACPanel();
+
+      addDetailsJushotiTokureiPanel();
+    }
+    return detailsJushotiTokureiPanel;
+
+  }
+
+  /**
+   * 明細情報（住所地特例）ラベルを取得します。
+   * @return 明細情報（住所地特例）ラベル
+   */
+  public ACLabel getDetailsJushotiTokureiLabel(){
+    if(detailsJushotiTokureiLabel==null){
+
+      detailsJushotiTokureiLabel = new ACLabel();
+
+      detailsJushotiTokureiLabel.setText("明細情報（住所地特例）");
+
+      addDetailsJushotiTokureiLabel();
+    }
+    return detailsJushotiTokureiLabel;
+
+  }
+
+  /**
+   * サービス削除ボタンを取得します。
+   * @return サービス削除ボタン
+   */
+  public ACButton getDetailsJushotiTokureiDelButton(){
+    if(detailsJushotiTokureiDelButton==null){
+
+      detailsJushotiTokureiDelButton = new ACButton();
+
+      detailsJushotiTokureiDelButton.setText("サービス削除");
+
+      detailsJushotiTokureiDelButton.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addDetailsJushotiTokureiDelButton();
+    }
+    return detailsJushotiTokureiDelButton;
+
+  }
+
+  /**
+   * 明細情報（住所地特例）テーブルを取得します。
+   * @return 明細情報（住所地特例）テーブル
+   */
+  public ACTable getDetailsJushotiTokureiInfoTable(){
+    if(detailsJushotiTokureiInfoTable==null){
+
+      detailsJushotiTokureiInfoTable = new ACTable();
+
+      detailsJushotiTokureiInfoTable.setColumnModel(getDetailsJushotiTokureiInfoTableColumnModel());
+
+      detailsJushotiTokureiInfoTable.setColumnSort(false);
+
+      addDetailsJushotiTokureiInfoTable();
+    }
+    return detailsJushotiTokureiInfoTable;
+
+  }
+
+  /**
+   * 明細情報（住所地特例）テーブルカラムモデルを取得します。
+   * @return 明細情報（住所地特例）テーブルカラムモデル
+   */
+  protected VRTableColumnModel getDetailsJushotiTokureiInfoTableColumnModel(){
+    if(detailsJushotiTokureiInfoTableColumnModel==null){
+      detailsJushotiTokureiInfoTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addDetailsJushotiTokureiInfoTableColumnModel();
+    }
+    return detailsJushotiTokureiInfoTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn0(){
+    if(detailsJushotiTokureiInfoTablecolumn0==null){
+
+      detailsJushotiTokureiInfoTablecolumn0 = new ACTableColumn(0, 30);
+
+      detailsJushotiTokureiInfoTablecolumn0.setHeaderValue("　");
+
+      detailsJushotiTokureiInfoTablecolumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      detailsJushotiTokureiInfoTablecolumn0.setSortable(false);
+
+      addDetailsJushotiTokureiInfoTablecolumn0();
+    }
+    return detailsJushotiTokureiInfoTablecolumn0;
+
+  }
+
+  /**
+   * サービスコードを取得します。
+   * @return サービスコード
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn1(){
+    if(detailsJushotiTokureiInfoTablecolumn1==null){
+
+      detailsJushotiTokureiInfoTablecolumn1 = new ACTableColumn(0, 105);
+
+      detailsJushotiTokureiInfoTablecolumn1.setHeaderValue("サービスコード");
+
+      addDetailsJushotiTokureiInfoTablecolumn1();
+    }
+    return detailsJushotiTokureiInfoTablecolumn1;
+
+  }
+
+  /**
+   * サービス名称を取得します。
+   * @return サービス名称
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn2(){
+    if(detailsJushotiTokureiInfoTablecolumn2==null){
+
+      detailsJushotiTokureiInfoTablecolumn2 = new ACTableColumn(1, 90);
+
+      detailsJushotiTokureiInfoTablecolumn2.setHeaderValue("サービス名称");
+
+      addDetailsJushotiTokureiInfoTablecolumn2();
+    }
+    return detailsJushotiTokureiInfoTablecolumn2;
+
+  }
+
+  /**
+   * 単位数を取得します。
+   * @return 単位数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn3(){
+    if(detailsJushotiTokureiInfoTablecolumn3==null){
+
+      detailsJushotiTokureiInfoTablecolumn3 = new ACTableColumn(2, 55);
+
+      detailsJushotiTokureiInfoTablecolumn3.setHeaderValue("単位数");
+
+      addDetailsJushotiTokureiInfoTablecolumn3();
+    }
+    return detailsJushotiTokureiInfoTablecolumn3;
+
+  }
+
+  /**
+   * 日数・回数を取得します。
+   * @return 日数・回数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn4(){
+    if(detailsJushotiTokureiInfoTablecolumn4==null){
+
+      detailsJushotiTokureiInfoTablecolumn4 = new ACTableColumn(3, 75);
+
+      detailsJushotiTokureiInfoTablecolumn4.setHeaderValue("日数・回数");
+
+      addDetailsJushotiTokureiInfoTablecolumn4();
+    }
+    return detailsJushotiTokureiInfoTablecolumn4;
+
+  }
+
+  /**
+   * 公費1対象日数・回数を取得します。
+   * @return 公費1対象日数・回数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn5(){
+    if(detailsJushotiTokureiInfoTablecolumn5==null){
+
+      detailsJushotiTokureiInfoTablecolumn5 = new ACTableColumn(4, 135);
+
+      detailsJushotiTokureiInfoTablecolumn5.setHeaderValue("公費1対象日数・回数");
+
+      addDetailsJushotiTokureiInfoTablecolumn5();
+    }
+    return detailsJushotiTokureiInfoTablecolumn5;
+
+  }
+
+  /**
+   * 公費2対象日数・回数を取得します。
+   * @return 公費2対象日数・回数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn6(){
+    if(detailsJushotiTokureiInfoTablecolumn6==null){
+
+      detailsJushotiTokureiInfoTablecolumn6 = new ACTableColumn(5, 135);
+
+      detailsJushotiTokureiInfoTablecolumn6.setHeaderValue("公費2対象日数・回数");
+
+      addDetailsJushotiTokureiInfoTablecolumn6();
+    }
+    return detailsJushotiTokureiInfoTablecolumn6;
+
+  }
+
+  /**
+   * 公費3対象日数・回数を取得します。
+   * @return 公費3対象日数・回数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn7(){
+    if(detailsJushotiTokureiInfoTablecolumn7==null){
+
+      detailsJushotiTokureiInfoTablecolumn7 = new ACTableColumn(6, 135);
+
+      detailsJushotiTokureiInfoTablecolumn7.setHeaderValue("公費3対象日数・回数");
+
+      addDetailsJushotiTokureiInfoTablecolumn7();
+    }
+    return detailsJushotiTokureiInfoTablecolumn7;
+
+  }
+
+  /**
+   * サービス単位数を取得します。
+   * @return サービス単位数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn8(){
+    if(detailsJushotiTokureiInfoTablecolumn8==null){
+
+      detailsJushotiTokureiInfoTablecolumn8 = new ACTableColumn(7, 105);
+
+      detailsJushotiTokureiInfoTablecolumn8.setHeaderValue("サービス単位数");
+
+      addDetailsJushotiTokureiInfoTablecolumn8();
+    }
+    return detailsJushotiTokureiInfoTablecolumn8;
+
+  }
+
+  /**
+   * 公費1対象サービス単位数を取得します。
+   * @return 公費1対象サービス単位数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn9(){
+    if(detailsJushotiTokureiInfoTablecolumn9==null){
+
+      detailsJushotiTokureiInfoTablecolumn9 = new ACTableColumn(8, 165);
+
+      detailsJushotiTokureiInfoTablecolumn9.setHeaderValue("公費1対象サービス単位数");
+
+      addDetailsJushotiTokureiInfoTablecolumn9();
+    }
+    return detailsJushotiTokureiInfoTablecolumn9;
+
+  }
+
+  /**
+   * 公費2対象サービス単位数を取得します。
+   * @return 公費2対象サービス単位数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn10(){
+    if(detailsJushotiTokureiInfoTablecolumn10==null){
+
+      detailsJushotiTokureiInfoTablecolumn10 = new ACTableColumn(9, 165);
+
+      detailsJushotiTokureiInfoTablecolumn10.setHeaderValue("公費2対象サービス単位数");
+
+      addDetailsJushotiTokureiInfoTablecolumn10();
+    }
+    return detailsJushotiTokureiInfoTablecolumn10;
+
+  }
+
+  /**
+   * 公費3対象サービス単位数を取得します。
+   * @return 公費3対象サービス単位数
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn11(){
+    if(detailsJushotiTokureiInfoTablecolumn11==null){
+
+      detailsJushotiTokureiInfoTablecolumn11 = new ACTableColumn(10, 165);
+
+      detailsJushotiTokureiInfoTablecolumn11.setHeaderValue("公費3対象サービス単位数");
+
+      addDetailsJushotiTokureiInfoTablecolumn11();
+    }
+    return detailsJushotiTokureiInfoTablecolumn11;
+
+  }
+
+  /**
+   * 施設所在保険者番号を取得します。
+   * @return 施設所在保険者番号
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn12(){
+    if(detailsJushotiTokureiInfoTablecolumn12==null){
+
+      detailsJushotiTokureiInfoTablecolumn12 = new ACTableColumn(11, 135);
+
+      detailsJushotiTokureiInfoTablecolumn12.setHeaderValue("施設所在保険者番号");
+
+      addDetailsJushotiTokureiInfoTablecolumn12();
+    }
+    return detailsJushotiTokureiInfoTablecolumn12;
+
+  }
+
+  /**
+   * 摘要(英数)を取得します。
+   * @return 摘要(英数)
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoTablecolumn13(){
+    if(detailsJushotiTokureiInfoTablecolumn13==null){
+
+      detailsJushotiTokureiInfoTablecolumn13 = new ACTableColumn(12, 105);
+
+      detailsJushotiTokureiInfoTablecolumn13.setHeaderValue("摘要(英数)");
+
+      addDetailsJushotiTokureiInfoTablecolumn13();
+    }
+    return detailsJushotiTokureiInfoTablecolumn13;
+
+  }
+
+  /**
+   * 明細設定内容修正パネルを取得します。
+   * @return 明細設定内容修正パネル
+   */
+  public ACPanel getDetailsJushotiTokureiInfoRevisionPanel(){
+    if(detailsJushotiTokureiInfoRevisionPanel==null){
+
+      detailsJushotiTokureiInfoRevisionPanel = new ACPanel();
+
+      addDetailsJushotiTokureiInfoRevisionPanel();
+    }
+    return detailsJushotiTokureiInfoRevisionPanel;
+
+  }
+
+  /**
+   * 設定内容修正欄ラベルを取得します。
+   * @return 設定内容修正欄ラベル
+   */
+  public ACLabel getDetailsJushotiTokureiInfoRevisionLabel(){
+    if(detailsJushotiTokureiInfoRevisionLabel==null){
+
+      detailsJushotiTokureiInfoRevisionLabel = new ACLabel();
+
+      detailsJushotiTokureiInfoRevisionLabel.setText("設定内容修正欄");
+
+      addDetailsJushotiTokureiInfoRevisionLabel();
+    }
+    return detailsJushotiTokureiInfoRevisionLabel;
+
+  }
+
+  /**
+   * 明細情報（住所地特例）を取得します。
+   * @return 明細情報（住所地特例）
+   */
+  public ACLabel getDetailsJushotiTokureiInfoRevision(){
+    if(detailsJushotiTokureiInfoRevision==null){
+
+      detailsJushotiTokureiInfoRevision = new ACLabel();
+
+      detailsJushotiTokureiInfoRevision.setText("明細情報（住所地特例）");
+
+      addDetailsJushotiTokureiInfoRevision();
+    }
+    return detailsJushotiTokureiInfoRevision;
+
+  }
+
+  /**
+   * 全ての情報を表示を取得します。
+   * @return 全ての情報を表示
+   */
+  public ACIntegerCheckBox getDetailsJushotiTokureiInfoRevisionCheck(){
+    if(detailsJushotiTokureiInfoRevisionCheck==null){
+
+      detailsJushotiTokureiInfoRevisionCheck = new ACIntegerCheckBox();
+
+      detailsJushotiTokureiInfoRevisionCheck.setText("すべての情報を表示（A）");
+
+      detailsJushotiTokureiInfoRevisionCheck.setMnemonic('A');
+
+      addDetailsJushotiTokureiInfoRevisionCheck();
+    }
+    return detailsJushotiTokureiInfoRevisionCheck;
+
+  }
+
+  /**
+   * 明細情報詳細テーブルを取得します。
+   * @return 明細情報詳細テーブル
+   */
+  public ACTable getDetailsJushotiTokureiInfoRevisionTable(){
+    if(detailsJushotiTokureiInfoRevisionTable==null){
+
+      detailsJushotiTokureiInfoRevisionTable = new ACTable();
+
+      detailsJushotiTokureiInfoRevisionTable.setColumnModel(getDetailsJushotiTokureiInfoRevisionTableColumnModel());
+
+      detailsJushotiTokureiInfoRevisionTable.setColumnSort(false);
+
+      addDetailsJushotiTokureiInfoRevisionTable();
+    }
+    return detailsJushotiTokureiInfoRevisionTable;
+
+  }
+
+  /**
+   * 明細情報詳細テーブルカラムモデルを取得します。
+   * @return 明細情報詳細テーブルカラムモデル
+   */
+  protected VRTableColumnModel getDetailsJushotiTokureiInfoRevisionTableColumnModel(){
+    if(detailsJushotiTokureiInfoRevisionTableColumnModel==null){
+      detailsJushotiTokureiInfoRevisionTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addDetailsJushotiTokureiInfoRevisionTableColumnModel();
+    }
+    return detailsJushotiTokureiInfoRevisionTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoRevisionTablecolumn0(){
+    if(detailsJushotiTokureiInfoRevisionTablecolumn0==null){
+
+      detailsJushotiTokureiInfoRevisionTablecolumn0 = new ACTableColumn(0, 30);
+
+      detailsJushotiTokureiInfoRevisionTablecolumn0.setHeaderValue("　");
+
+      detailsJushotiTokureiInfoRevisionTablecolumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      detailsJushotiTokureiInfoRevisionTablecolumn0.setSortable(false);
+
+      addDetailsJushotiTokureiInfoRevisionTablecolumn0();
+    }
+    return detailsJushotiTokureiInfoRevisionTablecolumn0;
+
+  }
+
+  /**
+   * 項目名を取得します。
+   * @return 項目名
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoRevisionTablecolumn1(){
+    if(detailsJushotiTokureiInfoRevisionTablecolumn1==null){
+
+      detailsJushotiTokureiInfoRevisionTablecolumn1 = new ACTableColumn(0, 55);
+
+      detailsJushotiTokureiInfoRevisionTablecolumn1.setHeaderValue("項目名");
+
+      detailsJushotiTokureiInfoRevisionTablecolumn1.setColumns(15);
+
+      addDetailsJushotiTokureiInfoRevisionTablecolumn1();
+    }
+    return detailsJushotiTokureiInfoRevisionTablecolumn1;
+
+  }
+
+  /**
+   * 設定値を取得します。
+   * @return 設定値
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoRevisionTablecolumn2(){
+    if(detailsJushotiTokureiInfoRevisionTablecolumn2==null){
+
+      detailsJushotiTokureiInfoRevisionTablecolumn2 = new ACTableColumn(1, 55);
+
+      detailsJushotiTokureiInfoRevisionTablecolumn2.setHeaderValue("設定値");
+
+      detailsJushotiTokureiInfoRevisionTablecolumn2.setEditable(true);
+
+      detailsJushotiTokureiInfoRevisionTablecolumn2.setColumns(8);
+
+      addDetailsJushotiTokureiInfoRevisionTablecolumn2();
+    }
+    return detailsJushotiTokureiInfoRevisionTablecolumn2;
+
+  }
+
+  /**
+   * コメントを取得します。
+   * @return コメント
+   */
+  public ACTableColumn getDetailsJushotiTokureiInfoRevisionTablecolumn3(){
+    if(detailsJushotiTokureiInfoRevisionTablecolumn3==null){
+
+      detailsJushotiTokureiInfoRevisionTablecolumn3 = new ACTableColumn(2, 55);
+
+      detailsJushotiTokureiInfoRevisionTablecolumn3.setHeaderValue("コメント");
+
+      detailsJushotiTokureiInfoRevisionTablecolumn3.setColumns(30);
+
+      addDetailsJushotiTokureiInfoRevisionTablecolumn3();
+    }
+    return detailsJushotiTokureiInfoRevisionTablecolumn3;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QP005Design() {
@@ -5330,6 +5936,8 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
     etcInfoTabs.addTab("社会福祉法人軽減情報", getShahukuInfos());
 
     etcInfoTabs.addTab("特別療養費情報", getRecuperationInfos());
+
+    etcInfoTabs.addTab("明細情報（住所地特例）", getDetailsJushotiTokureiInfos());
 
   }
 
@@ -7558,6 +8166,269 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
    * コメントに内部項目を追加します。
    */
   protected void addRecuperationInfoRevisionTablecolumn3(){
+
+  }
+
+  /**
+   * 明細情報（住所地特例）領域に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfos(){
+
+    detailsJushotiTokureiInfos.add(getDetailsJushotiTokureiPanel(), VRLayout.NORTH);
+
+    detailsJushotiTokureiInfos.add(getDetailsJushotiTokureiInfoTable(), VRLayout.NORTH);
+
+    detailsJushotiTokureiInfos.add(getDetailsJushotiTokureiInfoRevisionPanel(), VRLayout.NORTH);
+
+    detailsJushotiTokureiInfos.add(getDetailsJushotiTokureiInfoRevisionTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 明細情報（住所地特例）パネルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiPanel(){
+
+    detailsJushotiTokureiPanel.add(getDetailsJushotiTokureiLabel(), VRLayout.FLOW);
+
+    detailsJushotiTokureiPanel.add(getDetailsJushotiTokureiDelButton(), VRLayout.EAST);
+  }
+
+  /**
+   * 明細情報（住所地特例）ラベルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiLabel(){
+
+  }
+
+  /**
+   * サービス削除ボタンに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiDelButton(){
+
+  }
+
+  /**
+   * 明細情報（住所地特例）テーブルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTable(){
+
+  }
+
+  /**
+   * 明細情報（住所地特例）テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTableColumnModel(){
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn0());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn1());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn2());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn3());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn4());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn5());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn6());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn7());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn8());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn9());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn10());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn11());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn12());
+
+    getDetailsJushotiTokureiInfoTableColumnModel().addColumn(getDetailsJushotiTokureiInfoTablecolumn13());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn0(){
+
+  }
+
+  /**
+   * サービスコードに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn1(){
+
+  }
+
+  /**
+   * サービス名称に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn2(){
+
+  }
+
+  /**
+   * 単位数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn3(){
+
+  }
+
+  /**
+   * 日数・回数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn4(){
+
+  }
+
+  /**
+   * 公費1対象日数・回数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn5(){
+
+  }
+
+  /**
+   * 公費2対象日数・回数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn6(){
+
+  }
+
+  /**
+   * 公費3対象日数・回数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn7(){
+
+  }
+
+  /**
+   * サービス単位数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn8(){
+
+  }
+
+  /**
+   * 公費1対象サービス単位数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn9(){
+
+  }
+
+  /**
+   * 公費2対象サービス単位数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn10(){
+
+  }
+
+  /**
+   * 公費3対象サービス単位数に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn11(){
+
+  }
+
+  /**
+   * 施設所在保険者番号に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn12(){
+
+  }
+
+  /**
+   * 摘要(英数)に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoTablecolumn13(){
+
+  }
+
+  /**
+   * 明細設定内容修正パネルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionPanel(){
+
+    detailsJushotiTokureiInfoRevisionPanel.add(getDetailsJushotiTokureiInfoRevisionLabel(), VRLayout.FLOW);
+
+    detailsJushotiTokureiInfoRevisionPanel.add(getDetailsJushotiTokureiInfoRevision(), VRLayout.FLOW);
+
+    detailsJushotiTokureiInfoRevisionPanel.add(getDetailsJushotiTokureiInfoRevisionCheck(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 設定内容修正欄ラベルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionLabel(){
+
+  }
+
+  /**
+   * 明細情報（住所地特例）に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevision(){
+
+  }
+
+  /**
+   * 全ての情報を表示に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionCheck(){
+
+  }
+
+  /**
+   * 明細情報詳細テーブルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionTable(){
+
+  }
+
+  /**
+   * 明細情報詳細テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionTableColumnModel(){
+
+    getDetailsJushotiTokureiInfoRevisionTableColumnModel().addColumn(getDetailsJushotiTokureiInfoRevisionTablecolumn0());
+
+    getDetailsJushotiTokureiInfoRevisionTableColumnModel().addColumn(getDetailsJushotiTokureiInfoRevisionTablecolumn1());
+
+    getDetailsJushotiTokureiInfoRevisionTableColumnModel().addColumn(getDetailsJushotiTokureiInfoRevisionTablecolumn2());
+
+    getDetailsJushotiTokureiInfoRevisionTableColumnModel().addColumn(getDetailsJushotiTokureiInfoRevisionTablecolumn3());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionTablecolumn0(){
+
+  }
+
+  /**
+   * 項目名に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionTablecolumn1(){
+
+  }
+
+  /**
+   * 設定値に内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionTablecolumn2(){
+
+  }
+
+  /**
+   * コメントに内部項目を追加します。
+   */
+  protected void addDetailsJushotiTokureiInfoRevisionTablecolumn3(){
 
   }
 

@@ -37,12 +37,14 @@ import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * 様式第二　一帳票分の情報
@@ -137,6 +139,24 @@ public class QP001Style2 extends QP001StyleAbstract{
             detail.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
         }
         
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+        //明細情報レコードを取得
+        QP001RecordDetailJushotiTokurei detailJushotiTokurei = QP001RecordDetailJushotiTokurei.getInstance(identificationNo,
+                                                                targetDate,
+                                                                targetServiceDate,
+                                                                serviceDetail,
+                                                                serviceCode,
+                                                                patientState,
+                                                                detailMap,
+                                                                manager);
+        
+        //レコードが作成されていれば
+        if(detailJushotiTokurei != null){
+            //明細情報データ解析
+        	detailJushotiTokurei.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
+        }        
+// 2014/12/24 [Yoichiro Kamei] add - end
+        
       	/* 社福減免レコード集計処理 */
       	//社福レコードを取得
       	QP001RecordReduction reduction = QP001RecordReduction.getInstance(identificationNo,
@@ -195,8 +215,12 @@ public class QP001Style2 extends QP001StyleAbstract{
 			}
 			
 			//特地加算のレコードであるか確認
-			if(ACCastUtilities.toInt(detail.get_301007(),0) == 61){
-				if(ACCastUtilities.toInt(detail.get_301008(),0) == 8000){
+			// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化 
+			//if(ACCastUtilities.toInt(detail.get_301007(),0) == 61){
+			//	if(ACCastUtilities.toInt(detail.get_301008(),0) == 8000){
+			if("61".equals(detail.get_301007())){
+				if("8000".equals(detail.get_301008())){
+			// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化 
 					VRMap mainMap = new VRHashMap();
 					VRMap map = new VRHashMap();
 					map.put("UNIT",new Integer(unit));
@@ -271,7 +295,7 @@ public class QP001Style2 extends QP001StyleAbstract{
 			type.parse(detail,patientState,manager);
 		}
 		
-		it = typeMap.keySet().iterator();
+    	it = typeMap.keySet().iterator();
 		QP001RecordType type;
 		//集計情報レコードの確定処理
 		while(it.hasNext()){
@@ -301,6 +325,7 @@ public class QP001Style2 extends QP001StyleAbstract{
 		}
 		
 	}
+    
 	
 	/**
 	 * DB登録用のレコード集合を作成します。

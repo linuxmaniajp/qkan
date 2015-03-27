@@ -431,8 +431,12 @@ public class QP004 extends QP004Event {
 		// データの取得・画面設定
 		// 請求データを取得するためのwhere句を用意する。
 		// WHERE句
-		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
-
+		
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
+		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18))";
+// 2015/1/14 [Yoichiro Kamei] mod - end
+		
 		try {
 			// トランザクションを開始する。
 			getDBManager().beginTransaction();
@@ -526,8 +530,40 @@ public class QP004 extends QP004Event {
 				getClaimListBasic().addData(claimDataMap);
 			}
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+			// 明細情報（住所地特例）のバインドパスを明細情報のパスにコピーして、明細情報として処理させる
+			if (new Integer(CATEGORY_NO18).equals(claimDataMap.getData("CATEGORY_NO"))) {
+				VRBindPathParser.set("301001", claimDataMap, VRBindPathParser.get("1801001", claimDataMap));
+				VRBindPathParser.set("301002", claimDataMap, VRBindPathParser.get("1801002", claimDataMap));
+				VRBindPathParser.set("301003", claimDataMap, VRBindPathParser.get("1801003", claimDataMap));
+				VRBindPathParser.set("301004", claimDataMap, VRBindPathParser.get("1801004", claimDataMap));
+				VRBindPathParser.set("301005", claimDataMap, VRBindPathParser.get("1801005", claimDataMap));
+				VRBindPathParser.set("301006", claimDataMap, VRBindPathParser.get("1801006", claimDataMap));
+				VRBindPathParser.set("301007", claimDataMap, VRBindPathParser.get("1801007", claimDataMap));
+				VRBindPathParser.set("301008", claimDataMap, VRBindPathParser.get("1801008", claimDataMap));
+				VRBindPathParser.set("301009", claimDataMap, VRBindPathParser.get("1801009", claimDataMap));
+				VRBindPathParser.set("301010", claimDataMap, VRBindPathParser.get("1801010", claimDataMap));
+				VRBindPathParser.set("301011", claimDataMap, VRBindPathParser.get("1801011", claimDataMap));
+				VRBindPathParser.set("301012", claimDataMap, VRBindPathParser.get("1801012", claimDataMap));
+				VRBindPathParser.set("301013", claimDataMap, VRBindPathParser.get("1801013", claimDataMap));
+				VRBindPathParser.set("301014", claimDataMap, VRBindPathParser.get("1801014", claimDataMap));
+				VRBindPathParser.set("301015", claimDataMap, VRBindPathParser.get("1801015", claimDataMap));
+				VRBindPathParser.set("301016", claimDataMap, VRBindPathParser.get("1801016", claimDataMap));
+				VRBindPathParser.set("301017", claimDataMap, VRBindPathParser.get("1801017", claimDataMap));
+				VRBindPathParser.set("301018", claimDataMap, VRBindPathParser.get("1801019", claimDataMap));
+				VRBindPathParser.set("301019", claimDataMap, VRBindPathParser.get("1801020", claimDataMap));
+				VRBindPathParser.set("301020", claimDataMap, VRBindPathParser.get("1801021", claimDataMap));
+				VRBindPathParser.set("301021", claimDataMap, VRBindPathParser.get("1801022", claimDataMap));
+				VRBindPathParser.set("301022", claimDataMap, VRBindPathParser.get("1801023", claimDataMap));
+			}
+// 2015/1/14 [Yoichiro Kamei] add - end
+			
 			// 明細情報レコードの場合（CATEGORY_NO = 3）
-			if (new Integer(CATEGORY_NO3).equals(claimDataMap.getData("CATEGORY_NO"))) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//			if (new Integer(CATEGORY_NO3).equals(claimDataMap.getData("CATEGORY_NO"))) {
+			if (new Integer(CATEGORY_NO3).equals(claimDataMap.getData("CATEGORY_NO")) ||
+				new Integer(CATEGORY_NO18).equals(claimDataMap.getData("CATEGORY_NO"))) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 				// SQL文取得用のHashMap：paramを生成し、システムサービス種類コード（KEY：301021）、システムサービス項目コード（KEY：301022）を
 				VRMap param = new VRHashMap();
 				// 取り出し、下記のKEY/VALUEで設定する。
@@ -967,6 +1003,69 @@ public class QP004 extends QP004Event {
 					}
 				}
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+				
+		        //明細情報レコードがnulではない場合
+		        if (!(getClaimListDetail() == null || getClaimListDetail().isEmpty())) {
+		        	Iterator detailsIterator = getClaimListDetail().listIterator();
+		        	
+		        	while (detailsIterator.hasNext()) {
+		        		VRMap claimDataMap = (VRMap) detailsIterator.next();
+		        		
+		        		//明細情報（住所地特例）レコードについて、変換しているバインドパスを元に戻す
+		    			if (new Integer(CATEGORY_NO18).equals(claimDataMap.getData("CATEGORY_NO"))) {
+		    				// 明細情報レコードのバインドパスを明細情報（住所地特例）レコードにコピー
+		    				VRBindPathParser.set("1801001", claimDataMap, VRBindPathParser.get("301001", claimDataMap));
+		    				VRBindPathParser.set("1801002", claimDataMap, VRBindPathParser.get("301002", claimDataMap));
+		    				VRBindPathParser.set("1801003", claimDataMap, VRBindPathParser.get("301003", claimDataMap));
+		    				VRBindPathParser.set("1801004", claimDataMap, VRBindPathParser.get("301004", claimDataMap));
+		    				VRBindPathParser.set("1801005", claimDataMap, VRBindPathParser.get("301005", claimDataMap));
+		    				VRBindPathParser.set("1801006", claimDataMap, VRBindPathParser.get("301006", claimDataMap));
+		    				VRBindPathParser.set("1801007", claimDataMap, VRBindPathParser.get("301007", claimDataMap));
+		    				VRBindPathParser.set("1801008", claimDataMap, VRBindPathParser.get("301008", claimDataMap));
+		    				VRBindPathParser.set("1801009", claimDataMap, VRBindPathParser.get("301009", claimDataMap));
+		    				VRBindPathParser.set("1801010", claimDataMap, VRBindPathParser.get("301010", claimDataMap));
+		    				VRBindPathParser.set("1801011", claimDataMap, VRBindPathParser.get("301011", claimDataMap));
+		    				VRBindPathParser.set("1801012", claimDataMap, VRBindPathParser.get("301012", claimDataMap));
+		    				VRBindPathParser.set("1801013", claimDataMap, VRBindPathParser.get("301013", claimDataMap));
+		    				VRBindPathParser.set("1801014", claimDataMap, VRBindPathParser.get("301014", claimDataMap));
+		    				VRBindPathParser.set("1801015", claimDataMap, VRBindPathParser.get("301015", claimDataMap));
+		    				VRBindPathParser.set("1801016", claimDataMap, VRBindPathParser.get("301016", claimDataMap));
+		    				VRBindPathParser.set("1801017", claimDataMap, VRBindPathParser.get("301017", claimDataMap));
+		    				VRBindPathParser.set("1801019", claimDataMap, VRBindPathParser.get("301018", claimDataMap));
+		    				VRBindPathParser.set("1801020", claimDataMap, VRBindPathParser.get("301019", claimDataMap));
+		    				VRBindPathParser.set("1801021", claimDataMap, VRBindPathParser.get("301020", claimDataMap));
+		    				VRBindPathParser.set("1801022", claimDataMap, VRBindPathParser.get("301021", claimDataMap));
+		    				VRBindPathParser.set("1801023", claimDataMap, VRBindPathParser.get("301022", claimDataMap));
+		    				
+		    				// 明細情報レコードのバインドパスを除く
+		    				claimDataMap.removeData("301001");
+		    				claimDataMap.removeData("301002");
+		    				claimDataMap.removeData("301003");
+		    				claimDataMap.removeData("301004");
+		    				claimDataMap.removeData("301005");
+		    				claimDataMap.removeData("301006");
+		    				claimDataMap.removeData("301007");
+		    				claimDataMap.removeData("301008");
+		    				claimDataMap.removeData("301009");
+		    				claimDataMap.removeData("301010");
+		    				claimDataMap.removeData("301011");
+		    				claimDataMap.removeData("301012");
+		    				claimDataMap.removeData("301013");
+		    				claimDataMap.removeData("301014");
+		    				claimDataMap.removeData("301015");
+		    				claimDataMap.removeData("301016");
+		    				claimDataMap.removeData("301017");
+		    				claimDataMap.removeData("301018");
+		    				claimDataMap.removeData("301019");
+		    				claimDataMap.removeData("301020");
+		    				claimDataMap.removeData("301021");
+		    				claimDataMap.removeData("301022");
+		    			}
+		        	}
+		        }
+// 2015/1/14 [Yoichiro Kamei] add - end
+				
 				// 明細書情報レコードを取得する
 
 				// 基本情報レコード集合・明細情報レコード集合・表示しない明細情報レコード集合・特定診療費レコード集合を1つのレコード集合にまとめる。
@@ -980,8 +1079,12 @@ public class QP004 extends QP004Event {
 
 				// データ登録のためのWHERE句を作成する。
 				// WHERE句
-				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
-
+				
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
+				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18))";
+// 2015/1/14 [Yoichiro Kamei] mod - end
+				
 				// まとめたレコード集合でDBを更新する。
 				QkanCommon.updateClaimDetailCustom(getDBManager(), allList, getTargetDate(), whereStr);
 
@@ -1163,6 +1266,9 @@ public class QP004 extends QP004Event {
 
 		switch (categoryType) {
 			case CATEGORY_NO3:
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+			case CATEGORY_NO18:
+// 2015/1/14 [Yoichiro Kamei] add - end
 				// 通常の明細書摘要欄の場合
 
 				// 摘要欄記載事項一覧テーブルの各行の設定処理

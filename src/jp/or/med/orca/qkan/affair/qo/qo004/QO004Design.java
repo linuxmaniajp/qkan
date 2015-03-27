@@ -17,8 +17,8 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 藤原　伸
- * 作成日: 2012/02/24  日本コンピューター株式会社 藤原　伸 新規作成
+ * 開発者: 日高　しのぶ
+ * 作成日: 2015/01/30  日本コンピューター株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -193,15 +193,13 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem providerMainContentRegionLank4;
 
-  private ACRadioButtonItem providerMainContentRegionLank5a;
+  private ACRadioButtonItem providerMainContentRegionLank5;
 
-  private ACRadioButtonItem providerMainContentRegionLank5b;
-
-  private ACRadioButtonItem providerMainContentRegionLank6a;
-
-  private ACRadioButtonItem providerMainContentRegionLank6b;
+  private ACRadioButtonItem providerMainContentRegionLank6;
 
   private ACRadioButtonItem providerMainContentRegionLank7;
+
+  private ACRadioButtonItem providerMainContentRegionLank8;
 
   private ACIntegerCheckBox lankSpecialArea;
 
@@ -490,16 +488,15 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
       providerId.setColumns(8);
 
-      // [2014年度改正][Shinobu Hitaka] 2014/10/25 edit begin 英数字化
-      //providerId.setCharType(VRCharType.ONLY_DIGIT);
       providerId.setCharType(VRCharType.ONLY_ALNUM);
-      // [2014年度改正][Shinobu Hitaka] 2014/10/25 edit begin 英数字化
-      
+
       providerId.setHorizontalAlignment(SwingConstants.LEFT);
 
       providerId.setIMEMode(InputSubset.LATIN);
 
       providerId.setMaxLength(10);
+
+      /** @TODO 2014年度改正　英数字化 */
 
       addProviderId();
     }
@@ -1286,7 +1283,7 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
       providerMainContentRegion.setModel(getProviderMainContentRegionModel());
 
-      providerMainContentRegion.setValues(new int[]{1,6,7,2,3,8,4,9,5});
+      providerMainContentRegion.setValues(new int[]{1,6,7,2,3,4,9,5});
 
       addProviderMainContentRegion();
     }
@@ -1408,41 +1405,20 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
    * ５級地を取得します。
    * @return ５級地
    */
-  public ACRadioButtonItem getProviderMainContentRegionLank5a(){
-    if(providerMainContentRegionLank5a==null){
+  public ACRadioButtonItem getProviderMainContentRegionLank5(){
+    if(providerMainContentRegionLank5==null){
 
-      providerMainContentRegionLank5a = new ACRadioButtonItem();
+      providerMainContentRegionLank5 = new ACRadioButtonItem();
 
-      providerMainContentRegionLank5a.setText("5級地");
+      providerMainContentRegionLank5.setText("5級地");
 
-      providerMainContentRegionLank5a.setGroup(getProviderMainContentRegion());
+      providerMainContentRegionLank5.setGroup(getProviderMainContentRegion());
 
-      providerMainContentRegionLank5a.setConstraints(VRLayout.FLOW);
+      providerMainContentRegionLank5.setConstraints(VRLayout.FLOW);
 
-      addProviderMainContentRegionLank5a();
+      addProviderMainContentRegionLank5();
     }
-    return providerMainContentRegionLank5a;
-
-  }
-
-  /**
-   * ５級地の２を取得します。
-   * @return ５級地の２
-   */
-  public ACRadioButtonItem getProviderMainContentRegionLank5b(){
-    if(providerMainContentRegionLank5b==null){
-
-      providerMainContentRegionLank5b = new ACRadioButtonItem();
-
-      providerMainContentRegionLank5b.setText("5級地の2");
-
-      providerMainContentRegionLank5b.setGroup(getProviderMainContentRegion());
-
-      providerMainContentRegionLank5b.setConstraints(VRLayout.FLOW);
-
-      addProviderMainContentRegionLank5b();
-    }
-    return providerMainContentRegionLank5b;
+    return providerMainContentRegionLank5;
 
   }
 
@@ -1450,54 +1426,33 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
    * ６級地を取得します。
    * @return ６級地
    */
-  public ACRadioButtonItem getProviderMainContentRegionLank6a(){
-    if(providerMainContentRegionLank6a==null){
+  public ACRadioButtonItem getProviderMainContentRegionLank6(){
+    if(providerMainContentRegionLank6==null){
 
-      providerMainContentRegionLank6a = new ACRadioButtonItem();
+      providerMainContentRegionLank6 = new ACRadioButtonItem();
 
-      providerMainContentRegionLank6a.setText("6級地");
+      providerMainContentRegionLank6.setText("6級地");
 
-      providerMainContentRegionLank6a.setGroup(getProviderMainContentRegion());
+      providerMainContentRegionLank6.setGroup(getProviderMainContentRegion());
 
-      providerMainContentRegionLank6a.setConstraints(VRLayout.FLOW);
+      providerMainContentRegionLank6.setConstraints(VRLayout.FLOW);
 
-      addProviderMainContentRegionLank6a();
+      addProviderMainContentRegionLank6();
     }
-    return providerMainContentRegionLank6a;
+    return providerMainContentRegionLank6;
 
   }
 
   /**
-   * ６級地の２を取得します。
-   * @return ６級地の２
-   */
-  public ACRadioButtonItem getProviderMainContentRegionLank6b(){
-    if(providerMainContentRegionLank6b==null){
-
-      providerMainContentRegionLank6b = new ACRadioButtonItem();
-
-      providerMainContentRegionLank6b.setText("6級地の2");
-
-      providerMainContentRegionLank6b.setGroup(getProviderMainContentRegion());
-
-      providerMainContentRegionLank6b.setConstraints(VRLayout.FLOW);
-
-      addProviderMainContentRegionLank6b();
-    }
-    return providerMainContentRegionLank6b;
-
-  }
-
-  /**
-   * その他を取得します。
-   * @return その他
+   * ７級地を取得します。
+   * @return ７級地
    */
   public ACRadioButtonItem getProviderMainContentRegionLank7(){
     if(providerMainContentRegionLank7==null){
 
       providerMainContentRegionLank7 = new ACRadioButtonItem();
 
-      providerMainContentRegionLank7.setText("その他");
+      providerMainContentRegionLank7.setText("7級地");
 
       providerMainContentRegionLank7.setGroup(getProviderMainContentRegion());
 
@@ -1506,6 +1461,27 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
       addProviderMainContentRegionLank7();
     }
     return providerMainContentRegionLank7;
+
+  }
+
+  /**
+   * その他を取得します。
+   * @return その他
+   */
+  public ACRadioButtonItem getProviderMainContentRegionLank8(){
+    if(providerMainContentRegionLank8==null){
+
+      providerMainContentRegionLank8 = new ACRadioButtonItem();
+
+      providerMainContentRegionLank8.setText("その他");
+
+      providerMainContentRegionLank8.setGroup(getProviderMainContentRegion());
+
+      providerMainContentRegionLank8.setConstraints(VRLayout.FLOW);
+
+      addProviderMainContentRegionLank8();
+    }
+    return providerMainContentRegionLank8;
 
   }
 
@@ -2925,25 +2901,21 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
     getProviderMainContentRegionModel().add(getProviderMainContentRegionLank4());
 
-    getProviderMainContentRegionLank5a().setButtonIndex(3);
+    getProviderMainContentRegionLank5().setButtonIndex(3);
 
-    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank5a());
+    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank5());
 
-    getProviderMainContentRegionLank5b().setButtonIndex(8);
+    getProviderMainContentRegionLank6().setButtonIndex(4);
 
-    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank5b());
+    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank6());
 
-    getProviderMainContentRegionLank6a().setButtonIndex(4);
-
-    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank6a());
-
-    getProviderMainContentRegionLank6b().setButtonIndex(9);
-
-    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank6b());
-
-    getProviderMainContentRegionLank7().setButtonIndex(5);
+    getProviderMainContentRegionLank7().setButtonIndex(9);
 
     getProviderMainContentRegionModel().add(getProviderMainContentRegionLank7());
+
+    getProviderMainContentRegionLank8().setButtonIndex(5);
+
+    getProviderMainContentRegionModel().add(getProviderMainContentRegionLank8());
 
   }
 
@@ -2978,35 +2950,28 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
   /**
    * ５級地に内部項目を追加します。
    */
-  protected void addProviderMainContentRegionLank5a(){
-
-  }
-
-  /**
-   * ５級地の２に内部項目を追加します。
-   */
-  protected void addProviderMainContentRegionLank5b(){
+  protected void addProviderMainContentRegionLank5(){
 
   }
 
   /**
    * ６級地に内部項目を追加します。
    */
-  protected void addProviderMainContentRegionLank6a(){
+  protected void addProviderMainContentRegionLank6(){
 
   }
 
   /**
-   * ６級地の２に内部項目を追加します。
+   * ７級地に内部項目を追加します。
    */
-  protected void addProviderMainContentRegionLank6b(){
+  protected void addProviderMainContentRegionLank7(){
 
   }
 
   /**
    * その他に内部項目を追加します。
    */
-  protected void addProviderMainContentRegionLank7(){
+  protected void addProviderMainContentRegionLank8(){
 
   }
 

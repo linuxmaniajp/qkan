@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2012/08/06  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2015/02/13  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -125,6 +125,10 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACIntegerCheckBox basicInfoCheck;
 
+  private ACTextField yokaigodoNow;
+
+  private ACLabelContainer yokaigodoNowContainer;
+
   private ACLabelContainer basicInfoNameContena;
 
   private ACBackLabelContainer basicInfoFamilyNameContena;
@@ -207,10 +211,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACComboBoxModelAdapter kaigoInfoInsurerNameModel;
 
-  private ACTextField yokaigodoNow;
-
-  private ACLabelContainer yokaigodoNowContainer;
-
   private ACTextField kaigoInfoInsuredId;
 
   private ACLabelContainer kaigoInfoInsuredIdContainer;
@@ -235,13 +235,13 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem kaigoInfoKyotakuServiceRadioItem3;
 
-  private ACComboBox kaigoInfoKyotakuServicePlanCombo;
-
-  private ACComboBoxModelAdapter kaigoInfoKyotakuServicePlanComboModel;
-
   private QkanDateTextField kaigoInfoReportDate;
 
   private ACLabelContainer kaigoInfoReportDateContainer;
+
+  private ACComboBox kaigoInfoKyotakuServicePlanCombo;
+
+  private ACComboBoxModelAdapter kaigoInfoKyotakuServicePlanComboModel;
 
   private ACLabelContainer kaigoInfoRequestDivisionContena;
 
@@ -313,6 +313,14 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel kaigoInfoExplanationLabel1;
 
+  private ACLabelContainer kaigoInfoSystemValidLimits;
+
+  private QkanDateTextField kaigoInfoSystemValidLimit1;
+
+  private ACLabel kaigoInfoSystemValidLimit2;
+
+  private QkanDateTextField kaigoInfoSystemValidLimit3;
+
   private ACPanel kaigoInfoButtons;
 
   private ACButton kaigoInfoButtonClear;
@@ -346,6 +354,12 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn kaigoInfoTableColumn8;
 
   private ACTableColumn kaigoInfoTableColumn9;
+
+  private ACTableColumn kaigoInfoTableColumn10;
+
+  private ACTableColumn kaigoInfoTableColumn11;
+
+  private ACTableColumn kaigoInfoTableColumn12;
 
   private ACPanel idouInfoAndInstitutionInfoPanel;
 
@@ -522,6 +536,56 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn shisetsuInfoTableColumn4;
 
   private ACTableColumn shisetsuInfoTableColumn5;
+
+  private ACPanel jushotiTokureiInfoPanel;
+
+  private ACPanel jushotiTokureiInputPanel;
+
+  private ACGroupBox jushotiTokureiInfoGroup;
+
+  private VRLayout jushotiTokureiInfoLayout2;
+
+  private ACTextField jushotiTokureiInfoInsurerId;
+
+  private ACLabelContainer jushotiTokureiInfoInsurerIdContainer;
+
+  private ACComboBox jushotiTokureiInfoInsurerName;
+
+  private ACLabelContainer jushotiTokureiInfoInsurerNameContainer;
+
+  private ACComboBoxModelAdapter jushotiTokureiInfoInsurerNameModel;
+
+  private ACPanel jushotiTokureiInfoLimitPanel;
+
+  private ACLabelContainer jushotiTokureiInfoValidLimitContainer;
+
+  private QkanDateTextField jushotiTokureiInfoValidLimitDateStart;
+
+  private ACLabel jushotiTokureiInfoValidLimitLabel;
+
+  private QkanDateTextField jushotiTokureiInfoValidLimitDateEnd;
+
+  private ACPanel jushotiTokureiInfoButtons;
+
+  private ACButton jushotiTokureiInfoButtonClear;
+
+  private ACButton jushotiTokureiInfoButtonInsert;
+
+  private ACButton jushotiTokureiInfoButtonEdit;
+
+  private ACButton jushotiTokureiInfoButtonDelete;
+
+  private ACTable jushotiTokureiInfoTable;
+
+  private VRTableColumnModel jushotiTokureiInfoTableColumnModel;
+
+  private ACTableColumn jushotiTokureiInfoTableColumn0;
+
+  private ACTableColumn jushotiTokureiInfoTableColumn1;
+
+  private ACTableColumn jushotiTokureiInfoTableColumn2;
+
+  private ACTableColumn jushotiTokureiInfoTableColumn3;
 
   //getter
 
@@ -906,6 +970,45 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
     }
     return basicInfoCheck;
 
+  }
+
+  /**
+   * 現在の要介護度を取得します。
+   * @return 現在の要介護度
+   */
+  public ACTextField getYokaigodoNow(){
+    if(yokaigodoNow==null){
+
+      yokaigodoNow = new ACTextField();
+
+      getYokaigodoNowContainer().setText("現在の要介護度");
+
+      yokaigodoNow.setEditable(false);
+
+      yokaigodoNow.setColumns(7);
+
+      yokaigodoNow.setHorizontalAlignment(SwingConstants.CENTER);
+
+      yokaigodoNow.setForeground(Color.BLUE);
+
+      addYokaigodoNow();
+    }
+    return yokaigodoNow;
+
+  }
+
+  /**
+   * 現在の要介護度コンテナを取得します。
+   * @return 現在の要介護度コンテナ
+   */
+  protected ACLabelContainer getYokaigodoNowContainer(){
+    if(yokaigodoNowContainer==null){
+      yokaigodoNowContainer = new ACLabelContainer();
+      yokaigodoNowContainer.setFollowChildEnabled(true);
+      yokaigodoNowContainer.setVAlignment(VRLayout.CENTER);
+      yokaigodoNowContainer.add(getYokaigodoNow(), null);
+    }
+    return yokaigodoNowContainer;
   }
 
   /**
@@ -1704,45 +1807,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 現在の要介護度を取得します。
-   * @return 現在の要介護度
-   */
-  public ACTextField getYokaigodoNow(){
-    if(yokaigodoNow==null){
-
-      yokaigodoNow = new ACTextField();
-
-      getYokaigodoNowContainer().setText("現在の要介護度");
-
-      yokaigodoNow.setEditable(false);
-
-      yokaigodoNow.setColumns(7);
-
-      yokaigodoNow.setHorizontalAlignment(SwingConstants.CENTER);
-
-      yokaigodoNow.setForeground(Color.BLUE);
-
-      addYokaigodoNow();
-    }
-    return yokaigodoNow;
-
-  }
-
-  /**
-   * 現在の要介護度コンテナを取得します。
-   * @return 現在の要介護度コンテナ
-   */
-  protected ACLabelContainer getYokaigodoNowContainer(){
-    if(yokaigodoNowContainer==null){
-      yokaigodoNowContainer = new ACLabelContainer();
-      yokaigodoNowContainer.setFollowChildEnabled(true);
-      yokaigodoNowContainer.setVAlignment(VRLayout.CENTER);
-      yokaigodoNowContainer.add(getYokaigodoNow(), null);
-    }
-    return yokaigodoNowContainer;
-  }
-
-  /**
    * 被保険者番号を取得します。
    * @return 被保険者番号
    */
@@ -1868,7 +1932,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       kaigoInfoKyotakuServiceContenaLayout = new VRLayout();
 
-      kaigoInfoKyotakuServiceContenaLayout.setAutoWrap(true);
+      kaigoInfoKyotakuServiceContenaLayout.setAutoWrap(false);
 
       addKaigoInfoKyotakuServiceContenaLayout();
     }
@@ -1973,6 +2037,39 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 居宅サービス計画作成依頼届出日を取得します。
+   * @return 居宅サービス計画作成依頼届出日
+   */
+  public QkanDateTextField getKaigoInfoReportDate(){
+    if(kaigoInfoReportDate==null){
+
+      kaigoInfoReportDate = new QkanDateTextField();
+
+      getKaigoInfoReportDateContainer().setText("作成依頼届出日");
+
+      kaigoInfoReportDate.setBindPath("REPORTED_DATE");
+
+      addKaigoInfoReportDate();
+    }
+    return kaigoInfoReportDate;
+
+  }
+
+  /**
+   * 居宅サービス計画作成依頼届出日コンテナを取得します。
+   * @return 居宅サービス計画作成依頼届出日コンテナ
+   */
+  protected ACLabelContainer getKaigoInfoReportDateContainer(){
+    if(kaigoInfoReportDateContainer==null){
+      kaigoInfoReportDateContainer = new ACLabelContainer();
+      kaigoInfoReportDateContainer.setFollowChildEnabled(true);
+      kaigoInfoReportDateContainer.setVAlignment(VRLayout.CENTER);
+      kaigoInfoReportDateContainer.add(getKaigoInfoReportDate(), null);
+    }
+    return kaigoInfoReportDateContainer;
+  }
+
+  /**
    * 居宅サービス計画作成者・コンボを取得します。
    * @return 居宅サービス計画作成者・コンボ
    */
@@ -2011,39 +2108,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
       addKaigoInfoKyotakuServicePlanComboModel();
     }
     return kaigoInfoKyotakuServicePlanComboModel;
-  }
-
-  /**
-   * 居宅サービス計画作成依頼届出日を取得します。
-   * @return 居宅サービス計画作成依頼届出日
-   */
-  public QkanDateTextField getKaigoInfoReportDate(){
-    if(kaigoInfoReportDate==null){
-
-      kaigoInfoReportDate = new QkanDateTextField();
-
-      getKaigoInfoReportDateContainer().setText("作成依頼届出日");
-
-      kaigoInfoReportDate.setBindPath("REPORTED_DATE");
-
-      addKaigoInfoReportDate();
-    }
-    return kaigoInfoReportDate;
-
-  }
-
-  /**
-   * 居宅サービス計画作成依頼届出日コンテナを取得します。
-   * @return 居宅サービス計画作成依頼届出日コンテナ
-   */
-  protected ACLabelContainer getKaigoInfoReportDateContainer(){
-    if(kaigoInfoReportDateContainer==null){
-      kaigoInfoReportDateContainer = new ACLabelContainer();
-      kaigoInfoReportDateContainer.setFollowChildEnabled(true);
-      kaigoInfoReportDateContainer.setVAlignment(VRLayout.CENTER);
-      kaigoInfoReportDateContainer.add(getKaigoInfoReportDate(), null);
-    }
-    return kaigoInfoReportDateContainer;
   }
 
   /**
@@ -2242,7 +2306,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       kaigoInfoValidLimits = new ACLabelContainer();
 
-      kaigoInfoValidLimits.setText("有効期間");
+      kaigoInfoValidLimits.setText("認定有効期間");
 
       addKaigoInfoValidLimits();
     }
@@ -2690,6 +2754,74 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * (有効期間・コンテナ)を取得します。
+   * @return (有効期間・コンテナ)
+   */
+  public ACLabelContainer getKaigoInfoSystemValidLimits(){
+    if(kaigoInfoSystemValidLimits==null){
+
+      kaigoInfoSystemValidLimits = new ACLabelContainer();
+
+      kaigoInfoSystemValidLimits.setText("システム有効期間");
+
+      addKaigoInfoSystemValidLimits();
+    }
+    return kaigoInfoSystemValidLimits;
+
+  }
+
+  /**
+   * 有効期間・テキスト1を取得します。
+   * @return 有効期間・テキスト1
+   */
+  public QkanDateTextField getKaigoInfoSystemValidLimit1(){
+    if(kaigoInfoSystemValidLimit1==null){
+
+      kaigoInfoSystemValidLimit1 = new QkanDateTextField();
+
+      kaigoInfoSystemValidLimit1.setBindPath("SYSTEM_INSURE_VALID_START");
+
+      addKaigoInfoSystemValidLimit1();
+    }
+    return kaigoInfoSystemValidLimit1;
+
+  }
+
+  /**
+   * 有効期間・ラベルを取得します。
+   * @return 有効期間・ラベル
+   */
+  public ACLabel getKaigoInfoSystemValidLimit2(){
+    if(kaigoInfoSystemValidLimit2==null){
+
+      kaigoInfoSystemValidLimit2 = new ACLabel();
+
+      kaigoInfoSystemValidLimit2.setText(" から ");
+
+      addKaigoInfoSystemValidLimit2();
+    }
+    return kaigoInfoSystemValidLimit2;
+
+  }
+
+  /**
+   * 有効期間・テキスト2を取得します。
+   * @return 有効期間・テキスト2
+   */
+  public QkanDateTextField getKaigoInfoSystemValidLimit3(){
+    if(kaigoInfoSystemValidLimit3==null){
+
+      kaigoInfoSystemValidLimit3 = new QkanDateTextField();
+
+      kaigoInfoSystemValidLimit3.setBindPath("SYSTEM_INSURE_VALID_END");
+
+      addKaigoInfoSystemValidLimit3();
+    }
+    return kaigoInfoSystemValidLimit3;
+
+  }
+
+  /**
    * (介護保険情報・ボタン領域)を取得します。
    * @return (介護保険情報・ボタン領域)
    */
@@ -2841,15 +2973,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 申請日を取得します。
-   * @return 申請日
+   * システム有効開始を取得します。
+   * @return システム有効開始
    */
   public ACTableColumn getKaigoInfoTableColumn1(){
     if(kaigoInfoTableColumn1==null){
 
       kaigoInfoTableColumn1 = new ACTableColumn(0);
 
-      kaigoInfoTableColumn1.setHeaderValue("申請日");
+      kaigoInfoTableColumn1.setHeaderValue("システム有効開始");
 
       kaigoInfoTableColumn1.setColumns(10);
 
@@ -2862,17 +2994,19 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 申請区分を取得します。
-   * @return 申請区分
+   * システム有効終了を取得します。
+   * @return システム有効終了
    */
   public ACTableColumn getKaigoInfoTableColumn2(){
     if(kaigoInfoTableColumn2==null){
 
       kaigoInfoTableColumn2 = new ACTableColumn(1);
 
-      kaigoInfoTableColumn2.setHeaderValue("申請区分");
+      kaigoInfoTableColumn2.setHeaderValue("システム有効終了");
 
       kaigoInfoTableColumn2.setColumns(10);
+
+      kaigoInfoTableColumn2.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
 
       addKaigoInfoTableColumn2();
     }
@@ -2881,17 +3015,19 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 要介護情報を取得します。
-   * @return 要介護情報
+   * 給付率を取得します。
+   * @return 給付率
    */
   public ACTableColumn getKaigoInfoTableColumn3(){
     if(kaigoInfoTableColumn3==null){
 
       kaigoInfoTableColumn3 = new ACTableColumn(2);
 
-      kaigoInfoTableColumn3.setHeaderValue("要介護度");
+      kaigoInfoTableColumn3.setHeaderValue("給付率");
 
-      kaigoInfoTableColumn3.setColumns(7);
+      kaigoInfoTableColumn3.setColumns(4);
+
+      kaigoInfoTableColumn3.setHorizontalAlignment(SwingConstants.RIGHT);
 
       addKaigoInfoTableColumn3();
     }
@@ -2900,15 +3036,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 有効期間開始日を取得します。
-   * @return 有効期間開始日
+   * 申請日を取得します。
+   * @return 申請日
    */
   public ACTableColumn getKaigoInfoTableColumn4(){
     if(kaigoInfoTableColumn4==null){
 
       kaigoInfoTableColumn4 = new ACTableColumn(3);
 
-      kaigoInfoTableColumn4.setHeaderValue("有効期間開始日");
+      kaigoInfoTableColumn4.setHeaderValue("申請日");
 
       kaigoInfoTableColumn4.setColumns(10);
 
@@ -2921,19 +3057,17 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 有効期間終了日を取得します。
-   * @return 有効期間終了日
+   * 申請区分を取得します。
+   * @return 申請区分
    */
   public ACTableColumn getKaigoInfoTableColumn5(){
     if(kaigoInfoTableColumn5==null){
 
       kaigoInfoTableColumn5 = new ACTableColumn(4);
 
-      kaigoInfoTableColumn5.setHeaderValue("有効期間終了日");
+      kaigoInfoTableColumn5.setHeaderValue("申請区分");
 
       kaigoInfoTableColumn5.setColumns(10);
-
-      kaigoInfoTableColumn5.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
 
       addKaigoInfoTableColumn5();
     }
@@ -2942,19 +3076,17 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 作成依頼届出日を取得します。
-   * @return 作成依頼届出日
+   * 要介護情報を取得します。
+   * @return 要介護情報
    */
   public ACTableColumn getKaigoInfoTableColumn6(){
     if(kaigoInfoTableColumn6==null){
 
       kaigoInfoTableColumn6 = new ACTableColumn(5);
 
-      kaigoInfoTableColumn6.setHeaderValue("作成依頼届出日");
+      kaigoInfoTableColumn6.setHeaderValue("要介護度");
 
-      kaigoInfoTableColumn6.setColumns(10);
-
-      kaigoInfoTableColumn6.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+      kaigoInfoTableColumn6.setColumns(7);
 
       addKaigoInfoTableColumn6();
     }
@@ -2963,15 +3095,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 中断年月日を取得します。
-   * @return 中断年月日
+   * 認定有効期間開始を取得します。
+   * @return 認定有効期間開始
    */
   public ACTableColumn getKaigoInfoTableColumn7(){
     if(kaigoInfoTableColumn7==null){
 
       kaigoInfoTableColumn7 = new ACTableColumn(6);
 
-      kaigoInfoTableColumn7.setHeaderValue("中断年月日");
+      kaigoInfoTableColumn7.setHeaderValue("有効期間開始日");
 
       kaigoInfoTableColumn7.setColumns(10);
 
@@ -2984,17 +3116,19 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 中断理由を取得します。
-   * @return 中断理由
+   * 認定有効期間終了を取得します。
+   * @return 認定有効期間終了
    */
   public ACTableColumn getKaigoInfoTableColumn8(){
     if(kaigoInfoTableColumn8==null){
 
       kaigoInfoTableColumn8 = new ACTableColumn(7);
 
-      kaigoInfoTableColumn8.setHeaderValue("中断理由");
+      kaigoInfoTableColumn8.setHeaderValue("有効期間終了日");
 
-      kaigoInfoTableColumn8.setColumns(6);
+      kaigoInfoTableColumn8.setColumns(10);
+
+      kaigoInfoTableColumn8.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
 
       addKaigoInfoTableColumn8();
     }
@@ -3003,23 +3137,84 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 支給限度額を取得します。
-   * @return 支給限度額
+   * 作成依頼届出日を取得します。
+   * @return 作成依頼届出日
    */
   public ACTableColumn getKaigoInfoTableColumn9(){
     if(kaigoInfoTableColumn9==null){
 
       kaigoInfoTableColumn9 = new ACTableColumn(8);
 
-      kaigoInfoTableColumn9.setHeaderValue("支給限度額");
+      kaigoInfoTableColumn9.setHeaderValue("作成依頼届出日");
 
-      kaigoInfoTableColumn9.setColumns(7);
+      kaigoInfoTableColumn9.setColumns(10);
 
-      kaigoInfoTableColumn9.setHorizontalAlignment(SwingConstants.RIGHT);
+      kaigoInfoTableColumn9.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
 
       addKaigoInfoTableColumn9();
     }
     return kaigoInfoTableColumn9;
+
+  }
+
+  /**
+   * 中断年月日を取得します。
+   * @return 中断年月日
+   */
+  public ACTableColumn getKaigoInfoTableColumn10(){
+    if(kaigoInfoTableColumn10==null){
+
+      kaigoInfoTableColumn10 = new ACTableColumn(9);
+
+      kaigoInfoTableColumn10.setHeaderValue("中断年月日");
+
+      kaigoInfoTableColumn10.setColumns(10);
+
+      kaigoInfoTableColumn10.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addKaigoInfoTableColumn10();
+    }
+    return kaigoInfoTableColumn10;
+
+  }
+
+  /**
+   * 中断理由を取得します。
+   * @return 中断理由
+   */
+  public ACTableColumn getKaigoInfoTableColumn11(){
+    if(kaigoInfoTableColumn11==null){
+
+      kaigoInfoTableColumn11 = new ACTableColumn(10);
+
+      kaigoInfoTableColumn11.setHeaderValue("中断理由");
+
+      kaigoInfoTableColumn11.setColumns(6);
+
+      addKaigoInfoTableColumn11();
+    }
+    return kaigoInfoTableColumn11;
+
+  }
+
+  /**
+   * 支給限度額を取得します。
+   * @return 支給限度額
+   */
+  public ACTableColumn getKaigoInfoTableColumn12(){
+    if(kaigoInfoTableColumn12==null){
+
+      kaigoInfoTableColumn12 = new ACTableColumn(11);
+
+      kaigoInfoTableColumn12.setHeaderValue("支給限度額");
+
+      kaigoInfoTableColumn12.setColumns(7);
+
+      kaigoInfoTableColumn12.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addKaigoInfoTableColumn12();
+    }
+    return kaigoInfoTableColumn12;
 
   }
 
@@ -4700,6 +4895,475 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 住所地特例情報・パネルを取得します。
+   * @return 住所地特例情報・パネル
+   */
+  public ACPanel getJushotiTokureiInfoPanel(){
+    if(jushotiTokureiInfoPanel==null){
+
+      jushotiTokureiInfoPanel = new ACPanel();
+
+      addJushotiTokureiInfoPanel();
+    }
+    return jushotiTokureiInfoPanel;
+
+  }
+
+  /**
+   * 住所地特例入力領域・パネルを取得します。
+   * @return 住所地特例入力領域・パネル
+   */
+  public ACPanel getJushotiTokureiInputPanel(){
+    if(jushotiTokureiInputPanel==null){
+
+      jushotiTokureiInputPanel = new ACPanel();
+
+      addJushotiTokureiInputPanel();
+    }
+    return jushotiTokureiInputPanel;
+
+  }
+
+  /**
+   * 食費居住費・グループを取得します。
+   * @return 食費居住費・グループ
+   */
+  public ACGroupBox getJushotiTokureiInfoGroup(){
+    if(jushotiTokureiInfoGroup==null){
+
+      jushotiTokureiInfoGroup = new ACGroupBox();
+
+      jushotiTokureiInfoGroup.setText("住所地特例情報");
+
+      jushotiTokureiInfoGroup.setLayout(getJushotiTokureiInfoLayout2());
+
+      addJushotiTokureiInfoGroup();
+    }
+    return jushotiTokureiInfoGroup;
+
+  }
+
+  /**
+   * (住所地特例基本領域・レイアウト)を取得します。
+   * @return (住所地特例基本領域・レイアウト)
+   */
+  public VRLayout getJushotiTokureiInfoLayout2(){
+    if(jushotiTokureiInfoLayout2==null){
+
+      jushotiTokureiInfoLayout2 = new VRLayout();
+
+      jushotiTokureiInfoLayout2.setAutoWrap(false);
+
+      jushotiTokureiInfoLayout2.setHgap(2);
+
+      jushotiTokureiInfoLayout2.setHgrid(150);
+
+      addJushotiTokureiInfoLayout2();
+    }
+    return jushotiTokureiInfoLayout2;
+
+  }
+
+  /**
+   * 施設所在保険者番号を取得します。
+   * @return 施設所在保険者番号
+   */
+  public ACTextField getJushotiTokureiInfoInsurerId(){
+    if(jushotiTokureiInfoInsurerId==null){
+
+      jushotiTokureiInfoInsurerId = new ACTextField();
+
+      getJushotiTokureiInfoInsurerIdContainer().setText("施設所在保険者番号");
+
+      jushotiTokureiInfoInsurerId.setBindPath("JUSHOTI_INSURER_ID");
+
+      jushotiTokureiInfoInsurerId.setColumns(9);
+
+      jushotiTokureiInfoInsurerId.setCharType(VRCharType.ONLY_DIGIT);
+
+      jushotiTokureiInfoInsurerId.setIMEMode(InputSubset.LATIN);
+
+      jushotiTokureiInfoInsurerId.setMaxLength(6);
+
+      addJushotiTokureiInfoInsurerId();
+    }
+    return jushotiTokureiInfoInsurerId;
+
+  }
+
+  /**
+   * 施設所在保険者番号コンテナを取得します。
+   * @return 施設所在保険者番号コンテナ
+   */
+  protected ACLabelContainer getJushotiTokureiInfoInsurerIdContainer(){
+    if(jushotiTokureiInfoInsurerIdContainer==null){
+      jushotiTokureiInfoInsurerIdContainer = new ACLabelContainer();
+      jushotiTokureiInfoInsurerIdContainer.setFollowChildEnabled(true);
+      jushotiTokureiInfoInsurerIdContainer.setVAlignment(VRLayout.CENTER);
+      jushotiTokureiInfoInsurerIdContainer.add(getJushotiTokureiInfoInsurerId(), null);
+    }
+    return jushotiTokureiInfoInsurerIdContainer;
+  }
+
+  /**
+   * 施設所在保険者名を取得します。
+   * @return 施設所在保険者名
+   */
+  public ACComboBox getJushotiTokureiInfoInsurerName(){
+    if(jushotiTokureiInfoInsurerName==null){
+
+      jushotiTokureiInfoInsurerName = new ACComboBox();
+
+      getJushotiTokureiInfoInsurerNameContainer().setText("施設所在保険者名");
+
+      jushotiTokureiInfoInsurerName.setBindPath("JUSHOTI_INSURER_ID");
+
+      jushotiTokureiInfoInsurerName.setEditable(false);
+
+      jushotiTokureiInfoInsurerName.setColumns(10);
+
+      jushotiTokureiInfoInsurerName.setModelBindPath("INSURER");
+
+      jushotiTokureiInfoInsurerName.setRenderBindPath("INSURER_NAME");
+
+      jushotiTokureiInfoInsurerName.setMaxColumns(18);
+
+      jushotiTokureiInfoInsurerName.setModel(getJushotiTokureiInfoInsurerNameModel());
+
+      addJushotiTokureiInfoInsurerName();
+    }
+    return jushotiTokureiInfoInsurerName;
+
+  }
+
+  /**
+   * 施設所在保険者名コンテナを取得します。
+   * @return 施設所在保険者名コンテナ
+   */
+  protected ACLabelContainer getJushotiTokureiInfoInsurerNameContainer(){
+    if(jushotiTokureiInfoInsurerNameContainer==null){
+      jushotiTokureiInfoInsurerNameContainer = new ACLabelContainer();
+      jushotiTokureiInfoInsurerNameContainer.setFollowChildEnabled(true);
+      jushotiTokureiInfoInsurerNameContainer.setVAlignment(VRLayout.CENTER);
+      jushotiTokureiInfoInsurerNameContainer.add(getJushotiTokureiInfoInsurerName(), null);
+    }
+    return jushotiTokureiInfoInsurerNameContainer;
+  }
+
+  /**
+   * 施設所在保険者名モデルを取得します。
+   * @return 施設所在保険者名モデル
+   */
+  protected ACComboBoxModelAdapter getJushotiTokureiInfoInsurerNameModel(){
+    if(jushotiTokureiInfoInsurerNameModel==null){
+      jushotiTokureiInfoInsurerNameModel = new ACComboBoxModelAdapter();
+      addJushotiTokureiInfoInsurerNameModel();
+    }
+    return jushotiTokureiInfoInsurerNameModel;
+  }
+
+  /**
+   * 有効期間領域・パネルを取得します。
+   * @return 有効期間領域・パネル
+   */
+  public ACPanel getJushotiTokureiInfoLimitPanel(){
+    if(jushotiTokureiInfoLimitPanel==null){
+
+      jushotiTokureiInfoLimitPanel = new ACPanel();
+
+      addJushotiTokureiInfoLimitPanel();
+    }
+    return jushotiTokureiInfoLimitPanel;
+
+  }
+
+  /**
+   * 有効期間・コンテナを取得します。
+   * @return 有効期間・コンテナ
+   */
+  public ACLabelContainer getJushotiTokureiInfoValidLimitContainer(){
+    if(jushotiTokureiInfoValidLimitContainer==null){
+
+      jushotiTokureiInfoValidLimitContainer = new ACLabelContainer();
+
+      jushotiTokureiInfoValidLimitContainer.setText("有効期間");
+
+      addJushotiTokureiInfoValidLimitContainer();
+    }
+    return jushotiTokureiInfoValidLimitContainer;
+
+  }
+
+  /**
+   * 有効期間・テキスト1を取得します。
+   * @return 有効期間・テキスト1
+   */
+  public QkanDateTextField getJushotiTokureiInfoValidLimitDateStart(){
+    if(jushotiTokureiInfoValidLimitDateStart==null){
+
+      jushotiTokureiInfoValidLimitDateStart = new QkanDateTextField();
+
+      jushotiTokureiInfoValidLimitDateStart.setBindPath("JUSHOTI_VALID_START");
+
+      addJushotiTokureiInfoValidLimitDateStart();
+    }
+    return jushotiTokureiInfoValidLimitDateStart;
+
+  }
+
+  /**
+   * 有効期間・ラベルを取得します。
+   * @return 有効期間・ラベル
+   */
+  public ACLabel getJushotiTokureiInfoValidLimitLabel(){
+    if(jushotiTokureiInfoValidLimitLabel==null){
+
+      jushotiTokureiInfoValidLimitLabel = new ACLabel();
+
+      jushotiTokureiInfoValidLimitLabel.setText(" から ");
+
+      addJushotiTokureiInfoValidLimitLabel();
+    }
+    return jushotiTokureiInfoValidLimitLabel;
+
+  }
+
+  /**
+   * 有効期間・テキスト2を取得します。
+   * @return 有効期間・テキスト2
+   */
+  public QkanDateTextField getJushotiTokureiInfoValidLimitDateEnd(){
+    if(jushotiTokureiInfoValidLimitDateEnd==null){
+
+      jushotiTokureiInfoValidLimitDateEnd = new QkanDateTextField();
+
+      jushotiTokureiInfoValidLimitDateEnd.setBindPath("JUSHOTI_VALID_END");
+
+      addJushotiTokureiInfoValidLimitDateEnd();
+    }
+    return jushotiTokureiInfoValidLimitDateEnd;
+
+  }
+
+  /**
+   * 住所地特例情報・ボタン領域を取得します。
+   * @return 住所地特例情報・ボタン領域
+   */
+  public ACPanel getJushotiTokureiInfoButtons(){
+    if(jushotiTokureiInfoButtons==null){
+
+      jushotiTokureiInfoButtons = new ACPanel();
+
+      addJushotiTokureiInfoButtons();
+    }
+    return jushotiTokureiInfoButtons;
+
+  }
+
+  /**
+   * クリアを取得します。
+   * @return クリア
+   */
+  public ACButton getJushotiTokureiInfoButtonClear(){
+    if(jushotiTokureiInfoButtonClear==null){
+
+      jushotiTokureiInfoButtonClear = new ACButton();
+
+      jushotiTokureiInfoButtonClear.setText("クリア");
+
+      jushotiTokureiInfoButtonClear.setToolTipText("住所地特例情報をクリアします。");
+
+      jushotiTokureiInfoButtonClear.setIconPath(ACConstants.ICON_PATH_CLEAR_16);
+
+      addJushotiTokureiInfoButtonClear();
+    }
+    return jushotiTokureiInfoButtonClear;
+
+  }
+
+  /**
+   * 追加を取得します。
+   * @return 追加
+   */
+  public ACButton getJushotiTokureiInfoButtonInsert(){
+    if(jushotiTokureiInfoButtonInsert==null){
+
+      jushotiTokureiInfoButtonInsert = new ACButton();
+
+      jushotiTokureiInfoButtonInsert.setText("追加");
+
+      jushotiTokureiInfoButtonInsert.setToolTipText("住所地特例情報を追加します。");
+
+      jushotiTokureiInfoButtonInsert.setIconPath(ACConstants.ICON_PATH_RECORD_DOWNLOAD_16);
+
+      addJushotiTokureiInfoButtonInsert();
+    }
+    return jushotiTokureiInfoButtonInsert;
+
+  }
+
+  /**
+   * 書替を取得します。
+   * @return 書替
+   */
+  public ACButton getJushotiTokureiInfoButtonEdit(){
+    if(jushotiTokureiInfoButtonEdit==null){
+
+      jushotiTokureiInfoButtonEdit = new ACButton();
+
+      jushotiTokureiInfoButtonEdit.setText("書替");
+
+      jushotiTokureiInfoButtonEdit.setToolTipText("住所地特例情報を編集します。");
+
+      jushotiTokureiInfoButtonEdit.setIconPath(ACConstants.ICON_PATH_STATE_UPDATE_16);
+
+      addJushotiTokureiInfoButtonEdit();
+    }
+    return jushotiTokureiInfoButtonEdit;
+
+  }
+
+  /**
+   * 削除を取得します。
+   * @return 削除
+   */
+  public ACButton getJushotiTokureiInfoButtonDelete(){
+    if(jushotiTokureiInfoButtonDelete==null){
+
+      jushotiTokureiInfoButtonDelete = new ACButton();
+
+      jushotiTokureiInfoButtonDelete.setText("削除");
+
+      jushotiTokureiInfoButtonDelete.setToolTipText("住所地特例情報を削除します。");
+
+      jushotiTokureiInfoButtonDelete.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addJushotiTokureiInfoButtonDelete();
+    }
+    return jushotiTokureiInfoButtonDelete;
+
+  }
+
+  /**
+   * 住所地特例情報・テーブル領域を取得します。
+   * @return 住所地特例情報・テーブル領域
+   */
+  public ACTable getJushotiTokureiInfoTable(){
+    if(jushotiTokureiInfoTable==null){
+
+      jushotiTokureiInfoTable = new ACTable();
+
+      jushotiTokureiInfoTable.setColumnModel(getJushotiTokureiInfoTableColumnModel());
+
+      addJushotiTokureiInfoTable();
+    }
+    return jushotiTokureiInfoTable;
+
+  }
+
+  /**
+   * 住所地特例情報・テーブル領域カラムモデルを取得します。
+   * @return 住所地特例情報・テーブル領域カラムモデル
+   */
+  protected VRTableColumnModel getJushotiTokureiInfoTableColumnModel(){
+    if(jushotiTokureiInfoTableColumnModel==null){
+      jushotiTokureiInfoTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addJushotiTokureiInfoTableColumnModel();
+    }
+    return jushotiTokureiInfoTableColumnModel;
+  }
+
+  /**
+   * №を取得します。
+   * @return №
+   */
+  public ACTableColumn getJushotiTokureiInfoTableColumn0(){
+    if(jushotiTokureiInfoTableColumn0==null){
+
+      jushotiTokureiInfoTableColumn0 = new ACTableColumn(0);
+
+      jushotiTokureiInfoTableColumn0.setHeaderValue("No.");
+
+      jushotiTokureiInfoTableColumn0.setColumns(3);
+
+      jushotiTokureiInfoTableColumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      jushotiTokureiInfoTableColumn0.setSortable(false);
+
+      addJushotiTokureiInfoTableColumn0();
+    }
+    return jushotiTokureiInfoTableColumn0;
+
+  }
+
+  /**
+   * 有効期間開始を取得します。
+   * @return 有効期間開始
+   */
+  public ACTableColumn getJushotiTokureiInfoTableColumn1(){
+    if(jushotiTokureiInfoTableColumn1==null){
+
+      jushotiTokureiInfoTableColumn1 = new ACTableColumn(0);
+
+      jushotiTokureiInfoTableColumn1.setHeaderValue("有効期間開始");
+
+      jushotiTokureiInfoTableColumn1.setColumnName("JUSHOTI_VALID_START");
+
+      jushotiTokureiInfoTableColumn1.setColumns(10);
+
+      jushotiTokureiInfoTableColumn1.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addJushotiTokureiInfoTableColumn1();
+    }
+    return jushotiTokureiInfoTableColumn1;
+
+  }
+
+  /**
+   * 有効期間終了を取得します。
+   * @return 有効期間終了
+   */
+  public ACTableColumn getJushotiTokureiInfoTableColumn2(){
+    if(jushotiTokureiInfoTableColumn2==null){
+
+      jushotiTokureiInfoTableColumn2 = new ACTableColumn(1);
+
+      jushotiTokureiInfoTableColumn2.setHeaderValue("有効期間終了");
+
+      jushotiTokureiInfoTableColumn2.setColumnName("JUSHOTI_VALID_END");
+
+      jushotiTokureiInfoTableColumn2.setColumns(10);
+
+      jushotiTokureiInfoTableColumn2.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addJushotiTokureiInfoTableColumn2();
+    }
+    return jushotiTokureiInfoTableColumn2;
+
+  }
+
+  /**
+   * 施設所在保険者番号を取得します。
+   * @return 施設所在保険者番号
+   */
+  public ACTableColumn getJushotiTokureiInfoTableColumn3(){
+    if(jushotiTokureiInfoTableColumn3==null){
+
+      jushotiTokureiInfoTableColumn3 = new ACTableColumn(2);
+
+      jushotiTokureiInfoTableColumn3.setHeaderValue("施設所在保険者番号");
+
+      jushotiTokureiInfoTableColumn3.setColumnName("JUSHOTI_INSURER_ID");
+
+      jushotiTokureiInfoTableColumn3.setColumns(10);
+
+      addJushotiTokureiInfoTableColumn3();
+    }
+    return jushotiTokureiInfoTableColumn3;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QU002Design() {
@@ -4822,7 +5486,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     basicInfoAndInfoButton.add(getBasicInfoSexsContainer(), VRLayout.FLOW_INSETLINE);
 
-    basicInfoAndInfoButton.add(getBasicInfoCheck(), VRLayout.FLOW_INSETLINE_RETURN);
+    basicInfoAndInfoButton.add(getBasicInfoCheck(), VRLayout.FLOW_INSETLINE);
+
+    basicInfoAndInfoButton.add(getYokaigodoNowContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     basicInfoAndInfoButton.add(getBasicInfoNameContena(), VRLayout.FLOW_DOUBLEINSETLINE);
 
@@ -4892,6 +5558,13 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 一覧に表示・チェックに内部項目を追加します。
    */
   protected void addBasicInfoCheck(){
+
+  }
+
+  /**
+   * 現在の要介護度に内部項目を追加します。
+   */
+  protected void addYokaigodoNow(){
 
   }
 
@@ -5144,6 +5817,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     tabs.addTab("施設情報", getShisetsuInfoPanel());
 
+    tabs.addTab("住所地特例情報", getJushotiTokureiInfoPanel());
+
   }
 
   /**
@@ -5193,15 +5868,11 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     kaigoInfo.add(getKaigoInfoInsurerNameContainer(), VRLayout.FLOW_INSETLINE);
 
-    kaigoInfo.add(getYokaigodoNowContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
     kaigoInfo.add(getKaigoInfoInsuredIdContainer(), VRLayout.FLOW_INSETLINE);
 
     kaigoInfo.add(getKaigoInfoBenefitContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     kaigoInfo.add(getKaigoInfoKyotakuServiceContena(), VRLayout.FLOW_RETURN);
-
-    kaigoInfo.add(getKaigoInfoReportDateContainer(), VRLayout.FLOW_RETURN);
 
     kaigoInfo.add(getKaigoInfoRequestDivisionContena(), VRLayout.FLOW_RETURN);
 
@@ -5216,6 +5887,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
     kaigoInfo.add(getKaigoInfoProvideLimitGroup(), VRLayout.FLOW);
 
     kaigoInfo.add(getKaigoInfoInterruptionGroup(), VRLayout.FLOW_RETURN);
+
+    kaigoInfo.add(getKaigoInfoSystemValidLimits(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -5244,13 +5917,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 保険者名モデルに内部項目を追加します。
    */
   protected void addKaigoInfoInsurerNameModel(){
-
-  }
-
-  /**
-   * 現在の要介護度に内部項目を追加します。
-   */
-  protected void addYokaigodoNow(){
 
   }
 
@@ -5293,7 +5959,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     kaigoInfoKyotakuServiceContena.add(getKaigoInfoKyotakuServiceRadio(), VRLayout.FLOW);
 
-    kaigoInfoKyotakuServiceContena.add(getKaigoInfoKyotakuServicePlanCombo(), VRLayout.FLOW);
+    kaigoInfoKyotakuServiceContena.add(getKaigoInfoReportDateContainer(), VRLayout.FLOW_RETURN);
+
+    kaigoInfoKyotakuServiceContena.add(getKaigoInfoKyotakuServicePlanCombo(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -5352,6 +6020,13 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 居宅サービス計画作成依頼届出日に内部項目を追加します。
+   */
+  protected void addKaigoInfoReportDate(){
+
+  }
+
+  /**
    * 居宅サービス計画作成者・コンボに内部項目を追加します。
    */
   protected void addKaigoInfoKyotakuServicePlanCombo(){
@@ -5362,13 +6037,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 居宅サービス計画作成者・コンボモデルに内部項目を追加します。
    */
   protected void addKaigoInfoKyotakuServicePlanComboModel(){
-
-  }
-
-  /**
-   * 居宅サービス計画作成依頼届出日に内部項目を追加します。
-   */
-  protected void addKaigoInfoReportDate(){
 
   }
 
@@ -5635,6 +6303,40 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * (有効期間・コンテナ)に内部項目を追加します。
+   */
+  protected void addKaigoInfoSystemValidLimits(){
+
+    kaigoInfoSystemValidLimits.add(getKaigoInfoSystemValidLimit1(), VRLayout.FLOW);
+
+    kaigoInfoSystemValidLimits.add(getKaigoInfoSystemValidLimit2(), VRLayout.FLOW);
+
+    kaigoInfoSystemValidLimits.add(getKaigoInfoSystemValidLimit3(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間・テキスト1に内部項目を追加します。
+   */
+  protected void addKaigoInfoSystemValidLimit1(){
+
+  }
+
+  /**
+   * 有効期間・ラベルに内部項目を追加します。
+   */
+  protected void addKaigoInfoSystemValidLimit2(){
+
+  }
+
+  /**
+   * 有効期間・テキスト2に内部項目を追加します。
+   */
+  protected void addKaigoInfoSystemValidLimit3(){
+
+  }
+
+  /**
    * (介護保険情報・ボタン領域)に内部項目を追加します。
    */
   protected void addKaigoInfoButtons(){
@@ -5709,6 +6411,12 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     getKaigoInfoTableColumnModel().addColumn(getKaigoInfoTableColumn9());
 
+    getKaigoInfoTableColumnModel().addColumn(getKaigoInfoTableColumn10());
+
+    getKaigoInfoTableColumnModel().addColumn(getKaigoInfoTableColumn11());
+
+    getKaigoInfoTableColumnModel().addColumn(getKaigoInfoTableColumn12());
+
   }
 
   /**
@@ -5719,65 +6427,86 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 申請日に内部項目を追加します。
+   * システム有効開始に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn1(){
 
   }
 
   /**
-   * 申請区分に内部項目を追加します。
+   * システム有効終了に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn2(){
 
   }
 
   /**
-   * 要介護情報に内部項目を追加します。
+   * 給付率に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn3(){
 
   }
 
   /**
-   * 有効期間開始日に内部項目を追加します。
+   * 申請日に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn4(){
 
   }
 
   /**
-   * 有効期間終了日に内部項目を追加します。
+   * 申請区分に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn5(){
 
   }
 
   /**
-   * 作成依頼届出日に内部項目を追加します。
+   * 要介護情報に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn6(){
 
   }
 
   /**
-   * 中断年月日に内部項目を追加します。
+   * 認定有効期間開始に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn7(){
 
   }
 
   /**
-   * 中断理由に内部項目を追加します。
+   * 認定有効期間終了に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn8(){
 
   }
 
   /**
-   * 支給限度額に内部項目を追加します。
+   * 作成依頼届出日に内部項目を追加します。
    */
   protected void addKaigoInfoTableColumn9(){
+
+  }
+
+  /**
+   * 中断年月日に内部項目を追加します。
+   */
+  protected void addKaigoInfoTableColumn10(){
+
+  }
+
+  /**
+   * 中断理由に内部項目を追加します。
+   */
+  protected void addKaigoInfoTableColumn11(){
+
+  }
+
+  /**
+   * 支給限度額に内部項目を追加します。
+   */
+  protected void addKaigoInfoTableColumn12(){
 
   }
 
@@ -6485,6 +7214,205 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 主傷病名に内部項目を追加します。
    */
   protected void addShisetsuInfoTableColumn5(){
+
+  }
+
+  /**
+   * 住所地特例情報・パネルに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoPanel(){
+
+    jushotiTokureiInfoPanel.add(getJushotiTokureiInputPanel(), VRLayout.NORTH);
+
+    jushotiTokureiInfoPanel.add(getJushotiTokureiInfoButtons(), VRLayout.NORTH);
+
+    jushotiTokureiInfoPanel.add(getJushotiTokureiInfoTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 住所地特例入力領域・パネルに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInputPanel(){
+
+    jushotiTokureiInputPanel.add(getJushotiTokureiInfoGroup(), VRLayout.NORTH);
+
+    jushotiTokureiInputPanel.add(getJushotiTokureiInfoLimitPanel(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 食費居住費・グループに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoGroup(){
+
+    jushotiTokureiInfoGroup.add(getJushotiTokureiInfoInsurerIdContainer(), VRLayout.FLOW_INSETLINE);
+
+    jushotiTokureiInfoGroup.add(getJushotiTokureiInfoInsurerNameContainer(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * (住所地特例基本領域・レイアウト)に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoLayout2(){
+
+  }
+
+  /**
+   * 施設所在保険者番号に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoInsurerId(){
+
+  }
+
+  /**
+   * 施設所在保険者名に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoInsurerName(){
+
+  }
+
+  /**
+   * 施設所在保険者名モデルに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoInsurerNameModel(){
+
+  }
+
+  /**
+   * 有効期間領域・パネルに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoLimitPanel(){
+
+    jushotiTokureiInfoLimitPanel.add(getJushotiTokureiInfoValidLimitContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間・コンテナに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoValidLimitContainer(){
+
+    jushotiTokureiInfoValidLimitContainer.add(getJushotiTokureiInfoValidLimitDateStart(), VRLayout.FLOW);
+
+    jushotiTokureiInfoValidLimitContainer.add(getJushotiTokureiInfoValidLimitLabel(), VRLayout.FLOW);
+
+    jushotiTokureiInfoValidLimitContainer.add(getJushotiTokureiInfoValidLimitDateEnd(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間・テキスト1に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoValidLimitDateStart(){
+
+  }
+
+  /**
+   * 有効期間・ラベルに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoValidLimitLabel(){
+
+  }
+
+  /**
+   * 有効期間・テキスト2に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoValidLimitDateEnd(){
+
+  }
+
+  /**
+   * 住所地特例情報・ボタン領域に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoButtons(){
+
+    jushotiTokureiInfoButtons.add(getJushotiTokureiInfoButtonClear(), VRLayout.WEST);
+
+    jushotiTokureiInfoButtons.add(getJushotiTokureiInfoButtonInsert(), VRLayout.WEST);
+
+    jushotiTokureiInfoButtons.add(getJushotiTokureiInfoButtonEdit(), VRLayout.WEST);
+
+    jushotiTokureiInfoButtons.add(getJushotiTokureiInfoButtonDelete(), VRLayout.WEST);
+
+  }
+
+  /**
+   * クリアに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoButtonClear(){
+
+  }
+
+  /**
+   * 追加に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoButtonInsert(){
+
+  }
+
+  /**
+   * 書替に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoButtonEdit(){
+
+  }
+
+  /**
+   * 削除に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoButtonDelete(){
+
+  }
+
+  /**
+   * 住所地特例情報・テーブル領域に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoTable(){
+
+  }
+
+  /**
+   * 住所地特例情報・テーブル領域カラムモデルに内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoTableColumnModel(){
+
+    getJushotiTokureiInfoTableColumnModel().addColumn(getJushotiTokureiInfoTableColumn0());
+
+    getJushotiTokureiInfoTableColumnModel().addColumn(getJushotiTokureiInfoTableColumn1());
+
+    getJushotiTokureiInfoTableColumnModel().addColumn(getJushotiTokureiInfoTableColumn2());
+
+    getJushotiTokureiInfoTableColumnModel().addColumn(getJushotiTokureiInfoTableColumn3());
+
+  }
+
+  /**
+   * №に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoTableColumn0(){
+
+  }
+
+  /**
+   * 有効期間開始に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoTableColumn1(){
+
+  }
+
+  /**
+   * 有効期間終了に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoTableColumn2(){
+
+  }
+
+  /**
+   * 施設所在保険者番号に内部項目を追加します。
+   */
+  protected void addJushotiTokureiInfoTableColumn3(){
 
   }
 

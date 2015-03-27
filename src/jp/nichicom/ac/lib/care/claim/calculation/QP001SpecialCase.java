@@ -658,9 +658,464 @@ public class QP001SpecialCase {
      * @throws Exception
      */
     public static boolean isUnitNoCountService(String serviceCodeKind, String serviceCodeItem) throws Exception {
-        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
-        int item = ACCastUtilities.toInt(serviceCodeItem,0);
-        return isUnitNoCountService(kind,item);
+    	
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»‚É‚æ‚èŒÄ‚Î‚È‚¢‚æ‚¤‚É‚µ‚½
+        //int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+        //int item = ACCastUtilities.toInt(serviceCodeItem,0);
+        //return isUnitNoCountService(kind,item);
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - end
+        
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 add - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+    	String kind = serviceCodeKind;
+    	String item = serviceCodeItem;
+        boolean result = false;
+        //–K–âŠÅŒì
+        if ("13".equals(kind)) {
+        	if ("3111".equals(item)		//’èŠú„‰ñ–KŠÅ
+        		|| "3113".equals(item)	//’èŠú„‰ñ–KŠÅEy‚P
+        		|| "3115".equals(item)	//’èŠú„‰ñ–KŠÅE‰î‚T
+        		|| "3117".equals(item)	//’èŠú„‰ñ–KŠÅEy‚PE‰î‚T
+        		|| "6102".equals(item)	//–K–âŠÅŒìƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‚Q
+        		|| "8001".equals(item)	//“Á•Ê’nˆæ–K–âŠÅŒì‰ÁZ‚Q
+        		|| "8101".equals(item)	//–K–âŠÅŒì¬‹K–Í–‹ÆŠ‰ÁZ‚Q
+        		|| "8111".equals(item)	//–K–âŠÅŒì’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ‚Q
+        		) {
+                result = true;
+            }
+        }
+        //•Ÿƒ—p‹ï‘İ—^
+        if ("17".equals(kind)) {
+            //•Ÿƒ—p‹ïŒn—ñ‚Íˆê—¥’PˆÊ”‚ğo—Í‚µ‚È‚¢B
+            result = true;
+        }
+        //“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
+        if ("33".equals(kind)) {
+        	if ("2001".equals(item)		//ŠO•”Ô‚¢‚·‘İ—^
+        		|| "2002".equals(item)	//ŠO•”Ô‚¢‚·•t‘®•i‘İ—^
+        		|| "2003".equals(item)	//ŠO•”“ÁêQ‘ä‘İ—^
+        		|| "2004".equals(item)	//ŠO•”“ÁêQ‘ä•t‘®•i‘İ—^
+        		|| "2005".equals(item)	//ŠO•”°‚¸‚ê–h~—p‹ï‘İ—^
+        		|| "2006".equals(item)	//ŠO•”‘ÌˆÊ•ÏŠ·Ší‘İ—^
+        		|| "2007".equals(item)	//ŠO•”è‚·‚è‘İ—^
+        		|| "2008".equals(item)	//ŠO•”ƒXƒ[ƒv‘İ—^
+        		|| "2009".equals(item)	//ŠO•”•àsŠí‘İ—^
+        		|| "2010".equals(item)	//ŠO•”•às•â•‚Â‚¦‘İ—^
+        		|| "2011".equals(item)	//ŠO•”œpœjŠ´’m‹@Ší‘İ—^
+        		|| "2012".equals(item)	//ŠO•”ˆÚ“®—pƒŠƒtƒg‘İ—^
+        		|| "2013".equals(item)	//ŠO•”©“®”rŸ•ˆ—‘•’u‘İ—^" +
+            	) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
+        if ("35".equals(kind)) {
+            if ("1311".equals(item)		//—\–hŠO•”–K–â‰îŒì‡T
+            	|| "1321".equals(item)	//—\–hŠO•”–K–â‰îŒì‡U
+            	|| "1332".equals(item)	//—\–hŠO•”–K–â‰îŒì‡V
+            	|| "1711".equals(item)	//—\–hŠO•”’ÊŠ‰îŒì‚P
+            	|| "1712".equals(item)	//—\–hŠO•”’ÊŠ‰îŒì‚Q
+            	|| "1722".equals(item)	//—\–hŠO•”’ÊŠ‰îŒì‰^“®Ší‰ÁZ
+            	|| "1723".equals(item)	//—\–hŠO•”’ÊŠ‰îŒì‰h—{‰ü‘P‰ÁZ
+            	|| "1724".equals(item)	//—\–hŠO•”’ÊŠ‰îŒìŒûo‹@”\‰ÁZ
+            	|| "1725".equals(item)	//—\–hŠO•”’Ê‰î•¡”ƒT[ƒrƒX‰ÁZ‡T‚P
+            	|| "1726".equals(item)	//—\–hŠO•”’Ê‰î•¡”ƒT[ƒrƒX‰ÁZ‡T‚Q
+            	|| "1727".equals(item)	//—\–hŠO•”’Ê‰î•¡”ƒT[ƒrƒX‰ÁZ‡T‚R
+            	|| "1728".equals(item)	//—\–hŠO•”’Ê‰î•¡”ƒT[ƒrƒX‰ÁZ‡U
+            	|| "1811".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚P‚P
+            	|| "1812".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚P‚Q
+            	|| "1821".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‰^“®Ší‰ÁZ
+            	|| "1822".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‰h—{‰ü‘P‰ÁZ
+            	|| "1823".equals(item)	//—\–hŠO•”’ÊŠƒŠƒnŒûo‹@”\‰ÁZ
+            	|| "1824".equals(item)	//—\–hŠO•”’ÊƒŠ•¡”ƒT[ƒrƒX‰ÁZ‡T‚P
+            	|| "1825".equals(item)	//—\–hŠO•”’ÊƒŠ•¡”ƒT[ƒrƒX‰ÁZ‡T‚Q
+            	|| "1826".equals(item)	//—\–hŠO•”’ÊƒŠ•¡”ƒT[ƒrƒX‰ÁZ‡T‚R
+            	|| "1827".equals(item)	//—\–hŠO•”’ÊƒŠ•¡”ƒT[ƒrƒX‰ÁZ‡U
+            	|| "1831".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚Q‚P
+            	|| "1832".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚Q‚Q
+            	|| "1901".equals(item)	//—\–hŠO•”Ô‚¢‚·‘İ—^
+            	|| "1902".equals(item)	//—\–hŠO•”Ô‚¢‚·•t‘®•i‘İ—^
+            	|| "1903".equals(item)	//—\–hŠO•”“ÁêQ‘ä‘İ—^
+            	|| "1904".equals(item)	//—\–hŠO•”“ÁêQ‘ä•t‘®•i‘İ—^
+            	|| "1905".equals(item)	//—\–hŠO•”°‚¸‚ê–h~—p‹ï‘İ—^
+            	|| "1906".equals(item)	//—\–hŠO•”‘ÌˆÊ•ÏŠ·Ší‘İ—^
+            	|| "1907".equals(item)	//—\–hŠO•”è‚·‚è‘İ—^
+            	|| "1908".equals(item)	//—\–hŠO•”ƒXƒ[ƒv‘İ—^
+            	|| "1909".equals(item)	//—\–hŠO•”•àsŠí‘İ—^
+            	|| "1910".equals(item)	//—\–hŠO•”•às•â•‚Â‚¦‘İ—^
+            	|| "1911".equals(item)	//—\–hŠO•”œpœjŠ´’m‹@Ší‘İ—^
+            	|| "1912".equals(item)	//—\–hŠO•”ˆÚ“®—pƒŠƒtƒg‘İ—^
+            	|| "1913".equals(item)	//—\–hŠO•”©“®”rŸ•ˆ—‘•’u‘İ—^
+            	) {
+                result = true;
+            }
+    	}
+        //‰îŒì—\–hx‰‡
+        if ("46".equals(kind)) {
+            result = true;
+        }
+        //‰îŒì—\–h–K–â‰îŒì
+        if ("61".equals(kind)) {
+        	if ("1111".equals(item)		//—\–h–K–â‰îŒì‡T
+            	|| "1113".equals(item)	//—\–h–K–â‰îŒì‡TE‚Q‹‰
+            	|| "1114".equals(item)	//—\–h–K–â‰îŒì‡TE“¯ˆê
+            	|| "1115".equals(item)	//—\–h–K–â‰îŒì‡TE‚Q‹‰E“¯ˆê
+            	|| "1211".equals(item)	//—\–h–K–â‰îŒì‡U
+            	|| "1213".equals(item)	//—\–h–K–â‰îŒì‡UE‚Q‹‰
+            	|| "1214".equals(item)	//—\–h–K–â‰îŒì‡UE“¯ˆê
+            	|| "1215".equals(item)	//—\–h–K–â‰îŒì‡UE‚Q‹‰E“¯ˆê
+            	|| "1321".equals(item)	//—\–h–K–â‰îŒì‡V
+            	|| "1323".equals(item)	//—\–h–K–â‰îŒì‡VE‚Q‹‰
+            	|| "1324".equals(item)	//—\–h–K–â‰îŒì‡VE“¯ˆê
+            	|| "1325".equals(item)	//—\–h–K–â‰îŒì‡VE‚Q‹‰E“¯ˆê
+            	|| "4001".equals(item)	//—\–h–K–â‰îŒì‰‰ñ‰ÁZ
+            	|| "4002".equals(item)	//—\–h–K–â‰îŒì¶Šˆ‹@”\Œüã‰ÁZ
+            	|| "8000".equals(item)	//—\–h“Á•Ê’nˆæ–K–â‰îŒì‰ÁZ
+            	|| "8100".equals(item)	//—\–h–K–â‰îŒì¬‹K–Í–‹ÆŠ‰ÁZ
+            	|| "8110".equals(item)	//—\–h–K–â‰îŒì’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ"
+            	) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h’ÊŠ‰îŒì
+        if ("65".equals(kind)) {
+            if ("1111".equals(item)		//—\–h’ÊŠ‰îŒì‚P
+            	|| "1121".equals(item)	//—\–h’ÊŠ‰îŒì‚Q
+            	|| "5002".equals(item)	//—\–h’ÊŠ‰îŒì‰^“®Ší‹@”\Œüã‰ÁZ
+            	|| "5003".equals(item)	//—\–h’ÊŠ‰îŒì‰h—{‰ü‘P‰ÁZ
+            	|| "5004".equals(item)	//—\–h’ÊŠ‰îŒìŒûo‹@”\Œüã‰ÁZ
+            	|| "5005".equals(item)	//—\–h’ÊŠ‰îŒì–‹ÆŠ•]‰¿‰ÁZ
+            	|| "5006".equals(item)	//—\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZ‡T‚P
+            	|| "5007".equals(item)	//—\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZ‡T‚Q
+            	|| "5008".equals(item)	//—\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZ‡T‚R
+            	|| "5009".equals(item)	//—\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZ‡U
+            	|| "5010".equals(item)	//—\–h’Ê‰î¶ŠˆŒüãƒOƒ‹[ƒvŠˆ“®‰ÁZ
+            	|| "6101".equals(item)	//—\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚P
+            	|| "6102".equals(item)	//—\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚Q
+            	|| "6103".equals(item)	//—\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U‚P
+            	|| "6104".equals(item)	//—\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U‚Q
+            	|| "6105".equals(item)	//—\–h’ÊŠ‰îŒì‘—Œ}Œ¸Z‚P
+            	|| "6106".equals(item)	//—\–h’ÊŠ‰îŒì‘—Œ}Œ¸Z‚Q
+            	|| "6109".equals(item)	//—\–h’ÊŠ‰îŒìá”N«”F’mÇó“ü‰ÁZ
+            	|| "8001".equals(item)	//—\–h’ÊŠ‰îŒì‚PE’è’´
+            	|| "8011".equals(item)	//—\–h’ÊŠ‰îŒì‚QE’è’´
+            	|| "8110".equals(item)	//—\–h’ÊŠ‰îŒì’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ
+            	|| "9001".equals(item)	//—\–h’ÊŠ‰îŒì‚PElŒ‡
+            	|| "9011".equals(item)	//—\–h’ÊŠ‰îŒì‚QElŒ‡"
+            	) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h’ÊŠƒŠƒnƒrƒŠƒe[ƒVƒ‡ƒ“
+        if ("66".equals(kind)) {
+            if ("1111".equals(item)		//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚P
+            	|| "1121".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚Q
+            	|| "2111".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚P
+            	|| "2121".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚Q
+            	|| "5002".equals(item)	//—\–h’ÊŠƒŠƒn‰^“®Ší‹@”\Œüã‰ÁZ
+            	|| "5003".equals(item)	//—\–h’ÊŠƒŠƒn‰h—{‰ü‘P‰ÁZ
+            	|| "5004".equals(item)	//—\–h’ÊŠƒŠƒnŒûo‹@”\Œüã‰ÁZ
+            	|| "5005".equals(item)	//—\–h’ÊŠƒŠƒn–‹ÆŠ•]‰¿‰ÁZ
+            	|| "5006".equals(item)	//—\’ÊƒŠƒn•¡”ƒT[ƒrƒXÀ{‰ÁZ‡T‚P
+            	|| "5007".equals(item)	//—\’ÊƒŠƒn•¡”ƒT[ƒrƒXÀ{‰ÁZ‡T‚Q
+            	|| "5008".equals(item)	//—\’ÊƒŠƒn•¡”ƒT[ƒrƒXÀ{‰ÁZ‡T‚R
+            	|| "5009".equals(item)	//—\’ÊƒŠƒn•¡”ƒT[ƒrƒXÀ{‰ÁZ‡U
+            	|| "6101".equals(item)	//—\’ÊƒŠƒnƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚P
+            	|| "6102".equals(item)	//—\’ÊƒŠƒnƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚Q
+            	|| "6103".equals(item)	//—\’ÊƒŠƒnƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U‚P
+            	|| "6104".equals(item)	//—\’ÊƒŠƒnƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U‚Q
+            	|| "6105".equals(item)	//—\–h’ÊŠƒŠƒn‘—Œ}Œ¸Z‚P‚P
+            	|| "6106".equals(item)	//—\–h’ÊŠƒŠƒn‘—Œ}Œ¸Z‚P‚Q
+            	|| "6107".equals(item)	//—\–h’ÊŠƒŠƒn‘—Œ}Œ¸Z‚Q‚P
+            	|| "6108".equals(item)	//—\–h’ÊŠƒŠƒn‘—Œ}Œ¸Z‚Q‚Q
+            	|| "6109".equals(item)	//—\–h’ÊŠƒŠƒná”N«”F’mÇó“ü‰ÁZ
+            	|| "8001".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PE’è’´
+            	|| "8011".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QE’è’´
+            	|| "8110".equals(item)	//—\–h’ÊŠƒŠƒn’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ
+            	|| "8201".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PE’è’´
+            	|| "8211".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QE’è’´
+            	|| "9001".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PElŒ‡
+            	|| "9011".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QElŒ‡
+            	|| "9201".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PElŒ‡
+            	|| "9211".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QElŒ‡
+        		) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h•Ÿƒ—p‹ï‘İ—^
+        if ("67".equals(kind)) {
+            result = true;
+        }
+        //–éŠÔ‘Î‰Œ^–K–â‰îŒìƒT[ƒrƒX
+        if ("71".equals(kind)) {
+        	if ("1111".equals(item)		//–éŠÔ–K–â‰îŒì‡TŠî–{
+            	|| "2111".equals(item)	//–éŠÔ–K–â‰îŒì‡U
+            	|| "2113".equals(item)	//–éŠÔ–K–â‰îŒì‡UE“¯ˆê
+            	|| "6102".equals(item)	//–éŠÔ–K–âƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+            	|| "6136".equals(item)	//–éŠÔ–K–â‰îŒì‚Q‚SŠÔ’Ê•ñ‘Î‰‰ÁZ
+            	|| "7201".equals(item)	//Šî–{–éŠÔ–K–â‡Ts’¬‘º“Æ©‰ÁZ‚P
+            	|| "7203".equals(item)	//Šî–{–éŠÔ–K–â‡Ts’¬‘º“Æ©‰ÁZ‚Q
+            	|| "7205".equals(item)	//Šî–{–éŠÔ–K–â‡Ts’¬‘º“Æ©‰ÁZ‚R
+            	|| "7207".equals(item)	//Šî–{–éŠÔ–K–â‡Ts’¬‘º“Æ©‰ÁZ‚S
+            	|| "7209".equals(item)	//Šî–{–éŠÔ–K–â‡Ts’¬‘º“Æ©‰ÁZ‚T
+            	|| "7211".equals(item)	//Šî–{–éŠÔ–K–â‡Ts’¬‘º“Æ©‰ÁZ‚U
+            	|| "7301".equals(item)	//–éŠÔ–K–â‰îŒì‡Us’¬‘º“Æ©‰ÁZ‚P
+            	|| "7303".equals(item)	//–éŠÔ–K–â‰îŒì‡Us’¬‘º“Æ©‰ÁZ‚Q
+            	|| "7305".equals(item)	//–éŠÔ–K–â‰îŒì‡Us’¬‘º“Æ©‰ÁZ‚R
+            	|| "7307".equals(item)	//–éŠÔ–K–â‰îŒì‡Us’¬‘º“Æ©‰ÁZ‚S
+            	|| "7309".equals(item)	//–éŠÔ–K–â‰îŒì‡Us’¬‘º“Æ©‰ÁZ‚T
+            	|| "7311".equals(item)	//–éŠÔ–K–â‰îŒì‡Us’¬‘º“Æ©‰ÁZ‚U
+    			) {
+                result = true;
+            }
+        }
+        //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        if ("73".equals(kind)) {
+        	if ("1111".equals(item)		//¬‹K–Í‘½‹@”\‚P
+            	|| "1113".equals(item)	//¬‹K–Í‘½‹@”\‚PE‰ß­
+            	|| "1115".equals(item)	//¬‹K–Í‘½‹@”\‚PE“¯ˆê
+            	|| "1117".equals(item)	//¬‹K–Í‘½‹@”\‚PE“¯ˆêE‰ß­
+            	|| "1121".equals(item)	//¬‹K–Í‘½‹@”\‚Q
+            	|| "1123".equals(item)	//¬‹K–Í‘½‹@”\‚QE‰ß­
+            	|| "1125".equals(item)	//¬‹K–Í‘½‹@”\‚QE“¯ˆê
+            	|| "1127".equals(item)	//¬‹K–Í‘½‹@”\‚QE“¯ˆêE‰ß­
+            	|| "1131".equals(item)	//¬‹K–Í‘½‹@”\‚R
+            	|| "1133".equals(item)	//¬‹K–Í‘½‹@”\‚RE‰ß­
+            	|| "1135".equals(item)	//¬‹K–Í‘½‹@”\‚RE“¯ˆê
+            	|| "1137".equals(item)	//¬‹K–Í‘½‹@”\‚RE“¯ˆêE‰ß­
+            	|| "1141".equals(item)	//¬‹K–Í‘½‹@”\‚S
+            	|| "1143".equals(item)	//¬‹K–Í‘½‹@”\‚SE‰ß­
+            	|| "1145".equals(item)	//¬‹K–Í‘½‹@”\‚SE“¯ˆê
+            	|| "1147".equals(item)	//¬‹K–Í‘½‹@”\‚SE“¯ˆêE‰ß­
+            	|| "1151".equals(item)	//¬‹K–Í‘½‹@”\‚T
+            	|| "1153".equals(item)	//¬‹K–Í‘½‹@”\‚TE‰ß­
+            	|| "1155".equals(item)	//¬‹K–Í‘½‹@”\‚TE“¯ˆê
+            	|| "1157".equals(item)	//¬‹K–Í‘½‹@”\‚TE“¯ˆêE‰ß­
+            	|| "6101".equals(item)	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
+            	|| "6102".equals(item)	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+            	|| "6103".equals(item)	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+            	|| "6128".equals(item)	//¬‹K–Í‘½‹@”\Œ^”F’mÇ‰ÁZ‡T
+            	|| "6129".equals(item)	//¬‹K–Í‘½‹@”\Œ^”F’mÇ‰ÁZ‡U
+            	|| "6137".equals(item)	//¬‹K–Í‘½‹@”\Œ^ŠÅŒìEˆõ”z’u‰ÁZ‡T
+            	|| "6138".equals(item)	//¬‹K–Í‘½‹@”\Œ^ŠÅŒìEˆõ”z’u‰ÁZ‡U
+            	|| "6139".equals(item)	//¬‹K–Í‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ
+            	|| "7101".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P
+            	|| "7103".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚Q
+            	|| "7105".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚R
+            	|| "7107".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚S
+            	|| "7109".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚T
+            	|| "7111".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚U
+            	|| "7113".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚V
+            	|| "7115".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚W
+            	|| "7117".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚X
+            	|| "7119".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚O
+            	|| "7121".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚P
+            	|| "7123".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚Q
+            	|| "7125".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚R
+            	|| "7127".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚S
+            	|| "7129".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚T
+            	|| "7131".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚U
+            	|| "7133".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚V
+            	|| "7135".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚W
+            	|| "7137".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚X
+            	|| "7139".equals(item)	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚Q‚O
+            	|| "8011".equals(item)	//¬‹K–Í‘½‹@”\‚PE’è’´
+            	|| "8013".equals(item)	//¬‹K–Í‘½‹@”\‚PE’è’´E‰ß­
+            	|| "8015".equals(item)	//¬‹K–Í‘½‹@”\‚PE’è’´E“¯ˆê
+            	|| "8017".equals(item)	//¬‹K–Í‘½‹@”\‚PE’è’´E“¯ˆêE‰ß­
+            	|| "8021".equals(item)	//¬‹K–Í‘½‹@”\‚QE’è’´
+            	|| "8023".equals(item)	//¬‹K–Í‘½‹@”\‚QE’è’´E‰ß­
+            	|| "8025".equals(item)	//¬‹K–Í‘½‹@”\‚QE’è’´E“¯ˆê
+            	|| "8027".equals(item)	//¬‹K–Í‘½‹@”\‚QE’è’´E“¯ˆêE‰ß­
+            	|| "8031".equals(item)	//¬‹K–Í‘½‹@”\‚RE’è’´
+            	|| "8033".equals(item)	//¬‹K–Í‘½‹@”\‚RE’è’´E‰ß­
+            	|| "8035".equals(item)	//¬‹K–Í‘½‹@”\‚RE’è’´E“¯ˆê
+            	|| "8037".equals(item)	//¬‹K–Í‘½‹@”\‚RE’è’´E“¯ˆêE‰ß­
+            	|| "8041".equals(item)	//¬‹K–Í‘½‹@”\‚SE’è’´
+            	|| "8043".equals(item)	//¬‹K–Í‘½‹@”\‚SE’è’´E‰ß­
+            	|| "8045".equals(item)	//¬‹K–Í‘½‹@”\‚SE’è’´E“¯ˆê
+            	|| "8047".equals(item)	//¬‹K–Í‘½‹@”\‚SE’è’´E“¯ˆêE‰ß­
+            	|| "8051".equals(item)	//¬‹K–Í‘½‹@”\‚TE’è’´
+            	|| "8053".equals(item)	//¬‹K–Í‘½‹@”\‚TE’è’´E‰ß­
+            	|| "8055".equals(item)	//¬‹K–Í‘½‹@”\‚TE’è’´E“¯ˆê
+            	|| "8057".equals(item)	//¬‹K–Í‘½‹@”\‚TE’è’´E“¯ˆêE‰ß­
+            	|| "9011".equals(item)	//¬‹K–Í‘½‹@”\‚PElŒ‡
+            	|| "9013".equals(item)	//¬‹K–Í‘½‹@”\‚PElŒ‡E‰ß­
+            	|| "9015".equals(item)	//¬‹K–Í‘½‹@”\‚PElŒ‡E“¯ˆê
+            	|| "9017".equals(item)	//¬‹K–Í‘½‹@”\‚PElŒ‡E“¯ˆêE‰ß­
+            	|| "9021".equals(item)	//¬‹K–Í‘½‹@”\‚QElŒ‡
+            	|| "9023".equals(item)	//¬‹K–Í‘½‹@”\‚QElŒ‡E‰ß­
+            	|| "9025".equals(item)	//¬‹K–Í‘½‹@”\‚QElŒ‡E“¯ˆê
+            	|| "9027".equals(item)	//¬‹K–Í‘½‹@”\‚QElŒ‡E“¯ˆêE‰ß­
+            	|| "9031".equals(item)	//¬‹K–Í‘½‹@”\‚RElŒ‡
+            	|| "9033".equals(item)	//¬‹K–Í‘½‹@”\‚RElŒ‡E‰ß­
+            	|| "9035".equals(item)	//¬‹K–Í‘½‹@”\‚RElŒ‡E“¯ˆê
+            	|| "9037".equals(item)	//¬‹K–Í‘½‹@”\‚RElŒ‡E“¯ˆêE‰ß­
+            	|| "9041".equals(item)	//¬‹K–Í‘½‹@”\‚SElŒ‡
+            	|| "9043".equals(item)	//¬‹K–Í‘½‹@”\‚SElŒ‡E‰ß­
+            	|| "9045".equals(item)	//¬‹K–Í‘½‹@”\‚SElŒ‡E“¯ˆê
+            	|| "9047".equals(item)	//¬‹K–Í‘½‹@”\‚SElŒ‡E“¯ˆêE‰ß­
+            	|| "9051".equals(item)	//¬‹K–Í‘½‹@”\‚TElŒ‡
+            	|| "9053".equals(item)	//¬‹K–Í‘½‹@”\‚TElŒ‡E‰ß­
+            	|| "9055".equals(item)	//¬‹K–Í‘½‹@”\‚TElŒ‡E“¯ˆê
+            	|| "9057".equals(item)	//¬‹K–Í‘½‹@”\‚TElŒ‡E“¯ˆêE‰ß­
+            	) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        if ("75".equals(kind)) {
+        	if ("1111".equals(item)		//—\¬‹K–Í‘½‹@”\‚P
+	            || "1113".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE‰ß­
+	            || "1115".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE“¯ˆê
+	            || "1117".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE“¯ˆêE‰ß­
+	            || "1121".equals(item)	//—\¬‹K–Í‘½‹@”\‚Q
+	            || "1123".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE‰ß­
+	            || "1125".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE“¯ˆê
+	            || "1127".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE“¯ˆêE‰ß­
+	            || "6101".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
+	            || "6102".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+	            || "6103".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+	            || "6139".equals(item)	//—\¬‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ
+	            || "8011".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE’´
+	            || "8013".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE’´E‰ß­
+	            || "8015".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE’´E“¯ˆê
+	            || "8017".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE’´E“¯ˆêE‰ß­
+	            || "8021".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE’´
+	            || "8023".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE’´E‰ß­
+	            || "8025".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE’´E“¯ˆê
+	            || "8027".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE’´E“¯ˆêE‰ß­
+	            || "9011".equals(item)	//—\¬‹K–Í‘½‹@”\‚PEŒ‡
+	            || "9013".equals(item)	//—\¬‹K–Í‘½‹@”\‚PEŒ‡E‰ß­
+	            || "9015".equals(item)	//—\¬‹K–Í‘½‹@”\‚PEŒ‡E“¯ˆê
+	            || "9017".equals(item)	//—\¬‹K–Í‘½‹@”\‚PEŒ‡E“¯ˆêE‰ß­
+	            || "9021".equals(item)	//—\¬‹K–Í‘½‹@”\‚QEŒ‡
+	            || "9023".equals(item)	//—\¬‹K–Í‘½‹@”\‚QEŒ‡E‰ß­
+	            || "9025".equals(item)	//—\¬‹K–Í‘½‹@”\‚QEŒ‡E“¯ˆê
+	            || "9027".equals(item)	//—\¬‹K–Í‘½‹@”\‚QEŒ‡E“¯ˆêE‰ß­
+	            ) {
+                result = true;
+            }
+        }
+        //’èŠú„‰ñE‘Î‰Œ^–K–âŠÅŒì‰îŒì
+        if ("76".equals(kind)) {
+        	if ("1111".equals(item)		//’èŠú„‰ñ‡T‚P‚P
+	            || "1121".equals(item)	//’èŠú„‰ñ‡T‚P‚Q
+	            || "1131".equals(item)	//’èŠú„‰ñ‡T‚P‚R
+	            || "1141".equals(item)	//’èŠú„‰ñ‡T‚P‚S
+	            || "1151".equals(item)	//’èŠú„‰ñ‡T‚P‚T
+	            || "1211".equals(item)	//’èŠú„‰ñ‡T‚Q‚P
+	            || "1213".equals(item)	//’èŠú„‰ñ‡T‚Q‚PEyŠÅ
+	            || "1221".equals(item)	//’èŠú„‰ñ‡T‚Q‚Q
+	            || "1223".equals(item)	//’èŠú„‰ñ‡T‚Q‚QEyŠÅ
+	            || "1231".equals(item)	//’èŠú„‰ñ‡T‚Q‚R
+	            || "1233".equals(item)	//’èŠú„‰ñ‡T‚Q‚REyŠÅ
+	            || "1241".equals(item)	//’èŠú„‰ñ‡T‚Q‚S
+	            || "1243".equals(item)	//’èŠú„‰ñ‡T‚Q‚SEyŠÅ
+	            || "1251".equals(item)	//’èŠú„‰ñ‡T‚Q‚T
+	            || "1253".equals(item)	//’èŠú„‰ñ‡T‚Q‚TEyŠÅ
+	            || "2111".equals(item)	//’èŠú„‰ñ‡U‚P
+	            || "2121".equals(item)	//’èŠú„‰ñ‡U‚Q
+	            || "2131".equals(item)	//’èŠú„‰ñ‡U‚R
+	            || "2141".equals(item)	//’èŠú„‰ñ‡U‚S
+	            || "2151".equals(item)	//’èŠú„‰ñ‡U‚T
+	            || "3100".equals(item)	//’èŠú„‰ñ‹Ù‹}–K–âŠÅŒì‰ÁZ
+	            || "4000".equals(item)	//’èŠú„‰ñ“Á•ÊŠÇ—‰ÁZ‡T
+	            || "4001".equals(item)	//’èŠú„‰ñ“Á•ÊŠÇ—‰ÁZ‡U
+	            || "6100".equals(item)	//’èŠú„‰ñƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ
+	            || "6101".equals(item)	//’èŠú„‰ñƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
+	            || "6102".equals(item)	//’èŠú„‰ñƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+	            || "6103".equals(item)	//’èŠú„‰ñƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+	            || "7101".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚P
+	            || "7103".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚Q
+	            || "7105".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚R
+	            || "7107".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚S
+	            || "7109".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚T
+	            || "7111".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚U
+	            || "7113".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚V
+	            || "7115".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚W
+	            || "7117".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚X
+	            || "7119".equals(item)	//’èŠú„‰ñs’¬‘º“Æ©‰ÁZ‚P‚O
+	            || "8000".equals(item)	//’èŠú„‰ñ“Á•Ê’nˆæ–K–âŠÅŒì‰ÁZ
+	            || "8100".equals(item)	//’èŠú„‰ñ¬‹K–Í–‹ÆŠ‰ÁZ
+	            || "8110".equals(item)	//’èŠú„‰ñ’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ
+    			) {
+                result = true;
+            }
+        }
+        //•¡‡Œ^ƒT[ƒrƒX
+        if ("77".equals(kind)) {
+        	if ("1111".equals(item)		//•¡‡Œ^ƒT[ƒrƒX‚P
+	            || "1113".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚PE‰ß­
+	            || "1121".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚Q
+	            || "1123".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚QE‰ß­
+	            || "1131".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚R
+	            || "1133".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚RE‰ß­
+	            || "1141".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚S
+	            || "1143".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚SE‰ß­
+	            || "1151".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚T
+	            || "1153".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚TE‰ß­
+	            || "3100".equals(item)	//•¡‡Œ^‹Ù‹}–K–âŠÅŒì‰ÁZ
+	            || "4000".equals(item)	//•¡‡Œ^“Á•ÊŠÇ—‰ÁZ‡T
+	            || "4001".equals(item)	//•¡‡Œ^“Á•ÊŠÇ—‰ÁZ‡U
+	            || "6001".equals(item)	//•¡‡Œ^ˆã—Ã–K–âŠÅŒìŒ¸Z‚P
+	            || "6003".equals(item)	//•¡‡Œ^ˆã—Ã–K–âŠÅŒìŒ¸Z‚Q
+	            || "6005".equals(item)	//•¡‡Œ^ˆã—Ã–K–âŠÅŒìŒ¸Z‚R
+	            || "6007".equals(item)	//•¡‡Œ^ˆã—Ã–K–âŠÅŒìŒ¸Z‚S
+	            || "6009".equals(item)	//•¡‡Œ^ˆã—Ã–K–âŠÅŒìŒ¸Z‚T
+	            || "6100".equals(item)	//•¡‡Œ^ƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ
+	            || "6101".equals(item)	//•¡‡Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
+	            || "6102".equals(item)	//•¡‡Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+	            || "6103".equals(item)	//•¡‡Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+	            || "6128".equals(item)	//•¡‡Œ^”F’mÇ‰ÁZ‡T
+	            || "6129".equals(item)	//•¡‡Œ^”F’mÇ‰ÁZ‡U
+	            || "6139".equals(item)	//•¡‡Œ^–‹ÆŠJnx‰‡‰ÁZ
+	            || "7101".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P
+	            || "7103".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚Q
+	            || "7105".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚R
+	            || "7107".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚S
+	            || "7109".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚T
+	            || "7111".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚U
+	            || "7113".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚V
+	            || "7115".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚W
+	            || "7117".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚X
+	            || "7119".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚O
+	            || "7121".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚P
+	            || "7123".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚Q
+	            || "7125".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚R
+	            || "7127".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚S
+	            || "7129".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚T
+	            || "7131".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚U
+	            || "7133".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚V
+	            || "7135".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚W
+	            || "7137".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚P‚X
+	            || "7139".equals(item)	//•¡‡Œ^s’¬‘º“Æ©‰ÁZ‚Q‚O
+	            || "8011".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚PE’è’´
+	            || "8013".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚PE’è’´E‰ß­
+	            || "8021".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚QE’è’´
+	            || "8023".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚QE’è’´E‰ß­
+	            || "8031".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚RE’è’´
+	            || "8033".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚RE’è’´E‰ß­
+	            || "8041".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚SE’è’´
+	            || "8043".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚SE’è’´E‰ß­
+	            || "8051".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚TE’è’´
+	            || "8053".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚TE’è’´E‰ß­
+	            || "9011".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚PElŒ‡
+	            || "9013".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚PElŒ‡E‰ß­
+	            || "9021".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚QElŒ‡
+	            || "9023".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚QElŒ‡E‰ß­
+	            || "9031".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚RElŒ‡
+	            || "9033".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚RElŒ‡E‰ß­
+	            || "9041".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚SElŒ‡
+	            || "9043".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚SElŒ‡E‰ß­
+	            || "9051".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚TElŒ‡
+	            || "9053".equals(item)	//•¡‡Œ^ƒT[ƒrƒX‚TElŒ‡E‰ß­
+	            ) {
+                result = true;
+            }
+        }
+        
+        return result;
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 add - end ƒT[ƒrƒXƒR[ƒh‰p”‰»
     }
     
     /**
@@ -670,6 +1125,8 @@ public class QP001SpecialCase {
      * @return true : ’PˆÊ”‚ğ‹LÚ‚µ‚È‚¢ false : ’PˆÊ”‚ğ‹LÚ‚·‚é
      * @throws Exception
      */
+    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»‚É‚æ‚è‚±‚Ìƒ`ƒFƒbƒN•û–@‚ğ”p~
+    /*
     public static boolean isUnitNoCountService(int kind, int item) throws Exception {
         
         //[ID:0000714] •½¬24”N4Œ–@‰ü³‚É”º‚¢A‘SC³
@@ -1135,6 +1592,8 @@ public class QP001SpecialCase {
         
         return result;
     }
+    */
+    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - end
     
     /**
      * ’PˆÊ”‚ğ’ •[‚É‹LÚ‚µ‚È‚¢ƒT[ƒrƒX‚Å‚ ‚é‚©Šm”F‚·‚éB
@@ -1148,6 +1607,8 @@ public class QP001SpecialCase {
         int item = ACCastUtilities.toInt(serviceCodeItem,0);
         boolean result = false;
         
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+        /*
         switch(kind){
         //–éŠÔ‘Î‰Œ^–K–â‰îŒì
         case 71:
@@ -1169,11 +1630,26 @@ public class QP001SpecialCase {
             result = isUnitNoCountService(kind,item);
             break;
         }
+        */
+        if ("71".equals(serviceCodeKind)) {
+        	//–éŠÔ‘Î‰Œ^–K–â‰îŒì
+        	if ("1111".equals(serviceCodeItem)		//–éŠÔ–K–â‰îŒì‚PŠî–{
+        		|| "2111".equals(serviceCodeItem)	//–éŠÔ–K–â‰îŒì‚Q
+        		) {
+        		result = true;
+        	}
+        } else if ("17".equals(serviceCodeKind)) {
+        	//•Ÿƒ—p‹ï
+        	result = true;
+        } else {
+        	result = isUnitNoCountService(serviceCodeKind,serviceCodeItem);
+        }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - end ƒT[ƒrƒXƒR[ƒh‰p”‰»
         
         return result;
     }
     
-    
+ // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
     /**
      * ’ñ‹Ÿ‰ñ”‚ğ1‰ñ‚Æ‚µ‚ÄŒvã‚·‚éƒT[ƒrƒX‚Å‚ ‚é‚©Šm”F‚·‚éB
      * @param serviceCodeKind
@@ -1182,9 +1658,126 @@ public class QP001SpecialCase {
      * @throws Exception
      */
     public static boolean isSingleCountService(String serviceCodeKind, String serviceCodeItem) throws Exception {
-        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
-        int item = ACCastUtilities.toInt(serviceCodeItem,0);
-        return isSingleNoCountService(kind,item);
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - begin   ƒT[ƒrƒXƒR[ƒh‰p”‰»i”’l‚É‚æ‚éƒ`ƒFƒbƒN‚ğŒÄ‚Î‚È‚¢j
+        //int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+        //int item = ACCastUtilities.toInt(serviceCodeItem,0);
+        //return isSingleNoCountService(kind,item);
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - end
+    	
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 add - begin   ƒT[ƒrƒXƒR[ƒh‰p”‰»
+    	String kind = serviceCodeKind;
+    	String item = serviceCodeItem;
+        boolean result = false;
+        
+        //•Ÿƒ—p‹ï‘İ—^ or ‰îŒì—\–h•Ÿƒ—p‹ï‘İ—^
+        if ("17".equals(kind) || "67".equals(kind)) {
+    		if ("8001".equals(item)		//Ô‚¢‚·•Ÿƒ—p‹ï‘İ—^“Á’n‰ÁZ
+	    		|| "8002".equals(item)	//Ô‚¢‚·•t‘®•i‘İ—^“Á’n‰ÁZ
+	    		|| "8003".equals(item)	//“ÁêQ‘ä‘İ—^“Á’n‰ÁZ
+	    		|| "8004".equals(item)	//“ÁêQ‘ä•t‘®•i‘İ—^“Á’n‰ÁZ
+	    		|| "8005".equals(item)	//°‚¸‚ê–h~—p‹ï‘İ—^“Á’n‰ÁZ
+	    		|| "8006".equals(item)	//‘ÌˆÊ•ÏŠ·Ší‘İ—^“Á’n‰ÁZ
+	    		|| "8007".equals(item)	//è‚·‚è‘İ—^“Á’n‰ÁZ
+	    		|| "8008".equals(item)	//ƒXƒ[ƒv‘İ—^“Á’n‰ÁZ
+	    		|| "8009".equals(item)	//•àsŠí‘İ—^“Á’n‰ÁZ
+	    		|| "8010".equals(item)	//•às•â•‚Â‚¦‘İ—^“Á’n‰ÁZ
+	    		|| "8011".equals(item)	//œpœjŠ´’m‹@Ší‘İ—^“Á’n‰ÁZ
+	    		|| "8012".equals(item)	//ˆÚ“®—pƒŠƒtƒg‘İ—^“Á’n‰ÁZ
+	            || "8013".equals(item)	//©“®”rŸ•ˆ—‘•’u‘İ—^“Á’n‰ÁZ
+	    		|| "8101".equals(item)	//Ô‚¢‚·‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8102".equals(item)	//Ô‚¢‚·•t‘®•i‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8103".equals(item)	//“ÁêQ‘ä‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8104".equals(item)	//“ÁêQ‘ä•t‘®•i‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8105".equals(item)	//°‚¸‚ê–h~—p‹ï‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8106".equals(item)	//‘ÌˆÊ•ÏŠ·Ší‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8107".equals(item)	//è‚·‚è‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8108".equals(item)	//ƒXƒ[ƒv‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8109".equals(item)	//•àsŠí‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8110".equals(item)	//•às•â•‚Â‚¦‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8111".equals(item)	//œpœjŠ´’m‹@Ší‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8112".equals(item)	//ˆÚ“®—pƒŠƒtƒg‘İ—^¬‹K–Í‰ÁZ
+	    		|| "8201".equals(item)	//Ô‚¢‚·‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8202".equals(item)	//Ô‚¢‚·•t‘®•i‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8203".equals(item)	//“ÁêQ‘ä‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8204".equals(item)	//“ÁêQ‘ä•t‘®•i‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8205".equals(item)	//°‚¸‚ê–h~—p‹ï‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8206".equals(item)	//‘ÌˆÊ•ÏŠ·Ší‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8207".equals(item)	//è‚·‚è‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8208".equals(item)	//ƒXƒ[ƒv‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8209".equals(item)	//•àsŠí‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8210".equals(item)	//•às•â•‚Â‚¦‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8211".equals(item)	//œpœjŠ´’m‹@Ší‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8212".equals(item)	//ˆÚ“®—pƒŠƒtƒg‘İ—^’†RŠÔ’nˆæ‰ÁZ
+	    		|| "8213".equals(item)	//©“®”rŸ•‘•’u‘İ—^’†RŠÔ’nˆæ‰ÁZ
+    		) {
+    			result = true;
+    		}
+        }
+        //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        if ("73".equals(kind)) {
+            if ("1101".equals(item)		//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìŒo
+	            || "1111".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚P
+	            || "1121".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚Q
+	            || "1131".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚R
+	            || "1141".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚S
+	            || "1151".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚T
+	            || "8001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoE’è’´
+	            || "8011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚PE’è’´
+	            || "8021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚QE’è’´
+	            || "8031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚RE’è’´
+	            || "8041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚SE’è’´
+	            || "8051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚TE’è’´
+	            || "9001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoElŒ‡
+	            || "9011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚PElŒ‡
+	            || "9021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚QElŒ‡
+	            || "9031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚RElŒ‡
+	            || "9041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚SElŒ‡
+	            || "9051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚TElŒ‡
+	        	|| "1113".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚PE‰ß­
+	        	|| "1123".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚QE‰ß­
+	        	|| "1133".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚RE‰ß­
+	        	|| "1143".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚SE‰ß­
+	        	|| "1153".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚TE‰ß­
+	        	|| "8013".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚PE’è’´E‰ß­
+	        	|| "8023".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚QE’è’´E‰ß­
+	        	|| "8033".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚RE’è’´E‰ß­
+	        	|| "8043".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚SE’è’´E‰ß­
+	        	|| "8053".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚TE’è’´E‰ß­
+	        	|| "9013".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚PElŒ‡E‰ß­
+	        	|| "9023".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚QElŒ‡E‰ß­
+	        	|| "9033".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚RElŒ‡E‰ß­
+	        	|| "9043".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚SElŒ‡E‰ß­
+	        	|| "9053".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚TElŒ‡E‰ß­
+        	) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        if ("75".equals(kind)) {
+        	if ("1111".equals(item)		//—\–h¬‘½‹@”\Œ^‹‘î‰îŒì‚P
+	        	|| "1121".equals(item)	//—\–h¬‘½‹@”\Œ^‹‘î‰îŒì‚Q
+	        	|| "8011".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚PE’è’´
+	        	|| "8021".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚QE’è’´
+	        	|| "9011".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚PElŒ‡
+	        	|| "9021".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚QElŒ‡
+	        	|| "1113".equals(item)	//—\–h¬‘½‹@”\Œ^‹‘î‰îŒì‚PE‰ß­
+	        	|| "1123".equals(item)	//—\–h¬‘½‹@”\Œ^‹‘î‰îŒì‚QE‰ß­
+	        	|| "6139".equals(item)	//—\¬‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ‡T
+	        	|| "6140".equals(item)	//—\¬‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ‡U
+	        	|| "6101".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
+	        	|| "6102".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+	        	|| "6103".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+	        	|| "8013".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚PE’è’´E‰ß­
+	        	|| "8023".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚QE’è’´E‰ß­
+	        	|| "9013".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚PElŒ‡E‰ß­
+	        	|| "9023".equals(item)	//—\¬‘½‹@”\Œ^‹‘î‚QElŒ‡E‰ß­
+        	) {
+        		result = true;
+        	}
+        }
+        
+        return result;
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 add - end
     }
     
     /**
@@ -1194,6 +1787,8 @@ public class QP001SpecialCase {
      * @return true : ’ñ‹Ÿ‰ñ”‚ğ1‰ñ‚Æ‚µ‚ÄŒvã‚·‚é false : ’ñ‹Ÿ‰ñ”‚ğŒvã‚·‚é
      * @throws Exception
      */
+    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - begin   ƒT[ƒrƒXƒR[ƒh‰p”‰»i”’l‚É‚æ‚éƒ`ƒFƒbƒN‚ğŒÄ‚Î‚È‚¢j
+    /*
     public static boolean isSingleNoCountService(int kind, int item) throws Exception {
         
         boolean result = false;
@@ -1418,6 +2013,8 @@ public class QP001SpecialCase {
         
         return result;
     }
+    */
+    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - end
     
     /**
      * ƒT[ƒrƒX‰ñ”‚ğŒ‚Ì“ú”‚É•ÏX‚·‚éƒT[ƒrƒX‚©Šm”F‚·‚éB
@@ -1427,9 +2024,124 @@ public class QP001SpecialCase {
      * @throws Exception
      */
     public static boolean isMaxCountService(String serviceCodeKind, String serviceCodeItem) throws Exception {
-        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
-        int item = ACCastUtilities.toInt(serviceCodeItem,0);
-        return isMaxCountService(kind,item);
+    	
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - begin   ƒT[ƒrƒXƒR[ƒh‰p”‰»i”’l‚É‚æ‚éƒ`ƒFƒbƒN‚ğŒÄ‚Î‚È‚¢j
+        //int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+        //int item = ACCastUtilities.toInt(serviceCodeItem,0);
+        //return isMaxCountService(kind,item);
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - end
+        
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 add - begin
+    	String kind = serviceCodeKind;
+    	String item = serviceCodeItem;
+        boolean result = false;
+        
+        //“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
+        if ("33".equals(kind)) {
+            if ("2001".equals(item)		//ŠO•”ÔˆÖq‘İ—^
+	            || "2002".equals(item)	//ŠO•”ÔˆÖq•t‘®•i‘İ—^
+	            || "2003".equals(item)	//ŠO•”“ÁêQ‘ä‘İ—^
+	            || "2004".equals(item)	//ŠO•”“ÁêQ‘ä•t‘®•i‘İ—^
+	            || "2005".equals(item)	//ŠO•”°‚¸‚ê–h~—p‹ï‘İ—^
+	            || "2006".equals(item)	//ŠO•”‘ÌˆÊ•ÏŠ·‹@‘İ—^
+	            || "2007".equals(item)	//ŠO•”è‚·‚è‘İ—^
+	            || "2008".equals(item)	//ŠO•”ƒXƒ[ƒv‘İ—^
+	            || "2009".equals(item)	//ŠO•”•àsŠí‘İ—^
+	            || "2010".equals(item)	//ŠO•”•às•â•‚Â‚¦‘İ—^
+	            || "2011".equals(item)	//ŠO•””oæ~Š´’mŠí‘İ—^
+	            || "2012".equals(item)	//ŠO•”ˆÚ“®—pƒŠƒtƒg‘İ—^
+	            || "2013".equals(item)	//ŠO•”©“®”rŸ•‘•’u‘İ—^
+            ) {
+                result = true;
+            }
+        }
+        //•Ÿƒ—p‹ï‘İ—^
+        if ("17".equals(kind)) {
+            //•Ÿƒ—p‹ïŒn—ñ‚Íˆê—¥’PˆÊ”‚ğo—Í‚µ‚È‚¢B
+            if ("1001".equals(item)		//ÔˆÖq‘İ—^
+	            || "1002".equals(item)	//ÔˆÖq•t‘®•i‘İ—^
+	            || "1003".equals(item)	//“ÁêQ‘ä‘İ—^
+	            || "1004".equals(item)	//“ÁêQ‘ä•t‘®•i‘İ—^
+	            || "1005".equals(item)	//°‚¸‚ê–h~—p‹ï‘İ—^
+	            || "1006".equals(item)	//‘ÌˆÊ•ÏŠ·‹@‘İ—^
+	            || "1007".equals(item)	//è‚·‚è‘İ—^
+	            || "1008".equals(item)	//ƒXƒ[ƒv‘İ—^
+	            || "1009".equals(item)	//•àsŠí‘İ—^
+	            || "1010".equals(item)	//•às•â•‚Â‚¦‘İ—^
+	            || "1011".equals(item)	//œpœj’T’m‹@‘İ—^
+	            || "1012".equals(item)	//ˆÚ“®—pƒŠƒtƒg‘İ—^
+	            || "1013".equals(item)	//©“®”rŸ•‘•’u‘İ—^
+            ) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h•Ÿƒ—p‹ï‘İ—^
+        if ("67".equals(kind)) {
+        	//•Ÿƒ—p‹ïŒn—ñ‚Íˆê—¥’PˆÊ”‚ğo—Í‚µ‚È‚¢B
+        	if ("1001".equals(item)		//—\–hÔˆÖq‘İ—^
+	            || "1002".equals(item)	//—\–hÔˆÖq•t‘®•i‘İ—^
+	            || "1003".equals(item)	//—\–h“ÁêQ‘ä‘İ—^
+	            || "1004".equals(item)	//—\–h“ÁêQ‘ä•t‘®•i‘İ—^
+	            || "1005".equals(item)	//—\–h°‚¸‚ê–h~—p‹ï‘İ—^
+	            || "1006".equals(item)	//—\–h‘ÌˆÊ•ÏŠ·‹@‘İ—^
+	            || "1007".equals(item)	//—\–hè‚·‚è‘İ—^
+	            || "1008".equals(item)	//—\–hƒXƒ[ƒv‘İ—^
+	            || "1009".equals(item)	//—\–h•àsŠí‘İ—^
+	            || "1010".equals(item)	//—\–h•às•â•‚Â‚¦‘İ—^
+	            || "1011".equals(item)	//—\–hœpœj’T’m‹@‘İ—^
+	            || "1012".equals(item)	//—\–hˆÚ“®—pƒŠƒtƒg‘İ—^
+	            || "1013".equals(item)	//—\–h©“®”rŸ•‘•’u‘İ—^
+            ) {
+                result = true;
+        	}
+        }
+        //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        if ("73".equals(kind)) {
+            if ("1101".equals(item)		//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìŒo
+	            || "1111".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚P
+	            || "1121".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚Q
+	            || "1131".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚R
+	            || "1141".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚S
+	            || "1151".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚T
+	            || "8001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoE’è’´
+	            || "8011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚PE’è’´
+	            || "8021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚QE’è’´
+	            || "8031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚RE’è’´
+	            || "8041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚SE’è’´
+	            || "8051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚TE’è’´
+	            || "9001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoElŒ‡
+	            || "9011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚PElŒ‡
+	            || "9021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚QElŒ‡
+	            || "9031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚RElŒ‡
+	            || "9041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚SElŒ‡
+	            || "9051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚TElŒ‡
+            ) {
+                result = true;
+            }
+        }
+        //‰îŒì—\–h“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
+        if ("35".equals(kind)) {
+        	if ("1901".equals(item)		//—\–hŠO•”Ô‚¢‚·‘İ—^
+	        	|| "1902".equals(item)	//—\–hŠO•”Ô‚¢‚·•t‘®•i‘İ—^
+	        	|| "1903".equals(item)	//—\–hŠO•”“ÁêQ‘ä‘İ—^
+	        	|| "1904".equals(item)	//—\–hŠO•”“ÁêQ‘ä•t‘®•i‘İ—^
+	        	|| "1905".equals(item)	//—\–hŠO•”°‚¸‚ê–h~—p‹ï‘İ—^
+	        	|| "1906".equals(item)	//—\–hŠO•”‘ÌˆÊ•ÏŠ·Ší‘İ—^
+	        	|| "1907".equals(item)	//—\–hŠO•”è‚·‚è‘İ—^
+	        	|| "1908".equals(item)	//—\–hŠO•”ƒXƒ[ƒv‘İ—^
+	        	|| "1909".equals(item)	//—\–hŠO•”•àsŠí‘İ—^
+	        	|| "1910".equals(item)	//—\–hŠO•”•às•â•‚Â‚¦‘İ—^
+	        	|| "1911".equals(item)	//—\–hŠO•”œpœjŠ´’m‹@Ší‘İ—^
+	        	|| "1912".equals(item)	//—\–hŠO•”ˆÚ“®—pƒŠƒtƒg‘İ—^
+	            || "1913".equals(item)	//—\–hŠO•”©“®”rŸ•‘•’u‘İ—^
+        	) {
+        		result = true;
+        	}
+        }
+        
+        return result;
+        
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 add - end
     }
     
     /**
@@ -1439,6 +2151,8 @@ public class QP001SpecialCase {
      * @return true : ’PˆÊ”‚ğ‹LÚ‚µ‚È‚¢ false : ’PˆÊ”‚ğ‹LÚ‚·‚é
      * @throws Exception
      */
+    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - begin   ƒT[ƒrƒXƒR[ƒh‰p”‰»‚É‚æ‚è‚±‚Ìƒ`ƒFƒbƒN•û–@‚ğíœ
+    /*
     public static boolean isMaxCountService(int kind, int item) throws Exception {
         
         boolean result = false;
@@ -1594,48 +2308,48 @@ public class QP001SpecialCase {
             case 9051:
             
             //[ID:0000497][Shin Fujihara] 2009/04/28 add begin áŠQ‘Î‰
-            /*
-        	//[ID:0000447][Shin Fujihara] 2009/02 add begin •½¬21”N4Œ–@‰ü³‘Î‰
-        	//¬‹K–Í‘½‹@”\Œ^”F’mÇ‰ÁZ‡T
-        	case 6128:
-        	//¬‹K–Í‘½‹@”\Œ^”F’mÇ‰ÁZ‡U
-        	case 6129:
-        	//¬‹K–Í‘½‹@”\Œ^ŠÅŒìEˆõ”z’u‰ÁZ‡T
-        	case 6137:
-        	//¬‹K–Í‘½‹@”\Œ^ŠÅŒìEˆõ”z’u‰ÁZ‡U
-        	case 6138:
-        	//¬‹K–Í‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ‡T
-        	case 6139:
-        	//¬‹K–Í‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ‡U
-        	case 6140:
-        	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
-        	case 6101:
-        	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
-        	case 6102:
-        	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
-        	case 6103:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P
-        	case 7001:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚Q
-        	case 7002:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚R
-        	case 7003:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚S
-        	case 7004:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚T
-        	case 7005:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚U
-        	case 7006:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚V
-        	case 7007:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚W
-        	case 7008:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚X
-        	case 7009:
-        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚O
-        	case 7010:
-        	//[ID:0000447][Shin Fujihara] 2009/02 add end •½¬21”N4Œ–@‰ü³‘Î‰
-            */
+//
+//        	//[ID:0000447][Shin Fujihara] 2009/02 add begin •½¬21”N4Œ–@‰ü³‘Î‰
+//        	//¬‹K–Í‘½‹@”\Œ^”F’mÇ‰ÁZ‡T
+//        	case 6128:
+//        	//¬‹K–Í‘½‹@”\Œ^”F’mÇ‰ÁZ‡U
+//        	case 6129:
+//        	//¬‹K–Í‘½‹@”\Œ^ŠÅŒìEˆõ”z’u‰ÁZ‡T
+//        	case 6137:
+//        	//¬‹K–Í‘½‹@”\Œ^ŠÅŒìEˆõ”z’u‰ÁZ‡U
+//        	case 6138:
+//        	//¬‹K–Í‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ‡T
+//        	case 6139:
+//        	//¬‹K–Í‘½‹@”\Œ^–‹ÆŠJnx‰‡‰ÁZ‡U
+//        	case 6140:
+//        	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T
+//        	case 6101:
+//        	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
+//        	case 6102:
+//        	//¬‘½‹@”\Œ^ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+//        	case 6103:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P
+//        	case 7001:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚Q
+//        	case 7002:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚R
+//        	case 7003:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚S
+//        	case 7004:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚T
+//        	case 7005:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚U
+//        	case 7006:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚V
+//        	case 7007:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚W
+//        	case 7008:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚X
+//        	case 7009:
+//        	//¬‹K–Í‘½‹@”\Œ^s’¬‘º“Æ©‰ÁZ‚P‚O
+//        	case 7010:
+//        	//[ID:0000447][Shin Fujihara] 2009/02 add end •½¬21”N4Œ–@‰ü³‘Î‰
+//
             //[ID:0000497][Shin Fujihara] 2009/04/28 add end áŠQ‘Î‰
                 result = true;
                 break;
@@ -1701,6 +2415,8 @@ public class QP001SpecialCase {
         
         return result;
     }
+    */
+    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 del - end
     
     /**
      * —˜—pÒ•‰’SŠz‚ğæ“¾‚·‚éB
@@ -1797,8 +2513,29 @@ public class QP001SpecialCase {
      * @throws Exception
      */
     public static boolean isRegionStickingService(String serviceCodeKind) throws Exception {
-        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
-        return isRegionStickingService(kind);
+        //int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+        //return isRegionStickingService(kind);
+    	
+    	boolean result = false;
+    	if ("32".equals(serviceCodeKind)	//”F’mÇ‘Î‰Œ^
+    		|| "36".equals(serviceCodeKind)	//’nˆæ“Á’è{İ
+    		|| "37".equals(serviceCodeKind)	//—\–h”F’mÇ
+    		|| "38".equals(serviceCodeKind)	//”F’mÇ’ZŠú
+    		|| "39".equals(serviceCodeKind)	//—\–h”F’m’ZŠú
+    		|| "54".equals(serviceCodeKind)	//’nˆæ•Ÿƒ{İ
+    		|| "71".equals(serviceCodeKind)	//–éŠÔ–K–â‰îŒì
+    		|| "72".equals(serviceCodeKind)	//”F’mÇ’ÊŠ
+    		|| "73".equals(serviceCodeKind)	//¬‹K–Í‘½‹@”\
+    		|| "74".equals(serviceCodeKind)	//—\–h”F’m’ÊŠ
+    		|| "75".equals(serviceCodeKind)	//—\–h¬‹K–Í
+    		|| "77".equals(serviceCodeKind)	//•¡‡Œ^ 2015.03.04 add
+    		|| "68".equals(serviceCodeKind)	//¬‹K–Í‘½‹@”\’ZŠú 2015.03.04 add
+    		|| "69".equals(serviceCodeKind)	//—\–h¬‹K–Í‘½‹@”\’ZŠú 2015.03.04 add
+    		|| "79".equals(serviceCodeKind)	//•¡‡Œ^’ZŠú 2015.03.04 add
+    		) {
+    		result = true;
+    	}
+    	return result;
     }
     /**
      * ’nˆæ–§’…Œ^ƒT[ƒrƒX‚Å‚ ‚é‚©‚ğæ“¾‚·‚éB
@@ -1806,6 +2543,7 @@ public class QP001SpecialCase {
      * @return
      * @throws Exception
      */
+    /*
     public static boolean isRegionStickingService(int kind) throws Exception {
         boolean result = false;
         
@@ -1837,6 +2575,54 @@ public class QP001SpecialCase {
         }
         return result;
     }
+    */
+// 2014/12/24 [Yoichiro Kamei] add - begin ZŠ’n“Á—á‘Î‰
+    /**
+     * ZŠ’n“Á—á‚É‚Ä–¾×‘‹LÚ‘ÎÛ‚Ì’nˆæ–§’…Œ^ƒT[ƒrƒX‚Å‚ ‚é‚©‚ğæ“¾‚·‚éB
+     * @param serviceCodeKind
+     * @return
+     * @throws Exception
+     */
+    public static boolean isRegionStickingServiceForJushotiTokurei(String serviceCodeKind) throws Exception {
+    	/*
+        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+        boolean result = false;
+        
+        switch(kind){
+        //–éŠÔ–K–â‰îŒì
+        case 71:
+        //”F’mÇ’ÊŠ
+        case 72:
+        //¬‹K–Í‘½‹@”\
+        case 73:
+        //—\–h”F’m’ÊŠ
+        case 74:
+        //—\–h¬‹K–Í
+        case 75:
+        //’èŠú„‰ñ
+        case 76:
+        //•¡‡Œ^ƒT[ƒrƒX
+        case 77:
+            result = true;
+            break;
+        }
+        return result;
+        */
+    	boolean result = false;
+    	if ("71".equals(serviceCodeKind)	//–éŠÔ–K–â‰îŒì
+    		|| "72".equals(serviceCodeKind)	//”F’mÇ’ÊŠ
+    		|| "73".equals(serviceCodeKind)	//¬‹K–Í‘½‹@”\
+    		|| "74".equals(serviceCodeKind)	//—\–h”F’m’ÊŠ
+    		|| "75".equals(serviceCodeKind)	//—\–h¬‹K–Í
+    		|| "76".equals(serviceCodeKind)	//’èŠú„‰ñ
+    		|| "77".equals(serviceCodeKind)	//•¡‡Œ^ƒT[ƒrƒX
+    		) {
+    		result = true;
+    	}
+    	return result;
+    }
+// 2014/12/24 [Yoichiro Kamei] add - end
+    
     
     //[ID:0000523][Shin Fujihara] 2009/07 add begin 2009”N“x‘Î‰
     /**
@@ -2337,7 +3123,10 @@ public class QP001SpecialCase {
     /**
      * —l®‘æ“ñ‚Ì“ñ‚É‚¨‚¢‚ÄA—\–h–K–â‰îŒì‚P‚Æ—\–h–K–â‰îŒì‚PE‚R‹‰‚ªƒT[ƒrƒX‚É“o˜^‚³‚ê‚Ä‚¢‚½<br>
      * ê‡A—\–h–K–â‰îŒì‚PE‚R‹‰‚Ì‚İ¿‹‚ğs‚È‚¤B<br>
-     * ‰îŒì—\–h–K–âŠÅŒìƒT[ƒrƒXi“úŠ„‚ğœ‚­j‚Å‚ ‚ê‚ÎAtrue‚ğ•Ô‹p‚·‚éB
+     * ¨  2015.4 ‰ü³‘Î‰
+     *     2012”N‚Éu—\–h–K–â‰îŒì‚PE‚R‹‰v‚ª”p~‚³‚êAu—\–h–K–â‰îŒì‡TE‰”Cvu—\–h–K–â‰îŒì‡TE“¯ˆêvu—\–h–K–â‰îŒì‡TE‰”CE“¯ˆêv
+     *     ‚ª’Ç‰Á‚³‚ê‚Ä‚¢‚é‚±‚Æ‚É‘Î‰‚³‚ê‚Ä‚¢‚È‚¢‚½‚ßC³‚ğs‚Á‚½B
+     * ‰îŒì—\–h–K–â‰îŒìƒT[ƒrƒXi“úŠ„‚ğœ‚­j‚Å‚ ‚ê‚ÎAtrue‚ğ•Ô‹p‚·‚éB
      * @param serviceCodeKind
      * @param serviceCodeItem
      * @return
@@ -2345,28 +3134,50 @@ public class QP001SpecialCase {
      */
     public static boolean isArrangementData(String serviceCodeKind, String serviceCodeItem) throws Exception {
     	boolean result = false;
-    	int kind = ACCastUtilities.toInt(serviceCodeKind,0);
-    	int item = ACCastUtilities.toInt(serviceCodeItem,0);
+    	
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - begin   ƒT[ƒrƒXƒR[ƒh‰p”‰»‚Æ–¢‘Î‰ƒR[ƒh”»’è’Ç‰Á
+    	//int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+    	//int item = ACCastUtilities.toInt(serviceCodeItem,0);
     	
 		//ƒT[ƒrƒXí—ŞƒR[ƒh‚ÌŠm”F
-		if(kind == 61){
-			switch(item){
-			//—\–h–K–â‰îŒì‚P
-			case 1111:
-			//—\–h–K–â‰îŒì‚PE‚R‹‰
-			case 1112:
-			//—\–h–K–â‰îŒì‚Q
-			case 1211:
-			//—\–h–K–â‰îŒì‚QE‚R‹‰
-			case 1212:
-			//—\–h–K–â‰îŒì‚R
-			case 1321:
-			//—\–h–K–â‰îŒì‚RE‚R‹‰
-			case 1322:
+//		if(kind == 61){
+//			switch(item){
+//			//—\–h–K–â‰îŒì‚P
+//			case 1111:
+//			//—\–h–K–â‰îŒì‚PE‚R‹‰
+//			case 1112:
+//			//—\–h–K–â‰îŒì‚Q
+//			case 1211:
+//			//—\–h–K–â‰îŒì‚QE‚R‹‰
+//			case 1212:
+//			//—\–h–K–â‰îŒì‚R
+//			case 1321:
+//			//—\–h–K–â‰îŒì‚RE‚R‹‰
+//			case 1322:
+//				result = true;
+//				break;
+//			}
+//		}
+    	//—\–h–K–â‰îŒì
+		if ("61".equals(serviceCodeKind)){
+			if ("1111".equals(serviceCodeItem)		//—\–h–K–â‰îŒì‚P
+				|| "1113".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚PE‰”C
+				|| "1114".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚PE“¯ˆê
+				|| "1115".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚PE‰”CE“¯ˆê
+				|| "1211".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚Q
+				|| "1213".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚QE‰”C
+				|| "1214".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚QE“¯ˆê
+				|| "1215".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚QE‰”CE“¯ˆê
+				|| "1321".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚R
+				|| "1323".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚RE‰”C
+				|| "1324".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚RE“¯ˆê
+				|| "1325".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚RE‰”CE“¯ˆê
+			) {
 				result = true;
-				break;
 			}
 		}
+		// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - end
+		
 		return result;
     }
     
@@ -2438,7 +3249,15 @@ public class QP001SpecialCase {
                 count = ACCastUtilities.toInt(serviceDetail.get("1320115"),1);
             }
             
-        
+// 2015/3/9 [H27.4‰ü³‘Î‰][Yoichiro Kamei] add - begin
+        //“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
+        } else if ("33".equals(serviceCodeKind)) {
+            
+            //6125:“Á’è{İŠÅæ‚è‰îŒì‰ÁZ‚P 6126:“Á’è{İŠÅæ‚è‰îŒì‰ÁZ‚Q
+            if("6125".equals(serviceCodeItem) || "6126".equals(serviceCodeItem)){
+                count = ACCastUtilities.toInt(serviceDetail.get("1330133"),1);
+            }
+// 2015/3/9 [H27.4‰ü³‘Î‰][Yoichiro Kamei] add - begin
         //‰îŒì•Ÿƒ{İ
         } else if ("51".equals(serviceCodeKind)) {
             
@@ -2468,8 +3287,19 @@ public class QP001SpecialCase {
             if("6276".equals(serviceCodeItem) || "6277".equals(serviceCodeItem)){
                 count = ACCastUtilities.toInt(serviceDetail.get("1540128"),1);
             }
-        }
         
+// 2015/3/17 [H27.4‰ü³‘Î‰][Shinobu Hitaka] add - begin
+        //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìi’ZŠú—˜—pˆÈŠOj
+        } else if ("73".equals(serviceCodeKind)) {
+            
+            //4000:¬‘½‹@”\Œ^ŠÅæ‚è˜AŒg‘Ì§‰ÁZ
+            if("4000".equals(serviceCodeItem)){
+                count = ACCastUtilities.toInt(serviceDetail.get("1730116"),1);
+            }
+// 2017/3/9 [H27.4‰ü³‘Î‰][Shinobu Hitaka] add - begin
+            
+        }
+            
         return count;
     }
     //[ID:0000720][Shin Fujihara] 2012/04 add end 2012”N“x‘Î‰

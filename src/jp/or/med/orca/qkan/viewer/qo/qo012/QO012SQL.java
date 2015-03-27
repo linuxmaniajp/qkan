@@ -138,9 +138,10 @@ public class QO012SQL extends QO012Design {
     sb.append("(");
 
     sb.append("(");
-
-    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START");
+    sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START");
+// 2014/12/17 [Yoichiro Kamei] mod - end
     sb.append("  <= ");
 
     sb.append(dateFormat.format(VRBindPathParser.get("START_DATE", sqlParam), "yyyy-MM-dd"));
@@ -150,9 +151,10 @@ public class QO012SQL extends QO012Design {
     sb.append("AND");
 
     sb.append("(");
-
-    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END");
-
+ // 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+ //   sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END");
+    sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END");
+ // 2014/12/17 [Yoichiro Kamei] mod - end
     sb.append("  >=");
 
     sb.append(dateFormat.format(VRBindPathParser.get("START_DATE", sqlParam), "yyyy-MM-dd"));
@@ -166,9 +168,10 @@ public class QO012SQL extends QO012Design {
     sb.append("(");
 
     sb.append("(");
-
-    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START");
+    sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START");
+// 2014/12/17 [Yoichiro Kamei] mod - end
     sb.append(" <= ");
 
     sb.append(dateFormat.format(VRBindPathParser.get("END_DATE", sqlParam), "yyyy-MM-dd"));
@@ -178,9 +181,10 @@ public class QO012SQL extends QO012Design {
     sb.append("AND");
 
     sb.append("(");
-
-    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END");
+    sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END");
+// 2014/12/17 [Yoichiro Kamei] mod - end
     sb.append(" >=");
 
     sb.append(dateFormat.format(VRBindPathParser.get("END_DATE", sqlParam), "yyyy-MM-dd"));
@@ -194,9 +198,10 @@ public class QO012SQL extends QO012Design {
     sb.append("(");
 
     sb.append("(");
-
-    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START");
+    sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START");
+// 2014/12/17 [Yoichiro Kamei] mod - end
     sb.append(" >=");
 
     sb.append(dateFormat.format(VRBindPathParser.get("START_DATE", sqlParam), "yyyy-MM-dd"));
@@ -206,9 +211,10 @@ public class QO012SQL extends QO012Design {
     sb.append("AND");
 
     sb.append("(");
-
-    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//    sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END");
+    sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END");
+// 2014/12/17 [Yoichiro Kamei] mod - end
     sb.append(" <=");
 
     sb.append(dateFormat.format(VRBindPathParser.get("END_DATE", sqlParam), "yyyy-MM-dd"));

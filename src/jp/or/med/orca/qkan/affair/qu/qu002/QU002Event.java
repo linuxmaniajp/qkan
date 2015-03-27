@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司 和善
- * 作成日: 2012/08/03  日本コンピューター株式会社 上司 和善 新規作成
+ * 作成日: 2015/01/14  日本コンピューター株式会社 上司 和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -591,6 +591,118 @@ public abstract class QU002Event extends QU002SQL {
             }
         }
     });
+    getJushotiTokureiInfoButtonClear().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoButtonClearActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getJushotiTokureiInfoButtonInsert().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoButtonInsertActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getJushotiTokureiInfoButtonEdit().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoButtonEditActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getJushotiTokureiInfoButtonDelete().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoButtonDeleteActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getJushotiTokureiInfoTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoTableSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getJushotiTokureiInfoInsurerId().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoInsurerIdFocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getJushotiTokureiInfoInsurerName().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                jushotiTokureiInfoInsurerNameActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -812,6 +924,55 @@ public abstract class QU002Event extends QU002SQL {
    */
   protected abstract void shisetsuInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
 
+  /**
+   * 「住所地特例-クリアボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoButtonClearActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「住所地特例-追加ボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoButtonInsertActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「住所地特例-書換ボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoButtonEditActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「住所地特例-削除ボタン」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoButtonDeleteActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「対象レコードを表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoTableSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「保険者名表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoInsurerIdFocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「保険者番号表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void jushotiTokureiInfoInsurerNameActionPerformed(ActionEvent e) throws Exception;
+
   //変数定義
 
   private ACPassiveKey PASSIVE_CHECK_KEY_PATIENT;
@@ -820,9 +981,11 @@ public abstract class QU002Event extends QU002SQL {
   private int idouTableChangeFlg;
   private int kaigoTableChangeFlg;
   private int shisetsuTableChangeFlg;
+  private int jushotiTokureiTableChangeFlg;
   private int kaigoDataFlg;
   private int idouDataFlg;
   private int shisetsuDataFlg;
+  private int jushotiTokureiDataFlg;
   private int compulsoryBackFlg;
   private int NonCorrespondenceFlg;
   private Date systemDate;
@@ -884,14 +1047,17 @@ public abstract class QU002Event extends QU002SQL {
   private VRList kaigoHistoryList = new VRArrayList();
   private VRList idouHistoryList = new VRArrayList();
   private VRList shisetsuHistoryList = new VRArrayList();
+  private VRList jushotiTokureiList = new VRArrayList();
   private VRList providerListKaigoShien = new VRArrayList();
   private VRList providerListYobouShien = new VRArrayList();
   private ACTableModelAdapter kaigoTableModel;
   private ACTableModelAdapter idouTableModel;
   private ACTableModelAdapter shisetsuTableModel;
+  private ACTableModelAdapter jushotiTokureiTableModel;
   private ACSnapshot snapShotKaigo = new ACSnapshot();
   private ACSnapshot snapShotIdou = new ACSnapshot();
   private ACSnapshot snapShotShisetsu = new ACSnapshot();
+  private ACSnapshot snapShotJushotiTokurei = new ACSnapshot();
   //getter/setter
 
   /**
@@ -985,6 +1151,21 @@ public abstract class QU002Event extends QU002SQL {
   }
 
   /**
+   * jushotiTokureiTableChangeFlgを返します。
+   * @return jushotiTokureiTableChangeFlg
+   */
+  protected int getJushotiTokureiTableChangeFlg(){
+    return jushotiTokureiTableChangeFlg;
+  }
+  /**
+   * jushotiTokureiTableChangeFlgを設定します。
+   * @param jushotiTokureiTableChangeFlg jushotiTokureiTableChangeFlg
+   */
+  protected void setJushotiTokureiTableChangeFlg(int jushotiTokureiTableChangeFlg){
+    this.jushotiTokureiTableChangeFlg = jushotiTokureiTableChangeFlg;
+  }
+
+  /**
    * kaigoDataFlgを返します。
    * @return kaigoDataFlg
    */
@@ -1027,6 +1208,21 @@ public abstract class QU002Event extends QU002SQL {
    */
   protected void setShisetsuDataFlg(int shisetsuDataFlg){
     this.shisetsuDataFlg = shisetsuDataFlg;
+  }
+
+  /**
+   * jushotiTokureiDataFlgを返します。
+   * @return jushotiTokureiDataFlg
+   */
+  protected int getJushotiTokureiDataFlg(){
+    return jushotiTokureiDataFlg;
+  }
+  /**
+   * jushotiTokureiDataFlgを設定します。
+   * @param jushotiTokureiDataFlg jushotiTokureiDataFlg
+   */
+  protected void setJushotiTokureiDataFlg(int jushotiTokureiDataFlg){
+    this.jushotiTokureiDataFlg = jushotiTokureiDataFlg;
   }
 
   /**
@@ -1180,6 +1376,21 @@ public abstract class QU002Event extends QU002SQL {
   }
 
   /**
+   * jushotiTokureiListを返します。
+   * @return jushotiTokureiList
+   */
+  protected VRList getJushotiTokureiList(){
+    return jushotiTokureiList;
+  }
+  /**
+   * jushotiTokureiListを設定します。
+   * @param jushotiTokureiList jushotiTokureiList
+   */
+  protected void setJushotiTokureiList(VRList jushotiTokureiList){
+    this.jushotiTokureiList = jushotiTokureiList;
+  }
+
+  /**
    * providerListKaigoShienを返します。
    * @return providerListKaigoShien
    */
@@ -1255,6 +1466,21 @@ public abstract class QU002Event extends QU002SQL {
   }
 
   /**
+   * jushotiTokureiTableModelを返します。
+   * @return jushotiTokureiTableModel
+   */
+  protected ACTableModelAdapter getJushotiTokureiTableModel(){
+    return jushotiTokureiTableModel;
+  }
+  /**
+   * jushotiTokureiTableModelを設定します。
+   * @param jushotiTokureiTableModel jushotiTokureiTableModel
+   */
+  protected void setJushotiTokureiTableModel(ACTableModelAdapter jushotiTokureiTableModel){
+    this.jushotiTokureiTableModel = jushotiTokureiTableModel;
+  }
+
+  /**
    * snapShotKaigoを返します。
    * @return snapShotKaigo
    */
@@ -1297,6 +1523,21 @@ public abstract class QU002Event extends QU002SQL {
    */
   protected void setSnapShotShisetsu(ACSnapshot snapShotShisetsu){
     this.snapShotShisetsu = snapShotShisetsu;
+  }
+
+  /**
+   * snapShotJushotiTokureiを返します。
+   * @return snapShotJushotiTokurei
+   */
+  protected ACSnapshot getSnapShotJushotiTokurei(){
+    return snapShotJushotiTokurei;
+  }
+  /**
+   * snapShotJushotiTokureiを設定します。
+   * @param snapShotJushotiTokurei snapShotJushotiTokurei
+   */
+  protected void setSnapShotJushotiTokurei(ACSnapshot snapShotJushotiTokurei){
+    this.snapShotJushotiTokurei = snapShotJushotiTokurei;
   }
 
   //内部関数
@@ -1399,6 +1640,14 @@ public abstract class QU002Event extends QU002SQL {
   public abstract void doFindShisetsu() throws Exception;
 
   /**
+   * 「住所地特例情報取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void doFindJushotiTokurei() throws Exception;
+
+  /**
    * 「画面全体クリア処理」に関する処理を行ないます。
    *
    * @throws Exception 処理例外
@@ -1438,5 +1687,14 @@ public abstract class QU002Event extends QU002SQL {
    * @return boolean
    */
   public abstract boolean isValidInputShisetsu(int checkMode) throws Exception;
+
+  /**
+   * 「住所地特例情報入力チェック」に関する処理を行ないます。
+   *
+   * @param checkMode int
+   * @throws Exception 処理例外
+   * @return boolean
+   */
+  public abstract boolean isValidInputJushotiTokurei(int checkMode) throws Exception;
 
 }

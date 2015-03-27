@@ -112,6 +112,14 @@ public class ConvertTask implements Runnable {
                 // 最後にM_NO_CONTROLのPROVIDER_SERVICEを移行
                 copyNoControl("PROVIDER_SERVICE", "PROVIDER_SERVICE_ID");
                 
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - begin
+                //介護保険情報のシステム適用期間を設定
+                updateSystemInsureValid();
+                
+                //地域区分　５級地の２⇒５級地
+                updateProviderAreaType();
+// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - end
+                
                 setStatus("終了処理を実行中...", 100);
                 
                 to.commit();
@@ -441,6 +449,18 @@ public class ConvertTask implements Runnable {
         to.exec(sql.toString());
     }
     
+ // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - begin
+    private void updateSystemInsureValid() throws Exception {
+        String sql = "UPDATE PATIENT_NINTEI_HISTORY SET SYSTEM_INSURE_VALID_START = INSURE_VALID_START, SYSTEM_INSURE_VALID_END = INSURE_VALID_END";
+        to.exec(sql);
+    }
+    
+    // 地域区分　５級地の２：8⇒５級地：3
+    private void updateProviderAreaType() throws Exception {
+        String sql = "UPDATE PROVIDER SET PROVIDER_AREA_TYPE = 3 WHERE PROVIDER_AREA_TYPE = 8";
+        to.exec(sql);
+    }
+ // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - end
     
     private Set<Integer> getProviderServiceId() throws Exception {
         

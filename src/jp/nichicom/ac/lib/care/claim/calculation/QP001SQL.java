@@ -129,10 +129,16 @@ public class QP001SQL extends QP001State {
             sb.append(" SELECT FIRST 1 PATIENT_NINTEI_HISTORY.INSURER_ID FROM PATIENT_NINTEI_HISTORY");
             sb.append(" WHERE");
             sb.append(" (PATIENT.PATIENT_ID = PATIENT_NINTEI_HISTORY.PATIENT_ID)");
-            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= "
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= "
+//                    + startCompDate + ")");
+//            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= "
+//                    + endCompDate + ")");
+            sb.append(" AND (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START <= "
                     + startCompDate + ")");
-            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= "
+            sb.append(" AND (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END >= "
                     + endCompDate + ")");
+// 2014/12/17 [Yoichiro Kamei] mod - end
             sb.append(" AND (PATIENT_NINTEI_HISTORY.CHANGE_CODE = 0)");
             sb.append(" ORDER BY PATIENT_NINTEI_HISTORY.JOTAI_CODE DESC");
             sb.append(") AS INSURER_ID");
@@ -170,10 +176,16 @@ public class QP001SQL extends QP001State {
             sb.append(" SELECT FIRST 1 PATIENT_NINTEI_HISTORY.INSURED_ID FROM PATIENT_NINTEI_HISTORY");
             sb.append(" WHERE");
             sb.append(" (PATIENT.PATIENT_ID = PATIENT_NINTEI_HISTORY.PATIENT_ID)");
-            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= "
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= "
+//                    + startCompDate + ")");
+//            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= "
+//                    + endCompDate + ")");
+            sb.append(" AND (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START <= "
                     + startCompDate + ")");
-            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= "
+            sb.append(" AND (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END >= "
                     + endCompDate + ")");
+// 2014/12/17 [Yoichiro Kamei] mod - end
             sb.append(" AND (PATIENT_NINTEI_HISTORY.CHANGE_CODE = 0)");
             sb.append(" ORDER BY PATIENT_NINTEI_HISTORY.JOTAI_CODE DESC");
             sb.append(" ) AS INSURED_ID");
@@ -190,15 +202,27 @@ public class QP001SQL extends QP001State {
         sb.append(" (PATIENT.PATIENT_ID = PATIENT_NINTEI_HISTORY.PATIENT_ID)");
         
         if("01".equals(affair)){
-            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= "
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= "
+//                    + startCompDate + ")");
+//            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= "
+//                    + endCompDate + ")");
+            sb.append(" AND (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START <= "
                     + startCompDate + ")");
-            sb.append(" AND (PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= "
+            sb.append(" AND (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END >= "
                     + endCompDate + ")");
+// 2014/12/17 [Yoichiro Kamei] mod - end
         } else {
             //がっつり修正
-            sb.append(" AND(EXTRACT(YEAR FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_START) * 10000 + EXTRACT(MONTH FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_START) * 100 + EXTRACT(DAY FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_START))");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND(EXTRACT(YEAR FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_START) * 10000 + EXTRACT(MONTH FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_START) * 100 + EXTRACT(DAY FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_START))");
+        	sb.append(" AND(EXTRACT(YEAR FROM PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START) * 10000 + EXTRACT(MONTH FROM PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START) * 100 + EXTRACT(DAY FROM PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START))");
+// 2014/12/17 [Yoichiro Kamei] mod - end
             sb.append(" <= (EXTRACT(YEAR FROM CLAIM.TARGET_DATE) * 10000 + EXTRACT(MONTH FROM CLAIM.TARGET_DATE) * 100 + 31)");
-            sb.append(" AND(EXTRACT(YEAR FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_END) * 10000 + EXTRACT(MONTH FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_END) * 100 + EXTRACT(DAY FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_END))");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応           
+//            sb.append(" AND(EXTRACT(YEAR FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_END) * 10000 + EXTRACT(MONTH FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_END) * 100 + EXTRACT(DAY FROM PATIENT_NINTEI_HISTORY.INSURE_VALID_END))");
+            sb.append(" AND(EXTRACT(YEAR FROM PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END) * 10000 + EXTRACT(MONTH FROM PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END) * 100 + EXTRACT(DAY FROM PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END))");
+// 2014/12/17 [Yoichiro Kamei] mod - end
             sb.append(" >= (EXTRACT(YEAR FROM CLAIM.TARGET_DATE) * 10000 + EXTRACT(MONTH FROM CLAIM.TARGET_DATE) * 100 + 1)");
         }        
         
@@ -1239,10 +1263,17 @@ public class QP001SQL extends QP001State {
         sb.append(" WHERE");
         sb.append(" (PATIENT_ID = " + sqlParam.get("PATIENT_ID") + ")");
         if(target != null){
-            sb.append(" AND(INSURE_VALID_START <= '" + VRDateParser.format(ACDateUtilities.toLastDayOfMonth(target),"yyyy/MM/dd") + "')");
-            sb.append(" AND(INSURE_VALID_END >= '" + VRDateParser.format(ACDateUtilities.toFirstDayOfMonth(target),"yyyy/MM/dd") + "')");
+ // 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            sb.append(" AND(INSURE_VALID_START <= '" + VRDateParser.format(ACDateUtilities.toLastDayOfMonth(target),"yyyy/MM/dd") + "')");
+//            sb.append(" AND(INSURE_VALID_END >= '" + VRDateParser.format(ACDateUtilities.toFirstDayOfMonth(target),"yyyy/MM/dd") + "')");
+            sb.append(" AND(SYSTEM_INSURE_VALID_START <= '" + VRDateParser.format(ACDateUtilities.toLastDayOfMonth(target),"yyyy/MM/dd") + "')");
+            sb.append(" AND(SYSTEM_INSURE_VALID_END >= '" + VRDateParser.format(ACDateUtilities.toFirstDayOfMonth(target),"yyyy/MM/dd") + "')");
+ // 2014/12/17 [Yoichiro Kamei] mod - end
         }
-        sb.append(" ORDER BY INSURE_VALID_END DESC");
+ // 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+ //       sb.append(" ORDER BY INSURE_VALID_END DESC");
+        sb.append(" ORDER BY SYSTEM_INSURE_VALID_END DESC");
+ // 2014/12/17 [Yoichiro Kamei] mod - end
         return sb.toString();
     }
     

@@ -856,7 +856,12 @@ public class QO004 extends QO004Event {
         // providerServiceTableModelを設定する。
         // "OFFER" "SERVICE_NAME"
         model = new ACTableModelAdapter();
-        model.setColumns(new String[] { "OFFER", "SERVICE_ABBREVIATION" });
+        
+        // [H27.4改正対応][Shinobu Hitaka] 2015/2/13 edit - begin サービスリストは種類コード＋略称で表示する
+        // model.setColumns(new String[] { "OFFER", "SERVICE_ABBREVIATION" });
+        model.setColumns(new String[] { "OFFER", "SERVICE_CODE_KIND+':'+SERVICE_ABBREVIATION" });
+        // [H27.4改正対応][Shinobu Hitaka] 2015/2/13 edit - end 
+        
         setProviderServiceTableModel(model);
 
         // テーブルモデルを下記の画面のテーブルに設定する。
@@ -1049,9 +1054,13 @@ public class QO004 extends QO004Event {
         // 提供サービスリストを作成する処理
 
         // サービスマスタデータを取得する。
+    	// [H27.4改正対応][Shinobu Hitaka] 2015/1/29 edit - begin 
+        //VRMap temp = QkanCommon.getMasterService(getDBManager(),
+        //        TARGET_DATE_20120401);
         VRMap temp = QkanCommon.getMasterService(getDBManager(),
-                TARGET_DATE_20120401);
-
+                TARGET_DATE_20150401);
+    	// [H27.4改正対応][Shinobu Hitaka] 2015/1/29 edit - end
+        
         if (temp == null) {
             // マスタデータを取得できなかった場合
             // エラーメッセージを表示する。※メッセージID = ERROR_OF_SERVICE_MASTER
@@ -1845,7 +1854,12 @@ public class QO004 extends QO004Event {
             sb.append(serviceTypeCodeVal);
             sb.append("_");
             // 履歴管理の概念が出てきた場合は、末尾の年月を分岐させる
-            sb.append(QkanCommon.getAffairLowVersion("", null));
+            
+            // test hitaka
+            //sb.append(QkanCommon.getAffairLowVersion("", null));
+            sb.append("201504");
+            // test hitaka
+            
             // クラス生成
             serviceClass = (Class<QO004ProviderPanel>) Class.forName(sb
                     .toString());

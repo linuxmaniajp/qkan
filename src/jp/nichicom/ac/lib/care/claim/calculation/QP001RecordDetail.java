@@ -1019,6 +1019,8 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             case 3:
                 //サービスコードの確認
                 //訪問看護、緊急時訪問看護加算、特別管理加算であるか確認
+            	// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
+            	/*
                 switch(ACCastUtilities.toInt(serviceCode.get("SERVICE_CODE_KIND"),0)){
                 //訪問看護
                 case 13:
@@ -1044,6 +1046,27 @@ public class QP001RecordDetail extends QP001RecordAbstract {
                 	break;
                 
                 }
+                */
+            	String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
+                if ("13".equals(serviceCodeKind) 	//13:訪問看護
+                	|| "63".equals(serviceCodeKind)	//63:介護予防訪問看護
+                	) {
+                	//サービス項目コードの確認
+                	String serviceCodeItem = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"));
+                	if ("3100".equals(serviceCodeItem)		//3100:緊急時訪問看護加算１
+                		|| "3200".equals(serviceCodeItem)	//3200:緊急時訪問看護加算２
+                		|| "4000".equals(serviceCodeItem)	//4000:特別管理加算
+                		) {
+                        //設定ファイルの値を確認する。
+                        if(ACFrame.getInstance().hasProperty("PrintConfig/OncePerMonth")){
+                        	if(ACCastUtilities.toInt(ACFrame.getInstance().getProperty("PrintConfig/OncePerMonth"),1) == 0){
+                        		result = true;
+                        		return result;
+                        	}
+                        }
+                	}
+                }
+                // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end   サービスコード英数化
                 result = false;
                 break;
             default:
@@ -1092,7 +1115,10 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         //レコードの作成可否を判断
         //2008/09/03 [Shin Fujihara] edit - begin 30日超の単位数をPatientStateに保持するよう変更
         //if(!isMakeRecord(serviceDetail,serviceCode)){
-        if(!isMakeRecord(serviceDetail,serviceCode, patientState)){
+  // 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+  //if(!isMakeRecord(serviceDetail,serviceCode, patientState)){
+        if(!isMakeRecord(serviceDetail,serviceCode, patientState, targetServiceDate)){
+  // 2014/12/24 [Yoichiro Kamei] mod - end
         //2008/09/03 [Shin Fujihara] edit - end 30日超の単位数をPatientStateに保持するよう変更
             return detail;
         }
@@ -1119,7 +1145,10 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     
     //2008/09/03 [Shin Fujihara] edit - begin 30日超の単位数をPatientStateに保持するよう変更
     //private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode) throws Exception {
-    private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState) throws Exception {
+// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
+//    private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState) throws Exception {
+    private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState, Object targetServiceDate) throws Exception {
+// 2014/12/24 [Yoichiro Kamei] mod - end
     //2008/09/03 [Shin Fujihara] edit - end 30日超の単位数をPatientStateに保持するよう変更
         
         //給付管理限度額対象フラグを確認する。
@@ -1134,6 +1163,16 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         	//2008/09/03 [Shin Fujihara] add - end 30日超の単位数をPatientStateに保持するよう変更
             return false;
         }
+// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+        //住所地特例対象者で、地域密着型サービスの場合は、レコードの作成を中断する。
+        //明細情報（住所地特例）レコードとして別に作成するため
+        if (!ACTextUtilities.isNullText(patientState.getJushotiTokureiInsurerId(targetServiceDate))) {
+            if(QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceCode)))){
+            	return false;
+            }
+        }
+// 2014/12/24 [Yoichiro Kamei] add - end
+        
         return true;
     }
     

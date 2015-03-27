@@ -1090,6 +1090,10 @@ public class QkanCommon {
         sb.append(" PATIENT_NINTEI_HISTORY.NINTEI_DATE,");
         sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START,");
         sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_END,");
+// 2014/12/17 [Yoichiro Kamei] add - begin システム有効期間対応
+        sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START,");
+        sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END,");
+// 2014/12/17 [Yoichiro Kamei] add - end
         sb.append(" PATIENT_NINTEI_HISTORY.STOP_DATE,");
         sb.append(" PATIENT_NINTEI_HISTORY.STOP_REASON,");
         sb.append(" PATIENT_NINTEI_HISTORY.REPORTED_DATE,");
@@ -1102,7 +1106,10 @@ public class QkanCommon {
         sb.append(createWhereStatementOfNinteiHistory(targetMonth));
         sb.append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID + ")");
         sb.append(" ORDER BY");
-        sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START ASC");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//        sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START ASC");
+        sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START ASC");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 
         if (dbm == null) {
             return new VRArrayList();
@@ -1207,7 +1214,10 @@ public class QkanCommon {
         sb.append(createWhereStatementOfNinteiHistory(targetMonth));
         sb.append(" AND(PATIENT_NINTEI_HISTORY.PATIENT_ID = " + patientID + ")");
         sb.append(" ORDER BY");
-        sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START DESC");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//        sb.append(" PATIENT_NINTEI_HISTORY.INSURE_VALID_START DESC");
+        sb.append(" PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START DESC");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 
         //2014/01/24 [Shinobu Hitaka] edit - begin 【2014.4 区分支給限度額改定対応】
         //利用者毎の限度額を、対象年月の厚生労働省規定の区分支給限度額に差し替える
@@ -1307,7 +1317,10 @@ public class QkanCommon {
         Iterator it = history.iterator();
         while (it.hasNext()) {
             VRMap row = (VRMap) it.next();
-            Object obj = VRBindPathParser.get("INSURE_VALID_START", row);
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//            Object obj = VRBindPathParser.get("INSURE_VALID_START", row);
+            Object obj = VRBindPathParser.get("SYSTEM_INSURE_VALID_START", row);
+// 2014/12/17 [Yoichiro Kamei] mod - end
             if (obj instanceof Date) {
                 Calendar cmp = Calendar.getInstance();
                 cmp.setTime((Date) obj);
@@ -1315,7 +1328,10 @@ public class QkanCommon {
                         + cmp.get(Calendar.DAY_OF_YEAR);
                 if (targetDate >= beginDate) {
                     // 開始日以後
-                    obj = VRBindPathParser.get("INSURE_VALID_END", row);
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//                    obj = VRBindPathParser.get("INSURE_VALID_END", row);
+                    obj = VRBindPathParser.get("SYSTEM_INSURE_VALID_END", row);
+// 2014/12/17 [Yoichiro Kamei] mod - end
                     if (obj instanceof Date) {
                         cmp.setTime((Date) obj);
                         int endDate = cmp.get(Calendar.YEAR) * 1000
@@ -3473,19 +3489,32 @@ public class QkanCommon {
 
         sb.append(" (");
         // 1.有効期間開始日が対象年月以前の場合
-        sb.append(" (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= '"
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//        sb.append(" (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= '"
+//                + targetDateEnd + "')");
+        sb.append(" (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START <= '"
                 + targetDateEnd + "')");
+// 2014/12/17 [Yoichiro Kamei] mod - end
         // 1-1.かつ有効期間終了日は対象年月の初日と同じか超えているならば期間がかぶるのでOK
-        sb.append(" AND(PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= '"
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//        sb.append(" AND(PATIENT_NINTEI_HISTORY.INSURE_VALID_END >= '"
+//                + targetDateBegin + "')");
+        sb.append(" AND(PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_END >= '"
                 + targetDateBegin + "')");
-
+// 2014/12/17 [Yoichiro Kamei] mod - end
         sb.append(" )OR(");
 
         // 2.有効期間開始日が対象年月内ならば期間がかぶるのでOK
-        sb.append(" (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= '"
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//        sb.append(" (PATIENT_NINTEI_HISTORY.INSURE_VALID_START <= '"
+//                + targetDateBegin + "')");
+//      sb.append(" AND(PATIENT_NINTEI_HISTORY.INSURE_VALID_START >= '"
+//      + targetDateEnd + "')");
+        sb.append(" (PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START <= '"
                 + targetDateBegin + "')");
-        sb.append(" AND(PATIENT_NINTEI_HISTORY.INSURE_VALID_START >= '"
+        sb.append(" AND(PATIENT_NINTEI_HISTORY.SYSTEM_INSURE_VALID_START >= '"
                 + targetDateEnd + "')");
+// 2014/12/17 [Yoichiro Kamei] mod - end
         sb.append(" )");
 
         sb.append(" )");
@@ -4017,7 +4046,9 @@ public class QkanCommon {
             return lowVersion;
         case 17211:// 認知症対応型通所介護
             return lowVersion;
-        case 17311:// 小規模多機能型居宅介護
+        case 17311:// 小規模多機能型居宅介護（短期利用以外）
+            return lowVersion;
+        case 16811:// 小規模多機能型居宅介護（短期利用）[H27.4法改正対応] add
             return lowVersion;
         case 90101:// その他
             return lowVersion;
@@ -4057,7 +4088,9 @@ public class QkanCommon {
             return lowVersion;
         case 17411: // 介護予防認知症対応型通所介護
             return lowVersion;
-        case 17511: // 介護予防小規模多機能型居宅介護
+        case 17511: // 介護予防小規模多機能型居宅介護（短期利用以外）
+            return lowVersion;
+        case 16911: // 介護予防小規模多機能型居宅介護（短期利用）[H27.4法改正対応] add
             return lowVersion;
         case 13711: // 介護予防認知症対応型共同生活介護（短期利用以外）
             return lowVersion;
@@ -4069,7 +4102,9 @@ public class QkanCommon {
             return lowVersion;
         case 12811: // 地域密着型特定施設入居者生活介護（短期利用）
             return lowVersion;
-        case 17711: // 複合型サービス
+        case 17711: // 複合型サービス（短期利用以外）
+            return lowVersion;
+        case 17911: // 複合型サービス（短期利用）[H27.4法改正対応] add
             return lowVersion;
         }
 
@@ -4088,7 +4123,14 @@ public class QkanCommon {
             throws Exception {
         // パネルで使用する文字列を返却する
         // パネルに応じて返却する文字列を変更できるように分岐させる
-        int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2404;
+// 2014/1/9 [Yoichiro Kamei] edit - begin H27.4改正対応時
+        //int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2404;
+        int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2704;
+// ここは切替テスト用
+//        if (targetDate != null && ACDateUtilities.getDifferenceOnDay(QkanConstants.H2704, targetDate) < 1) {
+//            lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2704;
+//        }
+// 2014/1/9 [Yoichiro Kamei] edit - end
         String lowVersionString = ACCastUtilities.toString(lowVersion, "");
         lowVersionString = lowVersionString.substring(0, 6);
 

@@ -560,6 +560,8 @@ public class QP001Manager {
         
         Object unitData = null;
         
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+        /*
         switch(ACCastUtilities.toInt(serviceCodeItem,0)){
         //’ZŠú¶Šˆƒ†ƒjƒbƒgŒ^ŒÂº
         case 2121:
@@ -836,6 +838,249 @@ public class QP001Manager {
         	break;
         //[ID:0000641][Shin Fujihara] 2011/04/13 add end —\–hƒT[ƒrƒX‚Ìº—¿æ“¾˜R‚ê
         }
+        */
+        
+        if ("2121".equals(serviceCodeItem)  	//’ZŠú¶Šˆƒ†ƒjƒbƒgŒ^ŒÂº
+        	|| "2221".equals(serviceCodeItem)	//’ZŠú˜VŒ’ƒ†ƒjƒbƒgŒ^ŒÂº
+        	|| "2321".equals(serviceCodeItem)	//’ZŠú—Ã—{ƒ†ƒjƒbƒgŒ^ŒÂº
+        	|| "5121".equals(serviceCodeItem)	//•Ÿƒ{İƒ†ƒjƒbƒgŒ^ŒÂº
+        	|| "5221".equals(serviceCodeItem)	//•ÛŒ’{İƒ†ƒjƒbƒgŒ^ŒÂº
+        	|| "5321".equals(serviceCodeItem)	//—Ã—{{İƒ†ƒjƒbƒgŒ^ŒÂº
+        	|| "5421".equals(serviceCodeItem)	//’nˆæ•Ÿƒ{İƒ†ƒjƒbƒgŒ^ŒÂº
+    		) {
+            if(detail.containsKey("1210112")){
+                unitData = detail.get("1210112");
+            } else if(detail.containsKey("1220113")){
+                unitData = detail.get("1220113");
+            } else if(detail.containsKey("1230114")){
+                unitData = detail.get("1230114");
+            } else if(detail.containsKey("1230212")){
+                unitData = detail.get("1230212");
+            } else if(detail.containsKey("1230311")){
+                unitData = detail.get("1230311");
+            } else if(detail.containsKey("1230409")){
+                unitData = detail.get("1230409");
+            } else if(detail.containsKey("1510117")){
+                unitData = detail.get("1510117");
+            } else if(detail.containsKey("1520114")){
+                unitData =detail.get("1520114");
+            } else if(detail.containsKey("1530115")){
+                unitData = detail.get("1530115");
+            } else if(detail.containsKey("1530213")){
+                unitData = detail.get("1530213");
+            } else if(detail.containsKey("1530312")){
+                unitData = detail.get("1530312");
+            } else if(detail.containsKey("1540121")){
+                unitData = detail.get("1540121");
+            }
+        }
+        
+        if ("2122".equals(serviceCodeItem)  	//’ZŠú¶Šˆƒ†ƒjƒbƒgŒ^€ŒÂº
+        	|| "2222".equals(serviceCodeItem)	//’ZŠú˜VŒ’ƒ†ƒjƒbƒgŒ^€ŒÂº
+        	|| "2322".equals(serviceCodeItem)	//’ZŠú—Ã—{ƒ†ƒjƒbƒgŒ^€ŒÂº
+        	|| "5122".equals(serviceCodeItem)	//•Ÿƒ{İƒ†ƒjƒbƒgŒ^€ŒÂº
+        	|| "5222".equals(serviceCodeItem)	//•ÛŒ’{İƒ†ƒjƒbƒgŒ^€ŒÂº
+        	|| "5322".equals(serviceCodeItem)	//—Ã—{{İƒ†ƒjƒbƒgŒ^€ŒÂº
+        	|| "5422".equals(serviceCodeItem)	//’nˆæ•Ÿƒ{İƒ†ƒjƒbƒgŒ^€ŒÂº
+        	) {
+            if(detail.containsKey("1210113")){
+                unitData = detail.get("1210113");
+            } else if(detail.containsKey("1220114")){
+                unitData = detail.get("1220114");
+            } else if(detail.containsKey("1230115")){
+                unitData = detail.get("1230115");
+            } else if(detail.containsKey("1230213")){
+                unitData = detail.get("1230213");
+            } else if(detail.containsKey("1230312")){
+                unitData = detail.get("1230312");
+            } else if(detail.containsKey("1230410")){
+                unitData = detail.get("1230410");
+            } else if(detail.containsKey("1510118")){
+                unitData = detail.get("1510118");
+            } else if(detail.containsKey("1520115")){
+                unitData = detail.get("1520115");
+            } else if(detail.containsKey("1530116")){
+                unitData = detail.get("1530116");
+            } else if(detail.containsKey("1530214")){
+                unitData = detail.get("1530214");
+            } else if(detail.containsKey("1530313")){
+                unitData = detail.get("1530313");
+            } else if(detail.containsKey("1540122")){
+                unitData = detail.get("1540122");
+            }
+        }
+        
+        if ("2123".equals(serviceCodeItem)   	//’ZŠú¶Šˆ]—ˆŒ^ŒÂº
+        	|| "2223".equals(serviceCodeItem)	//’ZŠú˜VŒ’]—ˆŒ^ŒÂº
+        	|| "2323".equals(serviceCodeItem)	//’ZŠú—Ã—{]—ˆŒ^ŒÂº
+        	|| "5123".equals(serviceCodeItem)	//•Ÿƒ{İ]—ˆŒ^ŒÂº
+        	|| "5223".equals(serviceCodeItem)	//•ÛŒ’{İ]—ˆŒ^ŒÂº
+        	|| "5323".equals(serviceCodeItem)	//—Ã—{{İ]—ˆŒ^ŒÂº
+        	|| "5423".equals(serviceCodeItem)	//’nˆæ•Ÿƒ{İ]—ˆŒ^ŒÂº
+            ) {
+            if(detail.containsKey("1210114")){
+                unitData = detail.get("1210114");
+            } else if(detail.containsKey("1220115")){
+                unitData = detail.get("1220115");
+            } else if(detail.containsKey("1230116")){
+                unitData = detail.get("1230116");
+            } else if(detail.containsKey("1230214")){
+                unitData = detail.get("1230214");
+            } else if(detail.containsKey("1230313")){
+                unitData = detail.get("1230313");
+            } else if(detail.containsKey("1230411")){
+                unitData = detail.get("1230411");
+            } else if(detail.containsKey("1510119")){
+                unitData = detail.get("1510119");
+            } else if(detail.containsKey("1520116")){
+                unitData = detail.get("1520116");
+            } else if(detail.containsKey("1530117")){
+                unitData = detail.get("1530117");
+            } else if(detail.containsKey("1530215")){
+                unitData = detail.get("1530215");
+            } else if(detail.containsKey("1530314")){
+                unitData = detail.get("1530314");
+            } else if(detail.containsKey("1540123")){
+                unitData = detail.get("1540123");
+            }
+        }
+
+        if ("2124".equals(serviceCodeItem)   	//’ZŠú¶Šˆ‘½°º
+        	|| "2224".equals(serviceCodeItem)	//’ZŠú˜VŒ’‘½°º
+        	|| "2324".equals(serviceCodeItem)	//’ZŠú—Ã—{‘½°º
+        	|| "5124".equals(serviceCodeItem)	//•Ÿƒ{İ‘½°º
+        	|| "5224".equals(serviceCodeItem)	//•ÛŒ’{İ‘½°º
+        	|| "5324".equals(serviceCodeItem)	//—Ã—{{İ‘½°º
+        	|| "5424".equals(serviceCodeItem)	//’nˆæ•Ÿƒ{İ‘½°º
+            ) {
+            if(detail.containsKey("1210115")){
+                unitData = detail.get("1210115");
+            } else if(detail.containsKey("1220116")){
+                unitData = detail.get("1220116");
+            } else if(detail.containsKey("1230117")){
+                unitData = detail.get("1230117");
+            } else if(detail.containsKey("1230215")){
+                unitData = detail.get("1230215");
+            } else if(detail.containsKey("1230314")){
+                unitData = detail.get("1230314");
+            } else if(detail.containsKey("1230412")){
+                unitData = detail.get("1230412");
+            } else if(detail.containsKey("1510120")){
+                unitData = detail.get("1510120");
+            } else if(detail.containsKey("1520117")){
+                unitData = detail.get("1520117");
+            } else if(detail.containsKey("1530118")){
+                unitData = detail.get("1530118");
+            } else if(detail.containsKey("1530216")){
+                unitData = detail.get("1530216");
+            } else if(detail.containsKey("1530315")){
+                unitData = detail.get("1530315");
+            } else if(detail.containsKey("1540124")){
+                unitData = detail.get("1540124");
+            }
+        }
+        
+        //—\–h’ZŠú¶Šˆƒ†ƒjƒbƒgŒ^ŒÂº
+        if ("2421".equals(serviceCodeItem)) {
+            if(detail.containsKey("1240112")){
+                unitData = detail.get("1240112");
+            }
+        }
+        //—\–h’ZŠú¶Šˆƒ†ƒjƒbƒgŒ^€ŒÂº
+        if ("2422".equals(serviceCodeItem)) {
+            if(detail.containsKey("1240113")){
+                unitData = detail.get("1240113");
+            }
+        }
+        //—\–h’ZŠú¶Šˆ]—ˆŒ^ŒÂº
+        if ("2423".equals(serviceCodeItem)) {
+            if(detail.containsKey("1240114")){
+                unitData = detail.get("1240114");
+            }
+        }
+        //—\–h’ZŠú¶Šˆ‘½°º
+        if ("2424".equals(serviceCodeItem)) {
+            if(detail.containsKey("1240115")){
+                unitData = detail.get("1240115");
+            }
+        }
+        //—\–h’ZŠú˜VŒ’ƒ†ƒjƒbƒgŒ^ŒÂº
+        if ("2521".equals(serviceCodeItem)) {
+            if(detail.containsKey("1250112")){
+                unitData = detail.get("1250112");
+            }
+        }
+        //—\–h’ZŠú˜VŒ’ƒ†ƒjƒbƒgŒ^€ŒÂº
+        if ("2522".equals(serviceCodeItem)) {
+        	if(detail.containsKey("1250113")){
+                unitData = detail.get("1250113");
+            }
+        }
+        //—\–h’ZŠú¶Šˆ]—ˆŒ^ŒÂº
+        if ("2523".equals(serviceCodeItem)) {
+        	if(detail.containsKey("1250114")){
+                unitData = detail.get("1250114");
+            }
+        }
+        //—\–h’ZŠú¶Šˆ‘½°º
+        if ("2524".equals(serviceCodeItem)) {
+        	if(detail.containsKey("1250115")){
+                unitData = detail.get("1250115");
+            }
+        }
+        // —\–h’ZŠú—Ã—{ƒ†ƒjƒbƒgŒ^ŒÂº
+        if ("2621".equals(serviceCodeItem)) {
+        	// ‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì_•a‰@—Ã—{
+        	if(detail.containsKey("1260114")){
+                unitData = detail.get("1260114");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_f—ÃŠ—Ã—{
+            } else if(detail.containsKey("1260211")){
+                unitData = detail.get("1260211");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_”F’mÇ¾Š³
+            } else if(detail.containsKey("1260311")){
+                unitData = detail.get("1260311");
+            }
+        }
+        // —\–h’ZŠú—Ã—{ƒ†ƒjƒbƒgŒ^€ŒÂº
+        if ("2622".equals(serviceCodeItem)) {
+        	// ‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì_•a‰@—Ã—{
+        	if(detail.containsKey("1260115")){
+                unitData = detail.get("1260115");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_f—ÃŠ—Ã—{
+            } else if(detail.containsKey("1260212")){
+                unitData = detail.get("1260212");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_”F’mÇ¾Š³
+            } else if(detail.containsKey("1260312")){
+                unitData = detail.get("1260312");
+            }
+        }
+        // —\–h’ZŠú—Ã—{]—ˆŒ^ŒÂº
+        if ("2623".equals(serviceCodeItem)) {
+        	// ‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì_•a‰@—Ã—{
+        	if(detail.containsKey("1260116")){
+                unitData = detail.get("1260116");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_f—ÃŠ—Ã—{
+            } else if(detail.containsKey("1260213")){
+                unitData = detail.get("1260213");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_”F’mÇ¾Š³
+            } else if(detail.containsKey("1260313")){
+                unitData = detail.get("1260313");
+            }
+        }
+        // —\–h’ZŠú—Ã—{‘½°º
+        if ("2624".equals(serviceCodeItem)) {
+        	// ‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì_•a‰@—Ã—{
+        	if(detail.containsKey("1260117")){
+                unitData = detail.get("1260117");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_f—ÃŠ—Ã—{
+            } else if(detail.containsKey("1260214")){
+                unitData = detail.get("1260214");
+            // ’ZŠú“üŠ—Ã—{‰îŒì_”F’mÇ¾Š³
+            } else if(detail.containsKey("1260314")){
+                unitData = detail.get("1260314");
+            }
+        }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/20 edit - end ƒT[ƒrƒXƒR[ƒh‰p”‰»
         
         if(unitData != null){
             unit = ACCastUtilities.toInt(unitData,Integer.MIN_VALUE);

@@ -735,7 +735,47 @@ public class QP001CSVCreator {
                 //CSV出力用のデータを生成
                 csvData = makeEmergencyOwnFacilityRecord(map);
                 
-            } else {
+            }
+ // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+            //明細情報（住所地特例）レコード
+	          else if(map.containsKey("1801001")){
+	            compCode = ACCastUtilities.toString(map.get("1801001"));
+	            
+	            //サービス提供年月6桁(YYYYMM)
+	            sortkey.append(map.get("1801003"));
+	            sortkey.append("-");
+	            //交換情報識別番号4桁
+	            sortkey.append(map.get("1801001"));
+	            sortkey.append("-");
+	            //証記載保険者番号8桁
+	            sortkey.append(map.get("1801005"));
+	            sortkey.append("-");
+	            //被保険者番号10桁
+	            sortkey.append(map.get("1801006"));
+	            sortkey.append("-");
+	            
+	            //レコード種別コード2桁(14を設定)
+	            sortkey.append(map.get("1801002"));
+	            sortkey.append("-");
+	            //事業所番号10桁
+	            sortkey.append(map.get("1801004"));
+	            sortkey.append("-");
+	            //サービス種類コード2桁
+	            sortkey.append(map.get("1801007"));
+	            sortkey.append("-");
+	            //サービス項目コード4桁
+	            sortkey.append(map.get("1801008"));
+	            
+	            //福祉用具対応
+	            sortkey.append("-");
+	            sortkey.append(map.get("1801009"));
+	            sortkey.append("-");
+	            sortkey.append(map.get("1801019"));
+	            
+	            //CSV出力用のデータを生成
+	            csvData = makeDetailJushotiTokureiRecord(map);
+// 2014/12/24 [Yoichiro Kamei] add - end
+	        } else {
             	continue;
             }
             
@@ -2420,6 +2460,83 @@ public class QP001CSVCreator {
         return sb.toString();
     }
     
+ // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
+    /**
+     * 「明細情報（住所地特例）レコードデータ文字列作成」に関する処理を行ないます。
+     * 
+     * @throws Exception
+     *             処理例外
+     */
+    public String makeDetailJushotiTokureiRecord(VRMap map) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        // 以下の文字列をカンマ区切りで生成する。
+        // 交換情報識別番号4桁(SYSTEM_BIND_PATH:1801001)
+        sb.append("\"");
+        sb.append(getData(map,"1801001"));
+        sb.append(spliter);
+        // レコード種別コード2桁(SYSTEM_BIND_PATH:1801002)
+        sb.append(getData(map,"1801002"));
+        sb.append(spliter);
+        // サービス提供年月6桁(YYYYMM)(SYSTEM_BIND_PATH:1801003)
+        sb.append(getData(map,"1801003"));
+        sb.append(spliter);
+        // 事業所番号10桁(SYSTEM_BIND_PATH:1801004)
+        sb.append(getData(map,"1801004"));
+        sb.append(spliter);
+        // 証記載保険者番号8桁(SYSTEM_BIND_PATH:1801005)
+        //sb.append(getData(map,"1801005"));
+        sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"1801005"),0)));
+        sb.append(spliter);
+        // 被保険者番号10桁(SYSTEM_BIND_PATH:1801006)
+        sb.append(getData(map,"1801006"));
+        sb.append(spliter);
+        // サービス種類コード2桁(SYSTEM_BIND_PATH:1801007)
+        sb.append(getData(map,"1801007"));
+        sb.append(spliter);
+        // サービス項目コード4桁(SYSTEM_BIND_PATH:1801008)
+        sb.append(getData(map,"1801008"));
+        sb.append(spliter);
+        //単位数を記載しないサービスでない場合、単位数を出力する。
+        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"1801007"),getData(map,"1801008"))){
+            // 単位数4桁(SYSTEM_BIND_PATH:1801009)
+            sb.append(getData(map,"1801009"));
+        }
+        sb.append(spliter);
+        // 日数･回数2桁(SYSTEM_BIND_PATH:1801010)
+        sb.append(getData(map,"1801010"));
+        sb.append(spliter);
+        // 公費1対象日数・回数2桁(SYSTEM_BIND_PATH:1801011)
+        sb.append(getData(map,"1801011"));
+        sb.append(spliter);
+        // 公費2対象日数・回数2桁(SYSTEM_BIND_PATH:1801012)
+        sb.append(getData(map,"1801012"));
+        sb.append(spliter);
+        // 公費3対象日数・回数2桁(SYSTEM_BIND_PATH:1801013)
+        sb.append(getData(map,"1801013"));
+        sb.append(spliter);
+        // サービス単位数6桁(SYSTEM_BIND_PATH:1801014)
+        sb.append(getData(map,"1801014"));
+        sb.append(spliter);
+        // 公費1対象サービス単位数6桁(SYSTEM_BIND_PATH:1801015)
+        sb.append(getData(map,"1801015"));
+        sb.append(spliter);
+        // 公費2対象サービス単位数6桁(SYSTEM_BIND_PATH:1801016)
+        sb.append(getData(map,"1801016"));
+        sb.append(spliter);
+        // 公費3対象サービス単位数6桁(SYSTEM_BIND_PATH:1801017)
+        sb.append(getData(map,"1801017"));
+        sb.append(spliter);
+        // 施設所在保険者番号6桁(SYSTEM_BIND_PATH:1801018)
+        sb.append(getData(map,"1801018"));
+        //sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"1801018"),0)));
+        sb.append(spliter);
+        // 摘要20桁(SYSTEM_BIND_PATH:1801019)
+        sb.append(getData(map,"1801019"));
+        sb.append("\"");
+        
+        return sb.toString();
+    }
+ // 2014/12/24 [Yoichiro Kamei] add - end 
     
     private String getData0Rep(VRMap map,String key) throws Exception {
         String result = getData(map,key);

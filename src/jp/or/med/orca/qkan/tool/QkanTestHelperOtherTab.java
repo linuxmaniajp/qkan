@@ -64,6 +64,7 @@ public class QkanTestHelperOtherTab extends JPanel {
         cutMap.setData("17111", 0);
         cutMap.setData("17211", 0);
         cutMap.setData("17311", 0);
+        cutMap.setData("16811", 0);
         cutMap.setData("13211", 0);
         cutMap.setData("13811", 0);
         cutMap.setData("13611", 4);
@@ -85,12 +86,14 @@ public class QkanTestHelperOtherTab extends JPanel {
         cutMap.setData("14611", 5);
         cutMap.setData("17411", 1);
         cutMap.setData("17511", 1);
+        cutMap.setData("16911", 1);
         cutMap.setData("13711", 1);
         cutMap.setData("13911", 1);
         cutMap.setData("12711", 4);
         cutMap.setData("17611", 0);
         cutMap.setData("12811", 4);
         cutMap.setData("17711", 0);
+        cutMap.setData("17911", 0);
 
         listChangeButton.addActionListener(new ActionListener() {
             @Override
@@ -144,8 +147,8 @@ public class QkanTestHelperOtherTab extends JPanel {
         listChangeTypeButton.addActionListener(new ActionListener() {
             
             private String[][] styleType = 
-                {{"11111","11211","11311","11411","11511","11611","11711","13111","17111","17211","17311","17611","17711"},
-                {"16111","16211","16311","16411","16511","16611","16711","13411","17411","17511"},
+                {{"11111","11211","11311","11411","11511","11611","11711","13111","17111","17211","17311","16811","17611","17711","17911"},
+                {"16111","16211","16311","16411","16511","16611","16711","13411","17411","17511","16911"},
                 {"12111"},
                 {"12411"},
                 {"12211"},

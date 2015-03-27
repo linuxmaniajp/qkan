@@ -160,7 +160,6 @@ public class QU002 extends QU002Event {
 						"jp/nichicom/ac/images/icon/pix16/btn_080.png",
 						"jp/nichicom/ac/images/icon/pix16/btn_079.png" },
 						new Integer[] { new Integer(1), new Integer(2), }));
-
 		setShisetsuTableModel(model);
 
 		// アダプタをテーブルのモデルとして設定する。
@@ -189,7 +188,10 @@ public class QU002 extends QU002Event {
 
 		// 変更チェック(破棄する可能性のある情報)
 		// [ID:0000749][Masahiko.Higuchi] edit - begin 特定入所者の履歴管理機能
-		if (getSnapShotIdou().isModified() || getSnapShotKaigo().isModified() || getSnapShotShisetsu().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//		if (getSnapShotIdou().isModified() || getSnapShotKaigo().isModified() || getSnapShotShisetsu().isModified()) {
+		if (getSnapShotIdou().isModified() || getSnapShotKaigo().isModified() || getSnapShotShisetsu().isModified() || getSnapShotJushotiTokurei().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 		// [ID:0000749][Masahiko.Higuchi] edit - end
 			unsettledInfoExistFlg = true;
 		}
@@ -198,7 +200,10 @@ public class QU002 extends QU002Event {
 		// 変更チェック（スナップショットのチェック、画面テーブルのチェック）
 		if (getSnapshot().isModified() || getIdouTableChangeFlg() == 1
 				|| getKaigoTableChangeFlg() == 1 || unsettledInfoExistFlg
-				|| getShisetsuTableChangeFlg() == 1) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				|| getShisetsuTableChangeFlg() == 1) {
+				|| getShisetsuTableChangeFlg() == 1 || getJushotiTokureiTableChangeFlg() == 1) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 			// 最後に保存されてから、項目・画面テーブルが変更されている場合(下記のいずれかの場合）
 			// ・isModified
 			// ・idouTableChangeFlg = 1
@@ -220,7 +225,10 @@ public class QU002 extends QU002Event {
 						if (unsettledInfoExistFlg) {
 							// メッセージ表示
 							// [ID:0000749][Masahiko.Higuchi] edit - begin 特定入所者の履歴管理機能
-							String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//							String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+							String msgParam = "要介護認定情報もしくは異動情報・施設情報・住所地特例情報";
+// 2015/1/14 [Yoichiro Kamei] mod - end
 							// [ID:0000749][Masahiko.Higuchi] edit - end
 							switch (QkanMessageList.getInstance()
 									.WARNING_OF_CANCELLATION_UNSETTLED_DATA(
@@ -279,7 +287,10 @@ public class QU002 extends QU002Event {
 						if (unsettledInfoExistFlg) {
 							// メッセージ表示
 							// [ID:0000749][Masahiko.Higuchi] edit - begin 特定入所者の履歴管理機能
-							String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//							String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+							String msgParam = "要介護認定情報もしくは異動情報・施設情報・住所地特例情報";
+// 2015/1/14 [Yoichiro Kamei] mod - end
 							// [ID:0000749][Masahiko.Higuchi] edit - end
 							switch (QkanMessageList.getInstance()
 									.WARNING_OF_CANCELLATION_UNSETTLED_DATA(
@@ -387,9 +398,16 @@ public class QU002 extends QU002Event {
 			// 変更チェック(破棄する可能性のある情報)
 			if (getSnapShotIdou().isModified()
 					|| getSnapShotKaigo().isModified()
-					|| getSnapShotShisetsu().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//					|| getSnapShotShisetsu().isModified()) {
+					|| getSnapShotShisetsu().isModified()
+					|| getSnapShotJushotiTokurei().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 				// メッセージ表示
-				String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+				String msgParam = "要介護認定情報もしくは異動情報・施設情報・住所地特例情報";
+// 2015/1/14 [Yoichiro Kamei] mod - end
 				// [ID:0000749][Masahiko.Higuchi] edit - end
 				switch (QkanMessageList.getInstance()
 						.WARNING_OF_CANCELLATION_UNSETTLED_DATA(msgParam)) {
@@ -454,9 +472,16 @@ public class QU002 extends QU002Event {
 			// 変更チェック(破棄する可能性のある情報)
 			if (getSnapShotIdou().isModified()
 					|| getSnapShotKaigo().isModified()
-					|| getSnapShotShisetsu().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//					|| getSnapShotShisetsu().isModified()) {
+				|| getSnapShotShisetsu().isModified()
+				|| getSnapShotJushotiTokurei().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 				// メッセージ表示
-				String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+				String msgParam = "要介護認定情報もしくは異動情報・施設情報・住所地特例情報";
+// 2015/1/14 [Yoichiro Kamei] mod - end
 			// [ID:0000749][Masahiko.Higuchi] edit - end
 				switch (QkanMessageList.getInstance()
 						.WARNING_OF_CANCELLATION_UNSETTLED_DATA(msgParam)) {
@@ -516,7 +541,11 @@ public class QU002 extends QU002Event {
 		// 変更チェック（スナップショットのチェック、画面テーブルのチェック）
 		if (getSnapshot().isModified() || getIdouTableChangeFlg() == 1
 				|| getKaigoTableChangeFlg() == 1
-				|| getShisetsuTableChangeFlg() == 1) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//				|| getShisetsuTableChangeFlg() == 1) {
+				|| getShisetsuTableChangeFlg() == 1
+				|| getJushotiTokureiTableChangeFlg() == 1) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 			// [ID:0000749][Masahiko.Higuchi] edit - end
 			// 最後に保存されてから、項目・画面テーブルが変更されている場合(下記のいずれかの場合）
 			// ・isModified
@@ -593,7 +622,10 @@ public class QU002 extends QU002Event {
 
 		// [ID:0000749][Masahiko.Higuchi] edit - begin 特定入所者の履歴管理機能
 		// 変更チェック(破棄する可能性のある情報)
-		if (getSnapShotIdou().isModified() || getSnapShotKaigo().isModified() || getSnapShotShisetsu().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//		if (getSnapShotIdou().isModified() || getSnapShotKaigo().isModified() || getSnapShotShisetsu().isModified()) {
+		if (getSnapShotIdou().isModified() || getSnapShotKaigo().isModified() || getSnapShotShisetsu().isModified() || getSnapShotJushotiTokurei().isModified()) {
+// 2015/1/14 [Yoichiro Kamei] mod - end
 		// [ID:0000749][Masahiko.Higuchi] edit - end
 			unsettledInfoExistFlg = true;
 		}
@@ -645,7 +677,10 @@ public class QU002 extends QU002Event {
 					if (unsettledInfoExistFlg) {
 						// メッセージ表示
 						// [ID:0000749][Masahiko.Higuchi] edit - begin 特定入所者の履歴管理機能
-						String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+//						String msgParam = "要介護認定情報もしくは異動情報・施設情報";
+						String msgParam = "要介護認定情報もしくは異動情報・施設情報・住所地特例情報";
+// 2015/1/14 [Yoichiro Kamei] mod - end
 						// [ID:0000749][Masahiko.Higuchi] edit - end
 						switch (QkanMessageList.getInstance()
 								.WARNING_OF_CANCELLATION_UNSETTLED_DATA(
@@ -1202,8 +1237,10 @@ public class QU002 extends QU002Event {
 
 		// 以下の条件で介護情報テーブルのソートを行う。
 		// INSURE_VALID_START（有効期間開始）　DESC
-		getKaigoInfoTable().sort("INSURE_VALID_START DESC");
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//		getKaigoInfoTable().sort("INSURE_VALID_START DESC");
+		getKaigoInfoTable().sort("SYSTEM_INSURE_VALID_START DESC");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 		// 追加行を選択
 		getKaigoInfoTable().setSelectedModelRow(selectedRow);
 
@@ -1322,7 +1359,10 @@ public class QU002 extends QU002Event {
 
 		// 以下の条件で介護情報テーブルのソートを行う。
 		// INSURE_VALID_START（有効期間開始）　DESC
-		getKaigoInfoTable().sort("INSURE_VALID_START DESC");
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//		getKaigoInfoTable().sort("INSURE_VALID_START DESC");
+		getKaigoInfoTable().sort("SYSTEM_INSURE_VALID_START DESC");
+// 2014/12/17 [Yoichiro Kamei] mod - end
 
 		// 選択されていた行を選択
 		getKaigoInfoTable().setSelectedModelRow(selectedRow);
@@ -1397,11 +1437,17 @@ public class QU002 extends QU002Event {
 					VRMap param = new VRHashMap();
 					VRBindPathParser.set("PATIENT_ID", param, new Integer(
 							getPatientId()));
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//					VRBindPathParser.set("VALID_START", param,
+//							VRBindPathParser.get("INSURE_VALID_START", map));
+//					VRBindPathParser.set("VALID_END", param,
+//							VRBindPathParser.get("INSURE_VALID_END", map));
 					VRBindPathParser.set("VALID_START", param,
-							VRBindPathParser.get("INSURE_VALID_START", map));
+							VRBindPathParser.get("SYSTEM_INSURE_VALID_START", map));
 					VRBindPathParser.set("VALID_END", param,
-							VRBindPathParser.get("INSURE_VALID_END", map));
-
+							VRBindPathParser.get("SYSTEM_INSURE_VALID_END", map));
+// 2014/12/17 [Yoichiro Kamei] mod - end
+					
 					// 有効期間中のサービス予定・実績のレコードを取得する。
 					String strSql = getSQL_GET_PATIENT_RESERVED_SERVICE(param);
 					VRList list = getDBManager().executeQuery(strSql);
@@ -2919,143 +2965,429 @@ public class QU002 extends QU002Event {
 				return false;
 			}
 
-			// 既に登録されている要介護認定の有効期間と重なっていないかどうか　※要介護度-非該当の場合は行わない。
-			// ・kaigoInfoValidLimit1（有効期間開始日）
-			// ・kaigoInfoValidLimit2（有効期間終了日）
+// 2014/12/17 [Yoichiro Kamei] comment out - begin システム有効期間対応
+//			// 既に登録されている要介護認定の有効期間と重なっていないかどうか　※要介護度-非該当の場合は行わない。
+//			// ・kaigoInfoValidLimit1（有効期間開始日）
+//			// ・kaigoInfoValidLimit2（有効期間終了日）
+//
+//			if (!(getKaigoHistoryList() == null || getKaigoHistoryList().size() == 0)) {
+//
+//				Date latestStart = null;
+//
+//				// 最後の履歴のインデックスを取得する。
+//				for (int i = 0; i < getKaigoHistoryList().size(); i++) { // 認定履歴件数分ループ
+//
+//					// 編集モードの場合
+//					// 自身の履歴は無視する。
+//					if (checkMode == CHECK_MODE_UPDATE) {
+//						if (i == getKaigoInfoTable().getSelectedModelRow()) {
+//							continue;
+//						}
+//					}
+//
+//					VRMap map = (VRMap) getKaigoHistoryList().get(i); // 履歴抽出
+//
+//					// 対象の履歴が非該当の場合は無視する。
+//					int targetJotaiCode = ACCastUtilities
+//							.toInt(VRBindPathParser.get("JOTAI_CODE", map));
+//					if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
+//						continue;
+//					}
+//
+//					reservedStart = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_START", map); // 履歴の有効期間開始日
+//					if (latestStart == null) {
+//						latestStart = reservedStart;
+//						targetIndex = i;
+//					} else if (ACDateUtilities.getDifferenceOnDay(latestStart,
+//							reservedStart) < 0) {
+//						latestStart = reservedStart;
+//						targetIndex = i;
+//					}
+//				}
+//
+//				// 最後の履歴以外の履歴と重複していないかチェックする。
+//				for (int i = 0; i < getKaigoHistoryList().size(); i++) { // 認定履歴件数分ループ
+//
+//					// 最後の履歴は後で比較する
+//					if (i == targetIndex) {
+//						continue;
+//					}
+//
+//					// 編集モードの場合
+//					// 自身の履歴は無視する。
+//					if (checkMode == CHECK_MODE_UPDATE) {
+//						if (i == getKaigoInfoTable().getSelectedModelRow()) {
+//							continue;
+//						}
+//					}
+//
+//					VRMap map = (VRMap) getKaigoHistoryList().get(i); // 履歴抽出
+//
+//					// 対象の履歴が非該当の場合は無視する。
+//					int targetJotaiCode = ACCastUtilities
+//							.toInt(VRBindPathParser.get("JOTAI_CODE", map));
+//					if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
+//						continue;
+//					}
+//
+//					reservedStart = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_START", map);
+//					reservedEnd = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_END", map);
+//
+//					// 期間重複チェック
+//					// チェックの結果を取得
+//					int result = ACDateUtilities.getDuplicateTermCheck(
+//							reservedStart, reservedEnd, start, end);
+//
+//					if (result != ACDateUtilities.DUPLICATE_NONE) {
+//						// 重複していた場合
+//
+//						getKaigoInfoValidLimit1().requestFocus();
+//						QkanMessageList.getInstance()
+//								.QU002_ERROR_OF_DUPLICATE_KAIGO();
+//						return false;
+//
+//					}
+//				}
+//
+//				// 最後の履歴と重複していないかチェックする。
+//				if (targetIndex != -1) {
+//					VRMap latestMap = (VRMap) getKaigoHistoryList().get(
+//							targetIndex); // 最後の履歴抽出
+//					reservedStart = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_START", latestMap); // 最後の履歴の有効期間開始日
+//					reservedEnd = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_END", latestMap); // 最後の履歴の有効期間終了日
+//
+//					// チェックの結果を取得
+//					int result = ACDateUtilities.getDuplicateTermCheck(
+//							reservedStart, reservedEnd, start, end);
+//
+//					if (result != ACDateUtilities.DUPLICATE_NONE) {
+//						// 重複していた場合
+//
+//						if (result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND
+//								|| result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND_EQUALS_BOTH_END
+//								|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN
+//								|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN_ON_ONE_DAY) {
+//							// 有効期間を自動で調整できる場合
+//							// 確認メッセージを表示する。
+//							// ・メッセージID：WARNING_OF_DUPLICATE_TERM
+//							msgParam1 = "要介護認定";
+//							switch (QkanMessageList.getInstance()
+//									.WARNING_OF_DUPLICATE_TERM(msgParam1)) {
+//							case ACMessageBox.RESULT_OK:
+//								// 「OK」が選択された場合
+//								// 入力チェックを完全にパスした後処理を行う。
+//								doUpdateFlg = 1;
+//								break;
+//							case ACMessageBox.RESULT_CANCEL:
+//								// 「キャンセル」が選択された場合
+//								// エラーが発生したインスタンスにフォーカスを当てる。
+//								getKaigoInfoValidLimit1().requestFocus();
+//								// 戻り値としてfalseを返す。
+//								return false;
+//							}
+//
+//						} else {
+//							// 有効期間を自動で調整できない場合
+//							getKaigoInfoValidLimit1().requestFocus();
+//							QkanMessageList.getInstance()
+//									.QU002_ERROR_OF_DUPLICATE_KAIGO();
+//							return false;
+//						}
+//
+//					}
+//				}
+//			}
+// 2014/12/17 [Yoichiro Kamei] comment out - end
 
-			if (!(getKaigoHistoryList() == null || getKaigoHistoryList().size() == 0)) {
-
-				Date latestStart = null;
-
-				// 最後の履歴のインデックスを取得する。
-				for (int i = 0; i < getKaigoHistoryList().size(); i++) { // 認定履歴件数分ループ
-
-					// 編集モードの場合
-					// 自身の履歴は無視する。
-					if (checkMode == CHECK_MODE_UPDATE) {
-						if (i == getKaigoInfoTable().getSelectedModelRow()) {
-							continue;
-						}
+		}
+// 2014/12/17 [Yoichiro Kamei] add - begin システム有効期間対応
+		
+		if (getNonCorrespondenceFlg() == 0) { // ※要介護度-非該当の場合は処理を通らない。
+			boolean warn1 = false;
+			boolean warn2 = false;
+			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit1().getText())) {
+				warn1 = true;
+			}
+			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+				warn2 = true;
+			}
+			//システム適用期間が未入力のとき
+			if (warn1 || warn2) {
+				switch (QkanMessageList.getInstance()
+						.QU002_WARNING_OF_NEED_CHECK_OF_INPUT_SYSTEM_VALID()) {
+				case ACMessageBox.RESULT_OK:
+					if (warn1) {
+						getKaigoInfoSystemValidLimit1().setText(getKaigoInfoValidLimit1().getText());
 					}
-
-					VRMap map = (VRMap) getKaigoHistoryList().get(i); // 履歴抽出
-
-					// 対象の履歴が非該当の場合は無視する。
-					int targetJotaiCode = ACCastUtilities
-							.toInt(VRBindPathParser.get("JOTAI_CODE", map));
-					if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
-						continue;
+					if (warn2) {
+						getKaigoInfoSystemValidLimit3().setText(getKaigoInfoValidLimit3().getText());
 					}
-
-					reservedStart = (Date) VRBindPathParser.get(
-							"INSURE_VALID_START", map); // 履歴の有効期間開始日
-					if (latestStart == null) {
-						latestStart = reservedStart;
-						targetIndex = i;
-					} else if (ACDateUtilities.getDifferenceOnDay(latestStart,
-							reservedStart) < 0) {
-						latestStart = reservedStart;
-						targetIndex = i;
+					break;
+				case ACMessageBox.RESULT_CANCEL:
+					if (warn1) {
+						getKaigoInfoSystemValidLimit1().requestFocus();
 					}
-				}
-
-				// 最後の履歴以外の履歴と重複していないかチェックする。
-				for (int i = 0; i < getKaigoHistoryList().size(); i++) { // 認定履歴件数分ループ
-
-					// 最後の履歴は後で比較する
-					if (i == targetIndex) {
-						continue;
+					if (warn2) {
+						getKaigoInfoSystemValidLimit3().requestFocus();
 					}
-
-					// 編集モードの場合
-					// 自身の履歴は無視する。
-					if (checkMode == CHECK_MODE_UPDATE) {
-						if (i == getKaigoInfoTable().getSelectedModelRow()) {
-							continue;
-						}
-					}
-
-					VRMap map = (VRMap) getKaigoHistoryList().get(i); // 履歴抽出
-
-					// 対象の履歴が非該当の場合は無視する。
-					int targetJotaiCode = ACCastUtilities
-							.toInt(VRBindPathParser.get("JOTAI_CODE", map));
-					if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
-						continue;
-					}
-
-					reservedStart = (Date) VRBindPathParser.get(
-							"INSURE_VALID_START", map);
-					reservedEnd = (Date) VRBindPathParser.get(
-							"INSURE_VALID_END", map);
-
-					// 期間重複チェック
-					// チェックの結果を取得
-					int result = ACDateUtilities.getDuplicateTermCheck(
-							reservedStart, reservedEnd, start, end);
-
-					if (result != ACDateUtilities.DUPLICATE_NONE) {
-						// 重複していた場合
-
-						getKaigoInfoValidLimit1().requestFocus();
-						QkanMessageList.getInstance()
-								.QU002_ERROR_OF_DUPLICATE_KAIGO();
-						return false;
-
-					}
-				}
-
-				// 最後の履歴と重複していないかチェックする。
-				if (targetIndex != -1) {
-					VRMap latestMap = (VRMap) getKaigoHistoryList().get(
-							targetIndex); // 最後の履歴抽出
-					reservedStart = (Date) VRBindPathParser.get(
-							"INSURE_VALID_START", latestMap); // 最後の履歴の有効期間開始日
-					reservedEnd = (Date) VRBindPathParser.get(
-							"INSURE_VALID_END", latestMap); // 最後の履歴の有効期間終了日
-
-					// チェックの結果を取得
-					int result = ACDateUtilities.getDuplicateTermCheck(
-							reservedStart, reservedEnd, start, end);
-
-					if (result != ACDateUtilities.DUPLICATE_NONE) {
-						// 重複していた場合
-
-						if (result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND
-								|| result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND_EQUALS_BOTH_END
-								|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN
-								|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN_ON_ONE_DAY) {
-							// 有効期間を自動で調整できる場合
-							// 確認メッセージを表示する。
-							// ・メッセージID：WARNING_OF_DUPLICATE_TERM
-							msgParam1 = "要介護認定";
-							switch (QkanMessageList.getInstance()
-									.WARNING_OF_DUPLICATE_TERM(msgParam1)) {
-							case ACMessageBox.RESULT_OK:
-								// 「OK」が選択された場合
-								// 入力チェックを完全にパスした後処理を行う。
-								doUpdateFlg = 1;
-								break;
-							case ACMessageBox.RESULT_CANCEL:
-								// 「キャンセル」が選択された場合
-								// エラーが発生したインスタンスにフォーカスを当てる。
-								getKaigoInfoValidLimit1().requestFocus();
-								// 戻り値としてfalseを返す。
-								return false;
-							}
-
-						} else {
-							// 有効期間を自動で調整できない場合
-							getKaigoInfoValidLimit1().requestFocus();
-							QkanMessageList.getInstance()
-									.QU002_ERROR_OF_DUPLICATE_KAIGO();
-							return false;
-						}
-
-					}
+					return false;
 				}
 			}
 		}
+		if (getNonCorrespondenceFlg() == 0) { // ※要介護度-非該当の場合は処理を通らない。
+			
+			//システム適用期間が認定有効期間の範囲外のとき
+			Date validStart = getKaigoInfoValidLimit1().getDate();
+			Date validEnd = getKaigoInfoValidLimit3().getDate();
+			Date sysValidStart = getKaigoInfoSystemValidLimit1().getDate();
+			Date sysValidEnd = getKaigoInfoSystemValidLimit3().getDate();
+			
+			boolean warn1 = false;
+			boolean warn2 = false;
+			
+			if (ACDateUtilities.getDifferenceOnDay(sysValidStart, validStart) < 0 ||
+				ACDateUtilities.getDifferenceOnDay(sysValidStart, validEnd) > 0 ) {
+				warn1 = true;
+			}
+			if (ACDateUtilities.getDifferenceOnDay(sysValidEnd, validEnd) > 0 ||
+				ACDateUtilities.getDifferenceOnDay(sysValidEnd, validStart) < 0 ) {
+				warn2 = true;
+			}
+			if (warn1 || warn2) {
+				switch (QkanMessageList.getInstance()
+						.QU002_WARNING_OF_INVALID_SYSTEM_VALID()) {
+				case ACMessageBox.RESULT_OK:
+					if (warn1) {
+						getKaigoInfoSystemValidLimit1().setText(getKaigoInfoValidLimit1().getText());
+					}
+					if (warn2) {
+						getKaigoInfoSystemValidLimit3().setText(getKaigoInfoValidLimit3().getText());
+					}
+					break;
+				case ACMessageBox.RESULT_CANCEL:
+					if (warn1) {
+						getKaigoInfoSystemValidLimit1().requestFocus();
+					}
+					if (warn2) {
+						getKaigoInfoSystemValidLimit3().requestFocus();
+					}
+					return false;
+				}
+			}
+		}
+		
+		// ・kaigoInfoSystemValidLimit1（システム有効期間開始日）
+		// 入力されているかどうか
+		// ※エラーの場合、String：msgParam1を宣言し、"有効期間開始日"を代入する。
+		if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit1().getText())) {
+			getKaigoInfoSystemValidLimit1().requestFocus(); // フォーカス
+			msgParam1 = "システム有効期間開始日";
+			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+					msgParam1);
+			return false;
+		}
+
+		// 存在する日付が入力されているかどうか
+		// ※エラーの場合、String：msgParamを宣言し、"有効期間開始日の"を代入する。
+		if (!ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit1().getText())) {
+			if (!getKaigoInfoSystemValidLimit1().isValidDate()) {
+				getKaigoInfoSystemValidLimit1().requestFocus(); // フォーカス
+				msgParam1 = "システム有効期間開始日の";
+				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam1);
+				return false;
+			}
+		}
+
+		// 有効期間終了日のチェック　※要介護度-非該当の場合は行わない。
+		// ・kaigoInfoSystemValidLimit3（有効期間終了日）
+		// 入力されているかどうか
+		// ※エラーの場合、String：msgParam1を宣言し、"有効期間終了日"を代入する。
+		if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+			getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
+			msgParam1 = "システム有効期間終了日";
+			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+					msgParam1);
+			return false;
+		}
+
+		// 存在する日付が入力されているかどうか　※要介護度-非該当の場合は行わない。
+		// ※エラーの場合、String：msgParamを宣言し、"有効期間終了日の"を代入する。
+		if (!ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+			if (!getKaigoInfoSystemValidLimit3().isValidDate()) {
+				getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
+				msgParam1 = "システム有効期間終了日の";
+				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam1);
+				return false;
+			}
+		}
+		
+		
+
+		
+
+		// システム有効期間開始日とシステム有効期間終了日の前後関係のチェック
+		// ・kaigoInfoSystemValidLimit1（システム有効期間開始日）
+		// ・kaigoInfoSystemValidLimit3（システム有効期間終了日）
+		// ※エラーの場合、String：msgParam1を宣言し、"システム有効期間は"を代入する。
+		// ※エラーの場合、String：msgParam2を宣言し、"開始日"を代入する。
+		// ※エラーの場合、String：msgParam3を宣言し、"終了日"を代入する。
+
+		Date start = getKaigoInfoSystemValidLimit1().getDate();
+		Date end = getKaigoInfoSystemValidLimit3().getDate();
+
+		if (ACDateUtilities.getDifferenceOnDay(start, end) > 0) {
+			getKaigoInfoSystemValidLimit1().requestFocus();
+			msgParam1 = "システム有効期間は";
+			msgParam2 = "開始日";
+			msgParam3 = "終了日";
+			QkanMessageList.getInstance().ERROR_OF_GREATER_DATE_RELATION(
+					msgParam1, msgParam2, msgParam3);
+			return false;
+		}
+
+		// 既に登録されているシステム有効期間と重なっていないかどうか
+		// ・kaigoInfoSystemValidLimit1（システム有効期間開始日）
+		// ・kaigoInfoSystemValidLimit3（システム有効期間終了日）
+
+		if (!(getKaigoHistoryList() == null || getKaigoHistoryList().size() == 0)) {
+
+			Date latestStart = null;
+
+			// 最後の履歴のインデックスを取得する。
+			for (int i = 0; i < getKaigoHistoryList().size(); i++) { // 認定履歴件数分ループ
+
+				// 編集モードの場合
+				// 自身の履歴は無視する。
+				if (checkMode == CHECK_MODE_UPDATE) {
+					if (i == getKaigoInfoTable().getSelectedModelRow()) {
+						continue;
+					}
+				}
+
+				VRMap map = (VRMap) getKaigoHistoryList().get(i); // 履歴抽出
+
+				// 対象の履歴が非該当の場合は無視する。
+				int targetJotaiCode = ACCastUtilities
+						.toInt(VRBindPathParser.get("JOTAI_CODE", map));
+				if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
+					continue;
+				}
+
+				reservedStart = (Date) VRBindPathParser.get(
+						"SYSTEM_INSURE_VALID_START", map); // 履歴の有効期間開始日
+				if (latestStart == null) {
+					latestStart = reservedStart;
+					targetIndex = i;
+				} else if (ACDateUtilities.getDifferenceOnDay(latestStart,
+						reservedStart) < 0) {
+					latestStart = reservedStart;
+					targetIndex = i;
+				}
+			}
+
+			// 最後の履歴以外の履歴と重複していないかチェックする。
+			for (int i = 0; i < getKaigoHistoryList().size(); i++) { // 認定履歴件数分ループ
+
+				// 最後の履歴は後で比較する
+				if (i == targetIndex) {
+					continue;
+				}
+
+				// 編集モードの場合
+				// 自身の履歴は無視する。
+				if (checkMode == CHECK_MODE_UPDATE) {
+					if (i == getKaigoInfoTable().getSelectedModelRow()) {
+						continue;
+					}
+				}
+
+				VRMap map = (VRMap) getKaigoHistoryList().get(i); // 履歴抽出
+
+				// 対象の履歴が非該当の場合は無視する。
+				int targetJotaiCode = ACCastUtilities
+						.toInt(VRBindPathParser.get("JOTAI_CODE", map));
+				if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
+					continue;
+				}
+
+				reservedStart = (Date) VRBindPathParser.get(
+						"SYSTEM_INSURE_VALID_START", map);
+				reservedEnd = (Date) VRBindPathParser.get(
+						"SYSTEM_INSURE_VALID_END", map);
+
+				// 期間重複チェック
+				// チェックの結果を取得
+				int result = ACDateUtilities.getDuplicateTermCheck(
+						reservedStart, reservedEnd, start, end);
+
+				if (result != ACDateUtilities.DUPLICATE_NONE) {
+					// 重複していた場合
+
+					getKaigoInfoSystemValidLimit1().requestFocus();
+					QkanMessageList.getInstance()
+							.QU002_ERROR_OF_DUPLICATE_SYSTEM_VALID();
+					return false;
+
+				}
+			}
+
+			// 最後の履歴と重複していないかチェックする。
+			if (targetIndex != -1) {
+				VRMap latestMap = (VRMap) getKaigoHistoryList().get(
+						targetIndex); // 最後の履歴抽出
+				reservedStart = (Date) VRBindPathParser.get(
+						"SYSTEM_INSURE_VALID_START", latestMap); // 最後の履歴の有効期間開始日
+				reservedEnd = (Date) VRBindPathParser.get(
+						"SYSTEM_INSURE_VALID_END", latestMap); // 最後の履歴の有効期間終了日
+
+				// チェックの結果を取得
+				int result = ACDateUtilities.getDuplicateTermCheck(
+						reservedStart, reservedEnd, start, end);
+
+				if (result != ACDateUtilities.DUPLICATE_NONE) {
+					// 重複していた場合
+
+					if (result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND
+							|| result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND_EQUALS_BOTH_END
+							|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN
+							|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN_ON_ONE_DAY) {
+						// 有効期間を自動で調整できる場合
+						// 確認メッセージを表示する。
+						// ・メッセージID：WARNING_OF_DUPLICATE_TERM
+						msgParam1 = "システム";
+						switch (QkanMessageList.getInstance()
+								.WARNING_OF_DUPLICATE_TERM(msgParam1)) {
+						case ACMessageBox.RESULT_OK:
+							// 「OK」が選択された場合
+							// 入力チェックを完全にパスした後処理を行う。
+							doUpdateFlg = 1;
+							break;
+						case ACMessageBox.RESULT_CANCEL:
+							// 「キャンセル」が選択された場合
+							// エラーが発生したインスタンスにフォーカスを当てる。
+							getKaigoInfoSystemValidLimit1().requestFocus();
+							// 戻り値としてfalseを返す。
+							return false;
+						}
+
+					} else {
+						// 有効期間を自動で調整できない場合
+						getKaigoInfoSystemValidLimit1().requestFocus();
+						QkanMessageList.getInstance()
+								.QU002_ERROR_OF_DUPLICATE_SYSTEM_VALID();
+						return false;
+					}
+
+				}
+			}
+		}
+
+// 2014/12/17 [Yoichiro Kamei] add - end
 
 		if (getNonCorrespondenceFlg() == 0) { // 非該当の場合は処理を通らない。
 			// 中断日のチェック　※中断理由が選択されている場合のみ
@@ -3108,10 +3440,13 @@ public class QU002 extends QU002Event {
 		}
 
 		if (getNonCorrespondenceFlg() == 0) {
-
-			Date start = getKaigoInfoValidLimit1().getDate();
-			Date end = getKaigoInfoValidLimit3().getDate();
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//			Date start = getKaigoInfoValidLimit1().getDate();
+//			Date end = getKaigoInfoValidLimit3().getDate();
+			start = getKaigoInfoSystemValidLimit1().getDate();
+			end = getKaigoInfoSystemValidLimit3().getDate();			
+// 2014/12/17 [Yoichiro Kamei] mod - end
+			
 			// 1月（ひとつき）に、異なる被保険者番号が3つ以上存在することにならないかチェックする。
 			if (!(getKaigoHistoryList() == null || getKaigoHistoryList().size() == 0)) {
 
@@ -3139,12 +3474,16 @@ public class QU002 extends QU002Event {
 					if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
 						continue;
 					}
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//					reservedStart = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_START", map);
+//					reservedEnd = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_END", map);
 					reservedStart = (Date) VRBindPathParser.get(
-							"INSURE_VALID_START", map);
+							"SYSTEM_INSURE_VALID_START", map);
 					reservedEnd = (Date) VRBindPathParser.get(
-							"INSURE_VALID_END", map);
-
+							"SYSTEM_INSURE_VALID_END", map);
+// 2014/12/17 [Yoichiro Kamei] mod - end
 					if (ACDateUtilities.getDifferenceOnMonth(start,
 							reservedStart) == 0
 							|| ACDateUtilities.getDifferenceOnMonth(start,
@@ -3193,12 +3532,16 @@ public class QU002 extends QU002Event {
 					if (targetJotaiCode == YOUKAIGODO_HIGAITOU) {
 						continue;
 					}
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//					reservedStart = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_START", map);
+//					reservedEnd = (Date) VRBindPathParser.get(
+//							"INSURE_VALID_END", map);
 					reservedStart = (Date) VRBindPathParser.get(
-							"INSURE_VALID_START", map);
+							"SYSTEM_INSURE_VALID_START", map);
 					reservedEnd = (Date) VRBindPathParser.get(
-							"INSURE_VALID_END", map);
-
+							"SYSTEM_INSURE_VALID_END", map);
+// 2014/12/17 [Yoichiro Kamei] mod - end
 					if (ACDateUtilities.compareOnMonth(end, reservedStart) == 0
 							|| ACDateUtilities.compareOnMonth(end, reservedEnd) == 0) {
 						// 履歴の被保険者番号とkaigoInfoInsuredId（被保険者番号）に
@@ -3239,8 +3582,13 @@ public class QU002 extends QU002Event {
 			if (jotaiCode == YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
 				// 選択している要介護度が経過的要介護の場合
 				// 入力している要介護認定の有効期間を取得する。
-				Date start = getKaigoInfoValidLimit1().getDate();
-				Date end = getKaigoInfoValidLimit3().getDate();
+
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//				Date start = getKaigoInfoValidLimit1().getDate();
+//				Date end = getKaigoInfoValidLimit3().getDate();
+				start = getKaigoInfoSystemValidLimit1().getDate();
+				end = getKaigoInfoSystemValidLimit3().getDate();			
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				if (ACDateUtilities
 						.getDifferenceOnDay(QkanConstants.H2104, end) < 1) {
 					// 有効期間の終了日が平成21年4月以降の場合
@@ -3286,10 +3634,17 @@ public class QU002 extends QU002Event {
 						getPatientId()));
 				if (getNonCorrespondenceFlg() == 0) {
 					// 非該当の場合は入力された有効期間は必要ない
+
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//					VRBindPathParser.set("VALID_START", param,
+//							getKaigoInfoValidLimit1().getDate());
+//					VRBindPathParser.set("VALID_END", param,
+//							getKaigoInfoValidLimit3().getDate());
 					VRBindPathParser.set("VALID_START", param,
-							getKaigoInfoValidLimit1().getDate());
+							getKaigoInfoSystemValidLimit1().getDate());
 					VRBindPathParser.set("VALID_END", param,
-							getKaigoInfoValidLimit3().getDate());
+							getKaigoInfoSystemValidLimit3().getDate());
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				}
 
 				// 新たに入力された有効期間中のサービス予定・実績のレコードを取得する。
@@ -3306,10 +3661,17 @@ public class QU002 extends QU002Event {
 						getPatientId()));
 				if (targetJotaiCode != YOUKAIGODO_HIGAITOU) {
 					// 対象の認定の要介護度が非該当の場合は必要ない
+					
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//					VRBindPathParser.set("VALID_START", param,
+//							VRBindPathParser.get("INSURE_VALID_START", temp));
+//					VRBindPathParser.set("VALID_END", param,
+//							VRBindPathParser.get("INSURE_VALID_END", temp));
 					VRBindPathParser.set("VALID_START", param,
-							VRBindPathParser.get("INSURE_VALID_START", temp));
+							VRBindPathParser.get("SYSTEM_INSURE_VALID_START", temp));
 					VRBindPathParser.set("VALID_END", param,
-							VRBindPathParser.get("INSURE_VALID_END", temp));
+							VRBindPathParser.get("SYSTEM_INSURE_VALID_END", temp));
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				}
 
 				// 登録されていた有効期間中のサービス予定・実績のレコードを取得する。
@@ -3409,16 +3771,24 @@ public class QU002 extends QU002Event {
 			if (doUpdateFlg == 1) {
 
 				// 入力された有効期間開始日
-				Date start = getKaigoInfoValidLimit1().getDate();
-
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//				Date start = getKaigoInfoValidLimit1().getDate();
+				start = getKaigoInfoSystemValidLimit1().getDate();
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				// 自動調整確認メッセージで「OK」を選択した場合
-				// kaigoInfoValidLimit1（有効期間開始日）の値を取得し、前日の値に変換する。
+				// kaigoInfoSystemValidLimit1（システム有効期間開始日）の値を取得し、前日の値に変換する。
 				Date changedDate = ACDateUtilities.addDay(start, -1);
 				// 変換した値を、既にテーブルに登録されている要介護認定履歴のうち、
 				// 重なっている認定の有効期間終了日に設定する。
-				VRBindPathParser.set("INSURE_VALID_END",
+				
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//				VRBindPathParser.set("INSURE_VALID_END",
+//						(VRMap) getKaigoHistoryList().get(targetIndex),
+//						changedDate);
+				VRBindPathParser.set("SYSTEM_INSURE_VALID_END",
 						(VRMap) getKaigoHistoryList().get(targetIndex),
 						changedDate);
+// 2014/12/17 [Yoichiro Kamei] mod - end
 			}
 		}
 
@@ -3698,6 +4068,43 @@ public class QU002 extends QU002Event {
 			// [ID:0000749][Masahiko.Higuchi] del - end
 			
 			
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+			// 住所地特例情報
+			
+			// 住所地特例情報全件削除
+			if (getJushotiTokureiDataFlg() == 1) {
+				// jushotiTokureiDataFlgの値が1の場合
+
+				// 全件削除用SQL文取得のためのHashMap：paramを生成し、下記のKEY/VALUEを設定する。
+				// ・KEY：PATIENT_ID VALUE：patientId
+				param = new VRHashMap();
+				VRBindPathParser.set("PATIENT_ID", param, new Integer(
+						getPatientId()));
+
+				// 住所地特例情報（PATIENT_JUSHOTI_TOKUREI）の該当利用者のレコードを全件削除する。
+				// ※まだコミットしない。
+				strSql = getSQL_DELETE_JUSHOTI_TOKUREI(param);
+				getDBManager().executeUpdate(strSql);
+			}
+			
+			if(!(getJushotiTokureiList() == null || getJushotiTokureiList().size() == 0)) {
+				
+				for (int j = 0; j < getJushotiTokureiList().size(); j++) {
+					// 施設履歴情報登録
+					param = new VRHashMap();
+					param = (VRMap)getJushotiTokureiList().get(j);
+
+					// 利用者ID追加
+					VRBindPathParser.set("PATIENT_ID", param, new Integer(
+							getPatientId()));
+					
+					// ※まだコミットしない。
+					strSql = getSQL_INSERT_JUSHOTI_TOKUREI(param);
+					getDBManager().executeUpdate(strSql);
+				}
+			}
+// 2015/1/14 [Yoichiro Kamei] add - end
+			
 			// 上記のSQL発行処理に成功した場合
 			// DB処理をコミットする。
 			getDBManager().commitTransaction();
@@ -3718,6 +4125,10 @@ public class QU002 extends QU002Event {
 			setShisetsuTableChangeFlg(0);
 			// [ID:0000749][Masahiko.Higuchi] add - end
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+			setJushotiTokureiTableChangeFlg(0);
+// 2015/1/14 [Yoichiro Kamei] add - end
+			
 			return true;
 
 		} catch (Exception ex) {
@@ -3752,6 +4163,11 @@ public class QU002 extends QU002Event {
 
 			// 施設履歴情報を取得する。
 			doFindShisetsu();
+			
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+			// 住所地特例情報を取得する。
+			doFindJushotiTokurei();
+// 2015/1/14 [Yoichiro Kamei] add - end
 
 			// 取得した利用者情報（patientInfoList）の最初のレコードを抽出し、
 			// 「クライアント領域(contents)」のsourceに設定する。
@@ -3766,6 +4182,15 @@ public class QU002 extends QU002Event {
 				getShisetsuInfoPanel().setSource(
 						(VRMap) getShisetsuHistoryList().get(0));
 			}
+			
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+			// 取得した住所地特例情報（jushotiTokureiList）の最初のレコードを抽出し、
+			// 「クライアント領域(contents)」のsourceに設定する。
+			if (getJushotiTokureiList().size() > 0) {
+				getJushotiTokureiInputPanel().setSource(
+						(VRMap) getJushotiTokureiList().get(0));
+			}
+// 2015/1/14 [Yoichiro Kamei] add - end
 
 			// 画面に展開する。
 			getContents().bindSource();
@@ -3781,6 +4206,10 @@ public class QU002 extends QU002Event {
 		// [ID:0000749][Masahiko.Higuchi] add - begin 特定入所者の履歴管理機能
 		getShisetsuTableModel().setAdaptee(getShisetsuHistoryList());
 		// [ID:0000749][Masahiko.Higuchi] add - end
+		
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		getJushotiTokureiTableModel().setAdaptee(getJushotiTokureiList());
+// 2015/1/14 [Yoichiro Kamei] add - end
 
 		if (getKaigoHistoryList() == null || getKaigoHistoryList().size() == 0) {
 			// kaigoInfoTableのレコードが0件の場合
@@ -3862,7 +4291,28 @@ public class QU002 extends QU002Event {
 		}						
 		// [ID:0000749][Masahiko.Higuchi] add - begin 特定入所者の履歴管理機能
 		
+		
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		if (getJushotiTokureiList() == null || getJushotiTokureiList().size() == 0) {
+			// JushotiTokureiInfoTableのレコードが0件の場合
 
+			// 住所地特例情報領域の初期値作成
+			VRMap defaultMap = (VRMap) getJushotiTokureiInputPanel().createSource();
+			// 領域のクリア
+			getJushotiTokureiInputPanel().setSource(defaultMap);
+			getJushotiTokureiInputPanel().bindSource();
+
+			// ボタンの状態を未選択の場合の状態に設定する。
+			setState_ENABLE_JUSHOTI_TOKUREI_BUTTON_FALSE();
+
+		} else {
+
+			// テーブルの1列目を選択した状態にする。
+			getJushotiTokureiInfoTable().setSelectedSortedFirstRow();
+
+		}
+// 2015/1/14 [Yoichiro Kamei] add - end
+		
 		// システム日付において有効な要介護度を表示する。
 		displayNowYokaigodo();
 
@@ -3876,7 +4326,10 @@ public class QU002 extends QU002Event {
 		// [ID:0000749][Masahiko.Higuchi] add - begin 特定入所者の履歴管理機能
 		getSnapShotShisetsu().snapshot();
 		// [ID:0000749][Masahiko.Higuchi] add - end
-
+		
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		getSnapShotJushotiTokurei().snapshot();
+// 2015/1/14 [Yoichiro Kamei] add - end
 	}
 
 	/**
@@ -4005,6 +4458,34 @@ public class QU002 extends QU002Event {
 		}
 	}
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+	  /**
+	   * 「住所地特例情報取得」に関する処理を行ないます。
+	   *
+	   * @throws Exception 処理例外
+	   *
+	   */
+	  public void doFindJushotiTokurei() throws Exception {
+
+			// 取得のためにHashMap：paramを生成し、以下のKEY/VALUEを設定する。
+			VRMap param = new VRHashMap();
+
+			// KEY：PATIENT_ID　VALUE：patientId
+			VRBindPathParser.set("PATIENT_ID", param, new Integer(getPatientId()));
+
+			// 住所地特例情報を取得し、jushotiTokureiListに格納する。
+			String strSql = getSQL_GET_PATIENT_JUSHOTI_TOKUREI(param);
+
+			setJushotiTokureiList(getDBManager().executeQuery(strSql));
+
+			if (getJushotiTokureiList().size() > 0) {
+				// 住所地特例のレコードが1件以上の場合
+				// jushotiTokureiDataFlgに1を代入する。
+				setJushotiTokureiDataFlg(1);
+			}
+	  }
+// 2015/1/14 [Yoichiro Kamei] add - end
+	  
 	/**
 	 * 「画面全体クリア処理」に関する処理を行ないます。
 	 * 
@@ -4055,6 +4536,12 @@ public class QU002 extends QU002Event {
 		setShisetsuTableChangeFlg(0);
 		// [ID:0000749][Masahiko.Higuchi] add - end
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		getJushotiTokureiList().clear();
+		setJushotiTokureiTableChangeFlg(0);
+		setJushotiTokureiDataFlg(0);
+// 2015/1/14 [Yoichiro Kamei] add - end
+		
 		// システム日付において有効な要介護度を表示する。
 		displayNowYokaigodo();
 
@@ -4077,7 +4564,10 @@ public class QU002 extends QU002Event {
 		getSnapshot().snapshot();
 		getSnapShotKaigo().snapshot();
 		getSnapShotIdou().snapshot();
-
+		
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		getSnapShotJushotiTokurei().snapshot();
+// 2015/1/14 [Yoichiro Kamei] add - end
 	}
 
 	/**
@@ -4107,7 +4597,8 @@ public class QU002 extends QU002Event {
 		// "INSURE_VALID_END" "REPORTED_DATE"
 		// "STOP_DATE" "STOP_REASON" "LIMIT_RATE"
 		model = new ACTableModelAdapter();
-		model.setColumns(new String[] { "SHINSEI_DATE", "SHUBETSU_CODE_NAME",
+		model.setColumns(new String[] { "SYSTEM_INSURE_VALID_START", "SYSTEM_INSURE_VALID_END", "INSURE_RATE",
+				"SHINSEI_DATE", "SHUBETSU_CODE_NAME",
 				"JOTAI_CODE_NAME", "INSURE_VALID_START", "INSURE_VALID_END",
 				"REPORTED_DATE", "STOP_DATE", "STOP_REASON_NAME", "LIMIT_RATE" });
 		setKaigoTableModel(model);
@@ -4126,6 +4617,14 @@ public class QU002 extends QU002Event {
 		// "REASON"
 		// });
 		setIdouTableModel(model);
+		
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		model = new ACTableModelAdapter();
+		model.setColumns(new String[] { "JUSHOTI_VALID_START", "JUSHOTI_VALID_END",
+				"JUSHOTI_INSURER_ID" });
+		setJushotiTokureiTableModel(model);
+		getJushotiTokureiInfoTable().setModel(getJushotiTokureiTableModel());
+// 2015/1/14 [Yoichiro Kamei] add - end
 
 		// テーブルモデルを下記の画面テーブルに設定する。
 		// ・「介護情報・テーブル領域（kaigoInfoTable）」
@@ -4189,6 +4688,10 @@ public class QU002 extends QU002Event {
 		getSnapShotShisetsu().setRootContainer(getShisetsuInputPanel());
 		// [ID:0000749][Masahiko.Higuchi] add - end
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		getSnapShotJushotiTokurei().setRootContainer(getJushotiTokureiInputPanel());
+// 2015/1/14 [Yoichiro Kamei] add - end
+		
 		// 画面設定を行う。
 		casualInitialize();
 
@@ -4240,9 +4743,12 @@ public class QU002 extends QU002Event {
 		// サービスマスタレコードを取得し、以下のKEYでmapに設定する。
 		// ・KEY：SERVICE
 		VRList service = new VRArrayList();
+// 2014/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
+//		setMasterService(QkanCommon.getMasterService(getDBManager(),
+//				QkanConstants.H2404));
 		setMasterService(QkanCommon.getMasterService(getDBManager(),
-				QkanConstants.H2404));
-
+		QkanConstants.H2704));
+// 2014/1/9 [Yoichiro Kamei] mod - end
 		VRList temp = new VRArrayList(getMasterService().values());
 
 		if (!(temp == null || temp.size() == 0)) {
@@ -4289,6 +4795,13 @@ public class QU002 extends QU002Event {
 		VRBindPathParser.set("INSURER", map,
 				QkanCommon.getInsurerInfoCareOnly(getDBManager()));
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+		//住所地特例の保険者コンボ用にキー値をコピー
+		if (VRBindPathParser.get("INSURER", map) != null) {
+			ACBindUtilities.copyBindPath((VRList)VRBindPathParser.get("INSURER", map), "INSURER_ID", "JUSHOTI_INSURER_ID");
+		}
+// 2015/1/14 [Yoichiro Kamei] add - end
+		
 		// mapを「クライアント領域（contents）」に設定する。
 		getContents().setModelSource(map);
 
@@ -4734,10 +5247,16 @@ public class QU002 extends QU002Event {
 		} else {
 			for (int i = 0; i < target.size(); i++) {
 				VRMap temp = (VRMap) target.get(i);
+// 2014/12/17 [Yoichiro Kamei] mod - begin システム有効期間対応
+//				Date start = ACCastUtilities.toDate(VRBindPathParser.get(
+//						"INSURE_VALID_START", temp));
+//				Date end = ACCastUtilities.toDate(VRBindPathParser.get(
+//						"INSURE_VALID_END", temp));
 				Date start = ACCastUtilities.toDate(VRBindPathParser.get(
-						"INSURE_VALID_START", temp));
+						"SYSTEM_INSURE_VALID_START", temp));
 				Date end = ACCastUtilities.toDate(VRBindPathParser.get(
-						"INSURE_VALID_END", temp));
+						"SYSTEM_INSURE_VALID_END", temp));
+// 2014/12/17 [Yoichiro Kamei] mod - end
 				if (isValidTermOnTargetDate(getSystemDate(), start, end)) {
 					// システム日付において有効な認定履歴である場合
 					int yokaigodo = ACCastUtilities.toInt(VRBindPathParser.get(
@@ -4805,7 +5324,7 @@ public class QU002 extends QU002Event {
 		changeShisetsuState();
 
 	}
-
+	
 	/**
 	 * 施設情報 - クリアボタンイベント
 	 * 
@@ -5083,7 +5602,6 @@ public class QU002 extends QU002Event {
 			// 選択されていない場合
 			setState_ENABLE_TOKUTEI_NYUSHO_FALSE();
 		}
-		
 		// ボタンの状態制御
 		if (!getShisetsuInfoTable().isSelected()) {
 			setState_ENABLE_SHISETSU_BUTTON_FALSE();
@@ -5323,4 +5841,600 @@ public class QU002 extends QU002Event {
 		return true;
 	}
 
+// 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
+	/**
+	 * 住所地特例情報 - クリアボタンイベント
+	 * 
+	 */
+	protected void jushotiTokureiInfoButtonClearActionPerformed(ActionEvent e)
+			throws Exception {
+
+		String insurerId = "";
+		VRMap src = null;
+		VRMap tempSrc = null;
+		Date historyDate = null;
+		
+		// 住所地特例情報の先頭を取得する
+		if(getJushotiTokureiList().size() > 0) {
+			for(int i=0; i < getJushotiTokureiList().size();i++) {
+				// 採用するレコードを判定する
+				tempSrc = (VRMap)getJushotiTokureiList().getData(i);
+				if(historyDate == null) {
+					historyDate = ACCastUtilities.toDate(tempSrc.getData("JUSHOTI_VALID_START"));
+					src = (VRMap)getJushotiTokureiList().getData(i);
+					continue;
+				}
+				if(ACDateUtilities.compareOnDay(historyDate, ACCastUtilities.toDate(tempSrc.getData("JUSHOTI_VALID_START"))) < 0) {
+					// 有効期間開始が現在のレコードより後ろのものを採用する
+					src = (VRMap)getJushotiTokureiList().getData(i);
+				}
+			}
+			
+			insurerId = ACCastUtilities.toString(src.getData("JUSHOTI_INSURER_ID"),"");
+		}
+		
+		if (getJushotiTokureiInfoTable().isSelected()) {
+			// 画面テーブルが選択されている場合
+			// 画面テーブルの行を未選択の状態に設定する。
+			getJushotiTokureiInfoTable().clearSelection();
+
+		}
+		
+		VRMap map = new VRHashMap();
+		// 画面のソースを生成する。
+		map = (VRMap) getJushotiTokureiInputPanel().createSource();
+		map.setData("JUSHOTI_INSURER_ID", insurerId);
+		
+
+		// 「施設情報領域」のソースとして設定する。
+		getJushotiTokureiInputPanel().setSource(map);
+
+		// 画面に展開する。
+		getJushotiTokureiInputPanel().bindSource();
+		
+		// 非選択状態ならスナップショットを取る
+		if(!getJushotiTokureiInfoTable().isSelected()) {
+			// スナップショット
+			getSnapShotJushotiTokurei().snapshot();
+
+		}
+
+		// 画面状態制御
+//		changeShisetsuState();
+
+	}
+
+	/**
+	 * 住所地特例情報 - 追加ボタンイベント
+	 * 
+	 */
+	protected void jushotiTokureiInfoButtonInsertActionPerformed(ActionEvent e)
+			throws Exception {
+
+		// データ抽出
+		VRMap map = new VRHashMap();
+
+		// データの整合性確認
+		// 入力チェックを行う。
+		if (!isValidInputJushotiTokurei(CHECK_MODE_INSERT)) {
+			// 入力エラーがあった場合
+			// 処理を中断する。
+			return;
+		}
+		
+		// データ取得
+		getJushotiTokureiInputPanel().setSource(map);
+		getJushotiTokureiInputPanel().applySource();
+		
+
+		// 最大値+1の値を取得する。
+		int maxId = 0;
+
+		// 最大値の取得
+		if (!(getJushotiTokureiList() == null || getJushotiTokureiList()
+				.size() == 0)) {
+
+			// 画面テーブルに既にデータが存在している場合
+			for (int i = 0; i < getJushotiTokureiList().size(); i++) {
+
+				int target = ACCastUtilities.toInt(VRBindPathParser.get(
+						"JUSHOTI_HISTORY_ID", (VRMap) getJushotiTokureiList()
+								.get(i)));
+
+				// 比較対象が比較元より大きい値の場合
+				if (maxId < target) {
+					// 比較対象を比較元とする。
+					maxId = target;
+				}
+
+			}
+		}
+
+		// 取得した値を、取得した認定情報にKEY：JUSHOTI_HISTORY_IDで設定する。
+		VRBindPathParser
+				.set("JUSHOTI_HISTORY_ID", map, new Integer(maxId + 1));
+
+		// 利用者IDの設定
+		if (getProcessMode() == QkanConstants.PROCESS_MODE_UPDATE) {
+			// 更新モードの場合
+			// 取得したデータにKEY：PATIENT_ID　VALUE：patientidを設定する。
+			VRBindPathParser
+					.set("PATIENT_ID", map, new Integer(getPatientId()));
+		}
+
+		
+		// StringからIntegerに型変換　※ソート時対策
+		final String[] keys = new String[] { "JUSHOTI_HISTORY_ID" };
+		QkanCommon.convertValueFromStringToInteger(map, keys);
+
+        // 有効期間の付加処理
+        setMaxAndMinDateJushotiTokurei(map);
+        
+		// データの追加
+		getJushotiTokureiList().add(map);
+
+		// 追加行のインデックスを退避(最終行のインデックス)
+		int selectedRow = getJushotiTokureiList().size() - 1;
+
+		// 以下の条件で介護情報テーブルのソートを行う。
+		// INSURE_VALID_START（有効期間開始）　DESC
+		getJushotiTokureiInfoTable().sort("JUSHOTI_VALID_START DESC");
+
+		// 追加行を選択
+		getJushotiTokureiInfoTable().setSelectedModelRow(selectedRow);
+
+		// 1（変更あり）を代入する。
+		setJushotiTokureiTableChangeFlg(1);
+
+	}
+
+	/**
+	 * 住所地特例情報 - 編集ボタンイベント
+	 * 
+	 */
+	protected void jushotiTokureiInfoButtonEditActionPerformed(ActionEvent e)
+			throws Exception {
+		// 入力チェックを行う。
+		if (!isValidInputJushotiTokurei(CHECK_MODE_UPDATE)) {
+			// 入力エラーがあった場合
+			// 処理を中断する。
+			return;
+		}
+
+
+		// 選択行のインデックスを退避
+		int selectedRow = getJushotiTokureiInfoTable().getSelectedModelRow();
+
+		// 入力されたデータを取得する。
+		VRMap map = new VRHashMap();
+		getJushotiTokureiInputPanel().setSource(map);
+		getJushotiTokureiInputPanel().applySource();
+
+		// 選択行のデータを取得する。
+		VRMap temp = (VRMap) getJushotiTokureiList().get(selectedRow);
+
+		// 選択行のデータより、画面上にないデータを画面上データに移す。
+		VRBindPathParser.set("PATIENT_ID", map, new Integer(getPatientId()));
+		VRBindPathParser.set("JUSHOTI_HISTORY_ID", map,
+				VRBindPathParser.get("JUSHOTI_HISTORY_ID", temp));
+
+        // 有効期間の付加処理
+        setMaxAndMinDateJushotiTokurei(map);
+        
+		// 選択行に画面上のデータを設定する。
+		getJushotiTokureiList().setData(selectedRow, map);
+
+		// 以下の条件で異動情報テーブルのソートを行う。
+		getJushotiTokureiInfoTable().sort("JUSHOTI_VALID_START DESC");
+
+		// 選択されていた行を選択
+		getJushotiTokureiInfoTable().setSelectedModelRow(selectedRow);
+
+		// 1（変更あり）を代入する。
+		setJushotiTokureiTableChangeFlg(1);
+
+	}
+
+	/**
+	 * 住所地特例情報 - 削除ボタン
+	 * 
+	 */
+	protected void jushotiTokureiInfoButtonDeleteActionPerformed(ActionEvent e)
+			throws Exception {
+
+		if (!(getJushotiTokureiList() == null || getJushotiTokureiList()
+				.size() == 0)) {
+			// 確認メッセージを表示する。
+			// 　・メッセージID：WARNING_OF_DELETE_SELECTION
+			switch (QkanMessageList.getInstance().WARNING_OF_DELETE_SELECTION()) {
+
+			case ACMessageBox.RESULT_OK:
+				// 「はい」を選択した場合
+				// 選択されているレコードの画面上のインデックス
+				int sortedRow = getJushotiTokureiInfoTable().getSelectedSortedRow();
+
+				// 選択されているレコードをidouHistoryListから削除する。
+				getJushotiTokureiList().remove(
+						getJushotiTokureiInfoTable().getSelectedModelRow());
+
+				// 削除された行の1行上の行を選択する。
+				getJushotiTokureiInfoTable().setSelectedSortedRowOnAfterDelete(
+						sortedRow);
+
+				// shisetsuDataFlgに1（変更あり）を代入する。
+				//setShisetsuDataFlg(1);
+				setJushotiTokureiDataFlg(1);
+
+				break;
+
+			case ACMessageBox.RESULT_CANCEL:
+				// 「キャンセル」を選択した場合
+				// 処理を抜ける。（何もしない）
+				break;
+			}
+		}
+
+	}
+
+	/**
+	 * 住所地特例情報テーブル選択イベントです。
+	 * 
+	 */
+	protected void jushotiTokureiInfoTableSelectionChanged(ListSelectionEvent e)
+			throws Exception {
+
+		
+		VRMap map = new VRHashMap();
+
+		if (!getJushotiTokureiInfoTable().isSelected()) {
+			// 画面テーブルの行を選択していない場合
+			// Enable制御を行う。
+			// ・状態ID：ENABLE_JUSHOTI_TOKUREI_BUTTON_FALSE
+			setState_ENABLE_JUSHOTI_TOKUREI_BUTTON_FALSE();
+
+			// 画面のソースを生成する。
+			map = (VRMap) getJushotiTokureiInputPanel().createSource();
+
+		} else {
+			// 画面テーブルの行を選択している場合
+			// ・状態ID：ENABLE_JUSHOTI_TOKUREI_BUTTON_TRUE
+			// Enable制御を行う。
+			setState_ENABLE_JUSHOTI_TOKUREI_BUTTON_TRUE();
+
+			// 選択されているレコードを取得する。
+			map = (VRMap) getJushotiTokureiInfoTable().getSelectedModelRowValue();
+
+		}
+
+		// 住所地特例情報領域」のソースとして設定する。。
+		getJushotiTokureiInputPanel().setSource(map);
+
+		// 画面に展開する。
+		getJushotiTokureiInputPanel().bindSource();
+
+		// スナップショット
+		getSnapShotJushotiTokurei().snapshot();
+	}
+	
+	/**
+	 * 住所地特例情報入力チェック
+	 * 
+	 */
+	public boolean isValidInputJushotiTokurei(int checkMode) throws Exception {
+		
+		// フラグ
+		int doUpdateFlg = 0;
+
+		// メッセージ表示用引数
+		String msgParam1 = null;
+		String msgParam2 = null;
+		String msgParam3 = null;
+
+		// 登録されている履歴の有効期間
+		Date reservedStart = null;
+		Date reservedEnd = null;
+
+		// 編集対象となる履歴のインデックス
+		int targetIndex = -1;
+
+
+        
+        // ・施設所在保険者番号（jushotiTokureiInfoInsurerId）
+        // 入力されているかどうか。
+        // ※エラーの場合、String：msgParamを宣言し、"減額割合"を代入する。
+		if (!getJushotiTokureiInfoInsurerName().isSelected()) {
+			getJushotiTokureiInfoInsurerName().requestFocus(); // フォーカス
+			msgParam1 = "施設所在保険者名";
+			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(
+					msgParam1);
+			return false;
+		}
+        if (ACTextUtilities.isNullText(getJushotiTokureiInfoInsurerId()
+                .getText())) {
+        	getJushotiTokureiInfoInsurerId().requestFocus();
+            msgParam1 = "施設所在保険者番号";
+            QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+                    msgParam1);
+            return false;
+        }
+
+        // ・有効期間開始（jushotiTokureiInfoValidLimitDateStart）
+        // 入力されている日付が存在するか。
+        // ※エラーの場合、String：msgParamを宣言し、"有効期間開始日の"を代入する。
+        if (!ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateStart()
+                .getText())) {
+            if (!getJushotiTokureiInfoValidLimitDateStart().isValidDate()) {
+            	getJushotiTokureiInfoValidLimitDateStart().requestFocus();
+                msgParam1 = "有効期間開始日の";
+                QkanMessageList.getInstance()
+                        .ERROR_OF_WRONG_DATE(msgParam1);
+                return false;
+            }
+        }
+
+        // ・有効期間終了（jushotiTokureiInfoValidLimitDateEnd）
+        // 入力されている日付が存在するか。
+        // ※エラーの場合、String：msgParamを宣言し、"有効期間終了日の"を代入する。
+        if (!ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateEnd()
+                .getText())) {
+            if (!getJushotiTokureiInfoValidLimitDateEnd().isValidDate()) {
+            	getJushotiTokureiInfoValidLimitDateEnd().requestFocus();
+                msgParam1 = "有効期間終了日の";
+                QkanMessageList.getInstance()
+                        .ERROR_OF_WRONG_DATE(msgParam1);
+                return false;
+            }
+        }
+
+        // 有効期間開始
+        Date start;
+        // 有効期間終了
+        Date end;
+        
+        if (ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateStart()
+                .getText())) {
+        	start = MIN_DATE;
+        } else {
+        	start = getJushotiTokureiInfoValidLimitDateStart().getDate();
+        }
+        if (ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateEnd()
+                .getText())) {
+        	end = MAX_DATE;
+        } else {
+        	end = getJushotiTokureiInfoValidLimitDateEnd().getDate();
+        }
+        
+        // ・有効期間開始（jushotiTokureiInfoValidLimitDateStart）
+        // ・有効期間終了（jushotiTokureiInfoValidLimitDateEnd）
+        // 前後関係が矛盾していないか。
+        // ※エラーの場合、String：msgParam1を宣言し、"有効期間は"を代入する。
+        // ※エラーの場合、String：msgParam2を宣言し、"開始日"を代入する。
+        // ※エラーの場合、String：msgParam3を宣言し、"終了日"を代入する。
+        if (!(ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateStart()
+                .getText()))
+                && !(ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateEnd()
+                        .getText()))) {
+
+            if (ACDateUtilities.compareOnDay(start, end) > 0) {
+            	getJushotiTokureiInfoValidLimitDateStart().requestFocus();
+                msgParam1 = "有効期間は";
+                msgParam2 = "開始日";
+                msgParam3 = "終了日";
+                QkanMessageList.getInstance()
+                        .ERROR_OF_GREATER_DATE_RELATION(msgParam1,
+                                msgParam2, msgParam3);
+                return false;
+            }
+        }
+        
+        
+
+		// 既に登録されているデータの有効期間と重なっていないかどうか
+
+		if (!(getJushotiTokureiList() == null || getJushotiTokureiList()
+				.size() == 0)) {
+
+			Date latestStart = null;
+
+			// 最後の履歴のインデックスを取得する。
+			for (int i = 0; i < getJushotiTokureiList().size(); i++) { // 件数分ループ
+
+				// 編集モードの場合
+				// 自身の履歴は無視する。
+				if (checkMode == CHECK_MODE_UPDATE) {
+					if (i == getJushotiTokureiInfoTable().getSelectedModelRow()) {
+						continue;
+					}
+				}
+
+				// 履歴抽出
+				VRMap map = (VRMap) getJushotiTokureiList().get(i);
+
+				reservedStart = (Date) VRBindPathParser.get(
+						"JUSHOTI_VALID_START", map); // 履歴の有効期間開始日
+				if (latestStart == null) {
+					latestStart = reservedStart;
+					targetIndex = i;
+				} else if (ACDateUtilities.getDifferenceOnDay(latestStart,
+						reservedStart) < 0) {
+					latestStart = reservedStart;
+					targetIndex = i;
+				}
+			}
+
+			// 最後の履歴以外の履歴と重複していないかチェックする。
+			for (int i = 0; i < getJushotiTokureiList().size(); i++) { // 履歴件数分ループ
+
+				// 最後の履歴は後で比較する
+				if (i == targetIndex) {
+					continue;
+				}
+
+				// 編集モードの場合
+				// 自身の履歴は無視する。
+				if (checkMode == CHECK_MODE_UPDATE) {
+					if (i == getJushotiTokureiInfoTable().getSelectedModelRow()) {
+						continue;
+					}
+				}
+
+				VRMap map = (VRMap) getJushotiTokureiList().get(i); // 履歴抽出
+
+				reservedStart = (Date) VRBindPathParser.get(
+						"JUSHOTI_VALID_START", map);
+				reservedEnd = (Date) VRBindPathParser.get("JUSHOTI_VALID_END",
+						map);
+
+				// 期間重複チェック
+				// チェックの結果を取得
+				int result = ACDateUtilities.getDuplicateTermCheck(
+						reservedStart, reservedEnd, start, end);
+
+				if (result != ACDateUtilities.DUPLICATE_NONE) {
+					// 重複していた場合
+
+					getJushotiTokureiInfoValidLimitDateStart().requestFocus();
+					
+					QkanMessageList.getInstance()
+							.QU002_ERROR_OF_DUPLICATE_JUSHOTI_TOKUREI_VALID();
+					return false;
+
+				}
+			}
+
+			// 最後の履歴と重複していないかチェックする。
+			if (targetIndex != -1) {
+				VRMap latestMap = (VRMap) getJushotiTokureiList().get(
+						targetIndex); // 最後の履歴抽出
+				reservedStart = (Date) VRBindPathParser.get(
+						"JUSHOTI_VALID_START", latestMap); // 最後の履歴の有効期間開始日
+				reservedEnd = (Date) VRBindPathParser.get("JUSHOTI_VALID_END",
+						latestMap); // 最後の履歴の有効期間終了日
+
+				// チェックの結果を取得
+				int result = ACDateUtilities.getDuplicateTermCheck(
+						reservedStart, reservedEnd, start, end);
+
+				if (result != ACDateUtilities.DUPLICATE_NONE) {
+					// 重複していた場合
+
+					if (result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND
+							|| result == ACDateUtilities.DUPLICATE_FIRST_INCLUDE_SECOND_EQUALS_BOTH_END
+							|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN
+							|| result == ACDateUtilities.DUPLICATE_FIRST_END_AND_SECOND_BEGIN_ON_ONE_DAY) {
+						// 有効期間を自動で調整できる場合
+						// 確認メッセージを表示する。
+						// ・メッセージID：WARNING_OF_DUPLICATE_TERM
+						msgParam1 = "住所地特例情報";
+						switch (QkanMessageList.getInstance()
+								.WARNING_OF_DUPLICATE_TERM(msgParam1)) {
+						case ACMessageBox.RESULT_OK:
+							// 「OK」が選択された場合
+							// 入力チェックを完全にパスした後処理を行う。
+							doUpdateFlg = 1;
+							break;
+						case ACMessageBox.RESULT_CANCEL:
+							// 「キャンセル」が選択された場合
+							// エラーが発生したインスタンスにフォーカスを当てる。
+							getJushotiTokureiInfoValidLimitDateStart().requestFocus();
+							// 戻り値としてfalseを返す。
+							return false;
+						}
+
+					} else {
+						// 有効期間を自動で調整できない場合
+						getJushotiTokureiInfoValidLimitDateStart().requestFocus();
+						
+						QkanMessageList.getInstance()
+								.QU002_ERROR_OF_DUPLICATE_JUSHOTI_TOKUREI_VALID();
+						return false;
+					}
+
+				}
+			}
+			
+			// 有効期間自動調整
+			if (doUpdateFlg == 1) {
+
+				// 入力された有効期間開始日
+				Date startLimit = getJushotiTokureiInfoValidLimitDateStart().getDate();
+
+				// 自動調整確認メッセージで「OK」を選択した場合
+				// 有効期間開始日の値を取得し、前日の値に変換する。
+				Date changedDate = ACDateUtilities.addDay(startLimit, -1);
+				// 変換した値を、既にテーブルに登録されている履歴のうち、
+				// 重なっているデータの有効期間終了日に設定する。
+				VRBindPathParser.set("JUSHOTI_VALID_END",
+						(VRMap) getJushotiTokureiList().get(targetIndex),
+						changedDate);
+			}
+			
+		}
+        
+		// 入力エラーがなかった場合
+		return true;
+	}
+
+  /**
+   * 「保険者名表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+	protected void jushotiTokureiInfoInsurerIdFocusLost(FocusEvent e)
+			throws Exception {
+		String insurerId = getJushotiTokureiInfoInsurerId().getText();
+
+		// 入力された保険者番号に該当する保険者が存在する場合
+		VRMap map = (VRMap) getJushotiTokureiInfoInsurerName().getDataFromBindPath(
+				insurerId);
+
+		// 保険者名コンボ（jushotiTokureiInfoInsurerName）の該当保険者を選択状態にする。
+		getJushotiTokureiInfoInsurerName().setSelectedItem(map);
+	}
+
+  /**
+   * 「保険者番号表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+	protected void jushotiTokureiInfoInsurerNameActionPerformed(ActionEvent e)
+			throws Exception {
+		// 選択された保険者の保険者番号を保険者番号フィールド（jushotiTokureiInfoInsurerId）
+		// に表示する。
+		VRMap map = (VRMap) getJushotiTokureiInfoInsurerName().getSelectedModelItem();
+
+		if (VRBindPathParser.get("JUSHOTI_INSURER_ID", map) == null) {
+			getJushotiTokureiInfoInsurerId().setText("");
+		} else {
+			getJushotiTokureiInfoInsurerId().setText(
+					ACCastUtilities.toString(VRBindPathParser.get("JUSHOTI_INSURER_ID",
+							map)));
+		}
+	}
+	
+	/**
+	 * 「上限、下限日付設定」処理です。
+	 * 
+	 * @param VRMap
+	 *            値を詰め込みたいVRMap
+	 * @throws Exception
+	 *             処理例外
+	 */
+	private void setMaxAndMinDateJushotiTokurei(VRMap map) throws Exception {
+		// 非該当の場合の処理
+
+		// 有効期間開始日が入力されていない場合
+		// 下限日付を自動設定
+		if (ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateStart().getText())) {
+			VRBindPathParser.set("JUSHOTI_VALID_START", map, MIN_DATE);
+		}
+
+		// 有効期間終了日が入力されていない場合
+		// 上限日付を自動設定
+		if (ACTextUtilities.isNullText(getJushotiTokureiInfoValidLimitDateEnd().getText())) {
+			VRBindPathParser.set("JUSHOTI_VALID_END", map, MAX_DATE);
+		}
+	}
+// 2015/1/14 [Yoichiro Kamei] add - end
+	
 }

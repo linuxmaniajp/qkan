@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者登録
- * 作成日: 2012/09/25  日本コンピューター株式会社 利用者登録 新規作成
+ * 作成日: 2015/01/14  日本コンピューター株式会社 利用者登録 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -145,6 +145,10 @@ public class QU002SQL extends QU002State {
 
     sb.append(",LAST_TIME");
 
+    sb.append(",SYSTEM_INSURE_VALID_START");
+
+    sb.append(",SYSTEM_INSURE_VALID_END");
+
     sb.append(" FROM");
 
     sb.append(" PATIENT_NINTEI_HISTORY");
@@ -163,7 +167,7 @@ public class QU002SQL extends QU002State {
 
     sb.append(" ORDER BY");
 
-    sb.append(" INSURE_VALID_START");
+    sb.append(" SYSTEM_INSURE_VALID_START");
 
     sb.append(" DESC");
 
@@ -290,6 +294,58 @@ public class QU002SQL extends QU002State {
     sb.append(" ORDER BY");
 
     sb.append(" SHISETSU_VALID_START");
+
+    sb.append(" DESC");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「利用者住所地特例情報取得」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_PATIENT_JUSHOTI_TOKUREI(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",JUSHOTI_HISTORY_ID");
+
+    sb.append(",JUSHOTI_VALID_START");
+
+    sb.append(",JUSHOTI_VALID_END");
+
+    sb.append(",JUSHOTI_INSURER_ID");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(" FROM");
+
+    sb.append(" PATIENT_JUSHOTI_TOKUREI");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" JUSHOTI_VALID_START");
 
     sb.append(" DESC");
 
@@ -739,6 +795,10 @@ public class QU002SQL extends QU002State {
 
     sb.append(",LAST_TIME");
 
+    sb.append(",SYSTEM_INSURE_VALID_START");
+
+    sb.append(",SYSTEM_INSURE_VALID_END");
+
     sb.append(")VALUES(");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
@@ -818,6 +878,14 @@ public class QU002SQL extends QU002State {
     sb.append(",");
 
     sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SYSTEM_INSURE_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SYSTEM_INSURE_VALID_END", sqlParam), "yyyy-MM-dd"));
 
     sb.append(")");
 
@@ -933,6 +1001,66 @@ public class QU002SQL extends QU002State {
   }
 
   /**
+   * 「住所地特例追加」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_INSERT_JUSHOTI_TOKUREI(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("INSERT INTO");
+
+    sb.append(" PATIENT_JUSHOTI_TOKUREI");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",JUSHOTI_HISTORY_ID");
+
+    sb.append(",JUSHOTI_VALID_START");
+
+    sb.append(",JUSHOTI_VALID_END");
+
+    sb.append(",JUSHOTI_INSURER_ID");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(")VALUES(");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("JUSHOTI_HISTORY_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("JUSHOTI_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("JUSHOTI_VALID_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("JUSHOTI_INSURER_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
    * 「異動履歴削除」のためのSQLを返します。
    * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
    * @throws Exception 処理例外
@@ -1012,6 +1140,38 @@ public class QU002SQL extends QU002State {
     sb.append("DELETE FROM");
 
     sb.append(" PATIENT_SHISETSU_HISTORY");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「住所地特例削除」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_DELETE_JUSHOTI_TOKUREI(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("DELETE FROM");
+
+    sb.append(" PATIENT_JUSHOTI_TOKUREI");
 
     sb.append(" WHERE");
 

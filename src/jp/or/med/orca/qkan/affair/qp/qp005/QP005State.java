@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2009/12/10  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2015/01/06  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績データ作成 (P)
@@ -209,6 +209,26 @@ public class QP005State extends QP005Design {
   public void setState_TYPE11() throws Exception {
 
         getDetailsDelButton().setEnabled(false);
+
+  }
+
+  /**
+   * 「状態コントロール12」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_TYPE12() throws Exception {
+
+        getDetailsJushotiTokureiDelButton().setEnabled(true);
+
+  }
+
+  /**
+   * 「状態コントロール13」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_TYPE13() throws Exception {
+
+        getDetailsJushotiTokureiDelButton().setEnabled(false);
 
   }
 

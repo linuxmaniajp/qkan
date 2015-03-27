@@ -54,28 +54,63 @@ public class CareServiceCommon {
      * @return “Á’n‰ÁZ(•Ÿƒ—p‹ï‘İ—^ŠÜ‚Ş)‚ÌƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
      */
     public static boolean isAddSpecialArea(Map code) {
-        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
-        case 11:// –K–â‰îŒì
-        case 12:// –K–â“ü—‰îŒì
-        case 62:// —\–h–K–â“ü—‰îŒì
-        case 63:// —\–h–K–âŠÅŒì
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 8000:// “Á•Ê’nˆæ‰ÁZ
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+//        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
+//        case 11:// –K–â‰îŒì
+//        case 12:// –K–â“ü—‰îŒì
+//        case 62:// —\–h–K–â“ü—‰îŒì
+//        case 63:// —\–h–K–âŠÅŒì
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 8000:// “Á•Ê’nˆæ‰ÁZ
+//                return true;
+//            }
+//            break;
+//        case 13:// –K–âŠÅŒì
+//        case 61:// —\–h–K–â‰îŒì
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 8000:// “Á•Ê’nˆæ‰ÁZ
+//            case 8001:// “Á•Ê’nˆæ‰ÁZ“úŠ„
+//                return true;
+//            }
+//            break;
+//        case 17:// •Ÿƒ—p‹ï‘İ—^
+//        case 67:// —\–h•Ÿƒ—p‹ï‘İ—^
+//            return isAddSpecialAreaOfWelfareEquipment(code);
+//        }
+        String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+        if ("11".equals(serviceCodeKind)		// –K–â‰îŒì
+        	|| "12".equals(serviceCodeKind)		// –K–â“ü—‰îŒì
+        	|| "62".equals(serviceCodeKind)		// —\–h–K–â“ü—‰îŒì
+        	|| "63".equals(serviceCodeKind)		// —\–h–K–âŠÅŒì
+        	) {
+        	// “Á•Ê’nˆæ‰ÁZ
+            if ("8000".equals(serviceCodeItem)) {
                 return true;
             }
-            break;
-        case 13:// –K–âŠÅŒì
-        case 61:// —\–h–K–â‰îŒì
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 8000:// “Á•Ê’nˆæ‰ÁZ
-            case 8001:// “Á•Ê’nˆæ‰ÁZ“úŠ„
-                return true;
-            }
-            break;
-        case 17:// •Ÿƒ—p‹ï‘İ—^
-        case 67:// —\–h•Ÿƒ—p‹ï‘İ—^
-            return isAddSpecialAreaOfWelfareEquipment(code);
         }
+        if ("13".equals(serviceCodeKind)		// –K–âŠÅŒì
+               	) {
+            	// “Á•Ê’nˆæ‰ÁZ or “Á•Ê’nˆæ‰ÁZ“úŠ„
+                if ("8000".equals(serviceCodeItem) || "8001".equals(serviceCodeItem) || "8002".equals(serviceCodeItem)) {
+                    return true;
+                }
+            }
+        if ("61".equals(serviceCodeKind)		// —\–h–K–â‰îŒì
+        	|| "76".equals(serviceCodeKind)		// ’èŠú„‰ñE‘Î‰Œ^–K–â‰îŒìŠÅŒì
+           	) {
+        	// “Á•Ê’nˆæ‰ÁZ or “Á•Ê’nˆæ‰ÁZ“úŠ„
+            if ("8000".equals(serviceCodeItem) || "8001".equals(serviceCodeItem)) {
+                return true;
+            }
+        }
+        if ("17".equals(serviceCodeKind)		// •Ÿƒ—p‹ï‘İ—^
+        	|| "67".equals(serviceCodeKind)		// —\–h•Ÿƒ—p‹ï‘İ—^
+           	) {
+        	return isAddSpecialAreaOfWelfareEquipment(code);
+        }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end   ƒT[ƒrƒXƒR[ƒh‰p”‰»
+        
         return false;
     }
 
@@ -92,12 +127,19 @@ public class CareServiceCommon {
                     code.get("SERVICE_ADD_FLAG"), ""))) {
                 if ("1".equals(ACCastUtilities.toString(
                         code.get("TOTAL_GROUPING_TYPE"), ""))) {
-                    switch (ACCastUtilities.toInt(
-                            code.get("SERVICE_CODE_KIND"), 0)) {
-                    case 17:// •Ÿƒ—p‹ï‘İ—^
-                    case 67:// —\–h•Ÿƒ—p‹ï‘İ—^
-                        return true;
-                    }
+                	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+//                    switch (ACCastUtilities.toInt(
+//                            code.get("SERVICE_CODE_KIND"), 0)) {
+//                    case 17:// •Ÿƒ—p‹ï‘İ—^
+//                    case 67:// —\–h•Ÿƒ—p‹ï‘İ—^
+//                        return true;
+//                    }
+                	// 17:•Ÿƒ—p‹ï‘İ—^ or 67:—\–h•Ÿƒ—p‹ï‘İ—^
+                	String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+                	if ("17".equals(serviceCodeKind) || "67".equals(serviceCodeKind)) {
+                		return true;
+                	}
+                    // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end   ƒT[ƒrƒXƒR[ƒh‰p”‰»
                 }
             }
         }
@@ -264,15 +306,28 @@ public class CareServiceCommon {
      * @return ‹Ù‹}–K–âŠÅŒì‰ÁZ‚ğˆÓ–¡‚·‚éƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
      */
     public static boolean isAddEmergencyNursing(Map code) {
-        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
-        case 13:// –K–âŠÅŒì
-        case 63:// —\–h–K–âŠÅŒì
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 3100:// ‹Ù‹}–K–âŠÅŒì‰ÁZ‚P
-            case 3200:// ‹Ù‹}–K–âŠÅŒì‰ÁZ‚Q
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+//        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
+//        case 13:// –K–âŠÅŒì
+//        case 63:// —\–h–K–âŠÅŒì
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 3100:// ‹Ù‹}–K–âŠÅŒì‰ÁZ‚P
+//            case 3200:// ‹Ù‹}–K–âŠÅŒì‰ÁZ‚Q
+//                return true;
+//            }
+//        }
+        String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+        if ("13".equals(serviceCodeKind)		// –K–âŠÅŒì
+            || "63".equals(serviceCodeKind)		// —\–h–K–âŠÅŒì
+        	) {
+        	//3100:‹Ù‹}–K–âŠÅŒì‰ÁZ‚P or 3200:‹Ù‹}–K–âŠÅŒì‰ÁZ‚Q
+        	if ("3100".equals(serviceCodeItem) || "3200".equals(serviceCodeItem)) {
                 return true;
             }
         }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end   ƒT[ƒrƒXƒR[ƒh‰p”‰»
+        
         return false;
     }
 
@@ -283,15 +338,28 @@ public class CareServiceCommon {
      * @return “Á•ÊŠÇ—‰ÁZ‚ğˆÓ–¡‚·‚éƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
      */
     public static boolean isAddSpecialManagement(Map code) {
-        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
-        case 13:// –K–âŠÅŒì
-        case 63:// —\–h–K–âŠÅŒì
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 4000:// “Á•ÊŠÇ—‰ÁZ‚P
-            case 4001:// “Á•ÊŠÇ—‰ÁZ‚Q
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+//        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
+//        case 13:// –K–âŠÅŒì
+//        case 63:// —\–h–K–âŠÅŒì
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 4000:// “Á•ÊŠÇ—‰ÁZ‚P
+//            case 4001:// “Á•ÊŠÇ—‰ÁZ‚Q
+//                return true;
+//            }
+//        }
+        String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+        if ("13".equals(serviceCodeKind)		// –K–âŠÅŒì
+            || "63".equals(serviceCodeKind)		// —\–h–K–âŠÅŒì
+        	) {
+        	//4000:“Á•ÊŠÇ—‰ÁZ‚P or 4001:“Á•ÊŠÇ—‰ÁZ‚Q
+        	if ("4000".equals(serviceCodeItem) || "4001".equals(serviceCodeItem)) {
                 return true;
             }
         }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end   ƒT[ƒrƒXƒR[ƒh‰p”‰»
+        
         return false;
     }
 
@@ -302,16 +370,30 @@ public class CareServiceCommon {
      * @return ‹Ù‹}¡—ÃŠÇ—‚ğˆÓ–¡‚·‚éƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
      */
     public static boolean isAddEmergencyMedicalManagement(Map code) {
-        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
-        case 22:// ’ZŠú“üŠ
-        case 25:// —\–h’ZŠú“üŠ
-        case 52:// •ÛŒ’{İ
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 9000:// ‹Ù‹}¡—ÃŠÇ—‚P
-            case 6000:// ‹Ù‹}¡—ÃŠÇ—‚Q
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+//        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
+//        case 22:// ’ZŠú“üŠ
+//        case 25:// —\–h’ZŠú“üŠ
+//        case 52:// •ÛŒ’{İ
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 9000:// ‹Ù‹}¡—ÃŠÇ—‚P
+//            case 6000:// ‹Ù‹}¡—ÃŠÇ—‚Q
+//                return true;
+//            }
+//        }
+        String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+        if ("22".equals(serviceCodeKind)		// ’ZŠú“üŠ
+            || "25".equals(serviceCodeKind)		// —\–h’ZŠú“üŠ
+            || "52".equals(serviceCodeKind)		// •ÛŒ’{İ
+        	) {
+        	//9000:‹Ù‹}¡—ÃŠÇ—‚P or 6000:‹Ù‹}¡—ÃŠÇ—‚Q
+        	if ("9000".equals(serviceCodeItem) || "6000".equals(serviceCodeItem)) {
                 return true;
             }
         }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end   ƒT[ƒrƒXƒR[ƒh‰p”‰»
+        
         return false;
     }
 
@@ -322,26 +404,49 @@ public class CareServiceCommon {
      * @return “Á•ÊŠÇ—‰ÁZ‚ğˆÓ–¡‚·‚éƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
      */
     public static boolean isAddTerminalCare(Map code) {
-        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
-        case 13:// –K–âŠÅŒì
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 7000:// ƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»
+//        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
+//        case 13:// –K–âŠÅŒì
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 7000:// ƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ
+//                return true;
+//            }
+//            break;
+//        case 52: // ‰îŒì—Ã—{Œ^˜Vl•ÛŒ’{İ
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 6600: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚P‚P
+//            case 6001: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚P‚Q
+//            case 6602: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚Q‚P
+//            case 6002: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚Q‚Q
+//            case 6603: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚P
+//            case 6003: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚Q
+//                return true;
+//            }
+//            break;
+//
+//        }
+        String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+        // –K–âŠÅŒì
+        if ("13".equals(serviceCodeKind)) {
+        	//7000:ƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ
+        	if ("7000".equals(serviceCodeItem)) {
                 return true;
             }
-            break;
-        case 52: // ‰îŒì—Ã—{Œ^˜Vl•ÛŒ’{İ
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 6600: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚P‚P
-            case 6001: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚P‚Q
-            case 6602: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚Q‚P
-            case 6002: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚Q‚Q
-            case 6603: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚P
-            case 6003: // •ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚Q
-                return true;
-            }
-            break;
-
         }
+        // ‰îŒì—Ã—{Œ^˜Vl•ÛŒ’{İ
+        if ("52".equals(serviceCodeKind)) {
+            	if ("6600".equals(serviceCodeItem)		//•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚P‚P
+            		|| "6001".equals(serviceCodeItem)	//•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚P‚Q
+            		|| "6602".equals(serviceCodeItem)	//•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚Q‚P
+            		|| "6002".equals(serviceCodeItem)	//•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚Q‚Q
+            		|| "6603".equals(serviceCodeItem)	//•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚P
+            		|| "6003".equals(serviceCodeItem)	//•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚Q
+            		) {
+                    return true;
+                }
+        }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end   ƒT[ƒrƒXƒR[ƒh‰p”‰»
         return false;
     }
 
@@ -909,7 +1014,7 @@ public class CareServiceCommon {
 
     /**
      * ¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìƒT[ƒrƒX‚Å‚ ‚é‚©‚ğ•Ô‚µ‚Ü‚·B
-     * 
+     * ¦‹‘î‰îŒìx‰‡‚ğs‚¤ƒT[ƒrƒX”»’è‚Å—˜—p‚·‚é‚½‚ßA’ZŠú—˜—pi68,69,79‚ÍŠÜ‚ß‚È‚¢j
      * @param systemServiceKindDetail ƒT[ƒrƒXí—Ş
      * @return ¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìƒT[ƒrƒX‚Å‚ ‚é‚©
      */
@@ -1366,6 +1471,7 @@ public class CareServiceCommon {
         case 14611: // ‰îŒì—\–hx‰‡
         case 17411: // ‰îŒì—\–h”F’mÇ‘Î‰Œ^’ÊŠ‰îŒì
         case 17511: // ‰îŒì—\–h¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+        case 16911: // ‰îŒì—\–h¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìi’ZŠú—˜—pj[H27.4‰ü³‘Î‰]
         case 13711: // ‰îŒì—\–h”F’mÇ‘Î‰Œ^‹¤“¯¶Šˆ‰îŒìi’ZŠú—˜—pˆÈŠOj
         case 13911: // ‰îŒì—\–h”F’mÇ‘Î‰Œ^‹¤“¯¶Šˆ‰îŒìi’ZŠú—˜—pj
             return true;
@@ -1380,18 +1486,40 @@ public class CareServiceCommon {
      * @return —\–h–K–â‰îŒì‚Ì“úŠ„‚Å‚È‚¢‡¬’PˆÊ‚ğˆÓ–¡‚·‚éƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
      */
     public static boolean isAddPreventHomeVisitNotDailyBasicCode(Map code) {
-        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
-        case 61:// —\–h–K–â‰îŒì
-            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
-            case 1111:// —\–h–K–â‰îŒì‡T
-            case 1112:// —\–h–K–â‰îŒì‡TE‚R‹‰
-            case 1211:// —\–h–K–â‰îŒì‡U
-            case 1212:// —\–h–K–â‰îŒì‡UE‚R‹‰
-            case 1321:// —\–h–K–â‰îŒì‡V
-            case 1322:// —\–h–K–â‰îŒì‡VE‚R‹‰
-                return true;
-            }
+    	// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - begin ƒT[ƒrƒXƒR[ƒh‰p”‰»‚Æ–¢‘Î‰ƒR[ƒh”»’è’Ç‰Á
+//        switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_KIND"), 0)) {
+//        case 61:// —\–h–K–â‰îŒì
+//            switch (ACCastUtilities.toInt(code.get("SERVICE_CODE_ITEM"), 0)) {
+//            case 1111:// —\–h–K–â‰îŒì‡T
+//            case 1112:// —\–h–K–â‰îŒì‡TE‚R‹‰
+//            case 1211:// —\–h–K–â‰îŒì‡U
+//            case 1212:// —\–h–K–â‰îŒì‡UE‚R‹‰
+//            case 1321:// —\–h–K–â‰îŒì‡V
+//            case 1322:// —\–h–K–â‰îŒì‡VE‚R‹‰
+//                return true;
+//            }
+//        }
+        String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+        if ("61".equals(serviceCodeKind)) {	// —\–h–K–â‰îŒì
+        	if ("1111".equals(serviceCodeItem)		//—\–h–K–â‰îŒì‚P
+				|| "1113".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚PE‰”C
+				|| "1114".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚PE“¯ˆê
+				|| "1115".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚PE‰”CE“¯ˆê
+				|| "1211".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚Q
+				|| "1213".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚QE‰”C
+				|| "1214".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚QE“¯ˆê
+				|| "1215".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚QE‰”CE“¯ˆê
+				|| "1321".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚R
+				|| "1323".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚RE‰”C
+				|| "1324".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚RE“¯ˆê
+				|| "1325".equals(serviceCodeItem)	//—\–h–K–â‰îŒì‚RE‰”CE“¯ˆê
+        		) {
+        		return true;
+        	}
         }
+        // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/22 edit - end
+        
         return false;
     }
 
@@ -1431,15 +1559,15 @@ public class CareServiceCommon {
 
     /**
      * Œv‰æ’PˆÊ”‚ÌƒoƒCƒ“ƒhƒpƒX”z—ñ‚ğ•Ô‚µ‚Ü‚·B
-     * 
+     * [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/3/6 68,69,79‚ÌƒT[ƒrƒXí—Ş’Ç‰Á
      * @return Œv‰æ’PˆÊ”‚ÌƒoƒCƒ“ƒhƒpƒX”z—ñ
      */
     public static String[] getPlanUnitBindPathes() {
         return new String[] { "1011", "1012", "1013", "1014", "1015", "1016",
                 "1017", "1021", "1022", "1023", "1071", "1027", "1072", "1073",
-                "1038", "1028", "1076", "1077", "1061", "1062", "1063", "1064",
-                "1065", "1066", "1067", "1024", "1025", "1026", "1039", "1074",
-                "1075", };
+                "1068", "1038", "1028", "1076", "1077", "1079", "1061", "1062",
+                "1063", "1064", "1065", "1066", "1067", "1024", "1025", "1026",
+                "1039", "1074", "1075", "1069", };
     };
 
     /**

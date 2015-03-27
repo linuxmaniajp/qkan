@@ -56,9 +56,13 @@ public class QP001P031_201204 extends QP001P03_201204{
     public void doPrintReductionList(VRMap reductionMap) throws Exception {
         
         if (reductionMap != null) {
-            //
-            if (ACCastUtilities.toInt(VRBindPathParser.get(
-                    "901008", reductionMap)) == 21) {
+        	// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化
+            //if (ACCastUtilities.toInt(VRBindPathParser.get(
+            //        "901008", reductionMap)) == 21) {
+        	String serviceCodeKind = ACCastUtilities.toString(VRBindPathParser.get("901008", reductionMap));
+        	if ("21".equals(serviceCodeKind)) {
+            // [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - end   サービスコード英数化
+        		
                 //軽減率を設定する。
                 ACChotarouXMLUtilities.setValue(writer,
                         "keigenritsu", pad(VRBindPathParser.get(

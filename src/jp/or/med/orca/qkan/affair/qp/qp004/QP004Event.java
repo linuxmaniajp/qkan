@@ -250,6 +250,7 @@ public abstract class QP004Event extends QP004SQL {
   public static final int CATEGORY_NO3 = 3;
   public static final int CATEGORY_NO5 = 5;
   public static final int CATEGORY_NO7 = 7;
+  public static final int CATEGORY_NO18 = 18;
   
   // システムサービス種類コード(5桁)
   public static final String SYSTEM_SERVICE_KIND_CODE = "301021"; 
