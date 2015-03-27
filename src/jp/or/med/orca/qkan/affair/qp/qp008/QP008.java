@@ -77,7 +77,11 @@ public class QP008 extends QP008Event {
         setAffairTitle("QP008");
 
         VRMap settings = new VRHashMap();
-        settings.put("MEDIUM_DIVISION", new Integer(1));
+        //[CCCX:1938][Shinobu Hitaka] 2014/09.13 edit begin 媒体区分の初期値を設定しない
+        //settings.put("MEDIUM_DIVISION", new Integer(1));
+        settings.put("MEDIUM_DIVISION", new Integer(0));
+        //[CCCX:1938][Shinobu Hitaka] 2014/09/13 edit end   媒体区分の初期値を設定しない
+        
         // 設定ファイルを読み込み、画面の初期状態を設定する。
         if (ACFrame.getInstance().hasProperty("Claim/Button")) {
             // 設定ファイルのClaim-Buttonの値を取得する。
@@ -103,9 +107,14 @@ public class QP008 extends QP008Event {
             settings.put("FILE_PATH", new File( "." ).getAbsoluteFile().getParentFile());
         }
 
+        //[CCCX:1938][Shinobu Hitaka] 2014/09.13 edit begin 媒体区分の初期値を設定しない＆デフォルトとして保存にチェックをする
         // 該当が無い場合
         // 「伝送(mediumDivisionRadioItem3)」を選択状態にする。
-        settings.put("MEDIUM_DIVISION", new Integer(3));
+        //settings.put("MEDIUM_DIVISION", new Integer(3));
+        // 「デフォルトとして保存(fileFormCheckBox)」にチェックする
+        getFileFormCheckBox().setSelected(true);
+        //[CCCX:1938][Shinobu Hitaka] 2014/09.13 edit end   媒体区分の初期値を設定しない＆デフォルトとして保存にチェックをする
+        
         if (ACFrame.getInstance().hasProperty("Claim/Drive")) {
             // 設定ファイルのClaim-Driveの値を取得する。
             String drive = getProperty("Claim/Drive");
@@ -119,16 +128,23 @@ public class QP008 extends QP008Event {
                 settings.put("MEDIUM_DIVISION", new Integer(2));
                 // Claim-DriveがEの場合
             } else if ("E".equals(drive)) {
-                // 「伝送(mediumDivisionRadioItem3)」を選択状態にする。s
+                // 「伝送ISDN(mediumDivisionRadioItem3)」を選択状態にする。
                 settings.put("MEDIUM_DIVISION", new Integer(3));
+                
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 add begin 平成26年11月インターネット請求開始対応
+            } else if ("I".equals(drive)) {
+                // 「伝送インターネット(mediumDivisionRadioItem4)」を選択状態にする。
+                settings.put("MEDIUM_DIVISION", new Integer(4));
             }
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 add end   平成26年11月インターネット請求開始対応
         }
+        //settings.removeData("MEDIUM_DIVISION");
 
         // 画面の設定を行う。
         setState_INIT();
         getContents().setSource(settings);
         getContents().bindSource();
-        
+
         pack();
     }
 
@@ -159,7 +175,15 @@ public class QP008 extends QP008Event {
             
             
             //「伝送」が選択されている場合
-            if(ACCastUtilities.toInt(settings.get("MEDIUM_DIVISION")) == 3){
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 edit begin 平成26年11月インターネット請求開始対応
+            //if(ACCastUtilities.toInt(settings.get("MEDIUM_DIVISION")) == 3){
+            int mediumDivision = ACCastUtilities.toInt(settings.get("MEDIUM_DIVISION"));
+            if (mediumDivision == 0) {
+                QkanMessageList.getInstance().QP008_ERROR_OF_INVALID_MEDIUM_DIVISION();
+                return;
+            }
+            if(mediumDivision == 3 || mediumDivision == 4){
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 edit end   平成26年11月インターネット請求開始対応
                 boolean show = true;
                 //設定ファイルのClaim-Infoの値を取得する。
                 if(ACFrame.getInstance().hasProperty("Claim/Info")){
@@ -171,6 +195,16 @@ public class QP008 extends QP008Event {
                 if(show){
                     //確認メッセージダイアログを表示する。(QP009)
                     QP009 qp009 = new QP009();
+                    
+                    //[CCCX:1938][Shinobu Hitaka] 2014/10 add begin 平成26年11月インターネット請求開始対応
+                    //「伝送（ＩＳＤＮ）」または「伝送（インターネット）」を表示する
+                    if(mediumDivision == 3){
+                        qp009.getInfoLabel1().setText("　　伝送（ＩＳＤＮ）用のＣＳＶファイルを出力します。");
+                    } else {
+                        qp009.getInfoLabel1().setText("　　伝送（インターネット）用のＣＳＶファイルを出力します。");
+                    }
+                    //[CCCX:1938][Shinobu Hitaka] 2014/10 add end   平成26年11月インターネット請求開始対応
+                    
                     qp009.showModal();
                 }
             }
@@ -230,11 +264,18 @@ public class QP008 extends QP008Event {
                                 //Claim-DriveにMOを設定する。
                                 setProperty("Claim/Drive","MO");
                                 break;
-                            //「伝送(mediumDivisionRadioItem3)」が選択状態の場合
+                            //「伝送ISDN(mediumDivisionRadioItem3)」が選択状態の場合
                             case 3:
                                 //Claim-DriveにEを設定する。
                                 setProperty("Claim/Drive","E");
                                 break;
+                            //[CCCX:1938][Shinobu Hitaka] 2014/10 add begin 平成26年11月インターネット請求開始対応
+                            //「伝送インターネット(mediumDivisionRadioItem4)」が選択状態の場合
+                            case 4:
+                                //Claim-DriveにIを設定する。
+                                setProperty("Claim/Drive","I");
+                                break;
+                            //[CCCX:1938][Shinobu Hitaka] 2014/10 add end   平成26年11月インターネット請求開始対応
                         }
                         
                         
@@ -344,8 +385,10 @@ public class QP008 extends QP008Event {
         //フォルダ選択画面でＯＫが選択された場合
         if(selectFile != null){
             
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 del begin 平成26年11月インターネット請求開始対応
             //「伝送(mediumDivisionRadioItem3)」を選択状態にする。
-            settings.put("MEDIUM_DIVISION",new Integer(3));
+            // settings.put("MEDIUM_DIVISION",new Integer(3));
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 del end   平成26年11月インターネット請求開始対応
             
             //選択されたパスをファイルパステキスト(filePath)に表示する。
             settings.put("FILE_PATH",selectFile.getPath());

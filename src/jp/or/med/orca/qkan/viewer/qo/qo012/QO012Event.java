@@ -137,14 +137,21 @@ public abstract class QO012Event extends QO012SQL {
 	// 定数定義
 	public static final String MATRIX_ON = "○";
 
-	public static final String MEDIA_TYPE4 = "ＦＤ";
-
+	//[CCCX:1950][Shinobu Hitaka] 2014/10 edit begin 文言修正
+	//public static final String MEDIA_TYPE4 = "ＦＤ";
+	public static final String MEDIA_TYPE4 = "ＦＤ／ＣＤ－Ｒ";
+    //[CCCX:1950][Shinobu Hitaka] 2014/10 edit end   文言修正
+	
 	public static final String MEDIA_TYPE3 = "ＭＴ";
 
 	public static final String MEDIA_TYPE2 = "ＭＯ";
 
-	public static final String MEDIA_TYPE1 = "伝送";
-
+	//[CCCX:1938][Shinobu Hitaka] 2014/10 edit begin 平成26年11月インターネット請求開始対応
+	//public static final String MEDIA_TYPE1 = "伝送";
+	public static final String MEDIA_TYPE1 = "伝送（ＩＳＤＮ）";
+	public static final String MEDIA_TYPE7 = "伝送（インターネット）";
+    //[CCCX:1938][Shinobu Hitaka] 2014/10 edit end   平成26年11月インターネット請求開始対応
+	
 	public static final String CSV_FILE_TYPE_821 = "給付管理表情報";
 	
 	public static final String CSV_FILE_TYPE_812 = "介護給付費請求明細書（居宅サービス計画費）情報";

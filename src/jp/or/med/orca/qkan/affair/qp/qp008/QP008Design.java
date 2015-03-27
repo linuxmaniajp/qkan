@@ -99,6 +99,8 @@ public class QP008Design extends QkanAffairDialog {
 
   private ACRadioButtonItem mediumDivisionRadioItem3;
 
+  private ACRadioButtonItem mediumDivisionRadioItem4;
+  
   private ACPanel buttons;
 
   private ACPanel buttonsDetail;
@@ -503,7 +505,7 @@ public class QP008Design extends QkanAffairDialog {
 
       mediumDivisionRadioItem3 = new ACRadioButtonItem();
 
-      mediumDivisionRadioItem3.setText("伝送ソフト受渡し用");
+      mediumDivisionRadioItem3.setText("伝送ソフト受渡し用（ISDN）");
 
       mediumDivisionRadioItem3.setGroup(getMediumDivisionRadio());
 
@@ -512,6 +514,27 @@ public class QP008Design extends QkanAffairDialog {
       addMediumDivisionRadioItem3();
     }
     return mediumDivisionRadioItem3;
+
+  }
+
+  /**
+   * 伝送ソフト受渡し用を取得します。
+   * @return 伝送ソフト受渡し用
+   */
+  public ACRadioButtonItem getMediumDivisionRadioItem4(){
+    if(mediumDivisionRadioItem4==null){
+
+      mediumDivisionRadioItem4 = new ACRadioButtonItem();
+
+      mediumDivisionRadioItem4.setText("伝送ソフト受渡し用（インターネット）");
+
+      mediumDivisionRadioItem4.setGroup(getMediumDivisionRadio());
+
+      mediumDivisionRadioItem4.setConstraints(VRLayout.FLOW);
+
+      addMediumDivisionRadioItem4();
+    }
+    return mediumDivisionRadioItem4;
 
   }
 
@@ -829,6 +852,9 @@ public class QP008Design extends QkanAffairDialog {
     getMediumDivisionRadioItem3().setButtonIndex(3);
     getMediumDivisionRadioModel().add(getMediumDivisionRadioItem3());
 
+    getMediumDivisionRadioItem4().setButtonIndex(4);
+    getMediumDivisionRadioModel().add(getMediumDivisionRadioItem4());
+    
   }
 
   /**
@@ -849,6 +875,13 @@ public class QP008Design extends QkanAffairDialog {
    * 伝送ソフト受渡し用に内部項目を追加します。
    */
   protected void addMediumDivisionRadioItem3(){
+
+  }
+
+  /**
+   * 伝送ソフト受渡し用に内部項目を追加します。
+   */
+  protected void addMediumDivisionRadioItem4(){
 
   }
 

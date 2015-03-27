@@ -770,10 +770,10 @@ public class QP001CSVCreator {
         int fdCount = 1;
         int baitai = 0;
         
-        //ファイル名の命名規則は、FD : f MO:m 伝送:d(和暦年月)(アルファベットa-).csv
+        //ファイル名の命名規則は、FD/CD-R:f MO:m 伝送(ISDN):d 伝送(インターネット):i(和暦年月)(アルファベットa-).csv
         String fileNameHeader = csvFileNameFormat.format(new Date());
         switch(ACCastUtilities.toInt(VRBindPathParser.get("MEDIUM_DIVISION",settings))){
-            //FD
+            //FD／CD-R
             case 1:
                 fileNameHeader = "f" + fileNameHeader;
                 baitai = 4;
@@ -783,11 +783,18 @@ public class QP001CSVCreator {
                 fileNameHeader = "m" + fileNameHeader;
                 baitai = 2;
                 break;
-            //伝送
+            //伝送（ISDN）
             case 3:
                 fileNameHeader = "d" + fileNameHeader;
                 baitai = 1;
                 break;
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 edit begin 平成26年11月インターネット請求開始対応
+            //伝送（インターネット）
+            case 4:
+                fileNameHeader = "i" + fileNameHeader;
+                baitai = 7;
+                break;
+            //[CCCX:1938][Shinobu Hitaka] 2014/10 edit end   平成26年11月インターネット請求開始対応
         }
         
         
@@ -961,7 +968,7 @@ public class QP001CSVCreator {
         sb.append("00");
         // カンマ(,)
         sb.append(",");
-        // 媒体区分("1":伝送 "2":MO "4":FD)
+        // 媒体区分("1":伝送(ISDN) "2":MO "4":FD/CD-R "7":伝送(インターネット))
         sb.append(baitai);
         // カンマ(,)
         sb.append(",");

@@ -1015,6 +1015,14 @@ public class CareServiceSchedulePrintManager extends HashMap {
                                 // 他事業所のサービス単位数が0より大きい場合
 
                                 Map targetPage = (Map) provPages.get(size - 1);
+                                
+                                // [CCCX:1959][Shinobu Hitaka] 2014/08/22 add begin サービス最終行がMAX行数丁度の場合は１行目に上書きするので、改ページする
+                                if (endPos == 1){
+                                    provPages.add(buildParam.getFormPage().clone());
+                                    targetPage = (Map) provPages.get(size);
+                                }
+                                // [CCCX:1959][Shinobu Hitaka] 2014/08/22 add begin サービス最終行がMAX行数丁度の場合は１行目に上書きするので、改ページする
+                                
                                 // 事業所名
                                 targetPage.put("main.y" + endPos + ".x1",
                                         "他事業所");

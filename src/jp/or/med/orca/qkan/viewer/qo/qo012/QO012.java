@@ -308,7 +308,7 @@ public class QO012 extends QO012Event {
         // 7.保険者番号 保険者では無いので0
         // 8.事業所番号 PROVIDER_ID DB取得でPROVIDER_NAMEも取得
         // 9.都道府県番号 2桁の都道府県番号
-        // 10.媒体区分 1(伝送） 2（MO） 3(ＭＴ) 4(FD) MEDIA_TYPE
+        // 10.媒体区分 1(伝送(ISDN)) 2(MO) 3(MT) 4(FD/CD-R) 7(伝送(インターネット)) MEDIA_TYPE　※2014.11 インターネット請求開始
         // 11.処理対象年月 TARGET_MONTH
         // 12.ファイル管理番号
         if (getInputCSVFile().getRowCount() < 1) {
@@ -900,6 +900,13 @@ public class QO012 extends QO012Event {
             // headerMapに文字列"FD"をBINDPATH MEDIA_TYPEで格納する
             getHeaderMap().setData("MEDIA_TYPE", MEDIA_TYPE4);
             break;
+        //[CCCX:1938][Shinobu Hitaka] 2014/10 edit begin 平成26年11月インターネット請求開始対応
+        case 7:
+            // 媒体区分が7の場合
+            // headerMapに文字列"FD"をBINDPATH MEDIA_TYPEで格納する
+            getHeaderMap().setData("MEDIA_TYPE", MEDIA_TYPE7);
+            break;
+        //[CCCX:1938][Shinobu Hitaka] 2014/10 edit begin 平成26年11月インターネット請求開始対応
         default:
             // 媒体区分がそれら以外の場合
             return false;

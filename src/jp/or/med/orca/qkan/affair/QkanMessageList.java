@@ -2931,6 +2931,20 @@ public class QkanMessageList {
   }
 
   /**
+   * メッセージ「媒体区分が選択されていません。」を表示します。
+   * <p>
+   * CSV出力時に媒体区分が選択されていない場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP008_ERROR_OF_INVALID_MEDIUM_DIVISION() throws Exception{
+
+    return ACMessageBox.show("媒体区分が選択されていません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
    * メッセージ「被保険者番号が「H」で始まっているため、生保単独とみなし＜改行＞介護保険給付率を0%にします。＜改行＞よろしいですか？」を表示します。
    * <p>
    * 要介護認定履歴登録・編集時、被保険者番号が「H」で始まっている場合
