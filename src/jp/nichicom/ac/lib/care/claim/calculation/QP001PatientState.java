@@ -32,6 +32,7 @@ package jp.nichicom.ac.lib.care.claim.calculation;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -298,6 +299,9 @@ public class QP001PatientState {
 		sb.append(" ,LIMIT_JURAIGATA1");
 		sb.append(" ,LIMIT_JURAIGATA2");
 		sb.append(" ,LIMIT_TASHOSHITSU");
+		// 2015/6/8 [Shinobu Hitaka] add - begin H27.8‰ü³‘Î‰@‘½°º(“Á—{“™‚Æ˜VŒ’E—Ã—{“™)‚É•ª‚¯‚Ä•Û
+		sb.append(" ,LIMIT_TASHOSHITSU2");	
+		// 2015/6/8 [Shinobu Hitaka] add - end
 		sb.append(" ,KYUSOCHI_FLAG");
 		sb.append(" ,DISEASE");
 		sb.append(" FROM");
@@ -508,7 +512,7 @@ public class QP001PatientState {
 	 * @return
 	 * @throws Exception
 	 */
-	protected String getJushotiTokureiInsurerId(Object targetDate) throws Exception{
+	public String getJushotiTokureiInsurerId(Object targetDate) throws Exception{
 		return getJushotiTokureiData(targetDate,"JUSHOTI_INSURER_ID");
 	}
 // 2015/1/14 [Yoichiro Kamei] add - end
@@ -553,7 +557,8 @@ public class QP001PatientState {
 		for(int i = 0; i < list.getDataSize(); i++){
 			map = (VRMap)list.getData(i);
 			//temp = ACCastUtilities.toInt(VRBindPathParser.get("BENEFIT_RATE",map));
-            temp = ACCastUtilities.toInt(getKohiData(String.valueOf(map.get("KOHI_TYPE")),"BENEFIT_RATE",insureType),0);
+			QP001KohiKey kohiKey = new QP001KohiKey(map);
+            temp = ACCastUtilities.toInt(getKohiData(kohiKey,"BENEFIT_RATE",insureType),0);
 			if(temp > result) result = temp;
 			
 			if(result == 100) break;
@@ -579,6 +584,7 @@ public class QP001PatientState {
 		VRList result = new VRArrayList();
 		//w’è‚³‚ê‚½“ú•t‚ÉŠY“–‚·‚éŒö”ïî•ñ‚ğæ“¾
 		VRList list = getKohiData(targetDate,insureType,systemServiceKindDetail);
+		
 		VRMap map;
 		VRMap kohiTemp;
 		String kohiType;
@@ -600,7 +606,12 @@ public class QP001PatientState {
                     }
                 }
                 */
-                
+// 2015/5/12 [Yoichiro Kamei] add - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+			    kohiTemp.setData("SERVICE_DATE", targetDate);
+			    kohiTemp.setData("KOHI_LAW_NO", map.getData("KOHI_LAW_NO"));
+			    kohiTemp.setData("INSURER_ID", map.getData("INSURER_ID"));
+			    kohiTemp.setData("KOHI_RECIPIENT_NO", map.getData("KOHI_RECIPIENT_NO"));
+// 2015/5/12 [Yoichiro Kamei] add - end
 				result.add(kohiTemp);
 //				//‹‹•t—¦‚ª100‚È‚çƒŠƒXƒg‚Ö‚Ì’Ç‰Á‚ğ‘Å‚¿Ø‚é(‚»‚êˆÈ~‚ÌŒö”ï‚Í“K—p‚³‚ê‚È‚¢‚½‚ßB)
 //				if(ACCastUtilities.toString(VRBindPathParser.get("BENEFIT_RATE",kohiTemp)).equals("100"))break;
@@ -670,7 +681,7 @@ public class QP001PatientState {
 		}
 		return result;
 	}
-	
+    
 	/**
 	 * Œö”ïî•ñ‚ğæ“¾‚·‚éB
 	 * @param kohiType
@@ -678,16 +689,31 @@ public class QP001PatientState {
 	 * @return
 	 * @throws Exception
 	 */
-	protected String getKohiData(String kohiType, String key,int insureType) throws Exception {
+	protected String getKohiData(QP001KohiKey kohiKey, String key,int insureType) throws Exception {
 		String result = "";
 
 		if(kohiHistory == null) return result;
+// 2015/5/12 [Yoichiro Kamei] add - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+		if (kohiKey == null
+		    || ACTextUtilities.isNullText(kohiKey.getKohiLawNo())
+		    || ACTextUtilities.isNullText(kohiKey.getInsurerId())
+		    || ACTextUtilities.isNullText(kohiKey.getKohiRecipientNo())) {
+		    return result;
+		}
+// 2015/5/12 [Yoichiro Kamei] add - end
 		
 		VRMap map;
 		for(int i = 0; i < kohiHistory.getDataSize(); i++){
 			map = (VRMap)kohiHistory.getData(i);
-			if(ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE",map)).equals(kohiType)
-					&& ACCastUtilities.toInt(VRBindPathParser.get("INSURE_TYPE",map)) == insureType){
+// 2015/5/12 [Yoichiro Kamei] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+//	         if(ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE",map)).equals(kohiType)
+//	                    && ACCastUtilities.toInt(VRBindPathParser.get("INSURE_TYPE",map)) == insureType){
+			if(ACCastUtilities.toString(VRBindPathParser.get("KOHI_LAW_NO",map)).equals(kohiKey.getKohiLawNo())
+			    && ACCastUtilities.toString(VRBindPathParser.get("INSURER_ID",map)).equals(kohiKey.getInsurerId())
+			    && ACCastUtilities.toString(VRBindPathParser.get("KOHI_RECIPIENT_NO",map)).equals(kohiKey.getKohiRecipientNo())
+                && ACCastUtilities.toInt(VRBindPathParser.get("INSURE_TYPE",map)) == insureType
+			){
+// 2015/5/12 [Yoichiro Kamei] mod - end
 				result = ACCastUtilities.toString(VRBindPathParser.get(key,map));
 				break;
 			}
@@ -702,21 +728,21 @@ public class QP001PatientState {
      * @return
      * @throws Exception
      */
-    protected int getKohiSelfPay(String kohiType, int insureType) throws Exception {
+    protected int getKohiSelfPay(QP001KohiKey kohiKey, int insureType) throws Exception {
         int result = 0;
         //æ“¾Ï‚İ‚ÌŒö”ï©ŒÈ•‰’SŠz‚Ì‘¶İƒ`ƒFƒbƒN
-        if(kohiSelfPay.containsKey(kohiType)){
+        if(kohiSelfPay.containsKey(kohiKey)){
             //æ“¾Ï‚İ‚ÌŒö”ï©ŒÈ•‰’SŠz‚ğæ“¾
-            result = ((Integer)kohiSelfPay.get(kohiType)).intValue();
+            result = ((Integer)kohiSelfPay.get(kohiKey)).intValue();
             
         //Œö”ï©ŒÈ•‰’SŠz‚ª–¢æ“¾‚Ìê‡
         } else {
             //Œö”ï‚Ì—š—ğî•ñ‚©‚ç©ŒÈ•‰’SŠz‚ğæ“¾‚·‚éB
-            String selfPayTemp = getKohiData(kohiType, "SELF_PAY", insureType);
+            String selfPayTemp = getKohiData(kohiKey, "SELF_PAY", insureType);
             if (!ACTextUtilities.isNullText(selfPayTemp)) {
                 result = ACCastUtilities.toInt(selfPayTemp);
                 //æ“¾Ï‚İŒö”ï©ŒÈ•‰’SŠz‚Æ‚µ‚Ä“o˜^‚·‚éB
-                kohiSelfPay.put(kohiType, new Integer(result));
+                kohiSelfPay.put(kohiKey, new Integer(result));
             }
         }
         
@@ -729,11 +755,11 @@ public class QP001PatientState {
      * @param use
      * @throws Exception
      */
-    protected void setKohiSelfPayUse(String kohiType, int use) throws Exception {
-        if(kohiSelfPay.containsKey(kohiType)){
-            int value = ((Integer)kohiSelfPay.get(kohiType)).intValue();
+    protected void setKohiSelfPayUse(QP001KohiKey kohiKey, int use) throws Exception {
+        if(kohiSelfPay.containsKey(kohiKey)){
+            int value = ((Integer)kohiSelfPay.get(kohiKey)).intValue();
             value -= use;
-            kohiSelfPay.put(kohiType,new Integer(value));
+            kohiSelfPay.put(kohiKey,new Integer(value));
         }
     }
 	
@@ -1294,13 +1320,27 @@ public class QP001PatientState {
     		}
 
     		//“E—v—“‚ğæ“¾
+    		// 2015/4/24 [H27.4‰ü³‘Î‰][Shinobu Hitaka] edit - begin •¡”“E—v‚ª‚ ‚éê‡‚Ì‘Î‰
+//    		if(!ACTextUtilities.isNullText(ACCastUtilities.toString(map.get("301018"),""))){
+//    			String[] temp = ACCastUtilities.toString(map.get("301018"),"").split("/");
+//    			if(!temp[0].endsWith("%")){
+//    				result = temp[0];
+//    			}
+//    			break;
+//    		}
     		if(!ACTextUtilities.isNullText(ACCastUtilities.toString(map.get("301018"),""))){
     			String[] temp = ACCastUtilities.toString(map.get("301018"),"").split("/");
-    			if(!temp[0].endsWith("%")){
-    				result = temp[0];
+    			for ( int j = 0; j < temp.length; j++ ) {
+    				if(!temp[j].endsWith("%")){
+    					if (result.length() > 0) {
+    						result += "/";
+    					}
+    					result += temp[j];
+    				}
     			}
     			break;
     		}
+    		// 2015/4/24 [H27.4‰ü³‘Î‰][Shinobu Hitaka] edit - end 
     	}
     	
     	return result;
@@ -1663,16 +1703,21 @@ public class QP001PatientState {
     //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
     /**
      * Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-     * @param kohiType
+     * setKohiSelfPay->–¢g—p‰», clearKohiSelfPay->’Ç‰Á 2015/06/05
+     * @param kohiKey
      * @param pay
      * @throws Exception
      */
-    protected void setKohiSelfPay(String kohiType, int pay) throws Exception {
-        if(kohiSelfPay.containsKey(kohiType)){
-            int value = ((Integer)kohiSelfPay.get(kohiType)).intValue();
+    protected void setKohiSelfPay(QP001KohiKey kohiKey, int pay) throws Exception {
+        if(kohiSelfPay.containsKey(kohiKey)){
+            int value = ((Integer)kohiSelfPay.get(kohiKey)).intValue();
             value = pay;
-            kohiSelfPay.put(kohiType,new Integer(value));
+            kohiSelfPay.put(kohiKey,new Integer(value));
         }
+    }
+    
+    protected void clearKohiSelfPay() throws Exception {
+    	kohiSelfPay.clear();
     }
     //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
     

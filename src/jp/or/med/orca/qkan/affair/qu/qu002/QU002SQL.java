@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者登録
- * 作成日: 2015/04/15  日本コンピューター株式会社 利用者登録 新規作成
+ * 作成日: 2015/06/08  日本コンピューター株式会社 利用者登録 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -268,6 +268,8 @@ public class QU002SQL extends QU002State {
     sb.append(",LIMIT_JURAIGATA2");
 
     sb.append(",LIMIT_TASHOSHITSU");
+
+    sb.append(",LIMIT_TASHOSHITSU2");
 
     sb.append(",KYUSOCHI_FLAG");
 
@@ -945,6 +947,8 @@ public class QU002SQL extends QU002State {
 
     sb.append(",LIMIT_TASHOSHITSU");
 
+    sb.append(",LIMIT_TASHOSHITSU2");
+
     sb.append(",KYUSOCHI_FLAG");
 
     sb.append(",DISEASE");
@@ -990,6 +994,10 @@ public class QU002SQL extends QU002State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("LIMIT_TASHOSHITSU", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("LIMIT_TASHOSHITSU2", sqlParam)));
 
     sb.append(",");
 

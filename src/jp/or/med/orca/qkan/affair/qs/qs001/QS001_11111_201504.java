@@ -310,6 +310,14 @@ public class QS001_11111_201504 extends QS001_11111_201504Event {
                     // nullを返す。
                     return null;
                 }
+                // [CCCX:2753][Shinobu Hitaka] 2015/05/29 add - begin 24時間超をチェック
+                if (getHomonkaigoTeikyoTime().getSelectedIndex() > 45 && getTeikyoTime() > 1470) {
+                    // 内容詳細の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
+                    QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                    // nullを返す。
+                    return null;
+                }
+                // [CCCX:2753][Shinobu Hitaka] 2015/05/29 add - end
                 break;
             }
 

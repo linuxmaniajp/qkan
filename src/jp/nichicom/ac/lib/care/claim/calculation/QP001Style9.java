@@ -29,8 +29,11 @@
 
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -204,74 +207,129 @@ public class QP001Style9 extends QP001StyleAbstract {
     public void commitRecords(QP001PatientState patientState,VRMap styles, VRMap planUnitMap)
             throws Exception {
         VRMap kohiMap;
-        TreeMap kohiRank = new TreeMap();
+// 2015/5/12 [Yoichiro Kamei] mod - begin 公費関連見直し
+//        TreeMap kohiRank = new TreeMap();
         QP001RecordDetail detail = null;
         QP001RecordNursing nursing = null;
         //[H20.5 法改正対応] fujihara edit start
         QP001RecordDiagnosis diagnosis = null;
         //[H20.5 法改正対応] fujihara edit end
+        Iterator it;
+//        // 本帳票における公費順位の確定を行う。
+//        // TODO もう少し処理をすっきりさせたい。
+//
+//        Iterator it = detailMap.keySet().iterator();
+//        while (it.hasNext()) {
+//            detail = (QP001RecordDetail) detailMap.get(it.next());
+//            // 作成した明細情報レコードの公費適用状況を取得する。
+//            kohiMap = detail.getKohiList();
+//            Iterator itKohi = kohiMap.keySet().iterator();
+//            // 公費の順位を登録する。
+//            while (itKohi.hasNext()) {
+//                Object key = itKohi.next();
+//                if (!kohiRank.containsKey(key)) {
+//                    kohiRank.put(key, kohiMap.get(key));
+//                }
+//            }
+//        }
+//        it = nursingMap.keySet().iterator();
+//        while (it.hasNext()) {
+//            nursing = (QP001RecordNursing) nursingMap.get(it.next());
+//            // 作成した特定入所者レコードの公費適用状況を取得する。
+//            kohiMap = nursing.getKohiList();
+//            Iterator itKohi = kohiMap.keySet().iterator();
+//            // 公費の順位を登録する。
+//            while (itKohi.hasNext()) {
+//                Object key = itKohi.next();
+//                if (!kohiRank.containsKey(key)) {
+//                    kohiRank.put(key, kohiMap.get(key));
+//                }
+//            }
+//        }
+//        
+//        //[H20.5 法改正対応] fujihara edit start
+//        it = diagnosisMap.keySet().iterator();
+//        while (it.hasNext()) {
+//            diagnosis = (QP001RecordDiagnosis) diagnosisMap.get(it.next());
+//            // 作成した特定診療費レコードの公費状況を取得する。
+//            kohiMap = diagnosis.getKohiList();
+//            Iterator itKohi = kohiMap.keySet().iterator();
+//            // 公費の順位を登録する。
+//            while (itKohi.hasNext()) {
+//                Object key = itKohi.next();
+//                if (!kohiRank.containsKey(key)) {
+//                    kohiRank.put(key, kohiMap.get(key));
+//                }
+//            }
+//        }
+//        //[H20.5 法改正対応] fujihara edit end
+//        
+//        // 公費適用順位
+//        QP001KohiKey[] kohiTypes = new QP001KohiKey[3];
+//        it = kohiRank.keySet().iterator();
+//        int count = 0;
+//        while (it.hasNext()) {
+//            VRMap temp = (VRMap) kohiRank.get(it.next());
+//            kohiTypes[count] = new QP001KohiKey(temp);
+//            
+//            // [CCCX:1470][Shinobu Hitaka] 2014/03/13 add - start 老健の一部公費
+//            // 老健の一部公費対象で、緊急時施設療養費・所定疾患施設療養費がない場合は公費リストから除外
+//            if (CareServiceCommon.isKouhiService("52", kohiTypes[count].getKohiType())) {
+//                boolean kohiFlg = false;
+//                if (emergencyOwnFacility.get_1701018() == 0 && emergencyOwnFacility.get_1701019() == 0 && 
+//                    emergencyOwnFacility.get_1701053() == 0 && emergencyOwnFacility.get_1701054() == 0) {
+//                    // (1) 設定なし
+//                    kohiFlg = false;
+//                } else {
+//                    // (2) 設定ありで公費月途中開始・終了で期間外（明細に公費適用がない）
+//                    // 明細の公費適用状況を確認
+//                    Iterator itDetail = detailMap.keySet().iterator();
+//                    while (itDetail.hasNext()) {
+//                        detail = (QP001RecordDetail) detailMap.get(itDetail.next());
+//                        // 緊急時施設療養費・所定疾患施設療養費の場合
+//                        if ("Z6000".equals(detail.get_301022()) || "Z6100".equals(detail.get_301022()) || "Z9000".equals(detail.get_301022()) || "Z9100".equals(detail.get_301022())) {
+//                            // 明細に同じ公費が適用された場合は対象とする
+//                            kohiMap = detail.getKohiList();
+//                            Iterator itKohi = kohiMap.keySet().iterator();
+//                            while (itKohi.hasNext()) {
+//                                Object key = itKohi.next();
+//                                VRMap detailKohiMap = (VRMap) kohiMap.get(key);
+//                                if (kohiTypes[count].equals(ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE", detailKohiMap)))) {
+//                                    kohiFlg = true;
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                        if (kohiFlg) break;
+//                    }
+//                }
+//                // 一致するものがなければ公費リストから除外
+//                if (!kohiFlg) {
+//                    kohiTypes[count] = null;
+//                    continue;
+//                }
+//            }
+//            // [CCCX:1470][Shinobu Hitaka] 2014/03/13 add - end 老健の一部公費
+//            
+//            count++;
+//            if (count > kohiTypes.length - 1)
+//                break;
+//        }
         
-        // 本帳票における公費順位の確定を行う。
-        // TODO もう少し処理をすっきりさせたい。
-
-        Iterator it = detailMap.keySet().iterator();
-        while (it.hasNext()) {
-            detail = (QP001RecordDetail) detailMap.get(it.next());
-            // 作成した明細情報レコードの公費適用状況を取得する。
-            kohiMap = detail.getKohiList();
-            Iterator itKohi = kohiMap.keySet().iterator();
-            // 公費の順位を登録する。
-            while (itKohi.hasNext()) {
-                Object key = itKohi.next();
-                if (!kohiRank.containsKey(key)) {
-                    kohiRank.put(key, kohiMap.get(key));
-                }
-            }
-        }
-        it = nursingMap.keySet().iterator();
-        while (it.hasNext()) {
-            nursing = (QP001RecordNursing) nursingMap.get(it.next());
-            // 作成した特定入所者レコードの公費適用状況を取得する。
-            kohiMap = nursing.getKohiList();
-            Iterator itKohi = kohiMap.keySet().iterator();
-            // 公費の順位を登録する。
-            while (itKohi.hasNext()) {
-                Object key = itKohi.next();
-                if (!kohiRank.containsKey(key)) {
-                    kohiRank.put(key, kohiMap.get(key));
-                }
-            }
-        }
-        
-        //[H20.5 法改正対応] fujihara edit start
-        it = diagnosisMap.keySet().iterator();
-        while (it.hasNext()) {
-            diagnosis = (QP001RecordDiagnosis) diagnosisMap.get(it.next());
-            // 作成した特定診療費レコードの公費状況を取得する。
-            kohiMap = diagnosis.getKohiList();
-            Iterator itKohi = kohiMap.keySet().iterator();
-            // 公費の順位を登録する。
-            while (itKohi.hasNext()) {
-                Object key = itKohi.next();
-                if (!kohiRank.containsKey(key)) {
-                    kohiRank.put(key, kohiMap.get(key));
-                }
-            }
-        }
-        //[H20.5 法改正対応] fujihara edit end
-        
+        List<Map> records = new ArrayList<Map>();
+        records.add(detailMap);
+        records.add(nursingMap);
+        records.add(diagnosisMap);
+        List kohiTypesList = Arrays.asList(getKohiApplyArray(records));
         // 公費適用順位
-        String[] kohiTypes = new String[3];
-        it = kohiRank.keySet().iterator();
+        QP001KohiKey[] kohiTypes = new QP001KohiKey[3];
+        it = kohiTypesList.iterator();
         int count = 0;
         while (it.hasNext()) {
-            VRMap temp = (VRMap) kohiRank.get(it.next());
-            kohiTypes[count] = ACCastUtilities.toString(VRBindPathParser.get(
-                    "KOHI_TYPE", temp));
-            
+            kohiTypes[count] = (QP001KohiKey) it.next();
             // [CCCX:1470][Shinobu Hitaka] 2014/03/13 add - start 老健の一部公費
             // 老健の一部公費対象で、緊急時施設療養費・所定疾患施設療養費がない場合は公費リストから除外
-            if (CareServiceCommon.isKouhiService("52", kohiTypes[count])) {
+            if (kohiTypes[count] != null && CareServiceCommon.isKouhiService("52", kohiTypes[count].getKohiType())) {
                 boolean kohiFlg = false;
                 if (emergencyOwnFacility.get_1701018() == 0 && emergencyOwnFacility.get_1701019() == 0 && 
                     emergencyOwnFacility.get_1701053() == 0 && emergencyOwnFacility.get_1701054() == 0) {
@@ -291,7 +349,7 @@ public class QP001Style9 extends QP001StyleAbstract {
                             while (itKohi.hasNext()) {
                                 Object key = itKohi.next();
                                 VRMap detailKohiMap = (VRMap) kohiMap.get(key);
-                                if (kohiTypes[count].equals(ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE", detailKohiMap)))) {
+                                if (kohiTypes[count].getKohiType().equals(ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE", detailKohiMap)))) {
                                     kohiFlg = true;
                                     break;
                                 }
@@ -307,12 +365,11 @@ public class QP001Style9 extends QP001StyleAbstract {
                 }
             }
             // [CCCX:1470][Shinobu Hitaka] 2014/03/13 add - end 老健の一部公費
-            
             count++;
             if (count > kohiTypes.length - 1)
                 break;
         }
-
+// 2015/5/12 [Yoichiro Kamei] mod - end
         // 明細情報レコードの確定処理
         //[ID:0000721][Shin Fujihara] 2012/04 delete start 2012年度対応
 //        it = detailMap.keySet().iterator();
@@ -409,12 +466,23 @@ public class QP001Style9 extends QP001StyleAbstract {
         type.commitRecord(kohiTypes, patientState,styles,planUnitMap,nursingLast);
         //[H20.5 法改正対応] fujihara add start
         //自己負担額を本体請求からかけるため、type.commitRecordの後に実行してやる必用あり
-        if (diagnosis != null) {
-        	//[ID:0000523][Shin Fujihara] 2009/07 edit begin 2009年度対応
-            //type.parse(diagnosis, kohiTypes,patientState);
-        	type.parse(diagnosis, kohiTypes,patientState, nursingLast);
-            //[ID:0000523][Shin Fujihara] 2009/07 edit end 2009年度対応
+        
+// 2015/5/12 [Yoichiro Kamei] mod - begin 公費関連見直し
+//        if (diagnosis != null) {
+//        	//[ID:0000523][Shin Fujihara] 2009/07 edit begin 2009年度対応
+//            //type.parse(diagnosis, kohiTypes,patientState);
+//        	type.parse(diagnosis, kohiTypes,patientState, nursingLast);
+//            //[ID:0000523][Shin Fujihara] 2009/07 edit end 2009年度対応
+//        }
+        it = diagnosisMap.keySet().iterator();
+        // 集計情報レコードの作成
+        while (it.hasNext()) {
+            diagnosis = ((QP001RecordDiagnosis) diagnosisMap.get(it.next()));
+            type.parse(diagnosis, kohiTypes,patientState, nursingLast);
         }
+// 2015/5/12 [Yoichiro Kamei] mod - end
+
+        
         //[H20.5 法改正対応] fujihara add end
 
         //特定診療費情報レコード公費自己負担額確定

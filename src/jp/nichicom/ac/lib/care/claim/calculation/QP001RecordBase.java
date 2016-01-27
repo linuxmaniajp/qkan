@@ -1032,7 +1032,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
 	 * @param type
 	 * @throws Exception
 	 */
-	protected void parse(QP001RecordType type,QP001PatientState patientState,String[] kohiTypes,QP001Manager manager) throws Exception {
+	protected void parse(QP001RecordType type,QP001PatientState patientState,QP001KohiKey[] kohiTypes,QP001Manager manager) throws Exception {
         
 		//[ID:0000567][Shin Fujihara] 2009/12/10 del begin 2009年度対応
 		/*
@@ -1153,7 +1153,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
 			set_201005(type.get_701005());
 			//被保険者番号
 			set_201006(type.get_701006());
-            
+
             if(!ACTextUtilities.isNullText(kohiTypes[0])){
                 //(公費1)負担者番号8桁
                 set_201007(patientState.getKohiData(kohiTypes[0],"KOHI_PAYER_NO",1));
@@ -1172,6 +1172,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //(公費3)受給者番号7桁
                 set_201012(patientState.getKohiData(kohiTypes[2],"KOHI_RECIPIENT_NO",1));
             }
+			
 			//(被保険者情報)生年月日8桁YYYYMMDD
 			set_201013(patientState.getPatientData("PATIENT_BIRTHDAY").replaceAll("-",""));
 			//(被保険者情報)性別コード1桁1-男 2-女
@@ -1265,7 +1266,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //公費1給付率
                 set_201030(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[0],"BENEFIT_RATE",1),0));
                 //公費1 公費種類(KOHI_TYPE)
-                set_201058(kohiTypes[0]);
+                set_201058(kohiTypes[0].getKohiType());
             }
         }
         //公費２を使用していれば値を設定する。
@@ -1274,7 +1275,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //公費2給付率
                 set_201031(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[1],"BENEFIT_RATE",1),0));
                 //公費2 公費種類(KOHI_TYPE)
-                set_201059(kohiTypes[1]);
+                set_201059(kohiTypes[1].getKohiType());
             }
         }
         //公費３を使用していれば値を設定する。
@@ -1283,7 +1284,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //公費3給付率
                 set_201032(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[2],"BENEFIT_RATE",1),0));
                 //公費3 公費種類(KOHI_TYPE)
-                set_201060(kohiTypes[2]);
+                set_201060(kohiTypes[2].getKohiType());
             }
         }
         
@@ -1300,7 +1301,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
      * @param diagnosis
      * @throws Exception
      */
-    protected void parse(QP001RecordDiagnosis diagnosis,QP001PatientState patientState, String[] kohiTypes) throws Exception {
+    protected void parse(QP001RecordDiagnosis diagnosis,QP001PatientState patientState, QP001KohiKey[] kohiTypes) throws Exception {
         
         if(diagnosis == null) return;
         
@@ -1311,7 +1312,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //公費1給付率
                 set_201030(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[0],"BENEFIT_RATE",1),0));
                 //公費1 公費種類(KOHI_TYPE)
-                set_201058(kohiTypes[0]);
+                set_201058(kohiTypes[0].getKohiType());
             }
         }
         //公費２を使用していれば値を設定する。
@@ -1320,7 +1321,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //公費2給付率
                 set_201031(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[1],"BENEFIT_RATE",1),0));
                 //公費2 公費種類(KOHI_TYPE)
-                set_201059(kohiTypes[1]);
+                set_201059(kohiTypes[1].getKohiType());
             }
         }
         //公費３を使用していれば値を設定する。
@@ -1329,7 +1330,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                 //公費3給付率
                 set_201032(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[2],"BENEFIT_RATE",1),0));
                 //公費3 公費種類(KOHI_TYPE)
-                set_201060(kohiTypes[2]);
+                set_201060(kohiTypes[2].getKohiType());
             }
         }
         
@@ -1397,7 +1398,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
      * @param nursing
      * @throws Exception
      */
-    protected void parse(QP001RecordNursing nursing,QP001PatientState patientState, String[] kohiTypes) throws Exception {
+    protected void parse(QP001RecordNursing nursing,QP001PatientState patientState, QP001KohiKey[] kohiTypes) throws Exception {
         if(nursing == null) return;
         
         //(合計情報 保険)特定入所者介護サービス費等請求額8桁
@@ -1411,7 +1412,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                     //公費1給付率
                     set_201030(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[0],"BENEFIT_RATE",1),0));
                     //公費1 公費種類(KOHI_TYPE)
-                    set_201058(kohiTypes[0]);
+                    set_201058(kohiTypes[0].getKohiType());
                 }
             }
         }
@@ -1423,7 +1424,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                     //公費2給付率
                     set_201031(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[1],"BENEFIT_RATE",1),0));
                     //公費2 公費種類(KOHI_TYPE)
-                    set_201059(kohiTypes[1]);
+                    set_201059(kohiTypes[1].getKohiType());
                 }
             }
         }
@@ -1435,7 +1436,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
                     //公費3給付率
                     set_201032(ACCastUtilities.toInt(patientState.getKohiData(kohiTypes[2],"BENEFIT_RATE",1),0));
                     //公費3 公費種類(KOHI_TYPE)
-                    set_201060(kohiTypes[2]);
+                    set_201060(kohiTypes[2].getKohiType());
                 }
             }
         }

@@ -659,41 +659,77 @@ public class QP001RecordCareSupplyClaim extends QP001RecordAbstract {
             //set_101007(get_101007() + 1);
         	// [ID:0000622][Shin Fujihara] 2010/11 edit begin 2010”N“x‘Î‰
             //set_101007(base.get("201001"),base.get("201006"));
-        	set_101007(base.get("201001"), base.get("201005"), base.get("201006"));
-        	// [ID:0000622][Shin Fujihara] 2010/11 edit end 2010”N“x‘Î‰
-            // Šî–{î•ñƒŒƒR[ƒh‚Ì’l‚©‚ç‰îŒì‹‹•t”ï¿‹‘‚ÌƒŒƒCƒAƒEƒg‚É•ÏX‚·‚éB
-            // ƒT[ƒrƒX’ñ‹Ÿ”NŒ
-            set_101002(String.valueOf(base.get("201003")));
-            // –‹ÆŠ”Ô†
-            set_101003(String.valueOf(base.get("201004")));
-
             
-            // (ƒT[ƒrƒX”ï—p)’PˆÊ”11Œ…‚ğİ’è‚·‚éB
-            set_101008(get_101008()
-                    + ACCastUtilities.toInt(base.get("201033"), 0));
-
-            // (ƒT[ƒrƒX”ï—p)•ÛŒ¯¿‹Šz12Œ…‚ğİ’è‚·‚éB
-            set_101010(get_101010()
-                    + ACCastUtilities.toInt(base.get("201034"), 0) //(‡Œvî•ñ •ÛŒ¯)¿‹Šz9Œ…
-                    + ACCastUtilities.toInt(base.get("201036"), 0) //(‡Œvî•ñ •ÛŒ¯)‹Ù‹}{İ—Ã—{”ï¿‹Šz9Œ…
-                    + ACCastUtilities.toInt(base.get("201037"), 0));//(‡Œvî•ñ •ÛŒ¯)“Á’èf—Ã”ï¿‹Šz9Œ…
-
+// 2015/5/12 [Yoichiro Kamei] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+            //set_101007(base.get("201001"), base.get("201005"), base.get("201006"));
             
+            boolean existsFlg = false;
+            //Šù‚É“¯‚¶”í•ÛŒ¯Ò”Ô†‚Ìƒf[ƒ^‚ª‚ ‚éê‡
+            Object identification = base.get("201001");
+            Object insurer_id = base.get("201005");
+            Object patient_id = base.get("201006");
+            
+            String tmpPatientId = String.valueOf(patient_id);
+            String key = String.valueOf(identification) + "-" + insurer_id + "-" + tmpPatientId;
+            if (_101007.containsKey(key)) {
+                existsFlg = true; 
+                //“¯‚¶”í•ÛŒ¯Ò”Ô†‚ÅŒö”ï•‰’SÒ”Ô†‚ªˆÙ‚È‚éê‡‚Í‚QŒ‚É‚·‚é
+                //‰º‹L‚Ì‘Î‰
+                //(‘—¿)‰îŒì‹‹•t”ï¿‹‘“™‚Ì‹LÚ—v—Ì‚É‚Â‚¢‚Ä(P3)
+                //‚½‚¾‚µAs’¬‘º‡•¹“™‚É‚æ‚è”í•ÛŒ¯Ò“™ˆêl‚É‚Â‚«“ñ‚©Š‚Ì¶
+                //Šˆ•ÛŒì–”‚Í’†‘c—¯–Ml“™Œö”ï‚ÉŒW‚é‰îŒìx‰‡‹‹•tÀ{‹@ŠÖ‚Ö¿
+                //‹‚ğs‚¤ê‡‚É‚ÍA“ñŒ‚Æ‹LÚ‚·‚é‚±‚ÆB
+                String payerNo = "";
+                switch (kohiPosition) {
+                case 0:
+                    payerNo = ACCastUtilities.toString( base.get("201007"), "");
+                    break;
+                case 1:
+                    payerNo = ACCastUtilities.toString( base.get("201009"), "");
+                    break;
+                case 2:
+                    payerNo = ACCastUtilities.toString( base.get("201011"), "");
+                    break;
+                }
+                if (!ACTextUtilities.isNullText(payerNo)) {
+                    tmpPatientId = tmpPatientId + "-" + payerNo;
+                }
+            }
+            
+            set_101007(base.get("201001"), base.get("201005"), tmpPatientId);
 
-            // (ƒT[ƒrƒX”ï—p)Œö”ï¿‹Šz12Œ…‚ğİ’è‚·‚éB
-            switch(kohiPosition){
-            case 0:
-                set_101011(get_101011()
+            if (!existsFlg) {
+                // [ID:0000622][Shin Fujihara] 2010/11 edit end 2010”N“x‘Î‰
+                // Šî–{î•ñƒŒƒR[ƒh‚Ì’l‚©‚ç‰îŒì‹‹•t”ï¿‹‘‚ÌƒŒƒCƒAƒEƒg‚É•ÏX‚·‚éB
+                // ƒT[ƒrƒX’ñ‹Ÿ”NŒ
+                set_101002(String.valueOf(base.get("201003")));
+                // –‹ÆŠ”Ô†
+                set_101003(String.valueOf(base.get("201004")));
+
+                
+                // (ƒT[ƒrƒX”ï—p)’PˆÊ”11Œ…‚ğİ’è‚·‚éB
+                set_101008(get_101008()
+                        + ACCastUtilities.toInt(base.get("201033"), 0));
+
+                // (ƒT[ƒrƒX”ï—p)•ÛŒ¯¿‹Šz12Œ…‚ğİ’è‚·‚éB
+                set_101010(get_101010()
+                        + ACCastUtilities.toInt(base.get("201034"), 0) //(‡Œvî•ñ •ÛŒ¯)¿‹Šz9Œ…
+                        + ACCastUtilities.toInt(base.get("201036"), 0) //(‡Œvî•ñ •ÛŒ¯)‹Ù‹}{İ—Ã—{”ï¿‹Šz9Œ…
+                        + ACCastUtilities.toInt(base.get("201037"), 0));//(‡Œvî•ñ •ÛŒ¯)“Á’èf—Ã”ï¿‹Šz9Œ…
+                
+                // 2015/5/12 [Yoichiro Kamei] add - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+                // æ‚É”ï—p‡Œv‚ğŒvZ‚µ‚Ä‚¨‚­
+                set_101012(get_101012()
+                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
+                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
+                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
+                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
+                        );
+                set_101012(get_101012()
                         + ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
                         + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
                         + ACCastUtilities.toInt(base.get("201043"), 0) //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
                         );
-                // (ƒT[ƒrƒX”ï—p)—˜—pÒ•‰’S12Œ…‚ğİ’è‚·‚éB
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
-                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
-                        );
-                
                 set_101012(get_101012()
                         + ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
                         + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
@@ -704,57 +740,29 @@ public class QP001RecordCareSupplyClaim extends QP001RecordAbstract {
                         + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
                         + ACCastUtilities.toInt(base.get("201055"), 0) //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
                         );
-                
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
-                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
-                        );
-                        break;
-            case 1:
-                set_101011(get_101011()
-                        + ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
-                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201049"), 0) //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
-                        );
-                // (ƒT[ƒrƒX”ï—p)—˜—pÒ•‰’S12Œ…‚ğİ’è‚·‚éB
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
-                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
-                        );
-                
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
-                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201043"), 0) //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
-                        );
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
-                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201055"), 0) //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
-                        );
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
-                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
-                        );
-                        break;
-            case 2:
-                set_101011(get_101011()
-                        + ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
-                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201055"), 0) //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
-                        );
-                // (ƒT[ƒrƒX”ï—p)—˜—pÒ•‰’S12Œ…‚ğİ’è‚·‚éB
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
-                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
-                        );
-                
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
-                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201043"), 0) //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
-                        );
-                //[Shinobu Hitaka] 2014/03/16 edit - start ‡Œv’l‚ª‚ ‚í‚È‚¢
+                // 2015/5/12 [Yoichiro Kamei] add - end
+            }
+// 2015/5/12 [Yoichiro Kamei] mod - end
+// 2015/5/12 [Yoichiro Kamei] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+//            // (ƒT[ƒrƒX”ï—p)Œö”ï¿‹Šz12Œ…‚ğİ’è‚·‚éB
+//            switch(kohiPosition){
+//            case 0:
+//                set_101011(get_101011()
+//                        + ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
+//                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201043"), 0) //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                // (ƒT[ƒrƒX”ï—p)—˜—pÒ•‰’S12Œ…‚ğİ’è‚·‚éB
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
+//                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
+//                        );
+//                
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
+//                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201049"), 0) //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
 //                set_101012(get_101012()
 //                        + ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
 //                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
@@ -765,21 +773,102 @@ public class QP001RecordCareSupplyClaim extends QP001RecordAbstract {
 //                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
 //                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
 //                        );
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
+//                        break;
+//            case 1:
+//                set_101011(get_101011()
+//                        + ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
+//                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201049"), 0) //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                // (ƒT[ƒrƒX”ï—p)—˜—pÒ•‰’S12Œ…‚ğİ’è‚·‚éB
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
+//                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
+//                        );
+//                
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
+//                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201043"), 0) //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
+//                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201055"), 0) //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
+//                        );
+//                        break;
+//            case 2:
+//                set_101011(get_101011()
+//                        + ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
+//                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201055"), 0) //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                // (ƒT[ƒrƒX”ï—p)—˜—pÒ•‰’S12Œ…‚ğİ’è‚·‚éB
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201035"), 0) //•ÛŒ¯•ª—˜—pÒ•‰’SŠz
+//                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
+//                        );
+//                
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
+//                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201043"), 0) //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                //[Shinobu Hitaka] 2014/03/16 edit - start ‡Œv’l‚ª‚ ‚í‚È‚¢
+////                set_101012(get_101012()
+////                        + ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
+////                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+////                        + ACCastUtilities.toInt(base.get("201055"), 0) //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
+////                        );
+////                
+////                set_101012(get_101012()
+////                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
+////                        + ACCastUtilities.toInt(base.get("201053"), 0) //(‡Œvî•ñ Œö”ï3)–{l•‰’SŠz8Œ…
+////                        );
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
+//                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201049"), 0) //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                        );
+//                
+//                set_101012(get_101012()
+//                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
+//                        );
+//                //[Shinobu Hitaka] 2014/03/16 edit - end ‡Œv’l‚ª‚ ‚í‚È‚¢
+//                        break;
+//            }
+
+            int seikyu = 0;
+            switch(kohiPosition){
+            case 0:
+                seikyu = ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
+                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+                        + ACCastUtilities.toInt(base.get("201043"), 0); //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
+                set_101011(get_101011() + seikyu);
+                set_101012(get_101012() - seikyu);
+                        break;
+            case 1:
+                seikyu = ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
                         + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201049"), 0) //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
-                        );
-                
-                set_101012(get_101012()
-                        + ACCastUtilities.toInt(base.get("201041"), 0) //(‡Œvî•ñ Œö”ï1)–{l•‰’SŠz8Œ…
-                        + ACCastUtilities.toInt(base.get("201047"), 0) //(‡Œvî•ñ Œö”ï2)–{l•‰’SŠz8Œ…
-                        );
-                //[Shinobu Hitaka] 2014/03/16 edit - end ‡Œv’l‚ª‚ ‚í‚È‚¢
+                        + ACCastUtilities.toInt(base.get("201049"), 0); //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
+                set_101011(get_101011() + seikyu);
+                set_101012(get_101012() - seikyu);
+                        break;
+            case 2:
+                seikyu = ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
+                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+                        + ACCastUtilities.toInt(base.get("201055"), 0); //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
+                set_101011(get_101011() + seikyu);
+                set_101012(get_101012() - seikyu);
                         break;
             }
+// 2015/5/12 [Yoichiro Kamei] mod - end
             
-
             // (ƒT[ƒrƒX”ï—p)”ï—p‡Œv12Œ…‚ğİ’è‚·‚éB
             //•ÛŒ¯¿‹Šz+Œö”ï¿‹Šz+—˜—pÒ•‰’SŠz
             set_101009(get_101010() + get_101011() + get_101012());

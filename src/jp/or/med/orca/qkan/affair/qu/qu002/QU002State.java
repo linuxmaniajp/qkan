@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2015/01/14  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2015/06/08  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -311,6 +311,8 @@ public class QU002State extends QU002Design {
 
         getShisetsuInfoTasyoRoomLimitMoneyText().setEnabled(false);
 
+        getShisetsuInfoTasyoRoomLimitMoneyText2().setEnabled(false);
+
         getShisetsuInfoDinnerBearLimitMoneyContena().setEnabled(false);
 
         getShisetsuInfoDinnerBearLimitMoneyLabel().setEnabled(false);
@@ -335,6 +337,10 @@ public class QU002State extends QU002Design {
 
         getShisetsuInfoTasyoRoomLimitMoneyLabel().setEnabled(false);
 
+        getShisetsuInfoTasyoRoomLimitMoneyContena2().setEnabled(false);
+
+        getShisetsuInfoTasyoRoomLimitMoneyLabel2().setEnabled(false);
+
   }
 
   /**
@@ -354,6 +360,8 @@ public class QU002State extends QU002Design {
         getShisetsuInfoNormalRoomLimitMoneyText2().setEnabled(true);
 
         getShisetsuInfoTasyoRoomLimitMoneyText().setEnabled(true);
+
+        getShisetsuInfoTasyoRoomLimitMoneyText2().setEnabled(true);
 
         getShisetsuInfoDinnerBearLimitMoneyContena().setEnabled(true);
 
@@ -378,6 +386,10 @@ public class QU002State extends QU002Design {
         getShisetsuInfoTasyoRoomLimitMoneyContena().setEnabled(true);
 
         getShisetsuInfoTasyoRoomLimitMoneyLabel().setEnabled(true);
+
+        getShisetsuInfoTasyoRoomLimitMoneyContena2().setEnabled(true);
+
+        getShisetsuInfoTasyoRoomLimitMoneyLabel2().setEnabled(true);
 
   }
 

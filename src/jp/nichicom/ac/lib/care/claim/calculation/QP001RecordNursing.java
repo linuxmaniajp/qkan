@@ -154,7 +154,8 @@ public class QP001RecordNursing extends QP001RecordAbstract {
     // システム内サービス項目コード(SYSTEM_SERVICE_CODE_ITEM)
     private String _801036 = "";
     
-    // 提供サービス区分 1-食費 2-ユニット型個室 3-ユニット型準個室 4-従来型個室(特養等) 5-従来型個室(老健・療養等) 6-多床室
+    // 提供サービス区分 1-食費 2-ユニット型個室 3-ユニット型準個室 4-従来型個室(特養等) 5-従来型個室(老健・療養等) 6-多床室(老健・療養等)
+    //                  7-多床室室(特養等) [H27.8改正対応]
     private int _801037 = 0;
 
     // 公費順位決定オブジェクト
@@ -804,7 +805,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
 
     /**
      * 提供サービス区分を取得する。
-     * 1-食費 2-ユニット型個室 3-ユニット型準個室 4-従来型個室(特養等) 5-従来型個室(老健・療養等) 6-多床室
+     * 1-食費 2-ユニット型個室 3-ユニット型準個室 4-従来型個室(特養等) 5-従来型個室(老健・療養等) 6-多床室(老健・療養等) 7-多床室室(特養等)
      * 
      * @return
      */
@@ -814,7 +815,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
 
     /**
      * 提供サービス区分を設定する。
-     * 1-食費 2-ユニット型個室 3-ユニット型準個室 4-従来型個室(特養等) 5-従来型個室(老健・療養等) 6-多床室
+     * 1-食費 2-ユニット型個室 3-ユニット型準個室 4-従来型個室(特養等) 5-従来型個室(老健・療養等) 6-多床室(老健・療養等) 7-多床室室(特養等)
      * 
      * @param _801037
      */
@@ -898,8 +899,11 @@ public class QP001RecordNursing extends QP001RecordAbstract {
             switch(QP001SpecialCase.getServiceKind(serviceCode)){
             //食費
             case 1:
-            //多床室
+            //多床室（老健・療養等）
             case 6:
+            //多床室（特養等）
+            // [H27.8改正対応][Shinobu Hitaka] 2015/6/9 add 多床室(7:特養等と6:老健・療養等)に分けて保持
+            case 7:
                 return true;
             default:
                 return false;
@@ -1042,7 +1046,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
     /**
      * レコード内容の確定を行う。
      */
-    protected void commitRecord(String[] kohi,QP001PatientState patientState,QP001Manager manager) throws Exception {
+    protected void commitRecord(QP001KohiKey[] kohi,QP001PatientState patientState,QP001Manager manager) throws Exception {
         //生保単独フラグ
         boolean seihoOnly = QP001SpecialCase.isSeihoOnly(get_801006());
         //種類種別(1.食費)
@@ -1093,11 +1097,11 @@ public class QP001RecordNursing extends QP001RecordAbstract {
                 set_801021(0);
                 
                 // add sta 2006.05.18 fujihara.shin
-                if(isUsingKohi(kohi[0],manager) && kohi[0].startsWith("12")){
+                if(isUsingKohi(kohi[0],manager) && kohi[0].getKohiType().startsWith("12")){
                 	set_801013(kohiManager.getKohiCount(kohi[0]));
-                } else if(isUsingKohi(kohi[1],manager) && kohi[1].startsWith("12")){
+                } else if(isUsingKohi(kohi[1],manager) && kohi[1].getKohiType().startsWith("12")){
                 	set_801013(kohiManager.getKohiCount(kohi[1]));
-                } else if(isUsingKohi(kohi[2],manager) && kohi[2].startsWith("12")){
+                } else if(isUsingKohi(kohi[2],manager) && kohi[2].getKohiType().startsWith("12")){
                 	set_801013(kohiManager.getKohiCount(kohi[2]));
                 }
                 // add end 2006.05.18 fujihara.shin
@@ -1117,7 +1121,9 @@ public class QP001RecordNursing extends QP001RecordAbstract {
                     set_801013(kohiManager.getKohiCount(kohi[0]));
                     //食費提供、または多床室である場合のみ公費を適用する。
                     //(日数は設定を行う)
-                    if((serviceKind == 1) || (serviceKind == 6)){
+                    // [H27.8改正対応][Shinobu Hitaka] 2015/6/9 edit 多床室(7:特養等と6:老健・療養等)に分けて保持
+                    //if((serviceKind == 1) || (serviceKind == 6)){
+                    if((serviceKind == 1) || (serviceKind == 6) || (serviceKind == 7)){
                         // 公費1負担額(明細)6桁を設定する。(負担限度額*公費1日数)
                         set_801018(get_801011() * get_801013());
                         //公費分１が費用額と保険分の合算を超える場合
@@ -1151,7 +1157,9 @@ public class QP001RecordNursing extends QP001RecordAbstract {
                     //公費２の対象日を設定する。
                     set_801014(kohiManager.getKohiCount(kohi[1]));
                     //食費提供、または多床室である場合のみ公費を適用する。
-                    if((serviceKind == 1) || (serviceKind == 6)){
+                    // [H27.8改正対応][Shinobu Hitaka] 2015/6/9 edit 多床室(7:特養等と6:老健・療養等)に分けて保持
+                    //if((serviceKind == 1) || (serviceKind == 6)){
+                    if((serviceKind == 1) || (serviceKind == 6) || (serviceKind == 7)){
                         //公費２負担額(明細)6桁を設定する。（負担限度額*公費2日数）
                         set_801019(get_801011() * get_801014());
                         //公費２が費用額と保険分の合算を超える場合
@@ -1185,7 +1193,9 @@ public class QP001RecordNursing extends QP001RecordAbstract {
                     //公費３の対象日を設定する。
                     set_801015(kohiManager.getKohiCount(kohi[2]));
                     //食費提供、または多床室である場合のみ公費を適用する。
-                    if((serviceKind == 1) || (serviceKind == 6)){
+                    // [H27.8改正対応][Shinobu Hitaka] 2015/6/9 edit 多床室(7:特養等と6:老健・療養等)に分けて保持
+                    //if((serviceKind == 1) || (serviceKind == 6)){
+                    if((serviceKind == 1) || (serviceKind == 6) || (serviceKind == 7)){
                         //公費３負担額(明細)6桁を設定する。
                         set_801020(get_801011() * get_801015());
                         //公費３が費用額と保険分の合算を超える場合
@@ -1211,13 +1221,13 @@ public class QP001RecordNursing extends QP001RecordAbstract {
 
     }
 
-    private boolean isUsingKohi(String kohi, QP001Manager manager) throws Exception {
+    private boolean isUsingKohi(QP001KohiKey kohi, QP001Manager manager) throws Exception {
         
-        if((kohi == null) || "".equals(kohi)){
+        if((kohi == null) || "".equals(kohi.getKohiType())){
             return false;
         }
         
-        VRMap map = (VRMap)manager.getKohiMatchData(kohi,get_801035(),"4");
+        VRMap map = (VRMap)manager.getKohiMatchData(kohi.getKohiType(),get_801035(),"4");
         if(map == null){
             return false;
         }
@@ -1288,7 +1298,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
      * @param patientState 利用者情報
      * @throws Exception
      */
-    protected void commitRecordKohiSelfPay(String[] kohi,QP001PatientState patientState) throws Exception{
+    protected void commitRecordKohiSelfPay(QP001KohiKey[] kohi,QP001PatientState patientState) throws Exception{
         //レコード順次番号を確認し、99でなければ処理を中断する。
         if(get_801007() != 99){
             return;
@@ -1299,7 +1309,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
         }
         
         // 公費１の適用があるか確認
-        if ((kohi[0] != null) && (!"".equals(kohi[0]))) {
+        if ((kohi[0] != null) && (!"".equals(kohi[0].getKohiType()))) {
             int kohiRate = ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",1),0);
             //公費の給付有
             if(kohiRate != 0){
@@ -1325,7 +1335,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
             }
         }
         // 公費２の適用があるか確認
-        if ((kohi[1] != null) && (!"".equals(kohi[1]))) {
+        if ((kohi[1] != null) && (!"".equals(kohi[1].getKohiType()))) {
             //公費２の適用があるか確認
             int kohiRate = ACCastUtilities.toInt(patientState.getKohiData(kohi[1],"BENEFIT_RATE",1),0);
             //公費の給付有
@@ -1352,7 +1362,7 @@ public class QP001RecordNursing extends QP001RecordAbstract {
             }
         }
         // 公費３の適用があるか確認
-        if ((kohi[2] != null) && (!"".equals(kohi[2]))) {
+        if ((kohi[2] != null) && (!"".equals(kohi[2].getKohiType()))) {
             //公費３の適用があるか確認
             int kohiRate = ACCastUtilities.toInt(patientState.getKohiData(kohi[2],"BENEFIT_RATE",1),0);
             //公費の給付有
@@ -1409,10 +1419,12 @@ public class QP001RecordNursing extends QP001RecordAbstract {
         return this.kohiManager.getRealDays();
     }
 
-    protected VRMap getKohiPattern() {
-        return this.kohiManager.getKohiPattern();
-    }
-
+// [Yoichiro Kamei] [公費関連修正] 2015/4/27 comment out - begin 使われていない処理をコメント化
+//    protected VRMap getKohiPattern() {
+//        return this.kohiManager.getKohiPattern();
+//    }
+// [Yoichiro Kamei] [公費関連修正] 2015/4/27 comment out - end
+    
     /**
      * データ作成
      * 

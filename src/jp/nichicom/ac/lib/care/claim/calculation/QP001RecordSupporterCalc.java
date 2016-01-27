@@ -67,7 +67,8 @@ public class QP001RecordSupporterCalc {
 		VRMap map;
 		for(int i = 0; i < list.getDataSize(); i++){
 			map = (VRMap)list.getData(i);
-			treeMap.put(VRBindPathParser.get("KOHI_SORT",map),VRBindPathParser.get("KOHI_TYPE",map) + "-" + patientState.getKohiData(String.valueOf(map.get("KOHI_TYPE")),"BENEFIT_RATE",insureType));
+			QP001KohiKey kohiKey = new QP001KohiKey(map);
+			treeMap.put(VRBindPathParser.get("KOHI_SORT",map),VRBindPathParser.get("KOHI_TYPE",map) + "-" + patientState.getKohiData(kohiKey,"BENEFIT_RATE",insureType));
             //給付率が100を超えた場合は公費対象からはずす
 		}
 		
@@ -97,34 +98,36 @@ public class QP001RecordSupporterCalc {
         this.service_unit = service_unit;
     }
     
-	/**
-	 * 回数の加算を行う。
-	 *
-	 */
-	protected void addTime(VRMap serviceDetail,VRMap serviceCode) throws Exception {
-        //見取り看護加算対応
-        String systemServiceCodeItem = String.valueOf(serviceCode.get("SYSTEM_SERVICE_CODE_ITEM"));
-        String serviceCodeKind = String.valueOf(serviceCode.get("SERVICE_CODE_KIND"));
-        if("Z6276".equals(systemServiceCodeItem) || "Z6277".equals(systemServiceCodeItem)){
-            if("51".equals(serviceCodeKind)){
-                this.times += ACCastUtilities.toInt(serviceDetail.get("1510132"),1);
-            } else if("54".equals(serviceCodeKind)){
-                this.times += ACCastUtilities.toInt(serviceDetail.get("1540128"),1);
-            } else {
-                //通常のサービス
-                this.times++;
-            }
-        } else {
-            //通常のサービス
-            this.times++;
-        }
-        
-//		this.times++;
-	}
-	
-	protected int getServiceUnitTotal(){
-		return service_unit * times;
-	}
+// [Yoichiro Kamei] [公費関連修正] 2015/4/27 comment out - begin 使われていない処理をコメント化
+//	/**
+//	 * 回数の加算を行う。
+//	 *
+//	 */
+//	protected void addTime(VRMap serviceDetail,VRMap serviceCode) throws Exception {
+//        //見取り看護加算対応
+//        String systemServiceCodeItem = String.valueOf(serviceCode.get("SYSTEM_SERVICE_CODE_ITEM"));
+//        String serviceCodeKind = String.valueOf(serviceCode.get("SERVICE_CODE_KIND"));
+//        if("Z6276".equals(systemServiceCodeItem) || "Z6277".equals(systemServiceCodeItem)){
+//            if("51".equals(serviceCodeKind)){
+//                this.times += ACCastUtilities.toInt(serviceDetail.get("1510132"),1);
+//            } else if("54".equals(serviceCodeKind)){
+//                this.times += ACCastUtilities.toInt(serviceDetail.get("1540128"),1);
+//            } else {
+//                //通常のサービス
+//                this.times++;
+//            }
+//        } else {
+//            //通常のサービス
+//            this.times++;
+//        }
+//        
+////		this.times++;
+//	}
+//	
+//	protected int getServiceUnitTotal(){
+//		return service_unit * times;
+//	}
+// [Yoichiro Kamei] comment out - end
 	
 	public String toString(){
 		return "[SERVICE_UNIT=" + service_unit + "][SERVICE_TIMES=" + times + "]";

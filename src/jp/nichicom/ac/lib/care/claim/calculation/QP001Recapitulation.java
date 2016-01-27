@@ -83,6 +83,13 @@ public class QP001Recapitulation {
      */
     private int serviceMainFlag = 0;
     
+    // [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - begin
+    /**
+     * 人員配置強化型で摘要欄の引き継ぎを行うコードかどうか
+     */
+    private boolean isKyokagataTekiyoHoldCode = false;
+    // [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - end
+    
     /**
      * 摘要記載事項の解析を行う
      * @param serviceDetail
@@ -107,6 +114,10 @@ public class QP001Recapitulation {
         multiFloorFoom = QP001SpecialCase.isMultiFloorRoom(serviceCode);
         //本体報酬であるかのフラグ
         serviceMainFlag = ACCastUtilities.toInt(VRBindPathParser.get("SERVICE_MAIN_FLAG",serviceDetail), 0);
+        
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - begin
+        isKyokagataTekiyoHoldCode = QP001SpecialCase.isKyokagataTekiyoHoldCode(serviceCode);
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - end
         
         if(tekiyo != null){
             return;
@@ -703,6 +714,11 @@ public class QP001Recapitulation {
         	result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
         }
         
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - begin
+        if (isKyokagataTekiyoHoldCode) {
+            result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
+        }
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - end
         
         /*
          * ■介護保険施設

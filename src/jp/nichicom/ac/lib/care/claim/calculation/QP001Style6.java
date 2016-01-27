@@ -30,8 +30,11 @@
 
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -152,38 +155,45 @@ public class QP001Style6  extends QP001StyleAbstract{
 	 * 情報の確定を行う。
 	 */
     public void commitRecords(QP001PatientState patientState,VRMap styles, VRMap planUnitMap) throws Exception {
-		VRMap kohiMap;
-		TreeMap kohiRank = new TreeMap();
+// 2015/5/12 [Yoichiro Kamei] mod - begin 公費関連見直し
+//		VRMap kohiMap;
+//		TreeMap kohiRank = new TreeMap();
 		QP001RecordDetail detail = null;
+		Iterator it;
 		
-		//本帳票における公費順位の確定を行う。
-		//TODO もう少し処理をすっきりさせたい。
+//		//本帳票における公費順位の確定を行う。
+//		//TODO もう少し処理をすっきりさせたい。
+//		
+//		Iterator it = detailMap.keySet().iterator();
+//		while(it.hasNext()){
+//			detail = (QP001RecordDetail)detailMap.get(it.next());
+//			//作成した明細情報レコードの公費適用状況を取得する。
+//			kohiMap = detail.getKohiList();
+//			Iterator itKohi = kohiMap.keySet().iterator();
+//			//公費の順位を登録する。
+//			while(itKohi.hasNext()){
+//				Object key = itKohi.next();
+//				if(!kohiRank.containsKey(key)){
+//					kohiRank.put(key,kohiMap.get(key));
+//				}
+//			}
+//		}
+//		
+//		//公費適用順位
+//		QP001KohiKey[] kohiTypes = new QP001KohiKey[3];
+//		it = kohiRank.keySet().iterator();
+//		int count = 0;
+//		while(it.hasNext()){
+//			VRMap temp = (VRMap)kohiRank.get(it.next());
+//			kohiTypes[count] = new QP001KohiKey(temp);
+//			count++;
+//		}
 		
-		Iterator it = detailMap.keySet().iterator();
-		while(it.hasNext()){
-			detail = (QP001RecordDetail)detailMap.get(it.next());
-			//作成した明細情報レコードの公費適用状況を取得する。
-			kohiMap = detail.getKohiList();
-			Iterator itKohi = kohiMap.keySet().iterator();
-			//公費の順位を登録する。
-			while(itKohi.hasNext()){
-				Object key = itKohi.next();
-				if(!kohiRank.containsKey(key)){
-					kohiRank.put(key,kohiMap.get(key));
-				}
-			}
-		}
-		
-		//公費適用順位
-		String[] kohiTypes = new String[3];
-		it = kohiRank.keySet().iterator();
-		int count = 0;
-		while(it.hasNext()){
-			VRMap temp = (VRMap)kohiRank.get(it.next());
-			kohiTypes[count] = ACCastUtilities.toString(VRBindPathParser.get("KOHI_TYPE",temp));
-			count++;
-		}
-		
+        List<Map> records = new ArrayList<Map>();
+        records.add(detailMap);
+        QP001KohiKey[] kohiTypes = getKohiApplyArray(records);
+// 2015/5/12 [Yoichiro Kamei] mod - end
+        
 		//明細情報レコードの確定処理
 		//[ID:0000721][Shin Fujihara] 2012/04 delete start 2012年度対応
 //		it = detailMap.keySet().iterator();

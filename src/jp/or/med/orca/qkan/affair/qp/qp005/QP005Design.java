@@ -891,7 +891,7 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
 
       commonInfoPublicExpenseText.setBindPath("KOHI_NAME");
 
-      commonInfoPublicExpenseText.setColumns(20);
+      commonInfoPublicExpenseText.setColumns(60);
 
       addCommonInfoPublicExpenseText();
     }

@@ -1279,7 +1279,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     /**
      * レコード内容の確定を行う。
      */
-    protected void commitRecord(String[] kohi, QP001PatientState patientState) throws Exception {
+    protected void commitRecord(QP001KohiKey[] kohi, QP001PatientState patientState) throws Exception {
         
         //摘要欄の内容を確定
         set_301018(recapitulation.getRecapitulation(getRealDays(),patientState));
@@ -1338,7 +1338,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         // 公費１の適用があるか確認
         // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start 老健の一部公費対象の対応（対象サービスかのチェックを追加）
         // if ((kohi[0] != null) && (!"".equals(kohi[0]))) {
-        if ((kohi[0] != null) && (!"".equals(kohi[0])) && isKouhiService(kohi[0])) {
+        if ((kohi[0] != null) && (!"".equals(kohi[0].getKohiType())) && isKouhiService(kohi[0].getKohiType())) {
         // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end 老健の一部公費対象の対応
             
             // 適用がある場合
@@ -1353,7 +1353,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             // 公費1対象サービス単位数6桁(単位数*公費１適用回数)
             set_301015(get_301009() * get_301011());
             // 公費1公費タイプ
-            set_301023(kohi[0]);
+            set_301023(kohi[0].getKohiType());
             // 給付率が100%になったら処理を終了する。
             if(ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",1)) == 100){
                 //公費１で全単位数でまかなえれば公費計算を終了
@@ -1366,7 +1366,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         // 公費２の適用があるか確認
         // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start 老健の一部公費対象の対応（対象サービスかのチェックを追加）
         // if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1]))) {
-        if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1])) && isKouhiService(kohi[1])) {
+        if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1].getKohiType())) && isKouhiService(kohi[1].getKohiType())) {
         // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end 老健の一部公費対象の対応
 
             // 適用がある場合
@@ -1381,7 +1381,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             // 公費2対象サービス単位数6桁(単位数*公費２適用回数)
             set_301016(get_301009() * get_301012());
             // 公費2公費タイプ
-            set_301024(kohi[1]);
+            set_301024(kohi[1].getKohiType());
             // 給付率が100%になったら処理を終了する。
             if(ACCastUtilities.toInt(patientState.getKohiData(kohi[1],"BENEFIT_RATE",1)) == 100){
                 //公費２で全単位数でまかなえれば公費計算を終了
@@ -1393,7 +1393,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         // 公費３の適用があるか確認
         // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - start 老健の一部公費対象の対応（対象サービスかのチェックを追加）
         // if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2]))) {
-        if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2])) && isKouhiService(kohi[2])) {
+        if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2].getKohiType())) && isKouhiService(kohi[2].getKohiType())) {
         // [CCCX:1470][Shinobu Hitaka] 2014/02/07 edit - end 老健の一部公費対象の対応
 
             // 適用がある場合
@@ -1408,7 +1408,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             // 公費3対象サービス単位数6桁(単位数*公費３適用回数)
             set_301017(get_301009() * get_301013());
             // 公費3公費タイプ
-            set_301025(kohi[2]);
+            set_301025(kohi[2].getKohiType());
             // 給付率が100%になったら処理を終了する。
 //            if (ACCastUtilities.toInt(patientState.getKohiData(kohi[0],"BENEFIT_RATE",2)) == 100)
 //                return;

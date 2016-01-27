@@ -114,23 +114,58 @@ public class QP001P06_201204 extends QP001P02_10Event {
                     switch(kohiCount){
                     case 0:
                         ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),5));
+// 2015/5/21 [Yoichiro Kamei] add - begin 公費関連見直し 
+                        //公費給付率を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201030"),3));
+                        //公費分の給付単位数合計を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kouhitanitotal", pad(baseMap.get("201039"),6));
+                        //公費請求額を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohiseikyu", pad(baseMap.get("201040"),6));
+                        //公費利用者負担額を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohiriyosyafutan", pad(baseMap.get("201041"),6));
+// 2015/5/21 [Yoichiro Kamei] add - end
                         break;
                     case 1:
                         ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),5));
+// 2015/5/21 [Yoichiro Kamei] add - begin 公費関連見直し 
+                        //公費給付率を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201031"),3));
+                        //公費分の給付単位数合計を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kouhitanitotal", pad(baseMap.get("201045"),6));
+                        //公費請求額を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohiseikyu", pad(baseMap.get("201046"),6));
+                        //公費利用者負担額を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohiriyosyafutan", pad(baseMap.get("201047"),6));
+// 2015/5/21 [Yoichiro Kamei] add - end
                         break;
                     case 2:
                         ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),5));
+// 2015/5/21 [Yoichiro Kamei] add - begin 公費関連見直し
+                        //公費給付率を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201032"),3));
+                        //公費分の給付単位数合計を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kouhitanitotal", pad(baseMap.get("201051"),6));
+                        //公費請求額を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohiseikyu", pad(baseMap.get("201052"),6));
+                        //公費利用者負担額を設定する。
+                        ACChotarouXMLUtilities.setValue(writer, "kohiriyosyafutan", pad(baseMap.get("201053"),6));
+// 2015/5/21 [Yoichiro Kamei] add - end
                         break;
                     }
-                    
-                    //公費分の単位数合計を設定する。
-                    ACChotarouXMLUtilities.setValue(writer, "kouhitanitotal", pad(baseMap.get("201039"),6));
+// 2015/5/21 [Yoichiro Kamei] mod - begin 公費関連見直し 
+// 既存バグ修正 上記switch(kohiCount)内で公費別に設定を行う必要あり
+//                    //公費分の単位数合計を設定する。
+//                    ACChotarouXMLUtilities.setValue(writer, "kouhitanitotal", pad(baseMap.get("201039"),6));
+// 2015/5/21 [Yoichiro Kamei] mod - end
                     
                     //単位数単価を設定する。
                     ACChotarouXMLUtilities.setValue(writer, "tanka", getTanka(typeMap.get("701015")));
                     
-                    //公費給付率を設定する。
-                    ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201030"),3));
+// 2015/5/21 [Yoichiro Kamei] mod - begin 公費関連見直し 
+// 既存バグ修正 上記switch(kohiCount)内で公費別に設定を行う必要あり
+//                    //公費給付率を設定する。
+//                    ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201030"),3));
+// 2015/5/21 [Yoichiro Kamei] mod - end
                     
                     if(kohiCount == 0){
                         //保険給付率を設定する。
@@ -141,10 +176,13 @@ public class QP001P06_201204 extends QP001P02_10Event {
                         ACChotarouXMLUtilities.setValue(writer, "hokenriyosyafutan", pad(baseMap.get("201035"),6));
                     }
                     
-                    //公費請求額を設定する。
-                    ACChotarouXMLUtilities.setValue(writer, "kohiseikyu", pad(baseMap.get("201040"),6));
-                    //公費利用者負担額を設定する。
-                    ACChotarouXMLUtilities.setValue(writer, "kohiriyosyafutan", pad(baseMap.get("201041"),6));
+// 2015/5/21 [Yoichiro Kamei] mod - begin 公費関連見直し 
+// 既存バグ修正 上記switch(kohiCount)内で公費別に設定を行う必要あり
+//                    //公費請求額を設定する。
+//                    ACChotarouXMLUtilities.setValue(writer, "kohiseikyu", pad(baseMap.get("201040"),6));
+//                    //公費利用者負担額を設定する。
+//                    ACChotarouXMLUtilities.setValue(writer, "kohiriyosyafutan", pad(baseMap.get("201041"),6));
+// 2015/5/21 [Yoichiro Kamei] mod - end
                     
                     //外部利用型の設定を行う
                     doPrintExternalUse(baseMap,typeMap);

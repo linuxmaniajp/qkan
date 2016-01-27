@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -135,30 +136,38 @@ public class QP001RecordSupporter {
 		String serial = QP001RecordSupporterCalc.getSerialId(list,patientState,targetDate,1);
 		QP001RecordSupporterCalc calc = null;
 		
+        for(int i = 0; i < list.getDataSize(); i++) {
+            VRMap kohi = (VRMap)list.getData(i);
+            //公費適用順位への追加を行う
+            QP001KohiKey kohiKey = new QP001KohiKey(kohi);
+            if (!kohiRankMap.containsKey(kohiKey)) {
+                kohiRankMap.put(kohiKey,kohi);
+            }
+        }
+        
 		//未知の公費パタンである場合
 		if(!kohiPattern.containsKey(serial)){
-			for(int i = 0; i < list.getDataSize(); i++) {
-				VRMap kohi = (VRMap)list.getData(i);
-				//公費適用順位への追加を行う
-				kohiRankMap.put(VRBindPathParser.get("KOHI_SORT",kohi),kohi);
-			}
 			calc = new QP001RecordSupporterCalc(service_unit);
 			//公費計算オブジェクトの追加を行う。
 			kohiPattern.setData(serial,calc);
 		} else {
 			calc = (QP001RecordSupporterCalc)kohiPattern.getData(serial);
 		}
-		calc.addTime(serviceDetail,serviceCode);
+// [Yoichiro Kamei] [公費関連修正] 2015/4/27 comment out - begin 使われていない処理をコメント化
+//		calc.addTime(serviceDetail,serviceCode);
+// [Yoichiro Kamei] [公費関連修正] 2015/4/27 comment out - end
+		
 		//特定の公費パタンで何回適用があるかが知りたい
 		for(int i = 0; i < list.getDataSize(); i++){
 			VRMap kohi = (VRMap)list.getData(i);
 			int countTemp = count;
 			//公費の設定がある場合
-			if(kohiApplicationTimes.containsKey(VRBindPathParser.get("KOHI_TYPE",kohi))){
-                countTemp = ((Integer)kohiApplicationTimes.get(VRBindPathParser.get("KOHI_TYPE",kohi))).intValue();
+			QP001KohiKey kohiKey = new QP001KohiKey(kohi);
+			if(kohiApplicationTimes.containsKey(kohiKey)){
+                countTemp = ((Integer)kohiApplicationTimes.get(kohiKey)).intValue();
                 countTemp += count;
 			}
-			kohiApplicationTimes.setData(VRBindPathParser.get("KOHI_TYPE",kohi),new Integer(countTemp));
+			kohiApplicationTimes.setData(kohiKey,new Integer(countTemp));
 		}
 		
 		// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
@@ -248,14 +257,14 @@ public class QP001RecordSupporter {
     }
     
 	/**
-	 * 指定された公費番号の公費適用日数・回数を返却します。
+	 * 指定された公費IDの公費適用日数・回数を返却します。
 	 * @param kohiType
 	 * @return
 	 */
-	protected int getKohiCount(String kohiType){
+	protected int getKohiCount(QP001KohiKey kohiKey){
 		int result = 0;
-		if(kohiApplicationTimes.containsKey(new Integer(kohiType))){
-			result = ((Integer)(kohiApplicationTimes.getData(new Integer(kohiType)))).intValue();
+		if(kohiApplicationTimes.containsKey(kohiKey)){
+			result = ((Integer)(kohiApplicationTimes.getData(kohiKey))).intValue();
 		}
 		return result;
 	}
@@ -274,9 +283,14 @@ public class QP001RecordSupporter {
 		if (ACTextUtilities.isNullText(kohiType)) {
 			return result;
 		}
-		VRMap kohiTimes = (VRMap) kohiApplicationTimesPerCount.get(atTime);
-		if (kohiTimes.containsKey(new Integer(kohiType))) {
-			result = ((Integer)(kohiTimes.getData(new Integer(kohiType)))).intValue();
+		Map<QP001KohiKey, Integer> kohiTimes = (Map) kohiApplicationTimesPerCount.get(atTime);
+		if (kohiTimes != null && !kohiTimes.isEmpty()) {
+	        for (QP001KohiKey kohiKey : kohiTimes.keySet()) {
+	            if (kohiType.equals(kohiKey.getKohiType())) {
+	                result = kohiTimes.get(kohiKey).intValue();
+	                break;
+	            }
+	        }
 		}
 		return result;
 	}

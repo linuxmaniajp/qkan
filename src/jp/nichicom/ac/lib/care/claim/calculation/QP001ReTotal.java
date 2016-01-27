@@ -93,17 +93,17 @@ public class QP001ReTotal {
             Integer.MIN_VALUE };
     /** Œö”ïí—Ş */
     private String[] kohiType = new String[] { null, null, null };
+    /** Œö”ï•‰’SÒ”Ô† */
+    private String[] kohiPayerNo = new String[] { null, null, null };
+    /** Œö”ïó‹‹Ò”Ô† */
+    private String[] kohiRecipientNo = new String[] { null, null, null };
+    
     /** ‹Ù‹}¡—Ã“K—pŒö”ï */
     private VRList emergencyKohi = new VRArrayList();
 
     /** —˜—pÒî•ñ */
     private QP001PatientState patientState = null;
     
-    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-    /** —˜—pÒî•ñ‚Ì©ŒÈ•‰’SŠz•Û‘¶—p(ˆ‹ö‰ü‘PŒvZŒã‚ÌÄWŒv—p) **/
-    private int[] kohiSelfPay = new int[] { 0, 0, 0 };
-    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-
     /** Šî–{î•ñƒŒƒR[ƒh‚Éİ’è‚·‚é‹Ù‹}A“Á’èf—Ã”ïî•ñ */
     private VRMap baseCache = new VRHashMap();
 
@@ -220,30 +220,40 @@ public class QP001ReTotal {
                 continue;
             }
 
-            String kohiType = null;
+            String payerNo = null;
+            String recipientNo = null;
 
-            // Œö”ï1 Œö”ïí—Ş(KOHI_TYPE)
-            kohiType = toString(map, "201058");
-            if (!"".equals(kohiType)) {
-                patientState.getKohiSelfPay(kohiType, 1);
+            // (Œö”ï1)•‰’SÒ”Ô†8Œ…
+            payerNo = toString(map, "201007");
+            // (Œö”ï1)ó‹‹Ò”Ô†7Œ…
+            recipientNo = toString(map, "201008");
+            if (!"".equals(payerNo)) {
+                QP001KohiKey kohiKey = getKohiKey(payerNo, recipientNo);
+                patientState.getKohiSelfPay(kohiKey, 1);
                 // (‡Œvî•ñ Œö”ï1)–{l•‰’SŠz‚ğ·‚µˆø‚­
-                patientState.setKohiSelfPayUse(kohiType, toInt(map, "201041"));
+                patientState.setKohiSelfPayUse(kohiKey, toInt(map, "201041"));
             }
 
-            // Œö”ï2 Œö”ïí—Ş(KOHI_TYPE)
-            kohiType = toString(map, "201059");
-            if (!"".equals(kohiType)) {
-                patientState.getKohiSelfPay(kohiType, 1);
+            // (Œö”ï2)•‰’SÒ”Ô†8Œ…
+            payerNo = toString(map, "201009");
+            // (Œö”ï2)ó‹‹Ò”Ô†7Œ…
+            recipientNo = toString(map, "201010");
+            if (!"".equals(payerNo)) {
+                QP001KohiKey kohiKey = getKohiKey(payerNo, recipientNo);
+                patientState.getKohiSelfPay(kohiKey, 1);
                 // (‡Œvî•ñ Œö”ï2)–{l•‰’SŠz‚ğ·‚µˆø‚­
-                patientState.setKohiSelfPayUse(kohiType, toInt(map, "201047"));
+                patientState.setKohiSelfPayUse(kohiKey, toInt(map, "201047"));
             }
 
-            // Œö”ï3 Œö”ïí—Ş(KOHI_TYPE)
-            kohiType = toString(map, "201060");
-            if (!"".equals(kohiType)) {
-                patientState.getKohiSelfPay(kohiType, 1);
+            // (Œö”ï3)•‰’SÒ”Ô†8Œ…
+            payerNo = toString(map, "201011");
+            // (Œö”ï3)ó‹‹Ò”Ô†7Œ…
+            recipientNo = toString(map, "201012");
+            if (!"".equals(payerNo)) {
+                QP001KohiKey kohiKey = getKohiKey(payerNo, recipientNo);
+                patientState.getKohiSelfPay(kohiKey, 1);
                 // (‡Œvî•ñ Œö”ï3)–{l•‰’SŠz‚ğ·‚µˆø‚­
-                patientState.setKohiSelfPayUse(kohiType, toInt(map, "201053"));
+                patientState.setKohiSelfPayUse(kohiKey, toInt(map, "201053"));
             }
 
         }
@@ -601,10 +611,12 @@ public class QP001ReTotal {
                     // —˜—pÒ•‰’SŠz‚É0‚ğİ’è‚·‚éB
                     map.put("801021", "0");
                 } else {
-                    // í—Şí•Ê(1.H”ï@6.‘½°º)
+                    // [H27.8‰ü³‘Î‰][Shinobu Hitaka] 2015/6/9 edit ‘½°º(7:“Á—{“™‚Æ6:˜VŒ’E—Ã—{“™)‚É•ª‚¯‚Ä•Û
+                    // í—Şí•Ê(1.H”ï@6.‘½°º(˜VŒ’E—Ã—{“™)@7.‘½°º(“Á—{“™))
                     int serviceKind = toInt(map, "801037");
-                    // 1.H”ï@6.‘½°ºˆÈŠO‚ÍZ’è‚µ‚È‚¢
-                    if ((serviceKind == 1) || (serviceKind == 6)) {
+                    // 1.H”ï@6.‘½°º(˜VŒ’E—Ã—{“™)@7.‘½°º(“Á—{“™)ˆÈŠO‚ÍZ’è‚µ‚È‚¢
+                    //if ((serviceKind == 1) || (serviceKind == 6)) {
+                    if ((serviceKind == 1) || (serviceKind == 6) || (serviceKind == 7)) {
                         // Œö”ï‚P‚Ì“K—p‚ª‚ ‚éê‡(Œö”ï“ú”‚Æ‹‹•t—¦‚Å”»’f)
                         if ((toInt(map, "801013") != 0)
                                 && (getKohiRate(1) != 0)) {
@@ -860,10 +872,8 @@ public class QP001ReTotal {
         }
         
         //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-        // ÄŒvZ‚Ì‘O‚É—˜—p‚µ‚½©ŒÈ•‰’SŠz‚ğ–ß‚·
-        patientState.setKohiSelfPay(getKohiType(1), kohiSelfPay[0]);
-        patientState.setKohiSelfPay(getKohiType(2), kohiSelfPay[1]);
-        patientState.setKohiSelfPay(getKohiType(3), kohiSelfPay[2]);
+        // ÄWŒv‚ªs‚í‚ê‚é‘O‚ÉŒö”ï©ŒÈ•‰’SŠz‚Ìî•ñ‚ğƒNƒŠƒA
+        patientState.clearKohiSelfPay();
         //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
         
         // ˆ‹ö‰ü‘P‚Ì’l‚ğ•ÒW‚µ‚½‚Ì‚ÅAWŒvî•ñƒŒƒR[ƒh‚ğÄì¬
@@ -1234,14 +1244,19 @@ public class QP001ReTotal {
                     //        getKohiRate(2), reduction, usedRate);
                     roukenFlg = CareServiceCommon.isKouhiService(toString(map, "701007"), getKohiType(2));
                     unit = toInt(map, "701021");
-                    if (roukenFlg && ("1001".equals(getKohiType(1)))){
+// 2015/6/18 [Shinobu Hitaka] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µi10Š´õÇ‚Ìê‡‚ÉŒö”ï‹‹•t—¦‚ğ‰Šú‰»j
+                    //if (roukenFlg && ("1001".equals(getKohiType(1)))){
+                    if ("1001".equals(getKohiType(1))){
                         usedRate = getRate();
-                        if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                        //˜VŒ’ˆê•”“K—pŒö”ï‚Ìê‡‚Í’PˆÊ”’²®
+                        //if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                        if (roukenFlg) {
                             if (base.size() > 0) {
                                 unit = toInt((VRMap) base.get(0), "201045");
                             }
                         }
                     }
+// 2015/6/18 [Shinobu Hitaka] mod - end 
                     kohiClaim = getKohiClaim(map, unit, getKohiRate(2), reduction, usedRate);
                     //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - end   Š´õÇŒö”ï‚Ìˆ‹ö‰ü‘P‰ÁZ‘Î‰
                     
@@ -1272,12 +1287,13 @@ public class QP001ReTotal {
                 unit = toInt(map, "701024");
                 if(roukenFlg){
                     //Œö”ï1=10Š´õÇAŒö”ï2=˜VŒ’ˆê•”Œö”ï‚Ìê‡A¿‹Šz‚ğ’²®‚·‚é
-                    if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                    //if ("52".equals(toString(map, "701007")) && "1001".equals(getKohiType(1))){
+                    if ("1001".equals(getKohiType(1))){
                         if (base.size() > 0) {
                             unit = toInt((VRMap) base.get(0), "201051");
                         }
                         kohiClaim = getKohiClaim(map, unit, getKohiRate(3), reduction, getRate());
-                        if (kohiClaim > 0) kohiClaim -= toInt(map, "701019");
+                        if (kohiClaim > toInt(map, "701019")) kohiClaim -= toInt(map, "701019");
                     } else {
                         kohiClaim = getKohiClaim(map, unit, getKohiRate(3), reduction, getRate());
                     }
@@ -1304,12 +1320,7 @@ public class QP001ReTotal {
             int kohiCost = 0;
             // Œö”ï‚P‚Ì“K—p‚ ‚è
             if (getKohiRate(1) != 0) {
-                selfPay = patientState.getKohiSelfPay(getKohiType(1), 1);
-                
-                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-                // ˆ‹ö‰ü‘PŒvZŒã‚Ì‚½‚ß‚Ì•Û‘¶
-                kohiSelfPay[0] = selfPay;
-                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
+                selfPay = patientState.getKohiSelfPay(getKohiKey(1), 1);
                 
                 if (selfPay != 0) {
                     // —l®‘æ”ªA‘æ‹ãA‘æ\‚Ìê‡‚ÅŠ‚Â¶•Û’P“ÆÒ‚Å–³‚¢ê‡‚ÍA©ŒÈ•‰’SŠz‚Ìg—p‚É§ŒÀ‚ğ‚©‚¯‚é
@@ -1320,7 +1331,7 @@ public class QP001ReTotal {
 
                     selfPay = QP001SpecialCase.convertSelfPay(
                             toString(map, "701001"), toString(map, "701006"),
-                            selfPay, getKohiType(1), kohiCost);
+                            selfPay, getKohiKey(1), kohiCost);
 
                     // Œö”ï‚P¿‹Šz‚Æ–{l•‰’SŠz‚ğ”äŠr‚µA–{l•‰’SŠz‚ª‘å‚«‚¢ê‡
                     if (toInt(map, "701019") < selfPay) {
@@ -1329,13 +1340,13 @@ public class QP001ReTotal {
                         // Œö”ï‚P¿‹Šz‚ğ0‚Æ‚·‚é
                         map.put("701019", "0");
                         // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                        patientState.setKohiSelfPayUse(getKohiType(1),
+                        patientState.setKohiSelfPayUse(getKohiKey(1),
                                 toInt(map, "701020"));
                     } else {
                         map.put("701020", String.valueOf(selfPay));
                         sub(map, "701019", new String[] { "701019", "701020" });
                         // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                        patientState.setKohiSelfPayUse(getKohiType(1), selfPay);
+                        patientState.setKohiSelfPayUse(getKohiKey(1), selfPay);
                     }
 
                 }
@@ -1343,13 +1354,8 @@ public class QP001ReTotal {
 
             // Œö”ï‚Q‚Ì–{l•‰’SŠz‚ğæ“¾
             if (getKohiRate(2) != 0) {
-                selfPay = patientState.getKohiSelfPay(getKohiType(2), 1);
+                selfPay = patientState.getKohiSelfPay(getKohiKey(2), 1);
 
-                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-                // ˆ‹ö‰ü‘PŒvZŒã‚Ì‚½‚ß‚Ì•Û‘¶
-                kohiSelfPay[1] = selfPay;
-                //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-                
                 if (selfPay != 0) {
                     kohiCost = 0;
                     if (nursingTotal != null) {
@@ -1358,7 +1364,7 @@ public class QP001ReTotal {
 
                     selfPay = QP001SpecialCase.convertSelfPay(
                             toString(map, "701001"), toString(map, "701006"),
-                            selfPay, getKohiType(2), kohiCost);
+                            selfPay, getKohiKey(2), kohiCost);
 
                     // Œö”ï‚Q¿‹Šz‚Æ–{l•‰’SŠz‚ğ”äŠr‚µA–{l•‰’S‚ª‘å‚«‚¢ê‡
                     if (toInt(map, "701022") < selfPay) {
@@ -1367,25 +1373,20 @@ public class QP001ReTotal {
                         // Œö”ï‚Q¿‹Šz‚ğ0‚Æ‚·‚é
                         map.put("701022", "0");
                         // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                        patientState.setKohiSelfPayUse(getKohiType(2),
+                        patientState.setKohiSelfPayUse(getKohiKey(2),
                                 toInt(map, "701023"));
 
                     } else {
                         map.put("701023", String.valueOf(selfPay));
                         sub(map, "701022", new String[] { "701022", "701023" });
                         // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                        patientState.setKohiSelfPayUse(getKohiType(2), selfPay);
+                        patientState.setKohiSelfPayUse(getKohiKey(2), selfPay);
                     }
                 }
 
                 // Œö”ï‚R‚Ì–{l•‰’SŠz‚ğæ“¾
                 if (getKohiRate(3) != 0) {
-                    selfPay = patientState.getKohiSelfPay(getKohiType(3), 1);
-
-                    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
-                    // ˆ‹ö‰ü‘PŒvZŒã‚Ì‚½‚ß‚Ì•Û‘¶
-                    kohiSelfPay[2] = selfPay;
-                    //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   ˆ‹ö‰ü‘P—L{Œö”ï©ŒÈ•‰’S—L‚ÌÄWŒv
+                    selfPay = patientState.getKohiSelfPay(getKohiKey(3), 1);
                     
                     if (selfPay != 0) {
                         kohiCost = 0;
@@ -1396,7 +1397,7 @@ public class QP001ReTotal {
                         selfPay = QP001SpecialCase.convertSelfPay(
                                 toString(map, "701001"),
                                 toString(map, "701006"), selfPay,
-                                getKohiType(3), kohiCost);
+                                getKohiKey(3), kohiCost);
 
                         // Œö”ï‚R¿‹Šz‚Æ–{l•‰’SŠz‚ğ”äŠr‚µA–{l•‰’S‚ª‘å‚«‚¢ê‡
                         if (toInt(map, "701025") < selfPay) {
@@ -1405,7 +1406,7 @@ public class QP001ReTotal {
                             // Œö”ï‚R¿‹Šz‚ğ0‚Æ‚·‚é
                             map.put("701025", "0");
                             // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                            patientState.setKohiSelfPayUse(getKohiType(3),
+                            patientState.setKohiSelfPayUse(getKohiKey(3),
                                     toInt(map, "701026"));
 
                         } else {
@@ -1413,7 +1414,7 @@ public class QP001ReTotal {
                             sub(map, "701025", new String[] { "701025",
                                     "701026" });
                             // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                            patientState.setKohiSelfPayUse(getKohiType(3),
+                            patientState.setKohiSelfPayUse(getKohiKey(3),
                                     selfPay);
                         }
                     }
@@ -1500,7 +1501,7 @@ public class QP001ReTotal {
         // Œö”ï‚P‚Ì“K—p‚ª‚ ‚é‚©Šm”F
         if (getKohiRate(1) != 0) {
             // Œö”ï‚P©ŒÈ•‰’SŠz‚Ìİ’è‚ğs‚¤B
-            int selfPay = patientState.getKohiSelfPay(getKohiType(1), 1);
+            int selfPay = patientState.getKohiSelfPay(getKohiKey(1), 1);
             // Œö”ï©ŒÈ•‰’SŠz‚Ì•û‚ª‘å‚«‚¯‚ê‚Î
             if (toInt(nursingTotal, "801026") < selfPay) {
                 // (Œö”ï1)–{l•‰’SŠz5Œ…‚É¿‹Šz‚ğİ’è‚·‚éB
@@ -1508,7 +1509,7 @@ public class QP001ReTotal {
                 // Œö”ï1¿‹Šz‚ğ0‚Éİ’è‚·‚éB
                 nursingTotal.put("801026", "0");
                 // g—p‚µ‚½©ŒÈ•‰’S‚ğ•ñ‚·‚éB
-                patientState.setKohiSelfPayUse(getKohiType(1),
+                patientState.setKohiSelfPayUse(getKohiKey(1),
                         toInt(nursingTotal, "801027"));
 
             } else {
@@ -1520,14 +1521,14 @@ public class QP001ReTotal {
                 // Œö”ï‚P©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
                 nursingTotal.put("801027", String.valueOf(selfPay));
                 // g—p‚µ‚½©ŒÈ•‰’S‚ğ•ñ‚·‚éB
-                patientState.setKohiSelfPayUse(getKohiType(1), selfPay);
+                patientState.setKohiSelfPayUse(getKohiKey(1), selfPay);
             }
         }
 
         // Œö”ï‚Q‚Ì“K—p‚ª‚ ‚é‚©Šm”F
         if (getKohiRate(2) != 0) {
             // Œö”ï‚Q©ŒÈ•‰’SŠz‚Ìİ’è‚ğs‚¤B
-            int selfPay = patientState.getKohiSelfPay(getKohiType(2), 1);
+            int selfPay = patientState.getKohiSelfPay(getKohiKey(2), 1);
             // Œö”ï©ŒÈ•‰’SŠz‚Ì•û‚ª‘å‚«‚¯‚ê‚Î
             if (toInt(nursingTotal, "801029") < selfPay) {
                 // (Œö”ï2)–{l•‰’SŠz5Œ…‚É¿‹Šz‚ğİ’è‚·‚éB
@@ -1535,7 +1536,7 @@ public class QP001ReTotal {
                 // Œö”ï2¿‹Šz‚ğ0‚Éİ’è‚·‚éB
                 nursingTotal.put("801029", "0");
                 // g—p‚µ‚½©ŒÈ•‰’S‚ğ•ñ‚·‚éB
-                patientState.setKohiSelfPayUse(getKohiType(2),
+                patientState.setKohiSelfPayUse(getKohiKey(2),
                         toInt(nursingTotal, "801030"));
 
             } else {
@@ -1547,14 +1548,14 @@ public class QP001ReTotal {
                 // Œö”ï‚Q©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
                 nursingTotal.put("801030", String.valueOf(selfPay));
                 // g—p‚µ‚½©ŒÈ•‰’S‚ğ•ñ‚·‚éB
-                patientState.setKohiSelfPayUse(getKohiType(2), selfPay);
+                patientState.setKohiSelfPayUse(getKohiKey(2), selfPay);
             }
         }
 
         // Œö”ï‚R‚Ì“K—p‚ª‚ ‚é‚©Šm”F
         if (getKohiRate(3) != 0) {
             // Œö”ï‚R©ŒÈ•‰’SŠz‚Ìİ’è‚ğs‚¤B
-            int selfPay = patientState.getKohiSelfPay(getKohiType(3), 1);
+            int selfPay = patientState.getKohiSelfPay(getKohiKey(3), 1);
             // Œö”ï©ŒÈ•‰’SŠz‚Ì•û‚ª‘å‚«‚¯‚ê‚Î
             if (toInt(nursingTotal, "801032") < selfPay) {
                 // (Œö”ï3)–{l•‰’SŠz5Œ…‚É¿‹Šz‚ğİ’è‚·‚éB
@@ -1562,7 +1563,7 @@ public class QP001ReTotal {
                 // Œö”ï3¿‹Šz‚ğ0‚Éİ’è‚·‚éB
                 nursingTotal.put("801032", "0");
                 // g—p‚µ‚½©ŒÈ•‰’S‚ğ•ñ‚·‚éB
-                patientState.setKohiSelfPayUse(getKohiType(3),
+                patientState.setKohiSelfPayUse(getKohiKey(3),
                         toInt(nursingTotal, "801031"));
 
             } else {
@@ -1574,7 +1575,7 @@ public class QP001ReTotal {
                 // Œö”ï‚R©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
                 nursingTotal.put("801033", String.valueOf(selfPay));
                 // g—p‚µ‚½©ŒÈ•‰’S‚ğ•ñ‚·‚éB
-                patientState.setKohiSelfPayUse(getKohiType(3), selfPay);
+                patientState.setKohiSelfPayUse(getKohiKey(3), selfPay);
             }
         }
     }
@@ -1613,7 +1614,10 @@ public class QP001ReTotal {
         int amendsRate = getRate();
 
         // Œö”ï1‚Ì“K—p‚ ‚è
-        if (getKohiRate(1) != 0) {
+// 2015/6/18 [Shinobu Hitaka] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+//        if (getKohiRate(1) != 0) {
+        if(getKohiRate(1) != 0 && toInt(tmap, "701030") != 0){
+// 2015/6/18 [Shinobu Hitaka] mod - end
             // Œ“r’†Œö”ï‚ğ‹^‚¤
             if (toInt(tmap, "701027") == toInt(tmap, "701030")) {
                 // Œ“r’†Œö”ï‚È‚µ
@@ -1629,6 +1633,10 @@ public class QP001ReTotal {
                             "701031",
                             String.valueOf((int) Math.floor(totalRate
                                     * (getKohiRate(1) - getRate()) / 100)));
+                    
+// 2015/6/18 [Shinobu Hitaka] add - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+                    amendsRate = getKohiRate(1);
+// 2015/6/18 [Shinobu Hitaka] add - end
                 }
 
             } else {
@@ -1645,7 +1653,11 @@ public class QP001ReTotal {
         // Œö”ï‚Ì‘ÎÛ‚Æ‚È‚é©ŒÈ•‰’SŠz‚ªc‚Á‚Ä‚¢‚é‚©Šm”F
         if (totalRate >= (toInt(tmap, "701028") + toInt(tmap, "701031"))) {
             // Œö”ï2‚Ì“K—p‚ª‚ ‚éê‡
-            if (getKohiRate(2) != 0) {
+// 2015/6/18 [Shinobu Hitaka] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+//            if (getKohiRate(2) != 0) {
+            if(getKohiRate(2) != 0 && toInt(tmap, "701033") != 0){
+// 2015/6/18 [Shinobu Hitaka] mod - end
+
                 // Œ“r’†Œö”ï‚ğ‹^‚¤
                 if (toInt(tmap, "701027") == toInt(tmap, "701033")) {
                     // Œ“r’†Œö”ï‚È‚µ
@@ -1662,6 +1674,9 @@ public class QP001ReTotal {
                                 String.valueOf((int) Math.floor(totalRate
                                         * (getKohiRate(2) - getKohiRate(1))
                                         / 100)));
+// 2015/6/18 [Shinobu Hitaka] add - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+                        amendsRate = getKohiRate(2);
+// 2015/6/18 [Shinobu Hitaka] add - end
                     }
 
                 } else {
@@ -1679,7 +1694,10 @@ public class QP001ReTotal {
         if (totalRate >= (toInt(tmap, "701028") + toInt(tmap, "701031") + toInt(
                 tmap, "701034"))) {
             // Œö”ï2‚Ì“K—p‚ª‚ ‚éê‡
-            if (getKohiRate(3) != 0) {
+// 2015/6/18 [Shinobu Hitaka] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+//            if (getKohiRate(3) != 0) {
+            if (getKohiRate(3) != 0 && toInt(tmap, "701036") != 0){
+// 2015/6/18 [Shinobu Hitaka] mod - end
                 // Œ“r’†Œö”ï‚ğ‹^‚¤
                 if (toInt(tmap, "701027") == toInt(tmap, "701036")) {
                     // Œ“r’†Œö”ï‚È‚µ
@@ -1949,7 +1967,7 @@ public class QP001ReTotal {
         int selfPay = 0;
         // Œö”ï‚P‚Ì–{l•‰’SŠz
         if (toInt(tmap, "701031") != 0) {
-            selfPay = patientState.getKohiSelfPay(getKohiType(1), 1);
+            selfPay = patientState.getKohiSelfPay(getKohiKey(1), 1);
             if (selfPay != 0) {
                 selfPay = QP001SpecialCase.getApplicationIndividualPayment(
                         toString(tmap, "701001"), toString(tmap, "701006"),
@@ -1963,14 +1981,14 @@ public class QP001ReTotal {
                     // Œö”ï‚P¿‹Šz‚ğ0‚Æ‚·‚é
                     tmap.put("701031", "0");
                     // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                    patientState.setKohiSelfPayUse(getKohiType(1),
+                    patientState.setKohiSelfPayUse(getKohiKey(1),
                             toInt(tmap, "701032"));
 
                 } else {
                     tmap.put("701032", String.valueOf(selfPay));
                     sub(tmap, "701031", new String[] { "701031", "701032" });
                     // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                    patientState.setKohiSelfPayUse(getKohiType(1), selfPay);
+                    patientState.setKohiSelfPayUse(getKohiKey(1), selfPay);
                 }
 
                 // ¿‹Šz‚©‚ç—˜—pÒ•‰’SŠz‚ğ·‚µˆø‚­
@@ -1980,7 +1998,7 @@ public class QP001ReTotal {
 
         // Œö”ï‚Q‚Ì–{l•‰’SŠz‚ğæ“¾
         if (toInt(tmap, "701034") != 0) {
-            selfPay = patientState.getKohiSelfPay(getKohiType(2), 1);
+            selfPay = patientState.getKohiSelfPay(getKohiKey(2), 1);
             if (selfPay != 0) {
                 selfPay = QP001SpecialCase.getApplicationIndividualPayment(
                         toString(tmap, "701001"), toString(tmap, "701006"),
@@ -1994,14 +2012,14 @@ public class QP001ReTotal {
                     // Œö”ï‚Q¿‹Šz‚ğ0‚Æ‚·‚é
                     tmap.put("701034", "0");
                     // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                    patientState.setKohiSelfPayUse(getKohiType(2),
+                    patientState.setKohiSelfPayUse(getKohiKey(2),
                             toInt(tmap, "701035"));
 
                 } else {
                     tmap.put("701035", String.valueOf(selfPay));
                     sub(tmap, "701034", new String[] { "701034", "701035" });
                     // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                    patientState.setKohiSelfPayUse(getKohiType(2), selfPay);
+                    patientState.setKohiSelfPayUse(getKohiKey(2), selfPay);
                 }
 
                 // ¿‹Šz‚©‚ç—˜—pÒ•‰’SŠz‚ğ·‚µˆø‚­
@@ -2011,7 +2029,7 @@ public class QP001ReTotal {
 
         // Œö”ï‚R‚Ì–{l•‰’SŠz‚ğæ“¾
         if (toInt(tmap, "701037") != 0) {
-            selfPay = patientState.getKohiSelfPay(getKohiType(3), 1);
+            selfPay = patientState.getKohiSelfPay(getKohiKey(3), 1);
             if (selfPay != 0) {
                 selfPay = QP001SpecialCase.getApplicationIndividualPayment(
                         toString(tmap, "701001"), toString(tmap, "701006"),
@@ -2025,14 +2043,14 @@ public class QP001ReTotal {
                     // Œö”ï‚R¿‹Šz‚ğ0‚Æ‚·‚é
                     tmap.put("701037", "0");
                     // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                    patientState.setKohiSelfPayUse(getKohiType(3),
+                    patientState.setKohiSelfPayUse(getKohiKey(3),
                             toInt(tmap, "701038"));
 
                 } else {
                     tmap.put("701038", String.valueOf(selfPay));
                     sub(tmap, "701037", new String[] { "701037", "701038" });
                     // g—p‚µ‚½Œö”ï©ŒÈ•‰’SŠz‚ğİ’è‚·‚éB
-                    patientState.setKohiSelfPayUse(getKohiType(3), selfPay);
+                    patientState.setKohiSelfPayUse(getKohiKey(3), selfPay);
                 }
 
                 // ¿‹Šz‚©‚ç—˜—pÒ•‰’SŠz‚ğ·‚µˆø‚­
@@ -2379,6 +2397,44 @@ public class QP001ReTotal {
         }
         return kohiType[kohiNo - 1];
     }
+    
+    private QP001KohiKey getKohiKey(int kohiIndex) {
+        if ((kohiIndex < 1) || (3 < kohiIndex)) {
+            return null;
+        }
+
+        // Šî–{î•ñƒŒƒR[ƒh‚©‚çŒö”ï‚Ì‹‹•t—¦‚ğæ“¾‚·‚é
+        if (base.size() <= 0) {
+            return null;
+        }
+
+        // ‹‹•t—¦‚ª–¢æ“¾‚Ìê‡Aæ“¾Às
+        if (kohiPayerNo[kohiIndex - 1] == null) {
+            initBaseData();
+        }
+        String payerNo = kohiPayerNo[kohiIndex - 1];
+        String recipientNo = kohiRecipientNo[kohiIndex - 1];
+        return getKohiKey(payerNo, recipientNo);
+    }
+    
+    private QP001KohiKey getKohiKey(String payerNo, String recipientNo) {
+        if (!ACTextUtilities.isNullText(payerNo)) {
+            String kohiLawNo = "";
+            String insurerId = "";
+            if (payerNo.length() >= 2) {
+                kohiLawNo = payerNo.substring(0, 2);
+            }
+            if (payerNo.length() >= 3) {
+                insurerId = payerNo.substring(2);
+            }
+            Map map = new VRHashMap();
+            map.put("KOHI_LAW_NO", kohiLawNo);
+            map.put("INSURER_ID", insurerId);
+            map.put("KOHI_RECIPIENT_NO", recipientNo);
+            return new QP001KohiKey(map);
+        }
+        return null;
+    }
 
     private void initBaseData() {
         VRMap map = (VRMap) base.get(0);
@@ -2391,6 +2447,14 @@ public class QP001ReTotal {
         kohiType[0] = toString(map, "201058");
         kohiType[1] = toString(map, "201059");
         kohiType[2] = toString(map, "201060");
+        
+        kohiPayerNo[0] = toString(map, "201007");
+        kohiPayerNo[1] = toString(map, "201009");
+        kohiPayerNo[2] = toString(map, "201011");
+        
+        kohiRecipientNo[0] = toString(map, "201008");
+        kohiRecipientNo[1] = toString(map, "201010");
+        kohiRecipientNo[2] = toString(map, "201012");
     }
 
     /**

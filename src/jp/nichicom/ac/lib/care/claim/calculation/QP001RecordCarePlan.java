@@ -791,8 +791,13 @@ public class QP001RecordCarePlan extends QP001RecordAbstract {
                 if((list != null) && (list.size() != 0)){
                     VRMap kohi = (VRMap)list.get(0);
                     set_1001019(String.valueOf(kohi.get("KOHI_TYPE")));
-                    set_1001008(patientState.getKohiData(get_1001019(),"KOHI_PAYER_NO",1));
-                    set_1001009(patientState.getKohiData(get_1001019(),"KOHI_RECIPIENT_NO",1));
+// 2015/5/12 [Yoichiro Kamei] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
+//                    set_1001008(patientState.getKohiData(get_1001019(),"KOHI_PAYER_NO",1));
+//                    set_1001009(patientState.getKohiData(get_1001019(),"KOHI_RECIPIENT_NO",1));
+                    QP001KohiKey kohiKey = new QP001KohiKey(kohi);
+                    set_1001008(patientState.getKohiData(kohiKey,"KOHI_PAYER_NO",1));
+                    set_1001009(patientState.getKohiData(kohiKey,"KOHI_RECIPIENT_NO",1));
+// 2015/5/12 [Yoichiro Kamei] mod - end
                 }
             }
 

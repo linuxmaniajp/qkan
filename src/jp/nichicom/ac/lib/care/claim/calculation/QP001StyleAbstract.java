@@ -30,6 +30,7 @@
 package jp.nichicom.ac.lib.care.claim.calculation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -273,7 +274,11 @@ public abstract class QP001StyleAbstract {
             
             // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
             if (detail.isSelfPaymentNumberAddRecord()) {
-            	detailAdd.put(detail.get_301021() + "_2", detail);
+                if (detail instanceof QP001RecordDetailJushotiTokurei) {
+                    detailAdd.put(detail.get_301021() + "_2_jusho", detail);
+                } else {
+                    detailAdd.put(detail.get_301021() + "_2", detail);
+                }
             }
             // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
         }
@@ -288,7 +293,7 @@ public abstract class QP001StyleAbstract {
     
     public Map<String, QP001RecordDiagnosis> commitTreatmentImprovement(
             VRMap detailMap, Map<String, QP001RecordDiagnosis> diagnosisMap, 
-            QP001PatientState patientState, String[] kohiTypes,
+            QP001PatientState patientState, QP001KohiKey[] kohiTypes,
             VRMap styles,VRMap planUnitMap) throws Exception {
         
         Map<String, QP001RecordDiagnosis> diagnosisResult = new TreeMap<String, QP001RecordDiagnosis>();
@@ -502,17 +507,31 @@ public abstract class QP001StyleAbstract {
         //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - start 老健の一部公費対象の対応
         //公費1～3に老健の一部公費が含まれている場合
         //合計単位数＜公費1＋2＋3　の場合最後の公費で単位数を調整する
-        Iterator itKohi = target.getKohiList().keySet().iterator();
+        
+// 2015/5/12 [Yoichiro Kamei] mod - begin 公費関連見直し
+//        Iterator itKohi = target.getKohiList().keySet().iterator();
         String[] kohiTypes = new String[3];
-        int count = 0;
-        while(itKohi.hasNext()) {
-            Object kohiKey = itKohi.next();
-            Map kohiData = (Map)target.getKohiList().get(kohiKey);
-            kohiTypes[count] = ACCastUtilities.toString(kohiData.get("KOHI_TYPE"));
-            count++;
-            if (count > kohiTypes.length - 1)
+//        int count = 0;
+//        while(itKohi.hasNext()) {
+//            Object kohiKey = itKohi.next();
+//            Map kohiData = (Map)target.getKohiList().get(kohiKey);
+//            kohiTypes[count] = ACCastUtilities.toString(kohiData.get("KOHI_TYPE"));
+//            count++;
+//            if (count > kohiTypes.length - 1)
+//                break;
+//        }
+        List<QP001KohiKey> kohiKeyList = new ArrayList(target.getKohiList().keySet());
+        //公費優先順に並び替え
+        Collections.sort(kohiKeyList);
+        int index = 0;
+        for (QP001KohiKey kohiKey : kohiKeyList) {
+            kohiTypes[index++] = kohiKey.getKohiType();
+            //３つまで
+            if (index == kohiTypes.length) {
                 break;
+            }
         }
+// 2015/5/12 [Yoichiro Kamei] mod - end
         String systemServiceKindDetail = ACCastUtilities.toString(target.get_301021());
         if (CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, kohiTypes[0]) ||
             CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, kohiTypes[1]) ||
@@ -621,60 +640,17 @@ public abstract class QP001StyleAbstract {
                 if (selfPay == 0) {
                     continue;
                 }
+                stackedSelfUnit += adjustSelfPaymentNumberAddRecord(patientState, detail, selfPay);
+            }
+            if (detailAdd.containsKey(systemServiceKind + "_2_jusho")) {
+                detail = detailAdd.get(systemServiceKind + "_2_jusho");
                 
-                SelfPaymentNumberCalcurater selfPaymentNumberCalcurater = patientState.getSelfPaymentNumberCalcurater();
-                String providerId = detail.get_301004();
-                selfPaymentNumberCalcurater.parseServiceCode(detail.getSelfPaymentNumberAddCode(), providerId, selfPay);
-                int unit = selfPaymentNumberCalcurater.getSelfPayUnit();
-                int limitInNumber = selfPaymentNumberCalcurater.getLimitInNumber();
-                int reductedUnit = selfPaymentNumberCalcurater.getReductedUnit();
-                stackedSelfUnit += unit;
-                
-                //回数を区分支給限度内としての回数に設定
-                detail.set_301010(limitInNumber);
-                
-                //公費回数(上記回数時点の公費適用日数・回数）
-
-                //公費1対象日数・回数2桁
-                detail.set_301011(detail.getKohiCountAtTime(detail.get_301023(), limitInNumber));
-                
-                //公費2対象日数・回数2桁
-                detail.set_301012(detail.getKohiCountAtTime(detail.get_301024(), limitInNumber));
-                
-                //公費3対象日数・回数2桁
-                detail.set_301013(detail.getKohiCountAtTime(detail.get_301025(), limitInNumber));
-                
-                //公費回数の調整
-                
-                //公費1対象日数・回数2桁
-                if (detail.get_301010() < detail.get_301011()) {
-                    detail.set_301011(detail.get_301010());
+                selfPay = getSelfpay(styles, patientState, planUnitMap, detail, serviceUnit, selfPay);
+                //自己負担が発生していない場合は処理終了
+                if (selfPay == 0) {
+                    continue;
                 }
-                //公費2対象日数・回数2桁
-                if (detail.get_301010() < detail.get_301012()) {
-                    detail.set_301012(detail.get_301010());
-                }
-                //公費3対象日数・回数2桁
-                if (detail.get_301010() < detail.get_301013()) {
-                    detail.set_301013(detail.get_301010());
-                }
- 
-                //単位数
-                detail.set_301009(reductedUnit);
-                
-                //サービス単位数
-                detail.set_301014(detail.get_301009() * detail.get_301010());
-                
-                //公費1対象サービス単位数6桁
-                detail.set_301015(detail.get_301009() * detail.get_301011());
-                //公費2対象サービス単位数6桁
-                detail.set_301016(detail.get_301009() * detail.get_301012());
-                //公費3対象サービス単位数6桁
-                detail.set_301017(detail.get_301009() * detail.get_301013());
-
-                
-                //引いた分を全額自己負担へ
-                patientState.putAddSelfpay(detail.get_301007(), unit);            
+                stackedSelfUnit += adjustSelfPaymentNumberAddRecord(patientState, detail, selfPay);
             }
             // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
             
@@ -701,6 +677,71 @@ public abstract class QP001StyleAbstract {
             
         }
     }
+    
+ // [H27.4改正対応][Yoichiro Kamei] 2015/5/22 add - begin サービス提供体制加算の自己負担対応
+    private int adjustSelfPaymentNumberAddRecord(QP001PatientState patientState, QP001RecordDetail detail, int selfPay) throws Exception {
+        
+        SelfPaymentNumberCalcurater calc = patientState.getSelfPaymentNumberCalcurater();
+        String providerId = detail.get_301004();
+        if (detail instanceof QP001RecordDetailJushotiTokurei) {
+            calc.parseServiceCodeForSeikyuJushotiTokurei(detail.getSelfPaymentNumberAddCode(), providerId, selfPay, patientState);
+        } else {
+            calc.parseServiceCodeForSeikyu(detail.getSelfPaymentNumberAddCode(), providerId, selfPay, patientState);
+        }
+        
+        int unit = calc.getSelfPayUnit();
+        int limitInNumber = calc.getLimitInNumber();
+        int reductedUnit = calc.getReductedUnit();
+        
+        //回数を区分支給限度内としての回数に設定
+        detail.set_301010(limitInNumber);
+        
+        //公費回数(上記回数時点の公費適用日数・回数）
+
+        //公費1対象日数・回数2桁
+        detail.set_301011(detail.getKohiCountAtTime(detail.get_301023(), limitInNumber));
+        
+        //公費2対象日数・回数2桁
+        detail.set_301012(detail.getKohiCountAtTime(detail.get_301024(), limitInNumber));
+        
+        //公費3対象日数・回数2桁
+        detail.set_301013(detail.getKohiCountAtTime(detail.get_301025(), limitInNumber));
+        
+        //公費回数の調整
+        
+        //公費1対象日数・回数2桁
+        if (detail.get_301010() < detail.get_301011()) {
+            detail.set_301011(detail.get_301010());
+        }
+        //公費2対象日数・回数2桁
+        if (detail.get_301010() < detail.get_301012()) {
+            detail.set_301012(detail.get_301010());
+        }
+        //公費3対象日数・回数2桁
+        if (detail.get_301010() < detail.get_301013()) {
+            detail.set_301013(detail.get_301010());
+        }
+
+        //単位数
+        detail.set_301009(reductedUnit);
+        
+        //サービス単位数
+        detail.set_301014(detail.get_301009() * detail.get_301010());
+        
+        //公費1対象サービス単位数6桁
+        detail.set_301015(detail.get_301009() * detail.get_301011());
+        //公費2対象サービス単位数6桁
+        detail.set_301016(detail.get_301009() * detail.get_301012());
+        //公費3対象サービス単位数6桁
+        detail.set_301017(detail.get_301009() * detail.get_301013());
+
+        
+        //引いた分を全額自己負担へ
+        patientState.putAddSelfpay(detail.get_301007(), unit);   
+        
+        return unit;
+    }
+ // [H27.4改正対応][Yoichiro Kamei] 2015/5/22 add - end
     
     private void removeSelfPay(QP001RecordDetail detail, int unit) throws Exception {
         //サービス単位数を引く
@@ -860,6 +901,13 @@ public abstract class QP001StyleAbstract {
                 }
                 break;
             }
+//[CCCX:2815][Yoichiro Kamei] add - begin 回数調整でゼロ単位となった分を削除
+            if (detail.isSelfPaymentNumberAddRecord()) {
+                if (detail.get_301014() <= 0) {
+                    removeTarget.add(key);
+                }
+            }
+//[CCCX:2815][Yoichiro Kamei] add - end
         }
         
         for (Object key : removeTarget) {
@@ -871,7 +919,7 @@ public abstract class QP001StyleAbstract {
     //[ID:0000721][Shin Fujihara] 2012/04 add start 2012年度対応
     //看取り・ターミナル加算の摘要欄転記を考慮しながらの明細確定処理
     //様式第六、第六の三、第八、第九で使用
-    public void commitDetails(VRMap detailMap, String[] kohiTypes, QP001PatientState patientState) throws Exception {
+    public void commitDetails(VRMap detailMap, QP001KohiKey[] kohiTypes, QP001PatientState patientState) throws Exception {
         
         Map<String, String> mitoriTekiyo = new HashMap<String, String>();
         Map<String, List<QP001RecordDetail>> copyTarget = new HashMap<String, List<QP001RecordDetail>>();
@@ -944,4 +992,44 @@ public abstract class QP001StyleAbstract {
     }
     //[ID:0000721][Shin Fujihara] 2012/04 add end 2012年度対応
 
+// 2015/5/12 [Yoichiro Kamei] add - begin 公費関連見直し
+    //公費優先順に従い、適用対象の公費を３つまで取得
+    protected QP001KohiKey[] getKohiApplyArray(List<Map> recordsList) {
+        QP001KohiKey[] kohiTypes = new QP001KohiKey[3];
+        Map<QP001KohiKey, Object> kohiListAll = new HashMap<QP001KohiKey, Object>();
+        
+        for (Map records : recordsList) {
+            for (Object record : records.values()) {
+                //明細情報レコード
+                if (record instanceof QP001RecordDetail) {
+                    Map kohiListMap = ((QP001RecordDetail) record).getKohiList();
+                    kohiListAll.putAll(kohiListMap);
+                }
+                //特定入所者レコード
+                else if (record instanceof QP001RecordNursing) {
+                    Map kohiListMap = ((QP001RecordNursing) record).getKohiList();
+                    kohiListAll.putAll(kohiListMap);
+                }
+                //特定診療費レコード
+                else if (record instanceof QP001RecordDiagnosis) {
+                    Map kohiListMap = ((QP001RecordDiagnosis) record).getKohiList();
+                    kohiListAll.putAll(kohiListMap);
+                }
+            }
+        }
+        
+        List<QP001KohiKey> kohiKeyList = new ArrayList(kohiListAll.keySet());
+        //公費優先順に並び替え
+        Collections.sort(kohiKeyList);
+        int index = 0;
+        for (QP001KohiKey kohiKey : kohiKeyList) {
+            kohiTypes[index++] = kohiKey;
+            //３つまで
+            if (index == kohiTypes.length) {
+                break;
+            }
+        }
+        return kohiTypes;
+    }
+// 2015/5/12 [Yoichiro Kamei] add - end
 }

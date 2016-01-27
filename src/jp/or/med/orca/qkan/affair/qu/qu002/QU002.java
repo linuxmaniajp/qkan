@@ -4098,6 +4098,7 @@ public class QU002 extends QU002Event {
 						param.setData("LIMIT_JURAIGATA1",null);
 						param.setData("LIMIT_JURAIGATA2",null);
 						param.setData("LIMIT_TASHOSHITSU",null);
+						param.setData("LIMIT_TASHOSHITSU2",null);
 					}
 
 					// 施設履歴（PATIENT_SHISETSU_HISTORY）に画面上のデータ（shisetsuHistoryList）を登録する。

@@ -22,15 +22,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001PatientState;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001SpecialCase;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
@@ -55,7 +59,7 @@ public class SelfPaymentNumberCalcurater {
 	
 	//区分支給限度の管理を行わないサービス種類
 	private static List<String> taishogaiKindList = Arrays.asList(new String[]{
-		"31", "32", "33", "34", "35", "36", "37", "43", "51", "52", "53", "54"
+		"31", "32", "34", "36", "37", "43", "51", "52", "53", "54"
 	});
 	
 	//このクラスで追加した単位数を格納するKEY文字列
@@ -76,6 +80,12 @@ public class SelfPaymentNumberCalcurater {
 	
 	//対象サービスコードの単位数
 	private int reductedUnit = 0;
+	
+	//回数の計上タイプ
+	private enum KeijoType {ALL,                  //すべて計上
+	                        ONLY_JUSHOTI_TOKUREI, //住所地特例分のみ計上
+	                        NOT_JUSHOTI_TOKUREI   //住所地特例でない分のみ計上
+	};
 	
 	/**
 	 * コンストラクタ。
@@ -194,57 +204,88 @@ public class SelfPaymentNumberCalcurater {
      * @param limitOverUnit 超過分の単位数
      */
 	public void parseServiceCode(Map<String, Object> serviceCode, String targetProviderId, int limitOverUnit) throws Exception {
-		
-		String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
-		String serviceCodeItem = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"));
-		int serviceUnit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"));
-		int reductedUnit = calcurater.getReductedUnit(targetProviderId, serviceCode, serviceUnit);
-		
-		//積み上げ対象となるサービスの総単位数
-		int totalUnit = parseServiceList(serviceCode, targetProviderId);
-		
-		// サービスを時系列でソートする
-		Collections.sort(this.targetServiceList, new ServiceDateTimeLineComparator());
-		
-		//限度額オーバーを判定する単位数
-		int limitPoint = totalUnit - limitOverUnit;
-		
-		int limitInNum = 0; //限度内としての回数
-		int limitOverNum = 0; //限度外としての回数
-		int tumiageUnit = 0; //積み上げ中の単位数
-		boolean overFlg = false;
-		if (limitPoint == 0) {
-			//限度額を使い切っているのでオーバーとみなす
-			overFlg = true;
-		}
-		for (Map<String, Object> service : targetServiceList) {
-			//単位数の積み上げ
-			int unit = ACCastUtilities.toInt(service.get(ADD_UNIT_NAME));
-			
-			tumiageUnit += unit;
-			
-			List<Map<String, Object>> codes = calcurater.getServiceCodes((VRMap) service);
-			if (isExistsCode(codes, serviceCodeKind, serviceCodeItem)) {
-				//対象のサービスが算定されている場合、限度内、限度外の回数を計上
-				if (overFlg) {
-					//すでにオーバーしている場合
-					limitOverNum++;
-				} else {
-					//オーバーしていないか、このサービスでオーバーする場合
-					limitInNum++;
-				}
-			}
-			//積み上げた結果が基準単位数をオーバーしていた場合（等しい場合も限度額を使い切ったので、オーバーとする）
-			if (tumiageUnit >= limitPoint) {
-				overFlg = true;
-			}
-		}
-		
-		this.reductedUnit = reductedUnit;
-		this.selfPayUnit = reductedUnit * limitOverNum;
-		this.limitInNumber = limitInNum;
+	    parseServiceCodeImpl(serviceCode, targetProviderId, limitOverUnit, KeijoType.ALL, null);
 	}
 	
+    /**
+     * 対象のサービスコードについて単位数の積み上げ処理を行う。（請求明細用）（住所地特例ではない分）
+     * 
+     * @param serviceCode M_SERVICE_CODEのレコードが格納されたマップ
+     * @param targetProviderId 事業所コード
+     * @param limitOverUnit 超過分の単位数
+     * @param patientState QP001PatientState
+     */
+    public void parseServiceCodeForSeikyu(Map<String, Object> serviceCode, String targetProviderId, int limitOverUnit, QP001PatientState patientState) throws Exception {
+        parseServiceCodeImpl(serviceCode, targetProviderId, limitOverUnit, KeijoType.NOT_JUSHOTI_TOKUREI, patientState);
+    }
+    
+    /**
+     * 対象のサービスコードについて単位数の積み上げ処理を行う。（請求明細用）（住所地特例の対象分）
+     * 
+     * @param serviceCode M_SERVICE_CODEのレコードが格納されたマップ
+     * @param targetProviderId 事業所コード
+     * @param limitOverUnit 超過分の単位数
+     * @param patientState QP001PatientState
+     */
+    public void parseServiceCodeForSeikyuJushotiTokurei(Map<String, Object> serviceCode, String targetProviderId, int limitOverUnit, QP001PatientState patientState) throws Exception {
+        parseServiceCodeImpl(serviceCode, targetProviderId, limitOverUnit, KeijoType.ONLY_JUSHOTI_TOKUREI, patientState);
+    }
+	
+    private void parseServiceCodeImpl(Map<String, Object> serviceCode, String targetProviderId, int limitOverUnit, KeijoType keijoType, QP001PatientState patientState) throws Exception {
+        String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
+        String serviceCodeItem = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"));
+        int serviceUnit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"));
+        int reductedUnit = calcurater.getReductedUnit(targetProviderId, serviceCode, serviceUnit);
+        Set<Date> keijosumiDates = new HashSet<Date>();
+        
+        //積み上げ対象となるサービスの総単位数
+        int totalUnit = parseServiceList(serviceCode, targetProviderId);
+        
+        // サービスを時系列でソートする
+        Collections.sort(this.targetServiceList, new ServiceDateTimeLineComparator());
+        
+        //限度額オーバーを判定する単位数
+        int limitPoint = totalUnit - limitOverUnit;
+        
+        int limitInNum = 0; //限度内としての回数
+        int limitOverNum = 0; //限度外としての回数
+        int tumiageUnit = 0; //積み上げ中の単位数
+        boolean overFlg = false;
+        if (limitPoint == 0) {
+            //限度額を使い切っているのでオーバーとみなす
+            overFlg = true;
+        }
+        for (Map<String, Object> service : targetServiceList) {
+            //単位数の積み上げ
+            int unit = ACCastUtilities.toInt(service.get(ADD_UNIT_NAME));
+            
+            tumiageUnit += unit;
+            
+            List<Map<String, Object>> codes = calcurater.getServiceCodes((VRMap) service);
+            //サービスに対象の加算（サービス提供体制強化加算）が付いていて、回数を計上する場合
+            if (isExistsCode(codes, serviceCodeKind, serviceCodeItem)
+                    && isKeijo(service, serviceCode, keijosumiDates)
+                    && isKeijoType(service, serviceCode, keijoType, patientState)) {
+                //限度内、限度外の回数を計上
+                if (overFlg) {
+                    //すでにオーバーしている場合
+                    limitOverNum++;
+                } else {
+                    //オーバーしていないか、このサービスでオーバーする場合
+                    limitInNum++;
+                }
+            }
+            //積み上げた結果が基準単位数をオーバーしていた場合（等しい場合も限度額を使い切ったので、オーバーとする）
+            if (tumiageUnit >= limitPoint) {
+                overFlg = true;
+            }
+        }
+        
+        this.reductedUnit = reductedUnit;
+        this.selfPayUnit = reductedUnit * limitOverNum;
+        this.limitInNumber = limitInNum;
+    }
+    
 	//codesで指定したサービスのなかに対象のコードが存在するかどうかを返す
 	private boolean isExistsCode(List<Map<String, Object>> codes,  String kind, String item) throws Exception {
 		for (Map<String, Object> code : codes) {
@@ -255,6 +296,50 @@ public class SelfPaymentNumberCalcurater {
 			}
 		}
 		return false;
+	}
+	
+	//回数を計上するかどうかを返す
+	private boolean isKeijo(Map<String, Object> service, Map<String, Object> serviceCode,  Set<Date> keijosumiDates) throws Exception {
+	    Date serviceDate = ACCastUtilities.toDate(service.get("SERVICE_DATE"), null);
+	    int totalGroupingType = ACCastUtilities.toInt(serviceCode.get("TOTAL_GROUPING_TYPE"));
+	    //日単位のコードの場合、既に同じ日に回数を計上していたら計上しない
+	    if (totalGroupingType == 2) { //日単位の加算
+	        //計上済の場合
+	        if (keijosumiDates.contains(serviceDate)) {
+	            return false;
+	        }
+	    }
+	    keijosumiDates.add(serviceDate);
+	    return true;
+	}
+	
+	//回数の計上タイプに応じて、計上するかどうかを返す
+	private boolean isKeijoType(Map<String, Object> service, Map<String, Object> serviceCode, KeijoType keijoType, QP001PatientState patientState) throws Exception {
+        if (keijoType == KeijoType.ALL) {
+            //すべて計上
+            return true;
+        }
+        String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
+        if (!QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(serviceCodeKind)) {
+            //住所地特例対象の地域密着型サービスでなければ、住所地特例に関係ないのですべて計上
+            return true;
+        }
+        //対象日が住所地特例かどうか
+        Date serviceDate = ACCastUtilities.toDate(service.get("SERVICE_DATE"), null);
+        boolean isJushotiTokurei = !ACTextUtilities.isNullText(patientState.getJushotiTokureiInsurerId(serviceDate));
+	    if (keijoType == KeijoType.NOT_JUSHOTI_TOKUREI) {
+	        //住所地特例でなければ、計上
+	        if (!isJushotiTokurei) {
+                return true;
+	        }
+	    }
+	    if (keijoType == KeijoType.ONLY_JUSHOTI_TOKUREI) {
+	        //住所地特例であれば、計上
+	        if (isJushotiTokurei) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 	
 	// 全体のサービスリストから積み上げ対象となるサービスのリストに移す。

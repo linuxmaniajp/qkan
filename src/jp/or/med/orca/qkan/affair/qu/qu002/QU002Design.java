@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2015/04/15  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2015/06/08  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -488,6 +488,12 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField shisetsuInfoTasyoRoomLimitMoneyText;
 
   private ACLabel shisetsuInfoTasyoRoomLimitMoneyLabel;
+
+  private ACLabelContainer shisetsuInfoTasyoRoomLimitMoneyContena2;
+
+  private ACTextField shisetsuInfoTasyoRoomLimitMoneyText2;
+
+  private ACLabel shisetsuInfoTasyoRoomLimitMoneyLabel2;
 
   private ACPanel shisetsuInfRigthtPanel;
 
@@ -4382,15 +4388,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室負担限度額・コンテナを取得します。
-   * @return 多床室負担限度額・コンテナ
+   * 多床室特養等負担限度額・コンテナを取得します。
+   * @return 多床室特養等負担限度額・コンテナ
    */
   public ACLabelContainer getShisetsuInfoTasyoRoomLimitMoneyContena(){
     if(shisetsuInfoTasyoRoomLimitMoneyContena==null){
 
       shisetsuInfoTasyoRoomLimitMoneyContena = new ACLabelContainer();
 
-      shisetsuInfoTasyoRoomLimitMoneyContena.setText("多床室");
+      shisetsuInfoTasyoRoomLimitMoneyContena.setText("多床室(特養等)");
 
       addShisetsuInfoTasyoRoomLimitMoneyContena();
     }
@@ -4399,15 +4405,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室負担限度額・テキストを取得します。
-   * @return 多床室負担限度額・テキスト
+   * 多床室特養等負担限度額・テキストを取得します。
+   * @return 多床室特養等負担限度額・テキスト
    */
   public ACTextField getShisetsuInfoTasyoRoomLimitMoneyText(){
     if(shisetsuInfoTasyoRoomLimitMoneyText==null){
 
       shisetsuInfoTasyoRoomLimitMoneyText = new ACTextField();
 
-      shisetsuInfoTasyoRoomLimitMoneyText.setBindPath("LIMIT_TASHOSHITSU");
+      shisetsuInfoTasyoRoomLimitMoneyText.setBindPath("LIMIT_TASHOSHITSU2");
 
       shisetsuInfoTasyoRoomLimitMoneyText.setColumns(4);
 
@@ -4426,8 +4432,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室負担限度額・ラベルを取得します。
-   * @return 多床室負担限度額・ラベル
+   * 多床室特養等負担限度額・ラベルを取得します。
+   * @return 多床室特養等負担限度額・ラベル
    */
   public ACLabel getShisetsuInfoTasyoRoomLimitMoneyLabel(){
     if(shisetsuInfoTasyoRoomLimitMoneyLabel==null){
@@ -4439,6 +4445,67 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
       addShisetsuInfoTasyoRoomLimitMoneyLabel();
     }
     return shisetsuInfoTasyoRoomLimitMoneyLabel;
+
+  }
+
+  /**
+   * 多床室老健・療養等負担限度額・コンテナを取得します。
+   * @return 多床室老健・療養等負担限度額・コンテナ
+   */
+  public ACLabelContainer getShisetsuInfoTasyoRoomLimitMoneyContena2(){
+    if(shisetsuInfoTasyoRoomLimitMoneyContena2==null){
+
+      shisetsuInfoTasyoRoomLimitMoneyContena2 = new ACLabelContainer();
+
+      shisetsuInfoTasyoRoomLimitMoneyContena2.setText("多床室(老健・療養等)");
+
+      addShisetsuInfoTasyoRoomLimitMoneyContena2();
+    }
+    return shisetsuInfoTasyoRoomLimitMoneyContena2;
+
+  }
+
+  /**
+   * 多床室老健・療養等負担限度額・テキストを取得します。
+   * @return 多床室老健・療養等負担限度額・テキスト
+   */
+  public ACTextField getShisetsuInfoTasyoRoomLimitMoneyText2(){
+    if(shisetsuInfoTasyoRoomLimitMoneyText2==null){
+
+      shisetsuInfoTasyoRoomLimitMoneyText2 = new ACTextField();
+
+      shisetsuInfoTasyoRoomLimitMoneyText2.setBindPath("LIMIT_TASHOSHITSU");
+
+      shisetsuInfoTasyoRoomLimitMoneyText2.setColumns(4);
+
+      shisetsuInfoTasyoRoomLimitMoneyText2.setCharType(VRCharType.ONLY_DIGIT);
+
+      shisetsuInfoTasyoRoomLimitMoneyText2.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      shisetsuInfoTasyoRoomLimitMoneyText2.setIMEMode(InputSubset.LATIN);
+
+      shisetsuInfoTasyoRoomLimitMoneyText2.setMaxLength(4);
+
+      addShisetsuInfoTasyoRoomLimitMoneyText2();
+    }
+    return shisetsuInfoTasyoRoomLimitMoneyText2;
+
+  }
+
+  /**
+   * 多床室老健・療養等負担限度額・ラベルを取得します。
+   * @return 多床室老健・療養等負担限度額・ラベル
+   */
+  public ACLabel getShisetsuInfoTasyoRoomLimitMoneyLabel2(){
+    if(shisetsuInfoTasyoRoomLimitMoneyLabel2==null){
+
+      shisetsuInfoTasyoRoomLimitMoneyLabel2 = new ACLabel();
+
+      shisetsuInfoTasyoRoomLimitMoneyLabel2.setText("（円）");
+
+      addShisetsuInfoTasyoRoomLimitMoneyLabel2();
+    }
+    return shisetsuInfoTasyoRoomLimitMoneyLabel2;
 
   }
 
@@ -6956,7 +7023,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     shisetsuInfoSyokuhiGroup.add(getShisetsuInfoNormalRoomLimitMoneyContena2(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoTasyoRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE_RETURN);
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoTasyoRoomLimitMoneyContena(), VRLayout.FLOW_INSETLINE);
+
+    shisetsuInfoSyokuhiGroup.add(getShisetsuInfoTasyoRoomLimitMoneyContena2(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -7107,7 +7176,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室負担限度額・コンテナに内部項目を追加します。
+   * 多床室特養等負担限度額・コンテナに内部項目を追加します。
    */
   protected void addShisetsuInfoTasyoRoomLimitMoneyContena(){
 
@@ -7118,16 +7187,41 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室負担限度額・テキストに内部項目を追加します。
+   * 多床室特養等負担限度額・テキストに内部項目を追加します。
    */
   protected void addShisetsuInfoTasyoRoomLimitMoneyText(){
 
   }
 
   /**
-   * 多床室負担限度額・ラベルに内部項目を追加します。
+   * 多床室特養等負担限度額・ラベルに内部項目を追加します。
    */
   protected void addShisetsuInfoTasyoRoomLimitMoneyLabel(){
+
+  }
+
+  /**
+   * 多床室老健・療養等負担限度額・コンテナに内部項目を追加します。
+   */
+  protected void addShisetsuInfoTasyoRoomLimitMoneyContena2(){
+
+    shisetsuInfoTasyoRoomLimitMoneyContena2.add(getShisetsuInfoTasyoRoomLimitMoneyText2(), null);
+
+    shisetsuInfoTasyoRoomLimitMoneyContena2.add(getShisetsuInfoTasyoRoomLimitMoneyLabel2(), null);
+
+  }
+
+  /**
+   * 多床室老健・療養等負担限度額・テキストに内部項目を追加します。
+   */
+  protected void addShisetsuInfoTasyoRoomLimitMoneyText2(){
+
+  }
+
+  /**
+   * 多床室老健・療養等負担限度額・ラベルに内部項目を追加します。
+   */
+  protected void addShisetsuInfoTasyoRoomLimitMoneyLabel2(){
 
   }
 

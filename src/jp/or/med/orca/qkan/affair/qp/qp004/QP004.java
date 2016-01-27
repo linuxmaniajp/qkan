@@ -1753,9 +1753,14 @@ public class QP004 extends QP004Event {
 		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 286
 				|| ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 287) {
 			
-			if (_301018.length() != 1) {
+			// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/5/7 edit - begin d“x—Ã—{ŠÇ—‰ÁZ‚ÍŠ„ˆø—¦‚ª‚È‚¢‚Ì‚Å“E—v1•¶š‚Å‚È‚¯‚ê‚Î”²‚¯‚é
+			//if (_301018.length() != 1) {
+			//	return claimDataMap;
+			//}
+			if (_301018.length() != 1 && ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 286) {
 				return claimDataMap;
 			}
+			// [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/5/7 edit - end
 			
 			//‰æ–Ê•\¦—p‚É’l‚ğ•ÏŠ·
 			switch(_301018.charAt(0)) {
@@ -1791,6 +1796,7 @@ public class QP004 extends QP004Event {
 				break;
 			}
 		} else {
+			//CODE_ID=288(—Ã—{{İ‚ÌŠ³Òó‘Ô)‚Ìê‡
 			if (_301018.length() > 2) {
 				return claimDataMap;
 			}

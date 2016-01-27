@@ -412,7 +412,8 @@ public class QP001SpecialCase {
      * 3:ƒ†ƒjƒbƒgŒ^€ŒÂº<br>
      * 4:]—ˆŒ^ŒÂº(“Á—{“™)<br>
      * 5:]—ˆŒ^ŒÂº(˜VŒ’E—Ã—{“™)<br>
-     * 6:‘½°º
+     * 6:‘½°º(“Á—{“™)<br>
+     * 7:‘½°º(˜VŒ’E—Ã—{“™)<br>H27.8‰ü³‘Î‰‚É‚æ‚è’Ç‰Á
      * @throws Exception
      */
     public static int getServiceKind(VRMap serviceCode) throws Exception {
@@ -442,7 +443,15 @@ public class QP001SpecialCase {
                 result = 5;
                 break;
             case 3: // 3-‘½°º
-                result = 6;
+                result = 6;	//i˜VŒ’E—Ã—{“™j
+                // 2015/6/8 [Shinobu Hitaka] add - begin H27.8‰ü³‘Î‰@‘½°º(“Á—{“™‚Æ˜VŒ’E—Ã—{“™)‚É•ª‚¯‚Ä•Û
+                // 51:‰îŒì˜Vl•Ÿƒ{İ 21:’ZŠú“üŠ¶Šˆ‰îŒì 54:’nˆæ–§’…Œ^‰îŒì˜Vl•Ÿƒ{İ“üŠÒ¶Šˆ‰îŒì 24:i—\j’ZŠú“üŠ¶Šˆ‰îŒì
+                String tmpServiceCode = ACCastUtilities.toString(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL"));
+                if ("15111".equals(tmpServiceCode) || "12111".equals(tmpServiceCode) || 
+                    "15411".equals(tmpServiceCode) || "12411".equals(tmpServiceCode)) {
+                    result = 7;	//i“Á—{“™j
+                }
+                // 2015/6/8 [Shinobu Hitaka] add - end
                 break;
             case 4: // 4-ƒ†ƒjƒbƒgŒ^ŒÂº
                 result = 2;
@@ -590,7 +599,7 @@ public class QP001SpecialCase {
      * @return g—p‰Â”\‚È©ŒÈ•‰’SŠz
      * @throws Exception
      */
-    public static int convertSelfPay(String discriminationNo,String insurerdNo,int selfPay,String kohi,int kohiCost) throws Exception {
+    public static int convertSelfPay(String discriminationNo,String insurerdNo,int selfPay,QP001KohiKey kohi,int kohiCost) throws Exception {
         //—l®‘æ”ªA‘æ‹ãA‘æ\‚Å‚È‚¯‚ê‚ÎŒö”ï©ŒÈ•‰’SŠz‚ğ•Ô‹p‚·‚éB
         if(!isShisetsuDiscriminationNo(discriminationNo)){
             return selfPay;
@@ -631,7 +640,7 @@ public class QP001SpecialCase {
          * •ÊŒ‚É‚È‚é‚©‚Æv‚¢‚Ü‚·‚ªA¶•Ûó‹‹Ò‚Å“Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï‚ª
          * ‚©‚©‚ç‚È‚¢ê‡‚É‚Â‚¢‚Ä‚ÍãŒÀ‚ğİ‚¯‚È‚¢‚Æ‚¢‚¤–‚Å‚¨Šè‚¢‚µ‚Ü‚·B 
          */
-        if((kohi != null) && (kohi.startsWith("12"))){
+        if((kohi != null) && (kohi.getKohiType().startsWith("12"))){
         	//Œö”ï•¹—pó‹‹Ò
         	//“Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï‚ª‚©‚©‚éê‡
         	if(kohiCost > 0){
@@ -2596,10 +2605,16 @@ public class QP001SpecialCase {
         case 5:
             unit = patientState.getShisetsuData("LIMIT_JURAIGATA2");
             break;
-        //‘½°º
+        //‘½°º(˜VŒ’E—Ã—{“™)
         case 6:
             unit = patientState.getShisetsuData("LIMIT_TASHOSHITSU");
             break;
+        //‘½°º(“Á—{“™)
+        case 7:
+            // [H27.8‰ü³‘Î‰][Shinobu Hitaka] 2015/6/8 add - begin ‘½°º(“Á—{“™‚Æ˜VŒ’E—Ã—{“™)‚É•ª‚¯‚Ä•Û
+            unit = patientState.getShisetsuData("LIMIT_TASHOSHITSU2");
+            break;
+            // [H27.8‰ü³‘Î‰][Shinobu Hitaka] 2015/6/8 add - end
         }
         
         return ACCastUtilities.toInt(unit,0);
@@ -3526,5 +3541,40 @@ public class QP001SpecialCase {
         return false;
     }
     //[ID:0000720][Shin Fujihara] 2012/04 add end 2012”N“x‘Î‰
+    
+    
+    // [H27.4‰ü³‘Î‰][Yoichiro Kamei] 2015/4/23 add - begin
+    /**
+     * lˆõ”z’u‹­‰»Œ^‚Å“E—v—“‚Ìˆø‚«Œp‚¬‚ğs‚¤ƒR[ƒh‚©‚Ç‚¤‚©‚ğ•Ô‚µ‚Ü‚·B
+     */
+    public static boolean isKyokagataTekiyoHoldCode(VRMap serviceCode) throws Exception {
+        String systemServiceKindDetail = ACCastUtilities.toString(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL"),"");
+        int codeId = ACCastUtilities.toInt(serviceCode.get("CODE_ID"), 0);
+        int serviceMainFlag = ACCastUtilities.toInt(serviceCode.get("SERVICE_MAIN_FLAG"), 0);
+        int editableFlag = ACCastUtilities.toInt(serviceCode.get("EDITABLE_FLAG"), 0);
+        
+        //‰º‹LƒT[ƒrƒXí—Ş‚Ì‚Æ‚«
+        if (   "15311".equals(systemServiceKindDetail) //‰îŒì—Ã—{Œ^ˆã—Ã{İ_•a‰@
+            || "15312".equals(systemServiceKindDetail) //‰îŒì—Ã—{Œ^ˆã—Ã{İ_f—ÃŠ
+            || "12611".equals(systemServiceKindDetail) //—\–h’ZŠú—Ã—{_•a‰@
+            || "12612".equals(systemServiceKindDetail) //—\–h’ZŠú—Ã—{_f—ÃŠ
+            || "12311".equals(systemServiceKindDetail) //’ZŠú“üŠ—Ã—{‰îŒì_•a‰@
+            || "12312".equals(systemServiceKindDetail) //’ZŠú“üŠ—Ã—{‰îŒì_f—ÃŠ
+         ) {
+            //Š³Ò‚Ìó‘Ô‚ğƒRƒ“ƒ{‚Å‘I‘ğ‚·‚éê‡
+            if (codeId == 288) {
+                return true;
+            }
+            //–{‘Ì•ñV‚Å“E—v—“‚Ì•ÒW‚ª‰Â”\‚Èê‡
+            if (serviceMainFlag == 1 && editableFlag == 1) {
+                //DPCƒR[ƒhAŠ³Ò‚Ìó‘ÔA‘½°º‚Ì•¡”İ’è‚Ìê‡‚È‚Ç
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    // [H27.4‰ü³‘Î‰][Yoichiro Kamei] 2015/4/23 add - end
+    
     
 }

@@ -130,9 +130,12 @@ public class QO004_15111_201504 extends QO004_15111_201504Event {
                     getNormalRoom().setText(cost);
                     break;
                 // ‘½°º
-                case 6:
+                // [H27.8‰ü³‘Î‰][Shinobu Hitaka] 2015/6/9 edit - begin ‘½°º(7:“Á—{“™‚Æ6:˜VŒ’E—Ã—{“™)‚É•ª‚¯‚Ä•Û
+                //case 6:
+                case 7:
                     getTasyouRoom().setText(cost);
                     break;
+                // [H27.8‰ü³‘Î‰][Shinobu Hitaka] 2015/6/9 edit - end
                 }
 
             }

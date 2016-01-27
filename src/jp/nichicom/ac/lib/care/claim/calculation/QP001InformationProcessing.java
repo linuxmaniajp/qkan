@@ -1062,6 +1062,11 @@ public class QP001InformationProcessing {
 
 	    sb.append("SELECT");
 	    sb.append(" CODE_ID");
+// [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - begin
+	    sb.append(" ,SYSTEM_SERVICE_KIND_DETAIL");
+	    sb.append(" ,SERVICE_MAIN_FLAG");
+	    sb.append(" ,EDITABLE_FLAG");
+// [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - end
 	    sb.append(" FROM");
 	    sb.append(" M_SERVICE_CODE");
 	    sb.append(" WHERE");
@@ -1101,6 +1106,13 @@ public class QP001InformationProcessing {
 				return true;
 			}
 			
+// [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - begin
+			//人員配置強化型で摘要欄の引き継ぎを行うコードの場合
+			if (QP001SpecialCase.isKyokagataTekiyoHoldCode(service)) {
+	            setSameDetails(map);
+	            return true;
+			}
+// [H27.4改正対応][Yoichiro Kamei] 2015/4/23 add - end
 		}
 		return false;
 	}
