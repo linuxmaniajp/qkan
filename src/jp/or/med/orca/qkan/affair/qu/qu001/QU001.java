@@ -1529,6 +1529,10 @@ public class QU001 extends QU001Event {
 		int msgFlag = 0;
 		int msgResult = ACMessageBox.RESULT_OK;
 		
+		// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add 対象年月の途中で施設情報（特定入所者）が開始する場合
+		int sameMonthFlag = 0;
+		int afterMonthFlag = 0;
+		
 		// 要介護度の有効期間切れチェック
 		if ((list.size() == 0) || !(QkanCommon.isFullDecisionPatientInsureInfo(getDBManager(), targetDate, patientId))) {
 			// 要介護度情報が取得できなかった場合
@@ -1536,7 +1540,7 @@ public class QU001 extends QU001Event {
 			msgFlag += 1;
 		}
 		
-		// 施設情報の有効期間切れチェック
+		// 施設情報の有効期間切れチェック（対象年月の１日でチェックする）
 		VRMap sqlParam = new VRHashMap();
 		VRBindPathParser.set("PATIENT_ID", sqlParam, ACCastUtilities.toString(patientId));
 		list = getDBManager().executeQuery(getSQL_GET_SHISETSU_HISTORY_ALL(sqlParam));
@@ -1562,6 +1566,17 @@ public class QU001 extends QU001Event {
 					msgFlag -= 2;
 					break;
 				}
+				
+				// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add begin 月途中から開始かをチェック
+				if (ACDateUtilities.getMonth(validStart) == ACDateUtilities.getMonth(targetDate)) {
+					sameMonthFlag = 1;
+				} else if (ACDateUtilities.getMonth(validStart) > ACDateUtilities.getMonth(targetDate)) {
+					afterMonthFlag += 1;
+				}
+				// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add end
+			}
+			if (list.size() == afterMonthFlag) {
+				msgFlag -= 2;
 			}
 		}
 		
@@ -1585,11 +1600,25 @@ public class QU001 extends QU001Event {
 			break;
 			
 		case 2: //施設情報期間切れ
-			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU();
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit begin
+			//msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU();
+			if (sameMonthFlag == 1) {
+				msgResult = QkanMessageList.getInstance().QU001_TSUKITOCHU_SHISETSU();
+			} else {
+				msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU();
+			}
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit end
 			break;
 			
 		case 3: //要介護度期間切れ、かつ施設情報期間切れ
-			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU();
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit begin
+			//msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU();
+			if (sameMonthFlag == 1) {
+				msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_TSUKITOCHU_SHISETSU();
+			} else {
+				msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU();
+			}
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit end
 			break;
 			
 		case 4: //公費情報期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
@@ -1601,11 +1630,25 @@ public class QU001 extends QU001Event {
 			break;
 			
 		case 6: //公費情報期間切れ、かつ施設情報期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
-			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU_AND_KOHI();
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit begin
+			//msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU_AND_KOHI();
+			if (sameMonthFlag == 1) {
+				msgResult = QkanMessageList.getInstance().QU001_TSUKITOCHU_SHISETSU_AND_HAS_NO_KOHI();
+			} else {
+				msgResult = QkanMessageList.getInstance().QU001_HAS_NO_SHISETSU_AND_KOHI();
+			}
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit end
 			break;
 			
 		case 7: //公費情報期間切れ、かつ要介護度期間切れ、かつ施設情報期間切れ [H27.4改正対応][Shinobu Hitaka] 2015/3/12 add
-			msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU_AND_KOHI();
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit begin
+			//msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU_AND_KOHI();
+			if (sameMonthFlag == 1) {
+				msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_TSUKITOCHU_SHISETSU_AND_KOHI();
+			} else {
+				msgResult = QkanMessageList.getInstance().QU001_HAS_NO_YOKAIGODO_AND_SHISETSU_AND_KOHI();
+			}
+			// [CCCX:2846][Shinobu Hitaka] 2015/07/23 edit end
 			break;
 		}
 		

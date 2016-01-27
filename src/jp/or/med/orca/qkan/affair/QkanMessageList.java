@@ -4621,4 +4621,60 @@ public class QkanMessageList {
 
   }
 
+  /**
+   * メッセージ「利用者負担限度額の有効期間が月途中から開始されています。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、施設情報が対象年月の途中から開始されている場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_TSUKITOCHU_SHISETSU() throws Exception{
+
+    return ACMessageBox.show("利用者負担限度額の有効期間が月途中から開始されています。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「要介護度の有効期間が切れているか、登録されていません。＜改行＞有効期間外のサービスは集計できません。＜改行＞新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞利用者負担限度額の有効期間が月途中から開始されています。＜改行＞訂正する場合は、利用者情報詳細画面で修正してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、期間内の要介護度がない、かつ施設情報が対象年月の途中から開始されている場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_YOKAIGODO_AND_TSUKITOCHU_SHISETSU() throws Exception{
+
+    return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が月途中から開始されています。" + ACConstants.LINE_SEPARATOR + "訂正する場合は、利用者情報詳細画面で修正してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「利用者負担限度額の有効期間が月途中から開始されています。＜改行＞月の初日の場合は、利用者情報詳細画面で修正してください。＜改行＞＜改行＞公費の有効期間が前月または今月に切れています。＜改行＞利用者情報詳細画面で公費の有効期間を確認してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、施設情報が対象年月の途中から開始されている、かつ前月・今月に公費の有効期間がきれる場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_TSUKITOCHU_SHISETSU_AND_HAS_NO_KOHI() throws Exception{
+
+    return ACMessageBox.show("利用者負担限度額の有効期間が月途中から開始されています。" + ACConstants.LINE_SEPARATOR + "訂正する場合は、利用者情報詳細画面で修正してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「要介護度の有効期間が切れているか、登録されていません。＜改行＞有効期間外のサービスは集計できません。＜改行＞新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。＜改行＞＜改行＞利用者負担限度額の有効期間が月途中から開始されています。＜改行＞訂正する場合は、利用者情報詳細画面で修正してください。＜改行＞＜改行＞公費の有効期間が前月または今月に切れています。＜改行＞利用者情報詳細画面で公費の有効期間を確認してください。」を表示します。
+   * <p>
+   * 利用者一覧画面からサービス予定/実績画面に遷移する際に、施設情報が対象年月の途中から開始されている、かつ施設情報が対象年月の途中から開始されている、かつ前月・今月に公費の有効期間がきれる場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU001_HAS_NO_YOKAIGODO_AND_TSUKITOCHU_SHISETSU_AND_KOHI() throws Exception{
+
+    return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が月途中から開始されています。" + ACConstants.LINE_SEPARATOR + "訂正する場合は、利用者情報詳細画面で修正してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+  
 }

@@ -645,7 +645,15 @@ public class QP001RecordSupply extends QP001RecordAbstract {
         }
         
 // [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - begin
-        int reducedUnit = manager.getServiceUnit(get_1201017(),serviceCode);
+        // [CCCX:2915][Shinobu Hitaka] 2015/10/7 edit - begin  1回目の割引率が計算されない
+        //int reducedUnit = manager.getServiceUnit(get_1201017(),serviceCode);
+        String providerID = get_1201017();
+        if (ACTextUtilities.isNullText(providerID)) {
+        	providerID = ACCastUtilities.toString(VRBindPathParser.get("PROVIDER_ID", serviceDetail));
+        }
+        int reducedUnit = manager.getServiceUnit(providerID,serviceCode);
+        // [CCCX:2915][Shinobu Hitaka] 2015/10/7 edit - end  1回目の割引率が計算されない
+        
         String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
         String serviceCodeItem = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"));
         //看取り関連の加算コードであれば、単位数×加算日数とする

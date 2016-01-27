@@ -2263,6 +2263,18 @@ public class QU002 extends QU002Event {
 				return false;
 			}
 
+			// ・institutionInfoTasyoRoomLimitMoneyText2
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoTasyoRoomLimitMoneyText2()
+							.getText())) {
+				getShisetsuInfoTasyoRoomLimitMoneyText2().requestFocus();
+				msgParam = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam);
+				return false;
+			}
+
 		}
 
 		// 入力チェックエラーが発生しなかった場合
@@ -5521,7 +5533,12 @@ public class QU002 extends QU002Event {
 		final String[] keys = new String[] { "SHISETSU_HISTORY_ID" };
 		QkanCommon.convertValueFromStringToInteger(map, keys);
 
-		// データの追加
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - begin 
+        // 有効期間の付加処理
+        setMaxAndMinDateShisetsu(map);
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - end 
+        
+        // データの追加
 		getShisetsuHistoryList().add(map);
 
 		// 追加行のインデックスを退避(最終行のインデックス)
@@ -5570,7 +5587,12 @@ public class QU002 extends QU002Event {
 		VRBindPathParser.set("SHISETSU_HISTORY_ID", map,
 				VRBindPathParser.get("SHISETSU_HISTORY_ID", temp));
 
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - begin 
+        // 有効期間の付加処理
+        setMaxAndMinDateShisetsu(map);
+        // [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - end 
 
+        
 		// 選択行に画面上のデータを設定する。
 		getShisetsuHistoryList().setData(selectedRow, map);
 
@@ -5713,6 +5735,97 @@ public class QU002 extends QU002Event {
 				return false;
 			}
 		}
+		
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 edit - begin 
+		// 施設情報領域
+		// ※特定施設入所者チェックがONの場合のみチェックする。
+		if (getShisetsuInfoTokuteiCheck().isSelected()) {
+			// 未入力でないかチェックする。
+			// ・institutionInfoDinnerBearLimitMoneyText
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoDinnerBearLimitMoneyText()
+							.getText())) {
+				getShisetsuInfoDinnerBearLimitMoneyText().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+
+			// ・institutionInfoUnitRoomLimitMoneyText
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoUnitRoomLimitMoneyText()
+							.getText())) {
+				getShisetsuInfoUnitRoomLimitMoneyText().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+
+			// ・institutionInfoUnitSemiRoomLimitMoneyText
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoUnitSemiRoomLimitMoneyText()
+							.getText())) {
+				getShisetsuInfoUnitSemiRoomLimitMoneyText().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+
+			// ・institutionInfoNormalRoomLimitMoneyText
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoNormalRoomLimitMoneyText()
+							.getText())) {
+				getShisetsuInfoNormalRoomLimitMoneyText().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+
+			// ・institutionInfoNormalRoomLimitMoneyText2
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoNormalRoomLimitMoneyText2()
+							.getText())) {
+				getShisetsuInfoNormalRoomLimitMoneyText2().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+
+			// ・institutionInfoTasyoRoomLimitMoneyText
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoTasyoRoomLimitMoneyText()
+							.getText())) {
+				getShisetsuInfoTasyoRoomLimitMoneyText().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+
+			// ・institutionInfoTasyoRoomLimitMoneyText2
+			// ※エラーの場合、String：msgParamを宣言し、"負担限度額"を代入する。
+			if (ACTextUtilities
+					.isNullText(getShisetsuInfoTasyoRoomLimitMoneyText2()
+							.getText())) {
+				getShisetsuInfoTasyoRoomLimitMoneyText2().requestFocus();
+				msgParam1 = "負担限度額";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						msgParam1);
+				return false;
+			}
+		}
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 edit - end 
 
 		// 存在する日付が入力されているかどうか
 		// ※エラーの場合、String：msgParamを宣言し、"有効期間開始日の"を代入する。
@@ -5725,8 +5838,22 @@ public class QU002 extends QU002Event {
 				return false;
 			}
 		}
-
-		if (getNonCorrespondenceFlg() == 0) {
+		
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 edit - begin 特定入所者の場合のみ終了日必須
+//		if (getNonCorrespondenceFlg() == 0) {
+//			// 有効期間終了日のチェック　※要介護度-非該当の場合は行わない。
+//			// 入力されているかどうか
+//			// ※エラーの場合、String：msgParam1を宣言し、"有効期間終了日"を代入する。
+//			if (ACTextUtilities.isNullText(getShisetsuInfoValidLimitDateEnd()
+//					.getText())) {
+//				getShisetsuInfoValidLimitDateEnd().requestFocus(); // フォーカス
+//				msgParam1 = "有効期間終了日";
+//				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+//						msgParam1);
+//				return false;
+//			}
+//		}
+		if (getNonCorrespondenceFlg() == 0 && getShisetsuInfoTokuteiCheck().isSelected()) {
 			// 有効期間終了日のチェック　※要介護度-非該当の場合は行わない。
 			// 入力されているかどうか
 			// ※エラーの場合、String：msgParam1を宣言し、"有効期間終了日"を代入する。
@@ -5739,7 +5866,8 @@ public class QU002 extends QU002Event {
 				return false;
 			}
 		}
-
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 edit - end
+		
 		// 存在する日付が入力されているかどうか　※要介護度-非該当の場合は行わない。
 		// ※エラーの場合、String：msgParamを宣言し、"有効期間終了日の"を代入する。
 		if (!ACTextUtilities.isNullText(getShisetsuInfoValidLimitDateEnd()
@@ -5753,7 +5881,16 @@ public class QU002 extends QU002Event {
 		}
 
 		Date start = getShisetsuInfoValidLimitDateStart().getDate();
-		Date end = getShisetsuInfoValidLimitDateEnd().getDate();
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 edit - begin 
+		//Date end = getShisetsuInfoValidLimitDateEnd().getDate();
+		Date end;
+		if (ACTextUtilities.isNullText(getShisetsuInfoValidLimitDateEnd()
+				.getText())) {
+			end = MAX_DATE;
+		} else {
+			end = getShisetsuInfoValidLimitDateEnd().getDate();
+		}
+		// [CCCX:2930][Shinobu Hitaka] 2015/10/15 edit - end 
 
 		if (ACDateUtilities.getDifferenceOnDay(start, end) > 0) {
 			getShisetsuInfoTokuteiCheck().requestFocus();
@@ -6538,4 +6675,31 @@ public class QU002 extends QU002Event {
 
 	}
 // 2015/3/31 [Shinobu Hitaka] add - end
+	
+// [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - begin 施設情報有効期間の日付設定
+	/**
+	 * 「上限、下限日付設定」処理です。
+	 * 
+	 * @param VRMap
+	 *            値を詰め込みたいVRMap
+	 * @throws Exception
+	 *             処理例外
+	 */
+	private void setMaxAndMinDateShisetsu(VRMap map) throws Exception {
+		// 非該当の場合の処理
+
+		// 有効期間開始日が入力されていない場合
+		// 下限日付を自動設定
+		if (ACTextUtilities.isNullText(getShisetsuInfoValidLimitDateStart().getText())) {
+			VRBindPathParser.set("SHISETSU_VALID_START", map, MIN_DATE);
+		}
+
+		// 有効期間終了日が入力されていない場合
+		// 上限日付を自動設定
+		if (ACTextUtilities.isNullText(getShisetsuInfoValidLimitDateEnd().getText())) {
+			VRBindPathParser.set("SHISETSU_VALID_END", map, MAX_DATE);
+		}
+	}
+// [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - end
+	
 }

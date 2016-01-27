@@ -1083,6 +1083,16 @@ public class QU001SQL extends QU001State {
 
     sb.append(")");
 
+    // [CCCX:2846][Shinobu Hitaka] 2015/07/23 add begin “Á’è“üŠÒ—L‚Ì‚İ‚ğæ“¾
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_SHISETSU_HISTORY.TOKUTEI_NYUSHO_FLAG = 2");
+    
+    sb.append(")");
+    // [CCCX:2846][Shinobu Hitaka] 2015/07/23 add end
+
     return sb.toString();
   }
 
