@@ -43,6 +43,7 @@ import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
@@ -1725,6 +1726,12 @@ public class QP001 extends QP001Event {
         
         // 利用者の情報を取得する。
         QP001PatientState patientState = new QP001PatientState(getDBManager(), patient, getTargetDate().getDate());
+
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+        SelfPaymentNumberCalcurater selfPaymentNumberCalcurater = 
+        		new SelfPaymentNumberCalcurater(getDBManager(), getTargetDate().getDate(), patient, patientState, serviceDetailList);
+        patientState.setSelfPaymentNumberCalcurater(selfPaymentNumberCalcurater);
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
         
         //サービスコード生成ロジックのキャッシュをクリアする。
         Qkan10011_ServiceCodeManager.getInstance().clearServiceCodeCache();

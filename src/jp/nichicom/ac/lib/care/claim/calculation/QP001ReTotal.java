@@ -361,14 +361,20 @@ public class QP001ReTotal {
 
     private void doTotal() throws Exception {
 
+// 2015/04/13 [H27.04改正対応][Yoichiro Kamei] add - begin 住所地特例対応
+        for (int i = 0; i < detailJushotiTokurei.size(); i++) {
+        	VRMap claimDataMap = (VRMap) detailJushotiTokurei.get(i);
+        	//明細情報（住所地特例）のバインドパスを明細情報のパスにコピー
+        	QkanCommon.convertPathJushotiTokureiToDetail(claimDataMap);
+        	
+        	//明細情報用のリストに追加して、明細情報として処理させる
+        	detail.add(claimDataMap);
+        }
+// 2015/04/13 [Yoichiro Kamei] add - end
+        
         // 明細情報レコードの集計処理
         parseDetail();
 
- // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-        // 明細情報（住所地特例）レコードの集計処理
-        parseDetailJushotiTokurei();
- // 2014/12/24 [Yoichiro Kamei] add - end
-        
         // 緊急時治療レコードの集計処理
         parseEmergency();
 
@@ -388,10 +394,6 @@ public class QP001ReTotal {
         parseImproveTheTreatment();
         //[ID:0000726][Shin Fujihara] 2012/04 add end
 
-  // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-        parseImproveTheTreatmentJushotiTokurei();
-  // 2014/12/24 [Yoichiro Kamei] add - end
-        
         // 基本情報レコード
         parseBase();
 
@@ -400,6 +402,18 @@ public class QP001ReTotal {
 
         // 居宅サービス計画費
         parseCarePlan();
+        
+// 2015/04/13 [H27.04改正対応][Yoichiro Kamei] add - begin 住所地特例対応
+        //明細情報レコードに変換していたパスを元に戻す
+        for (int i = 0; i < detailJushotiTokurei.size(); i++) {
+        	VRMap claimDataMap = (VRMap) detailJushotiTokurei.get(i);
+        	if (detail.contains(claimDataMap)) {
+            	//明細情報用のリストから削除
+            	detail.remove(claimDataMap);
+        	}
+        	QkanCommon.convertPathJushotiTokureiToOriginal(claimDataMap);
+        }
+// 2015/04/13 [Yoichiro Kamei] add - end
     }
 
     /**
@@ -428,35 +442,6 @@ public class QP001ReTotal {
             mul(map, "301017", "301009", "301013");
         }
     }
-    
- // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-    /**
-     * 明細情報（住所地特例）レコードの集計処理
-     * 
-     * @throws Exception
-     */
-    private void parseDetailJushotiTokurei() throws Exception {
-
-        VRMap map = null;
-
-        for (int i = 0; i < detailJushotiTokurei.size(); i++) {
-            map = (VRMap) detailJushotiTokurei.get(i);
-
-            if (toInt(map, "1801009") == 0) {
-                continue;
-            }
-
-            // サービス単位数 = 単位数 * 回数
-            mul(map, "1801014", "1801009", "1801010");
-            // 公費１対象サービス単位数 = 単位数 * 公費１日数・回数
-            mul(map, "1801015", "1801009", "1801011");
-            // 公費２対象サービス単位数 = 単位数 * 公費２日数・回数
-            mul(map, "1801016", "1801009", "1801012");
-            // 公費３対象サービス単位数 = 単位数 * 公費３日数・回数
-            mul(map, "1801017", "1801009", "1801013");
-        }
-    }
- // 2014/12/24 [Yoichiro Kamei] add - end
 
     /**
      * 緊急時治療レコードの集計処理
@@ -886,169 +871,6 @@ public class QP001ReTotal {
         
     }
     
- // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-    //[ID:0000726][Shin Fujihara] 2012/04 add begin 処遇改善加算の再集計対応
-    /**
-     * 処遇改善加算の再集計処理
-     * @throws Exception
-     */
-    private void parseImproveTheTreatmentJushotiTokurei() throws Exception {
-        
-        List<VRMap> syogu = new ArrayList<VRMap>();
-        VRMap map = null;
-
-        for (int i = 0; i < detailJushotiTokurei.size(); i++) {
-            map = (VRMap) detailJushotiTokurei.get(i);
-            
-            //サービス名称を取得
-            String serviceName = ACCastUtilities.toString(map.get("1801020"), "");
-            
-            //「「処遇改善」という文字列があったら、処遇改善加算とみなす。
-            if (serviceName.indexOf("処遇改善") != -1) {
-                syogu.add(map);
-            }
-        }
-        
-        //処遇改善加算が存在しない場合は処理終了
-        if (syogu.isEmpty()) {
-            return;
-        }
-        
-        //処遇改善加算の計算
-        for (VRMap row : syogu) {
-            
-            //加算割合取得
-            VRMap servcie = getServcieCodegetServcieCodeJushotiTokurei(row);
-            if (servcie == null) {
-                continue;
-            }
-            
-            String servcieCodeKind = ACCastUtilities.toString(row.get("1801007"), "");
-            
-            //対応する集計情報レコードを取得
-            map = getType(servcieCodeKind);
-            
-            //取得に失敗した場合は処理終了
-            if (map == null) {
-                continue;
-            }
-            
-            int[] unitArray = new int[4];
-            //必要な値を抽出
-            // (保険)単位数合計 + (保険分出来高医療費)単位数合計
-            unitArray[0] = ACCastUtilities.toInt(map.get("701014"), 0) + ACCastUtilities.toInt(map.get("701027"), 0);
-            //(公費1)単位数合計 + (公費1分出来高医療費)単位数合計
-            unitArray[1] = ACCastUtilities.toInt(map.get("701018"), 0) + ACCastUtilities.toInt(map.get("701030"), 0);
-            //(公費2)単位数合計 + (公費2分出来高医療費)単位数合計
-            unitArray[2] = ACCastUtilities.toInt(map.get("701021"), 0) + ACCastUtilities.toInt(map.get("701033"), 0);
-            //(公費3)単位数合計 + (公費3分出来高医療費)単位数合計
-            unitArray[3] = ACCastUtilities.toInt(map.get("701024"), 0) + ACCastUtilities.toInt(map.get("701036"), 0);
-            
-            
-            //現在処遇改善レコードに設定されている値を引く
-            //これが、処遇改善加算算定の元となる単位数
-            // サービス単位数
-            unitArray[0] -= ACCastUtilities.toInt(row.get("1801014"), 0);
-            //公費1対象サービス単位数
-            unitArray[1] -= ACCastUtilities.toInt(row.get("1801015"), 0);
-            //公費2対象サービス単位数
-            unitArray[2] -= ACCastUtilities.toInt(row.get("1801016"), 0);
-            //公費3対象サービス単位数
-            unitArray[3] -= ACCastUtilities.toInt(row.get("1801017"), 0);
-            
-            
-            //処遇改善加算を再計算し、設定
-            int serviceUnit = ACCastUtilities.toInt(servcie.get("SERVICE_UNIT"), 0);
-            int serviceStaffUnit = ACCastUtilities.toInt(servcie.get("SERVICE_STAFF_UNIT"), 0);
-            
-            int _301014 = CareServiceCommon.calcSyogu(unitArray[0], serviceUnit, serviceStaffUnit);
-            int _301015 = CareServiceCommon.calcSyogu(unitArray[1], serviceUnit, serviceStaffUnit);
-            int _301016 = CareServiceCommon.calcSyogu(unitArray[2], serviceUnit, serviceStaffUnit);
-            int _301017 = CareServiceCommon.calcSyogu(unitArray[3], serviceUnit, serviceStaffUnit);
-            
-            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - start 老健の一部公費対象の対応
-            //公費1～3に老健の一部公費が含まれている場合
-            //合計単位数＜公費1＋2＋3　の場合最後の公費で単位数を調整する
-            String systemServiceKindDetail = ACCastUtilities.toString(row.get("1801022"));
-            if ((CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, getKohiType(1)) && _301015 > 0) ||
-                (CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, getKohiType(2)) && _301016 > 0) ||
-                (CareServiceCommon.isKouhiSystemService(systemServiceKindDetail, getKohiType(3)) && _301017 > 0)
-                ) {
-                //公費1＝10感染症が適用されている場合、感染症公費以外の単位数を調整する
-                if ("1001".equals(getKohiType(1)) && _301015 > 0) {
-                    if (_301017 != 0) {
-                        _301017 = _301014 - _301016;
-                    }
-                } else {
-                    if (_301014 < (_301015 + _301016 + _301017)) {
-                        if (_301017 != 0) {
-                            _301017 = _301014 - (_301015 + _301016);
-                        } else if (_301016 != 0) {
-                            _301016 = _301014 - _301015;
-                        } else if (_301015 != 0) {
-                            _301015 = _301014;
-                        }
-                    }
-                }
-            }
-            //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - end   老健の一部公費対象の対応
-
-            //単位数の再設定
-            row.put("1801014", _301014);
-            row.put("1801009", _301014);
-            
-            row.put("1801015", _301015);
-            row.put("1801016", _301016);
-            row.put("1801017", _301017);
-            
-            //公費1回数
-            setSyoguKohiCount(row, _301015, "1801011");
-            //公費2回数
-            setSyoguKohiCount(row, _301016, "1801012");
-            //公費3回数
-            setSyoguKohiCount(row, _301017, "1801013");
-            
-        }
-        
-        //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - start 処遇改善有＋公費自己負担有の再集計
-        // 再計算の前に利用した自己負担額を戻す
-        patientState.setKohiSelfPay(getKohiType(1), kohiSelfPay[0]);
-        patientState.setKohiSelfPay(getKohiType(2), kohiSelfPay[1]);
-        patientState.setKohiSelfPay(getKohiType(3), kohiSelfPay[2]);
-        //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
-        
-        // 処遇改善の値を編集したので、集計情報レコードを再作成
-        parseType();
-        
-    }
-    private VRMap getServcieCodegetServcieCodeJushotiTokurei(VRMap row) throws Exception {
-        
-        String systemServiceKind = ACCastUtilities.toString(row.get("1801022"), "");
-        String systemServiceItem = ACCastUtilities.toString(row.get("1801023"), "");
-        String target = VRDateParser.format(targetDate, "yyyy/MM/dd");
-        
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("SELECT * FROM M_SERVICE_CODE WHERE");
-        sql.append("(SYSTEM_SERVICE_KIND_DETAIL = ");
-        sql.append(systemServiceKind);
-        sql.append(") AND (SYSTEM_SERVICE_CODE_ITEM = '");
-        sql.append(systemServiceItem);
-        sql.append("') AND (SERVICE_VALID_START <= '");
-        sql.append(target);
-        sql.append("') AND (SERVICE_VALID_END >= '");
-        sql.append(target);
-        sql.append("')");
-        
-        VRList list = dbm.executeQuery(sql.toString());
-        if (list.isEmpty()) {
-            return null;
-        }
-        
-        return (VRMap)list.get(0);
-    }
-// 2014/12/24 [Yoichiro Kamei] add - end
-    
     private VRMap getType(String servcieCodeKind) throws Exception {
         
         if (type.isEmpty()) {
@@ -1255,73 +1077,6 @@ public class QP001ReTotal {
             }
             // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
         }
-        
- // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-        /* ====================================================== */
-        // 明細情報（住所地特例）を集計情報にまとめる
-        /* ====================================================== */
-        toolsTotalDay = Integer.MIN_VALUE;
-        toolsTotalDayYobo = Integer.MIN_VALUE;
-        //外部利用型使用フラグ
-        externalUse = false;
-        for (int i = 0; i < detailJushotiTokurei.size(); i++) {
-            VRMap map = (VRMap) detailJushotiTokurei.get(i);
-            VRMap tmap = getTypeMap(toString(map, "1801007"));
-            if (tmap == null) {
-                continue;
-            }
-
-            // 限度額管理対象フラグ
-            switch (toInt(map, "1801021")) {
-            // 1(限度額管理対象)の場合
-            case 1:
-                // 計画単位数
-                // addAppend(tmap, "701009", map, "301014");
-                // 限度額管理対象単位数
-                addAppend(tmap, "701010", map, "1801014");
-                break;
-            // 2(限度額管理対象外)の場合
-            case 2:
-                // 限度額管理対象外単位数
-                addAppend(tmap, "701011", map, "1801014");
-                break;
-            // 3(外部利用型)の場合
-            case 3:
-                // 計画単位数(そっとしておく？)
-                // set_701009(ACCastUtilities.toInt(patientState.getNinteiDataHeavy(get_701005(),get_701006(),"EXTERNAL_USE_LIMIT"),0));
-                // 限度額管理対象単位数
-                addAppend(tmap, "701010", map, "1801014");
-                externalUse = true;
-                break;
-            }
-
-            // 保険単位数合計
-            addAppend(tmap, "701014", map, "1801014");
-            // (公費1)単位数合計
-            addAppend(tmap, "701018", map, "1801015");
-            // (公費2)単位数合計
-            addAppend(tmap, "701021", map, "1801016");
-            // (公費3)単位数合計
-            addAppend(tmap, "701024", map, "1801017");
-
-            // 福祉用具例外処理
-            String serviceCodeKind = ACCastUtilities.toString(map.get("1801007"), "");
-            // 福祉用具
-            if ("17".equals(serviceCodeKind)) {
-                if (toolsTotalDay < toInt(map, "1801010")) {
-                    tmap.put("701008", map.get("1801010"));
-                    toolsTotalDay = toInt(map, "1801010");
-                }
-            }
-            // 予防福祉用具
-            if ("67".equals(serviceCodeKind)) {
-                if (toolsTotalDayYobo < toInt(map, "1801010")) {
-                    tmap.put("701008", map.get("1801010"));
-                    toolsTotalDayYobo = toInt(map, "1801010");
-                }
-            }
-        }
- // 2014/12/24 [Yoichiro Kamei] add - end
         
         /* ====================================================== */
         // 集計情報レコード自身の確定

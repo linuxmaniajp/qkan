@@ -28,8 +28,6 @@
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 
-import java.awt.event.ActionEvent;
-
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
@@ -62,21 +60,6 @@ public class QS001_11411_201504 extends QS001_11411_201504Event {
     }
 
     // コンポーネントイベント
-    /**
-     * 「リハビリテーションマネジメント加算選択時」イベントです。
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void houmonRehabilitationManagementAddRadioActionPerformed(
-            ActionEvent e) throws Exception {
-        // リハビリテーションマネジメント加算なし選択時、短期集中リハビリテーション加算は無効
-        if (getHoumonRehabilitationManagementAddRadio().getSelectedIndex() == 1) {
-            setState_INVALID_REHABILI_SHORT_CONCENTRATIO();
-        } else {
-            setState_VALID_REHABILI_SHORT_CONCENTRATIO();
-        }
-
-    }
 
     public static void main(String[] args) {
         // デフォルトデバッグ起動
@@ -103,14 +86,16 @@ public class QS001_11411_201504 extends QS001_11411_201504Event {
         // コンボアイテム設定用のレコード comboItemMap を生成する。
         VRMap comboItemMap = new VRHashMap();
         // ※設定
-        // ※開始時刻
-        // コードマスタデータよりCODE_ID：23（時刻・曜日の選択 / 時刻(開始)）を取得する。
+        // ※開始時刻  2015.04.13[Shinobu Hitaka] 10分単位に変更
+        // コードマスタデータよりCODE_ID：289（時刻・曜日の選択 / 時刻(開始)）を取得する。
         // 取得した値を、comboItemMapの KEY : 3 の VALUE として設定する。
-        comboItemMap.setData("3", QkanCommon.getArrayFromMasterCode(23, "3"));
-        // ※終了時刻
-        // コードマスタデータよりCODE_ID：23（時刻・曜日の選択 / 時刻(開始)）を取得する。
+        //comboItemMap.setData("3", QkanCommon.getArrayFromMasterCode(23, "3"));
+        comboItemMap.setData("3", QkanCommon.getArrayFromMasterCode(289, "3"));
+        // ※終了時刻  2015.04.13[Shinobu Hitaka] 10分単位に変更
+        // コードマスタデータよりCODE_ID：289（時刻・曜日の選択 / 時刻(開始)）を取得する。
         // 取得した値を、comboItemMapの KEY : 4 の VALUE として設定する。
-        comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(23, "4"));
+        //comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(23, "4"));
+        comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(289, "4"));
         // ※展開
         // 自身(this)にcomboItemMapに設定する。
         getThis().setModelSource(comboItemMap);
@@ -148,10 +133,6 @@ public class QS001_11411_201504 extends QS001_11411_201504Event {
             if (getCalculater().getTargetDate() != null && 
                     ACDateUtilities.getDifferenceOnDay(ACDateUtilities.createDate(2016, 4, 1), getCalculater().getTargetDate()) > 0) {
             	getRegionalServiceRadioGroupContainer().setEnabled(false);
-            }
-            // リハビリテーションマネジメント加算なし選択時、短期集中リハビリテーション加算は無効
-            if (getHoumonRehabilitationManagementAddRadio().getSelectedIndex() == 1) {
-                setState_INVALID_REHABILI_SHORT_CONCENTRATIO();
             }
             // 2015/03/09 [H27.4改正対応][Shinobu Hitaka] add - end
             // ※展開

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/13  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2015/04/21  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -127,22 +127,6 @@ public abstract class QS001_11611_201504Event extends QS001_11611_201504State im
             }
         }
     });
-    getHoumonRehabilitationManagementAddRadio().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                houmonRehabilitationManagementAddRadioActionPerformed(e);
-            }catch(Throwable ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
     getHoumonRehabilitationShortConcentrationAddRadio().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -208,13 +192,6 @@ public abstract class QS001_11611_201504Event extends QS001_11611_201504State im
    * @throws Exception 処理例外
    */
   protected abstract void houmonRehabilitationTimeDivisionActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「リハビリテーションマネジメント加算選択時」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void houmonRehabilitationManagementAddRadioActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「短期集中個別リハビリ実施加算選択時」イベントです。

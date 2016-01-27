@@ -144,23 +144,27 @@ public class ACTextField extends VRTextField {
 
         setFocusSelcetAll(true);
 
-        String osName = System.getProperty("os.name","").toLowerCase();
-        if ((osName != null) && (osName.indexOf("mac") >= 0)) {
-            // Mac
-
-            String ver = System.getProperty("os.version", "");
-            if("10.4.0".compareTo(ver)>=0){
-                // 10.4未満は"Osaka"
-                Font nowFont = getFont();
-                if (nowFont == null) {
-                    setFont(new Font("Osaka", Font.PLAIN, 12));
-                } else {
-                    setFont(new Font("Osaka", nowFont.getStyle(), nowFont.getSize()));
-                }
-            }else{
-                //10.4以上は何もしない
-            }
-        }
+        // 2015/4/15 [H27.4改正対応][Shinobu Hitaka] del - begin
+        // mac10.10.0以上の際にフォント設定ロジックを通過する
+        // 現時点で動作環境はmac10.6以上なので以下コメント化する
+//        String osName = System.getProperty("os.name","").toLowerCase();
+//        if ((osName != null) && (osName.indexOf("mac") >= 0)) {
+//            // Mac
+//
+//            String ver = System.getProperty("os.version", "");
+//            if("10.4.0".compareTo(ver)>=0){
+//                // 10.4未満は"Osaka"
+//                Font nowFont = getFont();
+//                if (nowFont == null) {
+//                    setFont(new Font("Osaka", Font.PLAIN, 12));
+//                } else {
+//                    setFont(new Font("Osaka", nowFont.getStyle(), nowFont.getSize()));
+//                }
+//            }else{
+//                //10.4以上は何もしない
+//            }
+//        }
+        // 2015/4/15 [H27.4改正対応][Shinobu Hitaka] del - end
         
         new ACTextComponentPopupMenu().addInvoker(this);
     }

@@ -1339,6 +1339,9 @@ public class QO005 extends QO005Event {
                 } else {
                     String version = ACCastUtilities.toString(((VRMap)list.getData(0)).get("SCHEME_VERSION"), "");
                     if (!QkanCommon.isValidSchemaVersion(version)) {
+                        // 2015/4/17 [Yoichiro Kamei] add - begin 旧バージョンのDBに接続したままとなっていた為、接続を解放
+                        dbm.releaseAll();
+                        // 2015/4/17 [Yoichiro Kamei] add - end
                         return DB_SCHEMA_ERROR;
                     }
                 }

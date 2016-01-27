@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2012/02/03  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2015/04/17  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム メニュー (M)
@@ -723,7 +723,7 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
 
       dbSchemaError = new ACLabel();
 
-      dbSchemaError.setText("データベースへの接続に失敗しました。旧バージョンのデータベースファイルが指定されています。" + ACConstants.LINE_SEPARATOR + "データベースは給管鳥V6以降のものを指定する必要があります。" + ACConstants.LINE_SEPARATOR + "「設定変更」画面でデータベースの設定を行ってください。");
+      dbSchemaError.setText("データベースへの接続に失敗しました。旧バージョンのデータベースファイルが指定されています。" + ACConstants.LINE_SEPARATOR + "データベースは給管鳥V7以降のものを指定する必要があります。" + ACConstants.LINE_SEPARATOR + "「設定変更」画面でデータベースの設定を行ってください。");
 
       dbSchemaError.setIconPath(ACConstants.ICON_PATH_STOP_16);
 

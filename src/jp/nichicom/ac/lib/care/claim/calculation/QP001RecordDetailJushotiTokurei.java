@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.text.ACTextUtilities;
-import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
@@ -574,12 +572,12 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
     
     protected static QP001RecordDetailJushotiTokurei getInstance(String identificationNo,
             Date targetDate, Object targetServiceDate, VRMap serviceDetail,
-            VRMap serviceCode, QP001PatientState patientState,VRMap detailMap,QP001Manager manager) throws Exception {
+            VRMap serviceCode, QP001PatientState patientState,VRMap detailMap,QP001Manager manager, String jushotiTokureiInsurerId) throws Exception {
         
     	QP001RecordDetailJushotiTokurei detail = null;
         
         //レコードの作成可否を判断
-        if(!isMakeRecord(serviceDetail,serviceCode, patientState, targetServiceDate)){
+        if(!isMakeRecord(serviceDetail,serviceCode, patientState)){
             return detail;
         }
         
@@ -589,11 +587,14 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
                                     serviceDetail,
                                     serviceCode,
                                     patientState,
-                                    manager);
+                                    manager,
+                                    jushotiTokureiInsurerId);
         
         //条件に合致するレコードが存在しない場合
         if(!detailMap.containsKey(serial)){
             detail = new QP001RecordDetailJushotiTokurei();
+        	//施設所在保険者番号
+            detail.set_1801018(jushotiTokureiInsurerId);
             detailMap.put(serial,detail);
         //条件に合致するレコードが存在する場合
         } else {
@@ -603,38 +604,10 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
         return detail;
     }
     
-    //2008/09/03 [Shin Fujihara] edit - begin 30日超の単位数をPatientStateに保持するよう変更
-    //private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode) throws Exception {
-    private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState, Object targetServiceDate) throws Exception {
-    //2008/09/03 [Shin Fujihara] edit - end 30日超の単位数をPatientStateに保持するよう変更
-        
-        //給付管理限度額対象フラグを確認する。
-        //フラグが0(食費等、単位数で管理しないサービス)の場合は、レコードの作成を中断する。
-        if(String.valueOf(serviceCode.get("LIMIT_AMOUNT_OBJECT")).equals("0")){
-            return false;
-        }
-        //30日超であればレコードの作成を中断する。
-        if(ACCastUtilities.toInt(serviceDetail.get("5"),0) == 2){
-        	//2008/09/03 [Shin Fujihara] add - begin 30日超の単位数をPatientStateに保持するよう変更
-        	patientState.putAbandonedUnit(serviceDetail, serviceCode);
-        	//2008/09/03 [Shin Fujihara] add - end 30日超の単位数をPatientStateに保持するよう変更
-            return false;
-        }
-        
-       
-        //住所地特例対象者で、地域密着型サービスの場合は、レコードを作成する。
-        if (!ACTextUtilities.isNullText(patientState.getJushotiTokureiInsurerId(targetServiceDate))) {
-            if(QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceCode)))){
-            	return true;
-            }
-        }
-
-        return false;
-    }
     
     private static String getSerialId(String identificationNo,
             Date targetDate, Object targetServiceDate, VRMap serviceDetail,
-            VRMap serviceCode, QP001PatientState patientState,QP001Manager manager) throws Exception {
+            VRMap serviceCode, QP001PatientState patientState,QP001Manager manager, String jushotiTokureiInsurerId) throws Exception {
         //レコードのシリアルIDを作成
         StringBuilder serial = new StringBuilder();
         // 交換識別番号
@@ -657,7 +630,7 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
         serial.append(serviceCode.get("SERVICE_CODE_ITEM"));
         
         // 施設所在保険者番号6桁
-        serial.append(patientState.getJushotiTokureiInsurerId(targetServiceDate));
+        serial.append(jushotiTokureiInsurerId);
         
         //福祉用具対応
         if(ACCastUtilities.toInt(serviceCode.get("SERVICE_ADD_FLAG"),0) != 3){
@@ -672,28 +645,6 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
         return serial.toString();
     }
     
-    
-    /**
-     * データのパースを実行します。
-     * 
-     * @param serviceDetail
-     * @param targetDate
-     * @param patientState
-     * @param serviceCode
-     * @throws Exception
-     */
-    protected void parse(VRMap serviceDetail, Date targetDate,
-            QP001PatientState patientState, VRMap serviceCode,
-            String identificationNo,QP001Manager manager) throws Exception {
-    	
-    	//明細情報と同じ
-    	super.parse(serviceDetail, targetDate, patientState, serviceCode, identificationNo, manager);
-    	
-        Object targetServiceDate = VRBindPathParser.get("SERVICE_DATE",
-                serviceDetail);
-    	//施設所在保険者番号
-    	set_1801018(patientState.getJushotiTokureiInsurerId(targetServiceDate));
-    }
     
     /**
      * データ作成

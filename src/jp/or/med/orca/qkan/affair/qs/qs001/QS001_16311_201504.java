@@ -200,13 +200,15 @@ public class QS001_16311_201504 extends QS001_16311_201504Event {
         // コンボアイテム設定用のレコード comboItemMap を生成する。
         VRMap comboItemMap = new VRHashMap();
         // ※設定
-        // ※開始時刻
-        // コードマスタデータよりCODE_ID：23（時刻・曜日の選択 / 時刻(開始)）を取得する。
-        comboItemMap.setData("3", QkanCommon.getArrayFromMasterCode(23, "3"));
+        // ※開始時刻  2015.04.13[Shinobu Hitaka] 10分単位に変更
+        // コードマスタデータよりCODE_ID：289（時刻・曜日の選択 / 時刻(開始)）を取得する。
+        //comboItemMap.setData("3", QkanCommon.getArrayFromMasterCode(23, "3"));
+        comboItemMap.setData("3", QkanCommon.getArrayFromMasterCode(289, "3"));
         // 取得した値を、comboItemMapの KEY : 3 の VALUE として設定する。
-        // ※終了時刻
-        // コードマスタデータよりCODE_ID：23（時刻・曜日の選択 / 時刻(開始)）を取得する。
-        comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(23, "4"));
+        // ※終了時刻  2015.04.13[Shinobu Hitaka] 10分単位に変更
+        // コードマスタデータよりCODE_ID：289（時刻・曜日の選択 / 時刻(開始)）を取得する。
+        //comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(23, "4"));
+        comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(289, "4"));
         // 取得した値を、comboItemMapの KEY : 4 の VALUE として設定する。
         // ※展開
         // 自身(this)にcomboItemMapに設定する。

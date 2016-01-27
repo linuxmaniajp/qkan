@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/13  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2015/04/21  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -129,40 +129,6 @@ public class QS001_11611_201504State extends QS001_11611_201504Design {
 
         getMedicalManagementRadioGroup().setEnabled(false);
         getMedicalManagementRadioGroup().getParent().setEnabled(false);
-
-  }
-
-  /**
-   * 「リハビリマネジメント加算・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_VALID_HOUMON_REHABILITATION_MANAGEMENT() throws Exception {
-
-        getHoumonRehabilitationShortConcentrationAddRadio().setEnabled(true);
-        getHoumonRehabilitationShortConcentrationAddRadio().getParent().setEnabled(true);
-
-        getDementiaRehabilitationShortConcentrationAddRadio().setEnabled(true);
-        getDementiaRehabilitationShortConcentrationAddRadio().getParent().setEnabled(true);
-
-        getLifeActsImproveRehabilitationRadioGroup().setEnabled(true);
-        getLifeActsImproveRehabilitationRadioGroup().getParent().setEnabled(true);
-
-  }
-
-  /**
-   * 「リハビリマネジメント加算・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_INVALID_HOUMON_REHABILITATION_MANAGEMENT() throws Exception {
-
-        getHoumonRehabilitationShortConcentrationAddRadio().setEnabled(false);
-        getHoumonRehabilitationShortConcentrationAddRadio().getParent().setEnabled(false);
-
-        getDementiaRehabilitationShortConcentrationAddRadio().setEnabled(false);
-        getDementiaRehabilitationShortConcentrationAddRadio().getParent().setEnabled(false);
-
-        getLifeActsImproveRehabilitationRadioGroup().setEnabled(false);
-        getLifeActsImproveRehabilitationRadioGroup().getParent().setEnabled(false);
 
   }
 

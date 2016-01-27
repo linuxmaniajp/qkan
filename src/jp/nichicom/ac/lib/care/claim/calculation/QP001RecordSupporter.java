@@ -30,9 +30,13 @@
 
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
@@ -66,6 +70,12 @@ public class QP001RecordSupporter {
 	//サービスの実提供日数を管理します。
 	private VRList offerDays = new VRArrayList();
 	//add end fujihara.shin 
+	
+	
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+	// 回数算定時点ごとに公費種類別のカウントを保持しておく
+	private Map<Integer, Object> kohiApplicationTimesPerCount = new HashMap<Integer, Object>();
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
 	
     /**
      * 
@@ -150,6 +160,17 @@ public class QP001RecordSupporter {
 			}
 			kohiApplicationTimes.setData(VRBindPathParser.get("KOHI_TYPE",kohi),new Integer(countTemp));
 		}
+		
+		// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+		// 回数算定時点の公費種類別のカウントを保持しておく
+		int nowCount =  0;
+		if (!kohiApplicationTimesPerCount.isEmpty()) {
+			//現在保持している回数の最大値を取得
+			nowCount = Collections.max(kohiApplicationTimesPerCount.keySet());
+		}
+		int nextCount = nowCount + count;
+		kohiApplicationTimesPerCount.put(new Integer(nextCount), new VRHashMap(kohiApplicationTimes));
+		// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
 	}
     
     /**
@@ -238,6 +259,29 @@ public class QP001RecordSupporter {
 		}
 		return result;
 	}
+	
+	
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+	/**
+	 * 指定回数算定時点における指定公費番号の公費適用日数・回数を返却します。
+	 * 
+	 * @param kohiType 公費番号
+	 * @param atTime 何回目の算定時における公費適用カウントを取得するか
+	 * @return 指定回数算定時点における指定された公費番号の公費適用日数・回数
+	 */
+	protected int getKohiCountAtTime(String kohiType, int atTime){
+		int result = 0;
+		if (ACTextUtilities.isNullText(kohiType)) {
+			return result;
+		}
+		VRMap kohiTimes = (VRMap) kohiApplicationTimesPerCount.get(atTime);
+		if (kohiTimes.containsKey(new Integer(kohiType))) {
+			result = ((Integer)(kohiTimes.getData(new Integer(kohiType)))).intValue();
+		}
+		return result;
+	}
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+	
 	/**
 	 * サービスの実日数リストを取得します。
 	 * @return

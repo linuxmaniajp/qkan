@@ -410,6 +410,26 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisyo1");
                     break;
 
+                //事業対象者 [H27.4法改正対応][Shinobu.Hitaka]月途中で事業対象者から要支援１へ区変した場合
+                case 6:
+                    // 経過的要介護（要支援）の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "keikatekiyoukaigo");
+                    // 要支援１の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
+                    // 要支援２の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youshien2");
+                    // 要介護１の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youkaigo1");
+                    // 要介護２の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youkaigo2");
+                    // 要介護３の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youkaigo3");
+                    // 要介護４の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
+                    // 要介護５の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                    break;
+                        
                 // 上記以外の場合
                 default:
                     // 経過的要介護（要支援）の○を非表示にする。

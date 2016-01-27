@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACFillZero10LeftFormat;
@@ -100,6 +101,10 @@ public class QP001PatientState {
     private VRMap addSelfpay = new VRHashMap();
     //[ID:0000682][Shin Fujihara] add end 【法改正対応】介護職員処遇改善加算
 	
+    // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+    private SelfPaymentNumberCalcurater selfPaymentNumberCalcurater;
+    // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+    
 	/**
 	 * コンストラクタ<br>
 	 * 第二引数patient_idで指定された利用者の第三引数targetDateに指定された月の<br>
@@ -188,6 +193,9 @@ public class QP001PatientState {
 		sb.append(" h.REPORTED_DATE,");
 		sb.append(" h.LIMIT_RATE,");
 		sb.append(" h.LAST_TIME,");
+// 2015/3/31 [Shinobu Hitaka] add - begin 事業対象者から要支援１変更フラグ
+		sb.append(" h.JIGYOTAISYO_FLAG,");
+// 2015/3/31 [Shinobu Hitaka] add - end
 		sb.append(" lrd_ex.LIMIT_RATE_VALUE AS EXTERNAL_USE_LIMIT");
 		sb.append(" FROM");
 		sb.append(" PATIENT_NINTEI_HISTORY h,");
@@ -907,13 +915,11 @@ public class QP001PatientState {
 			endYMD = getInt("JUSHOTI_VALID_END",map);
 
 			if((startYMD <= targetDateTemp) && (targetDateTemp <= endYMD)){
+				//指定された日付で有効な住所地特例情報が見つかった場合
+				result = String.valueOf(VRBindPathParser.get(key,map)); 
 				break;
 			}
 		}
-		if(map == null) return result;
-		
-		result = String.valueOf(VRBindPathParser.get(key,map));
-		
 		return result;
 	}
 // 2015/1/14 [Yoichiro Kamei] add - end
@@ -1669,4 +1675,15 @@ public class QP001PatientState {
         }
     }
     //[CCCX:1653][Shinobu Hitaka] 2014/03/19 add - end   処遇改善有＋公費自己負担有の再集計
+    
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+	public SelfPaymentNumberCalcurater getSelfPaymentNumberCalcurater() {
+		return selfPaymentNumberCalcurater;
+	}
+
+	public void setSelfPaymentNumberCalcurater(
+			SelfPaymentNumberCalcurater selfPaymentNumberCalcurater) {
+		this.selfPaymentNumberCalcurater = selfPaymentNumberCalcurater;
+	}
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
 }

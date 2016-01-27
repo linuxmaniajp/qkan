@@ -738,38 +738,61 @@ public class QS001003 extends QS001003Event {
 				QkanSystemInformation.getInstance().getSystemDate());
 		// ※届出年月日
 		// 初期値は設定しない。
-		// ※要介護状態区分
-		// patientInsureInfoFirstより「要介護状態区分」情報を取得し、画面のyouKaigodoType1に設定する。
-		Object firstCode = patientInsureInfoFirst.get("JOTAI_CODE");
-		getYouKaigodoType1()
-				.setText(
-						QkanJotaiCodeUnapplicableFormat.getInstance().format(
-								firstCode));
-		int shortStayCount = 0;
-		if (patientInsureInfoFirst != patientInsureInfoLast) {
-			// patientInsureInfoLastより「要介護状態区分」情報を取得し、画面のyouKaigodoType2に設定する。
-			Object lastCode = patientInsureInfoLast.get("JOTAI_CODE");
-			if ((firstCode == null) || (!firstCode.equals(lastCode))) {
-				getYouKaigodoType2().setText(
-						QkanJotaiCodeUnapplicableFormat.getInstance().format(
-								lastCode));
-			}
-			// 要介護度が切り替わる場合の短期入所日数は0
-		} else {
-			Date begin = ACCastUtilities.toDate(
-					patientInsureInfoFirst.get("INSURE_VALID_START"), null);
-			if (begin != null) {
-				// 認定の有効期間開始から対象年月前月いっぱいまでの短期入所サービス
-				VRMap param = new VRHashMap();
-				param.setData("TARGET_DATE", getTargetDateSource());
-				param.setData("INSURE_VALID_START", begin);
-				param.setData("PATIENT_ID", new Integer(getPatientID()));
-//				VRList list = getDBManager().executeQuery(
-//						getSQL_GET_PREVIEW_SHORT_STAY(param));
-//				shortStayCount = list.size();
-				shortStayCount = getPreviewShortStay(param);
-			}
-		}
+
+//2015/4/15 [H27.04改正対応][Yoichiro Kamei] mod - begin 短期入所日数の初期値対応
+        boolean isShortStayCountZero = false;//短期入所日数0と表示するかどうか
+        
+        Date first = ACCastUtilities.toDate(
+                patientInsureInfoFirst.get("INSURE_VALID_START"), null);
+        Date last = ACCastUtilities.toDate(
+                patientInsureInfoLast.get("INSURE_VALID_START"), null);
+        
+        // ※要介護状態区分
+        // patientInsureInfoFirstより「要介護状態区分」情報を取得し、画面のyouKaigodoType1に設定する。
+        Object firstCode = patientInsureInfoFirst.get("JOTAI_CODE");
+        getYouKaigodoType1().setText(
+                        QkanJotaiCodeUnapplicableFormat.getInstance().format(firstCode));
+        
+        //対象月に複数の介護保険情報の登録がある場合
+        if (patientInsureInfoFirst != patientInsureInfoLast) {
+            Object lastCode = patientInsureInfoLast.get("JOTAI_CODE");
+            // patientInsureInfoLastより「要介護状態区分」情報を取得し、画面のyouKaigodoType2に設定する。
+            if ((firstCode == null) || (!firstCode.equals(lastCode))) {
+                getYouKaigodoType2().setText(
+                        QkanJotaiCodeUnapplicableFormat.getInstance().format(lastCode));
+                // 要介護度が切り替わる場合の短期入所日数は0
+                isShortStayCountZero = true;
+            }
+            // 認定有効期間(開始)が変わる場合も短期入所日数は0
+            if (first != null && last != null) {
+               if (ACDateUtilities.compareOnDay(first, last) != 0) {
+                   isShortStayCountZero = true;
+               }
+            }
+        }
+        
+        int shortStayCount = 0;
+        //対象月で最新の介護保険情報について、短期入所日数の初期値を取得
+        if (!isShortStayCountZero && last != null) {
+            // 認定の有効期間開始から対象年月前月いっぱいまでの短期入所サービス
+            VRMap param = new VRHashMap();
+            param.setData("TARGET_DATE", getTargetDateSource());
+            param.setData("INSURE_VALID_START", last);
+            param.setData("PATIENT_ID", new Integer(getPatientID()));
+            shortStayCount = getPreviewShortStay(param);
+
+            int initShortStayCount = ACCastUtilities.toInt(
+                    patientInsureInfoLast.get("SHORTSTAY_USE_INIT_COUNT"), 0);
+            if (initShortStayCount > 0) {
+                //備考として出力
+                String biko = " （初期値：" + String.valueOf(initShortStayCount)
+                            + " ＋ 実績値：" + String.valueOf(shortStayCount) + "）";
+                getShortStayUseDayBiko().setText(biko);
+                //実績値に初期値を足す
+                shortStayCount += initShortStayCount;
+            }
+        }
+//2015/4/15 [H27.04改正対応][Yoichiro Kamei] mod - end
 		getShortStayUseDay().setText(String.valueOf(shortStayCount));
 
 		// ※支給限度基準額

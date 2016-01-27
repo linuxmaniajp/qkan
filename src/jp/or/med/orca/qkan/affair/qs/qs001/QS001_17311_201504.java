@@ -456,28 +456,24 @@ public class QS001_17311_201504 extends QS001_17311_201504Event {
      */
     public void checkState() throws Exception {
     	
-        // 算定区分で「2-加算のみ」が選択されている
-        // かつ、看取り連携体制加算が「1-なし」以外の場合
-        if ((getCalculationDivision().getSelectedIndex() == 2)
-                && (getTerminalCareInformationRadioGroup().getSelectedIndex() != 1)) {
-
-            // 看取り連携体制加算日数単位有効
-        	setState_VALID_TERMINAL();
-
-        } else {
-            // 看取り連携体制加算日数単位無効
-        	setState_INVALID_TERMINAL();
-
-        }
-        
-        // 看護職員配置加算(I)を選択した場合、看取り連携加算を有効
-    	if (getNurseStaffDispositionAddRadioGroup().getSelectedIndex() == 2 && getNurseStaffDispositionAddRadioGroup().isEnabled()) {
+    	// 算定区分で「2-加算のみ」が選択されている
+    	if (getCalculationDivision().getSelectedIndex() == 2) {
     		setState_VALID_TERMINAL_CARE_INFORMATION();
+    		// 看取り連携体制加算が「2-あり」の場合
+    		if (getTerminalCareInformationRadioGroup().getSelectedIndex() == 2) {
+    			// 看取り連携体制加算日数単位有効
+            	setState_VALID_TERMINAL();
+    		} else {
+    			// 看取り連携体制加算・看取り連携体制加算日数単位無効
+            	setState_INVALID_TERMINAL();
+    		}
     	} else {
+    		// 看取り連携体制加算日数単位無効
     		setState_INVALID_TERMINAL_CARE_INFORMATION();
     		setState_INVALID_TERMINAL();
     	}
-
+    	
+    	
         checkOnDayCheckState();
         resetStateByRestrictBindPath();
     }

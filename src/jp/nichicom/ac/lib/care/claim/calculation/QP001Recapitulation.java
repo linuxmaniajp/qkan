@@ -605,12 +605,13 @@ public class QP001Recapitulation {
          * （退院（所）日が2006年5月1日の場合）
          * 【プログラム中の解釈】
          * サービスコード
-         * 145001、145002
+         * 145001、145002→廃止になり、145003追加
          * のものを計上
          */
         //前月の請求の摘要欄に記載がある場合には、それを採用する。
         if("14".equals(serviceCodeKind)){
-            if("5001".equals(serviceCodeItem) || "5002".equals(serviceCodeItem)){
+            //if("5001".equals(serviceCodeItem) || "5002".equals(serviceCodeItem)){
+            if("5003".equals(serviceCodeItem)){
             	result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
             }
         }
@@ -647,6 +648,22 @@ public class QP001Recapitulation {
             	result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
             }
         }
+        
+        //[H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - begin 「6116：医療連携強化加算」を追加
+        /*
+         * ■短期入所生活介護
+         * ・医療連携強化加算を算定する場合
+         * 
+         * 利用者の状態（イからリまで）を記載すること。
+         */
+        //前月の請求の摘要欄に記載がある場合には、それを採用する。
+        if("21".equals(serviceCodeKind)){
+        	if("6116".equals(serviceCodeItem)){
+        		//医療連携強化加算
+        		result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
+        	}
+        }
+        //[H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - begin 「6116：医療連携強化加算」を追加
         
         //[CCCX:1616,2096][Shinobu Hitaka] 2014/11/25 add begin 「6278：重度療養管理加算1、6279：重度療養管理加算2」を追加
         /*
@@ -711,13 +728,15 @@ public class QP001Recapitulation {
          * この項目に関しては前月以前の直近の摘要欄から引継ぎ処理を行う
          */
         //
-        if("73".equals(serviceCodeKind) || "75".equals(serviceCodeKind)){
-        	//6139:小規模多機能型事業開始支援加算I
-        	//6140:小規模多機能型事業開始支援加算II
-        	if("6139".equals(serviceCodeItem) || "6140".equals(serviceCodeItem)){
-        		result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
-        	}
-        }
+        // [H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - begin 廃止コード対応
+        //if("73".equals(serviceCodeKind) || "75".equals(serviceCodeKind)){
+        //	//6139:小規模多機能型事業開始支援加算I
+        //	//6140:小規模多機能型事業開始支援加算II
+        //	if("6139".equals(serviceCodeItem) || "6140".equals(serviceCodeItem)){
+        //		result = patientState.getLastRecapitulationCategory3(serviceCodeKind + serviceCodeItem);
+        //	}
+        //}
+        // [H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - end 廃止コード対応
         //[ID:0000464][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
         
         //[ID:0000696][Shin Fujihara] 2012/03 add begin 平成24年4月法改正対応
@@ -811,6 +830,16 @@ public class QP001Recapitulation {
                 || "6503".equals(serviceCodeItem)){
                 daysUniting = true;
             }
+            //[H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - begin 既存と追加コード対応
+            //保健施設入所前後訪問指導加算Ⅰ１(6401)、保健施設入所前後訪問指導加算Ⅰ２(6402)
+            //保健施設入所前後訪問指導加算Ⅱ１(6403)、保健施設入所前後訪問指導加算Ⅱ２(6404)
+            if("6401".equals(serviceCodeItem)
+                || "6402".equals(serviceCodeItem)
+                || "6403".equals(serviceCodeItem)
+                || "6404".equals(serviceCodeItem)){
+                daysUniting = true;
+            }
+            //[H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - end
         }
         
         /* ■介護療養施設サービス

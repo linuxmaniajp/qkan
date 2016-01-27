@@ -4604,5 +4604,21 @@ public class QkanMessageList {
     return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が切れています。" + ACConstants.LINE_SEPARATOR + "新しい利用者負担限度額が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
+  
+  /**
+   * メッセージ「認定有効期間が変更されています。＜改行＞短期入所利用日数の初期値を0にします。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 利用者情報詳細画面で、「短期入所利用日数の初期値」が設定されている場合で、かつ
+   * 「追加」クリック時　・・・　認定有効期間の開始日が、登録済の履歴に存在しない場合　（履歴が0件の場合を除く）
+   * 「書替」クリック時　・・・　認定有効期間の開始日が書替前の日付から変更された場合に表示。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QU002_WARNING_OF_CHANGE_VALID_FOR_SHORTSTAY_USE_INIT_COUNT() throws Exception{
+
+    return ACMessageBox.show("認定有効期間が変更されています。" + ACConstants.LINE_SEPARATOR + "短期入所利用日数の初期値を0にします。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
 
 }

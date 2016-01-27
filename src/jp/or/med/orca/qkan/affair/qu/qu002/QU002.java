@@ -50,6 +50,7 @@ import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.ACZipRelation;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -1995,6 +1996,8 @@ public class QU002 extends QU002Event {
 
 		doFindExternalUseLimit();
 
+		// 要支援１の場合事業対象者からの変更かをチェックする。
+		doCheckJigyoTaisyo();
 	}
 
 	/**
@@ -2011,6 +2014,9 @@ public class QU002 extends QU002Event {
 		doFindLimitRate();
 
 		doFindExternalUseLimit();
+		
+		// 要支援１の場合事業対象者からの変更かをチェックする。
+		doCheckJigyoTaisyo();
 
 	}
 
@@ -3791,7 +3797,60 @@ public class QU002 extends QU002Event {
 // 2014/12/17 [Yoichiro Kamei] mod - end
 			}
 		}
+		
+// 2015/3/31 [Shinobu Hitaka] add - begin
+		// 要支援１の場合事業対象者からの変更かをチェックする。
+		doCheckJigyoTaisyo();
+// 2015/3/31 [Shinobu Hitaka] add - end
 
+// 2015/4/15 [Yoichiro Kamei] add - begin 短期入所利用日数の初期値対応
+        if (getNonCorrespondenceFlg() == 0) { // 非該当の場合は処理を通らない。
+            //短期入所利用日数の初期値が設定されていて、
+            //認定有効期間が変更されていた場合、短期入所利用日数の初期値をクリアするかどうか聞く
+            int shortCount = ACCastUtilities.toInt(getKaigoInfoShortCount().getText(), 0);
+            if (shortCount > 0) {
+        
+                boolean doAlert = false; //アラートを行うかどうか
+                Date validStartInput = getKaigoInfoValidLimit1().getDate(); //認定有効期間（開始）
+                
+                //書替の場合、変更前の日付と違う場合、アラート
+                if (checkMode == CHECK_MODE_UPDATE) {
+                    VRMap map = (VRMap) getKaigoHistoryList().get(getKaigoInfoTable().getSelectedModelRow());
+                    Date validStart = (Date) VRBindPathParser.get("INSURE_VALID_START", map);
+                    if (ACDateUtilities.getDifferenceOnDay(validStartInput, validStart) != 0) {
+                        doAlert = true;
+                    }
+                }
+        	    
+        	    if (checkMode == CHECK_MODE_INSERT && getKaigoHistoryList().size() > 0) {
+        	        //追加の場合で、履歴が登録されている場合
+        	        doAlert = true;
+        	        //登録済の日付と同じ場合、アラートしない
+        	        for (int i = 0; i < getKaigoHistoryList().size(); i++) {
+        	            VRMap map = (VRMap) getKaigoHistoryList().get(i);
+        	            Date validStart = (Date) VRBindPathParser.get("INSURE_VALID_START", map);
+        	            if (ACDateUtilities.getDifferenceOnDay(validStartInput, validStart) == 0) {
+        	                doAlert = false;
+        	                break;
+        	            }
+        	        }
+        	    }
+        
+                if (doAlert) {
+                    switch (QkanMessageList.getInstance()
+                            .QU002_WARNING_OF_CHANGE_VALID_FOR_SHORTSTAY_USE_INIT_COUNT()) {
+                    case ACMessageBox.RESULT_YES:
+                        // 短期入所利用日数の初期値を「0」に設定する。
+                        getKaigoInfoShortCount().setText(ACCastUtilities.toString(0));
+                        break;
+                    case ACMessageBox.RESULT_CANCEL:
+                        // 何もしない
+                    }
+                }
+        	}
+    	}
+// 2015/4/15 [Yoichiro Kamei] add - end 
+		
 		// 戻り値としてtrueを返す。
 		return true;
 
@@ -4913,6 +4972,15 @@ public class QU002 extends QU002Event {
 			}
 		}
 
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/31 add - begin 項目追加に伴う初期値設定
+		// 事業対象者から要支援１のフラグ値がNULLの場合１を設定する
+		if (VRBindPathParser.has("JIGYOTAISYO_FLAG", map)) {
+			if (VRBindPathParser.get("JIGYOTAISYO_FLAG", map) == null) {
+				VRBindPathParser.set("JIGYOTAISYO_FLAG", map, 1);
+			}
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/31 add - end
+		
 		return map;
 
 	}
@@ -6437,4 +6505,36 @@ public class QU002 extends QU002Event {
 	}
 // 2015/1/14 [Yoichiro Kamei] add - end
 	
+// 2015/3/31 [Shinobu Hitaka] add - begin 事業対象者→要支援１の区分変更対応
+	/**
+	 * 「月途中で事業対象者→要支援１になった」の設定チェックに関する処理を行ないます。
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public void doCheckJigyoTaisyo() throws Exception {
+
+		// 月途中の要支援１設定でない場合、事業対象者→要支援１のフラグ設定を初期化する。
+		// 要介護度をチェック
+		if (getKaigoInfoYokaigoInfo().isSelected()) {
+			VRMap temp = (VRMap) getKaigoInfoYokaigoInfo()
+					.getSelectedModelItem();
+			int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get(
+					"JOTAI_CODE", temp));
+			// 要支援１が選択されていない場合
+			if (jotaiCode != YOUKAIGODO_YOUSHIEN1) {
+				getKaigoInfoJigyoTaisyo().setSelected(false);
+			}
+		}
+		// 認定期間開始日が月途中でない場合
+		if (!ACTextUtilities.isNullText(getKaigoInfoValidLimit1().getText())) {
+			Date validStart = getKaigoInfoValidLimit1().getDate();
+			String tmpDay = VRDateParser.format(validStart, "dd");
+        	if ("01".equals(tmpDay)) {
+				getKaigoInfoJigyoTaisyo().setSelected(false);
+			}
+		}
+
+	}
+// 2015/3/31 [Shinobu Hitaka] add - end
 }

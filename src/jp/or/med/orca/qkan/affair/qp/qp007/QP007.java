@@ -127,7 +127,7 @@ public class QP007 extends QP007Event {
         if (ACFrame.getInstance().hasProperty("Claim/DetailsCheck")) {
 			//設定ファイルのClaim-DetailsCheckが0の場合	
 			//「詳細版で印刷する(patientBillSetupDetailsPrintOn)」のチェックをはずす。
-			//設定ファイルのClaim-DetailsCheckが0の場合	
+			//設定ファイルのClaim-DetailsCheckが1の場合	
 			//「詳細版で印刷する(patientBillSetupDetailsPrintOn)」のチェックを付ける。
             settings.put("DETAILS_CHECK",getProperty("Claim/DetailsCheck"));
         } else {
@@ -135,6 +135,17 @@ public class QP007 extends QP007Event {
         }
         // [利用者向け請求書・領収書　詳細版対応] fujihara add end
         
+        // [2014年要望][Shinobu Hitaka] 2015/04/15 add begin 利用者負担額0円も印刷可能にする
+        if (ACFrame.getInstance().hasProperty("Claim/ZeroCheck")) {
+			//設定ファイルのClaim-ZeroCheckが0の場合	
+			//「詳細版で印刷する(patientBillSetupZeroPrintOn)」のチェックをはずす。
+			//設定ファイルのClaim-ZeroCheckが1の場合	
+			//「詳細版で印刷する(patientBillSetupZeroPrintOn)」のチェックを付ける。
+            settings.put("ZERO_CHECK",getProperty("Claim/ZeroCheck"));
+        } else {
+            settings.put("ZERO_CHECK",new Integer(0));
+        }
+        // [2014年要望][Shinobu Hitaka] 2015/04/15 add end
         
         // 「請求書日付(patientBillSetupBillDate)」にログイン日付を設定する。
         settings.put("TARGET_DATE",QkanSystemInformation.getInstance().getSystemDate());
@@ -228,6 +239,14 @@ public class QP007 extends QP007Event {
         //設定ファイルのClaim-DetailsCheckを1に設定する。
         setProperty("Claim/DetailsCheck", String.valueOf(settings.getData("DETAILS_CHECK")));
         // [利用者向け請求書・領収書　詳細版対応] fujihara add end
+        
+        // [2014年要望][Shinobu Hitaka] 2015/04/15 add begin 利用者負担額0円も印刷可能にする
+        //「詳細版で印刷する(patientBillSetupZeroPrintOn)」がチェックされていない場合。	
+        //設定ファイルのClaim-ZeroCheckを0に設定する。
+        //「詳細版で印刷する(patientBillSetupZeroPrintOn)」がチェックされている場合。	
+        //設定ファイルのClaim-ZeroCheckを1に設定する。
+        setProperty("Claim/ZeroCheck", String.valueOf(settings.getData("ZERO_CHECK")));
+        // [2014年要望][Shinobu Hitaka] 2015/04/15 add end
         
         saveProperty();
         

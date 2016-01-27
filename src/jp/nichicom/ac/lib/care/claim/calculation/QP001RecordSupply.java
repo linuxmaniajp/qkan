@@ -644,6 +644,18 @@ public class QP001RecordSupply extends QP001RecordAbstract {
             return result;
         }
         
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - begin
+        int reducedUnit = manager.getServiceUnit(get_1201017(),serviceCode);
+        String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"));
+        String serviceCodeItem = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"));
+        //看取り関連の加算コードであれば、単位数×加算日数とする
+        int serviceCount = QP001SpecialCase.getServiceCount(serviceCodeKind
+            , serviceCodeItem
+            , serviceDetail);                                                
+        if (serviceCount > 1) {
+            reducedUnit = reducedUnit * serviceCount;
+        }
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - end
         
         if (isNew()) {
             // 交換識別番号を設定する。
@@ -689,7 +701,7 @@ public class QP001RecordSupply extends QP001RecordAbstract {
             //set_1201012(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"JOTAI_CODE"));
             //要介護度は当月の一番重いものを採用する。
             set_1201012(patientState.getNinteiDataHeavy(get_1201003(), get_1201009(),"JOTAI_CODE"));
-            
+                        
             //限度額適用期間(開始)6桁(YYYYMM)
             Date start = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"INSURE_VALID_START"));
             set_1201013(VRDateParser.format(start, "yyyyMM"));
@@ -697,6 +709,26 @@ public class QP001RecordSupply extends QP001RecordAbstract {
             Date end = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"INSURE_VALID_END"));
             //限度額適用期間(終了)6桁(YYYYMM)
             set_1201014(VRDateParser.format(end, "yyyyMM"));
+            
+            // [H27.4改正対応][Shinobu Hitaka] 事業対象者から要支援１へ変更時の対応 2015/3/31 add - begin
+            // 要支援１
+            if (get_1201012().equals("12")) {
+            	// 対象年月と限度額適用期間(開始)年月が同じ
+            	if (get_1201002().equals(get_1201013())) {
+            		// 月途中
+	            	String tmpDay = VRDateParser.format(start, "dd");
+	            	if (!"01".equals(tmpDay)) {
+	            		String tmpJigyoFlg = patientState.getNinteiDataLast(get_1201003(), get_1201009(), "JIGYOTAISYO_FLAG");
+	            		// 事業対象者フラグがON
+	            		if ("2".equals(tmpJigyoFlg)) {
+	            			// 要介護状態区分を 06-事業対象者 に差替える
+	            			set_1201012("06");
+	            		}
+	            	}
+            	}
+            }
+            // [H27.4改正対応][Shinobu Hitaka] 事業対象者から要支援１へ変更時の対応 2015/3/31 add - end
+            
             
             //居宅・介護予防支給限度額6桁
             //set_1201015(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"LIMIT_RATE"));
@@ -723,7 +755,10 @@ public class QP001RecordSupply extends QP001RecordAbstract {
             
             //給付計画単位数/日数6桁
             //set_1201020(QP001Manager.getInstance().getServiceUnit(get_1201017(),serviceCode) - ACCastUtilities.toInt(serviceDetail.get("REGULATION_RATE"),0));
-            set_1201020(manager.getServiceUnit(get_1201017(),serviceCode));
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - begin
+//            set_1201020(manager.getServiceUnit(get_1201017(),serviceCode));
+            set_1201020(reducedUnit);
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - end
             
             //限度額管理期間における前月までの給付計画日数3桁
             set_1201021("");
@@ -742,7 +777,10 @@ public class QP001RecordSupply extends QP001RecordAbstract {
 
 
         } else {
-            set_1201020(get_1201020() + (manager.getServiceUnit(get_1201017(),serviceCode)));
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - begin
+//            set_1201020(get_1201020() + (manager.getServiceUnit(get_1201017(),serviceCode)));
+        set_1201020(get_1201020() + reducedUnit);
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - end
         }
         
         //自費調整を反映させる。

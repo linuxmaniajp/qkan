@@ -90,6 +90,10 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
     private RecuperationUnitCalc unitCalc = new RecuperationUnitCalc();
     //[H20.5 法改正対応] fujihara add end
     
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add begin 「利用者負担額0円も印刷可能にする」のチェック状況
+    private int zeroPrint = 0;
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add end
+
     protected String getSerialId() {
         return null;
     }
@@ -354,6 +358,24 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
     private Date getTargetDate() {
         return target;
     }
+    
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add begin 「利用者負担額0円も印刷可能にする」のチェック状況
+    /**
+     * 利用者負担額0円の印字モードを設定する。
+     * @param target
+     */
+    public void setZeroPrint(int zeroPrint) {
+        this.zeroPrint = zeroPrint;
+    }
+    
+    /**
+     * 利用者負担額0円の印字モードを取得する。
+     * @return
+     */
+    public int getZeroPrint() {
+        return zeroPrint;
+    }
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add end
     
     /**
      * 利用者負担(1列目)　単位数を取得します。
@@ -854,6 +876,43 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
             	detailsTmp.put(detailsKey.toString(), claim);
             	break;
                 
+            // [H27.4法改正対応][Shinobu Hitaka] 2015/04/08 add start
+            //明細情報（住所地特例）レコード
+            case 18:
+            	/*
+            	 * サービス種類コード+サービス項目コード+'-'+サービス単位数＋'-'+摘要欄（用具対応）
+            	 * 上記文字列をキーとしてTreeMapに挿入する。
+            	 * 作成したTreeMapをdetailsMapにサービス種類コードをキーとして登録する。
+            	 * 
+            	 * detailsMap -+- "11" - TreeMap <- サービス種類コード11のデータの集まり
+            	 *             |
+            	 *             +- "12" - TreeMap <- サービス種類コード12のデータの集まり
+            	 *             |
+            	*/
+            	
+            	
+            	StringBuilder detailsKeyJT = new StringBuilder();
+            	String serviceCodeKindJT = ACCastUtilities.toString(VRBindPathParser.get("1801007",claim));
+            	
+            	detailsKeyJT.append(serviceCodeKindJT);
+            	detailsKeyJT.append(ACCastUtilities.toString(VRBindPathParser.get("1801008",claim)));
+            	detailsKeyJT.append("-");
+            	detailsKeyJT.append(ACCastUtilities.toString(VRBindPathParser.get("1801014",claim)));
+            	detailsKeyJT.append("-");
+            	detailsKeyJT.append(ACCastUtilities.toString(VRBindPathParser.get("1801018",claim)));
+            	
+            	Map detailsTmpJT = null;
+            	if (detailsMap.containsKey(serviceCodeKindJT)){
+            		detailsTmpJT = (Map)detailsMap.get(serviceCodeKindJT);
+            	} else {
+            		detailsTmpJT = new TreeMap();
+            		detailsMap.put(serviceCodeKindJT, detailsTmpJT);
+            	}
+            	
+            	detailsTmpJT.put(detailsKeyJT.toString(), claim);
+            	break;
+            // [H27.4法改正対応][Shinobu Hitaka] 2015/04/08 add end
+                
             //集計情報レコード
             case 7:
             	typeMap.put(claim.get("701007"), claim);
@@ -899,8 +958,12 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
      */
     private void parseType(VRMap claim, String[] kohiType,QP001Manager manager,VRMap detailsMap) throws Exception {
         
+    	// [2014年要望][Shinobu Hitaka] 2015/04/15 edit begin 利用者負担額0円も印刷可能にする
         //利用者負担額が0円以外の場合、帳票に出力する。
-        if(ACCastUtilities.toInt(claim.get("701017"),0) != 0){
+    	//if(ACCastUtilities.toInt(claim.get("701017"),0) != 0){
+        if((zeroPrint == 0 && ACCastUtilities.toInt(claim.get("701017"),0) != 0) || (zeroPrint != 0)){
+        // [2014年要望][Shinobu Hitaka] 2015/04/15 edit end
+        	
             //サービス種類コード
             String serviceCodeKind = String.valueOf(claim.get("701007"));
             //サービス名称
@@ -908,12 +971,34 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
             
             //明細情報レコードより、該当サービス種類コードの詳細を取得
             Map details = (Map)detailsMap.get(serviceCodeKind);
-            Iterator it = details.keySet().iterator();
-            while(it.hasNext()){
-            	VRMap map = (VRMap)details.get(it.next());
-            	//集計情報レコードに関連する明細情報を出力する
-            	setServiceData((String)map.get("301019"), 0, map);
+            
+            // [H27.4法改正対応][Shinobu Hitaka] 2015/04/08 edit begin
+            //Iterator it = details.keySet().iterator();
+            //while(it.hasNext()){
+            //	VRMap map = (VRMap)details.get(it.next());
+            //	//集計情報レコードに関連する明細情報を出力する
+            //	setServiceData((String)map.get("301019"), 0, map);
+            //}
+            //
+            //利用者負担0円印字の場合はサービス名先頭に*を付加する
+            if (zeroPrint != 0){
+            	serviceName = "*" + serviceName;
             }
+            //明細情報を念のためnull判定する
+            if(details != null){
+	            Iterator it = details.keySet().iterator();
+	            while(it.hasNext()){
+	            	VRMap map = (VRMap)details.get(it.next());
+	            	if ((String)map.get("301019") != null) {
+		            	//集計情報レコードに関連する明細情報を出力する
+		            	setServiceData((String)map.get("301019"), 0, map);
+	            	} else {
+		            	//集計情報レコードに関連する明細情報（住所地特例）を出力する
+	            		setServiceData((String)map.get("1801020"), 0, map);
+	            	}
+	            }
+            }
+            // [H27.4法改正対応][Shinobu Hitaka] 2015/04/08 edit end
             
             setServiceData(serviceName,ACCastUtilities.toInt(claim.get("701017"),0),claim);
         }
@@ -1117,6 +1202,19 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
 	        	}
 	        	//回数・日数
 	        	count = ACCastUtilities.toInt(VRBindPathParser.get("301010",claim),0);
+	        	
+	        // [H27.4法改正対応][Shinobu Hitaka] 2015/04/08 add begin
+	        //明細情報（住所地特例）レコードを表す分類の定数情報である場合
+	        } else if (QkanConstants.CATEGORY_NO_RECORD_DETAILED_JUSHOTI_TOKUREI.equals(categoryNo)) {
+	        	//単位数
+	        	unit = ACCastUtilities.toInt(VRBindPathParser.get("1801009",claim),0);
+	        	//単位数0の場合は、サービス単位数を採用する
+	        	if (unit == 0){
+	        		unit = ACCastUtilities.toInt(VRBindPathParser.get("1801014",claim),0);
+	        	}
+	        	//回数・日数
+	        	count = ACCastUtilities.toInt(VRBindPathParser.get("1801010",claim),0);
+	        // [H27.4法改正対応][Shinobu Hitaka] 2015/04/08 add end
 	        	
 	        //集計情報レコードを表す分類の定数情報である場合
 	        } else if (QkanConstants.CATEGORY_NO_RECORD_TOTAL.equals(categoryNo)) {

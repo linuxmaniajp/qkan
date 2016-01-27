@@ -36,6 +36,7 @@ import java.util.Set;
 
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -704,7 +705,24 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     //[ID:0000730][Shin Fujihara] add end
     
 
-    /**
+ // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+    private VRMap selfPaymentNumberAddCode;
+	/**
+     * 自己負担対象の回数加算レコードであるか
+     * @return
+     */
+    public boolean isSelfPaymentNumberAddRecord() {
+		return SelfPaymentNumberCalcurater.isTaisho(selfPaymentNumberAddCode);
+	}
+    public VRMap getSelfPaymentNumberAddCode() {
+		return selfPaymentNumberAddCode;
+	}
+	public void setSelfPaymentNumberAddCode(VRMap selfPaymentNumberAddCode) {
+		this.selfPaymentNumberAddCode = selfPaymentNumberAddCode;
+	}
+// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+	
+	/**
      * 既に情報が登録されているか返却します。
      * 
      * @return 新規:true 追加:false
@@ -859,6 +877,12 @@ public class QP001RecordDetail extends QP001RecordAbstract {
                     set_301018(ACCastUtilities.toString(serviceDetail.get("1170104")));
                 }
             }
+            
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+            if (SelfPaymentNumberCalcurater.isTaisho(serviceCode)) {
+            	setSelfPaymentNumberAddCode(new VRHashMap(serviceCode));
+            }
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
 
         } else {
             //見取り看護加算対応
@@ -1115,10 +1139,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         //レコードの作成可否を判断
         //2008/09/03 [Shin Fujihara] edit - begin 30日超の単位数をPatientStateに保持するよう変更
         //if(!isMakeRecord(serviceDetail,serviceCode)){
-  // 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
-  //if(!isMakeRecord(serviceDetail,serviceCode, patientState)){
-        if(!isMakeRecord(serviceDetail,serviceCode, patientState, targetServiceDate)){
-  // 2014/12/24 [Yoichiro Kamei] mod - end
+        if(!isMakeRecord(serviceDetail,serviceCode, patientState)){
         //2008/09/03 [Shin Fujihara] edit - end 30日超の単位数をPatientStateに保持するよう変更
             return detail;
         }
@@ -1145,10 +1166,10 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     
     //2008/09/03 [Shin Fujihara] edit - begin 30日超の単位数をPatientStateに保持するよう変更
     //private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode) throws Exception {
-// 2014/12/24 [Yoichiro Kamei] mod - begin 住所地特例対応
-//    private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState) throws Exception {
-    private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState, Object targetServiceDate) throws Exception {
-// 2014/12/24 [Yoichiro Kamei] mod - end
+ // 2015/3/30 [Yoichiro Kamei] mod - begin 住所地特例対応
+ //   private static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState) throws Exception {
+    protected static boolean isMakeRecord(VRMap serviceDetail,VRMap serviceCode, QP001PatientState patientState) throws Exception {
+ // 2015/3/30 [Yoichiro Kamei] mod - end
     //2008/09/03 [Shin Fujihara] edit - end 30日超の単位数をPatientStateに保持するよう変更
         
         //給付管理限度額対象フラグを確認する。
@@ -1163,15 +1184,6 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         	//2008/09/03 [Shin Fujihara] add - end 30日超の単位数をPatientStateに保持するよう変更
             return false;
         }
-// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-        //住所地特例対象者で、地域密着型サービスの場合は、レコードの作成を中断する。
-        //明細情報（住所地特例）レコードとして別に作成するため
-        if (!ACTextUtilities.isNullText(patientState.getJushotiTokureiInsurerId(targetServiceDate))) {
-            if(QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceCode)))){
-            	return false;
-            }
-        }
-// 2014/12/24 [Yoichiro Kamei] add - end
         
         return true;
     }
@@ -1483,6 +1495,19 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         return this.kohiManager.getKohiPattern();
     }
 
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+	/**
+	 * 指定回数算定時点における指定公費番号の公費適用日数・回数を返却します。
+	 * 
+	 * @param kohiType 公費番号
+	 * @param atTime 何回目の算定時における公費適用カウントを取得するか
+	 * @return 指定回数算定時点における指定された公費番号の公費適用日数・回数
+	 */
+	protected int getKohiCountAtTime(String kohiType, int atTime){
+		return this.kohiManager.getKohiCountAtTime(kohiType, atTime);
+	}
+	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+	
     /**
      * データ作成
      * 

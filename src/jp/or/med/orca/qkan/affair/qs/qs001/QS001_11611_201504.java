@@ -61,7 +61,7 @@ public class QS001_11611_201504 extends QS001_11611_201504Event {
         // 2015.03.02 del putImportProviderBindPath("入浴加算", "1160102", "1160105");
         // 2015.03.02 del putImportProviderBindPath("栄養改善体制", "1160116", "1160114");
         // 2015.03.02 del putImportProviderBindPath("口腔機能向上体制", "1160109", "1160115");
-        putImportProviderBindPath("認知症短期集中リハビリテーション加算", "1160113", "1160120");
+        // 2015.03.20 del putImportProviderBindPath("認知症短期集中リハビリテーション加算", "1160113", "1160120");
         putImportProviderBindPath("サービス提供体制強化加算", "1160115", "1160122");
         putImportProviderBindPath("中重度者ケア体制加算", "1160124", "1160125");
         putImportProviderBindPath("社会参加支援加算", "1160125", "1160126");
@@ -117,21 +117,6 @@ public class QS001_11611_201504 extends QS001_11611_201504Event {
         // paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
         ACFrame.debugStart(new ACAffairInfo(QS001_11611_201504.class.getName(),
                 param));
-    }
-
-    /**
-     * 「リハビリテーションマネジメント加算選択時」イベントです。
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void houmonRehabilitationManagementAddRadioActionPerformed(ActionEvent e) throws Exception{
-        // リハビリテーションマネジメント加算なし選択
-        if (getHoumonRehabilitationManagementAddRadio().getSelectedIndex() == 1) {
-        	setState_INVALID_HOUMON_REHABILITATION_MANAGEMENT();
-        } else {
-        	setState_VALID_HOUMON_REHABILITATION_MANAGEMENT();
-        	checkRehabilitationState();
-        }
     }
 
     /**
@@ -256,10 +241,6 @@ public class QS001_11611_201504 extends QS001_11611_201504Event {
                     ACDateUtilities.getDifferenceOnDay(ACDateUtilities.createDate(2016, 4, 1), getCalculater().getTargetDate()) > 0) {
             	getRegionalServiceRadioGroupContainer().setEnabled(false);
             }
-            // リハビリテーションマネジメント加算なし選択
-            if (getHoumonRehabilitationManagementAddRadio().getSelectedIndex() == 1) {
-            	setState_INVALID_HOUMON_REHABILITATION_MANAGEMENT();
-            }
             // 2015/03/02 [H27.4改正対応][Shinobu Hitaka] edit - end
 
             // ※展開
@@ -383,7 +364,7 @@ public class QS001_11611_201504 extends QS001_11611_201504Event {
 
         if (overKaigodo3) {
             // 要介護度が３・４・５の場合は、重度療養管理加算有効 かつ
-            // 1～2時間の場合のみ有効
+            // 1～2時間の場合は無効それ以外有効
             setState_INVALID_ADD_MEDICAL_MANAGEMENT();
             if (timeIndex >= 1) {
                 setState_VALID_ADD_MEDICAL_MANAGEMENT();

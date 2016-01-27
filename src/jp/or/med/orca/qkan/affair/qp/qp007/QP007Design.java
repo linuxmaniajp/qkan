@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2008/02/27  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2015/04/15  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
@@ -98,6 +98,8 @@ public class QP007Design extends QkanAffairDialog {
   private ACIntegerCheckBox patientBillSetupMedicalTreatmentOn;
 
   private ACIntegerCheckBox patientBillSetupDetailsPrintOn;
+
+  private ACIntegerCheckBox patientBillSetupZeroPrintOn;
 
   private ACPanel buttons;
 
@@ -490,6 +492,25 @@ public class QP007Design extends QkanAffairDialog {
   }
 
   /**
+   * 利用者負担0円のサービスを印刷するを取得します。
+   * @return 利用者負担0円のサービスを印刷する
+   */
+  public ACIntegerCheckBox getPatientBillSetupZeroPrintOn(){
+    if(patientBillSetupZeroPrintOn==null){
+
+      patientBillSetupZeroPrintOn = new ACIntegerCheckBox();
+
+      patientBillSetupZeroPrintOn.setText("利用者負担0円のサービスを印刷する");
+
+      patientBillSetupZeroPrintOn.setBindPath("ZERO_CHECK");
+
+      addPatientBillSetupZeroPrintOn();
+    }
+    return patientBillSetupZeroPrintOn;
+
+  }
+
+  /**
    * ボタン領域を取得します。
    * @return ボタン領域
    */
@@ -616,7 +637,7 @@ public class QP007Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(520, 220);
+      setSize(540, 240);
 
       // ウィンドウを中央に配置
       Point pos;
@@ -804,6 +825,8 @@ public class QP007Design extends QkanAffairDialog {
 
     patientBillSetupUnder.add(getPatientBillSetupDetailsPrintOn(), VRLayout.FLOW);
 
+    patientBillSetupUnder.add(getPatientBillSetupZeroPrintOn(), VRLayout.FLOW);
+
   }
 
   /**
@@ -824,6 +847,13 @@ public class QP007Design extends QkanAffairDialog {
    * 詳細版で印刷するに内部項目を追加します。
    */
   protected void addPatientBillSetupDetailsPrintOn(){
+
+  }
+
+  /**
+   * 利用者負担0円のサービスを印刷するに内部項目を追加します。
+   */
+  protected void addPatientBillSetupZeroPrintOn(){
 
   }
 

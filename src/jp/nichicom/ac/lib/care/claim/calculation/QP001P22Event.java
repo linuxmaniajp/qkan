@@ -191,8 +191,23 @@ public class QP001P22Event {
         //歴史的背景により、バインドパスが連番ではないので注意
         for (int row = 1,i = 0; row <= 10; row++, i+=2){
         	String row_name = Integer.toString(row);
+        	
+        	// [2014年要望][Shinobu Hitaka] 2015/04/15 edit begin 
+        	//--add begin
+        	// 利用者負担0円印字の場合は、サービス種類合計レコードのサービス名先頭に*が付加されている
+        	String tmpServiceName = ACCastUtilities.toString(style.getData(Integer.toString(1601001 + i)),"");
+        	Boolean totalFlag = false;
+        	if (tmpServiceName.length() > 1){
+	        	if ("*".equals(tmpServiceName.substring(0, 1))) {
+	        		totalFlag = true;
+	        		tmpServiceName = tmpServiceName.substring(1);
+	        	}
+        	}
+        	//--add end
+        	//--edit begin
             // 利用者負担が発生する場合はインデント＋背景色変更
-            if(!"".equals(getFormatData(style, Integer.toString(1601001 + i + 1)))){
+            //if(!"".equals(getFormatData(style, Integer.toString(1601001 + i + 1)))){
+            if(!"".equals(getFormatData(style, Integer.toString(1601001 + i + 1))) || totalFlag){
                 // サービス名を設定する。
                 ACChotarouXMLUtilities.setFillColor(writer,"seikyu.r" + row_name + ".service",SERVICE_TOTAL_BACK_COLOR);
                 // 単位数を設定する。
@@ -202,11 +217,15 @@ public class QP001P22Event {
                 // 利用者負担額を設定する。
                 ACChotarouXMLUtilities.setFillColor(writer,"seikyu.r" + row_name + ".futan",SERVICE_TOTAL_BACK_COLOR);
                 // サービス名にインデントを入れる
-                serviceName = "　" + style.getData(Integer.toString(1601001 + i));
+                //serviceName = "　" + style.getData(Integer.toString(1601001 + i));
+                serviceName = "　" + tmpServiceName;
             } else {
                 // 通常
-                serviceName = ACCastUtilities.toString(style.getData(Integer.toString(1601001 + i)),"");                
+                //ACCastUtilities.toString(style.getData(Integer.toString(1601001 + i)),"");
+                serviceName = tmpServiceName;
             }
+            //--edit end
+        	// [2014年要望][Shinobu Hitaka] 2015/04/15 edit end
 
             ACChotarouXMLUtilities.setValue(writer, "seikyu.r" + row_name + ".service", serviceName);
             // 単位数を設定する。
@@ -223,8 +242,22 @@ public class QP001P22Event {
         //11列目から19列目まで印字
         for (int row = 11,i = 0; row <= 19; row++, i+=4){
         	String row_name = Integer.toString(row);
+        	
+        	// [2014年要望][Shinobu Hitaka] 2015/04/15 edit begin 
+        	// 利用者負担0円印字の場合は、サービス種類合計レコードのサービス名先頭に*が付加されている
+        	//--add begin
+        	String tmpServiceName = ACCastUtilities.toString(style.getData(Integer.toString(1601062 + i)),"");
+        	Boolean totalFlag = false;
+        	if (tmpServiceName.length() > 1){
+	        	if ("*".equals(tmpServiceName.substring(0, 1))) {
+	        		totalFlag = true;
+	        		tmpServiceName = tmpServiceName.substring(1);
+	        	}
+        	}
+        	//--add end
+        	//--edit begin
             // 利用者負担が発生する場合はインデント＋背景色変更
-            if(!"".equals(getFormatData(style, Integer.toString(1601062 + i + 3)))){
+            if(!"".equals(getFormatData(style, Integer.toString(1601062 + i + 3))) || totalFlag){
                 // サービス名を設定する。
                 ACChotarouXMLUtilities.setFillColor(writer,"seikyu.r" + row_name + ".service",SERVICE_TOTAL_BACK_COLOR);
                 // 単位数を設定する。
@@ -234,11 +267,16 @@ public class QP001P22Event {
                 // 利用者負担額を設定する。
                 ACChotarouXMLUtilities.setFillColor(writer,"seikyu.r" + row_name + ".futan",SERVICE_TOTAL_BACK_COLOR);
                 // サービス名にインデントを入れる
-                serviceName = "　" + style.getData(Integer.toString(1601062 + i));
+                //serviceName = "　" + style.getData(Integer.toString(1601062 + i));
+                serviceName = "　" + tmpServiceName;
             } else {
                 // 通常
-                serviceName = ACCastUtilities.toString(style.getData(Integer.toString(1601062 + i)),"");
+                //ACCastUtilities.toString(style.getData(Integer.toString(1601062 + i)),"");
+                serviceName = tmpServiceName;
             }
+            //--edit end
+        	// [2014年要望][Shinobu Hitaka] 2015/04/15 edit end
+            
             ACChotarouXMLUtilities.setValue(writer, "seikyu.r" + row_name + ".service", serviceName);
         	//単位数
         	ACChotarouXMLUtilities.setValue(writer, "seikyu.r" + row_name + ".unit", getFormatData(style, Integer.toString(1601062 + i + 1)));

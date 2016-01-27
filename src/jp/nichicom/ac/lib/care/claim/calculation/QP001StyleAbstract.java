@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -269,6 +270,12 @@ public abstract class QP001StyleAbstract {
                 detailAdd.put(detail.get_301021() + "_8", detail);
                 break;
             }
+            
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+            if (detail.isSelfPaymentNumberAddRecord()) {
+            	detailAdd.put(detail.get_301021() + "_2", detail);
+            }
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
         }
         
         // 自己負担調整
@@ -330,6 +337,11 @@ public abstract class QP001StyleAbstract {
                 break;
             }
 
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+            if (detail.isSelfPaymentNumberAddRecord()) {
+            	detailAdd.put(detail.get_301021() + "_2", detail);
+            }
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
         }
         
         QP001RecordDiagnosis diagnosis = null; 
@@ -598,6 +610,74 @@ public abstract class QP001StyleAbstract {
                 //引いた分を全額自己負担へ
                 patientState.putAddSelfpay(detail.get_301007(), unit);
             }
+            
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+            //自己負担対象の回数加算を算定している場合
+            if (detailAdd.containsKey(systemServiceKind + "_2")) {
+                detail = detailAdd.get(systemServiceKind + "_2");
+                
+                selfPay = getSelfpay(styles, patientState, planUnitMap, detail, serviceUnit, selfPay);
+                //自己負担が発生していない場合は処理終了
+                if (selfPay == 0) {
+                    continue;
+                }
+                
+                SelfPaymentNumberCalcurater selfPaymentNumberCalcurater = patientState.getSelfPaymentNumberCalcurater();
+                String providerId = detail.get_301004();
+                selfPaymentNumberCalcurater.parseServiceCode(detail.getSelfPaymentNumberAddCode(), providerId, selfPay);
+                int unit = selfPaymentNumberCalcurater.getSelfPayUnit();
+                int limitInNumber = selfPaymentNumberCalcurater.getLimitInNumber();
+                int reductedUnit = selfPaymentNumberCalcurater.getReductedUnit();
+                stackedSelfUnit += unit;
+                
+                //回数を区分支給限度内としての回数に設定
+                detail.set_301010(limitInNumber);
+                
+                //公費回数(上記回数時点の公費適用日数・回数）
+
+                //公費1対象日数・回数2桁
+                detail.set_301011(detail.getKohiCountAtTime(detail.get_301023(), limitInNumber));
+                
+                //公費2対象日数・回数2桁
+                detail.set_301012(detail.getKohiCountAtTime(detail.get_301024(), limitInNumber));
+                
+                //公費3対象日数・回数2桁
+                detail.set_301013(detail.getKohiCountAtTime(detail.get_301025(), limitInNumber));
+                
+                //公費回数の調整
+                
+                //公費1対象日数・回数2桁
+                if (detail.get_301010() < detail.get_301011()) {
+                    detail.set_301011(detail.get_301010());
+                }
+                //公費2対象日数・回数2桁
+                if (detail.get_301010() < detail.get_301012()) {
+                    detail.set_301012(detail.get_301010());
+                }
+                //公費3対象日数・回数2桁
+                if (detail.get_301010() < detail.get_301013()) {
+                    detail.set_301013(detail.get_301010());
+                }
+ 
+                //単位数
+                detail.set_301009(reductedUnit);
+                
+                //サービス単位数
+                detail.set_301014(detail.get_301009() * detail.get_301010());
+                
+                //公費1対象サービス単位数6桁
+                detail.set_301015(detail.get_301009() * detail.get_301011());
+                //公費2対象サービス単位数6桁
+                detail.set_301016(detail.get_301009() * detail.get_301012());
+                //公費3対象サービス単位数6桁
+                detail.set_301017(detail.get_301009() * detail.get_301013());
+
+                
+                //引いた分を全額自己負担へ
+                patientState.putAddSelfpay(detail.get_301007(), unit);            
+            }
+            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+            
             
             //処遇改善加算を算定している場合
             if (detailAdd.containsKey(systemServiceKind + "_8")) {

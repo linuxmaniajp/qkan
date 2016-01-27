@@ -17,9 +17,9 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 小笠　貴志
- * 作成日: 2006/06/09  日本コンピューター株式会社 小笠　貴志 新規作成
- * 更新日: 2014/10/23  MIS九州株式会社 日高 しのぶ
+ * 開発者: 樋口　雅彦
+ * 作成日: 2015/04/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス作成/変更 (S)
  * プロセス サービス予定・実績 (001)
@@ -28,39 +28,60 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairDialog;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.component.QkanDateTextField;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 利用・提供票印刷画面項目デザイン(QS001003) 
  */
-@SuppressWarnings("serial")
 public class QS001003Design extends QkanAffairDialog {
   //GUIコンポーネント
 
@@ -157,6 +178,8 @@ public class QS001003Design extends QkanAffairDialog {
   private ACTextField shortStayUseDay;
 
   private ACLabel solid8;
+
+  private ACLabel shortStayUseDayBiko;
 
   private ACLabelContainer publicExpenses;
 
@@ -1038,6 +1061,21 @@ public class QS001003Design extends QkanAffairDialog {
   }
 
   /**
+   * ラベルを取得します。
+   * @return ラベル
+   */
+  public ACLabel getShortStayUseDayBiko(){
+    if(shortStayUseDayBiko==null){
+
+      shortStayUseDayBiko = new ACLabel();
+
+      addShortStayUseDayBiko();
+    }
+    return shortStayUseDayBiko;
+
+  }
+
+  /**
    * 公費コンテナを取得します。
    * @return 公費コンテナ
    */
@@ -1480,7 +1518,7 @@ public class QS001003Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(900, 310);
+      setSize(920, 330);
 
       // ウィンドウを中央に配置
       Point pos;
@@ -1856,6 +1894,8 @@ public class QS001003Design extends QkanAffairDialog {
 
     shortStayUseDays.add(getSolid8(), null);
 
+    shortStayUseDays.add(getShortStayUseDayBiko(), null);
+
   }
 
   /**
@@ -1876,6 +1916,13 @@ public class QS001003Design extends QkanAffairDialog {
    * ラベルに内部項目を追加します。
    */
   protected void addSolid8(){
+
+  }
+
+  /**
+   * ラベルに内部項目を追加します。
+   */
+  protected void addShortStayUseDayBiko(){
 
   }
 

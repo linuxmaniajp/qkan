@@ -107,10 +107,7 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
         if(_9 == 2){
             sysSvcCdItems = new ArrayList<HashMap<String, String>>();
             
-            if (_1160111 == 2) {
-                // 通所リハマネジメント加算Ⅰ
-                putSystemServiceCodeItem(sysSvcCdItems, "Z5601");//TODO:H27改正単独加算
-            } else if (_1160111 == 3) {
+            if (_1160111 == 3) {
                 // 通所リハマネジメント加算Ⅱ１
                 putSystemServiceCodeItem(sysSvcCdItems, "Z5608");//TODO:コード値確認
             } else if (_1160111 == 4) {

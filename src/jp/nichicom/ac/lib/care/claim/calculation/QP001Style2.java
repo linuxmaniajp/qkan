@@ -123,39 +123,48 @@ public class QP001Style2 extends QP001StyleAbstract{
 		
 		Object targetServiceDate = VRBindPathParser.get("SERVICE_DATE",serviceDetail);
 
-        //明細情報レコードを取得
-        QP001RecordDetail detail = QP001RecordDetail.getInstance(identificationNo,
-                                                                targetDate,
-                                                                targetServiceDate,
-                                                                serviceDetail,
-                                                                serviceCode,
-                                                                patientState,
-                                                                detailMap,
-                                                                manager);
-        
-        //レコードが作成されていれば
-        if(detail != null){
-            //明細情報データ解析
-            detail.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
-        }
-        
-// 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
-        //明細情報レコードを取得
-        QP001RecordDetailJushotiTokurei detailJushotiTokurei = QP001RecordDetailJushotiTokurei.getInstance(identificationNo,
-                                                                targetDate,
-                                                                targetServiceDate,
-                                                                serviceDetail,
-                                                                serviceCode,
-                                                                patientState,
-                                                                detailMap,
-                                                                manager);
-        
-        //レコードが作成されていれば
-        if(detailJushotiTokurei != null){
-            //明細情報データ解析
-        	detailJushotiTokurei.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
-        }        
-// 2014/12/24 [Yoichiro Kamei] add - end
+// 2015/3/30 [Yoichiro Kamei] mod - begin 住所地特例対応
+		//住所地特例の施設所在保険者番号
+		String jushotiTokureiInsurerId = getJushotiTokureiInsurerId(targetServiceDate, patientState, serviceCode);
+		
+		if (ACTextUtilities.isNullText(jushotiTokureiInsurerId)) {
+			//住所地特例ではない（通常の明細レコード）
+			
+	        //明細情報レコードを取得
+	        QP001RecordDetail detail = QP001RecordDetail.getInstance(identificationNo,
+	                                                                targetDate,
+	                                                                targetServiceDate,
+	                                                                serviceDetail,
+	                                                                serviceCode,
+	                                                                patientState,
+	                                                                detailMap,
+	                                                                manager);
+	        
+	        //レコードが作成されていれば
+	        if(detail != null){
+	            //明細情報データ解析
+	            detail.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
+	        }
+		} else {
+	        //住所地特例の明細情報レコードを取得
+	        QP001RecordDetailJushotiTokurei detailJushotiTokurei = QP001RecordDetailJushotiTokurei.getInstance(identificationNo,
+	                                                                targetDate,
+	                                                                targetServiceDate,
+	                                                                serviceDetail,
+	                                                                serviceCode,
+	                                                                patientState,
+	                                                                detailMap,
+	                                                                manager,
+	                                                                jushotiTokureiInsurerId);
+	        
+	        //レコードが作成されていれば
+	        if(detailJushotiTokurei != null){
+	            //明細情報データ解析
+	        	detailJushotiTokurei.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
+	        }
+
+		}
+// 2015/3/30 [Yoichiro Kamei] mod - end 住所地特例対応
         
       	/* 社福減免レコード集計処理 */
       	//社福レコードを取得
@@ -326,7 +335,33 @@ public class QP001Style2 extends QP001StyleAbstract{
 		
 	}
     
-	
+ // 2015/3/30 [Yoichiro Kamei] add - begin 住所地特例対応
+    //明細情報（住所地特例）の対象レコードであれば、施設所在保険者番号を返します。
+    //対象外の場合は空文字をかえします。
+    private String getJushotiTokureiInsurerId(Object targetServiceDate
+    		, QP001PatientState patientState
+    		, VRMap serviceCode)  throws Exception {
+    	//住所地特例対象の地域密着型サービスか
+    	if (!QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceCode)))) {
+    		return "";
+    	}
+    	//月額サービス、月額加算、地域系%加算の場合
+    	//月末時点で住所地特例の対象かどうか
+    	if (ACCastUtilities.toInt(VRBindPathParser.get("TOTAL_GROUPING_TYPE", serviceCode)) == 3 //1月につき
+    		|| ACCastUtilities.toInt(VRBindPathParser.get("SERVICE_ADD_FLAG", serviceCode)) == 3 //％加算(地域系加算)
+    		|| ACCastUtilities.toInt(VRBindPathParser.get("SERVICE_ADD_FLAG", serviceCode)) == 6 //％加算(対象に地域系加算を含む)
+    		|| ACCastUtilities.toInt(VRBindPathParser.get("SERVICE_ADD_FLAG", serviceCode)) == 8 //処遇改善加算
+    	) {
+    		//対象日を月末日にセット
+    		targetServiceDate = ACDateUtilities.toLastDayOfMonth(ACCastUtilities.toDate(targetServiceDate));
+    	}
+    	
+    	//対象日時点の住所地特例の施設所在保険者番号
+    	return patientState.getJushotiTokureiInsurerId(targetServiceDate);
+    }
+ // 2015/3/30 [Yoichiro Kamei] add - end 住所地特例対応
+    
+    
 	/**
 	 * DB登録用のレコード集合を作成します。
 	 * @param patient_id

@@ -916,6 +916,9 @@ public class QP001PrintControl {
         // 詳細版出力にチェックなし
         case 0:
             QP001RecordUserClaim userClaim = new QP001RecordUserClaim();
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add begin 利用者負担額0円も印刷可能にする
+            userClaim.setZeroPrint(ACCastUtilities.toInt(printSetting.get("ZERO_CHECK"), 0));
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add end
             userClaim.parse(claimList, manager);
             // 利用者支払い金額を取得
             riyousya = userClaim.getClaimTotal();
@@ -924,6 +927,9 @@ public class QP001PrintControl {
         // 詳細版出力にチェックあり
         case 1:
             QP001RecordUserClaimDetails userClaimDetails = new QP001RecordUserClaimDetails();
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add begin 利用者負担額0円も印刷可能にする
+            userClaimDetails.setZeroPrint(ACCastUtilities.toInt(printSetting.get("ZERO_CHECK"), 0));
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add end
             userClaimDetails.parse(claimList, manager);
             // 利用者支払い金額を取得
             riyousya = userClaimDetails.getClaimTotal();
@@ -1334,6 +1340,9 @@ public class QP001PrintControl {
         // 詳細版出力にチェックなし
         case 0:
             QP001RecordUserClaim userClaim = new QP001RecordUserClaim();
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add begin 利用者負担額0円も印刷可能にする
+            userClaim.setZeroPrint(ACCastUtilities.toInt(printSetting.get("ZERO_CHECK"), 0));
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add end
             userClaim.parse(claimList, manager);
             // 利用者支払い金額を取得
             riyousya = userClaim.getClaimTotal();
@@ -1342,6 +1351,9 @@ public class QP001PrintControl {
         // 詳細版出力にチェックあり
         case 1:
             QP001RecordUserClaimDetails userClaimDetails = new QP001RecordUserClaimDetails();
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add begin 利用者負担額0円も印刷可能にする
+            userClaimDetails.setZeroPrint(ACCastUtilities.toInt(printSetting.get("ZERO_CHECK"), 0));
+            // [2014年要望][Shinobu Hitaka] 2015/04/15 add end
             userClaimDetails.parse(claimList, manager);
             // 利用者支払い金額を取得
             riyousya = userClaimDetails.getClaimTotal();

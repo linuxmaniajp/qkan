@@ -532,30 +532,7 @@ public class QP004 extends QP004Event {
 
 // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
 			// 明細情報（住所地特例）のバインドパスを明細情報のパスにコピーして、明細情報として処理させる
-			if (new Integer(CATEGORY_NO18).equals(claimDataMap.getData("CATEGORY_NO"))) {
-				VRBindPathParser.set("301001", claimDataMap, VRBindPathParser.get("1801001", claimDataMap));
-				VRBindPathParser.set("301002", claimDataMap, VRBindPathParser.get("1801002", claimDataMap));
-				VRBindPathParser.set("301003", claimDataMap, VRBindPathParser.get("1801003", claimDataMap));
-				VRBindPathParser.set("301004", claimDataMap, VRBindPathParser.get("1801004", claimDataMap));
-				VRBindPathParser.set("301005", claimDataMap, VRBindPathParser.get("1801005", claimDataMap));
-				VRBindPathParser.set("301006", claimDataMap, VRBindPathParser.get("1801006", claimDataMap));
-				VRBindPathParser.set("301007", claimDataMap, VRBindPathParser.get("1801007", claimDataMap));
-				VRBindPathParser.set("301008", claimDataMap, VRBindPathParser.get("1801008", claimDataMap));
-				VRBindPathParser.set("301009", claimDataMap, VRBindPathParser.get("1801009", claimDataMap));
-				VRBindPathParser.set("301010", claimDataMap, VRBindPathParser.get("1801010", claimDataMap));
-				VRBindPathParser.set("301011", claimDataMap, VRBindPathParser.get("1801011", claimDataMap));
-				VRBindPathParser.set("301012", claimDataMap, VRBindPathParser.get("1801012", claimDataMap));
-				VRBindPathParser.set("301013", claimDataMap, VRBindPathParser.get("1801013", claimDataMap));
-				VRBindPathParser.set("301014", claimDataMap, VRBindPathParser.get("1801014", claimDataMap));
-				VRBindPathParser.set("301015", claimDataMap, VRBindPathParser.get("1801015", claimDataMap));
-				VRBindPathParser.set("301016", claimDataMap, VRBindPathParser.get("1801016", claimDataMap));
-				VRBindPathParser.set("301017", claimDataMap, VRBindPathParser.get("1801017", claimDataMap));
-				VRBindPathParser.set("301018", claimDataMap, VRBindPathParser.get("1801019", claimDataMap));
-				VRBindPathParser.set("301019", claimDataMap, VRBindPathParser.get("1801020", claimDataMap));
-				VRBindPathParser.set("301020", claimDataMap, VRBindPathParser.get("1801021", claimDataMap));
-				VRBindPathParser.set("301021", claimDataMap, VRBindPathParser.get("1801022", claimDataMap));
-				VRBindPathParser.set("301022", claimDataMap, VRBindPathParser.get("1801023", claimDataMap));
-			}
+			QkanCommon.convertPathJushotiTokureiToDetail(claimDataMap);
 // 2015/1/14 [Yoichiro Kamei] add - end
 			
 			// 明細情報レコードの場合（CATEGORY_NO = 3）
@@ -1004,64 +981,14 @@ public class QP004 extends QP004Event {
 				}
 
 // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
-				
 		        //明細情報レコードがnulではない場合
 		        if (!(getClaimListDetail() == null || getClaimListDetail().isEmpty())) {
 		        	Iterator detailsIterator = getClaimListDetail().listIterator();
 		        	
 		        	while (detailsIterator.hasNext()) {
 		        		VRMap claimDataMap = (VRMap) detailsIterator.next();
-		        		
 		        		//明細情報（住所地特例）レコードについて、変換しているバインドパスを元に戻す
-		    			if (new Integer(CATEGORY_NO18).equals(claimDataMap.getData("CATEGORY_NO"))) {
-		    				// 明細情報レコードのバインドパスを明細情報（住所地特例）レコードにコピー
-		    				VRBindPathParser.set("1801001", claimDataMap, VRBindPathParser.get("301001", claimDataMap));
-		    				VRBindPathParser.set("1801002", claimDataMap, VRBindPathParser.get("301002", claimDataMap));
-		    				VRBindPathParser.set("1801003", claimDataMap, VRBindPathParser.get("301003", claimDataMap));
-		    				VRBindPathParser.set("1801004", claimDataMap, VRBindPathParser.get("301004", claimDataMap));
-		    				VRBindPathParser.set("1801005", claimDataMap, VRBindPathParser.get("301005", claimDataMap));
-		    				VRBindPathParser.set("1801006", claimDataMap, VRBindPathParser.get("301006", claimDataMap));
-		    				VRBindPathParser.set("1801007", claimDataMap, VRBindPathParser.get("301007", claimDataMap));
-		    				VRBindPathParser.set("1801008", claimDataMap, VRBindPathParser.get("301008", claimDataMap));
-		    				VRBindPathParser.set("1801009", claimDataMap, VRBindPathParser.get("301009", claimDataMap));
-		    				VRBindPathParser.set("1801010", claimDataMap, VRBindPathParser.get("301010", claimDataMap));
-		    				VRBindPathParser.set("1801011", claimDataMap, VRBindPathParser.get("301011", claimDataMap));
-		    				VRBindPathParser.set("1801012", claimDataMap, VRBindPathParser.get("301012", claimDataMap));
-		    				VRBindPathParser.set("1801013", claimDataMap, VRBindPathParser.get("301013", claimDataMap));
-		    				VRBindPathParser.set("1801014", claimDataMap, VRBindPathParser.get("301014", claimDataMap));
-		    				VRBindPathParser.set("1801015", claimDataMap, VRBindPathParser.get("301015", claimDataMap));
-		    				VRBindPathParser.set("1801016", claimDataMap, VRBindPathParser.get("301016", claimDataMap));
-		    				VRBindPathParser.set("1801017", claimDataMap, VRBindPathParser.get("301017", claimDataMap));
-		    				VRBindPathParser.set("1801019", claimDataMap, VRBindPathParser.get("301018", claimDataMap));
-		    				VRBindPathParser.set("1801020", claimDataMap, VRBindPathParser.get("301019", claimDataMap));
-		    				VRBindPathParser.set("1801021", claimDataMap, VRBindPathParser.get("301020", claimDataMap));
-		    				VRBindPathParser.set("1801022", claimDataMap, VRBindPathParser.get("301021", claimDataMap));
-		    				VRBindPathParser.set("1801023", claimDataMap, VRBindPathParser.get("301022", claimDataMap));
-		    				
-		    				// 明細情報レコードのバインドパスを除く
-		    				claimDataMap.removeData("301001");
-		    				claimDataMap.removeData("301002");
-		    				claimDataMap.removeData("301003");
-		    				claimDataMap.removeData("301004");
-		    				claimDataMap.removeData("301005");
-		    				claimDataMap.removeData("301006");
-		    				claimDataMap.removeData("301007");
-		    				claimDataMap.removeData("301008");
-		    				claimDataMap.removeData("301009");
-		    				claimDataMap.removeData("301010");
-		    				claimDataMap.removeData("301011");
-		    				claimDataMap.removeData("301012");
-		    				claimDataMap.removeData("301013");
-		    				claimDataMap.removeData("301014");
-		    				claimDataMap.removeData("301015");
-		    				claimDataMap.removeData("301016");
-		    				claimDataMap.removeData("301017");
-		    				claimDataMap.removeData("301018");
-		    				claimDataMap.removeData("301019");
-		    				claimDataMap.removeData("301020");
-		    				claimDataMap.removeData("301021");
-		    				claimDataMap.removeData("301022");
-		    			}
+		        		QkanCommon.convertPathJushotiTokureiToOriginal(claimDataMap);
 		        	}
 		        }
 // 2015/1/14 [Yoichiro Kamei] add - end
@@ -1806,7 +1733,14 @@ public class QP004 extends QP004Event {
 		// 画面表示用にデータ変換
 		
 		//重度療養管理加算の時のみ変換を行う
-		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286) {
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/23 edit - begin 287(医療連携強化加算),288(療養施設の患者状態)も追加
+		//if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286) {
+		//	return claimDataMap;
+		//}
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286
+				&& ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 287
+				&& ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 288
+				) {
 			return claimDataMap;
 		}
 		
@@ -1816,45 +1750,129 @@ public class QP004 extends QP004Event {
 			return claimDataMap;
 		}
 		
-		if (_301018.length() != 1) {
-			return claimDataMap;
-		}
-		
-		//画面表示用に値を変換
-		switch(_301018.charAt(0)) {
-		case 'ｲ':
-			claimDataMap.setData("301018", "1");
-			break;
-		case 'ﾛ':
-			claimDataMap.setData("301018", "2");
-			break;
-		case 'ﾊ':
-			claimDataMap.setData("301018", "3");
-			break;
-		case 'ﾆ':
-			claimDataMap.setData("301018", "4");
-			break;
-		case 'ﾎ':
-			claimDataMap.setData("301018", "5");
-			break;
-		case 'ﾍ':
-			claimDataMap.setData("301018", "6");
-			break;
-		case 'ﾄ':
-			claimDataMap.setData("301018", "7");
-			break;
-		case 'ﾁ':
-			claimDataMap.setData("301018", "8");
-			break;
-		case 'ﾘ':
-			claimDataMap.setData("301018", "9");
-			break;
-		default:
-			claimDataMap.setData("301018", "");
-			break;
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 286
+				|| ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 287) {
+			
+			if (_301018.length() != 1) {
+				return claimDataMap;
+			}
+			
+			//画面表示用に値を変換
+			switch(_301018.charAt(0)) {
+			case 'ｲ':
+				claimDataMap.setData("301018", "1");
+				break;
+			case 'ﾛ':
+				claimDataMap.setData("301018", "2");
+				break;
+			case 'ﾊ':
+				claimDataMap.setData("301018", "3");
+				break;
+			case 'ﾆ':
+				claimDataMap.setData("301018", "4");
+				break;
+			case 'ﾎ':
+				claimDataMap.setData("301018", "5");
+				break;
+			case 'ﾍ':
+				claimDataMap.setData("301018", "6");
+				break;
+			case 'ﾄ':
+				claimDataMap.setData("301018", "7");
+				break;
+			case 'ﾁ':
+				claimDataMap.setData("301018", "8");
+				break;
+			case 'ﾘ':
+				claimDataMap.setData("301018", "9");
+				break;
+			default:
+				claimDataMap.setData("301018", "");
+				break;
+			}
+		} else {
+			if (_301018.length() > 2) {
+				return claimDataMap;
+			}
+			
+			//画面表示用に値を変換
+			switch(_301018.charAt(0)) {
+			case 'ｲ':
+				claimDataMap.setData("301018", "1");
+				break;
+			case 'ﾛ':
+				claimDataMap.setData("301018", "2");
+				break;
+			case 'ﾊ':
+				switch (_301018.charAt(1) ) {
+				case 'A':
+					claimDataMap.setData("301018", "3");
+					break;
+				case 'B':
+					claimDataMap.setData("301018", "4");
+					break;
+				case 'C':
+					claimDataMap.setData("301018", "5");
+					break;
+				case 'D':
+					claimDataMap.setData("301018", "6");
+					break;
+				}
+				break;
+			case 'ﾆ':
+				claimDataMap.setData("301018", "7");
+				break;
+			case 'ﾎ':
+				claimDataMap.setData("301018", "8");
+				break;
+			case 'ﾍ':
+				claimDataMap.setData("301018", "9");
+				break;
+			case 'ﾄ':
+				claimDataMap.setData("301018", "10");
+				break;
+			case 'ﾁ':
+				claimDataMap.setData("301018", "11");
+				break;
+			case 'ﾘ':
+				switch (_301018.charAt(1) ) {
+				case 'A':
+					claimDataMap.setData("301018", "12");
+					break;
+				case 'B':
+					claimDataMap.setData("301018", "13");
+					break;
+				case 'C':
+					claimDataMap.setData("301018", "14");
+					break;
+				case 'D':
+					claimDataMap.setData("301018", "15");
+					break;
+				case 'E':
+					claimDataMap.setData("301018", "16");
+					break;
+				case 'F':
+					claimDataMap.setData("301018", "17");
+					break;
+				case 'G':
+					claimDataMap.setData("301018", "18");
+					break;
+				case 'H':
+					claimDataMap.setData("301018", "19");
+					break;
+				}
+				break;
+			case 'ﾇ':
+				claimDataMap.setData("301018", "20");
+				break;
+			default:
+				claimDataMap.setData("301018", "");
+				break;
+			}
 		}
 		
 		return claimDataMap;
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/23 edit - end
 	}
 
 	/**
@@ -1868,46 +1886,120 @@ public class QP004 extends QP004Event {
 		// DB更新用にデータ変換
 		
 		//重度療養管理加算の時のみ変換を行う
-		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286) {
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/23 edit - begin 287(医療連携強化加算),288(療養施設の患者状態)も追加
+		//if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286) {
+		//	return claimDataMap;
+		//}
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 286 
+				&& ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 287
+				&& ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 288
+				) {
 			return claimDataMap;
 		}
 		
 		int selectedCode = ACCastUtilities.toInt(claimDataMap.get("301018"), 0); 
 		String value = "";
 		
-		switch(selectedCode) {
-		case 1:
-			value = "ｲ";
-			break;
-		case 2:
-			value = "ﾛ";
-			break;
-		case 3:
-			value = "ﾊ";
-			break;
-		case 4:
-			value = "ﾆ";
-			break;
-		case 5:
-			value = "ﾎ";
-			break;
-		case 6:
-			value = "ﾍ";
-			break;
-		case 7:
-			value = "ﾄ";
-			break;
-		case 8:
-			value = "ﾁ";
-			break;
-		case 9:
-			value = "ﾘ";
-			break;
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 286
+				|| ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) == 287) {
+			switch(selectedCode) {
+			case 1:
+				value = "ｲ";
+				break;
+			case 2:
+				value = "ﾛ";
+				break;
+			case 3:
+				value = "ﾊ";
+				break;
+			case 4:
+				value = "ﾆ";
+				break;
+			case 5:
+				value = "ﾎ";
+				break;
+			case 6:
+				value = "ﾍ";
+				break;
+			case 7:
+				value = "ﾄ";
+				break;
+			case 8:
+				value = "ﾁ";
+				break;
+			case 9:
+				value = "ﾘ";
+				break;
+			}
+		} else {
+			switch(selectedCode) {
+			case 1:
+				value = "ｲ";
+				break;
+			case 2:
+				value = "ﾛ";
+				break;
+			case 3:
+				value = "ﾊA";
+				break;
+			case 4:
+				value = "ﾊB";
+				break;
+			case 5:
+				value = "ﾊC";
+				break;
+			case 6:
+				value = "ﾊD";
+				break;
+			case 7:
+				value = "ﾆ";
+				break;
+			case 8:
+				value = "ﾎ";
+				break;
+			case 9:
+				value = "ﾍ";
+				break;
+			case 10:
+				value = "ﾄ";
+				break;
+			case 11:
+				value = "ﾁ";
+				break;
+			case 12:
+				value = "ﾘA";
+				break;
+			case 13:
+				value = "ﾘB";
+				break;
+			case 14:
+				value = "ﾘC";
+				break;
+			case 15:
+				value = "ﾘD";
+				break;
+			case 16:
+				value = "ﾘE";
+				break;
+			case 17:
+				value = "ﾘF";
+				break;
+			case 18:
+				value = "ﾘG";
+				break;
+			case 19:
+				value = "ﾘH";
+				break;
+			case 20:
+				value = "ﾇ";
+				break;
+			}
 		}
 		
 		claimDataMap.setData("301018", value);
 		
 		return claimDataMap;
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/23 edit - end
 	}
 	//[ID:0000737][Shin Fujihara] 2012/05 add end
 }

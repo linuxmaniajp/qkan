@@ -17,6 +17,7 @@ import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.core.ACDBManagerCreatable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001SpecialCase;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
@@ -178,6 +179,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
     private ACBorderBlankDateFormat yearMonthFormat = new ACBorderBlankDateFormat(
             "ggge年MM月");
 
+    // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+    private SelfPaymentNumberCalcurater selfPaymentNumberCalcurater;
+    // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+    
     /**
      * 本票の自費に△を記載するか を返します。
      * 
@@ -251,6 +256,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
         services.addAll(baseList);
         services.addAll(over30List);
         // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
+        
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+        this.selfPaymentNumberCalcurater = new SelfPaymentNumberCalcurater(getCalcurater(), services);
+        // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
         
         int shortStayCount = 0;
         // 保険者番号-被保険者番号の階層以下にサービス情報の階層を構築する。
@@ -2189,6 +2198,20 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 }
                 serviceItemName += ACCastUtilities.toString(
                         mainFormatCode.get("SERVICE_NAME"), "");
+                
+                //[H27.4改正対応][Shinobu Hitaka] 2015/4/2 add - begin
+                // 11:訪問介護20分未満の頻回表示対応
+                if ("11".equals(ACCastUtilities.toString(mainFormatCode.get("SERVICE_CODE_KIND")))
+                		&& "1".equals(ACCastUtilities.toString(mainFormatCode.get("SERVICE_MAIN_FLAG")))) {
+                	
+                	// システムサービスコードの最後の文字が頻回フラグ=2の場合に【頻回】を付加する。
+                	String tmpSystemServiceCodeItem = ACCastUtilities.toString(mainFormatCode.get("SYSTEM_SERVICE_CODE_ITEM"));
+                	if ("2".equals(tmpSystemServiceCodeItem.substring(tmpSystemServiceCodeItem.length() - 1))) {
+                		serviceItemName += "【頻回】";
+                	}
+                }
+                //[H27.4改正対応][Shinobu Hitaka] 2015/4/2 add - end
+                
                 // サービス内容
                 texts.put("lowerHeader.row" + row + "Upper.service",
                         serviceItemName);
@@ -2532,8 +2555,25 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     }
                 }
                 
+                // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+                boolean teikyoAddFlg = false;
+                if (SelfPaymentNumberCalcurater.isTaisho(services.code)) {
+                    findKey = ACCastUtilities.toString(rec.getData("PROVIDER_ID")) + "-" + ACCastUtilities.toString(rec.getData("SYSTEM_SERVICE_KIND_DETAIL"));
+                    String serviceAddFlag = ACCastUtilities.toString(services.code.get("SERVICE_ADD_FLAG"));
+                    findKey += "_" + serviceAddFlag;
+                    etcRegulationRate = ACCastUtilities.toInt(regulationHash.get(findKey),0);
+                    teikyoAddFlg = true;
+                    totals[INDEX_OF_LIMIT_OVER_UNIT_FOR_DETAIL] += etcRegulationRate;
+                    totals[INDEX_OF_LIMIT_OVER_UNIT] += etcRegulationRate;
+                }
+                // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+                
                 // [ID:0000764][Masahiko.Higuchi] edit - begin 30日超の別表印字障害対応
-                if(!isOver30Days) {
+                
+                // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 mod - begin サービス提供体制加算の自己負担対応
+                //if(!isOver30Days)
+                if(!isOver30Days && !teikyoAddFlg) {
+                // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 mod - end
                 // 自費調整分を合算
                 	addRedulationRate(totals, services, regulationCache);
                 }
@@ -2548,6 +2588,15 @@ public class CareServiceSchedulePrintManager extends HashMap {
                             provider, insureRate, unit, totals, false, false, isOver30Days);
                 } else if (itemState == ITEM_STATE_OUT_LIMIT_AMOUNT) {
                     // 給付管理限度額対象外
+                	
+                	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+                	// 対象の加算であれば印字
+                	if (etcRegulationRate > 0 && (SelfPaymentNumberCalcurater.isTaisho(services.code))) {
+                        services.buildUserSubTableTotalDetailRow(buildParam,
+                                provider, insureRate, unit, totals, true, false, isOver30Days);
+                	} else //下のif文へづづく(else if)
+                	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+                	
                     // 特別地域・中山間地域と処遇改善加算系で自己負担がある場合のみ小計に印字する
                     if(etcRegulationRate > 0 && CareServiceCommon.isAddPercentage(services.code)) {
                         services.buildUserSubTableTotalDetailRow(buildParam,
@@ -2831,8 +2880,18 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         targetMap.put(key, page);
                     }
 
-                    // 同一提供単位で集合化
-                    page.parse(service, code);
+// [H27.4改正対応][Yoichiro Kamei] 2015/3/19 mod - begin 看取り加算日数の対応
+//                  // 同一提供単位で集合化
+//                  page.parse(service, code);                    
+                    String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"));
+                    String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                    int serviceCount = QP001SpecialCase.getServiceCount(serviceCodeKind
+                        , serviceCodeItem
+                        , service);
+                    for (int i = 1; i <= serviceCount; i++) {
+                        page.parse(service, code);
+                    }
+// [H27.4改正対応][Yoichiro Kamei] 2015/3/19 mod - end
                 }
             }
             return calcurateUnit;
@@ -3077,6 +3136,26 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     // [ID:0000682] 2012/01 end
                 }
                 item.setSubPersentageUnit(units);
+                // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+                it2 = item.outInsureUnits.entrySet().iterator();
+                while (it2.hasNext()) {
+                    Map.Entry ent = (Map.Entry) it2.next();
+                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+                    VRMap rec = (VRHashMap)((DivedServiceUnit) ent.getValue()).get(0);
+                    
+                    String providerId = ACCastUtilities.toString(rec.getData("PROVIDER_ID"));
+                    String findKey = providerId + "-" + ACCastUtilities.toString(rec.getData("SYSTEM_SERVICE_KIND_DETAIL"));
+                    
+                    if (regulationHash.containsKey(findKey) && SelfPaymentNumberCalcurater.isTaisho(code)) {
+                        String serviceAddFlag = ACCastUtilities.toString((code.get("SERVICE_ADD_FLAG")),"");
+                        //自己負担分の単位数を求める
+                        int limitOverUnit = ACCastUtilities.toInt(regulationHash.get(findKey));
+                        selfPaymentNumberCalcurater.parseServiceCode(code, providerId, limitOverUnit);
+                        int selfPayUnit = selfPaymentNumberCalcurater.getSelfPayUnit();
+                        regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(selfPayUnit));
+                    }
+                }
+                // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
             
             }
             // [ID:0000444][Tozo TANAKA] 2009/03/17 replace end
@@ -3181,6 +3260,15 @@ public class CareServiceSchedulePrintManager extends HashMap {
                             if(regulationHash.containsKey(serchKey + "_6")) {
                                 totalRegulation += regulationHash.get(serchKey + "_6");
                             }
+                            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
+                            if (regulationHash.containsKey(serchKey + "_2")) {
+                                totalRegulation += regulationHash.get(serchKey + "_2");
+                            }
+                            if (regulationHash.containsKey(serchKey + "_4")) {
+                                totalRegulation += regulationHash.get(serchKey + "_4");
+                            }
+                            // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+                            
                             // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
                             int result = CareServiceCommon.calcSyoguPatientSelf(totalUnit, totalRegulation, serviceUnit, serviceStaffUnit);
                             regulationHash.put(serchKey + "_8", result);
@@ -3314,7 +3402,24 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 }
 //                buildParam.setCurrentRow(services.buildUserSubTable(buildParam,
 //                        provider, insureRate, totals, itemState, regulationCache, isOver30Days));
+                
+                //[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - begin
+                //30日超の場合に支給限度額対象外の項目を出力する（サービス提供体制強化加算が限度額管理外になったため）
+            	if (isOver30Days){
+	                int[] dummyTotal = new int[totals.length];
+	                Map outMap = ((DivedServiceItem) ent.getValue()).outInsureOver30Units;
+	                Iterator outIt = outMap.entrySet().iterator();
+	                while (outIt.hasNext()) {
+	                    Map.Entry outEnt = (Map.Entry) outIt.next();
+	                    DivedServiceUnit outService = (DivedServiceUnit)outEnt.getValue();
+	                    outService.buildUserSubTableDetailRow(buildParam, provider,
+	                        0, dummyTotal, isOver30Days);
+	                    buildParam.setCurrentRow(buildParam.getCurrentRow() + 1);
+	                }
+                }
+            	//[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - end
             }
+        	
             return buildParam.getCurrentRow();
         }
 

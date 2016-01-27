@@ -92,6 +92,10 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
     private int[] serviceCount = new int[10];
     // 2008/02/06 [Masahiko Higuchi] add - end
     
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add begin 「利用者負担額0円も印刷可能にする」のチェック状況
+    private int zeroPrint = 0;
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add end
+
     protected String getSerialId() {
         // TODO 自動生成されたメソッド・スタブ
         return null;
@@ -379,7 +383,24 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
         return target;
     }
     
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add begin 「利用者負担額0円も印刷可能にする」のチェック状況
+    /**
+     * 利用者負担額0円の印字モードを設定する。
+     * @param target
+     */
+    public void setZeroPrint(int zeroPrint) {
+        this.zeroPrint = zeroPrint;
+    }
     
+    /**
+     * 利用者負担額0円の印字モードを取得する。
+     * @return
+     */
+    public int getZeroPrint() {
+        return zeroPrint;
+    }
+    //[2014年要望][Shinobu Hitaka] 2015/04/15 add end
+        
     // 2007/11/09 [Masahiko Higuchi] add - begin Ver 5.4.1 利用者向け請求書対応
     //
     /**
@@ -632,8 +653,12 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
      */
     private void parseType(VRMap claim, String[] kohiType,QP001Manager manager) throws Exception {
         
-        //利用者負担額が0円以外の場合、帳票に出力する。
-        if(ACCastUtilities.toInt(claim.get("701017"),0) != 0){
+    	// [2014年要望][Shinobu Hitaka] 2015/04/15 edit begin 利用者負担額0円も印刷可能にする
+    	//利用者負担額が0円以外の場合、帳票に出力する。
+    	//if(ACCastUtilities.toInt(claim.get("701017"),0) != 0){
+    	if((zeroPrint == 0 && ACCastUtilities.toInt(claim.get("701017"),0) != 0) || (zeroPrint != 0)){
+        // [2014年要望][Shinobu Hitaka] 2015/04/15 edit end
+        	
             //サービス種類コード
             String serviceCodeKind = String.valueOf(claim.get("701007"));
             //サービス名称

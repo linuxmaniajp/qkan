@@ -358,13 +358,16 @@ public class QP001InformationProcessing {
 		boolean changed = false;
 		
 		//集計保持機能
-		//訪問リハ　　　145001:短期集中加算１　　　145002:短期集中加算２
-		//通所リハ　　　165602:廃止　165603:廃止　165604:廃止　165610:重度療養管理加算
-		//　　　　　　　165613:通所リハ短期集中個別リハ加算（追加）
-		//小規模多機能　736139:事業所開始時加算　　736140:廃止
-		if ("145001".equals(serviceCode) || "145002".equals(serviceCode)
+		//訪問リハ          145001:廃止　145002:廃止　145003:短期集中リハ加算
+		//通所リハ          165602:廃止　165603:廃止　165604:廃止
+		//                  165610:重度療養管理加算 　165613:短期集中個別リハ加算（追加）
+		//短期入所生活介護  216116:医療連携強化加算
+		//小規模多機能      736139:廃止　736140:廃止
+		//複合型サービス    776139:事業開始時支援加算
+		if ("145003".equals(serviceCode)
 			|| "165610".equals(serviceCode) || "165613".equals(serviceCode)
-			|| "736139".equals(serviceCode)) {
+			|| "216116".equals(serviceCode) || "776139".equals(serviceCode)
+			) {
 			changed = setSameDetails(map);
 		}
 		// [H27.4改正対応][Shinobu Hitaka] 2015/2/27 edit - end
@@ -467,9 +470,11 @@ public class QP001InformationProcessing {
 			break;
 		}
 		*/
+		//集計保持機能
+		//訪問リハ　　　645001:短期集中リハ加算
+		//小規模多機能　756139:廃止　756140:廃止
 		String serviceCode = getServiceCode(map);
-		//短期集中リハビリテーション加算、小規模多機能　事業所開始時加算
-		if ("645001".equals(serviceCode) || "756139".equals(serviceCode) || "756140".equals(serviceCode)) {
+		if ("645001".equals(serviceCode)) {
 			setSameDetails(map);
 		}
 		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
@@ -492,6 +497,15 @@ public class QP001InformationProcessing {
 	private void reflect3details(VRMap map) throws Exception {
 		//多床室
 		setMultiRoom(map);
+		
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/19 add - begin 
+		//集計保持機能
+		//短期生活　　　216116:医療連携強化加算
+		String serviceCode = getServiceCode(map);
+		if ("216116".equals(serviceCode)) {
+			setSameDetails(map);
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2015/3/19 add - end
 	}
 	
 	/**

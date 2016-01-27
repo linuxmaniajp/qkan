@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2015/02/13  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2015/04/15  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -221,6 +221,12 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel kaigoInfoBenefitPercent;
 
+  private ACLabelContainer kaigoInfoShortCounts;
+
+  private ACTextField kaigoInfoShortCount;
+
+  private ACLabel kaigoInfoShortCountDay;
+
   private ACLabelContainer kaigoInfoKyotakuServiceContena;
 
   private VRLayout kaigoInfoKyotakuServiceContenaLayout;
@@ -270,6 +276,10 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel kaigoInfoValidLimit2;
 
   private QkanDateTextField kaigoInfoValidLimit3;
+
+  private ACLabelContainer kaigoInfoJigyoTaisyos;
+
+  private ACIntegerCheckBox kaigoInfoJigyoTaisyo;
 
   private QkanDateTextField kaigoInfoRequestDate;
 
@@ -1905,6 +1915,65 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * (短期入所利用日数の初期値・コンテナ)を取得します。
+   * @return (短期入所利用日数の初期値・コンテナ)
+   */
+  public ACLabelContainer getKaigoInfoShortCounts(){
+    if(kaigoInfoShortCounts==null){
+
+      kaigoInfoShortCounts = new ACLabelContainer();
+
+      kaigoInfoShortCounts.setText("短期入所利用日数の初期値");
+
+      addKaigoInfoShortCounts();
+    }
+    return kaigoInfoShortCounts;
+
+  }
+
+  /**
+   * 短期入所利用日数の初期値を取得します。
+   * @return 短期入所利用日数の初期値
+   */
+  public ACTextField getKaigoInfoShortCount(){
+    if(kaigoInfoShortCount==null){
+
+      kaigoInfoShortCount = new ACTextField();
+
+      kaigoInfoShortCount.setBindPath("SHORTSTAY_USE_INIT_COUNT");
+
+      kaigoInfoShortCount.setColumns(3);
+
+      kaigoInfoShortCount.setCharType(VRCharType.ONLY_DIGIT);
+
+      kaigoInfoShortCount.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      kaigoInfoShortCount.setMaxLength(3);
+
+      addKaigoInfoShortCount();
+    }
+    return kaigoInfoShortCount;
+
+  }
+
+  /**
+   * ％ラベルを取得します。
+   * @return ％ラベル
+   */
+  public ACLabel getKaigoInfoShortCountDay(){
+    if(kaigoInfoShortCountDay==null){
+
+      kaigoInfoShortCountDay = new ACLabel();
+
+      kaigoInfoShortCountDay.setText(" 日");
+
+      addKaigoInfoShortCountDay();
+    }
+    return kaigoInfoShortCountDay;
+
+  }
+
+  /**
    * (居宅サービス計画作成者・コンテナ)を取得します。
    * @return (居宅サービス計画作成者・コンテナ)
    */
@@ -2362,6 +2431,44 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
       addKaigoInfoValidLimit3();
     }
     return kaigoInfoValidLimit3;
+
+  }
+
+  /**
+   * (月途中で事業対象者→要支援１となった・コンテナ)を取得します。
+   * @return (月途中で事業対象者→要支援１となった・コンテナ)
+   */
+  public ACLabelContainer getKaigoInfoJigyoTaisyos(){
+    if(kaigoInfoJigyoTaisyos==null){
+
+      kaigoInfoJigyoTaisyos = new ACLabelContainer();
+
+      addKaigoInfoJigyoTaisyos();
+    }
+    return kaigoInfoJigyoTaisyos;
+
+  }
+
+  /**
+   * 月途中で事業対象者→要支援１となったを取得します。
+   * @return 月途中で事業対象者→要支援１となった
+   */
+  public ACIntegerCheckBox getKaigoInfoJigyoTaisyo(){
+    if(kaigoInfoJigyoTaisyo==null){
+
+      kaigoInfoJigyoTaisyo = new ACIntegerCheckBox();
+
+      kaigoInfoJigyoTaisyo.setText("月途中で事業対象者→要支援１となった");
+
+      kaigoInfoJigyoTaisyo.setBindPath("JIGYOTAISYO_FLAG");
+
+      kaigoInfoJigyoTaisyo.setSelectValue(2);
+
+      kaigoInfoJigyoTaisyo.setUnSelectValue(1);
+
+      addKaigoInfoJigyoTaisyo();
+    }
+    return kaigoInfoJigyoTaisyo;
 
   }
 
@@ -5870,7 +5977,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     kaigoInfo.add(getKaigoInfoInsuredIdContainer(), VRLayout.FLOW_INSETLINE);
 
-    kaigoInfo.add(getKaigoInfoBenefitContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    kaigoInfo.add(getKaigoInfoBenefitContainer(), VRLayout.FLOW_INSETLINE);
+
+    kaigoInfo.add(getKaigoInfoShortCounts(), VRLayout.FLOW_INSETLINE_RETURN);
 
     kaigoInfo.add(getKaigoInfoKyotakuServiceContena(), VRLayout.FLOW_RETURN);
 
@@ -5878,7 +5987,9 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     kaigoInfo.add(getKaigoInfoYokaigoInfoContainer(), VRLayout.FLOW);
 
-    kaigoInfo.add(getKaigoInfoValidLimits(), VRLayout.FLOW_RETURN);
+    kaigoInfo.add(getKaigoInfoValidLimits(), VRLayout.FLOW);
+
+    kaigoInfo.add(getKaigoInfoJigyoTaisyos(), VRLayout.FLOW_RETURN);
 
     kaigoInfo.add(getKaigoInfoRequestDateContainer(), VRLayout.FLOW_INSETLINE);
 
@@ -5949,6 +6060,31 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * ％ラベルに内部項目を追加します。
    */
   protected void addKaigoInfoBenefitPercent(){
+
+  }
+
+  /**
+   * (短期入所利用日数の初期値・コンテナ)に内部項目を追加します。
+   */
+  protected void addKaigoInfoShortCounts(){
+
+    kaigoInfoShortCounts.add(getKaigoInfoShortCount(), VRLayout.FLOW);
+
+    kaigoInfoShortCounts.add(getKaigoInfoShortCountDay(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 短期入所利用日数の初期値に内部項目を追加します。
+   */
+  protected void addKaigoInfoShortCount(){
+
+  }
+
+  /**
+   * ％ラベルに内部項目を追加します。
+   */
+  protected void addKaigoInfoShortCountDay(){
 
   }
 
@@ -6150,6 +6286,22 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 有効期間・テキスト2に内部項目を追加します。
    */
   protected void addKaigoInfoValidLimit3(){
+
+  }
+
+  /**
+   * (月途中で事業対象者→要支援１となった・コンテナ)に内部項目を追加します。
+   */
+  protected void addKaigoInfoJigyoTaisyos(){
+
+    kaigoInfoJigyoTaisyos.add(getKaigoInfoJigyoTaisyo(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 月途中で事業対象者→要支援１となったに内部項目を追加します。
+   */
+  protected void addKaigoInfoJigyoTaisyo(){
 
   }
 

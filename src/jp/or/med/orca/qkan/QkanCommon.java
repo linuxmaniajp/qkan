@@ -1099,6 +1099,9 @@ public class QkanCommon {
         sb.append(" PATIENT_NINTEI_HISTORY.REPORTED_DATE,");
         sb.append(" PATIENT_NINTEI_HISTORY.LIMIT_RATE,");
         sb.append(" PATIENT_NINTEI_HISTORY.EXTERNAL_USE_LIMIT,");
+// 2015/4/15 [H27.04改正対応][Yoichiro Kamei] add - begin 短期入所日数の初期値対応
+        sb.append(" PATIENT_NINTEI_HISTORY.SHORTSTAY_USE_INIT_COUNT,");
+// 2015/4/15 [H27.04改正対応][Yoichiro Kamei] add - end
         sb.append(" PATIENT_NINTEI_HISTORY.LAST_TIME");
         sb.append(" FROM");
         sb.append(" PATIENT_NINTEI_HISTORY");
@@ -4160,9 +4163,12 @@ public class QkanCommon {
         if (ary.length < 3) {
             return false;
         }
-        
-        //メジャーバージョンが6未満は不正なスキーマ
-        if (ACCastUtilities.toInt(ary[0], 0) < 6) {
+// 2015/4/17 [H27.4改正対応][Yoichiro Kamei] edit - begin
+//        //メジャーバージョンが6未満は不正なスキーマ
+//        if (ACCastUtilities.toInt(ary[0], 0) < 6) {
+        //メジャーバージョンが7未満は不正なスキーマ
+        if (ACCastUtilities.toInt(ary[0], 0) < 7) {
+// 2015/4/17 [H27.4改正対応][Yoichiro Kamei] edit - end
             return false;
         }
         
@@ -4218,5 +4224,102 @@ public class QkanCommon {
         }
         return limitRate;
     }
+    
+// 2015/4/13 [H27.04改正対応][Yoichiro Kamei] add - begin 住所地特例対応
+	private static final Integer JUSHOTI_TOKUREI_CATEGORY_NO = new Integer(18);
+    /**
+     * 明細情報（住所地特例）のバインドパスを明細情報のパスにコピーする
+     * 
+     * @param claimDataMap 処理対象のマップ
+     * @throws Exception 処理例外
+     */
+	public static void convertPathJushotiTokureiToDetail(VRMap claimDataMap) throws Exception {
+		// 明細情報（住所地特例）のバインドパスを明細情報のパスにコピー
+		if (JUSHOTI_TOKUREI_CATEGORY_NO.equals(claimDataMap.getData("CATEGORY_NO"))) {
+			VRBindPathParser.set("301001", claimDataMap, VRBindPathParser.get("1801001", claimDataMap));
+			VRBindPathParser.set("301002", claimDataMap, VRBindPathParser.get("1801002", claimDataMap));
+			VRBindPathParser.set("301003", claimDataMap, VRBindPathParser.get("1801003", claimDataMap));
+			VRBindPathParser.set("301004", claimDataMap, VRBindPathParser.get("1801004", claimDataMap));
+			VRBindPathParser.set("301005", claimDataMap, VRBindPathParser.get("1801005", claimDataMap));
+			VRBindPathParser.set("301006", claimDataMap, VRBindPathParser.get("1801006", claimDataMap));
+			VRBindPathParser.set("301007", claimDataMap, VRBindPathParser.get("1801007", claimDataMap));
+			VRBindPathParser.set("301008", claimDataMap, VRBindPathParser.get("1801008", claimDataMap));
+			VRBindPathParser.set("301009", claimDataMap, VRBindPathParser.get("1801009", claimDataMap));
+			VRBindPathParser.set("301010", claimDataMap, VRBindPathParser.get("1801010", claimDataMap));
+			VRBindPathParser.set("301011", claimDataMap, VRBindPathParser.get("1801011", claimDataMap));
+			VRBindPathParser.set("301012", claimDataMap, VRBindPathParser.get("1801012", claimDataMap));
+			VRBindPathParser.set("301013", claimDataMap, VRBindPathParser.get("1801013", claimDataMap));
+			VRBindPathParser.set("301014", claimDataMap, VRBindPathParser.get("1801014", claimDataMap));
+			VRBindPathParser.set("301015", claimDataMap, VRBindPathParser.get("1801015", claimDataMap));
+			VRBindPathParser.set("301016", claimDataMap, VRBindPathParser.get("1801016", claimDataMap));
+			VRBindPathParser.set("301017", claimDataMap, VRBindPathParser.get("1801017", claimDataMap));
+			VRBindPathParser.set("301018", claimDataMap, VRBindPathParser.get("1801019", claimDataMap));
+			VRBindPathParser.set("301019", claimDataMap, VRBindPathParser.get("1801020", claimDataMap));
+			VRBindPathParser.set("301020", claimDataMap, VRBindPathParser.get("1801021", claimDataMap));
+			VRBindPathParser.set("301021", claimDataMap, VRBindPathParser.get("1801022", claimDataMap));
+			VRBindPathParser.set("301022", claimDataMap, VRBindPathParser.get("1801023", claimDataMap));
+		}
+	}
+	
+    /**
+     * 明細情報（住所地特例）レコードについて、変換しているバインドパスを元に戻す
+     * 
+     * @param claimDataMap 処理対象のマップ
+     * @throws Exception 処理例外
+     */
+	public static void convertPathJushotiTokureiToOriginal(VRMap claimDataMap) throws Exception {
+		
+		if (JUSHOTI_TOKUREI_CATEGORY_NO.equals(claimDataMap.getData("CATEGORY_NO"))) {
+			//明細情報（住所地特例）レコードについて、変換しているバインドパスを元に戻す
+			VRBindPathParser.set("1801001", claimDataMap, VRBindPathParser.get("301001", claimDataMap));
+			VRBindPathParser.set("1801002", claimDataMap, VRBindPathParser.get("301002", claimDataMap));
+			VRBindPathParser.set("1801003", claimDataMap, VRBindPathParser.get("301003", claimDataMap));
+			VRBindPathParser.set("1801004", claimDataMap, VRBindPathParser.get("301004", claimDataMap));
+			VRBindPathParser.set("1801005", claimDataMap, VRBindPathParser.get("301005", claimDataMap));
+			VRBindPathParser.set("1801006", claimDataMap, VRBindPathParser.get("301006", claimDataMap));
+			VRBindPathParser.set("1801007", claimDataMap, VRBindPathParser.get("301007", claimDataMap));
+			VRBindPathParser.set("1801008", claimDataMap, VRBindPathParser.get("301008", claimDataMap));
+			VRBindPathParser.set("1801009", claimDataMap, VRBindPathParser.get("301009", claimDataMap));
+			VRBindPathParser.set("1801010", claimDataMap, VRBindPathParser.get("301010", claimDataMap));
+			VRBindPathParser.set("1801011", claimDataMap, VRBindPathParser.get("301011", claimDataMap));
+			VRBindPathParser.set("1801012", claimDataMap, VRBindPathParser.get("301012", claimDataMap));
+			VRBindPathParser.set("1801013", claimDataMap, VRBindPathParser.get("301013", claimDataMap));
+			VRBindPathParser.set("1801014", claimDataMap, VRBindPathParser.get("301014", claimDataMap));
+			VRBindPathParser.set("1801015", claimDataMap, VRBindPathParser.get("301015", claimDataMap));
+			VRBindPathParser.set("1801016", claimDataMap, VRBindPathParser.get("301016", claimDataMap));
+			VRBindPathParser.set("1801017", claimDataMap, VRBindPathParser.get("301017", claimDataMap));
+			VRBindPathParser.set("1801019", claimDataMap, VRBindPathParser.get("301018", claimDataMap));
+			VRBindPathParser.set("1801020", claimDataMap, VRBindPathParser.get("301019", claimDataMap));
+			VRBindPathParser.set("1801021", claimDataMap, VRBindPathParser.get("301020", claimDataMap));
+			VRBindPathParser.set("1801022", claimDataMap, VRBindPathParser.get("301021", claimDataMap));
+			VRBindPathParser.set("1801023", claimDataMap, VRBindPathParser.get("301022", claimDataMap));
+			
+			// 明細情報レコードのバインドパスを除く
+			claimDataMap.removeData("301001");
+			claimDataMap.removeData("301002");
+			claimDataMap.removeData("301003");
+			claimDataMap.removeData("301004");
+			claimDataMap.removeData("301005");
+			claimDataMap.removeData("301006");
+			claimDataMap.removeData("301007");
+			claimDataMap.removeData("301008");
+			claimDataMap.removeData("301009");
+			claimDataMap.removeData("301010");
+			claimDataMap.removeData("301011");
+			claimDataMap.removeData("301012");
+			claimDataMap.removeData("301013");
+			claimDataMap.removeData("301014");
+			claimDataMap.removeData("301015");
+			claimDataMap.removeData("301016");
+			claimDataMap.removeData("301017");
+			claimDataMap.removeData("301018");
+			claimDataMap.removeData("301019");
+			claimDataMap.removeData("301020");
+			claimDataMap.removeData("301021");
+			claimDataMap.removeData("301022");
+		}
+	}
+// 2015/4/13 [H27.04改正対応] add - end
+	
 
 }

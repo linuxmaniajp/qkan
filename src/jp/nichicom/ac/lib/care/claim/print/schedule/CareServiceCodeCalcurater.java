@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001SpecialCase;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
@@ -328,8 +329,21 @@ public class CareServiceCodeCalcurater {
 
                 int unit = getServiceUnit(code, mode, service,
                         totalGroupingCache);
-                total += getReductedServiceCodeUnit(code, unit, total,
-                        reductRate);
+// [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - begin
+//              total += getReductedServiceCodeUnit(code, unit, total,
+//              reductRate);
+                int reducedUnit = getReductedServiceCodeUnit(code, unit, total, reductRate);
+                String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"));
+                String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                //看取り関連の加算コードであれば、単位数×加算日数とする
+                int serviceCount = QP001SpecialCase.getServiceCount(serviceCodeKind
+                    , serviceCodeItem
+                    , (VRMap) service);                                                
+                if (serviceCount > 1) {
+                    reducedUnit = reducedUnit * serviceCount;
+                }
+                total += reducedUnit;
+ // [H27.4改正対応][Yoichiro Kamei] 看取り加算関連の加算日数に対応 2015/3/19 mod - end
             }
         }
         // 合算を返す。

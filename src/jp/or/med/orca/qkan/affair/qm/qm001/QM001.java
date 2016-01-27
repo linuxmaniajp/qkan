@@ -188,6 +188,37 @@ public class QM001 extends QM001Event {
                 } else {
                     setState_VALID_DB();
                 }
+                
+                // 給付管理台帳システムバージョン情報取得用のSQL文を取得する。
+                // getSQL_GET_QKAN_VERSION(null);
+                // 取得したSQL文を発行する。
+                VRList versionList = getDBManager().executeQuery(
+                        getSQL_GET_QKAN_VERSION(null));
+
+                // 取得件数が0件より多い場合
+                if (versionList.size() > 0) {
+                    // setMasterDataVersion((マスターデータバージョン));
+                    masterDataVersion = ACCastUtilities
+                            .toString(VRBindPathParser.get(
+                                    "MASTER_DATA_VERSION",
+                                    (VRMap) versionList.getData()));
+
+                    // setSchemeVersion((スキーマバージョン));
+                    schemeVersion = ACCastUtilities.toString(VRBindPathParser
+                            .get("SCHEME_VERSION",
+                                    (VRMap) versionList.getData()));
+                    
+                    //スキーマバージョンチェック
+                    if (!QkanCommon.isValidSchemaVersion(schemeVersion)) {
+                        errorFlag |= DB_SCHEMA_VERSION_ERROR;
+                        setState_INVALID_SCHEMA_VERSION();
+                    }
+
+                } else {
+                    // 取得件数が0件の場合
+                    errorFlag |= DB_MASTER_VERSION_ERROR;
+                    setState_INVALID_MASTER_VERSION();
+                }
             } else {
                 // 失敗した場合
                 errorFlag |= DB_ERROR;

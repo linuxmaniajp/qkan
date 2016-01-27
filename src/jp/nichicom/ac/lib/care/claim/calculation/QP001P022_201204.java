@@ -67,7 +67,13 @@ public class QP001P022_201204 extends QP001P02_201204{
     public void doPrintReductionList(VRList reductionList) throws Exception {
 // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] mod - begin
     	//出力対象となるサービス種類
-    	List<String> targetKindList = Arrays.asList(new String[]{"61", "65", "74", "75"});
+    	List<String> targetKindList = Arrays.asList(new String[]{
+    			  "61" //介護予防訪問介護
+    			, "65" //介護予防通所介護
+    			, "74" //介護予防認知症対応型通所介護
+    			, "75" //介護予防小規模多機能型居宅介護（短期利用型以外）
+    			, "69" //介護予防小規模多機能型居宅介護（短期利用型）
+    	});
     	if (reductionList.getDataSize() > 0) {
     		//サービス種類コードが対象に含まれていなければ除く
             for (int j = 0; j < reductionList.getDataSize(); j++) {

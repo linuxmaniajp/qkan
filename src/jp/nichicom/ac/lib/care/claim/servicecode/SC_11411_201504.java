@@ -61,7 +61,23 @@ public class SC_11411_201504 extends Qkan10011_ServiceUnitGetter {
         // 社会参加支援加算
         int _1140112 = getIntValue(map, "1140112", 1);
         
+        // 加算のみ
+        int _9 = getIntValue(map,"9");
         
+        
+        // 単独加算のみ---------------------------------------------------------------
+        // 単独加算サービス
+        if(_9 == 2){
+            sysSvcCdItems = new ArrayList<HashMap<String, String>>();
+            // リハビリテーション・マネジメント加算
+            switch (_1140110) {
+            // II型
+            case 3:
+                putSystemServiceCodeItem(sysSvcCdItems, "Z5005");//2015.04
+                break;
+            }
+            return sysSvcCdItems;
+        }
         
         
         // 独自コード生成

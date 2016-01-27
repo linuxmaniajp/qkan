@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2015/04/21  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -86,28 +86,6 @@ public class QS001_11411_201504State extends QS001_11411_201504Design {
    * コンストラクタです。
    */
   public QS001_11411_201504State(){
-  }
-
-  /**
-   * 「短期集中リハビリ加算・有効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_VALID_REHABILI_SHORT_CONCENTRATIO() throws Exception {
-
-        getHoumonRehabiliShortConcentrationAddRadio().setEnabled(true);
-        getHoumonRehabiliShortConcentrationAddRadio().getParent().setEnabled(true);
-
-  }
-
-  /**
-   * 「短期集中リハビリ加算・無効」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_INVALID_REHABILI_SHORT_CONCENTRATIO() throws Exception {
-
-        getHoumonRehabiliShortConcentrationAddRadio().setEnabled(false);
-        getHoumonRehabiliShortConcentrationAddRadio().getParent().setEnabled(false);
-
   }
 
 }
