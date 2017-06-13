@@ -1,0 +1,161 @@
+--- QO012.java	2016-01-29 12:00:28.000000000 +0900
++++ /home/deuce/dngsrc/qkcsv_viwer/src/jp/or/med/orca/qkan/viewer/qo/qo012/QO012.java	2016-03-14 10:48:51.000000000 +0900
+@@ -68,6 +68,7 @@
+      * コンストラクタです。
+      */
+     public QO012() {
++        getCsvDataTableColumn0().setVisible(false);
+     }
+ 
+     public void initAffair(ACAffairInfo affair) throws Exception {
+@@ -188,6 +189,32 @@
+         qo012001.setVisible(true);
+     }
+ 
++    /*
++     * 「印刷」イベントです。
++     *
++     * @param e
++     *            イベント情報
++     * @throws Exception
++     *             処理例外
++     */
++    protected void printButtonActionPerformed(ActionEvent e) throws Exception {
++       if (getCsvDataTable().getModel().getRowCount()>0) {
++            QO012Print pj = new QO012Print(exchangeType);
++            pj.initPdf();
++            pj.openPDF("給管鳥 CSVファイル内容");
++            pj.setFileInfo(getHeaderMap());
++            pj.setInfoTableModel(getTotalInfoTable().getModel());
++            pj.setCsvTableModel(getCsvDataTable().getModel());
++            pj.flush();
++            if (ACFrame.getInstance().hasProperty("Acrobat/Path"))
++              pj.preview(ACFrame.getInstance().getProperty("Acrobat/Path"));
++            else pj.preview(null);
++       }
++       else {
++         ACMessageBox.show("ファイルを開いて下さい");
++       }
++    }
++
+     public static void main(String[] args) {
+         // // デフォルトデバッグ起動
+         // ACFrame.getInstance().setFrameEventProcesser(new
+@@ -385,6 +412,11 @@
+     }
+ 
+     /**
++     *   for print
++     */
++    String exchangeType;
++
++    /**
+      * 「明細基本情報レコード（サービス事業所）解析」に関する処理を行ないます。
+      * 
+      * @throws Exception 処理例外
+@@ -407,8 +439,7 @@
+ 
+             // 存在するのが前提になるが、念の為から文字チェックを入れておく
+             // 交換識別情報の確認
+-            String exchangeType = getInputCSVFile().getValueAtString(rowIndex,
+-                    COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE);
++            exchangeType = getInputCSVFile().getValueAtString(rowIndex, COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE);
+ 
+             if (exchangeType.equals("7131")) {
+                 // 7131 様式第2
+@@ -639,7 +670,7 @@
+         // UNIT_TOTAL
+ 
+         /*
+-         * String[] csvDataTableSchema = new String[45]; csvDataTableSchema[0] =
++         * String[] csvDataTableSchema = new String[46]; csvDataTableSchema[0] =
+          * "YEAR_AND_MONTH"; csvDataTableSchema[1] = "INSURED_ID";
+          * csvDataTableSchema[2] = "NAME"; csvDataTableSchema[3] = "CARE_LEVEL";
+          * csvDataTableSchema[4] = "11"; csvDataTableSchema[5] = "12";
+@@ -663,6 +694,7 @@
+          * csvDataTableSchema[40] = "74"; csvDataTableSchema[41] = "75";
+          * csvDataTableSchema[42] = "37"; csvDataTableSchema[43] = "39";
+          * csvDataTableSchema[44] = "UNIT_TOTAL";
++         * csvDataTableSchema[45] = "KUBUN";
+          */
+ 
+         //[H27.4 改正対応][Shinobu Hitaka] 2015/02 edit begin 68,69,79サービス種類追加
+@@ -689,7 +721,7 @@
+                 "36", "28", "38", "51", "52", "53", "54", "71", "72", "76",
+                 "77", "79", "73", "68", "78", "43", "61", "62", "63", "64", "65",
+                 "66", "67", "24", "25", "26", "34", "35", "46", "74", "75", 
+-                "69", "37", "39", "UNIT_TOTAL" };
++                "69", "37", "39", "UNIT_TOTAL","KUBUN" };
+         //[H28.4 改正対応][Shinobu Hitaka] 2016/01 edit end
+ 
+         // 格納
+@@ -828,6 +860,7 @@
+                 getTotalInfoTableColumn4().setVisible(true);
+                 getTotalInfoTableColumn5().setVisible(true);
+                 getTotalInfoTableColumn6().setVisible(true);
++                getCsvDataTableColumn0().setVisible(false);
+                 // 文字列調整
+                 getTotalInfoTableColumn2().setColumns(10);
+ 
+@@ -844,6 +877,7 @@
+                 getTotalInfoTableColumn4().setVisible(false);
+                 getTotalInfoTableColumn5().setVisible(false);
+                 getTotalInfoTableColumn6().setVisible(false);
++                getCsvDataTableColumn0().setVisible(true);
+             }
+ 
+             // 集計情報テーブルリストに加える
+@@ -937,6 +971,38 @@
+     }
+ 
+     /**
++     * 「区分」に関する処理を行ないます。
++     *
++     * @throws Exception
++     *             処理例外
++     */
++    public String checkKubun(String kubunCode) throws Exception {
++            String kubun = new String();
++            if (ACTextUtilities.isNullText(kubunCode)) {
++                    return "";
++            }
++
++            switch (ACCastUtilities.toInt(kubunCode)) {
++                    case 1:
++                            kubun = KUBUN_1;
++                            break;
++
++                    case 2:
++                            kubun = KUBUN_2;
++                            break;
++
++                    case 3:
++                            kubun = KUBUN_3;
++                            break;
++
++                    default:
++                            kubun = KUBUN_1;
++                            break;
++            }
++            return kubun;
++    }
++
++    /**
+      * 「要介護度チェック」に関する処理を行ないます。
+      * 
+      * @throws Exception 処理例外
+@@ -1667,6 +1733,14 @@
+      */
+     public boolean dataRecord822Parser(int rowIndex, VRMap returnDataMap)
+             throws Exception {
++
++            // returnDataMapに0.区分KUBUNを格納する。
++            if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(rowIndex, MANAGEMENT_RECORD_6_KUBUN))) {
++                    returnDataMap.setData("KUBUN", checkKubun(getInputCSVFile(). getValueAtString(rowIndex, MANAGEMENT_RECORD_6_KUBUN)));
++            } else {
++                    return false;
++            }
++
+         // returnDataMapに9.被保険者番号INSURED_IDと6.サービス提供年月YEAR_AND_MONTHを格納する。
+         if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(
+                 rowIndex, MANAGEMENT_RECORD_2_SERVICE_PROVIDE_YEAR_AND_MONTH))) {

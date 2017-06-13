@@ -1,0 +1,39 @@
+90a91,109
+>                 getPrintButton().addActionListener(new ActionListener() {
+>                         private boolean lockFlag = false;
+> 
+>                         public void actionPerformed(ActionEvent e) {
+>                                 if (lockFlag) {
+>                                         return;
+>                                 }
+>                                 lockFlag = true;
+>                                 try {
+>                                         printButtonActionPerformed(e);
+>                                 } catch (Throwable ex) {
+>                                         ACCommon.getInstance().showExceptionMessage(ex);
+>                                 } finally {
+>                                         lockFlag = false;
+>                                 }
+>                         }
+>                 });
+> 
+> 
+114a134,143
+>         /**
+>          * 「印刷」イベントです。
+>          *
+>          * @param e
+>          *            イベント情報
+>          * @throws Exception
+>          *             処理例外
+>          */
+>         protected abstract void printButtonActionPerformed(ActionEvent e) throws Exception;
+> 
+182a212,215
+>         public static final String KUBUN_1 = "新規";
+>         public static final String KUBUN_2 = "修正";
+>         public static final String KUBUN_3 = "取消";
+> 
+291a325,326
+>         public static final int MANAGEMENT_RECORD_6_KUBUN = 6; // 区分
+> 
