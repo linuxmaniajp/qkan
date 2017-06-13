@@ -67,38 +67,43 @@ public class SC_16911_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1690102) {
         case 5:
             // Z6100 小多機能型サービス提供体制加算Iイ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
             break;
         case 2:
             // 6101 小多機能型サービス提供体制加算Iロ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//2015.04
             break;
         case 3:
             // 6102 小多機能型サービス提供体制加算II
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6102");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6102");//2015.04
             break;
         case 4:
             // 6103 小多機能型サービス提供体制加算III
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6103");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6103");//2015.04
             break;
         }
 
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            // 小規模多機能型処遇改善加算I
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6112");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6110");//TODO:コード値確認
+            // 小規模多機能型処遇改善加算II
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6110");//2015.04
             break;
         case 2:
-            // 小規模多機能型処遇改善加算I日割
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6104");//TODO:コード値確認
+            // 小規模多機能型処遇改善加算IIII
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6104");//2015.04
             break;
         case 3:
-            // 小規模多機能型処遇改善加算II日割
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//TODO:コード値確認
+            // 小規模多機能型処遇改善加算IV
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//2015.04
             break;
         case 4:
-            // 小規模多機能型処遇改善加算III日割
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//TODO:コード値確認
+            // 小規模多機能型処遇改善加算V
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//2015.04
             break;
         }
 

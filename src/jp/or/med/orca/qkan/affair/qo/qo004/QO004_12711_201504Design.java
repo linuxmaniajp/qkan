@@ -18,7 +18,7 @@
  *****************************************************************
  * ƒAƒvƒŠ: QKANCHO
  * ŠJ”­Ò: ãi@˜a‘P
- * ì¬“ú: 2015/02/28  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ ãi@˜a‘P V‹Kì¬
+ * ì¬“ú: 2017/02/24  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ ãi@˜a‘P V‹Kì¬
  * XV“ú: ----/--/--
  * ƒVƒXƒeƒ€ ‹‹•tŠÇ—‘ä’  (Q)
  * ƒTƒuƒVƒXƒeƒ€ ‚»‚Ì‘¼‹@”\ (O)
@@ -157,6 +157,8 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
   private ACRadioButtonItem staffUpgradeRadioItem5;
 
+  private ACRadioButtonItem staffUpgradeRadioItem6;
+
   private ACLabelContainer reduceRateContainer;
 
   private ACTextField reduceRate;
@@ -174,7 +176,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       mainGroup = new ACGroupBox();
 
-      mainGroup.setText("“Á’è{İ“ü‹Ò¶Šˆ‰îŒìi’ZŠú—˜—pŒ^j");
+      mainGroup.setText("“Á’è{İ“ü‹Ò¶Šˆ‰îŒìi’ZŠú—˜—pj");
 
       mainGroup.setFollowChildEnabled(true);
 
@@ -655,7 +657,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       serviceAddProvisionStructuralRadioItem3.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
-      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW);
+      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW_RETURN);
 
       addServiceAddProvisionStructuralRadioItem3();
     }
@@ -714,7 +716,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioGroup = new ACValueArrayRadioButtonGroup();
 
-      getStaffUpgradeRadioGroupContainer().setText("‰îŒìEˆõˆ‹ö‰ü‘P‰ÁZ");
+      getStaffUpgradeRadioGroupContainer().setText("<html>‰îŒìEˆõˆ‹ö‰ü‘P‰ÁZ<br>i‹Œ‰ÁZF`H29.3j</html>");
 
       staffUpgradeRadioGroup.setBindPath("4");
 
@@ -724,7 +726,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioGroup.setModel(getStaffUpgradeRadioGroupModel());
 
-      staffUpgradeRadioGroup.setValues(new int[]{1,5,2,3,4});
+      staffUpgradeRadioGroup.setValues(new int[]{1,6,5,2,3,4});
 
       addStaffUpgradeRadioGroup();
     }
@@ -792,7 +794,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem2.setGroup(getStaffUpgradeRadioGroup());
 
-      staffUpgradeRadioItem2.setConstraints(VRLayout.FLOW);
+      staffUpgradeRadioItem2.setConstraints(VRLayout.FLOW_RETURN);
 
       addStaffUpgradeRadioItem2();
     }
@@ -809,7 +811,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem3 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem3.setText("‰ÁZII");
+      staffUpgradeRadioItem3.setText("‰ÁZIIi‹Œ‰ÁZIj");
 
       staffUpgradeRadioItem3.setGroup(getStaffUpgradeRadioGroup());
 
@@ -830,11 +832,11 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem4 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem4.setText("‰ÁZIII");
+      staffUpgradeRadioItem4.setText("‰ÁZIIIi‹Œ‰ÁZIIj");
 
       staffUpgradeRadioItem4.setGroup(getStaffUpgradeRadioGroup());
 
-      staffUpgradeRadioItem4.setConstraints(VRLayout.FLOW);
+      staffUpgradeRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
 
       addStaffUpgradeRadioItem4();
     }
@@ -851,7 +853,7 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem5 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem5.setText("‰ÁZIV");
+      staffUpgradeRadioItem5.setText("‰ÁZIVi‹Œ‰ÁZIIIj");
 
       staffUpgradeRadioItem5.setGroup(getStaffUpgradeRadioGroup());
 
@@ -860,6 +862,27 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
       addStaffUpgradeRadioItem5();
     }
     return staffUpgradeRadioItem5;
+
+  }
+
+  /**
+   * ‰ÁZV‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰ÁZV
+   */
+  public ACRadioButtonItem getStaffUpgradeRadioItem6(){
+    if(staffUpgradeRadioItem6==null){
+
+      staffUpgradeRadioItem6 = new ACRadioButtonItem();
+
+      staffUpgradeRadioItem6.setText("‰ÁZVi‹Œ‰ÁZIVj");
+
+      staffUpgradeRadioItem6.setGroup(getStaffUpgradeRadioGroup());
+
+      staffUpgradeRadioItem6.setConstraints(VRLayout.FLOW);
+
+      addStaffUpgradeRadioItem6();
+    }
+    return staffUpgradeRadioItem6;
 
   }
 
@@ -1209,21 +1232,25 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem1());
 
-    getStaffUpgradeRadioItem2().setButtonIndex(5);
+    getStaffUpgradeRadioItem2().setButtonIndex(6);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem2());
 
-    getStaffUpgradeRadioItem3().setButtonIndex(2);
+    getStaffUpgradeRadioItem3().setButtonIndex(5);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem3());
 
-    getStaffUpgradeRadioItem4().setButtonIndex(3);
+    getStaffUpgradeRadioItem4().setButtonIndex(2);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem4());
 
-    getStaffUpgradeRadioItem5().setButtonIndex(4);
+    getStaffUpgradeRadioItem5().setButtonIndex(3);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem5());
+
+    getStaffUpgradeRadioItem6().setButtonIndex(4);
+
+    getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem6());
 
   }
 
@@ -1259,6 +1286,13 @@ public class QO004_12711_201504Design extends QO004ProviderPanel {
    * ‰ÁZIV‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addStaffUpgradeRadioItem5(){
+
+  }
+
+  /**
+   * ‰ÁZV‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addStaffUpgradeRadioItem6(){
 
   }
 

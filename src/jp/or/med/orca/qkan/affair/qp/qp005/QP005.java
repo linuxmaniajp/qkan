@@ -51,10 +51,10 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001ReTotal;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaNotFoundException;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACCharacterConverter;
 import jp.nichicom.ac.text.ACTextUtilities;
-import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -65,7 +65,6 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
-import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
@@ -4233,7 +4232,14 @@ public class QP005 extends QP005Event {
 		
 		//再集計実行！
 		QP001ReTotal qp001retotal = new QP001ReTotal();
-		qp001retotal.calc(list, getDBManager(), getPatientId(), isPlanOverwrite);
+// 2016/10/13 [Yoichiro Kamei] mod - begin 総合事業対応
+//		qp001retotal.calc(list, getDBManager(), getPatientId(), isPlanOverwrite);
+		try {
+			qp001retotal.calc(list, getDBManager(), getPatientId(), isPlanOverwrite);
+		} catch (QkanSjTankaNotFoundException e) {
+			QkanMessageList.getInstance().QS001_SJ_TANKA_NOT_FOUND();
+		}
+// 2016/10/13 [Yoichiro Kamei] mod - end
 		
 		dump(list, "after.txt");
 		

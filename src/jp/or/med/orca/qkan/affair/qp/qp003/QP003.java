@@ -118,8 +118,7 @@ public class QP003 extends QP003Event {
         comboInitialize();
 
         // [V5.3.4対応 利用者向け領収書] kamitsukasa.kazuyoshi add start
-        if(
-                ACDateUtilities.compareOnDay(DATE_20070401, getClaimDate()) > 0){
+        if(ACDateUtilities.compareOnDay(DATE_20070401, getClaimDate()) > 0){
         	// 平成19年4月1日より過去の日付の場合
         	// 内税ラベル、テキストを非表示に設定する。
         	setState_INVISIBLE_INNER_TAX();
@@ -165,6 +164,13 @@ public class QP003 extends QP003Event {
         // [ID:0000435][Masahiko Higuchi] 2009/07 add end
         
         // [V5.3.4対応 利用者向け領収書] kamitsukasa.kazuyoshi add end
+        
+        // 医療費控除額取得
+        doFindKoujo();
+        // 医療費控除非表示
+        getKoujoDispCheck().setSelected(true);
+        getContentHokenIryoKoujoCheck().setSelected(true);
+        setState_KOUJO_ENABLE_TRUE();
         
         // 業務情報マスタより、データを取得する。
         setAffairTitle("QP003", getButtons());
@@ -421,8 +427,6 @@ public class QP003 extends QP003Event {
         // paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
         ACFrame.debugStart(new ACAffairInfo(QP003.class.getName(), param));
     }
-
-    // 内部関数
 
     // 内部関数
 
@@ -718,6 +722,8 @@ public class QP003 extends QP003Event {
         // ・その他費用小計フィールド（contentEtcSubtotal）
         getContentTotalText().setText(ACCastUtilities.toString(sum));
 
+        // 医療費控除の計算
+        calcKoujoPrice();
     }
 
     /**
@@ -1604,6 +1610,306 @@ public class QP003 extends QP003Event {
         
     }
 
+    /**
+     * 「医療費控除補助の制御」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void koujoDispCheckActionPerformed(ActionEvent e) throws Exception {
+        if(getKoujoDispCheck().isSelected()) {
+            // 医療費控除補助選択時
+        	setState_KOUJO_ENABLE_TRUE();
+        } else {
+            // 医療費控除補助非選択時
+        	setState_KOUJO_ENABLE_FALSE();
+        }
+        
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentHokenIryoUseFocusLost(FocusEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentHokenFukushiUseFocusLost(FocusEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentHokenIryoKoujoCheckActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentHokenFukushiKoujoCheckActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentJikohutanKoujoCheck1ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentJikohutanKoujoCheck2ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentJikohutanKoujoCheck3ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentEtcKoujoCheck1ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentEtcKoujoCheck2ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentEtcKoujoCheck3ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentEtcKoujoCheck4ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentEtcKoujoCheck5ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額算出」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void contentEtcKoujoCheck6ActionPerformed(ActionEvent e) throws Exception {
+    	calcKoujoPrice();
+    }
+
+    /**
+     * 「医療費控除金額反映」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void reflectionActionPerformed(ActionEvent e) throws Exception {
+        if (ACCastUtilities.toInt(getContentKoujyoText().getText(), 0) > 0) {
+            if (QkanMessageList.getInstance()
+                    .QP003_WARNING_OF_REPLACE_KOUJO() == ACMessageBox.RESULT_CANCEL) {
+                // 「キャンセル」選択時
+                return;
+                }
+        }
+        getContentKoujyoText().setText(getContentKoujyoText2().getText());
+    }
+
+    /**
+     * 「医療費控除計算」に関する処理を行ないます。
+     *
+     * @throws Exception 処理例外
+     *
+     */
+    public void calcKoujoPrice() throws Exception {
+        // 介護保険負担分合計金額の計算処理
+        int hokenSum = 0;
+        // 医療費控除対象がチェックされているフィールドの値の合計を計算する。
+        // ・医療系サービス
+        if (getContentHokenIryoKoujoCheck().isSelected() && !"".equals(getContentHokenIryoUse().getText())) {
+        	hokenSum += ACCastUtilities.toInt(getContentHokenIryoUse().getText(),0);
+        }
+        // ・福祉系サービス
+        if (getContentHokenFukushiKoujoCheck().isSelected() && !"".equals(getContentHokenFukushiUse().getText())) {
+        	hokenSum += ACCastUtilities.toInt(getContentHokenFukushiUse().getText(),0);
+        }
+        
+        // 全額自己負担分合計金額の計算処理
+        int sum = 0;
+        // ・全額自己負担分利用料１
+        if (getContentJikohutanKoujoCheck1().isSelected() && !"".equals(getContentJikohutanUse1().getText())) {
+            sum += ACCastUtilities.toInt(getContentJikohutanUse1().getText(),0);
+        }
+        // ・全額自己負担分利用料２
+        if (getContentJikohutanKoujoCheck2().isSelected() && !"".equals(getContentJikohutanUse2().getText())) {
+            sum += ACCastUtilities.toInt(getContentJikohutanUse2().getText(),0);
+        }
+        // ・全額自己負担分利用料３
+        if (getContentJikohutanKoujoCheck3().isSelected() && !"".equals(getContentJikohutanUse3().getText())) {
+            sum += ACCastUtilities.toInt(getContentJikohutanUse3().getText(),0);
+        }
+        // 計算結果を全額自己負担小計フィールドに表示する。
+        getContentJikohutanKoujoSubtotal().setText(ACCastUtilities.toString(sum));
+        
+        // その他利用料合計金額の計算処理
+        int etcSum = 0;
+        // ・その他利用料１
+        if (getContentEtcKoujoCheck1().isSelected() && !"".equals(getContentEtcUse1().getText())) {
+            etcSum += ACCastUtilities.toInt(getContentEtcUse1().getText(),0);
+        }
+        // ・その他利用料２
+        if (getContentEtcKoujoCheck2().isSelected() && !"".equals(getContentEtcUse2().getText())) {
+            etcSum += ACCastUtilities.toInt(getContentEtcUse2().getText(),0);
+        }
+        // ・その他利用料３
+        if (getContentEtcKoujoCheck3().isSelected() && !"".equals(getContentEtcUse3().getText())) {
+            etcSum += ACCastUtilities.toInt(getContentEtcUse3().getText(),0);
+        }
+        // ・その他利用料４
+        if (getContentEtcKoujoCheck4().isSelected() && !"".equals(getContentEtcUse4().getText())) {
+            etcSum += ACCastUtilities.toInt(getContentEtcUse4().getText(),0);
+        }
+        // ・その他利用料５
+        if (getContentEtcKoujoCheck5().isSelected() && !"".equals(getContentEtcUse5().getText())) {
+            etcSum += ACCastUtilities.toInt(getContentEtcUse5().getText(),0);
+        }
+        // ・その他利用料６
+        if (getContentEtcKoujoCheck6().isSelected() && !"".equals(getContentEtcUse6().getText())) {
+            etcSum += ACCastUtilities.toInt(getContentEtcUse6().getText(),0);
+        }        
+        // 計算結果をその他費用小計フィールドに表示する。
+        getContentEtcKoujoSubtotal().setText(ACCastUtilities.toString(etcSum));
+
+        // 医療費控除チェック合計に表示する。
+        sum = hokenSum + sum + etcSum;
+        getContentKoujyoText2().setText(ACCastUtilities.toString(sum));
+
+    }
+    
+    /**
+     * 「医療費控除情報を取得」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public void doFindKoujo() throws Exception {
+        // 請求詳細情報の利用者負担分を取得
+        // SQL文取得用のVRMap paramを生成し、以下のKEY/VALUEを設定する。
+        VRMap param = new VRHashMap();
+        // ・KEY：PATIENT_ID VALUE：patientId
+        // ・KEY：TARGET_DATE VALUE：targetDate
+        // ・KEY：CLAIM_DATE VALUE：claimDate
+        // ・KEY：PROVIDER_ID VALUE：providerId
+        // ・KEY：INSURED_ID VALUE：insuredId
+        param.setData("PATIENT_ID", new Integer(getPatientId()));
+        param.setData("TARGET_DATE", getTargetDate());
+        param.setData("CLAIM_DATE", getClaimDate());
+        param.setData("PROVIDER_ID", getProviderId());
+        param.setData("INSURED_ID", getInsuredId());
+        // SQL文を取得する。
+        // 取得したSQL文を実行し、データをkoujoListに格納する。
+        VRList koujoList = getDBManager().executeQuery(getSQL_GET_RIYOUSYA_UNIT(param));
+        int iryoTotal = 0;
+        int fukushiTotal = 0;
+        int halfTotal = 0;
+        for (int i = 0; i < koujoList.size(); i++) {
+            VRMap map = (VRMap) koujoList.getData(i);
+            // サービス種類毎に医療系と福祉系の利用者負担合計へ設定する
+            int unit = ACCastUtilities.toInt(map.get("UNIT"), 0);
+            String serviceCodeKind = ACCastUtilities.toString(map.get("SERVICE_CODE_KIND"), "");
+            int styleType = ACCastUtilities.toInt(map.get("CLAIM_STYLE_TYPE"), 0);
+            // 医療系サービス（特養以外）
+            if ("13".equals(serviceCodeKind) || "14".equals(serviceCodeKind) || "16".equals(serviceCodeKind)
+                || "22".equals(serviceCodeKind) || "23".equals(serviceCodeKind)
+                || "25".equals(serviceCodeKind) || "26".equals(serviceCodeKind)
+                || "31".equals(serviceCodeKind) || "34".equals(serviceCodeKind)
+                || "52".equals(serviceCodeKind) || "53".equals(serviceCodeKind)
+                || "63".equals(serviceCodeKind) || "64".equals(serviceCodeKind) || "66".equals(serviceCodeKind)
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_4)  // 特定入所者 短期老健
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_4_2)// 特定入所者 予防短期老健
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_5)  // 特定入所者 短期療養
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_5_2)// 特定入所者 予防短期療養
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_9)  // 特定入所者 老健
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_10) // 特定入所者 療養
+            	) {
+            	iryoTotal = iryoTotal + unit;
+            }
+            // 医療系サービス
+            // ※特養　最後に半額にするため別集計
+            if ("51".equals(serviceCodeKind) || "54".equals(serviceCodeKind) 
+            	|| ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_8) // 特定入所者 特養
+            ) {
+            	halfTotal = halfTotal + unit;
+            }
+            // 福祉系サービス
+            // ※総合事業は訪問型と通所型のみ（A1-A8）を対象とする
+            if ("11".equals(serviceCodeKind) || "12".equals(serviceCodeKind) || "15".equals(serviceCodeKind) 
+                || "21".equals(serviceCodeKind) || "24".equals(serviceCodeKind)
+                || "61".equals(serviceCodeKind) || "62".equals(serviceCodeKind)
+                || "65".equals(serviceCodeKind) || "68".equals(serviceCodeKind)
+                || "69".equals(serviceCodeKind)
+                || "71".equals(serviceCodeKind) || "72".equals(serviceCodeKind)
+                || "73".equals(serviceCodeKind) || "74".equals(serviceCodeKind)
+                || "75".equals(serviceCodeKind) || "76".equals(serviceCodeKind)
+                || "77".equals(serviceCodeKind) || "78".equals(serviceCodeKind)
+                || "79".equals(serviceCodeKind)
+                || "A1".equals(serviceCodeKind) || "A2".equals(serviceCodeKind)
+                || "A3".equals(serviceCodeKind) || "A4".equals(serviceCodeKind)
+                || "A5".equals(serviceCodeKind) || "A6".equals(serviceCodeKind)
+                || "A7".equals(serviceCodeKind) || "A8".equals(serviceCodeKind)
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_3)   // 特定入所者 短期生活
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_3_2) // 特定入所者 予防短期生活
+                ) {
+            	fukushiTotal = fukushiTotal + unit;
+            }
+        }
+        iryoTotal = iryoTotal + (int)Math.floor(halfTotal / 2.0d);
+        getContentHokenIryoUse().setText(ACCastUtilities.toString(iryoTotal));
+        getContentHokenFukushiUse().setText(ACCastUtilities.toString(fukushiTotal));
+    }
 
 
 }

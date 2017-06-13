@@ -222,7 +222,7 @@ public class SC_12611_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1260115) {
         case 5:
             // 2705 —\•a‰@—Ã’ZƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2705");//TODO:ƒR[ƒh’lŠm”F
+            putSystemServiceCodeItem(sysSvcCdItems, "Z2705");//2015.04
             break;
         case 2:
             // 2701 —\•a‰@—Ã’ZƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒ
@@ -240,19 +240,19 @@ public class SC_12611_201504 extends Qkan10011_ServiceUnitGetter {
 
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z2709");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2710");//TODO:ƒR[ƒh’lŠm”F
+            putSystemServiceCodeItem(sysSvcCdItems, "Z2710");//2015.04
             break;
         case 2:
-            // —\•a‰@—Ã’Zˆ‹ö‰ü‘P‰ÁZI
             putSystemServiceCodeItem(sysSvcCdItems, "Z2711");
             break;
         case 3:
-            // —\•a‰@—Ã’Zˆ‹ö‰ü‘P‰ÁZII
             putSystemServiceCodeItem(sysSvcCdItems, "Z2712");
             break;
         case 4:
-            // —\•a‰@—Ã’Zˆ‹ö‰ü‘P‰ÁZIII
             putSystemServiceCodeItem(sysSvcCdItems, "Z2713");
             break;
         }

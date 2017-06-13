@@ -1059,10 +1059,6 @@ public abstract class QU002Event extends QU002SQL {
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
   public static final int YOUKAIGODO_HIGAITOU = 1;
-  public static final int YOUKAIGODO_JIGYOTAISHO = 6;   //2016/7/5 Kamei add
-  public static final int YOUKAIGODO_KEIKATEKI_YOUKAIGO = 11;
-  public static final int YOUKAIGODO_YOUSHIEN1 = 12;	//2015/3/31 Hitaka add
-  public static final int YOUKAIGODO_YOUSHIEN2 = 13;	//2016/7/18 Kamei add
   public static final int CODE_IDOU_REASON_NYUSYO_NYUIN = 278;
   public static final int IDOU_START_SHISETSU1 = 1;
   public static final int IDOU_START_SHISETSU2 = 1;

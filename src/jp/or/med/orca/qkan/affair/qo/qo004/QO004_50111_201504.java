@@ -42,7 +42,7 @@ import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
- * 訪問型サービス(QO004501)
+ * 訪問型サービス(QO004_50111_201504)
  */
 @SuppressWarnings("serial")
 public class QO004_50111_201504 extends QO004_50111_201504Event {
@@ -153,25 +153,6 @@ public class QO004_50111_201504 extends QO004_50111_201504Event {
 
         // デバッグ用出力
         // System.out.println(map);
-
-    }
-
-    /**
-     * 「介護予防訪問介護と同じ設定をする処理」イベントです。
-     * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void settingCopyActionPerformed(ActionEvent e) throws Exception {
-        // 介護予防訪問介護と同じ設定をする処理
-
-        try {
-
-        	System.out.println("");
-
-        } catch (Exception ex) {
-            throw ex;
-        }
 
     }
 

@@ -1602,7 +1602,10 @@ public class QP001CSVCreator {
         sb.append(getData(map,"301008"));
         sb.append(spliter);
         //単位数を記載しないサービスでない場合、単位数を出力する。
-        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"301007"),getData(map,"301008"))){
+        // [H27.4改正対応][Shinobu Hitaka] 2016/10/05 edit 月額算定を印字しない判定用に引数追加
+        //if(!QP001SpecialCase.isUnitNoCountService(getData(map,"301007"),getData(map,"301008"))){
+        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"301007"),getData(map,"301008"),
+        		ACCastUtilities.toInt(getData(map,"301027"),0))){
             // 単位数4桁(SYSTEM_BIND_PATH:301009)
             sb.append(getData(map,"301009"));
         }
@@ -2630,7 +2633,10 @@ public class QP001CSVCreator {
         sb.append(getData(map,"1801008"));
         sb.append(spliter);
         //単位数を記載しないサービスでない場合、単位数を出力する。
-        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"1801007"),getData(map,"1801008"))){
+        // [H27.4改正対応][Shinobu Hitaka] 2016/10/05 edit 月額算定を印字しない判定用に引数追加
+        //if(!QP001SpecialCase.isUnitNoCountService(getData(map,"1801007"),getData(map,"1801008"))){
+        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"1801007"),getData(map,"1801008"),
+            ACCastUtilities.toInt(getData(map,"1801028")))){
             // 単位数4桁(SYSTEM_BIND_PATH:1801009)
             sb.append(getData(map,"1801009"));
         }

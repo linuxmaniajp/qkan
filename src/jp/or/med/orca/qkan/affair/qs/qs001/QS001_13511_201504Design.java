@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/02/27  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/12/01  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -325,6 +325,22 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
 
   private ACRadioButtonItem expertPlaceNursingMouthFunctionImprovementAddRadioItem2;
 
+  private ACValueArrayRadioButtonGroup expertPlaceNursingSentakutekiServiceRadio;
+
+  private ACLabelContainer expertPlaceNursingSentakutekiServiceRadioContainer;
+
+  private ACListModelAdapter expertPlaceNursingSentakutekiServiceRadioModel;
+
+  private ACRadioButtonItem expertPlaceNursingSentakutekiServiceRadioItem1;
+
+  private ACRadioButtonItem expertPlaceNursingSentakutekiServiceRadioItem2;
+
+  private ACRadioButtonItem expertPlaceNursingSentakutekiServiceRadioItem3;
+
+  private ACRadioButtonItem expertPlaceNursingSentakutekiServiceRadioItem4;
+
+  private ACRadioButtonItem expertPlaceNursingSentakutekiServiceRadioItem5;
+
   private ACPanel tabPanel5;
 
   private ACGroupBox expertPlaceRehabiliGroup;
@@ -372,6 +388,22 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
   private ACRadioButtonItem expertPlaceRehabiliMouthFunctionImprovementAddRadioItem1;
 
   private ACRadioButtonItem expertPlaceRehabiliMouthFunctionImprovementAddRadioItem2;
+
+  private ACValueArrayRadioButtonGroup expertPlaceRehabiliSentakutekiServiceRadio;
+
+  private ACLabelContainer expertPlaceRehabiliSentakutekiServiceRadioContainer;
+
+  private ACListModelAdapter expertPlaceRehabiliSentakutekiServiceRadioModel;
+
+  private ACRadioButtonItem expertPlaceRehabiliSentakutekiServiceRadioItem1;
+
+  private ACRadioButtonItem expertPlaceRehabiliSentakutekiServiceRadioItem2;
+
+  private ACRadioButtonItem expertPlaceRehabiliSentakutekiServiceRadioItem3;
+
+  private ACRadioButtonItem expertPlaceRehabiliSentakutekiServiceRadioItem4;
+
+  private ACRadioButtonItem expertPlaceRehabiliSentakutekiServiceRadioItem5;
 
   private ACPanel tabPanel6;
 
@@ -514,6 +546,22 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
   private ACRadioButtonItem expertPlaceNursingServiceMouthFunctionImprovementAddRadioItem1;
 
   private ACRadioButtonItem expertPlaceNursingServiceMouthFunctionImprovementAddRadioItem2;
+
+  private ACValueArrayRadioButtonGroup expertPlaceNursingServiceSentakutekiServiceRadio;
+
+  private ACLabelContainer expertPlaceNursingServiceSentakutekiServiceRadioContainer;
+
+  private ACListModelAdapter expertPlaceNursingServiceSentakutekiServiceRadioModel;
+
+  private ACRadioButtonItem expertPlaceNursingServiceSentakutekiServiceRadioItem1;
+
+  private ACRadioButtonItem expertPlaceNursingServiceSentakutekiServiceRadioItem2;
+
+  private ACRadioButtonItem expertPlaceNursingServiceSentakutekiServiceRadioItem3;
+
+  private ACRadioButtonItem expertPlaceNursingServiceSentakutekiServiceRadioItem4;
+
+  private ACRadioButtonItem expertPlaceNursingServiceSentakutekiServiceRadioItem5;
 
   //getter
 
@@ -2800,6 +2848,162 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算を取得します。
+   * @return 選択的サービス複数実施加算
+   */
+  public ACValueArrayRadioButtonGroup getExpertPlaceNursingSentakutekiServiceRadio(){
+    if(expertPlaceNursingSentakutekiServiceRadio==null){
+
+      expertPlaceNursingSentakutekiServiceRadio = new ACValueArrayRadioButtonGroup();
+
+      getExpertPlaceNursingSentakutekiServiceRadioContainer().setText("選択的サービス" + ACConstants.LINE_SEPARATOR + "複数実施加算");
+
+      expertPlaceNursingSentakutekiServiceRadio.setBindPath("1350145");
+
+      expertPlaceNursingSentakutekiServiceRadio.setUseClearButton(false);
+
+      expertPlaceNursingSentakutekiServiceRadio.setModel(getExpertPlaceNursingSentakutekiServiceRadioModel());
+
+      expertPlaceNursingSentakutekiServiceRadio.setValues(new int[]{1,2,3,4,5});
+
+      addExpertPlaceNursingSentakutekiServiceRadio();
+    }
+    return expertPlaceNursingSentakutekiServiceRadio;
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算コンテナを取得します。
+   * @return 選択的サービス複数実施加算コンテナ
+   */
+  protected ACLabelContainer getExpertPlaceNursingSentakutekiServiceRadioContainer(){
+    if(expertPlaceNursingSentakutekiServiceRadioContainer==null){
+      expertPlaceNursingSentakutekiServiceRadioContainer = new ACLabelContainer();
+      expertPlaceNursingSentakutekiServiceRadioContainer.setFollowChildEnabled(true);
+      expertPlaceNursingSentakutekiServiceRadioContainer.setVAlignment(VRLayout.CENTER);
+      expertPlaceNursingSentakutekiServiceRadioContainer.add(getExpertPlaceNursingSentakutekiServiceRadio(), null);
+    }
+    return expertPlaceNursingSentakutekiServiceRadioContainer;
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルを取得します。
+   * @return 選択的サービス複数実施加算モデル
+   */
+  protected ACListModelAdapter getExpertPlaceNursingSentakutekiServiceRadioModel(){
+    if(expertPlaceNursingSentakutekiServiceRadioModel==null){
+      expertPlaceNursingSentakutekiServiceRadioModel = new ACListModelAdapter();
+      addExpertPlaceNursingSentakutekiServiceRadioModel();
+    }
+    return expertPlaceNursingSentakutekiServiceRadioModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getExpertPlaceNursingSentakutekiServiceRadioItem1(){
+    if(expertPlaceNursingSentakutekiServiceRadioItem1==null){
+
+      expertPlaceNursingSentakutekiServiceRadioItem1 = new ACRadioButtonItem();
+
+      expertPlaceNursingSentakutekiServiceRadioItem1.setText("なし");
+
+      expertPlaceNursingSentakutekiServiceRadioItem1.setGroup(getExpertPlaceNursingSentakutekiServiceRadio());
+
+      expertPlaceNursingSentakutekiServiceRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingSentakutekiServiceRadioItem1();
+    }
+    return expertPlaceNursingSentakutekiServiceRadioItem1;
+
+  }
+
+  /**
+   * I1を取得します。
+   * @return I1
+   */
+  public ACRadioButtonItem getExpertPlaceNursingSentakutekiServiceRadioItem2(){
+    if(expertPlaceNursingSentakutekiServiceRadioItem2==null){
+
+      expertPlaceNursingSentakutekiServiceRadioItem2 = new ACRadioButtonItem();
+
+      expertPlaceNursingSentakutekiServiceRadioItem2.setText("I1");
+
+      expertPlaceNursingSentakutekiServiceRadioItem2.setGroup(getExpertPlaceNursingSentakutekiServiceRadio());
+
+      expertPlaceNursingSentakutekiServiceRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingSentakutekiServiceRadioItem2();
+    }
+    return expertPlaceNursingSentakutekiServiceRadioItem2;
+
+  }
+
+  /**
+   * I2を取得します。
+   * @return I2
+   */
+  public ACRadioButtonItem getExpertPlaceNursingSentakutekiServiceRadioItem3(){
+    if(expertPlaceNursingSentakutekiServiceRadioItem3==null){
+
+      expertPlaceNursingSentakutekiServiceRadioItem3 = new ACRadioButtonItem();
+
+      expertPlaceNursingSentakutekiServiceRadioItem3.setText("I2");
+
+      expertPlaceNursingSentakutekiServiceRadioItem3.setGroup(getExpertPlaceNursingSentakutekiServiceRadio());
+
+      expertPlaceNursingSentakutekiServiceRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingSentakutekiServiceRadioItem3();
+    }
+    return expertPlaceNursingSentakutekiServiceRadioItem3;
+
+  }
+
+  /**
+   * I3を取得します。
+   * @return I3
+   */
+  public ACRadioButtonItem getExpertPlaceNursingSentakutekiServiceRadioItem4(){
+    if(expertPlaceNursingSentakutekiServiceRadioItem4==null){
+
+      expertPlaceNursingSentakutekiServiceRadioItem4 = new ACRadioButtonItem();
+
+      expertPlaceNursingSentakutekiServiceRadioItem4.setText("I3");
+
+      expertPlaceNursingSentakutekiServiceRadioItem4.setGroup(getExpertPlaceNursingSentakutekiServiceRadio());
+
+      expertPlaceNursingSentakutekiServiceRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addExpertPlaceNursingSentakutekiServiceRadioItem4();
+    }
+    return expertPlaceNursingSentakutekiServiceRadioItem4;
+
+  }
+
+  /**
+   * IIを取得します。
+   * @return II
+   */
+  public ACRadioButtonItem getExpertPlaceNursingSentakutekiServiceRadioItem5(){
+    if(expertPlaceNursingSentakutekiServiceRadioItem5==null){
+
+      expertPlaceNursingSentakutekiServiceRadioItem5 = new ACRadioButtonItem();
+
+      expertPlaceNursingSentakutekiServiceRadioItem5.setText("II");
+
+      expertPlaceNursingSentakutekiServiceRadioItem5.setGroup(getExpertPlaceNursingSentakutekiServiceRadio());
+
+      expertPlaceNursingSentakutekiServiceRadioItem5.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingSentakutekiServiceRadioItem5();
+    }
+    return expertPlaceNursingSentakutekiServiceRadioItem5;
+
+  }
+
+  /**
    * タブパネル5を取得します。
    * @return タブパネル5
    */
@@ -3256,6 +3460,162 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
       addExpertPlaceRehabiliMouthFunctionImprovementAddRadioItem2();
     }
     return expertPlaceRehabiliMouthFunctionImprovementAddRadioItem2;
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算を取得します。
+   * @return 選択的サービス複数実施加算
+   */
+  public ACValueArrayRadioButtonGroup getExpertPlaceRehabiliSentakutekiServiceRadio(){
+    if(expertPlaceRehabiliSentakutekiServiceRadio==null){
+
+      expertPlaceRehabiliSentakutekiServiceRadio = new ACValueArrayRadioButtonGroup();
+
+      getExpertPlaceRehabiliSentakutekiServiceRadioContainer().setText("選択的サービス" + ACConstants.LINE_SEPARATOR + "複数実施加算");
+
+      expertPlaceRehabiliSentakutekiServiceRadio.setBindPath("1350146");
+
+      expertPlaceRehabiliSentakutekiServiceRadio.setUseClearButton(false);
+
+      expertPlaceRehabiliSentakutekiServiceRadio.setModel(getExpertPlaceRehabiliSentakutekiServiceRadioModel());
+
+      expertPlaceRehabiliSentakutekiServiceRadio.setValues(new int[]{1,2,3,4,5});
+
+      addExpertPlaceRehabiliSentakutekiServiceRadio();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadio;
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算コンテナを取得します。
+   * @return 選択的サービス複数実施加算コンテナ
+   */
+  protected ACLabelContainer getExpertPlaceRehabiliSentakutekiServiceRadioContainer(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioContainer==null){
+      expertPlaceRehabiliSentakutekiServiceRadioContainer = new ACLabelContainer();
+      expertPlaceRehabiliSentakutekiServiceRadioContainer.setFollowChildEnabled(true);
+      expertPlaceRehabiliSentakutekiServiceRadioContainer.setVAlignment(VRLayout.CENTER);
+      expertPlaceRehabiliSentakutekiServiceRadioContainer.add(getExpertPlaceRehabiliSentakutekiServiceRadio(), null);
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioContainer;
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルを取得します。
+   * @return 選択的サービス複数実施加算モデル
+   */
+  protected ACListModelAdapter getExpertPlaceRehabiliSentakutekiServiceRadioModel(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioModel==null){
+      expertPlaceRehabiliSentakutekiServiceRadioModel = new ACListModelAdapter();
+      addExpertPlaceRehabiliSentakutekiServiceRadioModel();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getExpertPlaceRehabiliSentakutekiServiceRadioItem1(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioItem1==null){
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem1 = new ACRadioButtonItem();
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem1.setText("なし");
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem1.setGroup(getExpertPlaceRehabiliSentakutekiServiceRadio());
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceRehabiliSentakutekiServiceRadioItem1();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioItem1;
+
+  }
+
+  /**
+   * I1を取得します。
+   * @return I1
+   */
+  public ACRadioButtonItem getExpertPlaceRehabiliSentakutekiServiceRadioItem2(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioItem2==null){
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem2 = new ACRadioButtonItem();
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem2.setText("I1");
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem2.setGroup(getExpertPlaceRehabiliSentakutekiServiceRadio());
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceRehabiliSentakutekiServiceRadioItem2();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioItem2;
+
+  }
+
+  /**
+   * I2を取得します。
+   * @return I2
+   */
+  public ACRadioButtonItem getExpertPlaceRehabiliSentakutekiServiceRadioItem3(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioItem3==null){
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem3 = new ACRadioButtonItem();
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem3.setText("I2");
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem3.setGroup(getExpertPlaceRehabiliSentakutekiServiceRadio());
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceRehabiliSentakutekiServiceRadioItem3();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioItem3;
+
+  }
+
+  /**
+   * I3を取得します。
+   * @return I3
+   */
+  public ACRadioButtonItem getExpertPlaceRehabiliSentakutekiServiceRadioItem4(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioItem4==null){
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem4 = new ACRadioButtonItem();
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem4.setText("I3");
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem4.setGroup(getExpertPlaceRehabiliSentakutekiServiceRadio());
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addExpertPlaceRehabiliSentakutekiServiceRadioItem4();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioItem4;
+
+  }
+
+  /**
+   * IIを取得します。
+   * @return II
+   */
+  public ACRadioButtonItem getExpertPlaceRehabiliSentakutekiServiceRadioItem5(){
+    if(expertPlaceRehabiliSentakutekiServiceRadioItem5==null){
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem5 = new ACRadioButtonItem();
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem5.setText("II");
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem5.setGroup(getExpertPlaceRehabiliSentakutekiServiceRadio());
+
+      expertPlaceRehabiliSentakutekiServiceRadioItem5.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceRehabiliSentakutekiServiceRadioItem5();
+    }
+    return expertPlaceRehabiliSentakutekiServiceRadioItem5;
 
   }
 
@@ -4629,6 +4989,162 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算を取得します。
+   * @return 選択的サービス複数実施加算
+   */
+  public ACValueArrayRadioButtonGroup getExpertPlaceNursingServiceSentakutekiServiceRadio(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadio==null){
+
+      expertPlaceNursingServiceSentakutekiServiceRadio = new ACValueArrayRadioButtonGroup();
+
+      getExpertPlaceNursingServiceSentakutekiServiceRadioContainer().setText("選択的サービス" + ACConstants.LINE_SEPARATOR + "複数実施加算");
+
+      expertPlaceNursingServiceSentakutekiServiceRadio.setBindPath("1350147");
+
+      expertPlaceNursingServiceSentakutekiServiceRadio.setUseClearButton(false);
+
+      expertPlaceNursingServiceSentakutekiServiceRadio.setModel(getExpertPlaceNursingServiceSentakutekiServiceRadioModel());
+
+      expertPlaceNursingServiceSentakutekiServiceRadio.setValues(new int[]{1,2,3,4,5});
+
+      addExpertPlaceNursingServiceSentakutekiServiceRadio();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadio;
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算コンテナを取得します。
+   * @return 選択的サービス複数実施加算コンテナ
+   */
+  protected ACLabelContainer getExpertPlaceNursingServiceSentakutekiServiceRadioContainer(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioContainer==null){
+      expertPlaceNursingServiceSentakutekiServiceRadioContainer = new ACLabelContainer();
+      expertPlaceNursingServiceSentakutekiServiceRadioContainer.setFollowChildEnabled(true);
+      expertPlaceNursingServiceSentakutekiServiceRadioContainer.setVAlignment(VRLayout.CENTER);
+      expertPlaceNursingServiceSentakutekiServiceRadioContainer.add(getExpertPlaceNursingServiceSentakutekiServiceRadio(), null);
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioContainer;
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルを取得します。
+   * @return 選択的サービス複数実施加算モデル
+   */
+  protected ACListModelAdapter getExpertPlaceNursingServiceSentakutekiServiceRadioModel(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioModel==null){
+      expertPlaceNursingServiceSentakutekiServiceRadioModel = new ACListModelAdapter();
+      addExpertPlaceNursingServiceSentakutekiServiceRadioModel();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getExpertPlaceNursingServiceSentakutekiServiceRadioItem1(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioItem1==null){
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem1 = new ACRadioButtonItem();
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem1.setText("なし");
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem1.setGroup(getExpertPlaceNursingServiceSentakutekiServiceRadio());
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingServiceSentakutekiServiceRadioItem1();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioItem1;
+
+  }
+
+  /**
+   * I1を取得します。
+   * @return I1
+   */
+  public ACRadioButtonItem getExpertPlaceNursingServiceSentakutekiServiceRadioItem2(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioItem2==null){
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem2 = new ACRadioButtonItem();
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem2.setText("I1");
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem2.setGroup(getExpertPlaceNursingServiceSentakutekiServiceRadio());
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingServiceSentakutekiServiceRadioItem2();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioItem2;
+
+  }
+
+  /**
+   * I2を取得します。
+   * @return I2
+   */
+  public ACRadioButtonItem getExpertPlaceNursingServiceSentakutekiServiceRadioItem3(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioItem3==null){
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem3 = new ACRadioButtonItem();
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem3.setText("I2");
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem3.setGroup(getExpertPlaceNursingServiceSentakutekiServiceRadio());
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingServiceSentakutekiServiceRadioItem3();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioItem3;
+
+  }
+
+  /**
+   * I3を取得します。
+   * @return I3
+   */
+  public ACRadioButtonItem getExpertPlaceNursingServiceSentakutekiServiceRadioItem4(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioItem4==null){
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem4 = new ACRadioButtonItem();
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem4.setText("I3");
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem4.setGroup(getExpertPlaceNursingServiceSentakutekiServiceRadio());
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addExpertPlaceNursingServiceSentakutekiServiceRadioItem4();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioItem4;
+
+  }
+
+  /**
+   * IIを取得します。
+   * @return II
+   */
+  public ACRadioButtonItem getExpertPlaceNursingServiceSentakutekiServiceRadioItem5(){
+    if(expertPlaceNursingServiceSentakutekiServiceRadioItem5==null){
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem5 = new ACRadioButtonItem();
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem5.setText("II");
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem5.setGroup(getExpertPlaceNursingServiceSentakutekiServiceRadio());
+
+      expertPlaceNursingServiceSentakutekiServiceRadioItem5.setConstraints(VRLayout.FLOW);
+
+      addExpertPlaceNursingServiceSentakutekiServiceRadioItem5();
+    }
+    return expertPlaceNursingServiceSentakutekiServiceRadioItem5;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001_13511_201504Design() {
@@ -5502,6 +6018,8 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
 
     expertPlaceNursingGroup.add(getExpertPlaceNursingMouthFunctionImprovementAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    expertPlaceNursingGroup.add(getExpertPlaceNursingSentakutekiServiceRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
   }
 
   /**
@@ -5627,6 +6145,75 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadio(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルに内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadioModel(){
+
+    getExpertPlaceNursingSentakutekiServiceRadioItem1().setButtonIndex(1);
+
+    getExpertPlaceNursingSentakutekiServiceRadioModel().add(getExpertPlaceNursingSentakutekiServiceRadioItem1());
+
+    getExpertPlaceNursingSentakutekiServiceRadioItem2().setButtonIndex(2);
+
+    getExpertPlaceNursingSentakutekiServiceRadioModel().add(getExpertPlaceNursingSentakutekiServiceRadioItem2());
+
+    getExpertPlaceNursingSentakutekiServiceRadioItem3().setButtonIndex(3);
+
+    getExpertPlaceNursingSentakutekiServiceRadioModel().add(getExpertPlaceNursingSentakutekiServiceRadioItem3());
+
+    getExpertPlaceNursingSentakutekiServiceRadioItem4().setButtonIndex(4);
+
+    getExpertPlaceNursingSentakutekiServiceRadioModel().add(getExpertPlaceNursingSentakutekiServiceRadioItem4());
+
+    getExpertPlaceNursingSentakutekiServiceRadioItem5().setButtonIndex(5);
+
+    getExpertPlaceNursingSentakutekiServiceRadioModel().add(getExpertPlaceNursingSentakutekiServiceRadioItem5());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadioItem1(){
+
+  }
+
+  /**
+   * I1に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadioItem2(){
+
+  }
+
+  /**
+   * I2に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadioItem3(){
+
+  }
+
+  /**
+   * I3に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadioItem4(){
+
+  }
+
+  /**
+   * IIに内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingSentakutekiServiceRadioItem5(){
+
+  }
+
+  /**
    * タブパネル5に内部項目を追加します。
    */
   protected void addTabPanel5(){
@@ -5651,6 +6238,8 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
     expertPlaceRehabiliGroup.add(getExpertPlaceRehabiliNourishmentImprovementAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     expertPlaceRehabiliGroup.add(getExpertPlaceRehabiliMouthFunctionImprovementAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    expertPlaceRehabiliGroup.add(getExpertPlaceRehabiliSentakutekiServiceRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -5809,6 +6398,75 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addExpertPlaceRehabiliMouthFunctionImprovementAddRadioItem2(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算に内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadio(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルに内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadioModel(){
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioItem1().setButtonIndex(1);
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioModel().add(getExpertPlaceRehabiliSentakutekiServiceRadioItem1());
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioItem2().setButtonIndex(2);
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioModel().add(getExpertPlaceRehabiliSentakutekiServiceRadioItem2());
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioItem3().setButtonIndex(3);
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioModel().add(getExpertPlaceRehabiliSentakutekiServiceRadioItem3());
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioItem4().setButtonIndex(4);
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioModel().add(getExpertPlaceRehabiliSentakutekiServiceRadioItem4());
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioItem5().setButtonIndex(5);
+
+    getExpertPlaceRehabiliSentakutekiServiceRadioModel().add(getExpertPlaceRehabiliSentakutekiServiceRadioItem5());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadioItem1(){
+
+  }
+
+  /**
+   * I1に内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadioItem2(){
+
+  }
+
+  /**
+   * I2に内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadioItem3(){
+
+  }
+
+  /**
+   * I3に内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadioItem4(){
+
+  }
+
+  /**
+   * IIに内部項目を追加します。
+   */
+  protected void addExpertPlaceRehabiliSentakutekiServiceRadioItem5(){
 
   }
 
@@ -6228,6 +6886,8 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
 
     expertPlaceNursingServiceGroup.add(getExpertPlaceNursingServiceMouthFunctionImprovementAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    expertPlaceNursingServiceGroup.add(getExpertPlaceNursingServiceSentakutekiServiceRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
   }
 
   /**
@@ -6349,6 +7009,75 @@ public class QS001_13511_201504Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addExpertPlaceNursingServiceMouthFunctionImprovementAddRadioItem2(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadio(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルに内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadioModel(){
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioItem1().setButtonIndex(1);
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioModel().add(getExpertPlaceNursingServiceSentakutekiServiceRadioItem1());
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioItem2().setButtonIndex(2);
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioModel().add(getExpertPlaceNursingServiceSentakutekiServiceRadioItem2());
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioItem3().setButtonIndex(3);
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioModel().add(getExpertPlaceNursingServiceSentakutekiServiceRadioItem3());
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioItem4().setButtonIndex(4);
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioModel().add(getExpertPlaceNursingServiceSentakutekiServiceRadioItem4());
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioItem5().setButtonIndex(5);
+
+    getExpertPlaceNursingServiceSentakutekiServiceRadioModel().add(getExpertPlaceNursingServiceSentakutekiServiceRadioItem5());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadioItem1(){
+
+  }
+
+  /**
+   * I1に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadioItem2(){
+
+  }
+
+  /**
+   * I2に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadioItem3(){
+
+  }
+
+  /**
+   * I3に内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadioItem4(){
+
+  }
+
+  /**
+   * IIに内部項目を追加します。
+   */
+  protected void addExpertPlaceNursingServiceSentakutekiServiceRadioItem5(){
 
   }
 

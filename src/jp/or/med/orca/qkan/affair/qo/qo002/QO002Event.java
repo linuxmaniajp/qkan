@@ -30,11 +30,13 @@
 package jp.or.med.orca.qkan.affair.qo.qo002;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACSnapshot;
@@ -170,6 +172,102 @@ public abstract class QO002Event extends QO002SQL {
             }
         }
     });
+    getUnitPriceType().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	unitPriceTypeActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });    
+    getUnitPriceTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                unitPriceTableSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getUnitPriceInsertButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	unitPriceInsertButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getUnitPriceEditButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	unitPriceEditButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getUnitPriceDeleteButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	unitPriceDeleteButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getUnitPriceRegularButton().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+            	unitPriceRegularButtonActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getInsert().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -234,7 +332,6 @@ public abstract class QO002Event extends QO002SQL {
             }
         }
     });
-
   }
   //コンポーネントイベント
 
@@ -288,6 +385,48 @@ public abstract class QO002Event extends QO002SQL {
   protected abstract void insurerLimitRateRegularButtonActionPerformed(ActionEvent e) throws Exception;
 
   /**
+   * 「単位数単価表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void unitPriceTypeActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「単位数単価対象レコードを表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void unitPriceTableSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「単位数単価追加処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void unitPriceInsertButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「単位数単価編集処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void unitPriceEditButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「単位数単価削除処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void unitPriceDeleteButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「単位数単価基準値を表示する処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void unitPriceRegularButtonActionPerformed(ActionEvent e) throws Exception;
+
+  /**
    * 「登録処理」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -328,9 +467,17 @@ public abstract class QO002Event extends QO002SQL {
   private VRList insurerLimitRateList = new VRArrayList();
   private VRList insurerLimitRateListSource = new VRArrayList();
   private ACTableModelAdapter insurerLimitRateTableModel;
+  private int unitPriceTableChangeFlg = 0;
+  private ACTableModelAdapter unitPriceTableModel;
+  private VRList unitPriceList = new VRArrayList();
+  private VRList unitPriceListSource = new VRArrayList();
   private ACSnapshot snapShotPeriod = new ACSnapshot();
+  private ACSnapshot snapShotUnit = new ACSnapshot();
   private ACDBManager masterInsurerDBManager;
   private QO002_InsurerRelation QO002_InsurerRelation;
+  // [総合事業対応][Keiko Yano] 2016/09 add begin 終了日は必須でなくす
+  public static final Date MAX_DATE = ACCastUtilities.toDate("9999/12/31", null);
+  // [総合事業対応][Keiko Yano] 2016/09 add end
   //getter/setter
 
   /**
@@ -499,6 +646,66 @@ public abstract class QO002Event extends QO002SQL {
   }
 
   /**
+   * unitPriceTableChangeFlgを返します。
+   * @return unitPriceTableChangeFlg
+   */
+  protected int getUnitPriceTableChangeFlg(){
+    return unitPriceTableChangeFlg;
+  }
+  /**
+   * unitPriceTableChangeFlgを設定します。
+   * @param unitPriceTableChangeFlg unitPriceTableChangeFlg
+   */
+  protected void setUnitPriceTableChangeFlg(int unitPriceTableChangeFlg){
+    this.unitPriceTableChangeFlg = unitPriceTableChangeFlg;
+  }
+
+  /**
+   * unitPriceTableModelを返します。
+   * @return unitPriceTableModel
+   */
+  protected ACTableModelAdapter getUnitPriceTableModel(){
+    return unitPriceTableModel;
+  }
+  /**
+   * unitPriceTableModelを設定します。
+   * @param unitPriceTableModel unitPriceTableModel
+   */
+  protected void setUnitPriceTableModel(ACTableModelAdapter unitPriceTableModel){
+    this.unitPriceTableModel = unitPriceTableModel;
+  }
+
+  /**
+   * unitPriceListを返します。
+   * @return unitPriceList
+   */
+  protected VRList getUnitPriceList(){
+    return unitPriceList;
+  }
+  /**
+   * unitPriceListを設定します。
+   * @param unitPriceList unitPriceList
+   */
+  protected void setUnitPriceList(VRList unitPriceList){
+    this.unitPriceList = unitPriceList;
+  }
+
+  /**
+   * unitPriceListSourceを返します。
+   * @return unitPriceListSource
+   */
+  protected VRList getUnitPriceListSource(){
+    return unitPriceListSource;
+  }
+  /**
+   * unitPriceListSourceを設定します。
+   * @param unitPriceListSource unitPriceListSource
+   */
+  protected void setUnitPriceListSource(VRList unitPriceListSource){
+    this.unitPriceListSource = unitPriceListSource;
+  }
+
+  /**
    * snapShotPeriodを返します。
    * @return snapShotPeriod
    */
@@ -513,6 +720,21 @@ public abstract class QO002Event extends QO002SQL {
     this.snapShotPeriod = snapShotPeriod;
   }
 
+  /**
+   * snapShotUnitを返します。
+   * @return snapShotUnit
+   */
+  protected ACSnapshot getSnapShotUnit(){
+    return snapShotUnit;
+  }
+  /**
+   * snapShotUnitを設定します。
+   * @param snapShotUnit snapShotUnit
+   */
+  protected void setSnapShotUnit(ACSnapshot snapShotUnit){
+    this.snapShotUnit = snapShotUnit;
+  }
+  
   /**
    * masterInsurerDBManagerを返します。
    * @return masterInsurerDBManager

@@ -202,8 +202,11 @@ public class SC_12411_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//2015.04
             break;
         case 2:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6104");

@@ -2458,6 +2458,15 @@ public class QU002 extends QU002Event {
 			if (list == null || list.size() == 0) {
 				// 取得したデータ件数が0件の場合
 				// 厚生労働省規定の支給限度額を取得する。
+				
+				// 2016/9/27 [Shinobu Hitaka] add - begin 総合事業対応
+				// 事業対象者の支給限度額超の場合は、要支援２の支給限度額とする
+				int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE", param), -1);
+				if (jotaiCode == QkanConstants.YOUKAIGODO_JIGYOTAISHO_OVER_LIMIT) {
+					VRBindPathParser.set("JOTAI_CODE", param, QkanConstants.YOUKAIGODO_YOUSHIEN2);
+				}
+				// 2016/9/27 [Shinobu Hitaka] add - end
+				
 				strSql = getSQL_GET_OFFICIAL_LIMIT_RATE(param);
 				list = getDBManager().executeQuery(strSql);
 
@@ -2604,7 +2613,9 @@ public class QU002 extends QU002Event {
 		// 要支援２の基準額を表示
 		if (isJigyotaisho) {
 			if (getKaigoInfoLimitChange().isSelected()) {
-				jotaiCode = YOUKAIGODO_YOUSHIEN2;
+				// 2016/9/27 [Shinobu Hitaka] mod 保険者支給限度額マスタ追加に伴い修正
+				//jotaiCode = QkanConstants.YOUKAIGODO_YOUSHIEN2;
+				jotaiCode = QkanConstants.YOUKAIGODO_JIGYOTAISHO_OVER_LIMIT;
 			}
 		}
 		VRBindPathParser.set("JOTAI_CODE", param, jotaiCode);
@@ -2632,7 +2643,7 @@ public class QU002 extends QU002Event {
 		            .getSelectedModelItem();
 			int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get(
 		            "JOTAI_CODE", temp));
-			if (jotaiCode == YOUKAIGODO_JIGYOTAISHO) {
+			if (jotaiCode == QkanConstants.YOUKAIGODO_JIGYOTAISHO) {
 				isJigyotaisho = true;
 			}
 		}
@@ -3106,6 +3117,30 @@ public class QU002 extends QU002Event {
 			}
 		}
 
+		// [CCCX:03750][Shinobu Hitaka] 2016/12/19 add - begin システム有効期間の日付チェック
+		// 存在する日付が入力されているかどうか
+		// ※エラーの場合、String：msgParamを宣言し、"システム有効期間開始日の"を代入する。
+		if (!ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit1().getText())) {
+			if (!getKaigoInfoSystemValidLimit1().isValidDate()) {
+				getKaigoInfoSystemValidLimit1().requestFocus(); // フォーカス
+				msgParam1 = "システム有効期間開始日の";
+				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam1);
+				return false;
+			}
+		}
+
+		// 存在する日付が入力されているかどうか　
+		// ※エラーの場合、String：msgParamを宣言し、"システム有効期間終了日の"を代入する。
+		if (!ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+			if (!getKaigoInfoSystemValidLimit3().isValidDate()) {
+				getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
+				msgParam1 = "システム有効期間終了日の";
+				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam1);
+				return false;
+			}
+		}
+		// [CCCX:03750][Shinobu Hitaka] 2016/12/19 add - end
+
 		int targetIndex = -1; // 編集対象となる履歴のインデックス
 
 		if (getNonCorrespondenceFlg() == 0) {
@@ -3391,17 +3426,6 @@ public class QU002 extends QU002Event {
 			return false;
 		}
 
-		// 存在する日付が入力されているかどうか
-		// ※エラーの場合、String：msgParamを宣言し、"有効期間開始日の"を代入する。
-		if (!ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit1().getText())) {
-			if (!getKaigoInfoSystemValidLimit1().isValidDate()) {
-				getKaigoInfoSystemValidLimit1().requestFocus(); // フォーカス
-				msgParam1 = "システム有効期間開始日の";
-				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam1);
-				return false;
-			}
-		}
-
 		// 有効期間終了日のチェック　※要介護度-非該当の場合は行わない。
 		// ・kaigoInfoSystemValidLimit3（有効期間終了日）
 		// 入力されているかどうか
@@ -3425,19 +3449,6 @@ public class QU002 extends QU002Event {
 		    }
 		}
 // 2016/7/5 [Yoichiro Kamei] mod - end
-
-		// 存在する日付が入力されているかどうか　※要介護度-非該当の場合は行わない。
-		// ※エラーの場合、String：msgParamを宣言し、"有効期間終了日の"を代入する。
-		if (!ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
-			if (!getKaigoInfoSystemValidLimit3().isValidDate()) {
-				getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
-				msgParam1 = "システム有効期間終了日の";
-				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE(msgParam1);
-				return false;
-			}
-		}
-		
-		
 
 		// システム有効期間開始日とシステム有効期間終了日の前後関係のチェック
 		// ・kaigoInfoSystemValidLimit1（システム有効期間開始日）
@@ -3805,7 +3816,7 @@ public class QU002 extends QU002Event {
 					.getSelectedModelItem();
 			int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get(
 					"JOTAI_CODE", temp));
-			if (jotaiCode == YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+			if (jotaiCode == QkanConstants.YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
 				// 選択している要介護度が経過的要介護の場合
 				// 入力している要介護認定の有効期間を取得する。
 
@@ -4704,7 +4715,7 @@ public class QU002 extends QU002Event {
 			// データよりレコードを取り出す。
 			VRMap map = (VRMap) list.get(i);
 			Integer yokaigodo = ACCastUtilities.toInteger(map.get("JOTAI_CODE"));
-			if (yokaigodo == YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+			if (yokaigodo == QkanConstants.YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
 				keikatekiAri = true;
 				break;
 			}
@@ -4837,7 +4848,7 @@ public class QU002 extends QU002Event {
 		for (int i = 0; i < list.size(); i++) {
 			VRMap yokaigoMap = (VRMap) list.get(i);
 			Integer yokaigo = ACCastUtilities.toInteger(yokaigoMap.get("CONTENT_KEY"));
-			if (yokaigo != YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+			if (yokaigo != QkanConstants.YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
 				newList.add(yokaigoMap);
 			}
 		}
@@ -5083,7 +5094,7 @@ public class QU002 extends QU002Event {
 		for (int i = 0; i < list.size(); i++) {
 			VRMap yokaigoMap = (VRMap) list.get(i);
 			Integer yokaigo = ACCastUtilities.toInteger(yokaigoMap.get("CONTENT_KEY"));
-			if (yokaigo != YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+			if (yokaigo != QkanConstants.YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
 				newList.add(yokaigoMap);
 			}
 		}
@@ -6972,7 +6983,7 @@ public class QU002 extends QU002Event {
 			int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get(
 					"JOTAI_CODE", temp));
 			// 事業対象者が選択されていない場合
-			if (jotaiCode != YOUKAIGODO_JIGYOTAISHO) {
+			if (jotaiCode != QkanConstants.YOUKAIGODO_JIGYOTAISHO) {
 				getKaigoInfoLimitChange().setSelected(false);
 				setState_VISIBLE_LIMIT_CHANGE_FALSE();
 			} else {

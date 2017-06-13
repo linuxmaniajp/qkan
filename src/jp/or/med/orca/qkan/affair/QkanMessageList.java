@@ -4676,5 +4676,340 @@ public class QkanMessageList {
     return ACMessageBox.show("要介護度の有効期間が切れているか、登録されていません。" + ACConstants.LINE_SEPARATOR + "有効期間外のサービスは集計できません。" + ACConstants.LINE_SEPARATOR + "新しい要介護度が決まっていれば、利用者情報詳細画面で登録してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "利用者負担限度額の有効期間が月途中から開始されています。" + ACConstants.LINE_SEPARATOR + "訂正する場合は、利用者情報詳細画面で修正してください。" + ACConstants.LINE_SEPARATOR + "" + ACConstants.LINE_SEPARATOR + "公費の有効期間が前月または今月に切れています。" + ACConstants.LINE_SEPARATOR + "利用者情報詳細画面で公費の有効期間を確認してください。", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
 
   }
+
+  /**
+   * メッセージ「指定された取込ファイルは存在しません。」を表示します。
+   * <p>
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_NOTICE_NOT_FOUND_FILE() throws Exception{
+
+    return ACMessageBox.show("指定された取込ファイルは存在しません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[{0}行目]　項目数が取込可能項目数({1}項目数)と一致しません。[{2}]」を表示します。
+   * <p>
+   * 第一引数：＜rowIndex＞　CSV取込対象の行数
+   * 第二引数：＜itemCnt＞　取込可能項目数
+   * </p>
+   * @param arg1 rowIndex
+   * @param arg2 itemCnt
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_ERROR_OF_IMPORT_ITEM_CNT(
+		  Object arg1
+		  , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("[");
+
+    sb.append(arg1);
+
+    sb.append("行目]　項目数が取込可能項目数(");
+
+    sb.append(arg2);
+
+    sb.append("項目数)と一致しません。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[{0}行目]　{1}[{2}]」を表示します。
+   * <p>
+   * 第一引数：＜rowIndex＞　CSV取込対象の行数
+   * 第二引数：＜message＞　メッセージ内容
+   * 第三引数：＜fieldName＞　対象のフィールド名
+   * </p>
+   * @param arg1 rowIndex
+   * @param arg2 message
+   * @param arg3 fieldName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_ERROR_OF_FOR_INPUT(
+		  Object arg1
+		  , Object arg2
+		  , Object arg3
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("[");
+
+    sb.append(arg1);
+
+    sb.append("行目]　");
+
+    sb.append(arg2);
+
+    sb.append("[");
+
+    sb.append(arg3);
+
+    sb.append("]");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[{0}行目]　必須項目が未設定のデータがあります。[{1}]」を表示します。
+   * <p>
+   * 第一引数：＜rowIndex＞　CSV取込対象の行数
+   * 第二引数：＜fieldName＞　対象のフィールド名
+   * </p>
+   * @param arg1 rowIndex
+   * @param arg2 fieldName
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_ERROR_OF_NEED_CHECK_FOR_INPUT(
+		  Object arg1
+		  , Object arg2
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append("[");
+
+    sb.append(arg1);
+
+    sb.append("行目]　必須項目が未設定のデータがあります。[");
+
+    sb.append(arg2);
+
+    sb.append("]");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「対象の保険者のデータを全削除して取り込みを行います。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * 取込前の確認
+   * 取込前にメッセージを出すことは必須
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_WARNING_OF_IMPORT() throws Exception{
+
+    return ACMessageBox.show("対象の保険者のデータを全削除して取り込みを行います。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
+  /**
+   * メッセージ「取込が終了しました。」を表示します。
+   * <p>
+   * 処理完了通知
+   * 登録(INSERT)が正常終了した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_IMPORT_SUCCESSED() throws Exception{
+
+    return ACMessageBox.show("取込が終了しました。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_INFOMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「[{0}行目]　同一のサービス種類コード、サービス項目コードにおいて適用開始年月が重複しているデータが既に存在します。」を表示します。
+   * <p>
+   * パッシブチェックでエラーが発生した場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO015_ERROR_OF_PASSIVE_CHECK_ON_INSERT(
+		  Object arg1
+                        ) throws Exception{
+	    StringBuffer sb = new StringBuffer();
+
+	    sb.append("[");
+
+	    sb.append(arg1);
+
+	    sb.append("行目]　同一のサービス種類コード、サービス項目コードにおいて適用開始年月が重複しているデータが既に存在します。");
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「予定に調整額が設定されています。＜改行＞調整額を実績に反映し、計画単位数の登録を行いますか？」を表示します。
+   * <p>
+   * 予定情報取込時。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_READ_PLAN_SAVE_PLAN_UNITS() throws Exception{
+
+    return ACMessageBox.show("予定に調整額が設定されています。" + ACConstants.LINE_SEPARATOR + "調整額を実績に反映しますか？（計画単位数が登録されます。）", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
   
+
+  /**
+   * メッセージ「予定、または実績として登録されています。編集しますか？」を表示します。
+   * <p>
+   * 編集時の確認
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO016_WARNING_OF_SJ_SERVICE_CODE_USE() throws Exception{
+
+    return ACMessageBox.show("予定、または実績として登録されています。編集しますか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「システムサービス種類コードに変換できませんでした。」を表示します。
+   * <p>
+   * 保存時エラー
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO017_ERROR_OF_FOR_INPUT_SYSTEM_KIND_DETAIL() throws Exception{
+    return ACMessageBox.show("システムサービス種類コードに変換できませんでした。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「システムサービス項目コードに変換できませんでした。」を表示します。
+   * <p>
+   * 保存時エラー
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO017_ERROR_OF_FOR_INPUT_SYSTEM_CODE_ITEM() throws Exception{
+    return ACMessageBox.show("システムサービス項目コードに変換できませんでした。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「同一の総合事業サービスコード情報が既に登録されています。」を表示します。
+   * <p>
+   * 保存前の確認
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO017ERROR_OF_OVERLAP() throws Exception{
+
+    return ACMessageBox.show("同一の総合事業サービスコード情報が既に登録されています。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+  
+  /**
+   * メッセージ「保険者の単位数単価が設定されていません。＜改行＞保険者情報詳細画面で総合事業単位数単価を登録してください。」を表示します。
+   * <p>
+   * 保険者の総合事業単位数単価が設定されていない場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_SJ_TANKA_NOT_FOUND() throws Exception{
+
+    return ACMessageBox.show("保険者の単位数単価が設定されていません。" + ACConstants.LINE_SEPARATOR + "保険者情報詳細画面で総合事業単位数単価を登録してください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+  /**
+   * メッセージ「保険者が変更されたため、コード一覧をクリアします。＜改行＞よろしいですか？」を表示します。
+   * <p>
+   * サービス予定/実績画面の総合事業サービス種類のパネルで保険者コンボボックスが変更された場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_CLEAR_SVCODELIST() throws Exception{
+
+    return ACMessageBox.show("保険者が変更されたため、コード一覧をクリアします。" + ACConstants.LINE_SEPARATOR + "よろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+  
+  /**
+   * メッセージ「[dayOfMonth][serviceKindName]には算定できない保険者が設定されています。＜改行＞内容を確認してください。」を表示します。
+   * <p>
+   * 異なる保険者のサービスを貼り付けていた場合の保存エラー。[dayOfMonth]は提供日、[svCode]はサービスコード。(例:3日の　A4-1001)
+   * </p>
+   * @param arg1 dayOfMonth
+   * @param arg2 serviceKindName
+   * @param arg3 addMsg
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_INVALID_INSURER_ID(
+
+      Object arg1
+      , Object arg2
+      , Object arg3
+                        ) throws Exception{
+    StringBuffer sb = new StringBuffer();
+
+    sb.append(arg1);
+
+    sb.append(arg2);
+
+    sb.append("には算定できない保険者が設定されています。" + ACConstants.LINE_SEPARATOR + arg3);
+
+    return ACMessageBox.show(sb.toString(), ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+  
+  /**
+   * メッセージ「総合事業のサービスで計画単位数と調整額が不整合です。＜改行＞自動的に調整してもよろしいですか？」を表示します。
+   * <p>
+   * サービス実績画面の保存時に、計画単位数と調整額が不整合だった場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_SJ_LIMIT_OVER_UNIT_INCONSISTENT() throws Exception{
+
+    return ACMessageBox.show("総合事業のサービスで計画単位数と調整額が不整合です。" + ACConstants.LINE_SEPARATOR + "自動的に調整してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+  
+  /**
+   * メッセージ「集計明細・計画単位数で区分支給超単位数調整をしてください。」を表示します。
+   * <p>
+   * 患者情報取得失敗時
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_INPUT_SJ_LIMIT_OVER_UNIT() throws Exception{
+
+    return ACMessageBox.show("集計明細・計画単位数で区分支給超単位数調整を行ってください。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+
+
+  /**
+   * メッセージ「医療費控除対象額が既に設定されています。＜改行＞上書きしてもよろしいですか？」を表示します。
+   * <p>
+   * 利用者向け請求詳細編集画面の反映ボタン押下時に、既に医療費控除対象額が入力されていた場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QP003_WARNING_OF_REPLACE_KOUJO() throws Exception{
+
+    return ACMessageBox.show("医療費控除対象額が既に設定されています。" + ACConstants.LINE_SEPARATOR + "上書きしてもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+
 }

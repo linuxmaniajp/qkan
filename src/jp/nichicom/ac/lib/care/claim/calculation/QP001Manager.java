@@ -30,10 +30,15 @@
 
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaManager;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -127,6 +132,151 @@ public class QP001Manager {
     }
 // 2016/8/16 [総合事業対応][Yoichiro Kamei] add - end
     
+// 2016/10/11 [総合事業対応][Yoichiro Kamei] add - begin
+    /**
+     * サービスマスタ
+     */
+    private VRMap serviceMaster = new VRHashMap();
+    
+	private static final DecimalFormat UNIT_PRICE_FORMAT = new DecimalFormat(
+			"##.00");
+    // 区分支給限度超単位数の格納されたマップ
+	// キーは、
+	// 独自定率：サービス種類-単位数単価-給付率
+	// 独自定額：サービス種類-単位数単価-サービス項目コード
+	private Map<String, Integer> sogoLimitOverMap = new HashMap<String, Integer>();
+	
+	/**
+	 * 区分支給限度超単位数の格納されたマップを取得します。
+	 * @return 区分支給限度超単位数の格納されたマップ
+	 */
+	public Map<String, Integer> getSogoLimitOverMap() {
+		return sogoLimitOverMap;
+	}
+	
+	/**
+	 * 区分支給限度超単位数の格納されたマップをクリアします。
+	 */
+	public void clearSogoLimitOverMap() {
+		this.sogoLimitOverMap.clear();
+	}
+	
+	/**
+	 * サービスに設定された調整額を保持します。
+	 * 
+	 * @param dbm
+	 * @param service
+	 * @throws Exception
+	 */
+	public void parseLimitOverUnit(ACDBManager dbm, VRMap service) throws Exception {
+		String insurerId = ACCastUtilities.toString(service.get("500"), "");
+		if ("".equals(insurerId)) {
+			//総合事業の保険者番号が設定されていなければ、何もしない
+			return;
+		}
+		int limitOverUnit = ACCastUtilities.toInt(service.get("REGULATION_RATE"), 0);
+		if (limitOverUnit == 0) {
+			//調整額が設定されていなければ、何もしない
+			return;
+		}
+		
+		String systemServiceKindDetail = ACCastUtilities.toString(service.get("SYSTEM_SERVICE_KIND_DETAIL"), "");
+		// 総合事業の独自・独自定率・独自定額でなければ、何もしない
+		if (!QkanSjServiceCodeManager.dokujiTeiritsuTeigakuCodes.contains(systemServiceKindDetail)) {
+			return;
+		}
+		
+		//総合事業の単位数単価取得
+		Double unitPrice = QkanSjTankaManager.getUnitPrice(insurerId, systemServiceKindDetail);
+		
+		String limitOverKey = "";
+		//独自の場合
+		if (QkanSjServiceCodeManager.dokujiCodes.contains(systemServiceKindDetail)) {
+			String skind = getServiceKindFromSystemKind(systemServiceKindDetail);
+			limitOverKey = getDokujiLimitOverUnitKey(skind, unitPrice);
+		} else {
+			// 独自定率・独自定額の場合
+			//コードの1つ目を取得
+			String sjCodeKey = ACCastUtilities.toString(service.get("501"), "");
+			VRMap code = QkanSjServiceCodeManager.getSjServiceCodeByKey(dbm, sjCodeKey, targetDate);
+			String skind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"));
+			
+			if (QkanSjServiceCodeManager.teiritsuCodes.contains(systemServiceKindDetail)) {
+				//独自定率の場合
+				int kyufuritsu = ACCastUtilities.toInt(code.get("KYUFURITSU"), 0);
+				limitOverKey = getTeiritsuLimitOverUnitKey(skind, unitPrice, kyufuritsu);
+			} else if (QkanSjServiceCodeManager.teigakuCodes.contains(systemServiceKindDetail)) {
+				//独自定額の場合
+				//サービス項目コード取得
+				String itemCode = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+				limitOverKey = getTeigakuLimitOverUnitKey(skind, unitPrice, itemCode);
+			}
+		}
+		if (this.sogoLimitOverMap.containsKey(limitOverKey)) {
+			int nowUnit = ACCastUtilities.toInt(this.sogoLimitOverMap.get(limitOverKey), 0);
+			limitOverUnit += nowUnit;
+		}
+		this.sogoLimitOverMap.put(limitOverKey, limitOverUnit);
+	}
+	
+	/**
+	 * 独自の区分支給超単位数Mapキーを取得します。
+	 * 
+	 * @param skind
+	 * @param unitPrice
+	 * @return
+	 */
+	public static String getDokujiLimitOverUnitKey(String skind, Double unitPrice) {
+		StringBuilder key = new StringBuilder();
+		key.append(skind).append("-")
+				.append(UNIT_PRICE_FORMAT.format(unitPrice));
+		return key.toString();
+	}
+	
+	/**
+	 * 独自定率の区分支給超単位数Mapキーを取得します。
+	 * 
+	 * @param skind
+	 * @param unitPrice
+	 * @param kyufuritsu
+	 * @return
+	 */
+	public static String getTeiritsuLimitOverUnitKey(String skind, Double unitPrice, int kyufuritsu) {
+		StringBuilder key = new StringBuilder();
+		key.append(skind).append("-")
+				.append(UNIT_PRICE_FORMAT.format(unitPrice)).append("-")
+				.append(kyufuritsu);
+		return key.toString();
+	}
+	
+	/**
+	 * 独自定額の区分支給超単位数Mapキーを取得します。
+	 * 
+	 * @param skind
+	 * @param unitPrice
+	 * @param itemCode
+	 * @return
+	 */
+	public static String getTeigakuLimitOverUnitKey(String skind, Double unitPrice, String itemCode) {
+		StringBuilder key = new StringBuilder();
+		key.append(skind).append("-")
+				.append(UNIT_PRICE_FORMAT.format(unitPrice)).append("-")
+				.append(itemCode);
+		return key.toString();
+	}
+	
+	// システムサービス種類コードからサービス種類コードを取得する
+    private String getServiceKindFromSystemKind(String systemKind) throws Exception {
+        String result = "";
+        VRMap row = (VRMap) serviceMaster.get(ACCastUtilities.toInteger(systemKind));
+        if (row != null) {
+            result = ACCastUtilities.toString(row.get("SERVICE_CODE_KIND"));
+        }
+        return result;
+    }
+    
+// 2016/10/11 [総合事業対応][Yoichiro Kamei] add - end
+    
 	/**
 	 * コンストラクタ
 	 * マスタデータの初期化を行う。
@@ -161,6 +311,11 @@ public class QP001Manager {
         // 2016/8/16 [総合事業対応][Yoichiro Kamei] add - begin
         setJigyotaishoLimitRate(dbm, targetDate);
         // 2016/8/16 [総合事業対応][Yoichiro Kamei] add - end
+        
+        // 2016/9/27 [総合事業対応][Yoichiro Kamei] add - begin
+        QkanSjTankaManager.initialize(dbm, targetDate);
+        QkanSjServiceCodeManager.clearCacheIfUpdated(dbm);
+        // 2016/9/27 [総合事業対応][Yoichiro Kamei] add - end
 	}
 	
 	/**
@@ -364,6 +519,7 @@ public class QP001Manager {
         StringBuilder sb = new StringBuilder();
         
         sb.append(" SELECT");
+        sb.append(" SYSTEM_SERVICE_KIND_DETAIL,"); // add 2016.10 総合事業独自対応
         sb.append(" SERVICE_CODE_KIND,");
         sb.append(" SERVICE_NAME,");
         sb.append(" SERVICE_ABBREVIATION,");
@@ -374,7 +530,12 @@ public class QP001Manager {
         sb.append(" WHERE");
         sb.append(" SERVICE_CODE_KIND IS NOT NULL");
         
-        ACBindUtilities.setMapFromArray(dbm.executeQuery(sb.toString()),serviceName,"SERVICE_CODE_KIND");
+        // 2016/10/11 [総合事業対応][Yoichiro Kamei] mod - begin
+        //ACBindUtilities.setMapFromArray(dbm.executeQuery(sb.toString()),serviceName,"SERVICE_CODE_KIND");
+        VRList results = dbm.executeQuery(sb.toString());
+        ACBindUtilities.setMapFromArray(results, serviceName,"SERVICE_CODE_KIND");
+        ACBindUtilities.setMapFromArray(results, serviceMaster,"SYSTEM_SERVICE_KIND_DETAIL");
+        // 2016/10/11 [総合事業対応][Yoichiro Kamei] mod - end
     }
     
     private void initializationInsurerName(ACDBManager dbm) throws Exception {

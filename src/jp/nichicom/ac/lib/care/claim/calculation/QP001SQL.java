@@ -538,8 +538,7 @@ public class QP001SQL extends QP001State {
         
         // サービス単位
         sb.append(" SELECT");
-        sb
-                .append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '-' || CLAIM_STYLE_TYPE || '-' || CLAIM.TARGET_DATE AS CODE,");
+        sb.append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '-' || CLAIM_STYLE_TYPE || '-' || CLAIM.TARGET_DATE AS CODE,");
         sb.append(" CLAIM.PATIENT_ID,");
         sb.append(" CLAIM.INSURED_ID,");
         sb.append(" CLAIM_STYLE_TYPE,");
@@ -2294,4 +2293,50 @@ public class QP001SQL extends QP001State {
       return sb.toString();
     }
     //[ID:0000612][Shin Fujihara] 2010/11 add end 2010年度対応
+    
+    //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add begin 負担割合表示
+    /**
+     * 「給付率を取得する」ためのSQLを返します。利用者向け請求一覧（AFFAIR：07）の場合のみ使用する。
+     * @param sqlParam
+     * @return
+     * @throws Exception
+     */
+    public String getSQL_GET_MAX_KYUFURITSU(VRMap sqlParam) throws Exception {
+        String affair = ACCastUtilities.toString(VRBindPathParser.get("AFFAIR", sqlParam));
+        StringBuilder sb = new StringBuilder();
+        Date seikyuDate = null;
+        if (VRBindPathParser.has("SEIKYU_DATE", sqlParam)) {
+            seikyuDate = ACCastUtilities.toDate(VRBindPathParser.get(
+                    "SEIKYU_DATE", sqlParam));
+        } else {
+            return sb.toString();
+        }
+        
+        Date fiscalDate = null;
+        fiscalDate = ACDateUtilities.addMonth(seikyuDate, -3);
+
+        // 給付率（保険給付、公費１、公費２、公費３のうち最大値）
+        sb.append(" SELECT");
+        sb.append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '--' || CLAIM.TARGET_DATE AS CODE,");
+        sb.append(" CLAIM.PATIENT_ID,");
+        sb.append(" CLAIM.INSURED_ID,");
+        sb.append(" MAX(CAST(CLAIM_TEMP.DETAIL_VALUE AS INTEGER)) AS KYUFURITSU");
+        sb.append(" FROM");
+        sb.append(" CLAIM,");
+        sb.append(" CLAIM_DETAIL_TEXT_" + VRDateParser.format(fiscalDate, "yyyy") + " CLAIM_TEMP");
+        sb.append(" WHERE");
+        sb.append(" (CLAIM.CATEGORY_NO = 2)");
+        sb.append(" AND(CLAIM.CLAIM_DATE = '" + VRDateParser.format(seikyuDate, "yyyy/MM/dd") + "')");
+        sb.append(" AND(CLAIM.CLAIM_ID = CLAIM_TEMP.CLAIM_ID)");
+        sb.append(" AND(CLAIM_TEMP.SYSTEM_BIND_PATH IN ('201029','201030','201031','201032'))");
+        sb.append(" AND (CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
+        sb.append(" GROUP BY");
+        sb.append(" CLAIM.PATIENT_ID,");
+        sb.append(" CLAIM.INSURED_ID,");
+        sb.append(" CLAIM.TARGET_DATE");
+        
+        return sb.toString();
+    }
+    //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add end
+
 }

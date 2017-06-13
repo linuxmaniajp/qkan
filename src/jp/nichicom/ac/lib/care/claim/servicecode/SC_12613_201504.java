@@ -157,7 +157,7 @@ public class SC_12613_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1260312) {
         case 5:
             // 4700 予認知短期サービス提供体制加算Iイ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z4700");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z4700");//2015.04
             break;
         case 2:
             // 4701 予認知短期サービス提供体制加算Iロ
@@ -175,8 +175,11 @@ public class SC_12613_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z4709");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z4710");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z4710");//2015.04
             break;
         case 2:
             putSystemServiceCodeItem(sysSvcCdItems, "Z4711");

@@ -277,6 +277,9 @@ public class QP001P20Event {
         riyousya += ACCastUtilities.toInt(style.get("1601018"),0);
         riyousya += ACCastUtilities.toInt(style.get("1601020"),0);
         
+        // 2016/12/02 [2016年要望][Shinobu Hitaka] add - begin 給付率追加
+        ACChotarouXMLUtilities.setValue(writer, style, "FUTAN_WARIAI","futanWariai");
+        // 2016/12/02 add - end
         
         if(serviceDetail != null){
             //全額自己負担のデータを設定する。

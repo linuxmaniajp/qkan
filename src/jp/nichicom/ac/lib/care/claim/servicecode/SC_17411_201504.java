@@ -133,16 +133,16 @@ public class SC_17411_201504 extends Qkan10011_ServiceUnitGetter {
         // 送迎減算
         switch (_18) {
         case 3: // 往復
-            putSystemServiceCodeItem(sysSvcCdItems, "Z56122");	//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z56122");	//2015.04
         case 2: // 片道
-            putSystemServiceCodeItem(sysSvcCdItems, "Z56121");	//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z56121");	//2015.04
             break;
         }
         
         switch (_1740110) {
         case 4:
             // 6100 予認通介サービス提供体制加算Iイ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");	//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");	//2015.04
             break;
         case 2:
             // 6101 予認通介サービス提供体制加算Iロ
@@ -156,19 +156,24 @@ public class SC_17411_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            // 予認通所介護処遇改善加算I
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");	//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");	//TODO:コード値確認
+            // 予認通所介護処遇改善加算II
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");	//2015.04
             break;
         case 2:
-            // 予認通所介護処遇改善加算I
+            // 予認通所介護処遇改善加算III
             putSystemServiceCodeItem(sysSvcCdItems, "Z6103");
             break;
         case 3:
-            // 予認通所介護処遇改善加算II
+            // 予認通所介護処遇改善加算IV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6104");
             break;
         case 4:
-            // 予認通所介護処遇改善加算III
+            // 予認通所介護処遇改善加算V
             putSystemServiceCodeItem(sysSvcCdItems, "Z6105");
             break;
         }

@@ -147,7 +147,7 @@ public class SC_12312_201504 extends Qkan10011_ServiceUnitGetter {
         // 従来型個室/多床室
         sb.append(CODE_CHAR[_1230203]);
         // ユニット型個室/ユニット型準個室
-        sb.append(CODE_CHAR[_1230204]);;
+        sb.append(CODE_CHAR[_1230204]);
 
         // 時間区分
         sb.append(CODE_CHAR[_1230255]);
@@ -240,7 +240,7 @@ public class SC_12312_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1230253) {
         case 5:
             // 3707 診療所短期サービス提供体制加算Iイ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z3700");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z3700");
             break;
         case 2:
             // 3701 診療所短期サービス提供体制加算Iロ
@@ -258,6 +258,9 @@ public class SC_12312_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 介護職員処遇改善を返却
         switch(_17){
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z3709");//2017.04
+            break;
         case 5:
             putSystemServiceCodeItem(sysSvcCdItems, "Z3710");//2015.04
             break;

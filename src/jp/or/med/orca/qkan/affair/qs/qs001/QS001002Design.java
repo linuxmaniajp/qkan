@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2012/07/03  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2016/09/22  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -115,15 +115,11 @@ public class QS001002Design extends ACPanel {
 
   private ACPanel buttons;
 
-  private ACButton coordinatePrivateExpenses;
+  private ACButton detailsbutton2;
 
-  private ACButton detailsbutton;
+  private ACButton detailsbutton3;
 
   private ACButton tokubetuButton;
-
-  private ACPanel addInfomations;
-
-  private ACButton planUnit;
 
   private ACPanel monthlyCharts;
 
@@ -197,6 +193,8 @@ public class QS001002Design extends ACPanel {
 
       getLimitContainer().setText("限度額");
 
+      limit.setBindPath("LIMIT_RATE");
+
       limit.setEditable(false);
 
       limit.setColumns(5);
@@ -234,6 +232,8 @@ public class QS001002Design extends ACPanel {
 
       getLimitAmountContainer().setText("管理対象内");
 
+      limitAmount.setBindPath("LIMIT_AMOUNT");
+
       limitAmount.setEditable(false);
 
       limitAmount.setColumns(5);
@@ -270,6 +270,8 @@ public class QS001002Design extends ACPanel {
       over = new ACTextField();
 
       getOverContainer().setText("超過分");
+
+      over.setBindPath("LIMIT_OVER");
 
       over.setEditable(false);
 
@@ -327,6 +329,8 @@ public class QS001002Design extends ACPanel {
 
       getAfterAdjustmentContainer().setText("調整後合計");
 
+      afterAdjustment.setBindPath("AFTER_ADJUSTMENT");
+
       afterAdjustment.setEditable(false);
 
       afterAdjustment.setColumns(5);
@@ -363,6 +367,8 @@ public class QS001002Design extends ACPanel {
       adjustment = new ACTextField();
 
       getAdjustmentContainer().setText("調整分");
+
+      adjustment.setBindPath("ADJUSTMENT");
 
       adjustment.setEditable(false);
 
@@ -406,42 +412,40 @@ public class QS001002Design extends ACPanel {
   }
 
   /**
-   * 自己負担調整画面を取得します。
-   * @return 自己負担調整画面
+   * 集計明細・負担額調整画面を取得します。
+   * @return 集計明細・負担額調整画面
    */
-  public ACButton getCoordinatePrivateExpenses(){
-    if(coordinatePrivateExpenses==null){
+  public ACButton getDetailsbutton2(){
+    if(detailsbutton2==null){
 
-      coordinatePrivateExpenses = new ACButton();
+      detailsbutton2 = new ACButton();
 
-      coordinatePrivateExpenses.setText("自己負担調整");
+      detailsbutton2.setText("集計明細・負担額調整");
 
-      coordinatePrivateExpenses.setEnabled(false);
+      detailsbutton2.setToolTipText("サービスごとの集計情報を表示し、利用者の自己負担分を調整します。");
 
-      coordinatePrivateExpenses.setToolTipText("利用者の自己負担分を調整します。");
-
-      addCoordinatePrivateExpenses();
+      addDetailsbutton2();
     }
-    return coordinatePrivateExpenses;
+    return detailsbutton2;
 
   }
 
   /**
-   * 集計明細画面を取得します。
-   * @return 集計明細画面
+   * 集計明細・計画単位数画面を取得します。
+   * @return 集計明細・計画単位数画面
    */
-  public ACButton getDetailsbutton(){
-    if(detailsbutton==null){
+  public ACButton getDetailsbutton3(){
+    if(detailsbutton3==null){
 
-      detailsbutton = new ACButton();
+      detailsbutton3 = new ACButton();
 
-      detailsbutton.setText("集計明細");
+      detailsbutton3.setText("集計明細・計画単位数");
 
-      detailsbutton.setToolTipText("サービスごとの集計情報を表示します。");
+      detailsbutton3.setToolTipText("サービスごとの集計情報を表示し、計画単位数を編集します。");
 
-      addDetailsbutton();
+      addDetailsbutton3();
     }
-    return detailsbutton;
+    return detailsbutton3;
 
   }
 
@@ -461,40 +465,6 @@ public class QS001002Design extends ACPanel {
       addTokubetuButton();
     }
     return tokubetuButton;
-
-  }
-
-  /**
-   * 追加情報領域を取得します。
-   * @return 追加情報領域
-   */
-  public ACPanel getAddInfomations(){
-    if(addInfomations==null){
-
-      addInfomations = new ACPanel();
-
-      addAddInfomations();
-    }
-    return addInfomations;
-
-  }
-
-  /**
-   * 計画単位数を取得します。
-   * @return 計画単位数
-   */
-  public ACButton getPlanUnit(){
-    if(planUnit==null){
-
-      planUnit = new ACButton();
-
-      planUnit.setText("計画単位数");
-
-      planUnit.setToolTipText("計画単位数を編集します。");
-
-      addPlanUnit();
-    }
-    return planUnit;
 
   }
 
@@ -581,7 +551,6 @@ public class QS001002Design extends ACPanel {
 
     uppers.add(getButtons(), VRLayout.CLIENT);
 
-    uppers.add(getAddInfomations(), VRLayout.SOUTH);
   }
 
   /**
@@ -650,25 +619,25 @@ public class QS001002Design extends ACPanel {
    */
   protected void addButtons(){
 
-    buttons.add(getCoordinatePrivateExpenses(), VRLayout.FLOW_RETURN);
+    buttons.add(getDetailsbutton2(), VRLayout.FLOW_RETURN);
 
-    buttons.add(getDetailsbutton(), VRLayout.FLOW_RETURN);
+    buttons.add(getDetailsbutton3(), VRLayout.FLOW_RETURN);
 
     buttons.add(getTokubetuButton(), VRLayout.FLOW);
 
   }
 
   /**
-   * 自己負担調整画面に内部項目を追加します。
+   * 集計明細・負担額調整画面に内部項目を追加します。
    */
-  protected void addCoordinatePrivateExpenses(){
+  protected void addDetailsbutton2(){
 
   }
 
   /**
-   * 集計明細画面に内部項目を追加します。
+   * 集計明細・計画単位数画面に内部項目を追加します。
    */
-  protected void addDetailsbutton(){
+  protected void addDetailsbutton3(){
 
   }
 
@@ -676,22 +645,6 @@ public class QS001002Design extends ACPanel {
    * 特定診療・特別療養費画面に内部項目を追加します。
    */
   protected void addTokubetuButton(){
-
-  }
-
-  /**
-   * 追加情報領域に内部項目を追加します。
-   */
-  protected void addAddInfomations(){
-
-    addInfomations.add(getPlanUnit(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 計画単位数に内部項目を追加します。
-   */
-  protected void addPlanUnit(){
 
   }
 

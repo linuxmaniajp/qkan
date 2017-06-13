@@ -110,33 +110,43 @@ public class QO002State extends QO002Design {
 
         getInsurerId().setVisible(true);
 
-        getInsurerLimitRateInfo().setEnabled(false);
-
-        getValidPeriodStart().setEnabled(false);
-
-        getValidPeriodEnd().setEnabled(false);
-
-        getYosien().setEnabled(false);
-
-        getYokaigo1().setEnabled(false);
-
-        getYokaigo2().setEnabled(false);
-
-        getYokaigo3().setEnabled(false);
-
-        getYokaigo4().setEnabled(false);
-
-        getYokaigo5().setEnabled(false);
-
-        getInsurerLimitRateRegularButton().setEnabled(false);
-
-        getInsurerLimitRateInsertButton().setEnabled(false);
-
-        getInsurerLimitRateEditButton().setEnabled(false);
-
-        getInsurerLimitRateDeleteButton().setEnabled(false);
+// [総合事業対応][Keiko Yano] 2016/08 del begin
+//        getInsurerLimitRateInfo().setEnabled(false);
+//
+//        getValidPeriodStart().setEnabled(false);
+//
+//        getValidPeriodEnd().setEnabled(false);
+//
+//        getYosien().setEnabled(false);
+//
+//        getYokaigo1().setEnabled(false);
+//
+//        getYokaigo2().setEnabled(false);
+//
+//        getYokaigo3().setEnabled(false);
+//
+//        getYokaigo4().setEnabled(false);
+//
+//        getYokaigo5().setEnabled(false);
+//
+//        getInsurerLimitRateRegularButton().setEnabled(false);
+//
+//        getInsurerLimitRateInsertButton().setEnabled(false);
+//
+//        getInsurerLimitRateEditButton().setEnabled(false);
+//
+//        getInsurerLimitRateDeleteButton().setEnabled(false);
+// [総合事業対応][Keiko Yano] 2016/08 del end
 
         getInsurerSelectButton().setEnabled(false);
+
+        // [総合事業対応][Keiko Yano] 2016/08 add begin
+        getUnitPriceInsertButton().setEnabled(true);
+
+        getUnitPriceEditButton().setEnabled(false);
+
+        getUnitPriceDeleteButton().setEnabled(false);
+        // [総合事業対応][Keiko Yano] 2016/08 add end
 
   }
 
@@ -232,6 +242,24 @@ public class QO002State extends QO002Design {
 
         getYokaigo5().setEnabled(true);
 
+        // [総合事業対応][Keiko Yano] 2016/08 add begin 事業対象者のみ表示する
+        getYosien1Container().setVisible(false);
+
+        getYosien2Container().setVisible(false);
+
+        getYosienContainer().setVisible(false);
+
+        getYokaigo1Container().setVisible(false);
+
+        getYokaigo2Container().setVisible(false);
+
+        getYokaigo3Container().setVisible(false);
+
+        getYokaigo4Container().setVisible(false);
+
+        getYokaigo5Container().setVisible(false);
+        // [総合事業対応][Keiko Yano] 2016/08 add end
+
         getInsurerLimitRateRegularButton().setEnabled(true);
 
         getInsurerLimitRateInsertButton().setEnabled(true);
@@ -239,6 +267,13 @@ public class QO002State extends QO002Design {
         getInsurerLimitRateEditButton().setEnabled(true);
 
         getInsurerLimitRateDeleteButton().setEnabled(true);
+
+        // [総合事業対応][Keiko Yano] 2016/08/18 add begin 支給限度は常に表示する
+        getInsurerLimitRateInfos().setVisible(true);
+
+        getInsurerLimitPanel().setVisible(false);
+
+        // [総合事業対応][Keiko Yano] 2016/08/18 add end
 
   }
 
@@ -299,6 +334,34 @@ public class QO002State extends QO002Design {
   public void setState_INVALID_INSURER_SELECT() throws Exception {
 
         getInsurerSelectButton().setEnabled(false);
+
+  }
+
+  /**
+   * 「単位数単価編集・削除不可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_NOT_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE() throws Exception {
+
+        getUnitPriceInsertButton().setEnabled(true);
+
+        getUnitPriceEditButton().setEnabled(false);
+
+        getUnitPriceDeleteButton().setEnabled(false);
+
+  }
+
+  /**
+   * 「単位数単価編集・削除可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE() throws Exception {
+
+        getUnitPriceInsertButton().setEnabled(true);
+
+        getUnitPriceEditButton().setEnabled(true);
+
+        getUnitPriceDeleteButton().setEnabled(true);
 
   }
 

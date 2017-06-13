@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 亀井　陽一郎
- * 作成日: 2016/07/20  日本コンピューター株式会社 亀井　陽一郎 新規作成
+ * 作成日: 2016/12/02  日本コンピューター株式会社 亀井　陽一郎 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -145,6 +145,22 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
 
   private ACRadioButtonItem mouthFunctionImprovementAddRadioItem2;
 
+  private ACValueArrayRadioButtonGroup sentakutekiServiceRadio;
+
+  private ACLabelContainer sentakutekiServiceRadioContainer;
+
+  private ACListModelAdapter sentakutekiServiceRadioModel;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem1;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem2;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem3;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem4;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem5;
+
   private ACValueArrayRadioButtonGroup serviceAddProvisionStructuralRadioGroup;
 
   private ACLabelContainer serviceAddProvisionStructuralRadioGroupContainer;
@@ -158,6 +174,22 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem2;
 
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem3;
+
+  private ACBackLabelContainer houmonKaigoTimeContainer;
+
+  private ACTimeComboBox houmonKaigoBeginTime;
+
+  private ACLabelContainer houmonKaigoBeginTimeContainer;
+
+  private ACComboBoxModelAdapter houmonKaigoBeginTimeModel;
+
+  private ACTimeComboBox houmonKaigoEndTime;
+
+  private ACLabelContainer houmonKaigoEndTimeContainer;
+
+  private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
+
+  private ACPanel tab2;
 
   private ACValueArrayRadioButtonGroup staffSubtractionRadio;
 
@@ -180,22 +212,6 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   private ACRadioButtonItem youngDementiaPatinetAddRadioItem1;
 
   private ACRadioButtonItem youngDementiaPatinetAddRadioItem2;
-
-  private ACBackLabelContainer houmonKaigoTimeContainer;
-
-  private ACTimeComboBox houmonKaigoBeginTime;
-
-  private ACLabelContainer houmonKaigoBeginTimeContainer;
-
-  private ACComboBoxModelAdapter houmonKaigoBeginTimeModel;
-
-  private ACTimeComboBox houmonKaigoEndTime;
-
-  private ACLabelContainer houmonKaigoEndTimeContainer;
-
-  private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
-
-  private ACPanel tab2;
 
   private ACValueArrayRadioButtonGroup officeEvaluationAddRadio;
 
@@ -237,6 +253,8 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
 
   private ACRadioButtonItem calculationDivisionAddOnly;
 
+  private ACPanel tab3;
+
   private ACGroupBox infoGroup;
 
   private ACLabel infoLabelPlan;
@@ -244,8 +262,8 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   //getter
 
   /**
-   * 介護予防通所介護パターン領域を取得します。
-   * @return 介護予防通所介護パターン領域
+   * 通所型サービス(みなし)パターン領域を取得します。
+   * @return 通所型サービス(みなし)パターン領域
    */
   public JTabbedPane getPreventiveExpertPlaceCareMultiPatterns(){
     if(preventiveExpertPlaceCareMultiPatterns==null){
@@ -812,6 +830,162 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算を取得します。
+   * @return 選択的サービス複数実施加算
+   */
+  public ACValueArrayRadioButtonGroup getSentakutekiServiceRadio(){
+    if(sentakutekiServiceRadio==null){
+
+      sentakutekiServiceRadio = new ACValueArrayRadioButtonGroup();
+
+      getSentakutekiServiceRadioContainer().setText("選択的サービス" + ACConstants.LINE_SEPARATOR + "複数実施加算");
+
+      sentakutekiServiceRadio.setBindPath("5050112");
+
+      sentakutekiServiceRadio.setUseClearButton(false);
+
+      sentakutekiServiceRadio.setModel(getSentakutekiServiceRadioModel());
+
+      sentakutekiServiceRadio.setValues(new int[]{1,2,3,4,5});
+
+      addSentakutekiServiceRadio();
+    }
+    return sentakutekiServiceRadio;
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算コンテナを取得します。
+   * @return 選択的サービス複数実施加算コンテナ
+   */
+  protected ACLabelContainer getSentakutekiServiceRadioContainer(){
+    if(sentakutekiServiceRadioContainer==null){
+      sentakutekiServiceRadioContainer = new ACLabelContainer();
+      sentakutekiServiceRadioContainer.setFollowChildEnabled(true);
+      sentakutekiServiceRadioContainer.setVAlignment(VRLayout.CENTER);
+      sentakutekiServiceRadioContainer.add(getSentakutekiServiceRadio(), null);
+    }
+    return sentakutekiServiceRadioContainer;
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルを取得します。
+   * @return 選択的サービス複数実施加算モデル
+   */
+  protected ACListModelAdapter getSentakutekiServiceRadioModel(){
+    if(sentakutekiServiceRadioModel==null){
+      sentakutekiServiceRadioModel = new ACListModelAdapter();
+      addSentakutekiServiceRadioModel();
+    }
+    return sentakutekiServiceRadioModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem1(){
+    if(sentakutekiServiceRadioItem1==null){
+
+      sentakutekiServiceRadioItem1 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem1.setText("なし");
+
+      sentakutekiServiceRadioItem1.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem1();
+    }
+    return sentakutekiServiceRadioItem1;
+
+  }
+
+  /**
+   * I1を取得します。
+   * @return I1
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem2(){
+    if(sentakutekiServiceRadioItem2==null){
+
+      sentakutekiServiceRadioItem2 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem2.setText("I1");
+
+      sentakutekiServiceRadioItem2.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem2();
+    }
+    return sentakutekiServiceRadioItem2;
+
+  }
+
+  /**
+   * I2を取得します。
+   * @return I2
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem3(){
+    if(sentakutekiServiceRadioItem3==null){
+
+      sentakutekiServiceRadioItem3 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem3.setText("I2");
+
+      sentakutekiServiceRadioItem3.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem3();
+    }
+    return sentakutekiServiceRadioItem3;
+
+  }
+
+  /**
+   * I3を取得します。
+   * @return I3
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem4(){
+    if(sentakutekiServiceRadioItem4==null){
+
+      sentakutekiServiceRadioItem4 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem4.setText("I3");
+
+      sentakutekiServiceRadioItem4.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addSentakutekiServiceRadioItem4();
+    }
+    return sentakutekiServiceRadioItem4;
+
+  }
+
+  /**
+   * IIを取得します。
+   * @return II
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem5(){
+    if(sentakutekiServiceRadioItem5==null){
+
+      sentakutekiServiceRadioItem5 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem5.setText("II");
+
+      sentakutekiServiceRadioItem5.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem5.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem5();
+    }
+    return sentakutekiServiceRadioItem5;
+
+  }
+
+  /**
    * サービス提供体制強化加算を取得します。
    * @return サービス提供体制強化加算
    */
@@ -945,6 +1119,148 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
       addServiceAddProvisionStructuralRadioItem3();
     }
     return serviceAddProvisionStructuralRadioItem3;
+
+  }
+
+  /**
+   * 提供時間コンテナを取得します。
+   * @return 提供時間コンテナ
+   */
+  public ACBackLabelContainer getHoumonKaigoTimeContainer(){
+    if(houmonKaigoTimeContainer==null){
+
+      houmonKaigoTimeContainer = new ACBackLabelContainer();
+
+      houmonKaigoTimeContainer.setFollowChildEnabled(true);
+
+      addHoumonKaigoTimeContainer();
+    }
+    return houmonKaigoTimeContainer;
+
+  }
+
+  /**
+   * 開始時刻コンボを取得します。
+   * @return 開始時刻コンボ
+   */
+  public ACTimeComboBox getHoumonKaigoBeginTime(){
+    if(houmonKaigoBeginTime==null){
+
+      houmonKaigoBeginTime = new ACTimeComboBox();
+
+      getHoumonKaigoBeginTimeContainer().setText("開始時刻");
+
+      houmonKaigoBeginTime.setBindPath("3");
+
+      houmonKaigoBeginTime.setModelBindPath("3");
+
+      houmonKaigoBeginTime.setRenderBindPath("CONTENT");
+
+      houmonKaigoBeginTime.setModel(getHoumonKaigoBeginTimeModel());
+
+      addHoumonKaigoBeginTime();
+    }
+    return houmonKaigoBeginTime;
+
+  }
+
+  /**
+   * 開始時刻コンボコンテナを取得します。
+   * @return 開始時刻コンボコンテナ
+   */
+  protected ACLabelContainer getHoumonKaigoBeginTimeContainer(){
+    if(houmonKaigoBeginTimeContainer==null){
+      houmonKaigoBeginTimeContainer = new ACLabelContainer();
+      houmonKaigoBeginTimeContainer.setFollowChildEnabled(true);
+      houmonKaigoBeginTimeContainer.setVAlignment(VRLayout.CENTER);
+      houmonKaigoBeginTimeContainer.add(getHoumonKaigoBeginTime(), null);
+    }
+    return houmonKaigoBeginTimeContainer;
+  }
+
+  /**
+   * 開始時刻コンボモデルを取得します。
+   * @return 開始時刻コンボモデル
+   */
+  protected ACComboBoxModelAdapter getHoumonKaigoBeginTimeModel(){
+    if(houmonKaigoBeginTimeModel==null){
+      houmonKaigoBeginTimeModel = new ACComboBoxModelAdapter();
+      addHoumonKaigoBeginTimeModel();
+    }
+    return houmonKaigoBeginTimeModel;
+  }
+
+  /**
+   * 終了時刻コンボを取得します。
+   * @return 終了時刻コンボ
+   */
+  public ACTimeComboBox getHoumonKaigoEndTime(){
+    if(houmonKaigoEndTime==null){
+
+      houmonKaigoEndTime = new ACTimeComboBox();
+
+      getHoumonKaigoEndTimeContainer().setText("終了時刻");
+
+      houmonKaigoEndTime.setBindPath("4");
+
+      houmonKaigoEndTime.setModelBindPath("4");
+
+      houmonKaigoEndTime.setRenderBindPath("CONTENT");
+
+      houmonKaigoEndTime.setModel(getHoumonKaigoEndTimeModel());
+
+      addHoumonKaigoEndTime();
+    }
+    return houmonKaigoEndTime;
+
+  }
+
+  /**
+   * 終了時刻コンボコンテナを取得します。
+   * @return 終了時刻コンボコンテナ
+   */
+  protected ACLabelContainer getHoumonKaigoEndTimeContainer(){
+    if(houmonKaigoEndTimeContainer==null){
+      houmonKaigoEndTimeContainer = new ACLabelContainer();
+      houmonKaigoEndTimeContainer.setFollowChildEnabled(true);
+      houmonKaigoEndTimeContainer.setVAlignment(VRLayout.CENTER);
+      houmonKaigoEndTimeContainer.add(getHoumonKaigoEndTime(), null);
+    }
+    return houmonKaigoEndTimeContainer;
+  }
+
+  /**
+   * 終了時刻コンボモデルを取得します。
+   * @return 終了時刻コンボモデル
+   */
+  protected ACComboBoxModelAdapter getHoumonKaigoEndTimeModel(){
+    if(houmonKaigoEndTimeModel==null){
+      houmonKaigoEndTimeModel = new ACComboBoxModelAdapter();
+      addHoumonKaigoEndTimeModel();
+    }
+    return houmonKaigoEndTimeModel;
+  }
+
+  /**
+   * タブ2を取得します。
+   * @return タブ2
+   */
+  public ACPanel getTab2(){
+    if(tab2==null){
+
+      tab2 = new ACPanel();
+
+      tab2.setFollowChildEnabled(true);
+
+      tab2.setHgap(0);
+
+      tab2.setLabelMargin(0);
+
+      tab2.setVgap(0);
+
+      addTab2();
+    }
+    return tab2;
 
   }
 
@@ -1154,148 +1470,6 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
       addYoungDementiaPatinetAddRadioItem2();
     }
     return youngDementiaPatinetAddRadioItem2;
-
-  }
-
-  /**
-   * 提供時間コンテナを取得します。
-   * @return 提供時間コンテナ
-   */
-  public ACBackLabelContainer getHoumonKaigoTimeContainer(){
-    if(houmonKaigoTimeContainer==null){
-
-      houmonKaigoTimeContainer = new ACBackLabelContainer();
-
-      houmonKaigoTimeContainer.setFollowChildEnabled(true);
-
-      addHoumonKaigoTimeContainer();
-    }
-    return houmonKaigoTimeContainer;
-
-  }
-
-  /**
-   * 開始時刻コンボを取得します。
-   * @return 開始時刻コンボ
-   */
-  public ACTimeComboBox getHoumonKaigoBeginTime(){
-    if(houmonKaigoBeginTime==null){
-
-      houmonKaigoBeginTime = new ACTimeComboBox();
-
-      getHoumonKaigoBeginTimeContainer().setText("開始時刻");
-
-      houmonKaigoBeginTime.setBindPath("3");
-
-      houmonKaigoBeginTime.setModelBindPath("3");
-
-      houmonKaigoBeginTime.setRenderBindPath("CONTENT");
-
-      houmonKaigoBeginTime.setModel(getHoumonKaigoBeginTimeModel());
-
-      addHoumonKaigoBeginTime();
-    }
-    return houmonKaigoBeginTime;
-
-  }
-
-  /**
-   * 開始時刻コンボコンテナを取得します。
-   * @return 開始時刻コンボコンテナ
-   */
-  protected ACLabelContainer getHoumonKaigoBeginTimeContainer(){
-    if(houmonKaigoBeginTimeContainer==null){
-      houmonKaigoBeginTimeContainer = new ACLabelContainer();
-      houmonKaigoBeginTimeContainer.setFollowChildEnabled(true);
-      houmonKaigoBeginTimeContainer.setVAlignment(VRLayout.CENTER);
-      houmonKaigoBeginTimeContainer.add(getHoumonKaigoBeginTime(), null);
-    }
-    return houmonKaigoBeginTimeContainer;
-  }
-
-  /**
-   * 開始時刻コンボモデルを取得します。
-   * @return 開始時刻コンボモデル
-   */
-  protected ACComboBoxModelAdapter getHoumonKaigoBeginTimeModel(){
-    if(houmonKaigoBeginTimeModel==null){
-      houmonKaigoBeginTimeModel = new ACComboBoxModelAdapter();
-      addHoumonKaigoBeginTimeModel();
-    }
-    return houmonKaigoBeginTimeModel;
-  }
-
-  /**
-   * 終了時刻コンボを取得します。
-   * @return 終了時刻コンボ
-   */
-  public ACTimeComboBox getHoumonKaigoEndTime(){
-    if(houmonKaigoEndTime==null){
-
-      houmonKaigoEndTime = new ACTimeComboBox();
-
-      getHoumonKaigoEndTimeContainer().setText("終了時刻");
-
-      houmonKaigoEndTime.setBindPath("4");
-
-      houmonKaigoEndTime.setModelBindPath("4");
-
-      houmonKaigoEndTime.setRenderBindPath("CONTENT");
-
-      houmonKaigoEndTime.setModel(getHoumonKaigoEndTimeModel());
-
-      addHoumonKaigoEndTime();
-    }
-    return houmonKaigoEndTime;
-
-  }
-
-  /**
-   * 終了時刻コンボコンテナを取得します。
-   * @return 終了時刻コンボコンテナ
-   */
-  protected ACLabelContainer getHoumonKaigoEndTimeContainer(){
-    if(houmonKaigoEndTimeContainer==null){
-      houmonKaigoEndTimeContainer = new ACLabelContainer();
-      houmonKaigoEndTimeContainer.setFollowChildEnabled(true);
-      houmonKaigoEndTimeContainer.setVAlignment(VRLayout.CENTER);
-      houmonKaigoEndTimeContainer.add(getHoumonKaigoEndTime(), null);
-    }
-    return houmonKaigoEndTimeContainer;
-  }
-
-  /**
-   * 終了時刻コンボモデルを取得します。
-   * @return 終了時刻コンボモデル
-   */
-  protected ACComboBoxModelAdapter getHoumonKaigoEndTimeModel(){
-    if(houmonKaigoEndTimeModel==null){
-      houmonKaigoEndTimeModel = new ACComboBoxModelAdapter();
-      addHoumonKaigoEndTimeModel();
-    }
-    return houmonKaigoEndTimeModel;
-  }
-
-  /**
-   * タブ2を取得します。
-   * @return タブ2
-   */
-  public ACPanel getTab2(){
-    if(tab2==null){
-
-      tab2 = new ACPanel();
-
-      tab2.setFollowChildEnabled(true);
-
-      tab2.setHgap(0);
-
-      tab2.setLabelMargin(0);
-
-      tab2.setVgap(0);
-
-      addTab2();
-    }
-    return tab2;
 
   }
 
@@ -1676,6 +1850,29 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * タブ3を取得します。
+   * @return タブ3
+   */
+  public ACPanel getTab3(){
+    if(tab3==null){
+
+      tab3 = new ACPanel();
+
+      tab3.setFollowChildEnabled(true);
+
+      tab3.setHgap(0);
+
+      tab3.setLabelMargin(0);
+
+      tab3.setVgap(0);
+
+      addTab3();
+    }
+    return tab3;
+
+  }
+
+  /**
    * 注意書きグループを取得します。
    * @return 注意書きグループ
    */
@@ -1745,13 +1942,15 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   }
 
   /**
-   * 介護予防通所介護パターン領域に内部項目を追加します。
+   * 通所型サービス(みなし)パターン領域に内部項目を追加します。
    */
   protected void addPreventiveExpertPlaceCareMultiPatterns(){
 
     preventiveExpertPlaceCareMultiPatterns.addTab("1", getTab1());
 
     preventiveExpertPlaceCareMultiPatterns.addTab("2", getTab2());
+
+    preventiveExpertPlaceCareMultiPatterns.addTab("3", getTab3());
 
   }
 
@@ -1776,11 +1975,9 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
 
     tab1.add(getMouthFunctionImprovementAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab1.add(getSentakutekiServiceRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     tab1.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab1.add(getStaffSubtractionRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab1.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab1.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
 
@@ -1988,6 +2185,75 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadio(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルに内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioModel(){
+
+    getSentakutekiServiceRadioItem1().setButtonIndex(1);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem1());
+
+    getSentakutekiServiceRadioItem2().setButtonIndex(2);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem2());
+
+    getSentakutekiServiceRadioItem3().setButtonIndex(3);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem3());
+
+    getSentakutekiServiceRadioItem4().setButtonIndex(4);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem4());
+
+    getSentakutekiServiceRadioItem5().setButtonIndex(5);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem5());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem1(){
+
+  }
+
+  /**
+   * I1に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem2(){
+
+  }
+
+  /**
+   * I2に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem3(){
+
+  }
+
+  /**
+   * I3に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem4(){
+
+  }
+
+  /**
+   * IIに内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem5(){
+
+  }
+
+  /**
    * サービス提供体制強化加算に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroup(){
@@ -2042,6 +2308,64 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
    * II型に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioItem3(){
+
+  }
+
+  /**
+   * 提供時間コンテナに内部項目を追加します。
+   */
+  protected void addHoumonKaigoTimeContainer(){
+
+    houmonKaigoTimeContainer.add(getHoumonKaigoBeginTimeContainer(), VRLayout.FLOW);
+
+    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 開始時刻コンボに内部項目を追加します。
+   */
+  protected void addHoumonKaigoBeginTime(){
+
+  }
+
+  /**
+   * 開始時刻コンボモデルに内部項目を追加します。
+   */
+  protected void addHoumonKaigoBeginTimeModel(){
+
+  }
+
+  /**
+   * 終了時刻コンボに内部項目を追加します。
+   */
+  protected void addHoumonKaigoEndTime(){
+
+  }
+
+  /**
+   * 終了時刻コンボモデルに内部項目を追加します。
+   */
+  protected void addHoumonKaigoEndTimeModel(){
+
+  }
+
+  /**
+   * タブ2に内部項目を追加します。
+   */
+  protected void addTab2(){
+
+    tab2.add(getStaffSubtractionRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab2.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab2.add(getOfficeEvaluationAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab2.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab2.add(getTransportationCallRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    tab2.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -2125,62 +2449,6 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
    * ありに内部項目を追加します。
    */
   protected void addYoungDementiaPatinetAddRadioItem2(){
-
-  }
-
-  /**
-   * 提供時間コンテナに内部項目を追加します。
-   */
-  protected void addHoumonKaigoTimeContainer(){
-
-    houmonKaigoTimeContainer.add(getHoumonKaigoBeginTimeContainer(), VRLayout.FLOW);
-
-    houmonKaigoTimeContainer.add(getHoumonKaigoEndTimeContainer(), VRLayout.FLOW_RETURN);
-
-  }
-
-  /**
-   * 開始時刻コンボに内部項目を追加します。
-   */
-  protected void addHoumonKaigoBeginTime(){
-
-  }
-
-  /**
-   * 開始時刻コンボモデルに内部項目を追加します。
-   */
-  protected void addHoumonKaigoBeginTimeModel(){
-
-  }
-
-  /**
-   * 終了時刻コンボに内部項目を追加します。
-   */
-  protected void addHoumonKaigoEndTime(){
-
-  }
-
-  /**
-   * 終了時刻コンボモデルに内部項目を追加します。
-   */
-  protected void addHoumonKaigoEndTimeModel(){
-
-  }
-
-  /**
-   * タブ2に内部項目を追加します。
-   */
-  protected void addTab2(){
-
-    tab2.add(getOfficeEvaluationAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getTransportationCallRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab2.add(getInfoGroup(), VRLayout.FLOW);
 
   }
 
@@ -2325,6 +2593,15 @@ public class QS001_50511_201504Design extends QS001ServicePanel {
    * 加算のみに内部項目を追加します。
    */
   protected void addCalculationDivisionAddOnly(){
+
+  }
+
+  /**
+   * タブ3に内部項目を追加します。
+   */
+  protected void addTab3(){
+
+    tab3.add(getInfoGroup(), VRLayout.FLOW);
 
   }
 

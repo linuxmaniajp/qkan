@@ -314,6 +314,10 @@ public class QP001P22Event {
         kohi += ACCastUtilities.toInt(style.get("1601022"),0);
         kohi += ACCastUtilities.toInt(style.get("1601024"),0);
         
+        // 2016/12/02 [2016年要望][Shinobu Hitaka] add - begin 給付率追加
+        ACChotarouXMLUtilities.setValue(writer, style, "FUTAN_WARIAI","futanWariai");
+        // 2016/12/02 add - end
+        
         if(serviceDetail != null){
             //その他のデータを設定する。
             for (int i = 1; i <= 6; i++){

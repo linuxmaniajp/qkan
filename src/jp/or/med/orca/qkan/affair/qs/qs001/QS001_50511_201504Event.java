@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 亀井　陽一郎
- * 作成日: 2016/07/07  日本コンピューター株式会社 亀井　陽一郎 新規作成
+ * 作成日: 2016/12/01  MIS九州株式会社 亀井　陽一郎 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -191,6 +191,22 @@ public abstract class QS001_50511_201504Event extends QS001_50511_201504State im
             }
         }
     });
+    getSentakutekiServiceRadio().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                sentakutekiServiceRadioSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -236,6 +252,13 @@ public abstract class QS001_50511_201504Event extends QS001_50511_201504State im
    * @throws Exception 処理例外
    */
   protected abstract void activityAddRadioSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「選択的サービス複数実施加算」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void sentakutekiServiceRadioSelectionChanged(ListSelectionEvent e) throws Exception;
 
   //変数定義
 

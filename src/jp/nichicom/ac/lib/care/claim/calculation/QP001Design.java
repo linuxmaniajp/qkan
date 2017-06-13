@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2016/07/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/12/12  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定/請求書出力 (P)
@@ -314,6 +314,8 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn infoTableColumn21;
 
   private ACTableColumn infoTableColumn22;
+
+  private ACTableColumn infoTableColumn24;
 
   //getter
 
@@ -2234,7 +2236,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
       infoTableColumn6.setColumnName("INSURER_ID");
 
-      infoTableColumn6.setColumns(8);
+      infoTableColumn6.setColumns(6);
 
       addInfoTableColumn6();
     }
@@ -2255,7 +2257,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
       infoTableColumn7.setColumnName("INSURER_NAME");
 
-      infoTableColumn7.setColumns(10);
+      infoTableColumn7.setColumns(7);
 
       addInfoTableColumn7();
     }
@@ -2276,7 +2278,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
       infoTableColumn8.setColumnName("PATIENT_CODE");
 
-      infoTableColumn8.setColumns(10);
+      infoTableColumn8.setColumns(8);
 
       addInfoTableColumn8();
     }
@@ -2297,7 +2299,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
       infoTableColumn9.setColumnName("INSURED_ID");
 
-      infoTableColumn9.setColumns(10);
+      infoTableColumn9.setColumns(8);
 
       addInfoTableColumn9();
     }
@@ -2318,7 +2320,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
       infoTableColumn10.setColumnName("PATIENT_NAME");
 
-      infoTableColumn10.setColumns(10);
+      infoTableColumn10.setColumns(9);
 
       addInfoTableColumn10();
     }
@@ -2406,7 +2408,9 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
       infoTableColumn15.setColumnName("JOTAI_CODE");
 
-      infoTableColumn15.setColumns(5);
+      infoTableColumn15.setColumns(6);
+      
+      infoTableColumn15.setMinWidth(60);
 
       addInfoTableColumn15();
     }
@@ -2570,6 +2574,31 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       addInfoTableColumn22();
     }
     return infoTableColumn22;
+
+  }
+
+  /**
+   * 負担割合(列を取得します。
+   * @return 負担割合(列
+   */
+  public ACTableColumn getInfoTableColumn24(){
+    if(infoTableColumn24==null){
+
+      infoTableColumn24 = new ACTableColumn();
+
+      infoTableColumn24.setHeaderValue("負担割合");
+
+      infoTableColumn24.setColumnName("FUTANWARIAI");
+
+      infoTableColumn24.setColumns(4);
+
+      infoTableColumn24.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      infoTableColumn24.setMinWidth(45);
+
+      addInfoTableColumn24();
+    }
+    return infoTableColumn24;
 
   }
 
@@ -3213,6 +3242,8 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
     getInfoTableColumnModel().addColumn(getInfoTableColumn22());
 
+    getInfoTableColumnModel().addColumn(getInfoTableColumn24());
+
   }
 
   /**
@@ -3373,6 +3404,13 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
    * 利用者負担額(列に内部項目を追加します。
    */
   protected void addInfoTableColumn22(){
+
+  }
+
+  /**
+   * 負担割合(列に内部項目を追加します。
+   */
+  protected void addInfoTableColumn24(){
 
   }
 

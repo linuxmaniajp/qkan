@@ -42,7 +42,10 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanConstants;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001SjClaimCalc.KohiyusenType;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon; //20140210 add
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjLimitOverUnitException;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 
 /**
  * 集計情報レコード
@@ -148,6 +151,11 @@ public class QP001RecordType extends QP001RecordAbstract {
 	private String _701046 = "";
 	//[ID:0000525][Shin Fujihara] 2009/07 add end 2009年度対応
 
+	// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+	//総合事業の区分支給超単位数
+	private String _701047 = "";
+	// 2016/10/11 [Yoichiro Kamei] add - end
+	
 	//サービス実日数
 	private VRList serviceRealDays = new VRArrayList();
 	//入所サービス実日数
@@ -170,7 +178,61 @@ public class QP001RecordType extends QP001RecordAbstract {
     //※外部利用型以外の単位数積み上げ
     private int _701011_temp = 0;
     //[ID:0000699][Shin Fujihara] 2012/03 add end 2012年度法改正対応
-	
+    
+    
+    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+    // 独自・独自定率、独自定額用の計算
+    private QP001SjClaimCalc sjClaimCalc;
+    
+    /**
+     * 総合事業の独自・独自定率・独自定額かどうかを返します。
+     * @return
+     */
+    protected boolean isDokujiTeiritsuTeigaku() {
+		if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_701001())
+				&& QkanSjServiceCodeManager.dokujiTeiritsuTeigakuKinds.contains(get_701007())) {
+			return true;
+		}
+		return false;
+    }
+
+    /**
+     * 総合事業の独自かどうかを返します。
+     * @return
+     */
+    protected boolean isDokuji() {
+		if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_701001())
+				&& QkanSjServiceCodeManager.dokujiKinds.contains(get_701007())) {
+			return true;
+		}
+		return false;
+    }
+    
+    /**
+     * 総合事業の独自定率かどうかを返します。
+     * @return
+     */
+    protected boolean isDokujiTeiritsu() {
+		if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_701001())
+				&& QkanSjServiceCodeManager.teiritsuKinds.contains(get_701007())) {
+			return true;
+		}
+		return false;
+    }
+    
+    /**
+     * 総合事業の独自定額かどうかを返します。
+     * @return 
+     */
+    protected boolean isDokujiTeigaku() {
+		if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_701001())
+				&& QkanSjServiceCodeManager.teigakuKinds.contains(get_701007())) {
+			return true;
+		}
+		return false;
+    }
+    // 2016/10/11 [Yoichiro Kamei] add - end
+    
 	/**
 	 * 交換情報識別番号4桁を取得する。
 	 * @return
@@ -819,6 +881,25 @@ public class QP001RecordType extends QP001RecordAbstract {
 	}
 	//[ID:0000525][Shin Fujihara] 2009/07 add end 2009年度対応
 	
+	
+	// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+	/**
+	 * 総合事業 区分支給超単位数の情報を取得する。
+	 * @return
+	 */
+	protected String get_701047() {
+		return _701047;
+	}
+	/**
+	 * 総合事業 区分支給超単位数の情報を設定する。
+	 * @param _701043
+	 */
+	protected void set_701047(String _701047) {
+		this._701047 = _701047;
+	}
+	// 2016/10/11 [Yoichiro Kamei] add - end
+	
+	
     protected int get_701015Multiplies100() {
         BigDecimal temp = new BigDecimal(String.valueOf(get_701015()));
         temp = temp.multiply(new BigDecimal("100"));
@@ -946,10 +1027,23 @@ public class QP001RecordType extends QP001RecordAbstract {
 			
 			//給付割合を退避する
 			set_701040(detail.get_301026());
+
+			// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+			// 独自定率・独自定額の場合給付率は設定しない
+			if (isDokujiTeiritsu() || isDokujiTeigaku()) {
+				set_701040(0);
+			}
+			// 2016/10/11 [Yoichiro Kamei] add - end
 			
 //			//システム内のサービス種類コードを退避する
 //			set_701044(detail.get_301021());
 //			set_701045(detail.get_301022());
+			
+			// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+			if (isDokujiTeiritsuTeigaku()) {
+				this.sjClaimCalc = new QP001SjClaimCalc(get_701007(), manager.getSogoLimitOverMap());
+			}
+			// 2016/10/11 [Yoichiro Kamei] add - end
 
 		//既存情報が存在する場合
 		} else {
@@ -1077,6 +1171,12 @@ public class QP001RecordType extends QP001RecordAbstract {
 			
 			kohiPattern.put(key,new Integer(value));
 		}
+		
+		// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+		if (isDokujiTeiritsuTeigaku()) {
+			this.sjClaimCalc.parseRecordDetail(detail);
+		}
+		// 2016/10/11 [Yoichiro Kamei] add - end
 	}
 	
 	/**
@@ -1448,6 +1548,28 @@ public class QP001RecordType extends QP001RecordAbstract {
             //[ID:0000525][Shin Fujihara] 2009/07 add end 2009年度対応
         }
         
+        // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
+        // 計画単位数と総合事業の区分支給超単位数の整合性チェック
+        if (isDokujiTeiritsuTeigaku()) {
+            int gendoTaishoUnit = get_701010();
+            int limitOverUnit = this.sjClaimCalc.getTotalLimitOverUnit();
+            
+            if (planUnit > 0) {
+                // 限度額管理対象単位数＞計画単位数のとき
+                if (gendoTaishoUnit > planUnit) {
+                    if (gendoTaishoUnit !=  (planUnit + limitOverUnit)) {
+                        throw new QkanSjLimitOverUnitException(get_701007(), "区分支給超単位数の不整合");
+                    }
+                }
+            } else if (planUnit == 0) {
+                // 計画単位数が0だが調整額のみ設定されている場合
+                if (limitOverUnit > 0) {
+                    throw new QkanSjLimitOverUnitException(get_701007(), "区分支給超単位数の不整合");
+                }
+            }
+        }
+        // 2016/10 [Yoichiro Kamei] add - end
+        
         // 計画単位数と限度額対象管理数の少ないほうを採用する
         int unit = get_701010();
         if(get_701009() < unit){
@@ -1486,6 +1608,12 @@ public class QP001RecordType extends QP001RecordAbstract {
         //基本情報レコードで設定するよう変更
 //		set_701013(this.entranceRealDays.getDataSize());
 
+        // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+        if (isDokujiTeiritsuTeigaku()) {
+            // 独自・独自定率・独自定額の計算
+            this.sjClaimCalc.calculate();
+        }
+        // 2016/10/11 [Yoichiro Kamei] add - end
         
 		//あとは、合算時に一括計算(commitRecord)
 		//利用者の給付割合により処理を分岐する。
@@ -1501,6 +1629,14 @@ public class QP001RecordType extends QP001RecordAbstract {
             totalUnit = (int)Math.floor((totalUnit * get_701040()) / 100d); 
             
             set_701016(totalUnit);
+            
+            // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+            if (isDokuji()) {
+                set_701016(this.sjClaimCalc.getDokujiJigyohiSeikyugaku());
+            } else if (isDokujiTeiritsu()) {
+                set_701016(this.sjClaimCalc.getTeiritsuJigyohiSeikyugaku());
+            }
+            // 2016/10/11 [Yoichiro Kamei] add - end
         }
 		
 		//公費の算出を行う。
@@ -1595,6 +1731,22 @@ public class QP001RecordType extends QP001RecordAbstract {
 				//kohiClaim = getKohiClaim(value,kohiRate,0,usedRate);
                 kohiClaim = getKohiClaim(get_701018(),kohiRate,0,usedRate, 0);
                 
+                // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                if (isDokuji()) {
+                    kohiClaim = this.sjClaimCalc.calcDokujiKohiSeikyugaku(KohiyusenType.KOHI1,
+                            get_701014(), get_701018(), kohiRate, reduction, usedRate, 0);
+                } else if (isDokujiTeiritsu()) {
+                    //生保単独ではない場合
+                    if (!get_701006().toUpperCase().startsWith("H")) {
+                        usedRate = -1; //サービスの給付率を使用するため
+                    }
+                    kohiClaim = this.sjClaimCalc.calcTeiritsuKohiSeikyugaku(KohiyusenType.KOHI1,
+                        get_701014(), get_701018(), kohiRate, reduction, usedRate, 0);
+                } else if (isDokujiTeigaku()) {
+                    kohiClaim = this.sjClaimCalc.getTeigakuKohi1Seikyugaku();
+                }
+                // 2016/10/11 [Yoichiro Kamei] add - end
+                
 				reduction += kohiClaim;
 				//detail の KEY : 701019((公費1)請求額)に値を設定する。
 				set_701019(get_701019() + kohiClaim);
@@ -1671,6 +1823,18 @@ public class QP001RecordType extends QP001RecordAbstract {
                     //kohiClaim = getKohiClaim(value,kohiRate,reduction,usedRate);
                     kohiClaim = getKohiClaim(get_701021(),kohiRate,reduction,usedRate, get_701018());
                     
+                    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                    if (isDokuji()) {
+                        kohiClaim = this.sjClaimCalc.calcDokujiKohiSeikyugaku(KohiyusenType.KOHI2,
+                                get_701014(), get_701021(), kohiRate, reduction, usedRate, get_701018());
+                    } else if (isDokujiTeiritsu()) {
+                        kohiClaim = this.sjClaimCalc.calcTeiritsuKohiSeikyugaku(KohiyusenType.KOHI2,
+                            get_701014(), get_701021(), kohiRate, reduction, usedRate, get_701018());
+                    } else if (isDokujiTeigaku()) {
+                        kohiClaim = this.sjClaimCalc.getTeigakuKohi2Seikyugaku();
+                    }
+                    // 2016/10/11 [Yoichiro Kamei] add - end
+                    
                     reduction += kohiClaim;
                     //detail の KEY : 701022((公費2)請求額)に値を設定する。
                     set_701022(get_701022() + kohiClaim);
@@ -1731,6 +1895,18 @@ public class QP001RecordType extends QP001RecordAbstract {
                     
                     //お試し版
                     kohiClaim = getKohiClaim(get_701024(),kohiRate,reduction,usedRate, get_701018() + get_701021());
+                    
+                    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                    if (isDokuji()) {
+                        kohiClaim = this.sjClaimCalc.calcDokujiKohiSeikyugaku(KohiyusenType.KOHI3,
+                                get_701014(), get_701024(), kohiRate, reduction, usedRate, get_701018() + get_701021());
+                    } else if (isDokujiTeiritsu()) {
+                        kohiClaim = this.sjClaimCalc.calcTeiritsuKohiSeikyugaku(KohiyusenType.KOHI3,
+                            get_701014(), get_701024(), kohiRate, reduction, usedRate, get_701018() + get_701021());
+                    } else if (isDokujiTeigaku()) {
+                        kohiClaim = this.sjClaimCalc.getTeigakuKohi3Seikyugaku();
+                    }
+                    // 2016/10/11 [Yoichiro Kamei] add - end
                     
 // 2015/6/18 [Shinobu Hitaka] add - begin 公費関連見直し（公費1=10感染症の場合、請求額を調整する）
                     if ("1001".equals(kohi[0].getKohiType()) && kohiClaim > get_701019()){
@@ -1851,6 +2027,50 @@ public class QP001RecordType extends QP001RecordAbstract {
                             - get_701023()
                             - get_701026());
         
+        // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+        if (isDokujiTeiritsuTeigaku()) {
+            if (isDokuji()) {
+                // 独自
+                // 利用者負担額
+                set_701017(this.sjClaimCalc.getDokujiTotalSeikyugaku()
+                        - get_701016()
+                        - get_701019()
+                        - get_701022()
+                        - get_701025()
+                        - get_701020()
+                        - get_701023()
+                        - get_701026());
+            } else if (isDokujiTeiritsu()) {
+                // 独自定率
+                // 利用者負担額
+                set_701017(this.sjClaimCalc.getTeiritsuTotalSeikyugaku()
+                        - get_701016()
+                        - get_701019()
+                        - get_701022()
+                        - get_701025()
+                        - get_701020()
+                        - get_701023()
+                        - get_701026());
+                
+            } else if (isDokujiTeigaku()) {
+                // 独自定額
+                // 事業費請求額
+                if (!get_701006().toUpperCase().startsWith("H")) {
+                    set_701016(this.sjClaimCalc.getTeigakuJigyohiSeikyugaku(get_701019() + get_701022() + get_701025()
+                        , get_701020() + get_701023() + get_701026()));
+                }
+                // 利用者負担額
+                set_701017(this.sjClaimCalc.getTeigakuRiyoshaFutangaku());
+            }
+            
+            //総合事業の単位数単価を設定
+            set_701015(this.sjClaimCalc.getUnitPrice());
+            //総合事業の区分限度超単位数情報を設定
+            set_701047(this.sjClaimCalc.getSogoLimitOverInfo());
+        }
+        // 2016/10/11 [Yoichiro Kamei] add - end
+        
+        
         //念のため
         //利用者負担額がマイナスになった場合
         if(get_701017() < 0){
@@ -1953,33 +2173,36 @@ public class QP001RecordType extends QP001RecordAbstract {
         		}
         	}
         }
-        
-        //実績登録画面で計画単位数の入力が無い場合、予定のデータを見に行く
-        
-        if(styles == null) return result;
-        
-        Iterator it = styles.keySet().iterator();
-        while(it.hasNext()){
-            QP001StyleAbstract style = (QP001StyleAbstract)styles.get(it.next());
-            if(style instanceof QP001Style11){
-                QP001Style11 target = (QP001Style11)style;
-                
-                Map supplyMap = (Map)target.getSupplyMap();
-                
-                Iterator supplyIt = supplyMap.keySet().iterator();
-                while(supplyIt.hasNext()){
-                    QP001RecordSupply supply = (QP001RecordSupply)supplyMap.get(supplyIt.next());
-                  //事業所番号と保険者番号,被保険者番号とサービス種類コードが等しいものを探す
-                  if(String.valueOf(supply.get_1201017()).equals(get_701004())
-                          && (String.valueOf(supply.get_1201003()).equals(get_701005()))
-                          && (String.valueOf(supply.get_1201009()).equals(get_701006()))
-                          && (String.valueOf(supply.get_1201019()).equals(get_701007()))){
-                      result = supply.get_1201020();
-                      break;
-                  }
-                }
-            }
-        }
+// 2016/10/18 [Yoichiro Kamei] del - begin 総合事業対応
+// 予定読込時に計画単位数を設定するよう変更したため、予定のデータは見ない
+//        
+//        //実績登録画面で計画単位数の入力が無い場合、予定のデータを見に行く
+//        
+//        if(styles == null) return result;
+//        
+//        Iterator it = styles.keySet().iterator();
+//        while(it.hasNext()){
+//            QP001StyleAbstract style = (QP001StyleAbstract)styles.get(it.next());
+//            if(style instanceof QP001Style11){
+//                QP001Style11 target = (QP001Style11)style;
+//                
+//                Map supplyMap = (Map)target.getSupplyMap();
+//                
+//                Iterator supplyIt = supplyMap.keySet().iterator();
+//                while(supplyIt.hasNext()){
+//                    QP001RecordSupply supply = (QP001RecordSupply)supplyMap.get(supplyIt.next());
+//                  //事業所番号と保険者番号,被保険者番号とサービス種類コードが等しいものを探す
+//                  if(String.valueOf(supply.get_1201017()).equals(get_701004())
+//                          && (String.valueOf(supply.get_1201003()).equals(get_701005()))
+//                          && (String.valueOf(supply.get_1201009()).equals(get_701006()))
+//                          && (String.valueOf(supply.get_1201019()).equals(get_701007()))){
+//                      result = supply.get_1201020();
+//                      break;
+//                  }
+//                }
+//            }
+//        }
+// 2016/10/18 [Yoichiro Kamei] del - end
         return result;
         
     }
@@ -2200,6 +2423,8 @@ public class QP001RecordType extends QP001RecordAbstract {
 		//[ID:0000525][Shin Fujihara] 2009/07 add begin 2009年度対応
 		setData(result,"701046",get_701046());
 		//[ID:0000525][Shin Fujihara] 2009/07 add end 2009年度対応
+		
+		setData(result,"701047",get_701047()); // 2016/10 add 総合事業独自対応
 		
 		return result;
 	}

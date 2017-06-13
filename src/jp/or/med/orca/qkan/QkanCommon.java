@@ -1138,12 +1138,36 @@ public class QkanCommon {
             // 事業対象者で「要支援１の額を超えてサービスを利用」の場合は、要支援２の限度額を使用
             int jotaiCode = ACCastUtilities.toInt(record.getData("JOTAI_CODE"), 0);
             int limitChangeFlg = ACCastUtilities.toInt(record.getData("LIMIT_CHANGE_FLAG"), 0);
-            if (limitChangeFlg == 2) {
-                if (QkanConstants.YOUKAIGODO_JIGYOTAISHO == jotaiCode) {
-                    jotaiCode = QkanConstants.YOUKAIGODO_YOUSHIEN2;
+            
+            // 2016/10/14 [Shinobu Hitaka] edit - begin 保険者の限度額を優先する。
+            //if (limitChangeFlg == 2) {
+            //    if (QkanConstants.YOUKAIGODO_JIGYOTAISHO == jotaiCode) {
+            //        jotaiCode = QkanConstants.YOUKAIGODO_YOUSHIEN2;
+            //    }
+            //}            
+            //limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(jotaiCode));
+            if (QkanConstants.YOUKAIGODO_JIGYOTAISHO == jotaiCode) {
+                // 保険者の限度額を取得する。
+                if (limitChangeFlg == 2) {
+                    // 事業対象者（要支援１超）
+                    limitRate = getInsurerLimitRate(dbm, record.getData("INSURER_ID").toString(), targetMonth, String.valueOf(QkanConstants.YOUKAIGODO_JIGYOTAISHO_OVER_LIMIT));
+                    if (limitRate <= 0) {
+                        // 保険者の設定がなければ「要支援２」の厚生労働省規定の区分支給限度額を取得する。
+                        limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(QkanConstants.YOUKAIGODO_YOUSHIEN2));
+                    }
+                } else {
+                    // 事業対象者
+                    limitRate = getInsurerLimitRate(dbm, record.getData("INSURER_ID").toString(), targetMonth, String.valueOf(QkanConstants.YOUKAIGODO_JIGYOTAISHO));
+                    if (limitRate <= 0) {
+                        // 保険者の設定がなければ「事業対象者」の厚生労働省規定の区分支給限度額を取得する。
+                        limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(QkanConstants.YOUKAIGODO_JIGYOTAISHO));
+                    }
                 }
-            }            
-            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(jotaiCode));
+            } else {
+                limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(jotaiCode));
+            }
+            // 2016/10/14 [Shinobu Hitaka] edit - end
+            
 // 2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
             if (limitRate > 0) {
                 record.setData("LIMIT_RATE", limitRate);
@@ -4291,6 +4315,9 @@ public class QkanCommon {
 			VRBindPathParser.set("301020", claimDataMap, VRBindPathParser.get("1801021", claimDataMap));
 			VRBindPathParser.set("301021", claimDataMap, VRBindPathParser.get("1801022", claimDataMap));
 			VRBindPathParser.set("301022", claimDataMap, VRBindPathParser.get("1801023", claimDataMap));
+			VRBindPathParser.set("301027", claimDataMap, VRBindPathParser.get("1801028", claimDataMap)); //add 2016.10.05
+			VRBindPathParser.set("301028", claimDataMap, VRBindPathParser.get("1801029", claimDataMap)); //add 2016.10.11
+			VRBindPathParser.set("301029", claimDataMap, VRBindPathParser.get("1801030", claimDataMap)); //add 2016.10.11
 		}
 	}
 	
@@ -4326,6 +4353,9 @@ public class QkanCommon {
 			VRBindPathParser.set("1801021", claimDataMap, VRBindPathParser.get("301020", claimDataMap));
 			VRBindPathParser.set("1801022", claimDataMap, VRBindPathParser.get("301021", claimDataMap));
 			VRBindPathParser.set("1801023", claimDataMap, VRBindPathParser.get("301022", claimDataMap));
+			VRBindPathParser.set("1801028", claimDataMap, VRBindPathParser.get("301027", claimDataMap)); //add 2016.10.05
+			VRBindPathParser.set("1801029", claimDataMap, VRBindPathParser.get("301028", claimDataMap)); //add 2016.10.11
+			VRBindPathParser.set("1801030", claimDataMap, VRBindPathParser.get("301029", claimDataMap)); //add 2016.10.11
 			
 			// 明細情報レコードのバインドパスを除く
 			claimDataMap.removeData("301001");
@@ -4350,9 +4380,63 @@ public class QkanCommon {
 			claimDataMap.removeData("301020");
 			claimDataMap.removeData("301021");
 			claimDataMap.removeData("301022");
+			claimDataMap.removeData("301027"); //add 2016.10.05
+			claimDataMap.removeData("301028"); //add 2016.10.11
+			claimDataMap.removeData("301029"); //add 2016.10.11
 		}
 	}
 // 2015/4/13 [H27.04改正対応] add - end
 	
+// 2016/10/14 [H27.04改正対応][Shinobu Hitaka] add - begin 総合事業独自対応
+    /**
+     * 保険者の支給限度額を取得する
+     * @param dbm
+     * @param insurerID     保険者番号
+     * @param targetDate    対象年月
+     * @param jotaiCode     介護度
+     * @throws Exception 処理例外
+     * @return 限度額
+     */
+    public static int getInsurerLimitRate(ACDBManager dbm, String insurerID, Date targetDate, String jotaiCode) throws Exception{
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(targetDate);
+        String ym = VRDateParser.format(cal, "yyyy/MM");
+
+        StringBuilder sb = new StringBuilder();
+
+        //対象年月の開始終了日を設定
+        String targetDateBegin = ym + "/01";
+        String targetDateEnd = ym + "/" + cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        //SQL作成
+        sb.append("SELECT");
+        sb.append(" LIMIT_RATE_VALUE");
+        sb.append(" FROM");
+        sb.append(" INSURER_LIMIT_RATE_DETAIL");
+        sb.append(" WHERE");
+        sb.append("     (INSURER_LIMIT_RATE_DETAIL.INSURER_ID ='" + insurerID + "')");
+        sb.append(" AND (INSURER_LIMIT_RATE_DETAIL.JOTAI_CODE = " + jotaiCode + ")");
+        sb.append(" AND (INSURER_LIMIT_RATE_DETAIL.LIMIT_RATE_HISTORY_ID = ");
+        sb.append(" (SELECT");
+        sb.append("  MAX(INSURER_LIMIT_RATE.LIMIT_RATE_HISTORY_ID)");
+        sb.append("  FROM");
+        sb.append("  INSURER_LIMIT_RATE");
+        sb.append("  WHERE");
+        sb.append("      (INSURER_LIMIT_RATE.INSURER_ID ='" + insurerID + "')");
+        sb.append("  AND (INSURER_LIMIT_RATE.LIMIT_RATE_VALID_START <='" + targetDateEnd + "')");
+        sb.append("  AND (INSURER_LIMIT_RATE.LIMIT_RATE_VALID_END >='" + targetDateBegin + "')");
+        sb.append(" ))");
+        
+        VRList limitList = dbm.executeQuery(sb.toString());
+        int limitRate = -1;
+        if (!(limitList == null || limitList.size() == 0)) {
+            limitRate = ACCastUtilities.toInt(VRBindPathParser.get(
+                    "LIMIT_RATE_VALUE", (VRMap) limitList.get(0)));
+        }
+        return limitRate;
+    }
+// 2016/10/14 [H27.04改正対応] add - end
+
 
 }

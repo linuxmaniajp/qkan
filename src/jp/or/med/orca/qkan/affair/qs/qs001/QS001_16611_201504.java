@@ -30,6 +30,8 @@ package jp.or.med.orca.qkan.affair.qs.qs001;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.event.ListSelectionEvent;
+
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACAffairInfo;
@@ -69,6 +71,7 @@ public class QS001_16611_201504 extends QS001_16611_201504Event {
         putRestrictProviderBindPath("‰^“®Ší‹@”\Œüã‘Ì§", "1660102", "1660103");
         putRestrictProviderBindPath("‰h—{‰ü‘P‘Ì§", "1660103", "1660104");
         putRestrictProviderBindPath("Œûo‹@”\Œüã‘Ì§", "1660104", "1660105");
+        putRestrictProviderBindPath("‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZ", "1660109", "1660111");
         putRestrictProviderBindPath("Ž–‹ÆŠ•]‰¿‰ÁŽZ‚Ì—L–³", "1660105", "1660106");
 
     }
@@ -277,6 +280,29 @@ public class QS001_16611_201504 extends QS001_16611_201504Event {
         // “úŠ„‚èƒ`ƒFƒbƒN‚Ì§Œä
         checkOnDayCheckState();
 
+        // ‰^“®Ší‹@”\Œüã‰ÁŽZE‰h—{‰ü‘P‰ÁŽZEŒûo‹@”\Œüã‰ÁŽZ‚Ì‘g‚Ý‡‚í‚¹ƒ`ƒFƒbƒN
+        if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰^“®Ší‹@”\Œüã‰ÁŽZ + ‰h—{‰ü‘P‰ÁŽZ + Œûo‹@”\Œüã‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZII
+        	getSentakutekiServiceRadio().setSelectedIndex(5);
+        } else if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰^“®Ší‹@”\Œüã‰ÁŽZ + ‰h—{‰ü‘P‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZI1
+        	getSentakutekiServiceRadio().setSelectedIndex(2);
+        } else if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰^“®Ší‹@”\Œüã‰ÁŽZ + Œûo‹@”\Œüã‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZI2
+        	getSentakutekiServiceRadio().setSelectedIndex(3);
+        } else if (getNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰h—{‰ü‘P‰ÁŽZ + Œûo‹@”\Œüã‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZI3
+        	getSentakutekiServiceRadio().setSelectedIndex(4);
+        } else {
+        	// ‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZF‚È‚µ
+        	getSentakutekiServiceRadio().setSelectedIndex(1);
+        }
+
         // Ž–‹ÆŠ‘Ì§‚Æ“¯Šú
         resetStateByRestrictBindPath();
 
@@ -329,4 +355,60 @@ public class QS001_16611_201504 extends QS001_16611_201504Event {
         checkOnDayCheckState();
 
     }
+    
+    /**
+     * ‰^“®Ší‹@”\Œüã‰ÁŽZ
+     */
+    protected void moveFunctionImprovementAddRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        // ‰æ–Êó‘Ô§Œä
+        checkState();
+
+    }
+
+    /**
+     * ‰h—{‰ü‘P‰ÁŽZ
+     */
+    protected void nourishmentImprovementAddRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        // ‰æ–Êó‘Ô§Œä
+        checkState();
+
+    }
+
+    /**
+     * Œûo‹@”\Œüã‰ÁŽZ
+     */
+    protected void mouthFunctionImprovementAddRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        // ‰æ–Êó‘Ô§Œä
+        checkState();
+
+    }
+
+    /**
+     * ‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZ
+     */
+    protected void sentakutekiServiceRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        int idx = getSentakutekiServiceRadio().getSelectedIndex();
+        // ‰æ–Êó‘Ô§Œä
+        checkState();
+        // ‘S‚Äu‚È‚µv‚©‚P‚Â‚¾‚¯‘I‘ð‚Ìê‡‚ÍA‘I‘ð‚µ‚½‚à‚Ì‚É–ß‚·
+        int selCnt = 0;
+        if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (selCnt == 1 || selCnt == 0) {
+        	getSentakutekiServiceRadio().setSelectedIndex(idx);
+        }
+
+    }
+
 }

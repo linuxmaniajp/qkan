@@ -94,44 +94,44 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
             // 認知症専門ケア加算
             switch (_1350134) {
             case 2:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6133");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6133");//2015.04
                 break;
             case 3:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6134");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6134");//2015.04
                 break;
             }
             
             // サービス提供体制加算
             switch (_1350135) {
             case 2:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
                 break;
             case 3:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//2015.04
                 break;
             case 4:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6102");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6102");//2015.04
                 break;
             case 5:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6103");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6103");//2015.04
                 break;
             }
             
             // 介護職員処遇改善を返却
             switch (_17) {
+            case 6:
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6132");//2017.04
+                break;
             case 5:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6131");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6131");//2015.04
                 break;
             case 2:
-                // 予防特定施設処遇改善加算I
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6128");
                 break;
             case 3:
-                // 予防特定施設処遇改善加算II
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6129");
                 break;
             case 4:
-                // 予防特定施設処遇改善加算III
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6130");
                 break;
             }
@@ -182,45 +182,44 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
         // 認知症専門ケア加算
         switch (_1350134) {
         case 2:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6133");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6133");//2015.04
             break;
         case 3:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6134");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6134");//2015.04
             break;
         }
         
         // サービス提供体制加算
         switch (_1350135) {
         case 2:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
             break;
         case 3:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//2015.04
             break;
         case 4:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6102");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6102");//2015.04
             break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6103");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6103");//2015.04
             break;
         }
         
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6132");//2017.04
+            break;
         case 5:
-        	// 予防特定施設処遇改善加算I
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6131");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6131");//2015.04
             break;
         case 2:
-            // 予防特定施設処遇改善加算II
             putSystemServiceCodeItem(sysSvcCdItems, "Z6128");
             break;
         case 3:
-            // 予防特定施設処遇改善加算III
             putSystemServiceCodeItem(sysSvcCdItems, "Z6129");
             break;
         case 4:
-            // 予防特定施設処遇改善加算IV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6130");
             break;
         }
@@ -364,7 +363,7 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
         int _1350132 = getIntValue(map, "1350132", 1);
 
         // 1350136 看護職員区分
-        int _1350136 = getIntValue(map, "1350136", 1);//TODO
+        int _1350136 = getIntValue(map, "1350136", 1);
         
         // 独自コード生成
         // ===========================================================================
@@ -456,6 +455,10 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
         // 1350114 通所介護-口腔機能向上加算　1-なし 2-あり
         int _1350114 = getIntValue(map, "1350114", 1);
 
+        // [CCCX:03692][Shinobu Hitaka] 2016/12/01 add - begin 個別選択対応
+        // 1660111 選択的サービス複数実施加算　1-なし 2-I1 3-I2 4-I3 5-II
+        int _1350145 = getIntValue(map, "1350145", 1);
+
         // 独自コード生成
         // ===========================================================================
         StringBuilder sb = new StringBuilder();
@@ -476,48 +479,68 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
 
         // 加算
         // ===========================================================================
-        
-        // [運動機能向上加算][栄養改善加算][口腔機能向上加算]の3桁の数値に変換
-        int addParam = (_1350112 * 100) + (_1350113 * 10) + _1350114;
-        
-        switch(addParam) {
-        // 運動器機能向上加算
-        case 211:
-            // 予防外部通所介護運動器加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1722");
-            break;
-        // 栄養改善加算
-        case 121:
-            // 予防外部通所介護栄養改善加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1723");
-            break;
-        // 口腔機能向上加算
-        case 112:
-            // 予防外部通所介護口腔機能加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1724");
-            break;
-        // 運動器機能向上加算 + 栄養改善加算
-        case 221:
-            // 予防外部通介複数サービス加算I１
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1725");
-            break;
-        // 運動器機能向上加算 + 口腔機能向上加算
-        case 212:
-            // 予防外部通介複数サービス加算I２
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1726");
-            break;
-        // 栄養改善加算 + 口腔機能向上加算
-        case 122:
-            // 予防外部通介複数サービス加算I３
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1727");
-            break;
-        // 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算
-        case 222:
-            // 予防外部通介複数サービス加算II
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1728");
-            break;
+    	// 選択的サービス複数実施加算　1-なし 2-I1 3-I2 4-I3 5-II
+        if (_1350145 > 1) {
+        	switch (_1350145) {
+            case 2:
+                // 複数サービス実施加算I１
+                putSystemServiceCodeItem(sysSvcCdItems, "Z1725");
+                break;
+            case 3:
+            	// 複数サービス実施加算I２
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1726");
+                break;
+            case 4:
+            	// 複数サービス実施加算I３
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1727");
+                break;
+            case 5:
+            	// 複数サービス実施加算II
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1728");
+                break;
+            }
+        } else {
+	        // [運動機能向上加算][栄養改善加算][口腔機能向上加算]の3桁の数値に変換
+	        int addParam = (_1350112 * 100) + (_1350113 * 10) + _1350114;
+	        
+	        switch(addParam) {
+	        // 運動器機能向上加算
+	        case 211:
+	            // 予防外部通所介護運動器加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1722");
+	            break;
+	        // 栄養改善加算
+	        case 121:
+	            // 予防外部通所介護栄養改善加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1723");
+	            break;
+	        // 口腔機能向上加算
+	        case 112:
+	            // 予防外部通所介護口腔機能加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1724");
+	            break;
+	        // 運動器機能向上加算 + 栄養改善加算
+	        case 221:
+	            // 予防外部通介複数サービス加算I１
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1725");
+	            break;
+	        // 運動器機能向上加算 + 口腔機能向上加算
+	        case 212:
+	            // 予防外部通介複数サービス加算I２
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1726");
+	            break;
+	        // 栄養改善加算 + 口腔機能向上加算
+	        case 122:
+	            // 予防外部通介複数サービス加算I３
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1727");
+	            break;
+	        // 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算
+	        case 222:
+	            // 予防外部通介複数サービス加算II
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1728");
+	            break;
+	        }
         }
-        
         
         return sysSvcCdItems;
     }
@@ -550,6 +573,10 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
         // 1350133 施設等の区分 1-病院又は診療所 2-介護老人保健施設
         int _1350133 = getIntValue(map, "1350133", 1);
 
+        // [CCCX:03692][Shinobu Hitaka] 2016/12/01 add - begin 個別選択対応
+        // 1350146 選択的サービス複数実施加算　1-なし 2-I1 3-I2 4-I3 5-II
+        int _1350146 = getIntValue(map, "1350146", 1);
+
         // 独自コード生成
         // ===========================================================================
         StringBuilder sb = new StringBuilder();
@@ -573,45 +600,67 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
 
         // 加算
         // ===========================================================================
-        // [運動機能向上加算][栄養改善加算][口腔機能向上加算]の3桁の数値に変換
-        int addParam = (_1350116 * 100) + (_1350117 * 10) + _1350118;
-        
-        switch(addParam) {
-        // 運動器機能向上加算
-        case 211:
-            // 予防外部通所介護運動器加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1821");
-            break;
-        // 栄養改善加算
-        case 121:
-            // 予防外部通所介護栄養改善加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1822");
-            break;
-        // 口腔機能向上加算
-        case 112:
-            // 予防外部通所介護口腔機能加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1823");
-            break;
-        // 運動器機能向上加算 + 栄養改善加算
-        case 221:
-            // 予防外部通介複数サービス加算I１
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1824");
-            break;
-        // 運動器機能向上加算 + 口腔機能向上加算
-        case 212:
-            // 予防外部通介複数サービス加算I２
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1825");
-            break;
-        // 栄養改善加算 + 口腔機能向上加算
-        case 122:
-            // 予防外部通介複数サービス加算I３
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1826");
-            break;
-        // 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算
-        case 222:
-            // 予防外部通介複数サービス加算II
-            putSystemServiceCodeItem(sysSvcCdItems, "Z1827");
-            break;
+    	// 選択的サービス複数実施加算　1-なし 2-I1 3-I2 4-I3 5-II
+        if (_1350146 > 1) {
+        	switch (_1350146) {
+            case 2:
+                // 複数サービス実施加算I１
+                putSystemServiceCodeItem(sysSvcCdItems, "Z1824");
+                break;
+            case 3:
+            	// 複数サービス実施加算I２
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1825");
+                break;
+            case 4:
+            	// 複数サービス実施加算I３
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1826");
+                break;
+            case 5:
+            	// 複数サービス実施加算II
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1827");
+                break;
+            }
+        } else {
+        	// [運動機能向上加算][栄養改善加算][口腔機能向上加算]の3桁の数値に変換
+	        int addParam = (_1350116 * 100) + (_1350117 * 10) + _1350118;
+	        
+	        switch(addParam) {
+	        // 運動器機能向上加算
+	        case 211:
+	            // 予防外部通所介護運動器加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1821");
+	            break;
+	        // 栄養改善加算
+	        case 121:
+	            // 予防外部通所介護栄養改善加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1822");
+	            break;
+	        // 口腔機能向上加算
+	        case 112:
+	            // 予防外部通所介護口腔機能加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1823");
+	            break;
+	        // 運動器機能向上加算 + 栄養改善加算
+	        case 221:
+	            // 予防外部通介複数サービス加算I１
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1824");
+	            break;
+	        // 運動器機能向上加算 + 口腔機能向上加算
+	        case 212:
+	            // 予防外部通介複数サービス加算I２
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1825");
+	            break;
+	        // 栄養改善加算 + 口腔機能向上加算
+	        case 122:
+	            // 予防外部通介複数サービス加算I３
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1826");
+	            break;
+	        // 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算
+	        case 222:
+	            // 予防外部通介複数サービス加算II
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z1827");
+	            break;
+	        }
         }
 
         return sysSvcCdItems;
@@ -824,6 +873,10 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
         // 1350144 通所型サービス-口腔機能向上加算　1-なし 2-あり
         int _1350144 = getIntValue(map, "1350144", 1);
 
+        // [CCCX:03692][Shinobu Hitaka] 2016/12/01 add - begin 個別選択対応
+        // 1350147 選択的サービス複数実施加算　1-なし 2-I1 3-I2 4-I3 5-II
+        int _1350147 = getIntValue(map, "1350147", 1);
+
         // 独自コード生成
         // ===========================================================================
         StringBuilder sb = new StringBuilder();
@@ -844,48 +897,68 @@ public class SC_13511_201504 extends Qkan10011_ServiceUnitGetter {
 
         // 加算
         // ===========================================================================
-        
-        // [運動機能向上加算][栄養改善加算][口腔機能向上加算]の3桁の数値に変換
-        int addParam = (_1350142 * 100) + (_1350143 * 10) + _1350144;
-        
-        switch(addParam) {
-        // 運動器機能向上加算
-        case 211:
-            // 予防外部通所サービス介護運動器加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2322");//TODO:コード値確認
-            break;
-        // 栄養改善加算
-        case 121:
-            // 予防外部通所サービス介護栄養改善加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2323");//TODO:コード値確認
-            break;
-        // 口腔機能向上加算
-        case 112:
-            // 予防外部通所サービス介護口腔機能加算
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2324");//TODO:コード値確認
-            break;
-        // 運動器機能向上加算 + 栄養改善加算
-        case 221:
-            // 予防外部通所サービス複数サービス加算I１
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2325");//TODO:コード値確認
-            break;
-        // 運動器機能向上加算 + 口腔機能向上加算
-        case 212:
-            // 予防外部通所サービス複数サービス加算I２
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2326");//TODO:コード値確認
-            break;
-        // 栄養改善加算 + 口腔機能向上加算
-        case 122:
-            // 予防外部通所サービス複数サービス加算I３
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2327");//TODO:コード値確認
-            break;
-        // 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算
-        case 222:
-            // 予防外部通所サービス複数サービス加算II
-            putSystemServiceCodeItem(sysSvcCdItems, "Z2328");//TODO:コード値確認
-            break;
+    	// 選択的サービス複数実施加算　1-なし 2-I1 3-I2 4-I3 5-II
+        if (_1350147 > 1) {
+        	switch (_1350147) {
+            case 2:
+                // 複数サービス実施加算I１
+                putSystemServiceCodeItem(sysSvcCdItems, "Z2325");
+                break;
+            case 3:
+            	// 複数サービス実施加算I２
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2326");
+                break;
+            case 4:
+            	// 複数サービス実施加算I３
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2327");
+                break;
+            case 5:
+            	// 複数サービス実施加算II
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2328");
+                break;
+            }
+        } else {
+	        // [運動機能向上加算][栄養改善加算][口腔機能向上加算]の3桁の数値に変換
+	        int addParam = (_1350142 * 100) + (_1350143 * 10) + _1350144;
+	        
+	        switch(addParam) {
+	        // 運動器機能向上加算
+	        case 211:
+	            // 予防外部通所サービス介護運動器加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2322");
+	            break;
+	        // 栄養改善加算
+	        case 121:
+	            // 予防外部通所サービス介護栄養改善加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2323");
+	            break;
+	        // 口腔機能向上加算
+	        case 112:
+	            // 予防外部通所サービス介護口腔機能加算
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2324");
+	            break;
+	        // 運動器機能向上加算 + 栄養改善加算
+	        case 221:
+	            // 予防外部通所サービス複数サービス加算I１
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2325");
+	            break;
+	        // 運動器機能向上加算 + 口腔機能向上加算
+	        case 212:
+	            // 予防外部通所サービス複数サービス加算I２
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2326");
+	            break;
+	        // 栄養改善加算 + 口腔機能向上加算
+	        case 122:
+	            // 予防外部通所サービス複数サービス加算I３
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2327");
+	            break;
+	        // 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算
+	        case 222:
+	            // 予防外部通所サービス複数サービス加算II
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z2328");
+	            break;
+	        }
         }
-        
         
         return sysSvcCdItems;
     }

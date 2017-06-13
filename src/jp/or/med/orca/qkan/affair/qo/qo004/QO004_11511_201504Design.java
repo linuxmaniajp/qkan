@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2016/01/27  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2017/02/24  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -58,7 +58,7 @@ import jp.nichicom.ac.sql.*;
 import jp.nichicom.ac.text.*;
 import jp.nichicom.ac.util.*;
 import jp.nichicom.ac.util.adapter.*;
-
+import jp.nichicom.vr.*;
 import jp.nichicom.vr.bind.*;
 import jp.nichicom.vr.bind.event.*;
 import jp.nichicom.vr.border.*;
@@ -86,6 +86,10 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
+
+  private JTabbedPane tab;
+
+  private ACPanel panel1;
 
   private ACPanel providerMainPanel;
 
@@ -235,6 +239,12 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
   private ACRadioButtonItem serviceAddProvisionStructuralRadioItem5;
 
+  private ACPanel panel2;
+
+  private ACPanel calculationDetails2;
+
+  private ACPanel providerSubPanel;
+
   private ACValueArrayRadioButtonGroup staffUpgradeRadioGroup;
 
   private ACLabelContainer staffUpgradeRadioGroupContainer;
@@ -251,7 +261,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
   private ACRadioButtonItem staffUpgradeRadioItem5;
 
-  private ACPanel providerSubPanel;
+  private ACRadioButtonItem staffUpgradeRadioItem6;
 
   private ACLabelContainer reduceRateContainer;
 
@@ -281,6 +291,38 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
       addMainGroup();
     }
     return mainGroup;
+
+  }
+
+  /**
+   * タブを取得します。
+   * @return タブ
+   */
+  public JTabbedPane getTab(){
+    if(tab==null){
+
+      tab = new JTabbedPane();
+
+      addTab();
+    }
+    return tab;
+
+  }
+
+  /**
+   * パネル１を取得します。
+   * @return パネル１
+   */
+  public ACPanel getPanel1(){
+    if(panel1==null){
+
+      panel1 = new ACPanel();
+
+      panel1.setFollowChildEnabled(true);
+
+      addPanel1();
+    }
+    return panel1;
 
   }
 
@@ -1698,6 +1740,65 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   }
 
   /**
+   * パネル2を取得します。
+   * @return パネル2
+   */
+  public ACPanel getPanel2(){
+    if(panel2==null){
+
+      panel2 = new ACPanel();
+
+      panel2.setFollowChildEnabled(true);
+
+      addPanel2();
+    }
+    return panel2;
+
+  }
+
+  /**
+   * 算定項目領域2を取得します。
+   * @return 算定項目領域2
+   */
+  public ACPanel getCalculationDetails2(){
+    if(calculationDetails2==null){
+
+      calculationDetails2 = new ACPanel();
+
+      calculationDetails2.setFollowChildEnabled(true);
+
+      calculationDetails2.setHgrid(200);
+
+      addCalculationDetails2();
+    }
+    return calculationDetails2;
+
+  }
+
+  /**
+   * 事業所サブパネルを取得します。
+   * @return 事業所サブパネル
+   */
+  public ACPanel getProviderSubPanel(){
+    if(providerSubPanel==null){
+
+      providerSubPanel = new ACPanel();
+
+      providerSubPanel.setFollowChildEnabled(true);
+
+      providerSubPanel.setHgap(0);
+
+      providerSubPanel.setLabelMargin(0);
+
+      providerSubPanel.setVgap(0);
+
+      addProviderSubPanel();
+    }
+    return providerSubPanel;
+
+  }
+
+  /**
    * 介護職員処遇改善加算を取得します。
    * @return 介護職員処遇改善加算
    */
@@ -1706,7 +1807,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioGroup = new ACValueArrayRadioButtonGroup();
 
-      getStaffUpgradeRadioGroupContainer().setText("介護職員処遇改善加算");
+      getStaffUpgradeRadioGroupContainer().setText("<html>介護職員処遇改善加算<br>（旧加算：～H29.3）</html>");
 
       staffUpgradeRadioGroup.setBindPath("4");
 
@@ -1716,7 +1817,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioGroup.setModel(getStaffUpgradeRadioGroupModel());
 
-      staffUpgradeRadioGroup.setValues(new int[]{1,5,2,3,4});
+      staffUpgradeRadioGroup.setValues(new int[]{1,6,5,2,3,4});
 
       addStaffUpgradeRadioGroup();
     }
@@ -1784,7 +1885,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem2.setGroup(getStaffUpgradeRadioGroup());
 
-      staffUpgradeRadioItem2.setConstraints(VRLayout.FLOW);
+      staffUpgradeRadioItem2.setConstraints(VRLayout.FLOW_RETURN);
 
       addStaffUpgradeRadioItem2();
     }
@@ -1801,7 +1902,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem3 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem3.setText("加算II");
+      staffUpgradeRadioItem3.setText("加算II（旧加算I）");
 
       staffUpgradeRadioItem3.setGroup(getStaffUpgradeRadioGroup());
 
@@ -1822,11 +1923,11 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem4 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem4.setText("加算III");
+      staffUpgradeRadioItem4.setText("加算III（旧加算II）");
 
       staffUpgradeRadioItem4.setGroup(getStaffUpgradeRadioGroup());
 
-      staffUpgradeRadioItem4.setConstraints(VRLayout.FLOW);
+      staffUpgradeRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
 
       addStaffUpgradeRadioItem4();
     }
@@ -1843,7 +1944,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem5 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem5.setText("加算IV");
+      staffUpgradeRadioItem5.setText("加算IV（旧加算III）");
 
       staffUpgradeRadioItem5.setGroup(getStaffUpgradeRadioGroup());
 
@@ -1856,25 +1957,23 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   }
 
   /**
-   * 事業所サブパネルを取得します。
-   * @return 事業所サブパネル
+   * 加算Vを取得します。
+   * @return 加算V
    */
-  public ACPanel getProviderSubPanel(){
-    if(providerSubPanel==null){
+  public ACRadioButtonItem getStaffUpgradeRadioItem6(){
+    if(staffUpgradeRadioItem6==null){
 
-      providerSubPanel = new ACPanel();
+      staffUpgradeRadioItem6 = new ACRadioButtonItem();
 
-      providerSubPanel.setFollowChildEnabled(true);
+      staffUpgradeRadioItem6.setText("加算V（旧加算IV）");
 
-      providerSubPanel.setHgap(0);
+      staffUpgradeRadioItem6.setGroup(getStaffUpgradeRadioGroup());
 
-      providerSubPanel.setLabelMargin(0);
+      staffUpgradeRadioItem6.setConstraints(VRLayout.FLOW);
 
-      providerSubPanel.setVgap(0);
-
-      addProviderSubPanel();
+      addStaffUpgradeRadioItem6();
     }
-    return providerSubPanel;
+    return staffUpgradeRadioItem6;
 
   }
 
@@ -1998,9 +2097,27 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
    */
   protected void addMainGroup(){
 
-    mainGroup.add(getProviderMainPanel(), VRLayout.NORTH);
+    mainGroup.add(getTab(), VRLayout.CLIENT);
 
-    mainGroup.add(getProviderSubPanel(), VRLayout.NORTH);
+  }
+
+  /**
+   * タブに内部項目を追加します。
+   */
+  protected void addTab(){
+
+    tab.addTab("1", getPanel1());
+
+    tab.addTab("2", getPanel2());
+
+  }
+
+  /**
+   * パネル１に内部項目を追加します。
+   */
+  protected void addPanel1(){
+
+    panel1.add(getProviderMainPanel(), VRLayout.NORTH);
 
   }
 
@@ -2034,8 +2151,6 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
     providerMainPanel.add(getBathingAssistanceSystemContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     providerMainPanel.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    providerMainPanel.add(getStaffUpgradeRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -2605,6 +2720,37 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   }
 
   /**
+   * パネル2に内部項目を追加します。
+   */
+  protected void addPanel2(){
+
+    panel2.add(getCalculationDetails2(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 算定項目領域2に内部項目を追加します。
+   */
+  protected void addCalculationDetails2(){
+
+    calculationDetails2.add(getProviderSubPanel(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 事業所サブパネルに内部項目を追加します。
+   */
+  protected void addProviderSubPanel(){
+
+    providerSubPanel.add(getStaffUpgradeRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    providerSubPanel.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE);
+
+    providerSubPanel.add(getShahukuReduce(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
    * 介護職員処遇改善加算に内部項目を追加します。
    */
   protected void addStaffUpgradeRadioGroup(){
@@ -2620,21 +2766,25 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem1());
 
-    getStaffUpgradeRadioItem2().setButtonIndex(5);
+    getStaffUpgradeRadioItem2().setButtonIndex(6);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem2());
 
-    getStaffUpgradeRadioItem3().setButtonIndex(2);
+    getStaffUpgradeRadioItem3().setButtonIndex(5);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem3());
 
-    getStaffUpgradeRadioItem4().setButtonIndex(3);
+    getStaffUpgradeRadioItem4().setButtonIndex(2);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem4());
 
-    getStaffUpgradeRadioItem5().setButtonIndex(4);
+    getStaffUpgradeRadioItem5().setButtonIndex(3);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem5());
+
+    getStaffUpgradeRadioItem6().setButtonIndex(4);
+
+    getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem6());
 
   }
 
@@ -2674,13 +2824,9 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   }
 
   /**
-   * 事業所サブパネルに内部項目を追加します。
+   * 加算Vに内部項目を追加します。
    */
-  protected void addProviderSubPanel(){
-
-    providerSubPanel.add(getReduceRateContainer(), VRLayout.FLOW_INSETLINE);
-
-    providerSubPanel.add(getShahukuReduce(), VRLayout.FLOW_RETURN);
+  protected void addStaffUpgradeRadioItem6(){
 
   }
 

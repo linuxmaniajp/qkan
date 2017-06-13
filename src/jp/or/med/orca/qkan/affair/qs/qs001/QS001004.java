@@ -128,12 +128,42 @@ public class QS001004 extends QS001004Event {
         // 自事業所一覧を取得し、事業所コンボに設定する。
         VRList providers = getDBManager().executeQuery(
                 getSQL_GET_MY_PROVIDER(null));
+        
+// 2016/9/6 [Yoichiro Kamei] add - begin 総合事業対応
+        //対象の事業所が設定されていればその事業所のみ選択可とする
+        if (!getTargetProviderIds().isEmpty()) {
+        	VRList tmp = new VRArrayList();
+        	for (int index = 0; index < providers.size(); index++) {
+        		VRMap row = (VRMap) providers.get(index);
+        		String provierId = ACCastUtilities.toString(row.get("PROVIDER_ID"));
+        		if (getTargetProviderIds().contains(provierId)) {
+        			tmp.add(row);
+        		}
+        	}
+        	if (!tmp.isEmpty()) {
+        		providers = tmp;
+        	}
+        }
+// 2016/9/6 [Yoichiro Kamei] add - end
         getProvider().setModel(providers);
-        // ログイン事業所をデフォルト選択する。
+        
+// 2016/9/6 [Yoichiro Kamei] mod - begin 総合事業対応
+//        // ログイン事業所をデフォルト選択する。
+//        getProvider().setSelectedIndex(
+//                ACBindUtilities.getMatchIndexFromValue(providers,
+//                        "PROVIDER_ID", QkanSystemInformation.getInstance()
+//                                .getLoginProviderID()));
+        String iniProviderId = QkanSystemInformation.getInstance()
+        		.getLoginProviderID();
+        if (!getTargetProviderIds().isEmpty()) {
+        	iniProviderId = (String) getTargetProviderIds().get(0);
+        }
         getProvider().setSelectedIndex(
-                ACBindUtilities.getMatchIndexFromValue(providers,
-                        "PROVIDER_ID", QkanSystemInformation.getInstance()
-                                .getLoginProviderID()));
+           ACBindUtilities.getMatchIndexFromValue(providers,
+              "PROVIDER_ID", iniProviderId));
+// 2016/9/6 [Yoichiro Kamei] mod - end
+        
+
         // ※計画単位数列のエディタをテキストフィールドとみなし、以下のプロパティ設定を行う。
         Component unitEditor = getPlanUnitTableUnit().getCellEditorComponent();
         if (unitEditor instanceof ACTextField) {
@@ -182,6 +212,23 @@ public class QS001004 extends QS001004Event {
             VRMap planUnit = (VRMap) obj;
             VRArrayList units = new VRArrayList();
             String[] pathes = CareServiceCommon.getPlanUnitBindPathes();
+// 2016/9/6 [Yoichiro Kamei] add - begin 総合事業対応
+            //対象のサービス種類が設定されていればそのサービス種類のみ設定可とする
+            VRList kindList = getTargetServiceCodeKinds();
+            if (!kindList.isEmpty()) {
+            	VRList tmp = new VRArrayList();
+            	for (int index = 0; index < kindList.size(); index++) {
+            		String kind = ACCastUtilities.toString(kindList.get(index));
+            		String path = CareServiceCommon.getPlanUnitBindPath(kind);
+            		if (!"".equals(path)) {
+            			tmp.add(path);
+            		}
+            	}
+            	if (!tmp.isEmpty()) {
+            		pathes = (String[]) tmp.toArray(new String[0]);
+            	}
+            }
+// 2016/9/6 [Yoichiro Kamei] add - end
             int end = pathes.length;
         	// [H28.4法改正対応][Shinobu Hitaka] 2016/02/02 add - begin
             // 78:地域密着型通所介護は対象年月がH28.4以降の場合とする

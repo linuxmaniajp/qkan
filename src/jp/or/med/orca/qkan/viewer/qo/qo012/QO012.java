@@ -684,6 +684,7 @@ public class QO012 extends QO012Event {
         //[H27.4 改正対応][Shinobu Hitaka] 2015/02 add 68,69,79 追加
         //[H28.4 改正対応][Shinobu Hitaka] 2016/01 add 78 追加
         //[H27.4 改正対応][Shinobu Hitaka] 2016/07 add A1,A5 追加
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/09 add A2-A4,A6-AE 追加
         String[] csvDataTableSchema = new String[] {
                 "YEAR_AND_MONTH", "INSURED_ID", "NAME", "CARE_LEVEL",
                 "11", "12", "13", "14", "15", "16", "17", "21", "22", "23",
@@ -691,7 +692,8 @@ public class QO012 extends QO012Event {
                 "54", "71", "72", "76", "77", "79", "73", "68", "78",
                 "43", "61", "62", "63", "64", "65", "66", "67", "24", "25",
                 "26", "34", "35", "46", "74", "75", "69", "37", "39",
-                "A1", "A5",
+                "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9",
+                "AA", "AB", "AC", "AD", "AE",
                 "UNIT_TOTAL"
                 };
 
@@ -2016,6 +2018,21 @@ public class QO012 extends QO012Event {
         serviceCodeSet.add("A1"); //訪問型サービス
         serviceCodeSet.add("A5"); //通所型サービス
         //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 add end
+        
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/09/26 add begin 総合事業追加
+        serviceCodeSet.add("A2"); //訪問型独自サービス
+        serviceCodeSet.add("A3"); //
+        serviceCodeSet.add("A4"); //
+        serviceCodeSet.add("A6"); //
+        serviceCodeSet.add("A7"); //
+        serviceCodeSet.add("A8"); //
+        serviceCodeSet.add("A9"); //
+        serviceCodeSet.add("AA"); //
+        serviceCodeSet.add("AB"); //
+        serviceCodeSet.add("AC"); //
+        serviceCodeSet.add("AD"); //
+        serviceCodeSet.add("AE"); //
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/09/26 add end
     }
 
     private Integer getServiceCount(List list) {

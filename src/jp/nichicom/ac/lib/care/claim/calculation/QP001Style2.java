@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -275,6 +276,20 @@ public class QP001Style2 extends QP001StyleAbstract{
 	                String key = String.valueOf(detail.get_301021()) + "-"
 	                        + String.valueOf(detail.get_301022()) + "-"
 	                        + String.valueOf(3);
+	                
+	                // 2016/10/20 [Yoichiro Kamei] add - begin ‘‡–‹Æ“Æ©‘Î‰
+	                // “Æ©‚Ìê‡‚Íkey‚Ìæ“ª‚É•ÛŒ¯Ò”Ô†‚ğ•t‚¯‚é
+	                if (QkanSjServiceCodeManager.dokujiKinds.contains(detail.get_301007())) {
+		        		// •ÛŒ¯Ò”Ô†
+		        		String insurerId;
+		        		if (detail instanceof QP001RecordDetailJushotiTokurei) {
+		        			insurerId = ((QP001RecordDetailJushotiTokurei) detail).get_1801018();
+		        		} else {
+		        			insurerId = ACCastUtilities.toString(detail.get_301005());
+		        		}
+		        		key = insurerId + "-" + key;
+	                }
+	                // 2016/10/20 [Yoichiro Kamei] add - end
 	                removeKeys.add(key);
 					it.remove();
 				}

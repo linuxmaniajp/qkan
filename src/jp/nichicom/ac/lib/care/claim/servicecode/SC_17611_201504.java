@@ -128,6 +128,9 @@ public class SC_17611_201504 extends Qkan10011_ServiceUnitGetter {
 
             // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
             switch (_17) {
+            case 6:
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6114");//2017.04
+                break;
             case 5:
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6112");//2015.04
                 break;
@@ -299,6 +302,9 @@ public class SC_17611_201504 extends Qkan10011_ServiceUnitGetter {
         
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6114");//2017.04
+            break;
         case 5:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6112");//2015.04
             break;

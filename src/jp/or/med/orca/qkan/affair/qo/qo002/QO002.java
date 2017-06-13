@@ -36,6 +36,7 @@ import java.util.Iterator;
 import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.bind.ACBindUtilities;
+import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -65,6 +66,11 @@ public class QO002 extends QO002Event {
 	 * 編集ボタンが押されたかどうかの判定
 	 */
 	private boolean insurerLimitRateEditHantei;
+
+	/**
+	 * 編集ボタンが押されたかどうかの判定 [総合事業対応][Keiko Yano] 2016/08 add
+	 */
+	private boolean unitPriceEditHantei;
 
 	/**
 	 * 戻るボタンが押されたかどうか
@@ -107,6 +113,7 @@ public class QO002 extends QO002Event {
         
 		// 編集ボタン判定の初期化
 		insurerLimitRateEditHantei = false;
+		unitPriceEditHantei = false;
 		
 		//戻るボタンの判定の初期化
 		canBackBtnHantei=false;
@@ -149,7 +156,10 @@ public class QO002 extends QO002Event {
 		setAffairTitle("QO002", "0", getButtons());
 
 		// 画面の状態を変更する。
-		setState_INSURER_LIMIT_RATE_ENABLE_FALSE();
+		// [総合事業対応][Keiko Yano] 2016/08 edit begin 支給限度は常に表示する
+//		setState_INSURER_LIMIT_RATE_ENABLE_FALSE();
+		setState_INSURER_LIMIT_RATE_ENABLE_TRUE();
+		// [総合事業対応][Keiko Yano] 2016/08 edit end
 		// 業務ボタンのキャプションを変更する。
 		// PROCESS_MODEが、共通定数の「PROCESS_MODE_INSERT(4)｣だった場合
 		if (getPROCESS_MODE().equals(
@@ -178,16 +188,39 @@ public class QO002 extends QO002Event {
 		// テーブルモデルを下記の画面のテーブルに設定する。
 		ACTableModelAdapter model = new ACTableModelAdapter();
 
+		// [総合事業対応][Keiko Yano] 2016/08 edit begin 事業対象者の追加
+//		model
+//				.setColumns(new String[] { "12", "13", "11", "21", "22", "23",
+//						"24", "25", "LIMIT_RATE_VALID_START",
+//						"LIMIT_RATE_VALID_END", });
 		model
-				.setColumns(new String[] { "12", "13", "11", "21", "22", "23",
-						"24", "25", "LIMIT_RATE_VALID_START",
-						"LIMIT_RATE_VALID_END", });
+				.setColumns(new String[] { "LIMIT_RATE_VALID_START",
+						"LIMIT_RATE_VALID_END", "6", "61", });
+		// [総合事業対応][Keiko Yano] 2016/08 edit end
 
 		setInsurerLimitRateTableModel(model);
 
 		// ・保険支給限度額情報テーブル（insurerLimitRateTable)
 		// テーブルモデル：insurerLimitRateTableModel
 		getInsurerLimitRateTable().setModel(getInsurerLimitRateTableModel());
+
+		// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+		// 地域区分コンボの項目を設定する。
+		VRList list = QkanCommon.getArrayFromMasterCode(153, "UNIT_PRICE_TYPE");
+		getUnitPriceType().setModel(list);
+		
+		// テーブルモデルを下記の画面のテーブルに設定する。
+		ACTableModelAdapter model_unit = new ACTableModelAdapter();
+
+		model_unit.setColumns(new String[] { "UNIT_PRICE_VALID_START", "UNIT_PRICE_VALID_END", "UNIT_PRICE_TYPE_NAME" });
+
+		setUnitPriceTableModel(model_unit);
+
+		// ・保険者単位数単価情報テーブル（unitPriceTable)
+		// テーブルモデル：unitPriceTableModel
+		getUnitPriceTable().setModel(getUnitPriceTableModel());
+		// [総合事業対応][Keiko Yano] 2016/08 add end
+
 		// DBよりレコードを取得し、画面に展開する。
 		doFind();
 
@@ -217,18 +250,24 @@ public class QO002 extends QO002Event {
 				switch (msgID) {
 				case ACMessageBox.RESULT_OK:
 					// ｢登録して戻る｣押下時
-					// 保険者全情報入力チェックを行う。
-					if (getInsurerLimitRateTableChangeFlg() == 1) {
-						if (!doValidCheck()) {
-							canBackBtnHantei=false;
-							return false;
-						}
-					} else {
-						if (!doValidInsurerInfoCheck()) {
-							canBackBtnHantei=false;
-							return false;
-						}
+					// [総合事業対応][Keiko Yano] 2016/08 edit begin 支給限度額は一覧に追加した時点で入力チェックされているのでこの処理は必要なし
+//					// 保険者全情報入力チェックを行う。
+//					if (getInsurerLimitRateTableChangeFlg() == 1) {
+//						if (!doValidCheck()) {
+//							canBackBtnHantei=false;
+//							return false;
+//						}
+//					} else {
+//						if (!doValidInsurerInfoCheck()) {
+//							canBackBtnHantei=false;
+//							return false;
+//						}
+//					}
+					if (!doValidInsurerInfoCheck()) {
+						canBackBtnHantei=false;
+						return false;
 					}
+					// [総合事業対応][Keiko Yano] 2016/08 edit end
 
 					// 登録処理を行う。
 					if(!doSave()){
@@ -317,8 +356,11 @@ public class QO002 extends QO002Event {
 			}
 		} else {
 			// 変更されていなかった場合
-			// insurerLimitRateTableChangeFlgの値をチェックする。
-			if (getInsurerLimitRateTableChangeFlg() == 1) {
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//			// insurerLimitRateTableChangeFlgの値をチェックする。
+//			if (getInsurerLimitRateTableChangeFlg() == 1) {
+			if (getInsurerLimitRateTableChangeFlg() == 1 || getUnitPriceTableChangeFlg() == 1) {
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
 				// 値が1（変更あり）だった場合
 				// 更新確認メッセージを表示する。※メッセージID = WARNING_OF_UPDATE_ON_MODIFIED
 				int msgID = QkanMessageList.getInstance()
@@ -381,9 +423,16 @@ public class QO002 extends QO002Event {
 		// ※スナップショットチェック
 		// スナップショットの更新チェックを行う。
 		if (!getSnapshot().isModified()) {
-			// 更新されていない場合
-			// システムを終了する。
-			return true;
+//			// 更新されていない場合
+//			// システムを終了する。
+//			return true;
+			// [総合事業対応][Keiko Yano] 2016/09 edit begin
+			// 変更されていなかった場合
+			if (getInsurerLimitRateTableChangeFlg() == 0 && getUnitPriceTableChangeFlg() == 0) {
+				// システムを終了する。
+				return true;
+			}
+			// [総合事業対応][Keiko Yano] 2016/09 edit end
 		}
 		// 更新されている場合
 		// 処理を継続する。
@@ -493,6 +542,9 @@ public class QO002 extends QO002Event {
 			throws Exception {
 		// 入力された支給限度額をテーブルに追加する処理
 		// 入力チェックを行う。
+		// [総合事業対応][Keiko Yano] 2016/09 add begin
+		insurerLimitRateEditHantei = false;
+		// [総合事業対応][Keiko Yano] 2016/09 add end
 		if (doValidLimitRateCheck()) {
 			setInsurereId(getInsurerId().getText());
 
@@ -511,8 +563,11 @@ public class QO002 extends QO002Event {
 
 			// テーブルのソートを有効にするため、
 			// 指定キーのデータ型をStringからIntegerに変換する。
-			final String[] Keys = new String[] { "11", "12", "13", "21", "22",
-					"23", "24", "25" };
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 事業対象者
+//			final String[] Keys = new String[] { "11", "12", "13", "21", "22",
+//					"23", "24", "25" };
+			final String[] Keys = new String[] { "6", "61" };
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
 			QkanCommon.convertValueFromStringToInteger(insurerLimitInfoMap,
 					Keys);
 
@@ -520,10 +575,22 @@ public class QO002 extends QO002Event {
 			// getInsurerLimitRateTableModel().setAdaptee(
 			// getInsurerLimitRateList());
 
-			// insurerLimitRateList内のレコードに下記のKEY/VALUEを設定する。
-			// KEY：LIMIT_RATE_HISTORY_ID VALUE：リスト内のインデックス
-			// getInsurerLimitRateList().setData("LIMIT_RATE_HISTORY_ID",getInsurerLimitRateList().getData());
-			getInsurerLimitRateTable().setSelectedSortedLastRow();
+			// [総合事業対応][Keiko Yano] 2016/08 add begin 並び順を変更する処理追加
+			// 追加行のインデックスを退避(最終行のインデックス)
+			int selectedRow = getInsurerLimitRateList().size() - 1;
+
+			// 以下の条件で支給限度額情報テーブルのソートを行う。
+			// LIMIT_RATE_VALID_START（有効期限開始）　DESC
+			getInsurerLimitRateTable().sort("LIMIT_RATE_VALID_START DESC");
+
+			// 退避していたインデックスの行を選択
+			getInsurerLimitRateTable().setSelectedModelRow(selectedRow);
+			// [総合事業対応][Keiko Yano] 2016/08 add end
+
+//			// insurerLimitRateList内のレコードに下記のKEY/VALUEを設定する。
+//			// KEY：LIMIT_RATE_HISTORY_ID VALUE：リスト内のインデックス
+//			// getInsurerLimitRateList().setData("LIMIT_RATE_HISTORY_ID",getInsurerLimitRateList().getData());
+//			getInsurerLimitRateTable().setSelectedSortedLastRow();
 			// insurerLimitRateTableChangeFlgに1（変更あり）を代入する。
 			setInsurerLimitRateTableChangeFlg(1);
 			// 画面状態を変更する。（削除、編集ボタンをEnable制御し、押下可能にする）
@@ -548,6 +615,11 @@ public class QO002 extends QO002Event {
 			insurerLimitRateEditHantei = true;
 			if (doValidLimitRateCheck()) {
 
+				// [総合事業対応][Keiko Yano] 2016/08 add begin 並び順を変更する処理追加
+				// 選択行のインデックスを退避
+				int selectedRow = getInsurerLimitRateTable().getSelectedModelRow();
+				// [総合事業対応][Keiko Yano] 2016/08 add end
+
 				// 入力されたデータを取得する。
 				// applySource( insurerLimitRateInfo);
 				VRMap insurerLimitInfoMap = new VRHashMap();
@@ -563,13 +635,25 @@ public class QO002 extends QO002Event {
 
 				// テーブルのソートを有効にするため、
 				// 指定キーのデータ型をStringからIntegerに変換する。
-				final String[] Keys = new String[] { "11", "12", "13", "21",
-						"22", "23", "24", "25" };
+				// [総合事業対応][Keiko Yano] 2016/08 edit begin 事業対象者
+//				final String[] Keys = new String[] { "11", "12", "13", "21",
+//						"22", "23", "24", "25" };
+				final String[] Keys = new String[] { "6", "61" };
+				// [総合事業対応][Keiko Yano] 2016/08 edit end
 				QkanCommon.convertValueFromStringToInteger(insurerLimitInfoMap,
 						Keys);
 
 				getInsurerLimitRateTable().revalidate();
 				getInsurerLimitRateTable().repaint();
+
+				// [総合事業対応][Keiko Yano] 2016/08 add begin 並び順を変更する処理追加
+				// 以下の条件で支給限度額情報テーブルのソートを行う。
+				// LIMIT_RATE_VALID_START（有効期限開始）　DESC
+				getInsurerLimitRateTable().sort("LIMIT_RATE_VALID_START DESC");
+
+				// 退避していたインデックスの行を選択
+				getInsurerLimitRateTable().setSelectedModelRow(selectedRow);
+				// [総合事業対応][Keiko Yano] 2016/08 add end
 
 				// insurerLimitRateTableChangeFlgに1（変更あり）を代入する。
 				setInsurerLimitRateTableChangeFlg(1);
@@ -699,9 +783,16 @@ public class QO002 extends QO002Event {
 		// 保険者情報を登録する処理
 		// 変更チェックを行う。※スナップショット
 		// 変更チェック(破棄する可能性のある情報)
-		if (getSnapShotPeriod().isModified()) {
+		// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//		if (getSnapShotPeriod().isModified()) {
+		if (getSnapShotPeriod().isModified() || 
+			getSnapShotUnit().isModified()) {
+		// [総合事業対応][Keiko Yano] 2016/08 edit end
 			// メッセージ表示
-			String msgParam = "支給限度額履歴情報";
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//			String msgParam = "支給限度額履歴情報";
+			String msgParam = "支給限度額履歴情報もしくは単位数単価履歴情報";
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
 			switch (QkanMessageList.getInstance()
 					.WARNING_OF_CANCELLATION_UNSETTLED_DATA(msgParam)) {
 			// 「OK」なら破棄
@@ -726,6 +817,9 @@ public class QO002 extends QO002Event {
 							.toString(QkanConstants.PROCESS_MODE_UPDATE));
 					// insurerLimitRateChangeFlgの値に0（変更なし）を代入する。
 					setInsurerLimitRateTableChangeFlg(0);
+					// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+					setUnitPriceTableChangeFlg(0);
+					// [総合事業対応][Keiko Yano] 2016/08 add end
 					// 登録完了メッセージを表示する。※メッセージID = INSERT_SUCCESSED
 					QkanMessageList.getInstance().INSERT_SUCCESSED();
 					// 画面状態を変更する。
@@ -752,6 +846,9 @@ public class QO002 extends QO002Event {
 								.toString(QkanConstants.PROCESS_MODE_UPDATE));
 						// insurerLimitRateChangeFlgの値に0（変更なし）を代入する。
 						setInsurerLimitRateTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+						setUnitPriceTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add end
 						// 登録完了メッセージを表示する。※メッセージID = INSERT_SUCCESSED
 						QkanMessageList.getInstance().INSERT_SUCCESSED();
 						// 画面状態を変更する。
@@ -773,6 +870,9 @@ public class QO002 extends QO002Event {
 								.toString(QkanConstants.PROCESS_MODE_UPDATE));
 						// insurerLimitRateChangeFlgの値に0（変更なし）を代入する。
 						setInsurerLimitRateTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+						setUnitPriceTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add end
 						// 登録完了メッセージを表示する。※メッセージID = INSERT_SUCCESSED
 						QkanMessageList.getInstance().INSERT_SUCCESSED();
 						// 画面状態を変更する。
@@ -798,9 +898,16 @@ public class QO002 extends QO002Event {
 	protected void updateActionPerformed(ActionEvent e) throws Exception {
 		// 保険者情報を更新する処理
 		// 変更チェックを行う。※スナップショット
-		if (getSnapShotPeriod().isModified()) {
+		// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//		if (getSnapShotPeriod().isModified()) {
+		if (getSnapShotPeriod().isModified() || 
+			getSnapShotUnit().isModified()) {
+		// [総合事業対応][Keiko Yano] 2016/08 edit end
 			// メッセージ表示
-			String msgParam = "支給限度額履歴情報";
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//			String msgParam = "支給限度額履歴情報";
+			String msgParam = "支給限度額履歴情報もしくは単位数単価履歴情報";
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
 			switch (QkanMessageList.getInstance()
 					.WARNING_OF_CANCELLATION_UNSETTLED_DATA(msgParam)) {
 			// 「OK」なら破棄
@@ -819,6 +926,9 @@ public class QO002 extends QO002Event {
 				if (doSave()) {
 					// insurerLimitRateChangeFlgの値に0（変更なし）を代入する。
 					setInsurerLimitRateTableChangeFlg(0);
+					// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+					setUnitPriceTableChangeFlg(0);
+					// [総合事業対応][Keiko Yano] 2016/08 add end
 					// 更新完了メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
 					QkanMessageList.getInstance().UPDATE_SUCCESSED();
 					// DBよりレコードを取得し、画面に展開する。
@@ -838,6 +948,9 @@ public class QO002 extends QO002Event {
 					if (doSave()) {
 						// insurerLimitRateChangeFlgの値に0（変更なし）を代入する。
 						setInsurerLimitRateTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+						setUnitPriceTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add end
 						// 更新完了メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
 						QkanMessageList.getInstance().UPDATE_SUCCESSED();
 						// DBよりレコードを取得し、画面に展開する。
@@ -852,6 +965,9 @@ public class QO002 extends QO002Event {
 					if (doSave()) {
 						// insurerLimitRateChangeFlgの値に0（変更なし）を代入する。
 						setInsurerLimitRateTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+						setUnitPriceTableChangeFlg(0);
+						// [総合事業対応][Keiko Yano] 2016/08 add end
 						// 更新完了メッセージを表示する。※メッセージID = UPDATE_SUCCESSED
 						QkanMessageList.getInstance().UPDATE_SUCCESSED();
 						// DBよりレコードを取得し、画面に展開する。
@@ -896,7 +1012,11 @@ public class QO002 extends QO002Event {
 			// 変更がなかった場合
 			// insurerLimitRateTableChangeFlgの値をチェックする。
 			// 値が1（変更あり）だった場合
-			if (getInsurerLimitRateTableChangeFlg() == 1) {
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//			if (getInsurerLimitRateTableChangeFlg() == 1) {
+			if (getInsurerLimitRateTableChangeFlg() == 1 || getUnitPriceTableChangeFlg() == 1) {
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
+
 				// 新規登録モード遷移確認メッセージを表示する。
 				int msgID = QkanMessageList.getInstance()
 						.WARNING_OF_CLEAR_ON_MODIFIED();
@@ -962,7 +1082,11 @@ public class QO002 extends QO002Event {
 			// 変更がなかった場合
 			// insurerLimitRateTableChangeFlgの値をチェックする。
 			// 値が1（変更あり）だった場合
-			if (getInsurerLimitRateTableChangeFlg() == 1) {
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+//			if (getInsurerLimitRateTableChangeFlg() == 1) {
+			if (getInsurerLimitRateTableChangeFlg() == 1 || getUnitPriceTableChangeFlg() == 1) {
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
+
 				// 確認メッセージを表示する ※メッセージID = WARNING_OF_CLEAR_ON_MODIFIED
 				int msgID = QkanMessageList.getInstance()
 						.WARNING_OF_CLEAR_ON_MODIFIED();
@@ -977,6 +1101,247 @@ public class QO002 extends QO002Event {
 			}
 		}
 
+	}
+
+	/**
+	 * 「単位数単価表示」イベントです。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void unitPriceTypeActionPerformed(ActionEvent e)
+			throws Exception {
+		
+		// 選択された地域区分により各単位数単価コンボを設定する。
+		VRMap map = (VRMap) getUnitPriceType().getSelectedModelItem();
+		setRegulerAreaUnitPrice(map);
+		
+	}
+
+	/**
+	 * 「単位数単価対象レコードを表示」イベントです。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void unitPriceTableSelectionChanged(ListSelectionEvent e)
+			throws Exception {
+		// テーブル内が選択されていないとき
+		if (!getUnitPriceTable().isSelected()) {
+//			// 編集・削除ボタンを押下付加にする
+			setState_NOT_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE();
+		}
+
+		// 選択レコードの単位数単価情報を表示する。
+		// 選択されているレコードを｢単位数単価入力領域｢unitPriceSetPanel｣のソースとして設定する。
+		// setSource(unitPriceTable, 選択レコード);
+		if (getUnitPriceTable().getSelectedRow() != -1) {
+			getUnitPriceSetPanel().setSource(
+					(VRMap) getUnitPriceTable()
+							.getSelectedModelRowValue());
+			// 画面に展開する。
+			// bindSource(unitPricePanel);
+			getUnitPriceSetPanel().bindSource();
+
+			// 編集・削除ボタンを押下可能にする
+			setState_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE();
+
+			// スナップショット
+			getSnapShotUnit().snapshot();
+		}
+	}
+
+	/**
+	 * 「単位数単価追加処理」イベントです。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void unitPriceInsertButtonActionPerformed(ActionEvent e)
+			throws Exception {
+		// 入力された単位数単価をテーブルに追加する処理
+		// 入力チェックを行う。
+		// [総合事業対応][Keiko Yano] 2016/09 add begin
+		unitPriceEditHantei = false;
+		// [総合事業対応][Keiko Yano] 2016/09 add end
+		if (doValidUnitPriceCheck()) {
+			setInsurereId(getInsurerId().getText());
+
+			// 空のHashMapを生成し、｢単位数単価設定領域(unitPriceSetInfos)｣にソースとして設定する。
+			VRMap unitPriceInfoMap = new VRHashMap();
+			getUnitPriceSetInfos().setSource(unitPriceInfoMap);
+
+			// 入力されたデータをソースに流し込み、データを取得する。
+			getUnitPriceSetInfos().applySource();
+			unitPriceInfoMap.setData("UNIT_PRICE_HISTORY_ID", Integer
+					.toString(getUnitPriceTable().getRowCount() + 1));
+			unitPriceInfoMap.setData("INSURER_ID", getInsurereId());
+
+			// テーブル表示用に編集
+			unitPriceInfoMap = toUnitPriceTableList(unitPriceInfoMap);
+			
+			getUnitPriceList().add(unitPriceInfoMap);
+			
+			// 追加行のインデックスを退避(最終行のインデックス)
+			int selectedRow = getUnitPriceList().size() - 1;
+
+			// 以下の条件で単位数単価情報テーブルのソートを行う。
+			getUnitPriceTable().sort("UNIT_PRICE_VALID_START DESC");
+
+			// 退避していたインデックスの行を選択
+			getUnitPriceTable().setSelectedModelRow(selectedRow);
+
+			// insurerLimitRateTableChangeFlgに1（変更あり）を代入する。
+			setUnitPriceTableChangeFlg(1);
+			// 画面状態を変更する。（削除、編集ボタンをEnable制御し、押下可能にする）
+			setState_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE();
+		}
+	}
+
+
+	/**
+	 * 「単位数単価編集処理」イベントです。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void unitPriceEditButtonActionPerformed(ActionEvent e)
+			throws Exception {
+		// テーブルが選択されているとき
+		if (getUnitPriceTable().isSelected()) {
+			// 選択レコードを入力された単位数単価で更新する処理。
+			// 入力チェックを行う。
+			unitPriceEditHantei = true;
+			if (doValidUnitPriceCheck()) {
+
+				// 選択行のインデックスを退避
+				int selectedRow = getUnitPriceTable().getSelectedModelRow();
+
+				// 入力されたデータを取得する。
+				VRMap unitPriceInfoMap = new VRHashMap();
+				getUnitPriceSetInfos().setSource(unitPriceInfoMap);
+				getUnitPriceSetInfos().applySource();
+
+				// テーブル表示用に編集
+				unitPriceInfoMap = toUnitPriceTableList(unitPriceInfoMap);
+				
+
+				// テーブルを再描写する。
+				unitPriceInfoMap.setData("INSURER_ID", getInsurereId());
+
+				getUnitPriceList().setData(
+						getUnitPriceTable().getSelectedModelRow(),
+						unitPriceInfoMap);
+
+				getUnitPriceTable().revalidate();
+				getUnitPriceTable().repaint();
+
+				// 以下の条件で単位数単価情報テーブルのソートを行う。
+				// UNIT_PRICE_VALID_START（有効期限開始）　DESC
+				getUnitPriceTable().sort("UNIT_PRICE_VALID_START DESC");
+
+				// 退避していたインデックスの行を選択
+				getUnitPriceTable().setSelectedModelRow(selectedRow);
+
+				// unitPriceTableChangeFlgに1（変更あり）を代入する。
+				setUnitPriceTableChangeFlg(1);
+
+				// スナップショットの撮影
+				getSnapShotUnit().snapshot();
+
+			}
+		}		
+	}
+
+	/**
+	 * 「単位数単価削除処理」イベントです。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void unitPriceDeleteButtonActionPerformed(ActionEvent e)
+			throws Exception {
+
+		// テーブルが選択されているか
+		if (getUnitPriceTable().isSelected()) {
+			// 選択レコードを削除する処理
+			// 削除確認メッセージを表示する。※メッセージID = WARNING_OF_DELETE_SELECTION
+			int msgID = QkanMessageList.getInstance()
+					.WARNING_OF_DELETE_SELECTION();
+			// ｢はい｣選択時
+			switch (msgID) {
+			case ACMessageBox.RESULT_OK:
+				// 選択されたレコードをunitPriceListから削除する。
+				int index = getUnitPriceTable().getSelectedRow();
+
+				getUnitPriceList().remove(
+						getUnitPriceTable().getSelectedModelRowValue());
+				getUnitPriceTableModel().setAdaptee(
+						getUnitPriceList());
+				// unitPriceTableChangeFlgに1（変更あり）を代入する。
+				setUnitPriceTableChangeFlg(1);
+				// レコードの件数が0件になった場合
+				if (getUnitPriceTable().getRowCount() == 0) {
+					// 画面状態を変更する。（削除、編集ボタンをEnable制御し、押下不可にする）
+					setState_NOT_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE();
+				} else {
+					getUnitPriceTable()
+							.setSelectedSortedRowOnAfterDelete(index);
+				}
+
+			case ACMessageBox.RESULT_CANCEL:
+				// ｢キャンセル｣選択時
+				// 処理を抜ける。（処理を行わない）
+				return;
+			}
+		}		
+	}
+
+	/**
+	 * 「単位数単価規定を表示する処理」イベントです。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void unitPriceRegularButtonActionPerformed(ActionEvent e)
+			throws Exception {
+		// 内部変数 regularUnitPriceList を生成する。
+		VRMap regularUnitPriceMap = new VRHashMap();
+
+		// 単位数単価情報パネル(unitPriceSetInfos)のソースとして regularUnitPriceMap
+		// を設定する。
+		getUnitPriceSetInfos().setSource(regularUnitPriceMap);
+		// 単位数単価情報パネルにcreateSourceを行う。
+		getUnitPriceSetInfos().createSource();
+		// 画面をクリアする。
+		getUnitPriceSetInfos().bindSource();
+		// 単位数単価規定情報を取得する。
+		VRMap map = (VRMap) getUnitPriceType().getSelectedModelItem();
+		setRegulerAreaUnitPrice(map);
+		// 取得した情報をregularUnitPriceMapに格納する。
+		// 単位数単価情報パネル(unitPriceSetInfos)のソースとして regularUnitPriceMap
+		// を設定する。
+		getUnitPriceSetInfos().setSource(regularUnitPriceMap);
+		// 単位数単価情報パネル(unitPriceSetInfos)に情報を展開する。
+		getUnitPriceSetInfos().bindSource();
 	}
 
 	public static void main(String[] args) {
@@ -1017,12 +1382,36 @@ public class QO002 extends QO002Event {
 		// レコードが1件以上あった場合
 		if (getInsurerLimitRateList().size() > 0) {
 			// 画面の状態を変更する。
-			setState_INSURER_LIMIT_RATE_ENABLE_TRUE();
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin ボタンだけを変更する
+//			setState_INSURER_LIMIT_RATE_ENABLE_TRUE();
+			setState_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE();
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
 			// レコードの1件目を選択状態にする。※セル選択イベント
 			getInsurerLimitRateTable().setSelectedSortedFirstRow();
 		} else {
-
+			// [総合事業対応][Keiko Yano] 2016/08 add begin
+			// 画面の状態を変更する。
+			setState_NOT_POSSIBLE_FIND_AND_DELETE_LIMIT_RATE();
+			// [総合事業対応][Keiko Yano] 2016/08 add end
 		}
+
+		// [総合事業対応][Keiko Yano] 2016/08 edit begin 単位数単価
+		// 単位数単価情報を取得する。
+		doFindUnitPrice();
+		// 単位数単価情報テーブルに取得レコードを表示する。
+		getUnitPriceTableModel().setAdaptee(getUnitPriceList());
+
+		// レコードが1件以上あった場合
+		if (getUnitPriceList().size() > 0) {
+			// 画面の状態を変更する。
+			setState_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE();
+			// レコードの1件目を選択状態にする。※セル選択イベント
+			getUnitPriceTable().setSelectedSortedFirstRow();
+		} else {
+			// 画面の状態を変更する。
+			setState_NOT_POSSIBLE_FIND_AND_DELETE_UNIT_PRICE();
+		}
+		// [総合事業対応][Keiko Yano] 2016/08 edit end
 
 		// フォーカス処理
 		if (getPROCESS_MODE().equals(
@@ -1154,6 +1543,7 @@ public class QO002 extends QO002Event {
 			setInsurerLimitRateListSource(getInsurerLimitRateList());
 			// 並列に持っている支給限度額情報を保険者ID、支給限度額履歴をKEYにして1レコード（直列）にしinsurerLimitRateListに格納する。※共通関数：getSeriesedKeyList使用
 			VRMap map = new VRHashMap();
+			map.put("61", null);// 要支援１超はレコードが存在しない場合あり。一覧クリック時の処理のために追加
 
 			Iterator it = getInsurerLimitRateList().iterator();
 
@@ -1165,25 +1555,21 @@ public class QO002 extends QO002Event {
 				// JOTAI_CODEをキー、LIMIT_RATE_VALUEを値として追加
 
 				if (ACCastUtilities.toInt(VRBindPathParser.get(
-						"LIMIT_RATE_HISTORY_ID", row)) == limitRateHistoryOldId) {
-					map.put("LIMIT_RATE_HISTORY_ID", VRBindPathParser.get(
-							"LIMIT_RATE_HISTORY_ID", row));
-					map.put("INSURER_ID", getInsurereId());
-					map.put(String.valueOf(VRBindPathParser.get("JOTAI_CODE",
-							row)), VRBindPathParser
-							.get("LIMIT_RATE_VALUE", row));
-					map.put("LIMIT_RATE_VALID_START", VRBindPathParser.get(
-							"LIMIT_RATE_VALID_START", row));
-					map.put("LIMIT_RATE_VALID_END", VRBindPathParser.get(
-							"LIMIT_RATE_VALID_END", row));
-				} else {
-
+						"LIMIT_RATE_HISTORY_ID", row)) != limitRateHistoryOldId) {
 					list.add(map);
 					map = new VRHashMap();
-					map.put(String.valueOf(VRBindPathParser.get("JOTAI_CODE",
-							row)), VRBindPathParser
-							.get("LIMIT_RATE_VALUE", row));
+					map.put("61", null);// 要支援１超はレコードが存在しない場合あり。一覧クリック時の処理のために追加
 				}
+				map.put("LIMIT_RATE_HISTORY_ID", VRBindPathParser.get(
+						"LIMIT_RATE_HISTORY_ID", row));
+				map.put("INSURER_ID", getInsurereId());
+				map.put(String.valueOf(VRBindPathParser.get("JOTAI_CODE",
+						row)), VRBindPathParser
+						.get("LIMIT_RATE_VALUE", row));
+				map.put("LIMIT_RATE_VALID_START", VRBindPathParser.get(
+						"LIMIT_RATE_VALID_START", row));
+				map.put("LIMIT_RATE_VALID_END", VRBindPathParser.get(
+						"LIMIT_RATE_VALID_END", row));
 
 				limitRateHistoryOldId = ACCastUtilities.toInt(VRBindPathParser
 						.get("LIMIT_RATE_HISTORY_ID", row));
@@ -1191,6 +1577,12 @@ public class QO002 extends QO002Event {
 
 			list.add(map);
 			setInsurerLimitRateList(list);
+			
+			// [総合事業対応][Keiko Yano] 2016/08 add begin
+			// 以下の条件で支給限度額情報テーブルのソートを行う。
+			// LIMIT_RATE_VALID_START（有効期限開始）　DESC
+			getInsurerLimitRateTable().sort("LIMIT_RATE_VALID_START DESC");
+			// [総合事業対応][Keiko Yano] 2016/08 add end
 
 			// setInsurerLimitRateList(ACBindUtilities.getSeriesedKeyListWithoutGroupField(getInsurerLimitRateListSource(),str1,str2,str3,str4,ob));
 			// 画面状態を変更する。
@@ -1207,7 +1599,10 @@ public class QO002 extends QO002Event {
 			getValidPeriodPanel().bindSource();
 
 			// 画面状態を変更する。
-			setState_INSURER_LIMIT_RATE_ENABLE_FALSE();
+			// [総合事業対応][Keiko Yano] 2016/08 edit begin 支給限度は常に表示する
+//			setState_INSURER_LIMIT_RATE_ENABLE_FALSE();
+			setState_INSURER_LIMIT_RATE_ENABLE_TRUE();
+			// [総合事業対応][Keiko Yano] 2016/08 edit end
 		}
 
 	}
@@ -1361,6 +1756,11 @@ public class QO002 extends QO002Event {
 					// 支給限度額情報を登録する
 					doSaveLimitRate();
 
+					// [総合事業対応][Keiko Yano] 2016/08 add begin
+					// 単位数単価情報を登録する
+					doSaveUnitPrice();
+					// [総合事業対応][Keiko Yano] 2016/08 add end
+
 					// 入力エラーがあった場合
 					// }else{
 					// 処理を中断する。
@@ -1389,6 +1789,11 @@ public class QO002 extends QO002Event {
 					// 入力エラーがなかった場合
 					// 支給限度額情報を登録する
 					doSaveLimitRate();
+
+					// [総合事業対応][Keiko Yano] 2016/08 add begin
+					// 単位数単価情報を登録する
+					doSaveUnitPrice();
+					// [総合事業対応][Keiko Yano] 2016/08 add end
 
 					// 入力エラーがあった場合
 					// }else{
@@ -1471,6 +1876,12 @@ public class QO002 extends QO002Event {
 			insurerLimitRateMap = (VRMap) getInsurerLimitRateList().getData(i);
 			insurerLimitRateMap.setData("LIMIT_RATE_HISTORY_ID", Integer
 					.toString(i + 1));
+			// [総合事業対応][Keiko Yano] 2016/09 add begin
+			Object end = insurerLimitRateMap.getData("LIMIT_RATE_VALID_END");
+			if (ACTextUtilities.isNullText(end)) {
+				insurerLimitRateMap.setData("LIMIT_RATE_VALID_END", MAX_DATE);
+			}
+			// [総合事業対応][Keiko Yano] 2016/09 add end
 
 			getDBManager()
 					.executeUpdate(
@@ -1480,12 +1891,20 @@ public class QO002 extends QO002Event {
 		// 支給限度額詳細情報登録用SQL文で使用するためのデーターを取得しinsurerLimitRateListSourceに格納する。
 		String[] str1 = { "INSURER_ID", "LIMIT_RATE_HISTORY_ID",
 				"LIMIT_RATE_VALID_START", "LIMIT_RATE_VALID_END" };
-		String[] str2 = { "12", "13", "11", "21", "22", "23", "24", "25" };
-		Object obj = null;
-
+		// [総合事業対応][Keiko Yano] 2016/08/18 add begin 事業対象者の保存も行う
+//		String[] str2 = { "12", "13", "11", "21", "22", "23", "24", "25" };
+		String[] str2 = { "6", "61" };
+		// [総合事業対応][Keiko Yano] 2016/08/18 add end 事業対象者の保存も行う
+		// [総合事業対応][Keiko Yano] 2016/08/18 edit begin 61はnullでも保存
+//		Object obj = null;
+//
+//		setInsurerLimitRateListSource(ACBindUtilities.getParalleledKeyList(
+//				getInsurerLimitRateList(), str1, "JOTAI_CODE",
+//				"LIMIT_RATE_VALUE", str2, obj));
 		setInsurerLimitRateListSource(ACBindUtilities.getParalleledKeyList(
 				getInsurerLimitRateList(), str1, "JOTAI_CODE",
-				"LIMIT_RATE_VALUE", str2, obj));
+				"LIMIT_RATE_VALUE", str2, ""));
+		// [総合事業対応][Keiko Yano] 2016/08/18 edit end
 
 		// insurerLimitRateSource内のレコードを支給限度額詳細情報TABLEに登録する。
 		// insurerLimtRateSource内のレコードの数だけ以下の処理を行う。
@@ -1494,9 +1913,11 @@ public class QO002 extends QO002Event {
 		for (int i = 0; i < getInsurerLimitRateListSource().size(); i++) {
 			insurerLimitRateListSourceMap
 					.putAll((VRMap) getInsurerLimitRateListSource().getData(i));
-			getDBManager()
-					.executeUpdate(
-							getSQL_INSURT_INSURER_LIMIT_RATE_DETAIL(insurerLimitRateListSourceMap));
+			if (!ACTextUtilities.isNullText(insurerLimitRateListSourceMap.get("LIMIT_RATE_VALUE"))) {
+				getDBManager()
+						.executeUpdate(
+								getSQL_INSURT_INSURER_LIMIT_RATE_DETAIL(insurerLimitRateListSourceMap));
+			}
 		}
 		// 支給限度額詳細情報登録用のSQL文を取得する
 		// getSQL_INSURT_INSURER_LIMIT_RATE_DETAIL(insurerLimitRateListSourceMap);
@@ -1691,15 +2112,17 @@ public class QO002 extends QO002Event {
 					return false;
 				}
 			} else {
-				// 入力されていなかった場合
-				// エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_INPUT 引数 =
-				// 有効期間
-				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
-						"有効期間");
-				// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
-				getValidPeriodEnd().requestFocus();
-				// 処理を抜ける。（処理を中断する）
-				return false;
+				// [総合事業対応][Keiko Yano] 2016/09 delete begin 終了日は必須でなくす
+//				// 入力されていなかった場合
+//				// エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_INPUT 引数 =
+//				// 有効期間
+//				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+//						"有効期間");
+//				// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+//				getValidPeriodEnd().requestFocus();
+//				// 処理を抜ける。（処理を中断する）
+//				return false;
+				// [総合事業対応][Keiko Yano] 2016/09 delete end
 			}
 		} else {
 			// 入力されていなかった場合
@@ -1749,25 +2172,38 @@ public class QO002 extends QO002Event {
 		}
 		// ・有効期間テキスト（終了）（validPeriodEnd）
 		// 入力されている値が月末以外の値だった場合
-		if (ACDateUtilities.compareOnDay(
-				ACCastUtilities.toDate(getValidPeriodEnd().getText()),
-				ACDateUtilities.toLastDayOfMonth(
-						ACCastUtilities.toDate(getValidPeriodEnd().getText()))) != 0) {
-			// エラーメッセージを表示する。 メッセージID：ERROR_OF_VALID_PERIOD
-			QkanMessageList.getInstance().ERROR_OF_VALID_PERIOD("終了", "月末");
-			return false;
+		// [総合事業対応][Keiko Yano] 2016/09 edit begin 終了日は必須でなくす
+		if (!ACTextUtilities.isNullText(getValidPeriodEnd().getText())) {
+		// [総合事業対応][Keiko Yano] 2016/09 edit end
+			if (ACDateUtilities.compareOnDay(
+					ACCastUtilities.toDate(getValidPeriodEnd().getText()),
+					ACDateUtilities.toLastDayOfMonth(
+							ACCastUtilities.toDate(getValidPeriodEnd().getText()))) != 0) {
+				// [総合事業対応][Keiko Yano] 2016/09 edit end			// エラーメッセージを表示する。 メッセージID：ERROR_OF_VALID_PERIOD
+				QkanMessageList.getInstance().ERROR_OF_VALID_PERIOD("終了", "月末");
+				return false;
+			}
 		}
 
 		// 下記のフィールドに入力されている日付が既に登録されている有効期間と重複していないかチェックする。※有効期間が正しく入力されている場合のみ通過するロジック。
 		// ・有効期間テキスト（開始）（validPeriodStart）
 		// ・有効期間テキスト（終了）（validPeriodEnd）
 		// insurerLimitRateList内のLIMIT_RATE_VALID_START及び、LIMIT_RATE_VALID_ENDの日付と比較する。
-		// validPeriodStart > LIMIT_RATE_VALID_START
-		// validPeriodStart < LIMIT_RATE_VALID_END
-		// validPeriodEnd > LIMIT_RATE_VALID_START
-		// validPeriodEnd > LIMIT_RATE_VALID_END
 
 		if (getInsurerLimitRateList().size() > 0) {
+			
+			// [総合事業対応][Keiko Yano] 2016/09 add begin 終了日は必須でなくす
+			Date start = getValidPeriodStart().getDate();
+			Date end;
+			if (ACTextUtilities.isNullText(getValidPeriodEnd().getText())) {
+			    end = MAX_DATE;
+			} else {
+			    end = getValidPeriodEnd().getDate();
+			}
+			Date reservedStart = null;
+			Date reservedEnd = null;
+			// [総合事業対応][Keiko Yano] 2016/09 add end
+
 			for (int i = 0; i < getInsurerLimitRateList().size(); i++) {
 				if(canBackBtnHantei==true){
 					return true;
@@ -1776,67 +2212,89 @@ public class QO002 extends QO002Event {
 				if (insurerLimitRateEditHantei == true
 						&& getInsurerLimitRateTable().getSelectedModelRow() == i) {
 					insurerLimitRateEditHantei = false;
-					break;
+					// [総合事業対応][Keiko Yano] 2016/08 edit begin 最後の行までチェックする…。
+//					break;
+					continue;
+					// [総合事業対応][Keiko Yano] 2016/08 edit end
 				}
 
-				if (ACDateUtilities
-						.compareOnDay(
-								ACCastUtilities.toDate(getValidPeriodStart()
-										.getText()),
-								(Date) VRBindPathParser.get(
-										"LIMIT_RATE_VALID_START",
-										(VRMap) getInsurerLimitRateList()
-												.getData(i))) == 0) {
-					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
-					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
+				// [総合事業対応][Keiko Yano] 2016/09 change begin 重複チェックが甘いので差し替える
+				reservedStart = (Date) VRBindPathParser.get(
+						"LIMIT_RATE_VALID_START", (VRMap) getInsurerLimitRateList().getData(i));
+				if (ACTextUtilities.isNullText(VRBindPathParser.get("LIMIT_RATE_VALID_END",
+						(VRMap) getInsurerLimitRateList().getData(i)))) {
+					reservedEnd = MAX_DATE;
+				} else {
+					reservedEnd = (Date) VRBindPathParser.get("LIMIT_RATE_VALID_END",
+							(VRMap) getInsurerLimitRateList().getData(i));
+				}
+				int result = ACDateUtilities.getDuplicateTermCheck(
+						reservedStart, reservedEnd, start, end);
+				if (result != ACDateUtilities.DUPLICATE_NONE) {
 					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+					getValidPeriodCpntena().requestFocus();
 					return false;
 				}
-				if (ACDateUtilities.compareOnDay(
-						ACCastUtilities.toDate(getValidPeriodEnd().getText()),
-						(Date) VRBindPathParser.get("LIMIT_RATE_VALID_END",
-								(VRMap) getInsurerLimitRateList().getData(i))) == 0) {
-					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
-					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
-					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
-					return false;
-				}
-				if (ACDateUtilities
-						.compareOnDay(
-								ACCastUtilities.toDate(getValidPeriodStart()
-										.getText()),
-								(Date) VRBindPathParser.get(
-										"LIMIT_RATE_VALID_START",
-										(VRMap) getInsurerLimitRateList()
-												.getData(i))) == 1
-						&& ACDateUtilities.compareOnDay(
-								ACCastUtilities.toDate(getValidPeriodStart()
-										.getText()),
-								(Date) VRBindPathParser.get(
-										"LIMIT_RATE_VALID_END",
-										(VRMap) getInsurerLimitRateList()
-												.getData(i))) == -1) {
-					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
-					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
-					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
-					return false;
-				}
-				if (ACDateUtilities.compareOnDay(
-						ACCastUtilities.toDate(getValidPeriodEnd().getText()),
-						(Date) VRBindPathParser.get("LIMIT_RATE_VALID_START",
-								(VRMap) getInsurerLimitRateList().getData(i))) == 1
-						&& ACDateUtilities.compareOnDay(
-								ACCastUtilities.toDate(getValidPeriodEnd()
-										.getText()),
-								(Date) VRBindPathParser.get(
-										"LIMIT_RATE_VALID_END",
-										(VRMap) getInsurerLimitRateList()
-												.getData(i))) == -1) {
-					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
-					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
-					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
-					return false;
-				}
+//				if (ACDateUtilities
+//						.compareOnDay(
+//								ACCastUtilities.toDate(getValidPeriodStart()
+//										.getText()),
+//								(Date) VRBindPathParser.get(
+//										"LIMIT_RATE_VALID_START",
+//										(VRMap) getInsurerLimitRateList()
+//												.getData(i))) == 0) {
+//					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
+//					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
+//					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+//					return false;
+//				}
+//				if (ACDateUtilities.compareOnDay(
+//						ACCastUtilities.toDate(getValidPeriodEnd().getText()),
+//						(Date) VRBindPathParser.get("LIMIT_RATE_VALID_END",
+//								(VRMap) getInsurerLimitRateList().getData(i))) == 0) {
+//					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
+//					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
+//					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+//					return false;
+//				}
+//				if (ACDateUtilities
+//						.compareOnDay(
+//								ACCastUtilities.toDate(getValidPeriodStart()
+//										.getText()),
+//								(Date) VRBindPathParser.get(
+//										"LIMIT_RATE_VALID_START",
+//										(VRMap) getInsurerLimitRateList()
+//												.getData(i))) == 1
+//						&& ACDateUtilities.compareOnDay(
+//								ACCastUtilities.toDate(getValidPeriodStart()
+//										.getText()),
+//										(Date) VRBindPathParser.get(
+//												"LIMIT_RATE_VALID_END",
+//												(VRMap) getInsurerLimitRateList()
+//														.getData(i))) == -1) {
+//					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
+//					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
+//					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+//					return false;
+//				}
+//				// [総合事業対応][Keiko Yano] 2016/09 edit begin 終了日は必須でなくす
+//				if (ACDateUtilities.compareOnDay(
+//						ACCastUtilities.toDate(getValidPeriodEnd().getText()),
+//						(Date) VRBindPathParser.get("LIMIT_RATE_VALID_START",
+//								(VRMap) getInsurerLimitRateList().getData(i))) == 1
+//						&& ACDateUtilities.compareOnDay(
+//								ACCastUtilities.toDate(getValidPeriodEnd()
+//										.getText()),
+//								(Date) VRBindPathParser.get(
+//										"LIMIT_RATE_VALID_END",
+//										(VRMap) getInsurerLimitRateList()
+//												.getData(i))) == -1) {
+//					// 下記の条件と一致する場合エラーメッセージを表示する。メッセージID =
+//					// QO002_ERROR_OF_DUPLICATE_LIMIT_RATE 引数 = "有効期間"
+//					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+//					return false;
+//				}
+				// [総合事業対応][Keiko Yano] 2016/09 change end
 			}
 		}
 
@@ -1847,15 +2305,20 @@ public class QO002 extends QO002Event {
 		// ・支給限度額（要介護3）（yokaigo3）
 		// ・支給限度額（要介護4）（yokaigo4）
 		// ・支給限度額（要介護5）（yokaigo5）
+		// ・事業対象者 [総合事業対応] 2016/08
 		// 空白だった場合
-		if (getYosien1().getText().equals("")
-				|| getYosien2().getText().equals("")
-				|| getYosien().getText().equals("")
-				|| getYokaigo1().getText().equals("")
-				|| getYokaigo2().getText().equals("")
-				|| getYokaigo3().getText().equals("")
-				|| getYokaigo4().getText().equals("")
-				|| getYokaigo5().getText().equals("")) {
+		// [総合事業対応][Keiko Yano] 2016/09 edit begin 画面に表示している要介護のデータのみチェックする
+//		if (getYosien1().getText().equals("")
+//				|| getYosien2().getText().equals("")
+//				|| getYosien().getText().equals("")
+//				|| getYokaigo1().getText().equals("")
+//				|| getYokaigo2().getText().equals("")
+//				|| getYokaigo3().getText().equals("")
+//				|| getYokaigo4().getText().equals("")
+//				|| getYokaigo5().getText().equals("")
+//				|| getJigyoTaishosha().getText().equals("")) {
+		if (getJigyoTaishosha().getText().equals("")) {
+			// [総合事業対応][Keiko Yano] 2016/09 edit end
 			// エラーメッセージを表示する。 ※メッセージID：ERROR_OF_NEED_CHECK_FOR_INPUT
 			QkanMessageList.getInstance()
 					.ERROR_OF_NEED_CHECK_FOR_INPUT("支給限度額");
@@ -1919,6 +2382,21 @@ public class QO002 extends QO002Event {
 		// 画面に展開する
 		getValidPeriodPanel().bindSource();
 
+		// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+		// 単位数単価情報テーブルに初期化したレコードを表示する。※テーブルがクリアされる
+		getUnitPriceTableModel().clearData();
+
+		// unitPriceTableChangeFlgに0（変化なし）を代入する。
+		setUnitPriceTableChangeFlg(0);
+
+		// 入力領域をクリアする
+		VRMap unitPriceMap = new VRHashMap();
+		unitPriceMap = (VRMap) getUnitPriceSetInfos().createSource();
+		getUnitPriceSetInfos().setSource(unitPriceMap);
+		getUnitPriceSetInfos().bindSource();
+		// [総合事業対応][Keiko Yano] 2016/08 add end
+
+
 		// 保険者番号テキストを有効にする
 		getInsurerId().setEnabled(true);
 
@@ -1964,14 +2442,24 @@ public class QO002 extends QO002Event {
 		// ※スナップショットの撮影対象から下記の領域を除外する。
 		VRList excusions = new VRArrayList();
 		excusions.add(getInsurerLimitRateInfo());
+		// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+		excusions.add(getUnitPriceSetInfos());
+		// [総合事業対応][Keiko Yano] 2016/08 add end
 
 		getSnapshot().setExclusions(excusions);
 
 		// 要介護情報領域のスナップショット
 		getSnapShotPeriod().setRootContainer(getInsurerLimitRateInfo());
+		// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+		// 単位数単価情報領域のスナップショット
+		getSnapShotUnit().setRootContainer(getUnitPriceSetInfos());
+		// [総合事業対応][Keiko Yano] 2016/08 add end
 
 		getSnapshot().snapshot();
 		getSnapShotPeriod().snapshot();
+		// [総合事業対応][Keiko Yano] 2016/08 add begin 単位数単価
+		getSnapShotUnit().snapshot();
+		// [総合事業対応][Keiko Yano] 2016/08 add end
 	}
 
 	/**
@@ -2016,6 +2504,9 @@ public class QO002 extends QO002Event {
 							row)), VRBindPathParser
 							.get("LIMIT_RATE_VALUE", row));
 				}
+		        // [総合事業対応][Keiko Yano] 2016/08/18 add begin 事業対象者(要支援1超)をデフォルトセット
+				map.put("61", "");
+				// [総合事業対応][Keiko Yano] 2016/08/18 add end
 			}
 			regularLimitRateMap = map;
 
@@ -2061,5 +2552,488 @@ public class QO002 extends QO002Event {
         repaint();
         
     }
+
+	/**
+	 * 「単位数単価情報取得」に関する処理を行ないます。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public void doFindUnitPrice() throws Exception {
+		// 単位数単価情報を取得する。
+		// 単位数単価情報取得のためHashMap：paramを作成し以下のKEY/VALUEを設定する。
+		VRMap param = new VRHashMap();
+		// KEY：INSURER_ID VALUE：insurerId
+		if (getInsurereId() != null) {
+			param.setData("INSURER_ID", getInsurereId());
+			// 単位数単価情報を取得するためのSQL文を取得する。
+			setUnitPriceList(getDBManager().executeQuery(
+					getSQL_GET_INSURER_UNIT_PRICE(param)));
+
+		}
+
+		if (getUnitPriceList().size() > 0) {
+			// レコードが取得できた場合
+			// 取得したレコードをUnitPriceListSourceに設定する。
+			setUnitPriceListSource(getUnitPriceList());
+			// 並列に持っている単位数単価情報を保険者ID、単位数単価履歴をKEYにして1レコード（直列）にしUnitPriceListに格納する。※共通関数：getSeriesedKeyList使用
+			VRMap map = new VRHashMap();
+
+			Iterator it = getUnitPriceList().iterator();
+
+			VRList list = new VRArrayList();
+			int unitPriceHistoryOldId = 1;
+
+			VRMap temp = null;
+			VRList conv_list = QkanCommon.getArrayFromMasterCode(153, "UNIT_PRICE_TYPE_NAME");
+
+			while (it.hasNext()) {
+				VRMap row = (VRMap) it.next();
+				
+				// SYSTEM_SERVICE_KIND_DETAILをキー、UNIT_PRICE_VALUEを値として追加
+
+				if (ACCastUtilities.toInt(VRBindPathParser.get(
+						"UNIT_PRICE_HISTORY_ID", row)) == unitPriceHistoryOldId) {
+					map.put("UNIT_PRICE_HISTORY_ID", VRBindPathParser.get(
+							"UNIT_PRICE_HISTORY_ID", row));
+					map.put("INSURER_ID", getInsurereId());
+					map.put("UNIT_PRICE_TYPE", VRBindPathParser.get(
+							"UNIT_PRICE_TYPE", row));
+					map.put(String.valueOf(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL",
+							row)), VRBindPathParser
+							.get("UNIT_PRICE_VALUE", row));
+					map.put("UNIT_PRICE_VALID_START", VRBindPathParser.get(
+							"UNIT_PRICE_VALID_START", row));
+					map.put("UNIT_PRICE_VALID_END", VRBindPathParser.get(
+							"UNIT_PRICE_VALID_END", row));
+					// 地域区分の名称取得
+					temp = new VRHashMap();
+					if (VRBindPathParser.has("UNIT_PRICE_TYPE", row)) {
+						temp = ACBindUtilities.getMatchRowFromValue(conv_list, "CONTENT_KEY",
+								VRBindPathParser.get("UNIT_PRICE_TYPE", row));
+						if (temp != null) {
+							map.put("UNIT_PRICE_TYPE_NAME", VRBindPathParser.get("CONTENT", temp));
+						}
+					}
+				} else {
+
+					list.add(map);
+					map = new VRHashMap();
+					map.put(String.valueOf(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL",
+							row)), VRBindPathParser
+							.get("UNIT_PRICE_VALUE", row));
+				}
+
+				unitPriceHistoryOldId = ACCastUtilities.toInt(VRBindPathParser
+						.get("UNIT_PRICE_HISTORY_ID", row));
+			}
+
+			list.add(map);
+			setUnitPriceList(list);
+			
+			// 以下の条件で単位数単価情報テーブルのソートを行う。
+			// UNIT_PRICE_VALID_START（有効期限開始）　DESC
+			getUnitPriceTable().sort("UNIT_PRICE_VALID_START DESC");
+
+		}
+
+	}
+
+	/**
+	 *  単位数単価を表示します
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param map
+	 *            地域区分
+	 * @throws Exception
+	 *             処理例外
+	 */
+	private void setRegulerAreaUnitPrice(VRMap map)
+			throws Exception {
+		if (map != null) {
+			// 訪問型サービス
+			doFindAreaUnitPrice(getUnitPriceServiceA2(), map, "50211", "50211");
+			doFindAreaUnitPrice(getUnitPriceServiceA3(), map, "50311", "50311");
+			doFindAreaUnitPrice(getUnitPriceServiceA4(), map, "50411", "50411");
+			
+			
+			// 通所型サービス
+			doFindAreaUnitPrice(getUnitPriceServiceA6(), map, "50611", "50611");
+			doFindAreaUnitPrice(getUnitPriceServiceA7(), map, "50711", "50711");
+			doFindAreaUnitPrice(getUnitPriceServiceA8(), map, "50811", "50811");
+			
+			// 介護予防ケアマネジメント
+			doFindAreaUnitPrice(getUnitPriceServiceAF(), map, "51511", "51511");
+			
+			VRMap param = new VRHashMap();
+			param.setData("UNIT_PRICE_TYPE", VRBindPathParser.get("UNIT_PRICE_TYPE", map));
+			param.setData("TARGET_DATE", QkanSystemInformation.getInstance().getSystemDate());
+			
+			// その他の生活支援サービス
+			//M_AREA_UNIT_PRICEをサービス種類指定せずに取得する
+			doFindAreaUnitPrice(getUnitPriceServiceA9(), map, "", "50911");
+			doFindAreaUnitPrice(getUnitPriceServiceAA(), map, "", "51011");
+			doFindAreaUnitPrice(getUnitPriceServiceAB(), map, "", "51111");
+			doFindAreaUnitPrice(getUnitPriceServiceAC(), map, "", "51211");
+			doFindAreaUnitPrice(getUnitPriceServiceAD(), map, "", "51311");
+			doFindAreaUnitPrice(getUnitPriceServiceAE(), map, "", "51411");
+		}
+
+	}
+
+	/**
+	 *  地域区分×サービス種類毎の単位数単価を取得します
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @param unitPriceServiceCombo 単位数単価コンボ
+	 *        map 地域区分
+	 *        systemServiceKindDetail サービス種類
+	 *        bindPathKey コンボ用のバインドキー
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void doFindAreaUnitPrice(ACComboBox unitPriceServiceCombo, VRMap map, String systemServiceKindDetail, String bindPathKey)
+			throws Exception {
+
+		VRMap param = new VRHashMap();
+		param.setData("UNIT_PRICE_TYPE", VRBindPathParser.get("UNIT_PRICE_TYPE", map));
+		param.setData("TARGET_DATE", QkanSystemInformation.getInstance().getSystemDate());
+		if(!"".equals(systemServiceKindDetail)) {
+			param.setData("SYSTEM_SERVICE_KIND_DETAIL", systemServiceKindDetail);
+		}
+		VRList list = getDBManager().executeQuery(getSQL_GET_AREA_UNIT_PRICE(param));
+		int selIndex = list.size();
+
+		// コンボ用にキー値をコピー
+		ACBindUtilities.copyBindPath(list, "UNIT_PRICE_VALUE", bindPathKey);
+		unitPriceServiceCombo.setModel(list);
+		unitPriceServiceCombo.setSelectedIndex(selIndex);
+
+	}
+
+	/**
+	 * 「単位数単価情報チェック処理」に関する処理を行ないます。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public boolean doValidUnitPriceCheck() throws Exception {
+		// 地域区分のチェック
+		// ・idouInfoServise（サービス）
+		// 選択されているかどうか
+		// ※エラーの場合、String：msgParamを宣言し、"サービス"を代入する。
+		if (!getUnitPriceType().isSelected()) {
+			getUnitPriceType().requestFocus();
+			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_SELECT(
+					"地域区分");
+			return false;
+		}
+
+		// 単位数単価が空白でないかチェックする。
+		// 空白だった場合
+		if (getUnitPriceServiceA2().getText().equals("")
+				|| getUnitPriceServiceA3().getText().equals("")
+				|| getUnitPriceServiceA4().getText().equals("")
+				|| getUnitPriceServiceA6().getText().equals("")
+				|| getUnitPriceServiceA7().getText().equals("")
+				|| getUnitPriceServiceA8().getText().equals("")
+				|| getUnitPriceServiceA9().getText().equals("")
+				|| getUnitPriceServiceAA().getText().equals("")
+				|| getUnitPriceServiceAB().getText().equals("")
+				|| getUnitPriceServiceAC().getText().equals("")
+				|| getUnitPriceServiceAD().getText().equals("")
+				|| getUnitPriceServiceAE().getText().equals("")
+				|| getUnitPriceServiceAF().getText().equals("")) {
+			// エラーメッセージを表示する。 ※メッセージID：ERROR_OF_NEED_CHECK_FOR_INPUT
+			QkanMessageList.getInstance()
+					.ERROR_OF_NEED_CHECK_FOR_INPUT("単位数単価");
+			// 処理を抜ける。（処理を中断する）
+			return false;
+		}
+
+		// 支給限度額情報正しく入力されているかチェックする処理
+		// ｢有効期間テキスト（開始）（unitPriceValidStart）｣が入力されているかチェックする。
+		// 入力されていた場合
+		if (!ACTextUtilities.isNullText(getUnitPriceValidStart().getText())) {
+			// 日付型かどうかのチェック
+			if (!getUnitPriceValidStart().isValidDate()) {
+				// エラーメッセージを表示する。※メッセージID = ERROR_OF_WRONG_DATE 引数 = 有効期間
+				QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+				// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+				getUnitPriceValidStart().requestFocus();
+				// 処理を抜ける。（処理を中断する）
+				return false;
+			}
+
+			// ｢有効期間テキスト（終了）（validPeriodEnd）｣が入力されているかチェックする。
+			// 入力されていた場合
+			if (!ACTextUtilities.isNullText(getUnitPriceValidEnd().getText())) {
+				if (!getUnitPriceValidEnd().isValidDate()) {
+					// エラーメッセージを表示する。※メッセージID = ERROR_OF_WRONG_DATE 引数 = 有効期間
+					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+					// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+					getUnitPriceValidEnd().requestFocus();
+					// 処理を抜ける。（処理を中断する）
+					return false;
+				}
+
+				// 有効期間テキストに入力された値をチェックする。
+				// 値が、有効期間テキスト（開始）＞有効期間テキスト（終了）だった場合
+				if (ACDateUtilities
+						.compareOnDay(
+								ACCastUtilities.toDate(getUnitPriceValidStart()
+										.getText()),
+								ACCastUtilities.toDate(getUnitPriceValidEnd()
+										.getText())) == 1) {
+					// エラーメッセージを表示する。※メッセージID = ERROR_OF_WRONG_DATE 引数 = 有効期間
+					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+					// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+					getUnitPriceValidEnd().requestFocus();
+					// 処理を抜ける。（処理を中断する）
+					return false;
+				} else if (ACDateUtilities
+						.compareOnDay(
+								ACCastUtilities.toDate(getUnitPriceValidStart()
+										.getText()),
+								ACCastUtilities.toDate(getUnitPriceValidEnd()
+										.getText())) == 0) {
+					// 値が、有効期間テキスト（開始）=有効期間テキスト（終了）だった場合
+					// エラーメッセージを表示する。※メッセージID = ERROR_OF_WRONG_DATE 引数 = 有効期間
+					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+					// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+					getUnitPriceValidEnd().requestFocus();
+					// 処理を抜ける。（処理を中断する）
+					return false;
+				}
+			} else {
+				// [総合事業対応][Keiko Yano] 2016/09 delete begin 終了日は必須でなくす
+//				// 入力されていなかった場合
+//				// エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_INPUT 引数 =
+//				// 有効期間
+//				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+//						"有効期間");
+//				// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+//				getUnitPriceValidEnd().requestFocus();
+//				// 処理を抜ける。（処理を中断する）
+//				return false;
+				// [総合事業対応][Keiko Yano] 2016/09 delete end
+			}
+		} else {
+			// 入力されていなかった場合
+			// 有効期間テキスト（終了）（validPeriodEnd）｣が入力されているかチェックする。
+			// 入力されていた場合
+			if (!ACTextUtilities.isNullText(getUnitPriceValidEnd().getText())) {
+				if (!getUnitPriceValidEnd().isValid()) {
+					// エラーメッセージを表示する。※メッセージID = ERROR_OF_WRONG_DATE 引数 = 有効期間
+					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+					// ｢有効期間テキスト（終了）（validPeriodEnd）｣にフォーカスを当てる。
+					getUnitPriceValidEnd().requestFocus();
+					// 処理を抜ける。（処理を中断する）
+					return false;
+				}
+
+				// エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_INPUT 引数 =
+				// 有効期間
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						"有効期間");
+				// ｢有効期間テキスト（開始）（validPeriodStart）｣にフォーカスを当てる。
+				getUnitPriceValidStart().requestFocus();
+				// 処理を抜ける。（処理を中断する）
+				return false;
+				// 入力されていなかった場合
+			} else {
+				// エラーメッセージを表示する。※メッセージID = ERROR_OF_NEED_CHECK_FOR_INPUT
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+						"有効期間");
+				// ｢有効期間テキスト（開始）（validPeriodStart）｣にフォーカスを当てる。
+				getUnitPriceValidStart().requestFocus();
+				// 処理を抜ける。（処理を中断する）
+				return false;
+			}
+		}
+
+		// 有効期間テキスト（開始）（validPeriodStart）の値をチェックする。
+		// 入力されている値が月初以外の値だった場合
+		if (ACDateUtilities.compareOnDay(
+				ACCastUtilities.toDate(getUnitPriceValidStart().getText()),
+				ACDateUtilities
+						.toFirstDayOfMonth(
+								ACCastUtilities.toDate(getUnitPriceValidStart()
+										.getText()))) != 0) {
+			// エラーメッセージを表示する。 メッセージID：ERROR_OF_VALID_PERIOD
+			QkanMessageList.getInstance().ERROR_OF_VALID_PERIOD("開始", "月初");
+			return false;
+		}
+		// [総合事業対応][Keiko Yano] 2016/09 edit begin 終了日は必須でなくす
+		if (!ACTextUtilities.isNullText(getUnitPriceValidEnd().getText())) {
+		// [総合事業対応][Keiko Yano] 2016/09 edit end
+			// ・有効期間テキスト（終了）（validPeriodEnd）
+			// 入力されている値が月末以外の値だった場合
+			if (ACDateUtilities.compareOnDay(
+					ACCastUtilities.toDate(getUnitPriceValidEnd().getText()),
+					ACDateUtilities.toLastDayOfMonth(
+							ACCastUtilities.toDate(getUnitPriceValidEnd().getText()))) != 0) {
+				// エラーメッセージを表示する。 メッセージID：ERROR_OF_VALID_PERIOD
+				QkanMessageList.getInstance().ERROR_OF_VALID_PERIOD("終了", "月末");
+				return false;
+			}
+		}
+
+		// 下記のフィールドに入力されている日付が既に登録されている有効期間と重複していないかチェックする。※有効期間が正しく入力されている場合のみ通過するロジック。
+		// ・有効期間テキスト（開始）（validPeriodStart）
+		// ・有効期間テキスト（終了）（validPeriodEnd）
+		// unitPriceList内のUNIT_PRICE_VALID_START及び、UNIT_PRICE_VALID_ENDの日付と比較する。
+
+		if (getUnitPriceList().size() > 0) {
+
+			// [総合事業対応][Keiko Yano] 2016/09 add begin 終了日は必須でなくす
+			Date start = getUnitPriceValidStart().getDate();
+			Date end;
+			if (ACTextUtilities.isNullText(getUnitPriceValidEnd().getText())) {
+			    end = MAX_DATE;
+			} else {
+			    end = getUnitPriceValidEnd().getDate();
+			}
+			Date reservedStart = null;
+			Date reservedEnd = null;
+			// [総合事業対応][Keiko Yano] 2016/09 add end
+
+			for (int i = 0; i < getUnitPriceList().size(); i++) {
+				if(canBackBtnHantei==true){
+					return true;
+				}
+				
+				if (unitPriceEditHantei == true
+						&& getUnitPriceTable().getSelectedModelRow() == i) {
+					unitPriceEditHantei = false;
+					// [総合事業対応][Keiko Yano] 2016/08 edit begin 最後の行までチェックする…。
+//					break;
+					continue;
+					// [総合事業対応][Keiko Yano] 2016/08 edit end
+				}
+
+				// [総合事業対応][Keiko Yano] 2016/09 add begin 重複チェックが甘いので差し替える
+				reservedStart = (Date) VRBindPathParser.get(
+						"UNIT_PRICE_VALID_START", (VRMap) getUnitPriceList().getData(i));
+				if (ACTextUtilities.isNullText(VRBindPathParser.get("UNIT_PRICE_VALID_END",
+						(VRMap) getUnitPriceList().getData(i)))) {
+					reservedEnd = MAX_DATE;
+				} else {
+					reservedEnd = (Date) VRBindPathParser.get("UNIT_PRICE_VALID_END",
+							(VRMap) getUnitPriceList().getData(i));
+				}
+				int result = ACDateUtilities.getDuplicateTermCheck(
+						reservedStart, reservedEnd, start, end);
+				if (result != ACDateUtilities.DUPLICATE_NONE) {
+					QkanMessageList.getInstance().ERROR_OF_WRONG_DATE("有効期間");
+					getUnitPriceValidPeriodContena().requestFocus();
+					return false;
+				}
+				// [総合事業対応][Keiko Yano] 2016/09 add end
+
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * 「単位数単価情報登録処理」に関する処理を行ないます。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public void doSaveUnitPrice() throws Exception {
+		// 単位数単価情報を更新する（更新モード）
+		// 単位数単価情報削除用のSQL文を取得するためVRMap：paramを作成し、下記のKEY/VALUEを設定する。
+		VRMap param = new VRHashMap();
+		// KEY：INSURER_ID VALUE：insurerId
+		param.setData("INSURER_ID", getInsurereId());
+		// 単位数単価情報削除用のSQL文を取得する。
+		getDBManager().executeUpdate(getSQL_DELETE_INSURER_UNIT_PRICE(param));
+		// 単位数単価詳細情報削除用のSQL文を取得する。
+		getDBManager().executeUpdate(
+				getSQL_DELETE_INSURER_UNIT_PRICE_DETAIL(param));
+		// unitPriceListのレコードを単位数単価情報TABLEに登録する。
+		// unitPriceList内のレコード数だけ以下の処理を行う。
+		for (int i = 0; i < getUnitPriceList().size(); i++) {
+			VRMap UnitPriceMap = new VRHashMap();
+			UnitPriceMap = (VRMap) getUnitPriceList().getData(i);
+			UnitPriceMap.setData("UNIT_PRICE_HISTORY_ID", Integer
+					.toString(i + 1));
+			// [総合事業対応][Keiko Yano] 2016/09 add begin 終了日は必須でなくす
+			Object end = UnitPriceMap.getData("UNIT_PRICE_VALID_END");
+			if (ACTextUtilities.isNullText(end)) {
+				UnitPriceMap.setData("UNIT_PRICE_VALID_END", MAX_DATE);
+			}
+			// [総合事業対応][Keiko Yano] 2016/09 add end
+
+			getDBManager()
+					.executeUpdate(
+							getSQL_INSURT_INSURER_UNIT_PRICE((VRMap) getUnitPriceList()
+									.getData(i)));
+		}
+		// 単位数単価詳細情報登録用SQL文で使用するためのデーターを取得しUnitPriceListSourceに格納する。
+		String[] str1 = { "INSURER_ID", "UNIT_PRICE_HISTORY_ID",
+				"UNIT_PRICE_VALID_START", "UNIT_PRICE_VALID_END", "UNIT_PRICE_TYPE" };
+		String[] str2 = { "50211", "50311", "50411", "50611", "50711", "50811", "50911", "51011", "51111", "51211", "51311", "51411", "51511" };
+		Object obj = null;
+
+		setUnitPriceListSource(ACBindUtilities.getParalleledKeyList(
+				getUnitPriceList(), str1, "SYSTEM_SERVICE_KIND_DETAIL",
+				"UNIT_PRICE_VALUE", str2, obj));
+
+		// UnitPriceSource内のレコードを単位数単価詳細情報TABLEに登録する。
+		// insurerLimtRateSource内のレコードの数だけ以下の処理を行う。
+		// UnitPriceSourceからレコードを取得しUnitPriceSourceMapに格納する。
+		VRMap UnitPriceListSourceMap = new VRHashMap();
+		for (int i = 0; i < getUnitPriceListSource().size(); i++) {
+			UnitPriceListSourceMap
+					.putAll((VRMap) getUnitPriceListSource().getData(i));
+			getDBManager()
+					.executeUpdate(
+							getSQL_INSURT_INSURER_UNIT_PRICE_DETAIL(UnitPriceListSourceMap));
+		}
+
+	}
+
+	/**
+	 * 「データ編集」に関する処理を行ないます。 テーブル表示用に編集する関数です。
+	 *  [総合事業対応][Keiko Yano] 2016/08 add
+	 * 
+	 * @return VRMap 単位数単価情報（編集済）
+	 * @param VRMap
+	 *            単位数単価情報（単件）
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public VRMap toUnitPriceTableList(VRMap map) throws Exception {
+
+		if (map == null) {
+			return null;
+		}
+
+		// コードマスタより名称を取得する。
+		VRList list = null;
+		VRMap temp = null;
+
+		// 地域区分の名称取得
+		list = QkanCommon.getArrayFromMasterCode(153, "UNIT_PRICE_TYPE_NAME");
+		temp = new VRHashMap();
+		if (VRBindPathParser.has("UNIT_PRICE_TYPE", map)) {
+			temp = ACBindUtilities.getMatchRowFromValue(list, "CONTENT_KEY",
+					VRBindPathParser.get("UNIT_PRICE_TYPE", map));
+			if (temp != null) {
+				VRBindPathParser.set("UNIT_PRICE_TYPE_NAME", map,
+						VRBindPathParser.get("CONTENT", temp));
+			}
+		}
+				
+		return map;
+
+	}
 
 }

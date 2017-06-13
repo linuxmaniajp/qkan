@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 亀井　陽一郎
- * 作成日: 2016/07/13  日本コンピューター株式会社 亀井　陽一郎 新規作成
+ * 作成日: 2016/12/01  MIS九州株式会社 亀井　陽一郎 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -239,6 +239,28 @@ public class QS001_50511_201504State extends QS001_50511_201504Design {
 
         getPreventiveExpertPlaceCareServiceRadio().setEnabled(false);
         getPreventiveExpertPlaceCareServiceRadio().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「選択的サービス複数実施加算」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_SENTAKU_ADD() throws Exception {
+
+        getSentakutekiServiceRadio().setEnabled(true);
+        getSentakutekiServiceRadio().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「選択的サービス複数実施加算」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_SENTAKU_ADD() throws Exception {
+
+        getSentakutekiServiceRadio().setEnabled(false);
+        getSentakutekiServiceRadio().getParent().setEnabled(false);
 
   }
 

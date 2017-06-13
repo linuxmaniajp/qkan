@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -60,9 +61,17 @@ import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.core.debugger.ACStaticDebugger;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSummaryManager;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerChecker;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerException;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaNotFoundException;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACDBManager;
@@ -522,6 +531,11 @@ public class QS001 extends QS001Event {
                 getServiceKindsList(), getInSpecialFacilityFlag(),
                 getOldFacilityUserFlag());
 
+        // 2016/9/27 [総合事業対応][Yoichiro Kamei] add - begin
+        QkanSjTankaManager.initialize(getDBManager(), getTargetDate());
+        QkanSjServiceCodeManager.clearCacheIfUpdated(getDBManager());
+        // 2016/9/27 [総合事業対応][Yoichiro Kamei] add - end
+        
         // ※ウィンドウタイトルの設定
         // 業務情報レコードを取得する。
         // ウィンドウタイトルに、取得レコードのKEY : WINDOW_TITLEのVALUEを設定する。
@@ -1628,6 +1642,12 @@ public class QS001 extends QS001Event {
         boolean doubleCheck_15111 = false;
         boolean doubleCheck_15411 = false;
         
+        
+        // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
+        QkanSjInsurerChecker sjInsurerChecker = new QkanSjInsurerChecker(getCalcurater());
+        boolean isSogoAdjudtUnitCheck = false; //総合事業の調整額のチェックを行うかどうか
+        // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
+        
         // 予防時対応（要望）
         // 2005/05/31
         // ※介護支援専門員番号が未入力の場合の未入力チェック
@@ -1776,6 +1796,45 @@ public class QS001 extends QS001Event {
                     }
             }
             // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add end 
+            
+            // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
+            String skind = ACCastUtilities.toString(row.get("SYSTEM_SERVICE_KIND_DETAIL"), "");
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuCodes.contains(skind)) {
+                // 算定可能な保険者のコードかチェック
+                try {
+                    sjInsurerChecker.checkCodes(row);
+                } catch (QkanSjInsurerException e) {
+                    Date serviceDate = ACCastUtilities.toDate(row.get("SERVICE_DATE"), null);
+                    String dayOfMonth = "";
+                    if (serviceDate != null) {
+                        dayOfMonth = ACDateUtilities.getDayOfMonth(serviceDate) + "日の";
+                    }
+                    // サービスコード
+                    Map code = e.getCode();
+                    String svCode = 
+                    ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"), "") + "-" +
+                    ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+
+                    String svCodedName = "コード: [" + svCode+ "] ";
+                    String addMsg =  "内容を確認してください。";
+                    if (e.isTukitotyuJushotiTokurei()) {
+                        if ("3".equals(ACCastUtilities.toString(code.get("TOTAL_GROUPING_TYPE"), ""))) {
+                            addMsg = "月途中住所地特例の場合、月額サービスは、月末時点の保険者のサービスを設定してください。";
+                        }
+                    }
+                    // エラーメッセージ
+                    QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_INSURER_ID(dayOfMonth, svCodedName, addMsg);
+                    return false;
+                }
+                // 独自・独自定率・独自定額サービスの登録があって、
+                // 計画単位数が入力されている場合、実績保存時に調整額のチェックを行う
+                VRMap planUnits = getMonthlyPanel().getPlanUnits();
+                if ((planUnits != null) && (!planUnits.isEmpty())) {
+                    isSogoAdjudtUnitCheck = true;
+                }
+            }
+            // 2016/10 [Yoichiro Kamei] add - end
+            
         }
 
         // ※回数チェック
@@ -1830,7 +1889,9 @@ public class QS001 extends QS001Event {
 
         // ※その他の回数超過警告チェック
         int[] countOf50111 = {0, 0, 0, 0};
+        int[] countOf50211 = {0, 0, 0, 0};
         int[] countOf50511 = {0, 0};
+        int[] countOf50611 = {0, 0};
         String sogoErrorService = null;
 
         // 月n回を上限とする加算
@@ -2047,7 +2108,7 @@ public class QS001 extends QS001Event {
                 }
             }
             
-            // [H27.4法改正対応][Shinobu Hitaka] 2016/07/19 add begin 総合事業（みなし）対応
+            // [H27.4法改正対応][Shinobu Hitaka] 2016/07/19 add begin 総合事業（みなし・独自）対応
             if ("50111".equals(systemServiceKindDetail)) {
                 // 訪問型サービス（みなし）の回数チェック
                 if (ACCastUtilities.toInt(row.getData("5010101"),1) == 4) {
@@ -2079,7 +2140,38 @@ public class QS001 extends QS001Event {
                         warningTargetLimit = "22回まで";
                     }
                 }
-            }else if ("50511".equals(systemServiceKindDetail)) {
+            } else if ("50211".equals(systemServiceKindDetail)) {
+                    // 訪問型サービス（独自）の回数チェック
+                    if (ACCastUtilities.toInt(row.getData("5020101"),1) == 4) {
+                        countOf50211[0]++;
+                        if (countOf50211[0] > 4) {
+                            warningTargetName = "訪問型独自サービスIV ";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "4回まで";
+                        }
+                    } else if (ACCastUtilities.toInt(row.getData("5020101"),1) == 5) {
+                    	countOf50211[1]++;
+                        if (countOf50211[1] > 8) {
+                            warningTargetName = "訪問型独自サービスV ";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "5回から8回まで";
+                        }
+                    } else if (ACCastUtilities.toInt(row.getData("5020101"),1) == 6) {
+                    	countOf50211[2]++;
+                        if (countOf50211[2] > 12) {
+                            warningTargetName = "訪問型独自サービスVI ";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "9回から12回まで";
+                        }
+                    } else if (ACCastUtilities.toInt(row.getData("5020101"),1) == 7) {
+                    	countOf50211[3]++;
+                        if (countOf50211[3] > 22) {
+                            warningTargetName = "訪問型独自短時間サービス";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "22回まで";
+                        }
+                    }
+            } else if ("50511".equals(systemServiceKindDetail)) {
                 // 通所型サービス（みなし）の回数チェック
                 // 算定区分：通常 ＆ 回数
                 if (ACCastUtilities.toInt(row.getData("9"),1) == 1 && ACCastUtilities.toInt(row.getData("5050102"),1) == 2) {
@@ -2096,6 +2188,28 @@ public class QS001 extends QS001Event {
                         countOf50511[1]++;
                         if (countOf50511[1] > 8) {
                             warningTargetName = "通所型サービス２回数";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "5回から8回まで";
+                        }
+                    }
+                }
+            } else if ("50611".equals(systemServiceKindDetail)) {
+                // 通所型サービス（独自）の回数チェック
+                // 算定区分：通常 ＆ 回数
+                if (ACCastUtilities.toInt(row.getData("9"),1) == 1 && ACCastUtilities.toInt(row.getData("5060102"),1) == 2) {
+                    if (ACCastUtilities.toInt(row.getData("5060101"),1) == 1) {
+                        // サービス１
+                        countOf50611[0]++;
+                        if (countOf50611[0] > 4) {
+                            warningTargetName = "通所型独自サービス１回数";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "4回まで";
+                        }
+                    } else if (ACCastUtilities.toInt(row.getData("5060101"),1) == 2) {
+                        // サービス２
+                        countOf50611[1]++;
+                        if (countOf50611[1] > 8) {
+                            warningTargetName = "通所型独自サービス２回数";
                             warningTargetSpan = "ひと月に";
                             warningTargetLimit = "5回から8回まで";
                         }
@@ -2273,6 +2387,64 @@ public class QS001 extends QS001Event {
         }
         // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
 
+        // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
+        // 実績保存時に計画単位数が入力されている場合
+        if ((getProcessType() == QkanConstants.PROCESS_TYPE_RESULT) 
+            && isSogoAdjudtUnitCheck) {
+            try {
+                // 調整額を設定するための一時的なIDを付ける
+                Map<String, Object> updateKeyMap = new HashMap<String, Object>();
+                for (int i = 0; i < list.size(); i++) {
+                    VRMap service = (VRMap) list.get(i);
+                    String id = String.valueOf(i); //IDは連番
+                    service.put(QS001009Event.QS001009_UPDATE_KEY, id);
+                    //後で更新対象のサービスをIDから取得するために格納
+                    updateKeyMap.put(id, service);
+                }
+                
+                // 総合事業 独自・独自定率・独自定額サービスの調整額と計画単位数の整合性チェック
+                CareServiceSummaryManager summary = new CareServiceSummaryManager(
+                        getCalcurater(), getMonthlyPanel().getPatientInsureInfoHeaviest(),
+                        getMonthlyPanel().getMonthlySchedule().getMasterService());
+                
+                // データのクローンを作成する。
+                VRList cloneServices = new VRArrayList();
+                cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+                summary.initialize(getCalcurater(), cloneServices);
+                summary.parsePlanUnits(getMonthlyPanel().getPlanUnits());
+                List<Map<String, Object>> ret = summary.checkAndAdjustUnits();
+                if (!ret.isEmpty()) {
+                    if (ACMessageBox.RESULT_OK == QkanMessageList.getInstance().QS001_WARNING_OF_SJ_LIMIT_OVER_UNIT_INCONSISTENT()) {
+                        for (Map item : ret) {
+                            Map source = (Map) item.get("PARSED_ROW");
+                            int planUnit = ACCastUtilities.toInt(item.get("PLAN_UNIT"), 0);
+                            summary.applyPlanUnit(source, planUnit);
+                        }
+                    } else {
+                        QkanMessageList.getInstance().QS001_WARNING_OF_INPUT_SJ_LIMIT_OVER_UNIT();
+                        return false;
+                    }
+                }
+                Map<String, Integer> results = summary.getAdjustResults();
+                // サービスが更新された場合
+                if (!results.isEmpty()) {
+                    // 入力された調整額をサービスに反映させる
+                    for (String id : results.keySet()) {
+                        int adjust = results.get(id);
+                        VRMap service = (VRMap) updateKeyMap.get(id);
+                        service.put("REGULATION_RATE", adjust);
+                    }
+                }
+            } finally {
+                // 調整額を設定するための一時的なIDを削除する
+                for (int i = 0; i < list.size(); i++) {
+                    VRMap service = (VRMap) list.get(i);
+                    service.remove(QS001009Event.QS001009_UPDATE_KEY);
+                }
+            }
+        }
+        // 2016/10 [Yoichiro Kamei] add - end
+        
         it = list.iterator();
 
         // [ID:0000456][Masahiko Higuchi] 2009/03 edit begin 平成21年4月法改正対応
@@ -2734,6 +2906,11 @@ public class QS001 extends QS001Event {
                 getTargetDate(),
                 QkanConstants.SERVICE_DETAIL_GET_PLAN_OF_MONTHLY_ONLY);
         dbm.commitTransaction();
+        
+        // 2016/9/14 [Yoichiro Kamei] mod - begin 総合事業対応
+        // 調整額をもとに計画単位数を設定
+        boolean existsRegulationRate = false;
+        // 2016/9/14 [Yoichiro Kamei] mod - end
         Iterator it = plans.iterator();
         while (it.hasNext()) {
             // USE_TYPEが予定のものになっているので、実績に差し替える
@@ -2751,7 +2928,48 @@ public class QS001 extends QS001Event {
             }
             // キーを削除
             row.remove("SERVICE_ID");
+            
+            // 2016/9/14 [Yoichiro Kamei] mod - begin 総合事業対応
+            // 調整額が設定されているか確認
+            int rate = ACCastUtilities.toInt(row.get("REGULATION_RATE"), 0);
+            if (rate > 0) {
+                existsRegulationRate = true;
+            }
+            // 2016/9/14 [Yoichiro Kamei] mod - end
         }
+        
+        // 登録済みの計画単位数をクリア 2016/12/08 [Shinobu Hitaka] add
+        getMonthlyPanel().getPlanUnits().clear();
+        
+        // 2016/9/14 [Yoichiro Kamei] mod - begin 総合事業対応
+        if (existsRegulationRate) {
+            // 調整額をもとに計画単位数の設定を行いますか？
+            if (QkanMessageList.getInstance().QS001_READ_PLAN_SAVE_PLAN_UNITS() == ACMessageBox.RESULT_OK) {
+                // 「OK」選択時
+                // 調整額をもとに計画単位数の登録を行う
+                CareServiceSummaryManager summary = new CareServiceSummaryManager(
+                    getCalcurater(), getMonthlyPanel().getPatientInsureInfoHeaviest(),
+                    getMonthlyPanel().getMonthlySchedule().getMasterService());
+                
+                // データのクローンを作成する。
+                VRList cloneServices = new VRArrayList();
+                cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(plans));
+                
+                // 登録済みの計画単位数を設定
+                summary.initialize(getCalcurater(), cloneServices);
+                summary.setupPlanUnitsFromAdjusts(getMonthlyPanel().getPlanUnits());
+            } else {
+                // 「キャンセル」選択時
+                // 予定で設定された調整額をクリアする
+                it = plans.iterator();
+                while (it.hasNext()) {
+                    VRMap row = (VRMap) it.next();
+                    row.put("REGULATION_RATE", 0);
+                }
+            }
+        }
+        // 2016/9/14 [Yoichiro Kamei] add - end
+        
         // 同一対象年月の予定情報を画面に展開
         getMonthlyPanel().setSchedule(plans);
 
@@ -2800,7 +3018,13 @@ public class QS001 extends QS001Event {
             if (serviceClass != null) {
                 servicePanel = (QS001ServicePanel) serviceClass.newInstance();
             }
-
+            // 2016/8/23 [Yoichiro Kamei] add - begin 総合事業対応
+            if (servicePanel != null) {
+                if (servicePanel instanceof QS001ServicePanelSogo) {
+                    ((QS001ServicePanelSogo) servicePanel).setSystemServiceKindDetail(serviceKindDetailVal);
+                }
+            }
+            // 2016/8/23 [Yoichiro Kamei] add - end
         } catch (ClassNotFoundException e) { // by Class.forName
             // 指定した名称のクラス存在しなかった場合
             e.printStackTrace();
@@ -3231,6 +3455,17 @@ public class QS001 extends QS001Event {
             }
             getSelectedServiceClass().initialize();
             getServiceContentSettings().add(serviceClass, VRLayout.CLIENT);
+            // 2016/10/13 [Yoichiro Kamei] add - begin 総合事業対応
+            if (serviceClass instanceof QS001ServicePanelSogo) {
+                try {
+                    // 総合事業の単位数単価が設定されていなければ、警告ダイアログを表示
+                    String insurerId = ((QS001ServicePanelSogo) serviceClass).getInitialInsurerId();
+                    QkanSjTankaManager.getUnitPrice(insurerId, String.valueOf(serviceKind));
+                } catch (QkanSjTankaNotFoundException e) {
+                    QkanMessageList.getInstance().QS001_SJ_TANKA_NOT_FOUND();
+                }
+            }
+            // 2016/10/13 [Yoichiro Kamei] add - end
         } else {
             setSelectedServiceClass(null);
         }

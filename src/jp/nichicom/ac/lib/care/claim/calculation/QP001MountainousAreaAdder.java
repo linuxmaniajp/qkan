@@ -163,6 +163,8 @@ public class QP001MountainousAreaAdder {
 	 * 
 	 * key‚ÍˆÈ‰º‚ÌŒ‹‡•¶š—ñ‚Æ‚È‚è‚Ü‚·B
 	 * "SYSTEM_SERVICE_KIND_DETAIL"-"SYSTEM_SERVICE_CODE_ITEM"-"TOTAL_GROUPING_TYPE"
+	 * ‘‡–‹Æ‚Ì“Æ©‚Ìê‡‚ÍA
+	 * "INSURER_ID-SYSTEM_SERVICE_KIND_DETAIL"-"SYSTEM_SERVICE_CODE_ITEM"-"TOTAL_GROUPING_TYPE"
 	 */
 	public void removeService(String key) {
 		if (!serviceUnitAddMap.isEmpty()){

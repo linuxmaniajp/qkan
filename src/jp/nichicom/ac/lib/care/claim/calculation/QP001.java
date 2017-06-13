@@ -43,12 +43,19 @@ import jp.nichicom.ac.bind.ACBindUtilities;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerChecker;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerException;
 import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjLimitOverUnitException;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaNotFoundException;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
@@ -116,6 +123,11 @@ public class QP001 extends QP001Event {
             Map map = (Map)loginProviderInfo.getData();
             getLoginProviderInfo()
                     .setText("「" + map.get("PROVIDER_NAME") + "」に関する集計・請求処理を行ないます。他の事業所を対象とする場合は、ログアウトを行い事業所を選択しなおしてください。");
+            if ("07".equals(ACCastUtilities.toString(affair.getParameters().get("NEXT_AFFAIR")))) {
+                getLoginProviderInfo()
+                .setText("<html>「" + map.get("PROVIDER_NAME") + "」に関する集計・請求処理を行ないます。他の事業所を対象とする場合は、ログアウトを行い事業所を選択しなおしてください。"
+                		+ "<br>「独自/定率」「独自/定額」サービス、利用者負担がない場合は、割合は印字されません。</html>");
+            }
         }
         
 
@@ -278,7 +290,8 @@ public class QP001 extends QP001Event {
                 "SERVICE_TOTAL",// サービス合計金額
                 "HOKEN",// 保険請求額
                 "KOUHI",// 公費負担額
-                "RIYOUSYA"// 利用者負担額
+                "RIYOUSYA",// 利用者負担額
+                "FUTANWARIAI"// 負担割合 2016.12.03 add
         }));
         // データの設定を行う。
         getInfoTable().setModel(getPatientTableModel());
@@ -1129,6 +1142,11 @@ public class QP001 extends QP001Event {
         // 請求テーブル情報
         VRMap claimMap = new VRHashMap();
         
+        //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add begin 負担割合表示
+        // 請求テーブルの給付率情報
+        VRMap kyufuritsuMap = new VRHashMap();
+        //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add end
+        
         //保険区分
         VRMap insureTypeMap = new VRHashMap();
         
@@ -1199,6 +1217,18 @@ public class QP001 extends QP001Event {
             } catch(Exception e){
                 VRLogger.warning(e);
             }
+            
+            //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add begin 負担割合表示
+            //利用者請求一覧の場合に給付率最大値を取得する。
+            if ("07".equals(getAffair())) {
+                try{
+                    ACBindUtilities.setMapFromArray(getDBManager().executeQuery(
+                            getSQL_GET_MAX_KYUFURITSU(param)), kyufuritsuMap, "CODE");
+                } catch(Exception e){
+                    VRLogger.warning(e);
+                }
+            }
+            //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add end
         }
         //印刷済フラグの取得
         try{
@@ -1403,6 +1433,23 @@ public class QP001 extends QP001Event {
                 if(insureTypeMap.containsKey(key)){
                     record.put("INSURE_TYPE",((VRMap)insureTypeMap.get(key)).get("INSURE_TYPE"));
                 }
+                
+                //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add begin 負担割合表示
+                //利用者請求一覧の場合に給付率最大値を取得する。
+                if ("07".equals(getAffair())) {
+                    String strWariai = "";
+                    if(kyufuritsuMap.containsKey(key)){
+                        int futanwariai = 100 - ACCastUtilities.toInt(((VRMap)kyufuritsuMap.get(key)).get("KYUFURITSU"),0);
+                        if (futanwariai < 10) {
+                            strWariai = " ";
+                        }
+                        if (futanwariai >= 0 && futanwariai < 100) {
+                            strWariai = strWariai + ACCastUtilities.toString(futanwariai) + "%";
+                        }
+                    }
+                    record.put("FUTANWARIAI", strWariai);
+                }
+                //[CCCX:03616][Shinobu Hitaka] 2016.12.03 add end
             }
             
             //氏名、かな氏名を結合し表示用に変換する
@@ -1463,9 +1510,9 @@ public class QP001 extends QP001Event {
      */
     public void doTotal() throws Exception {
     	
-    	// [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add
+    	// [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add => 2016/09/27 del
     	// H27.4開始の68,69,79短期利用サービスについて、請求開始が7月より前だった場合警告表示する
-    	String errorTargetPatient = null;
+    	//String errorTargetPatient = null;
     	
         // 集計の確認メッセージを表示する。
         if (QkanMessageList.getInstance().QP001_CONFIRMATION_PRINT() == ACMessageBox.RESULT_CANCEL) {
@@ -1581,65 +1628,86 @@ public class QP001 extends QP001Event {
                 
                 //[ID:0000561][Shin Fujihara] 2009/12/14 edit begin 2009年度対応
                 //int result = doTotalDetail(patient, servicePlanList, serviceDetailList,manager);
-                int result = doTotalDetail(patient, servicePlanList, serviceDetailList,manager, errors);
+// 2016/10/13 [Yoichiro Kamei] mod - begin 総合事業対応
+//                int result = doTotalDetail(patient, servicePlanList, serviceDetailList,manager, errors);
+                int result;
+                try {
+                    result = doTotalDetail(patient, servicePlanList, serviceDetailList,manager, errors);
+                } catch (QkanSjTankaNotFoundException e) {
+                    map.put("PRINT",null);
+                    map.put("TARGET_DATE", null);
+                    errors.addSjTankaNotFound(map, e.getInsurerId());
+                    continue;
+                } catch (QkanSjInsurerException e) {
+                    map.put("PRINT",null);
+                    map.put("TARGET_DATE", null);
+                    errors.addSjIncorrectInsurers(map);
+                    continue;
+                } catch (QkanSjLimitOverUnitException e) {
+                    map.put("PRINT",null);
+                    map.put("TARGET_DATE", null);
+                    errors.addSjIncorrectLimitOverUnits(map);
+                    continue;
+                }
+// 2016/10/13 [Yoichiro Kamei] mod - end
                 //[ID:0000561][Shin Fujihara] 2009/12/14 edit end 2009年度対応
                 
-                // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可
+                // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可 => 2016/09/27 del
                 // 対象年月が4月・5月、かつ、システム日付が7月より前の場合チェックする
-                if ((ACDateUtilities.getDifferenceOnMonth(getTargetDate().getDate(),ACDateUtilities.createDate(2015, 6)) < 0)
-                		&& ACDateUtilities.getDifferenceOnMonth(getClaimDateUpdate().getDate(), ACDateUtilities.createDate(2015, 7)) < 0) {
-        	        // 予定月間表上のサービスを全走査する。
-        	        Iterator it = servicePlanList.iterator();
-        	        errorTargetPatient = null;
-        	        while (it.hasNext()) {
-        	            VRMap row = (VRMap) it.next();
-        	            //予定データがログイン事業所のものであるか確認する。
-        	            if(!QkanSystemInformation.getInstance().getLoginProviderID().equals(String.valueOf(row.get("PROVIDER_ID")))){
-        	                continue;
-        	            }
-        	            // エラーとなった利用者コードを設定する。
-        	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
-        	            		"SYSTEM_SERVICE_KIND_DETAIL", row), 0)) {
-        	            case 16811:
-        	            case 16911:
-        	            case 17911:
-        	            	if (errorTargetPatient != null) {
-        	            		errorTargetPatient += ", " + ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
-        	            	} else {
-        	            		errorTargetPatient = ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
-        	            	}
-        	            }
-    	            	if (errorTargetPatient != null) {
-        	            	break;
-    	            	}
-        	        }
-        	        // 実績月間表上のサービスを全走査する。既に予定で見つかった場合は省略する。
-        	        if (errorTargetPatient == null) {
-	        	        it = serviceDetailList.iterator();
-	        	        while (it.hasNext()) {
-	        	            VRMap row = (VRMap) it.next();
-	        	            //実績データがログイン事業所のものであるか確認する。
-	        	            if(!QkanSystemInformation.getInstance().getLoginProviderID().equals(String.valueOf(row.get("PROVIDER_ID")))){
-	        	                continue;
-	        	            }
-	        	            // エラーとなった利用者コードを設定する。
-	        	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
-	        	            		"SYSTEM_SERVICE_KIND_DETAIL", row), 0)) {
-	        	            case 16811:
-	        	            case 16911:
-	        	            case 17911:
-	        	            	if (errorTargetPatient != null) {
-	        	            		errorTargetPatient += ", " + ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
-	        	            	} else {
-	        	            		errorTargetPatient = ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
-	        	            	}
-	        	            }
-	    	            	if (errorTargetPatient != null) {
-	        	            	break;
-	    	            	}
-	        	        }
-        	        }
-        	    }
+//                if ((ACDateUtilities.getDifferenceOnMonth(getTargetDate().getDate(),ACDateUtilities.createDate(2015, 6)) < 0)
+//                		&& ACDateUtilities.getDifferenceOnMonth(getClaimDateUpdate().getDate(), ACDateUtilities.createDate(2015, 7)) < 0) {
+//        	        // 予定月間表上のサービスを全走査する。
+//        	        Iterator it = servicePlanList.iterator();
+//        	        errorTargetPatient = null;
+//        	        while (it.hasNext()) {
+//        	            VRMap row = (VRMap) it.next();
+//        	            //予定データがログイン事業所のものであるか確認する。
+//        	            if(!QkanSystemInformation.getInstance().getLoginProviderID().equals(String.valueOf(row.get("PROVIDER_ID")))){
+//        	                continue;
+//        	            }
+//        	            // エラーとなった利用者コードを設定する。
+//        	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+//        	            		"SYSTEM_SERVICE_KIND_DETAIL", row), 0)) {
+//        	            case 16811:
+//        	            case 16911:
+//        	            case 17911:
+//        	            	if (errorTargetPatient != null) {
+//        	            		errorTargetPatient += ", " + ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+//        	            	} else {
+//        	            		errorTargetPatient = ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+//        	            	}
+//        	            }
+//    	            	if (errorTargetPatient != null) {
+//        	            	break;
+//    	            	}
+//        	        }
+//        	        // 実績月間表上のサービスを全走査する。既に予定で見つかった場合は省略する。
+//        	        if (errorTargetPatient == null) {
+//	        	        it = serviceDetailList.iterator();
+//	        	        while (it.hasNext()) {
+//	        	            VRMap row = (VRMap) it.next();
+//	        	            //実績データがログイン事業所のものであるか確認する。
+//	        	            if(!QkanSystemInformation.getInstance().getLoginProviderID().equals(String.valueOf(row.get("PROVIDER_ID")))){
+//	        	                continue;
+//	        	            }
+//	        	            // エラーとなった利用者コードを設定する。
+//	        	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+//	        	            		"SYSTEM_SERVICE_KIND_DETAIL", row), 0)) {
+//	        	            case 16811:
+//	        	            case 16911:
+//	        	            case 17911:
+//	        	            	if (errorTargetPatient != null) {
+//	        	            		errorTargetPatient += ", " + ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+//	        	            	} else {
+//	        	            		errorTargetPatient = ACCastUtilities.toString(VRBindPathParser.get("PATIENT_CODE", patient));
+//	        	            	}
+//	        	            }
+//	    	            	if (errorTargetPatient != null) {
+//	        	            	break;
+//	    	            	}
+//	        	        }
+//        	        }
+//        	    }
                 // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
                 
                 // 介護保険分の実績集計を行なう。
@@ -1690,12 +1758,12 @@ public class QP001 extends QP001Event {
         }
         //[ID:0000561][Shin Fujihara] 2009/12/14 edit end 2009年度対応
         
-        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可
-        if (errorTargetPatient != null) {
-	        if (QkanMessageList.getInstance()
-	                .QS001_WARNING_OF_CLAIM_STARTDATE2() == ACMessageBox.RESULT_OK) {
-	        }
-        }
+        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可 => 2016/09/27 del
+        //if (errorTargetPatient != null) {
+	    //    if (QkanMessageList.getInstance()
+	    //            .QS001_WARNING_OF_CLAIM_STARTDATE2() == ACMessageBox.RESULT_OK) {
+	    //    }
+        //}
         // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
         
         // 集計が終了したことを示すメッセージを表示する。
@@ -1743,6 +1811,11 @@ public class QP001 extends QP001Event {
         // 利用者の情報を取得する。
         QP001PatientState patientState = new QP001PatientState(getDBManager(), patient, getTargetDate().getDate());
 
+        // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - begin
+        CareServiceCodeCalcurater calcurater = getCalcurater(getDBManager(), getTargetDate().getDate(), patient, patientState);
+        QkanSjInsurerChecker sjInsurerChecker = new QkanSjInsurerChecker(calcurater);
+        // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
+        
         // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
         SelfPaymentNumberCalcurater selfPaymentNumberCalcurater = 
         		new SelfPaymentNumberCalcurater(getDBManager(), getTargetDate().getDate(), patient, patientState, serviceDetailList);
@@ -1751,6 +1824,11 @@ public class QP001 extends QP001Event {
         
         //サービスコード生成ロジックのキャッシュをクリアする。
         Qkan10011_ServiceCodeManager.getInstance().clearServiceCodeCache();
+        
+        // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+        // 区分支給限度超単位数をクリア
+        manager.clearSogoLimitOverMap();
+        // 2016/10/11 [Yoichiro Kamei] add - end
 
         // 月次予定データ分ループする
         for(int i = 0; i < servicePlanList.size(); i++){
@@ -1810,6 +1888,14 @@ public class QP001 extends QP001Event {
             // サービスコードを取得する
             serviceCodeList = ug.getServiceCode(serviceDetail, getDBManager());
             
+            // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - begin
+            String skind = ACCastUtilities.toString(serviceDetail.get("SYSTEM_SERVICE_KIND_DETAIL"));
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuCodes.contains(skind)) {
+                // 総合事業の保険者番号チェック
+                sjInsurerChecker.checkServiceCodeList(serviceCodeList, serviceDetail);
+            }
+            // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
+            
             boolean first = true;
             // サービス情報分ループする。
             for (int j = 0; j < serviceCodeList.size(); j++) {
@@ -1862,7 +1948,12 @@ public class QP001 extends QP001Event {
                 planUnitMap = serviceDetail;
                 continue;
             }
-
+            
+            // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+            // 区分支給限度超単位数を保持
+            manager.parseLimitOverUnit(getDBManager(), serviceDetail);
+            // 2016/10/11 [Yoichiro Kamei] add - end
+            
             // サービス情報退避用のVRArrayList serviceCode を生成し、
             // 実績データからサービス情報を取得する。
             //[H20.4 法改正対応] fujihara edit start
@@ -1924,6 +2015,14 @@ public class QP001 extends QP001Event {
             // サービスコードを取得する
             serviceCodeList = ug.getServiceCode(serviceDetail, getDBManager());
 
+            // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - begin
+            String skind = ACCastUtilities.toString(serviceDetail.get("SYSTEM_SERVICE_KIND_DETAIL"));
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuCodes.contains(skind)) {
+                // 総合事業の保険者番号チェック
+                sjInsurerChecker.checkServiceCodeList(serviceCodeList, serviceDetail);
+            }
+            // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
+            
             firstRecord = true;
             
             //サービスコードの変換を行う。
@@ -2315,6 +2414,15 @@ public class QP001 extends QP001Event {
                 String key = String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")) + "-"
                 + String.valueOf(serviceCode.get("SYSTEM_SERVICE_CODE_ITEM")) + "-"
                 + String.valueOf(serviceCode.get("TOTAL_GROUPING_TYPE"));
+                
+                // 2016/10/20 [Yoichiro Kamei] add - begin 総合事業対応
+                String skind = ACCastUtilities.toString(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL"));
+                if (QkanSjServiceCodeManager.dokujiCodes.contains(skind)) {
+                    // キーの先頭に保険者番号を付ける。
+                    //（endsWithで集計集合化区分を見ている処理があるので、キーの最後には付けない）
+                    key = ACCastUtilities.toString(serviceCode.get("INSURER_ID")) + "-" + key;
+                }
+                // 2016/10/20 [Yoichiro Kamei] add - begin 総合事業対応
                 
                 unit = new Integer(manager.getServiceUnit(String.valueOf(serviceDetail.get("PROVIDER_ID")),serviceCode));
                 unitMap.put(key,unit);
@@ -3285,4 +3393,23 @@ public class QP001 extends QP001Event {
 	}
 	// [ID:0000629][Shin Fujihara] 2011/02 add end 2010年度対応
 	
+	// 2016/10 [総合事業対応][Yoichiro Kamei] add - begin
+	private CareServiceCodeCalcurater getCalcurater(ACDBManager dbm, 
+			Date targetDate,
+			VRMap patientInfo,
+			QP001PatientState patientState) throws Exception {
+		
+		// サービス単位計算クラスを生成
+		CareServiceCodeCalcurater calcurater = new CareServiceCodeCalcurater();
+		
+		VRMap hashedProviders = new VRHashMap();
+		ACBindUtilities.setMapFromArray(QkanCommon.getProviderInfo(dbm), hashedProviders, "PROVIDER_ID");
+		int inSpecialFacilityFlag =  ACCastUtilities.toInt(patientState.getShisetsuData("TOKUTEI_NYUSHO_FLAG"), 0);
+		int oldFacilityUserFlag = ACCastUtilities.toInt(patientState.getShisetsuData("KYUSOCHI_FLAG"), 0);
+		VRList insureInfoHistory = QkanCommon.getPatientInsureInfoHistory(dbm, targetDate, patientState.getPatientId());
+		//serviceKindsは使用していないので空のリストをセットしている
+		calcurater.initialize(targetDate, patientInfo, insureInfoHistory, hashedProviders, dbm, new VRArrayList(), inSpecialFacilityFlag, oldFacilityUserFlag);
+		return calcurater;
+	}
+	// 2016/10 [総合事業対応][Yoichiro Kamei] add - end
 }

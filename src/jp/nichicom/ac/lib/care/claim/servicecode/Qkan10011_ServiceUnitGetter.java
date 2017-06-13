@@ -37,6 +37,12 @@ public abstract class Qkan10011_ServiceUnitGetter {
     public static final String SYOGUKAIZEN_KASAN = "17";
     // [ID:0000682] 2012/01 end
 
+ // 2016/8/23 [Yoichiro Kamei] add - begin 総合事業対応
+    public static  final String SJ_HOKENSHA_NO_BIND_PATH = "500";
+    public static  final int SJ_SERVICE_CODE_BIND_PATH_ST = 501;
+    public static  final int SJ_SERVICE_CODE_BIND_PATH_ED = 510;
+ // 2016/8/23 [Yoichiro Kamei] add - end
+    
     // サービスコード生成項目値 初期値
     public static final String DEFAULT_CHAR = "1";
 
@@ -133,7 +139,7 @@ public abstract class Qkan10011_ServiceUnitGetter {
             break;
             
 // 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
-        case 6: // 経過的要介護
+        case 6: // 事業対象者
             systemYokaigodo = 10;
             break;
 // 2016/7/5 [Yoichiro Kamei] add - end
@@ -191,6 +197,29 @@ public abstract class Qkan10011_ServiceUnitGetter {
         return true;
     }
 
+// 2016/8/23 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * SYSTEM_SERVICE_CODE_ITEM格納用のリストに値を追加する（総合事業の独自定率・独自定額に使用）
+     * 
+     * @param sysSvcCdItems システムサービス項目コードを格納するためのマップ
+     * @param codes サービスに選択されたコード
+     */
+    protected void putSogoSystemServiceCodeItems(
+            ArrayList<HashMap<String, String>> sysSvcCdItems,
+            Map codes) {
+        for (int key = SJ_SERVICE_CODE_BIND_PATH_ST; key <=SJ_SERVICE_CODE_BIND_PATH_ED; key++) {
+            String value = ACCastUtilities.toString(codes.get(String.valueOf(key)), "");
+            if ("".equals(value)) {
+                break;
+            }
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("SYSTEM_SERVICE_KIND_DETAIL", getSystemServiceKindDetail());
+            map.put("SYSTEM_SERVICE_CODE_ITEM", value);
+            sysSvcCdItems.add(map);
+        }
+    }
+// 2016/8/23 [Yoichiro Kamei] add - end
+    
     /**
      * SYSTEM_SERVICE_CODE_ITEMからサービスコードを取得する
      * 
@@ -221,6 +250,17 @@ public abstract class Qkan10011_ServiceUnitGetter {
                         "SYSTEM_SERVICE_CODE_ITEM").toString();
                 String systemServiceCodeDetail = systemServiceCodeMap.get(
                         "SYSTEM_SERVICE_KIND_DETAIL").toString();
+                
+             // 2016/8/23 [Yoichiro Kamei] add - begin 総合事業対応
+                if (QkanSjServiceCodeManager.teiritsuTeigakuCodes.contains(systemServiceCodeDetail)) {
+                    VRMap ret = QkanSjServiceCodeManager.getSjServiceCodeByKey(dbm, systemServiceCodeItem, sysYmd);
+                    if (!ret.isEmpty()) {
+                        serviceCode.add(ret);
+                        continue;
+                    }
+                }
+             // 2016/8/23 [Yoichiro Kamei] add - end
+                
                 // String serviceValidStart =
                 // systemServiceCodeMap.get("SERVICE_VALID_START").toString();
 
@@ -318,7 +358,30 @@ public abstract class Qkan10011_ServiceUnitGetter {
                 }
                 System.out.println(data);
                 if (data.getDataSize() > 0) {
-                    serviceCode.add((VRMap) data.getData(0));
+                    // 2016/8/23 [Yoichiro Kamei] mod - begin 総合事業対応
+                    //serviceCode.add((VRMap) data.getData(0));
+                    VRMap code = (VRMap) data.getData(0);
+                    // 独自の場合
+                    if (QkanSjServiceCodeManager.dokujiCodes.contains(systemServiceCodeDetail)) {
+                        String insurerId = map.get(SJ_HOKENSHA_NO_BIND_PATH);
+                        // 保険者番号をセット
+                        code.put("INSURER_ID", insurerId);
+                        // 上書き対象が％加算でなければ、単位数を上書き
+                        if (!(ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 3 //％加算(地域系加算)
+                                || ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 6 //％加算(対象に地域系加算を含む)
+                                || ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 8 //処遇改善加算
+                            )) {
+                            String itemCode = ACCastUtilities.toString(code.getData("SERVICE_CODE_ITEM"));
+                            String sjKey = QkanSjServiceCodeManager.createSjServiceCodeKey(insurerId, systemServiceCodeDetail, itemCode);
+                            VRMap ret = QkanSjServiceCodeManager.getSjServiceCodeByKey(dbm, sjKey, sysYmd);
+                            int unit = ACCastUtilities.toInt(ret.get("SERVICE_UNIT"), 0);
+                            if (unit != 0) {
+                                code.put("SERVICE_UNIT", unit);
+                            }
+                        }
+                    }
+                    serviceCode.add(code);
+                    // 2016/8/23 [Yoichiro Kamei] mod - end
                 }
             }
         } catch (Exception ex) {

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2016/07/26  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2016/09/26  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -242,6 +242,30 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn csvDataTableColumn54;
 
   private ACTableColumn csvDataTableColumn55;
+
+  private ACTableColumn csvDataTableColumn56;
+
+  private ACTableColumn csvDataTableColumn57;
+
+  private ACTableColumn csvDataTableColumn58;
+
+  private ACTableColumn csvDataTableColumn59;
+
+  private ACTableColumn csvDataTableColumn60;
+
+  private ACTableColumn csvDataTableColumn61;
+
+  private ACTableColumn csvDataTableColumn62;
+
+  private ACTableColumn csvDataTableColumn63;
+
+  private ACTableColumn csvDataTableColumn64;
+
+  private ACTableColumn csvDataTableColumn65;
+
+  private ACTableColumn csvDataTableColumn66;
+
+  private ACTableColumn csvDataTableColumn67;
 
   private ACTableColumn csvDataTableColumn45;
 
@@ -2046,17 +2070,17 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 総通みカラムを取得します。
-   * @return 総通みカラム
+   * 総訪独カラムを取得します。
+   * @return 総訪独カラム
    */
   public ACTableColumn getCsvDataTableColumn55(){
     if(csvDataTableColumn55==null){
 
       csvDataTableColumn55 = new ACTableColumn();
 
-      csvDataTableColumn55.setHeaderValue("<html>総<br>通<br>み</html>");
+      csvDataTableColumn55.setHeaderValue("<html>総<br>訪<br>独</html>");
 
-      csvDataTableColumn55.setColumnName("A5");
+      csvDataTableColumn55.setColumnName("A2");
 
       csvDataTableColumn55.setEditable(false);
 
@@ -2067,6 +2091,306 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
       addCsvDataTableColumn55();
     }
     return csvDataTableColumn55;
+
+  }
+
+  /**
+   * 総訪率カラムを取得します。
+   * @return 総訪率カラム
+   */
+  public ACTableColumn getCsvDataTableColumn56(){
+    if(csvDataTableColumn56==null){
+
+      csvDataTableColumn56 = new ACTableColumn();
+
+      csvDataTableColumn56.setHeaderValue("<html>総<br>訪<br>率</html>");
+
+      csvDataTableColumn56.setColumnName("A3");
+
+      csvDataTableColumn56.setEditable(false);
+
+      csvDataTableColumn56.setColumns(3);
+
+      csvDataTableColumn56.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn56();
+    }
+    return csvDataTableColumn56;
+
+  }
+
+  /**
+   * 総訪額カラムを取得します。
+   * @return 総訪額カラム
+   */
+  public ACTableColumn getCsvDataTableColumn57(){
+    if(csvDataTableColumn57==null){
+
+      csvDataTableColumn57 = new ACTableColumn();
+
+      csvDataTableColumn57.setHeaderValue("<html>総<br>訪<br>額</html>");
+
+      csvDataTableColumn57.setColumnName("A4");
+
+      csvDataTableColumn57.setEditable(false);
+
+      csvDataTableColumn57.setColumns(3);
+
+      csvDataTableColumn57.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn57();
+    }
+    return csvDataTableColumn57;
+
+  }
+
+  /**
+   * 総通みカラムを取得します。
+   * @return 総通みカラム
+   */
+  public ACTableColumn getCsvDataTableColumn58(){
+    if(csvDataTableColumn58==null){
+
+      csvDataTableColumn58 = new ACTableColumn();
+
+      csvDataTableColumn58.setHeaderValue("<html>総<br>通<br>み</html>");
+
+      csvDataTableColumn58.setColumnName("A5");
+
+      csvDataTableColumn58.setEditable(false);
+
+      csvDataTableColumn58.setColumns(3);
+
+      csvDataTableColumn58.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn58();
+    }
+    return csvDataTableColumn58;
+
+  }
+
+  /**
+   * 総通独カラムを取得します。
+   * @return 総通独カラム
+   */
+  public ACTableColumn getCsvDataTableColumn59(){
+    if(csvDataTableColumn59==null){
+
+      csvDataTableColumn59 = new ACTableColumn();
+
+      csvDataTableColumn59.setHeaderValue("<html>総<br>通<br>独</html>");
+
+      csvDataTableColumn59.setColumnName("A6");
+
+      csvDataTableColumn59.setEditable(false);
+
+      csvDataTableColumn59.setColumns(3);
+
+      csvDataTableColumn59.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn59();
+    }
+    return csvDataTableColumn59;
+
+  }
+
+  /**
+   * 総通率カラムを取得します。
+   * @return 総通率カラム
+   */
+  public ACTableColumn getCsvDataTableColumn60(){
+    if(csvDataTableColumn60==null){
+
+      csvDataTableColumn60 = new ACTableColumn();
+
+      csvDataTableColumn60.setHeaderValue("<html>総<br>通<br>率</html>");
+
+      csvDataTableColumn60.setColumnName("A7");
+
+      csvDataTableColumn60.setEditable(false);
+
+      csvDataTableColumn60.setColumns(3);
+
+      csvDataTableColumn60.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn60();
+    }
+    return csvDataTableColumn60;
+
+  }
+
+  /**
+   * 総通額カラムを取得します。
+   * @return 総通額カラム
+   */
+  public ACTableColumn getCsvDataTableColumn61(){
+    if(csvDataTableColumn61==null){
+
+      csvDataTableColumn61 = new ACTableColumn();
+
+      csvDataTableColumn61.setHeaderValue("<html>総<br>通<br>額</html>");
+
+      csvDataTableColumn61.setColumnName("A8");
+
+      csvDataTableColumn61.setEditable(false);
+
+      csvDataTableColumn61.setColumns(3);
+
+      csvDataTableColumn61.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn61();
+    }
+    return csvDataTableColumn61;
+
+  }
+
+  /**
+   * 総食率カラムを取得します。
+   * @return 総食率カラム
+   */
+  public ACTableColumn getCsvDataTableColumn62(){
+    if(csvDataTableColumn62==null){
+
+      csvDataTableColumn62 = new ACTableColumn();
+
+      csvDataTableColumn62.setHeaderValue("<html>総<br>食<br>率</html>");
+
+      csvDataTableColumn62.setColumnName("A9");
+
+      csvDataTableColumn62.setEditable(false);
+
+      csvDataTableColumn62.setColumns(3);
+
+      csvDataTableColumn62.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn62();
+    }
+    return csvDataTableColumn62;
+
+  }
+
+  /**
+   * 総食額カラムを取得します。
+   * @return 総食額カラム
+   */
+  public ACTableColumn getCsvDataTableColumn63(){
+    if(csvDataTableColumn63==null){
+
+      csvDataTableColumn63 = new ACTableColumn();
+
+      csvDataTableColumn63.setHeaderValue("<html>総<br>食<br>額</html>");
+
+      csvDataTableColumn63.setColumnName("AA");
+
+      csvDataTableColumn63.setEditable(false);
+
+      csvDataTableColumn63.setColumns(3);
+
+      csvDataTableColumn63.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn63();
+    }
+    return csvDataTableColumn63;
+
+  }
+
+  /**
+   * 総守率カラムを取得します。
+   * @return 総守率カラム
+   */
+  public ACTableColumn getCsvDataTableColumn64(){
+    if(csvDataTableColumn64==null){
+
+      csvDataTableColumn64 = new ACTableColumn();
+
+      csvDataTableColumn64.setHeaderValue("<html>総<br>守<br>率</html>");
+
+      csvDataTableColumn64.setColumnName("AB");
+
+      csvDataTableColumn64.setEditable(false);
+
+      csvDataTableColumn64.setColumns(3);
+
+      csvDataTableColumn64.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn64();
+    }
+    return csvDataTableColumn64;
+
+  }
+
+  /**
+   * 総守額カラムを取得します。
+   * @return 総守額カラム
+   */
+  public ACTableColumn getCsvDataTableColumn65(){
+    if(csvDataTableColumn65==null){
+
+      csvDataTableColumn65 = new ACTableColumn();
+
+      csvDataTableColumn65.setHeaderValue("<html>総<br>守<br>額</html>");
+
+      csvDataTableColumn65.setColumnName("AC");
+
+      csvDataTableColumn65.setEditable(false);
+
+      csvDataTableColumn65.setColumns(3);
+
+      csvDataTableColumn65.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn65();
+    }
+    return csvDataTableColumn65;
+
+  }
+
+  /**
+   * 総他率カラムを取得します。
+   * @return 総他率カラム
+   */
+  public ACTableColumn getCsvDataTableColumn66(){
+    if(csvDataTableColumn66==null){
+
+      csvDataTableColumn66 = new ACTableColumn();
+
+      csvDataTableColumn66.setHeaderValue("<html>総<br>他<br>率</html>");
+
+      csvDataTableColumn66.setColumnName("AD");
+
+      csvDataTableColumn66.setEditable(false);
+
+      csvDataTableColumn66.setColumns(3);
+
+      csvDataTableColumn66.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn66();
+    }
+    return csvDataTableColumn66;
+
+  }
+
+  /**
+   * 総他額カラムを取得します。
+   * @return 総他額カラム
+   */
+  public ACTableColumn getCsvDataTableColumn67(){
+    if(csvDataTableColumn67==null){
+
+      csvDataTableColumn67 = new ACTableColumn();
+
+      csvDataTableColumn67.setHeaderValue("<html>総<br>他<br>額</html>");
+
+      csvDataTableColumn67.setColumnName("AE");
+
+      csvDataTableColumn67.setEditable(false);
+
+      csvDataTableColumn67.setColumns(3);
+
+      csvDataTableColumn67.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn67();
+    }
+    return csvDataTableColumn67;
 
   }
 
@@ -2449,6 +2773,30 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn55());
 
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn56());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn57());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn58());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn59());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn60());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn61());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn62());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn63());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn64());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn65());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn66());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn67());
+
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn45());
 
   }
@@ -2825,9 +3173,93 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 総通みカラムに内部項目を追加します。
+   * 総訪独カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn55(){
+
+  }
+
+  /**
+   * 総訪率カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn56(){
+
+  }
+
+  /**
+   * 総訪額カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn57(){
+
+  }
+
+  /**
+   * 総通みカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn58(){
+
+  }
+
+  /**
+   * 総通独カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn59(){
+
+  }
+
+  /**
+   * 総通率カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn60(){
+
+  }
+
+  /**
+   * 総通額カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn61(){
+
+  }
+
+  /**
+   * 総食率カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn62(){
+
+  }
+
+  /**
+   * 総食額カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn63(){
+
+  }
+
+  /**
+   * 総守率カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn64(){
+
+  }
+
+  /**
+   * 総守額カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn65(){
+
+  }
+
+  /**
+   * 総他率カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn66(){
+
+  }
+
+  /**
+   * 総他額カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn67(){
 
   }
 

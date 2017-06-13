@@ -17,8 +17,8 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2015/02/19  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 亀井　陽一郎
+ * 作成日: 2016/11/28  MIS九州株式会社 亀井　陽一郎 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -133,6 +133,22 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
 
   private ACRadioButtonItem mouthFunctionImprovementAddRadioItem2;
 
+  private ACValueArrayRadioButtonGroup sentakutekiServiceRadio;
+
+  private ACLabelContainer sentakutekiServiceRadioContainer;
+
+  private ACListModelAdapter sentakutekiServiceRadioModel;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem1;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem2;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem3;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem4;
+
+  private ACRadioButtonItem sentakutekiServiceRadioItem5;
+
   private ACValueArrayRadioButtonGroup serviceAddProvisionStructuralRadioGroup;
 
   private ACLabelContainer serviceAddProvisionStructuralRadioGroupContainer;
@@ -159,16 +175,6 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
 
   private ACRadioButtonItem staffSubtractionRadioItem3;
 
-  private ACValueArrayRadioButtonGroup youngDementiaPatinetAddRadioGroup;
-
-  private ACLabelContainer youngDementiaPatinetAddRadioGroupContainer;
-
-  private ACListModelAdapter youngDementiaPatinetAddRadioGroupModel;
-
-  private ACRadioButtonItem youngDementiaPatinetAddRadioItem1;
-
-  private ACRadioButtonItem youngDementiaPatinetAddRadioItem2;
-
   private ACBackLabelContainer houmonKaigoTimeContainer;
 
   private ACTimeComboBox houmonKaigoBeginTime;
@@ -184,6 +190,16 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
   private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
 
   private ACPanel tab2;
+
+  private ACValueArrayRadioButtonGroup youngDementiaPatinetAddRadioGroup;
+
+  private ACLabelContainer youngDementiaPatinetAddRadioGroupContainer;
+
+  private ACListModelAdapter youngDementiaPatinetAddRadioGroupModel;
+
+  private ACRadioButtonItem youngDementiaPatinetAddRadioItem1;
+
+  private ACRadioButtonItem youngDementiaPatinetAddRadioItem2;
 
   private ACValueArrayRadioButtonGroup officeEvaluationAddRadio;
 
@@ -684,6 +700,162 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算を取得します。
+   * @return 選択的サービス複数実施加算
+   */
+  public ACValueArrayRadioButtonGroup getSentakutekiServiceRadio(){
+    if(sentakutekiServiceRadio==null){
+
+      sentakutekiServiceRadio = new ACValueArrayRadioButtonGroup();
+
+      getSentakutekiServiceRadioContainer().setText("選択的サービス" + ACConstants.LINE_SEPARATOR + "複数実施加算");
+
+      sentakutekiServiceRadio.setBindPath("1650111");
+
+      sentakutekiServiceRadio.setUseClearButton(false);
+
+      sentakutekiServiceRadio.setModel(getSentakutekiServiceRadioModel());
+
+      sentakutekiServiceRadio.setValues(new int[]{1,2,3,4,5});
+
+      addSentakutekiServiceRadio();
+    }
+    return sentakutekiServiceRadio;
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算コンテナを取得します。
+   * @return 選択的サービス複数実施加算コンテナ
+   */
+  protected ACLabelContainer getSentakutekiServiceRadioContainer(){
+    if(sentakutekiServiceRadioContainer==null){
+      sentakutekiServiceRadioContainer = new ACLabelContainer();
+      sentakutekiServiceRadioContainer.setFollowChildEnabled(true);
+      sentakutekiServiceRadioContainer.setVAlignment(VRLayout.CENTER);
+      sentakutekiServiceRadioContainer.add(getSentakutekiServiceRadio(), null);
+    }
+    return sentakutekiServiceRadioContainer;
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルを取得します。
+   * @return 選択的サービス複数実施加算モデル
+   */
+  protected ACListModelAdapter getSentakutekiServiceRadioModel(){
+    if(sentakutekiServiceRadioModel==null){
+      sentakutekiServiceRadioModel = new ACListModelAdapter();
+      addSentakutekiServiceRadioModel();
+    }
+    return sentakutekiServiceRadioModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem1(){
+    if(sentakutekiServiceRadioItem1==null){
+
+      sentakutekiServiceRadioItem1 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem1.setText("なし");
+
+      sentakutekiServiceRadioItem1.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem1();
+    }
+    return sentakutekiServiceRadioItem1;
+
+  }
+
+  /**
+   * I1を取得します。
+   * @return I1
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem2(){
+    if(sentakutekiServiceRadioItem2==null){
+
+      sentakutekiServiceRadioItem2 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem2.setText("I1");
+
+      sentakutekiServiceRadioItem2.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem2();
+    }
+    return sentakutekiServiceRadioItem2;
+
+  }
+
+  /**
+   * I2を取得します。
+   * @return I2
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem3(){
+    if(sentakutekiServiceRadioItem3==null){
+
+      sentakutekiServiceRadioItem3 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem3.setText("I2");
+
+      sentakutekiServiceRadioItem3.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem3();
+    }
+    return sentakutekiServiceRadioItem3;
+
+  }
+
+  /**
+   * I3を取得します。
+   * @return I3
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem4(){
+    if(sentakutekiServiceRadioItem4==null){
+
+      sentakutekiServiceRadioItem4 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem4.setText("I3");
+
+      sentakutekiServiceRadioItem4.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
+
+      addSentakutekiServiceRadioItem4();
+    }
+    return sentakutekiServiceRadioItem4;
+
+  }
+
+  /**
+   * IIを取得します。
+   * @return II
+   */
+  public ACRadioButtonItem getSentakutekiServiceRadioItem5(){
+    if(sentakutekiServiceRadioItem5==null){
+
+      sentakutekiServiceRadioItem5 = new ACRadioButtonItem();
+
+      sentakutekiServiceRadioItem5.setText("II");
+
+      sentakutekiServiceRadioItem5.setGroup(getSentakutekiServiceRadio());
+
+      sentakutekiServiceRadioItem5.setConstraints(VRLayout.FLOW);
+
+      addSentakutekiServiceRadioItem5();
+    }
+    return sentakutekiServiceRadioItem5;
+
+  }
+
+  /**
    * サービス提供体制強化加算を取得します。
    * @return サービス提供体制強化加算
    */
@@ -935,101 +1107,6 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
   }
 
   /**
-   * 若年性認知症利用者受入加算を取得します。
-   * @return 若年性認知症利用者受入加算
-   */
-  public ACValueArrayRadioButtonGroup getYoungDementiaPatinetAddRadioGroup(){
-    if(youngDementiaPatinetAddRadioGroup==null){
-
-      youngDementiaPatinetAddRadioGroup = new ACValueArrayRadioButtonGroup();
-
-      getYoungDementiaPatinetAddRadioGroupContainer().setText("若年性認知症利用者受入加算");
-
-      youngDementiaPatinetAddRadioGroup.setBindPath("1650108");
-
-      youngDementiaPatinetAddRadioGroup.setNoSelectIndex(0);
-
-      youngDementiaPatinetAddRadioGroup.setUseClearButton(false);
-
-      youngDementiaPatinetAddRadioGroup.setModel(getYoungDementiaPatinetAddRadioGroupModel());
-
-      youngDementiaPatinetAddRadioGroup.setValues(new int[]{1,2});
-
-      addYoungDementiaPatinetAddRadioGroup();
-    }
-    return youngDementiaPatinetAddRadioGroup;
-
-  }
-
-  /**
-   * 若年性認知症利用者受入加算コンテナを取得します。
-   * @return 若年性認知症利用者受入加算コンテナ
-   */
-  protected ACLabelContainer getYoungDementiaPatinetAddRadioGroupContainer(){
-    if(youngDementiaPatinetAddRadioGroupContainer==null){
-      youngDementiaPatinetAddRadioGroupContainer = new ACLabelContainer();
-      youngDementiaPatinetAddRadioGroupContainer.setFollowChildEnabled(true);
-      youngDementiaPatinetAddRadioGroupContainer.setVAlignment(VRLayout.CENTER);
-      youngDementiaPatinetAddRadioGroupContainer.add(getYoungDementiaPatinetAddRadioGroup(), null);
-    }
-    return youngDementiaPatinetAddRadioGroupContainer;
-  }
-
-  /**
-   * 若年性認知症利用者受入加算モデルを取得します。
-   * @return 若年性認知症利用者受入加算モデル
-   */
-  protected ACListModelAdapter getYoungDementiaPatinetAddRadioGroupModel(){
-    if(youngDementiaPatinetAddRadioGroupModel==null){
-      youngDementiaPatinetAddRadioGroupModel = new ACListModelAdapter();
-      addYoungDementiaPatinetAddRadioGroupModel();
-    }
-    return youngDementiaPatinetAddRadioGroupModel;
-  }
-
-  /**
-   * なしを取得します。
-   * @return なし
-   */
-  public ACRadioButtonItem getYoungDementiaPatinetAddRadioItem1(){
-    if(youngDementiaPatinetAddRadioItem1==null){
-
-      youngDementiaPatinetAddRadioItem1 = new ACRadioButtonItem();
-
-      youngDementiaPatinetAddRadioItem1.setText("なし");
-
-      youngDementiaPatinetAddRadioItem1.setGroup(getYoungDementiaPatinetAddRadioGroup());
-
-      youngDementiaPatinetAddRadioItem1.setConstraints(VRLayout.FLOW);
-
-      addYoungDementiaPatinetAddRadioItem1();
-    }
-    return youngDementiaPatinetAddRadioItem1;
-
-  }
-
-  /**
-   * ありを取得します。
-   * @return あり
-   */
-  public ACRadioButtonItem getYoungDementiaPatinetAddRadioItem2(){
-    if(youngDementiaPatinetAddRadioItem2==null){
-
-      youngDementiaPatinetAddRadioItem2 = new ACRadioButtonItem();
-
-      youngDementiaPatinetAddRadioItem2.setText("あり");
-
-      youngDementiaPatinetAddRadioItem2.setGroup(getYoungDementiaPatinetAddRadioGroup());
-
-      youngDementiaPatinetAddRadioItem2.setConstraints(VRLayout.FLOW);
-
-      addYoungDementiaPatinetAddRadioItem2();
-    }
-    return youngDementiaPatinetAddRadioItem2;
-
-  }
-
-  /**
    * 提供時間コンテナを取得します。
    * @return 提供時間コンテナ
    */
@@ -1168,6 +1245,101 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
       addTab2();
     }
     return tab2;
+
+  }
+
+  /**
+   * 若年性認知症利用者受入加算を取得します。
+   * @return 若年性認知症利用者受入加算
+   */
+  public ACValueArrayRadioButtonGroup getYoungDementiaPatinetAddRadioGroup(){
+    if(youngDementiaPatinetAddRadioGroup==null){
+
+      youngDementiaPatinetAddRadioGroup = new ACValueArrayRadioButtonGroup();
+
+      getYoungDementiaPatinetAddRadioGroupContainer().setText("若年性認知症利用者受入加算");
+
+      youngDementiaPatinetAddRadioGroup.setBindPath("1650108");
+
+      youngDementiaPatinetAddRadioGroup.setNoSelectIndex(0);
+
+      youngDementiaPatinetAddRadioGroup.setUseClearButton(false);
+
+      youngDementiaPatinetAddRadioGroup.setModel(getYoungDementiaPatinetAddRadioGroupModel());
+
+      youngDementiaPatinetAddRadioGroup.setValues(new int[]{1,2});
+
+      addYoungDementiaPatinetAddRadioGroup();
+    }
+    return youngDementiaPatinetAddRadioGroup;
+
+  }
+
+  /**
+   * 若年性認知症利用者受入加算コンテナを取得します。
+   * @return 若年性認知症利用者受入加算コンテナ
+   */
+  protected ACLabelContainer getYoungDementiaPatinetAddRadioGroupContainer(){
+    if(youngDementiaPatinetAddRadioGroupContainer==null){
+      youngDementiaPatinetAddRadioGroupContainer = new ACLabelContainer();
+      youngDementiaPatinetAddRadioGroupContainer.setFollowChildEnabled(true);
+      youngDementiaPatinetAddRadioGroupContainer.setVAlignment(VRLayout.CENTER);
+      youngDementiaPatinetAddRadioGroupContainer.add(getYoungDementiaPatinetAddRadioGroup(), null);
+    }
+    return youngDementiaPatinetAddRadioGroupContainer;
+  }
+
+  /**
+   * 若年性認知症利用者受入加算モデルを取得します。
+   * @return 若年性認知症利用者受入加算モデル
+   */
+  protected ACListModelAdapter getYoungDementiaPatinetAddRadioGroupModel(){
+    if(youngDementiaPatinetAddRadioGroupModel==null){
+      youngDementiaPatinetAddRadioGroupModel = new ACListModelAdapter();
+      addYoungDementiaPatinetAddRadioGroupModel();
+    }
+    return youngDementiaPatinetAddRadioGroupModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getYoungDementiaPatinetAddRadioItem1(){
+    if(youngDementiaPatinetAddRadioItem1==null){
+
+      youngDementiaPatinetAddRadioItem1 = new ACRadioButtonItem();
+
+      youngDementiaPatinetAddRadioItem1.setText("なし");
+
+      youngDementiaPatinetAddRadioItem1.setGroup(getYoungDementiaPatinetAddRadioGroup());
+
+      youngDementiaPatinetAddRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addYoungDementiaPatinetAddRadioItem1();
+    }
+    return youngDementiaPatinetAddRadioItem1;
+
+  }
+
+  /**
+   * ありを取得します。
+   * @return あり
+   */
+  public ACRadioButtonItem getYoungDementiaPatinetAddRadioItem2(){
+    if(youngDementiaPatinetAddRadioItem2==null){
+
+      youngDementiaPatinetAddRadioItem2 = new ACRadioButtonItem();
+
+      youngDementiaPatinetAddRadioItem2.setText("あり");
+
+      youngDementiaPatinetAddRadioItem2.setGroup(getYoungDementiaPatinetAddRadioGroup());
+
+      youngDementiaPatinetAddRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addYoungDementiaPatinetAddRadioItem2();
+    }
+    return youngDementiaPatinetAddRadioItem2;
 
   }
 
@@ -1644,11 +1816,11 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
 
     tab1.add(getMouthFunctionImprovementAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    tab1.add(getSentakutekiServiceRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     tab1.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab1.add(getStaffSubtractionRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
-
-    tab1.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab1.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
 
@@ -1813,6 +1985,75 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * 選択的サービス複数実施加算に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadio(){
+
+  }
+
+  /**
+   * 選択的サービス複数実施加算モデルに内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioModel(){
+
+    getSentakutekiServiceRadioItem1().setButtonIndex(1);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem1());
+
+    getSentakutekiServiceRadioItem2().setButtonIndex(2);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem2());
+
+    getSentakutekiServiceRadioItem3().setButtonIndex(3);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem3());
+
+    getSentakutekiServiceRadioItem4().setButtonIndex(4);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem4());
+
+    getSentakutekiServiceRadioItem5().setButtonIndex(5);
+
+    getSentakutekiServiceRadioModel().add(getSentakutekiServiceRadioItem5());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem1(){
+
+  }
+
+  /**
+   * I1に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem2(){
+
+  }
+
+  /**
+   * I2に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem3(){
+
+  }
+
+  /**
+   * I3に内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem4(){
+
+  }
+
+  /**
+   * IIに内部項目を追加します。
+   */
+  protected void addSentakutekiServiceRadioItem5(){
+
+  }
+
+  /**
    * サービス提供体制強化加算に内部項目を追加します。
    */
   protected void addServiceAddProvisionStructuralRadioGroup(){
@@ -1918,42 +2159,6 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
   }
 
   /**
-   * 若年性認知症利用者受入加算に内部項目を追加します。
-   */
-  protected void addYoungDementiaPatinetAddRadioGroup(){
-
-  }
-
-  /**
-   * 若年性認知症利用者受入加算モデルに内部項目を追加します。
-   */
-  protected void addYoungDementiaPatinetAddRadioGroupModel(){
-
-    getYoungDementiaPatinetAddRadioItem1().setButtonIndex(1);
-
-    getYoungDementiaPatinetAddRadioGroupModel().add(getYoungDementiaPatinetAddRadioItem1());
-
-    getYoungDementiaPatinetAddRadioItem2().setButtonIndex(2);
-
-    getYoungDementiaPatinetAddRadioGroupModel().add(getYoungDementiaPatinetAddRadioItem2());
-
-  }
-
-  /**
-   * なしに内部項目を追加します。
-   */
-  protected void addYoungDementiaPatinetAddRadioItem1(){
-
-  }
-
-  /**
-   * ありに内部項目を追加します。
-   */
-  protected void addYoungDementiaPatinetAddRadioItem2(){
-
-  }
-
-  /**
    * 提供時間コンテナに内部項目を追加します。
    */
   protected void addHoumonKaigoTimeContainer(){
@@ -1997,6 +2202,8 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
    */
   protected void addTab2(){
 
+    tab2.add(getYoungDementiaPatinetAddRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     tab2.add(getOfficeEvaluationAddRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab2.add(getProviderAddMountainousAreaRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -2006,6 +2213,42 @@ public class QS001_16511_201504Design extends QS001ServicePanel {
     tab2.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     tab2.add(getInfoGroup(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 若年性認知症利用者受入加算に内部項目を追加します。
+   */
+  protected void addYoungDementiaPatinetAddRadioGroup(){
+
+  }
+
+  /**
+   * 若年性認知症利用者受入加算モデルに内部項目を追加します。
+   */
+  protected void addYoungDementiaPatinetAddRadioGroupModel(){
+
+    getYoungDementiaPatinetAddRadioItem1().setButtonIndex(1);
+
+    getYoungDementiaPatinetAddRadioGroupModel().add(getYoungDementiaPatinetAddRadioItem1());
+
+    getYoungDementiaPatinetAddRadioItem2().setButtonIndex(2);
+
+    getYoungDementiaPatinetAddRadioGroupModel().add(getYoungDementiaPatinetAddRadioItem2());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addYoungDementiaPatinetAddRadioItem1(){
+
+  }
+
+  /**
+   * ありに内部項目を追加します。
+   */
+  protected void addYoungDementiaPatinetAddRadioItem2(){
 
   }
 

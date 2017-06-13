@@ -1,6 +1,8 @@
 package jp.nichicom.ac.lib.care.claim.calculation;
 
 import java.awt.Dimension;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -35,6 +37,60 @@ public class QP001TotalErrors {
 	private VRList selfPlanStyle7 = new VRArrayList();
 	/** 要支援２のみ算定可能エラー */
 	private VRList neededSupport2Only = new VRArrayList();
+	
+	// 2016/10/13 [Yoichiro Kamei] add - begin 総合事業対応
+	private VRList sjTankaNotFound = new VRArrayList();
+	private Set<String> insurerIds = new HashSet<String>();
+	/**
+	 * 保険者の単位数単価未設定のエラーを登録する。
+	 * @param patient
+	 */
+	public void addSjTankaNotFound(VRMap patient, String insurerId) {
+		addErrorArray(getFullName(patient), sjTankaNotFound);
+		insurerIds.add(insurerId);
+	}
+	//保険者の単位数単価未設定のエラーメッセージを取得
+	private String getSjTankaNotFoundMessage() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("保険者番号[");
+		boolean first = true;
+		for (String insurerId : insurerIds) {
+			if (!first) {
+				sb.append(",");
+			}
+			sb.append(insurerId);
+			first = false;
+		}
+		sb.append("]の単位数単価が設定されていません。");
+		sb.append(ACConstants.LINE_SEPARATOR);
+		sb.append("「保険者情報詳細画面」で「総合事業単位数単価」を設定してください。");
+		sb.append(ACConstants.LINE_SEPARATOR);
+		return sb.toString();
+	}
+	// 2016/10/13 [Yoichiro Kamei] add - end
+	
+	
+	// 2016/10/25 [Yoichiro Kamei] add - begin 総合事業対応
+	private VRList sjIncorrectInsurers = new VRArrayList();
+	/**
+	 * 請求出来ない保険者のコード設定エラーを登録する。
+	 * @param patient
+	 */
+	public void addSjIncorrectInsurers(VRMap patient) {
+		addErrorArray(getFullName(patient), sjIncorrectInsurers);
+	}
+	
+	private VRList sjIncorrectLimitOverUnits = new VRArrayList();
+	
+	/**
+	 * 区分支給限度超単位数の不整合エラーを登録する。
+	 * @param patient
+	 */
+	public void addSjIncorrectLimitOverUnits (VRMap patient) {
+		addErrorArray(getFullName(patient), sjIncorrectLimitOverUnits);
+	}
+	
+	// 2016/10/25 [Yoichiro Kamei] add - end
 	
 	//private ACDateFormat errorDateFormat = new ACDateFormat("MM月dd日");
 	
@@ -140,6 +196,9 @@ public class QP001TotalErrors {
 		if (outOfTermError.size() != 0) return true;
 		if (selfPlanStyle7.size() != 0) return true;
 		if (neededSupport2Only.size() != 0) return true;
+		if (sjTankaNotFound.size() != 0) return true; // add 2016.10 総合事業独自対応
+		if (sjIncorrectInsurers.size() != 0) return true; // add 2016.10 総合事業独自対応
+		if (sjIncorrectLimitOverUnits.size() != 0) return true; // add 2016.10 総合事業独自対応
 		
 		return false;
 	}
@@ -154,6 +213,10 @@ public class QP001TotalErrors {
 		makeErrorMessage("要介護認定情報の認定期間外にサービスの実績が作成されています。", outOfTermError, msg);
 		makeErrorMessage("利用者情報の居宅サービス計画作成者の設定が不正です。", selfPlanStyle7, msg);
 		makeErrorMessage("要支援1では受給できないサービスが設定されています。", neededSupport2Only, msg);
+		
+		makeErrorMessage(getSjTankaNotFoundMessage(), sjTankaNotFound, msg);// add 2016.10 総合事業独自対応
+		makeErrorMessage("総合事業で請求できない保険者のサービスが設定されています。", sjIncorrectInsurers, msg);// add 2016.10 総合事業独自対応
+		makeErrorMessage("区分支給超単位数が不正です。実績管理で[総合事業 区分支給超単位数調整]を行ってください。", sjIncorrectLimitOverUnits, msg);// add 2016.10 総合事業独自対応
 		
 		return msg.toString();
 	}

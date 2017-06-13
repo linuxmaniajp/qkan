@@ -33,7 +33,6 @@ package jp.nichicom.ac.lib.care.claim.calculation;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRMap;
 
 public class QP001SpecialCase {
@@ -674,11 +673,15 @@ public class QP001SpecialCase {
      * 単位数を計上しないサービスであるか確認する。
      * @param serviceCodeKind
      * @param serviceCodeItem
+     * @param totalGroupingType 算定単位（1:回数 2:日 3:月）※[総合事業独自対応][Shinobu Hitaka] 2016/09/30 add
      * @return
      * @throws Exception
      */
-    public static boolean isUnitNoCountService(String serviceCodeKind, String serviceCodeItem) throws Exception {
-    	
+// [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod - begin 算定単位が月の場合は省略するためパラメータ追加
+//  public static boolean isUnitNoCountService(String serviceCodeKind, String serviceCodeItem) throws Exception {
+    public static boolean isUnitNoCountService(String serviceCodeKind, String serviceCodeItem, int totalGroupingType) throws Exception {
+// [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod - end
+
     	// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 del - begin サービスコード英数化により呼ばないようにした
         //int kind = ACCastUtilities.toInt(serviceCodeKind,0);
         //int item = ACCastUtilities.toInt(serviceCodeItem,0);
@@ -1291,7 +1294,38 @@ public class QP001SpecialCase {
             }
         }
         // [H27.4改正対応][Shinobu Hitaka] 2016/7/21 add - end
-        
+        // [H27.4改正対応][Shinobu Hitaka] 2016/9/30 add - begin
+        //訪問型サービス（独自）
+        if ("A2".equals(serviceCodeKind)) {
+        	// 月額算定のうち処遇改善加算以外は全て対象
+        	if (totalGroupingType == 3 && 
+        		!("6270".equals(item) || "6271".equals(item)
+        			|| "6273".equals(item) || "6275".equals(item))){
+        		result = true;
+        	}
+        }
+        //通所型サービス（独自）
+        if ("A6".equals(serviceCodeKind)) {
+        	// 月額算定のうち処遇改善加算以外は全て対象
+        	if (totalGroupingType == 3 && 
+        		!("6110".equals(item) || "6111".equals(item)
+        			|| "6113".equals(item) || "6115".equals(item))){
+        		result = true;
+        	}
+        }
+        // 独自定率・独自定額の場合は月額算定が全て対象
+        if ("A3".equals(serviceCodeKind) || "A4".equals(serviceCodeKind)
+        		|| "A7".equals(serviceCodeKind) || "A8".equals(serviceCodeKind)
+                || "A9".equals(serviceCodeKind) || "AA".equals(serviceCodeKind)
+                || "AB".equals(serviceCodeKind) || "AC".equals(serviceCodeKind)
+                || "AD".equals(serviceCodeKind) || "AE".equals(serviceCodeKind)
+                || "AF".equals(serviceCodeKind)) {
+        		if (totalGroupingType == 3) {
+        			result = true;
+        		}
+        }
+    	// [H27.4改正対応][Shinobu Hitaka] 2016/9/30 add - end
+
         return result;
         // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 add - end サービスコード英数化
     }
@@ -1780,9 +1814,10 @@ public class QP001SpecialCase {
      * @return
      * @throws Exception
      */
-    public static boolean isUnitNotShowService(String serviceCodeKind, String serviceCodeItem) throws Exception {
-        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
-        int item = ACCastUtilities.toInt(serviceCodeItem,0);
+//    public static boolean isUnitNotShowService(String serviceCodeKind, String serviceCodeItem) throws Exception {
+    public static boolean isUnitNotShowService(String serviceCodeKind, String serviceCodeItem, int totalGroupingType) throws Exception {
+//        int kind = ACCastUtilities.toInt(serviceCodeKind,0);
+//        int item = ACCastUtilities.toInt(serviceCodeItem,0);
         boolean result = false;
         
         // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
@@ -1820,7 +1855,10 @@ public class QP001SpecialCase {
         	//福祉用具
         	result = true;
         } else {
-        	result = isUnitNoCountService(serviceCodeKind,serviceCodeItem);
+        	// [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod - begin 算定単位パラメータ追加
+        	//result = isUnitNoCountService(serviceCodeKind,serviceCodeItem);
+        	result = isUnitNoCountService(serviceCodeKind,serviceCodeItem,totalGroupingType);
+        	// [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod - end
         }
         // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end サービスコード英数化
         
@@ -2828,9 +2866,21 @@ public class QP001SpecialCase {
             ) {
             result = true;
         }
-        // [H27.4改正対応][Shinobu Hitaka] 2016/7/22 add - begin 総合事業対応
-        if (   "A1".equals(serviceCodeKind) //訪問型サービス
-            || "A5".equals(serviceCodeKind) //通所型サービス
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/22 add - begin 総合事業対応（2016/10/06 A1,A5以外追加）
+        if (   "A1".equals(serviceCodeKind) //訪問型サービス（みなし）
+            || "A2".equals(serviceCodeKind) //訪問型サービス（独自）
+            || "A3".equals(serviceCodeKind) //訪問型サービス（独自／定率）
+            || "A4".equals(serviceCodeKind) //訪問型サービス（独自／定額）
+            || "A5".equals(serviceCodeKind) //通所型サービス（みなし）
+            || "A6".equals(serviceCodeKind) //通所型サービス（独自）
+            || "A7".equals(serviceCodeKind) //通所型サービス（独自／定率）
+            || "A8".equals(serviceCodeKind) //通所型サービス（独自／定額）
+            || "A9".equals(serviceCodeKind) //その他の生活支援サービス（配食／定率）
+            || "AA".equals(serviceCodeKind) //その他の生活支援サービス（配食／定額）
+            || "AB".equals(serviceCodeKind) //その他の生活支援サービス（見守り／定率）
+            || "AC".equals(serviceCodeKind) //その他の生活支援サービス（見守り／定額）
+            || "AD".equals(serviceCodeKind) //その他の生活支援サービス（その他／定率）
+            || "AE".equals(serviceCodeKind) //その他の生活支援サービス（その他／定額）
             ) {
                 result = true;
         }
@@ -3411,12 +3461,81 @@ public class QP001SpecialCase {
 				|| "1324".equals(serviceCodeItem)	//訪問型サービス３・同一
 				|| "1325".equals(serviceCodeItem)	//訪問型サービス３・初任・同一
         		) {
-        		return true;
+        		result = true;
         	}
         }
         // 2016/7/21 [Yoichiro Kamei] add - end
         
-		return result;
+        // 2016/10/6 [Shinobu Hitaka] add - begin 総合事業独自対応
+        // 総合事業の独自分も追加
+        if ("A2".equals(serviceCodeKind)) {	// 訪問型サービス
+        	if ("1111".equals(serviceCodeItem)		//訪問型独自サービス１
+				|| "1113".equals(serviceCodeItem)	//訪問型独自サービス１・初任
+				|| "1114".equals(serviceCodeItem)	//訪問型独自サービス１・同一
+				|| "1115".equals(serviceCodeItem)	//訪問型独自サービス１・初任・同一
+				|| "1211".equals(serviceCodeItem)	//訪問型独自サービス２
+				|| "1213".equals(serviceCodeItem)	//訪問型独自サービス２・初任
+				|| "1214".equals(serviceCodeItem)	//訪問型独自サービス２・同一
+				|| "1215".equals(serviceCodeItem)	//訪問型独自サービス２・初任・同一
+				|| "1321".equals(serviceCodeItem)	//訪問型独自サービス３
+				|| "1323".equals(serviceCodeItem)	//訪問型独自サービス３・初任
+				|| "1324".equals(serviceCodeItem)	//訪問型独自サービス３・同一
+				|| "1325".equals(serviceCodeItem)	//訪問型独自サービス３・初任・同一
+				|| "1121".equals(serviceCodeItem)	//訪問型独自サービス１／２
+				|| "1123".equals(serviceCodeItem)	//訪問型独自サービス１／２・初任
+				|| "1124".equals(serviceCodeItem)	//訪問型独自サービス１／２・同一
+				|| "1125".equals(serviceCodeItem)	//訪問型独自サービス１／２・初任・同一
+				|| "1221".equals(serviceCodeItem)	//訪問型独自サービス２／２
+				|| "1223".equals(serviceCodeItem)	//訪問型独自サービス２／２・初任
+				|| "1224".equals(serviceCodeItem)	//訪問型独自サービス２／２・同一
+				|| "1225".equals(serviceCodeItem)	//訪問型独自サービス２／２・初任・同一
+				|| "1331".equals(serviceCodeItem)	//訪問型独自サービス３／２
+				|| "1333".equals(serviceCodeItem)	//訪問型独自サービス３／２・初任
+				|| "1334".equals(serviceCodeItem)	//訪問型独自サービス３／２・同一
+				|| "1335".equals(serviceCodeItem)	//訪問型独自サービス３／２・初任・同一
+				|| "1131".equals(serviceCodeItem)	//訪問型独自サービス１／３
+				|| "1133".equals(serviceCodeItem)	//訪問型独自サービス１／３・初任
+				|| "1134".equals(serviceCodeItem)	//訪問型独自サービス１／３・同一
+				|| "1135".equals(serviceCodeItem)	//訪問型独自サービス１／３・初任・同一
+				|| "1231".equals(serviceCodeItem)	//訪問型独自サービス２／３
+				|| "1233".equals(serviceCodeItem)	//訪問型独自サービス２／３・初任
+				|| "1234".equals(serviceCodeItem)	//訪問型独自サービス２／３・同一
+				|| "1235".equals(serviceCodeItem)	//訪問型独自サービス２／３・初任・同一
+				|| "1341".equals(serviceCodeItem)	//訪問型独自サービス３／３
+				|| "1343".equals(serviceCodeItem)	//訪問型独自サービス３／３・初任
+				|| "1344".equals(serviceCodeItem)	//訪問型独自サービス３／３・同一
+				|| "1345".equals(serviceCodeItem)	//訪問型独自サービス３／３・初任・同一
+				|| "1141".equals(serviceCodeItem)	//訪問型独自サービス１／４
+				|| "1143".equals(serviceCodeItem)	//訪問型独自サービス１／４・初任
+				|| "1144".equals(serviceCodeItem)	//訪問型独自サービス１／４・同一
+				|| "1145".equals(serviceCodeItem)	//訪問型独自サービス１／４・初任・同一
+				|| "1241".equals(serviceCodeItem)	//訪問型独自サービス２／４
+				|| "1243".equals(serviceCodeItem)	//訪問型独自サービス２／４・初任
+				|| "1244".equals(serviceCodeItem)	//訪問型独自サービス２／４・同一
+				|| "1245".equals(serviceCodeItem)	//訪問型独自サービス２／４・初任・同一
+				|| "1351".equals(serviceCodeItem)	//訪問型独自サービス３／４
+				|| "1353".equals(serviceCodeItem)	//訪問型独自サービス３／４・初任
+				|| "1354".equals(serviceCodeItem)	//訪問型独自サービス３／４・同一
+				|| "1355".equals(serviceCodeItem)	//訪問型独自サービス３／４・初任・同一
+				|| "1151".equals(serviceCodeItem)	//訪問型独自サービス１／５
+				|| "1153".equals(serviceCodeItem)	//訪問型独自サービス１／５・初任
+				|| "1154".equals(serviceCodeItem)	//訪問型独自サービス１／５・同一
+				|| "1155".equals(serviceCodeItem)	//訪問型独自サービス１／５・初任・同一
+				|| "1251".equals(serviceCodeItem)	//訪問型独自サービス２／５
+				|| "1253".equals(serviceCodeItem)	//訪問型独自サービス２／５・初任
+				|| "1254".equals(serviceCodeItem)	//訪問型独自サービス２／５・同一
+				|| "1255".equals(serviceCodeItem)	//訪問型独自サービス２／５・初任・同一
+				|| "1361".equals(serviceCodeItem)	//訪問型独自サービス３／５
+				|| "1363".equals(serviceCodeItem)	//訪問型独自サービス３／５・初任
+				|| "1364".equals(serviceCodeItem)	//訪問型独自サービス３／５・同一
+				|| "1365".equals(serviceCodeItem)	//訪問型独自サービス３／５・初任・同一
+        		) {
+        		result = true;
+        	}
+        }
+        // 2016/10/6 [Shinobu Hitaka] add - end
+
+        return result;
     }
     
     //[ID:0000529][Shin Fujihara] 2009/07 add begin 2009年度対応

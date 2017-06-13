@@ -38,7 +38,7 @@ import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
- * 居宅介護支援(QO004117)
+ * 介護予防ケアマネジメント(QO004_51511_201504)
  */
 @SuppressWarnings("serial")
 public class QO004_51511_201504 extends QO004_51511_201504Event {

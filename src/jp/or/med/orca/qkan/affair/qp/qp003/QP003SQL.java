@@ -1814,4 +1814,119 @@ public class QP003SQL extends QP003State {
     return sb.toString();
   }
 
+
+  /**
+   * 「医療費控除に記載する利用者負担額を取得する」ためのSQLを返します。 
+   * @param sqlParam
+   * @return
+   * @throws Exception
+   */
+  public String getSQL_GET_RIYOUSYA_UNIT(VRMap sqlParam) throws Exception {
+      StringBuilder sb = new StringBuilder();
+      Date seikyuDate = null;
+      if (VRBindPathParser.has("CLAIM_DATE", sqlParam)) {
+          seikyuDate = ACCastUtilities.toDate(VRBindPathParser.get(
+                  "CLAIM_DATE", sqlParam));
+      } else {
+          return sb.toString();
+      }
+      
+      Date fiscalDate = null;
+      fiscalDate = ACDateUtilities.addMonth(seikyuDate, -3);
+
+      sb.append("SELECT");
+      sb.append(" CLAIM1.PATIENT_ID,");
+      sb.append(" CLAIM1.INSURED_ID,");
+      sb.append(" CLAIM1.CLAIM_ID,");
+      sb.append(" CLAIM1.CLAIM_STYLE_TYPE,");
+      sb.append(" CLAIM1.UNIT,");
+      sb.append(" CLAIM2.SERVICE_CODE_KIND");
+      sb.append(" FROM (");
+      
+      // 各利用者負担額
+      sb.append("SELECT");
+      sb.append(" CLAIM.PATIENT_ID,");
+      sb.append(" CLAIM.INSURED_ID,");
+      sb.append(" CLAIM.CLAIM_ID,");
+      sb.append(" CLAIM.CLAIM_STYLE_TYPE,");
+      sb.append(" SUM(CAST(CLAIM_TEMP.DETAIL_VALUE AS INTEGER)) AS UNIT");
+      sb.append(" FROM");
+      sb.append(" CLAIM,");
+      sb.append(" CLAIM_DETAIL_TEXT_" + VRDateParser.format(fiscalDate, "yyyy") + " CLAIM_TEMP");
+      sb.append(" WHERE");
+      sb.append("(");
+      sb.append(" CLAIM.PATIENT_ID");
+      sb.append(" =");
+      sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+      sb.append(")");
+      sb.append("AND");
+      sb.append("(");
+      sb.append(" CLAIM.TARGET_DATE");
+      sb.append(" =");
+      sb.append(dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd"));
+      sb.append(")");
+      sb.append("AND");
+      sb.append("(");
+      sb.append(" CLAIM.CLAIM_DATE");
+      sb.append(" =");
+      sb.append(dateFormat.format(VRBindPathParser.get("CLAIM_DATE", sqlParam), "yyyy-MM-dd"));
+      sb.append(")");
+      sb.append("AND");
+      sb.append("(");
+      sb.append(" CLAIM.PROVIDER_ID");
+      sb.append(" =");
+      sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
+      sb.append(")");
+      // 様式６と様式７は除外する
+      sb.append(" AND(CLAIM.CLAIM_STYLE_TYPE < 10611 OR CLAIM.CLAIM_STYLE_TYPE > 10713)");
+      sb.append(" AND(CLAIM.CLAIM_ID = CLAIM_TEMP.CLAIM_ID)");
+
+      sb.append(" AND (");
+      //集計情報レコード
+      sb.append("((CLAIM.CATEGORY_NO = 7) AND CLAIM_TEMP.SYSTEM_BIND_PATH IN (");
+      //保険+公費
+      sb.append("'701017'"); //(保険)利用者負担額8桁
+      sb.append(",'701020'"); //(公費1)本人負担額8桁
+      sb.append(",'701023'"); //(公費2)本人負担額8桁
+      sb.append(",'701026'"); //(公費3)本人負担額8桁
+      //緊急時施設療養費＋特定診療費・特別療養費
+      sb.append(",'701029'"); //(保険分出来高医療費)出来高医療費利用者負担額8桁
+      sb.append(",'701032'"); //(公費1分出来高医療費)出来高医療費本人負担額8桁
+      sb.append(",'701035'"); //(公費2分出来高医療費)出来高医療費本人負担額8桁
+      sb.append(",'701038'"); //(公費3分出来高医療費)出来高医療費本人負担額8桁
+      sb.append("))");
+      //特定入所者レコード
+      sb.append(" OR ");
+      sb.append("((CLAIM.CATEGORY_NO = 8) AND CLAIM_TEMP.SYSTEM_BIND_PATH IN (");
+      //特定入所者介護サービス費
+      sb.append("'801024'"); //(特定入所者)利用者負担額合計6桁
+      sb.append(",'801027'"); //(特定入所者　公費1)本人負担月額5桁
+      sb.append(",'801030'"); //(特定入所者　公費2)本人負担月額5桁
+      sb.append(",'801033'"); //(特定入所者　公費3)本人負担月額5桁
+      sb.append("))");
+      sb.append(")");
+      sb.append(" GROUP BY");
+      sb.append(" CLAIM.PATIENT_ID,");
+      sb.append(" CLAIM.INSURED_ID,");
+      sb.append(" CLAIM.CLAIM_ID,");
+      sb.append(" CLAIM.CLAIM_STYLE_TYPE");
+
+      // サービス種類をJOINする※集計レコード以外はNullが設定されるので注意
+      sb.append(" ) CLAIM1");
+      sb.append(" LEFT JOIN (");
+      sb.append(" SELECT CLAIM_ID, DETAIL_VALUE AS SERVICE_CODE_KIND");
+      sb.append(" FROM");
+      sb.append(" CLAIM_DETAIL_TEXT_" + VRDateParser.format(fiscalDate, "yyyy"));
+      sb.append(" WHERE");
+      sb.append(" SYSTEM_BIND_PATH = 701007");
+      sb.append(" ) CLAIM2");
+      sb.append(" ON CLAIM1.CLAIM_ID = CLAIM2.CLAIM_ID");
+
+      sb.append(" ORDER BY");
+      sb.append(" CLAIM1.CLAIM_ID, CLAIM1.CLAIM_STYLE_TYPE");
+      sb.append(" ASC");
+
+      return sb.toString();
+  }
+
 }

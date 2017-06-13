@@ -86,8 +86,11 @@ public class SC_13711_201504 extends Qkan10011_ServiceUnitGetter {
             
             // 介護職員処遇改善を返却
             switch (_17) {
+            case 6:
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//2017.04
+                break;
             case 5:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//2015.04
                 break;
             case 2:
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6104");
@@ -129,10 +132,10 @@ public class SC_13711_201504 extends Qkan10011_ServiceUnitGetter {
             //施設区分により分岐
             switch (_1370109) {
             case 1: // I型
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6161");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6161");//2015.04
                 break;
             case 2: // II型
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6171");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6171");//2015.04
                 break;
             }
         }
@@ -166,7 +169,7 @@ public class SC_13711_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1370107) {
         case 5:
             // 6100 予認知対応サービス提供体制加算Iイ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
             break;
         case 2:
             // 6101 予認知対応サービス提供体制加算Iロ
@@ -184,8 +187,11 @@ public class SC_13711_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//2015.04
             break;
         case 2:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6104");

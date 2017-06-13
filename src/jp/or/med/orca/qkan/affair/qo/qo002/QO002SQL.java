@@ -28,12 +28,18 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qo.qo002;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Stack;
 
+import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACSQLSafeDateFormat;
 import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
 import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 
 /**
@@ -711,4 +717,276 @@ public class QO002SQL extends QO002State {
     return sb.toString();
   }
 
+  /**
+   * 「保険者の単位数単価情報」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_INSURER_UNIT_PRICE(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("SELECT");
+
+    sb.append(" INSURER_UNIT_PRICE.INSURER_ID");
+
+    sb.append(",INSURER_UNIT_PRICE_DETAIL.UNIT_PRICE_HISTORY_ID");
+
+    sb.append(",INSURER_UNIT_PRICE.UNIT_PRICE_VALID_START");
+
+    sb.append(",INSURER_UNIT_PRICE.UNIT_PRICE_VALID_END");
+
+    sb.append(",INSURER_UNIT_PRICE.UNIT_PRICE_TYPE");
+
+    sb.append(",INSURER_UNIT_PRICE_DETAIL.SYSTEM_SERVICE_KIND_DETAIL");
+
+    sb.append(",INSURER_UNIT_PRICE_DETAIL.UNIT_PRICE_VALUE");
+
+    sb.append(" FROM");
+
+    sb.append(" INSURER_UNIT_PRICE");
+
+    sb.append(",INSURER_UNIT_PRICE_DETAIL");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" INSURER_UNIT_PRICE.INSURER_ID");
+
+    sb.append(" =");
+
+    sb.append(" INSURER_UNIT_PRICE_DETAIL.INSURER_ID");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" INSURER_UNIT_PRICE.UNIT_PRICE_HISTORY_ID");
+
+    sb.append(" =");
+
+    sb.append(" INSURER_UNIT_PRICE_DETAIL.UNIT_PRICE_HISTORY_ID");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" INSURER_UNIT_PRICE.INSURER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+
+    sb.append(" ORDER BY");
+
+    sb.append(" INSURER_UNIT_PRICE.INSURER_ID");
+
+    sb.append(" ");
+
+    sb.append(",INSURER_UNIT_PRICE_DETAIL.UNIT_PRICE_HISTORY_ID");
+
+    return sb.toString();
+  }
+  
+  /**
+   * 「地域単価マスタを取得する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_AREA_UNIT_PRICE(VRMap sqlParam) throws Exception{
+    String ym = dateFormat.format(VRBindPathParser.get("TARGET_DATE", sqlParam), "yyyy-MM-dd");
+    String serviceKind = ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", sqlParam));
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("SELECT");
+    sb.append(" DISTINCT UNIT_PRICE_VALUE");
+    sb.append(" FROM");
+    sb.append(" M_AREA_UNIT_PRICE");
+    sb.append(" WHERE");
+    sb.append(" (UNIT_PRICE_TYPE");
+    sb.append(" IN");
+    sb.append(" ('5',");// その他の単位数単価
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("UNIT_PRICE_TYPE", sqlParam)));
+    sb.append(" )");
+    sb.append(" )");
+    sb.append(" AND(M_AREA_UNIT_PRICE.UNIT_VALID_START <= " + ym + ")");
+    sb.append(" AND(M_AREA_UNIT_PRICE.UNIT_VALID_END >= " + ym + ")");
+    if (VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", sqlParam) != null) {
+        sb.append(" AND(M_AREA_UNIT_PRICE.SYSTEM_SERVICE_KIND_DETAIL = " + serviceKind + ")");
+      }
+    sb.append(" ORDER BY UNIT_PRICE_VALUE");
+
+    return sb.toString();
+
+  }
+  
+  /**
+   * 「単位数単価情報を削除する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_DELETE_INSURER_UNIT_PRICE(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("DELETE FROM");
+
+    sb.append(" INSURER_UNIT_PRICE");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「単位数単価詳細情報を削除する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_DELETE_INSURER_UNIT_PRICE_DETAIL(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("DELETE FROM");
+
+    sb.append(" INSURER_UNIT_PRICE_DETAIL");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+  /**
+   * 「単位数単価情報を登録する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_INSURT_INSURER_UNIT_PRICE(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("INSERT INTO");
+
+    sb.append(" INSURER_UNIT_PRICE");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(",UNIT_PRICE_HISTORY_ID");
+
+    sb.append(",UNIT_PRICE_VALID_START");
+
+    sb.append(",UNIT_PRICE_VALID_END");
+
+    sb.append(",UNIT_PRICE_TYPE");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(")VALUES(");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("UNIT_PRICE_HISTORY_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("UNIT_PRICE_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("UNIT_PRICE_VALID_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("UNIT_PRICE_TYPE", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「単位数単価情報詳細を」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_INSURT_INSURER_UNIT_PRICE_DETAIL(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("INSERT INTO");
+
+    sb.append(" INSURER_UNIT_PRICE_DETAIL");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(",UNIT_PRICE_HISTORY_ID");
+
+    sb.append(",SYSTEM_SERVICE_KIND_DETAIL");
+
+    sb.append(",UNIT_PRICE_VALUE");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(")VALUES(");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("UNIT_PRICE_HISTORY_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("UNIT_PRICE_VALUE", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
 }

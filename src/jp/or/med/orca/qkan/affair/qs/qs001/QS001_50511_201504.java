@@ -16,8 +16,8 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2011/11/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 亀井　陽一郎
+ * 作成日: 2011/11/16  MIS九州株式会社 亀井　陽一郎 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -70,6 +70,7 @@ public class QS001_50511_201504 extends QS001_50511_201504Event {
         putRestrictProviderBindPath("運動機能向上体制", "5050102", "5050106");
         putRestrictProviderBindPath("栄養改善体制", "5050103", "5050107");
         putRestrictProviderBindPath("口腔機能向上体制", "5050104", "5050108");
+        putRestrictProviderBindPath("選択的サービス複数実施加算", "5050109", "5050112");
         putRestrictProviderBindPath("事業所評価加算の有無", "5050105", "5050109");
 
     }
@@ -195,7 +196,9 @@ public class QS001_50511_201504 extends QS001_50511_201504Event {
                     || ACCastUtilities.toInt(
                             VRBindPathParser.get("5050103", provider), 1) > 1
                     || ACCastUtilities.toInt(
-                            VRBindPathParser.get("5050104", provider), 1) > 1) {
+                            VRBindPathParser.get("5050104", provider), 1) > 1
+                    || ACCastUtilities.toInt(
+                            VRBindPathParser.get("5050109", provider), 1) > 1) {
                 // サービスの生活機能向上グループ活動加算関連の初期化
                 VRBindPathParser.set("5050105", defaultMap, new Integer(1));
             }
@@ -292,21 +295,47 @@ public class QS001_50511_201504 extends QS001_50511_201504Event {
             setState_INVALID_MOVE_FUNCTION_ADD();
             setState_INVALID_NOURISHMENT_ADD();
             setState_INVALID_MOUTH_ADD();
+            setState_INVALID_SENTAKU_ADD();
         } else {
             setState_VALID_MOVE_FUNCTION_ADD();
             setState_VALID_NOURISHMENT_ADD();
             setState_VALID_MOUTH_ADD();
+            setState_VALID_SENTAKU_ADD();
         }
 
         // 運動器機能向上加算・栄養改善加算・口腔機能向上加算のいづれかがついた場合
         if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
                 || getNourishmentImprovementAddRadio().getSelectedIndex() > 1
-                || getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+                || getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1
+                || getSentakutekiServiceRadio().getSelectedIndex() > 1) {
             setState_INVALID_ACTIVITY_ADD();
         } else {
             setState_VALID_ACTIVITY_ADD();
         }
         
+        // 運動器機能向上加算・栄養改善加算・口腔機能向上加算の組み合わせチェック
+        if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算II
+        	getSentakutekiServiceRadio().setSelectedIndex(5);
+        } else if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算：選択的サービス複数実施加算I1
+        	getSentakutekiServiceRadio().setSelectedIndex(2);
+        } else if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 口腔機能向上加算：選択的サービス複数実施加算I2
+        	getSentakutekiServiceRadio().setSelectedIndex(3);
+        } else if (getNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算I3
+        	getSentakutekiServiceRadio().setSelectedIndex(4);
+        } else {
+        	// 選択的サービス複数実施加算：なし
+        	getSentakutekiServiceRadio().setSelectedIndex(1);
+        }
+
 // 2016/7/13 [Yoichiro Kamei] add - begin 総合事業対応
         //要介護認定履歴が１つのみで、要支援１、または要支援２の場合
         //通所型サービス費は選択不可とする
@@ -325,12 +354,11 @@ public class QS001_50511_201504 extends QS001_50511_201504Event {
             }
         }
 // 2016/7/13 [Yoichiro Kamei] add - end
-        
 
         // 事業所体制と同期
         resetStateByRestrictBindPath();
     }
-
+    
     /**
      * 値バインド後処理
      * 
@@ -361,10 +389,12 @@ public class QS001_50511_201504 extends QS001_50511_201504Event {
             getMoveFunctionImprovementAddRadio().setSelectedIndex(1);
             getNourishmentImprovementAddRadio().setSelectedIndex(1);
             getMouthFunctionImprovementAddRadio().setSelectedIndex(1);
+            getSentakutekiServiceRadio().setSelectedIndex(1);
         }
         // [ID:0000713][Masahiko.Higuchi] 2012/03 平成24年4月法改正対応 add end
 
-        checkOnDayCheckState();
+        // 画面状態を設定する。
+        checkState();
     }
 
     /**
@@ -431,6 +461,31 @@ public class QS001_50511_201504 extends QS001_50511_201504Event {
 
     }
 
+    /**
+     * 選択的サービス複数実施加算
+     */
+    protected void sentakutekiServiceRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        int idx = getSentakutekiServiceRadio().getSelectedIndex();
+        // 画面状態制御
+        checkState();
+        // 全て「なし」か１つだけ選択の場合は、選択したものに戻す
+        int selCnt = 0;
+        if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (selCnt == 1 || selCnt == 0) {
+        	getSentakutekiServiceRadio().setSelectedIndex(idx);
+        }
+
+    }
+    
     /**
      * 回数チェック時の画面制御処理です。
      * 

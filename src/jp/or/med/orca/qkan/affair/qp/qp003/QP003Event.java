@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2010/11/11  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2016/12/08  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -461,6 +461,246 @@ public abstract class QP003Event extends QP003SQL {
             }
         }
     });
+    getKoujoDispCheck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                koujoDispCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentHokenIryoUse().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentHokenIryoUseFocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentHokenFukushiUse().addFocusListener(new FocusAdapter(){
+        private boolean lockFlag = false;
+        public void focusLost(FocusEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentHokenFukushiUseFocusLost(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentHokenIryoKoujoCheck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentHokenIryoKoujoCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentHokenFukushiKoujoCheck().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentHokenFukushiKoujoCheckActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentJikohutanKoujoCheck1().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentJikohutanKoujoCheck1ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentJikohutanKoujoCheck2().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentJikohutanKoujoCheck2ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentJikohutanKoujoCheck3().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentJikohutanKoujoCheck3ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcKoujoCheck1().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcKoujoCheck1ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcKoujoCheck2().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcKoujoCheck2ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcKoujoCheck3().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcKoujoCheck3ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcKoujoCheck4().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcKoujoCheck4ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcKoujoCheck5().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcKoujoCheck5ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getContentEtcKoujoCheck6().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                contentEtcKoujoCheck6ActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getReflection().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                reflectionActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -639,6 +879,111 @@ public abstract class QP003Event extends QP003SQL {
    * @throws Exception 処理例外
    */
   protected abstract void tabsStateChanged(ChangeEvent e) throws Exception;
+
+  /**
+   * 「医療費控除補助の制御」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void koujoDispCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentHokenIryoUseFocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentHokenFukushiUseFocusLost(FocusEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentHokenIryoKoujoCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentHokenFukushiKoujoCheckActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentJikohutanKoujoCheck1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentJikohutanKoujoCheck2ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentJikohutanKoujoCheck3ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcKoujoCheck1ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcKoujoCheck2ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcKoujoCheck3ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcKoujoCheck4ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcKoujoCheck5ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額算出」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void contentEtcKoujoCheck6ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「医療費控除金額反映」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void reflectionActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
@@ -1047,5 +1392,13 @@ public abstract class QP003Event extends QP003SQL {
    * @return boolean
    */
   public abstract boolean calenderIsModified() throws Exception;
+
+  /**
+   * 「医療費控除計算」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   *
+   */
+  public abstract void calcKoujoPrice() throws Exception;
 
 }

@@ -77,6 +77,10 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
         // 1650109 ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‹­‰»‰ÁZ
         int _1650109 = getIntValue(map, "1650109");
 
+        // [CCCX:03692][Shinobu Hitaka] 2016/12/01 add - begin ŒÂ•Ê‘I‘ğ‘Î‰
+        // 1650111 ‘I‘ğ“IƒT[ƒrƒX•¡”À{‰ÁZ@1-‚È‚µ 2-I1 3-I2 4-I3 5-II
+        int _1650111 = getIntValue(map, "1650111", 1);
+
         // 16 “¯ˆêŒš•¨‹ZÒ‚Ö‚ÌƒT[ƒrƒX’ñ‹Ÿ
         int _16 = getIntValue(map, "16", 1);
 
@@ -92,37 +96,30 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
         // ’P“Æ‰ÁZƒT[ƒrƒX
         if(_9 == 2){
             sysSvcCdItems = new ArrayList<HashMap<String, String>>();
-            // 1650104 ‰^“®Ší‹@”\Œüã‰ÁZ@1-‚È‚µ 2-‚ ‚è
-            if (_1650104 > 1) {
-                putSystemServiceCodeItem(sysSvcCdItems, "Z5002");
-            }
             
-            // 1650105 ‰h—{‰ü‘P‰ÁZ@1-‚È‚µ 2-‚ ‚è
-            if (_1650105 > 1) {
-                putSystemServiceCodeItem(sysSvcCdItems, "Z5003");
-            }
-            
-            // 1650106 Œûo‹@”\Œüã‰ÁZ@1-‚È‚µ 2-‚ ‚è
-            if (_1650106 > 1) {
-                putSystemServiceCodeItem(sysSvcCdItems, "Z5004");
-            }
+            // ‰^“®Ší‹@”\Œüã‰ÁZA‰h—{‰ü‘P‰ÁZAŒûo‹@”\Œüã‰ÁZA‘I‘ğ“IƒT[ƒrƒX•¡”À{‰ÁZ
+            setSentakutekiService(_1650111, _1650104, _1650105, _1650106, sysSvcCdItems);
             
             // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
             switch (_17) {
-            case 5:
+            case 6:
                 // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZI
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6110");//TODO:ƒR[ƒh’lŠm”F
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2017.04
+                break;
+            case 5:
+                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZII
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6110");
                 break;
             case 2:
-                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZI
+                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZIII
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6111");
                 break;
             case 3:
-                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZII
+                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZIV
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6113");
                 break;
             case 4:
-                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZIII
+                // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZV
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6115");
                 break;
             }
@@ -178,49 +175,8 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
             putSystemServiceCodeItem(sysSvcCdItems, "Z5010");
         }
         
-        // ‰^“®Ší‹@”\Œüã‰ÁZA‰h—{‰ü‘P‰ÁZAŒûo‹@”\Œüã‰ÁZ‚Ì—áŠOˆ—
-        // 
-        // [‰^“®Ší‹@”\Œüã‰ÁZ‚Ìƒtƒ‰ƒO][‰h—{‰ü‘P‰ÁZ‚Ìƒtƒ‰ƒO][Œûo‹@”\Œüã‰ÁZ‚Ìƒtƒ‰ƒO]
-        // ‚Æ‚¢‚¤•À‚Ñ‚Ì3Œ…‚Ì”’l‚ğì¬‚µ‚Ä•ªŠòiƒtƒ‰ƒO‚Í 1-‚È‚µ 2-‚ ‚èj
-        int addParam = (_1650104 * 100) + (_1650105 * 10) + _1650106;
-        
-        switch(addParam) {
-        // ‰^“®Ší‹@”\Œüã‰ÁZ
-        case 211:
-            // —\–h’ÊŠ‰îŒì‰^“®Ší‹@”\Œüã‰ÁZ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5002");
-            break;
-        // ‰h—{‰ü‘P‰ÁZ
-        case 121:
-            // —\–h’ÊŠ‰îŒì‰h—{‰ü‘P‰ÁZ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5003");
-            break;
-        // Œûo‹@”\Œüã‰ÁZ
-        case 112:
-            // —\–h’ÊŠ‰îŒìŒûo‹@”\Œüã‰ÁZ
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5004");
-            break;
-        // ‰^“®Ší‹@”\Œüã‰ÁZ + ‰h—{‰ü‘P‰ÁZ
-        case 221:
-            // —\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZI‚P
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5006");
-            break;
-        // ‰^“®Ší‹@”\Œüã‰ÁZ + Œûo‹@”\Œüã‰ÁZ
-        case 212:
-            // —\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZI‚Q
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5007");
-            break;
-        // ‰h—{‰ü‘P‰ÁZ + Œûo‹@”\Œüã‰ÁZ
-        case 122:
-            // —\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZI‚R
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5008");
-            break;
-        // ‰^“®Ší‹@”\Œüã‰ÁZ + ‰h—{‰ü‘P‰ÁZ + Œûo‹@”\Œüã‰ÁZ
-        case 222:
-            // —\–h’Ê‰î•¡”ƒT[ƒrƒXÀ{‰ÁZII
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5009");
-            break;
-        }
+        // ‰^“®Ší‹@”\Œüã‰ÁZA‰h—{‰ü‘P‰ÁZAŒûo‹@”\Œüã‰ÁZA‘I‘ğ“IƒT[ƒrƒX•¡”À{‰ÁZ
+        setSentakutekiService(_1650111, _1650104, _1650105, _1650106, sysSvcCdItems);
         
         // –‹ÆŠ•]‰¿‰ÁZ@1-‚È‚µ 2-‚ ‚è
         if (_1650107 > 1) {
@@ -231,12 +187,12 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
         case 4:
             if (_1 == 3) {
                 // —vx‰‡‚P‚Ìê‡
-                // 6101 —\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC‚P
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//TODO:ƒR[ƒh’lŠm”F
+                // 6107 —\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC‚P
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6107");
             } else if (_1 == 4) {
                 // —vx‰‡‚Q‚Ìê‡
-                // 6102 —\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC‚Q
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//TODO:ƒR[ƒh’lŠm”F
+                // 6108 —\–h’ÊŠƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC‚Q
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6108");
             }
             break;
         case 2:
@@ -266,20 +222,24 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
         
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch (_17) {
-        case 5:
+        case 6:
             // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZI
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6110");//TODO:ƒR[ƒh’lŠm”F
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2017.04
+            break;
+        case 5:
+            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZII
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6110");
             break;
         case 2:
-            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZI
+            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZIII
             putSystemServiceCodeItem(sysSvcCdItems, "Z6111");
             break;
         case 3:
-            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZII
+            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZIV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6113");
             break;
         case 4:
-            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZIII
+            // —\–h’ÊŠ‰îŒìˆ‹ö‰ü‘P‰ÁZV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6115");
             break;
         }
@@ -305,5 +265,82 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
 
         return sysSvcCdItems;
     }
-
+    
+    /**
+     * ‰^“®Ší‹@”\Œüã‰ÁZA‰h—{‰ü‘P‰ÁZAŒûo‹@”\Œüã‰ÁZ‚Ì‘I‘ğó‹µ‚É‚æ‚Á‚Ä•¡”ƒT[ƒrƒXÀ{‰ÁZ‚ğİ’è‚µ‚Ü‚·B
+	 * @param sentakuteki •¡”ƒT[ƒrƒXÀ{‰ÁZ
+	 * @param moveFunction ‰^“®Ší‹@”\Œüã‰ÁZ
+	 * @param nourishment ‰h—{‰ü‘P‰ÁZ
+	 * @param mouthFunction Œûo‹@”\Œüã‰ÁZ
+	 * @param sysSvcCdItems ƒT[ƒrƒXƒR[ƒhMap
+     */
+    private void setSentakutekiService(int sentakuteki, 
+    		int moveFunction, int nourishment, int mouthFunction, 
+    		ArrayList<HashMap<String, String>> sysSvcCdItems) {
+    	// ‘I‘ğ“IƒT[ƒrƒX•¡”À{‰ÁZ@1-‚È‚µ 2-I1 3-I2 4-I3 5-II
+        if (sentakuteki > 1) {
+        	switch (sentakuteki) {
+            case 2:
+                // •¡”ƒT[ƒrƒXÀ{‰ÁZI‚P
+                putSystemServiceCodeItem(sysSvcCdItems, "Z5006");
+                break;
+            case 3:
+            	// •¡”ƒT[ƒrƒXÀ{‰ÁZI‚Q
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5007");
+                break;
+            case 4:
+            	// •¡”ƒT[ƒrƒXÀ{‰ÁZI‚R
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5008");
+                break;
+            case 5:
+            	// •¡”ƒT[ƒrƒXÀ{‰ÁZII
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5009");
+                break;
+            }
+        } else {
+	        // ‰^“®Ší‹@”\Œüã‰ÁZA‰h—{‰ü‘P‰ÁZAŒûo‹@”\Œüã‰ÁZ‚Ì—áŠOˆ—
+	        // 
+	        // [‰^“®Ší‹@”\Œüã‰ÁZ‚Ìƒtƒ‰ƒO][‰h—{‰ü‘P‰ÁZ‚Ìƒtƒ‰ƒO][Œûo‹@”\Œüã‰ÁZ‚Ìƒtƒ‰ƒO]
+	        // ‚Æ‚¢‚¤•À‚Ñ‚Ì3Œ…‚Ì”’l‚ğì¬‚µ‚Ä•ªŠòiƒtƒ‰ƒO‚Í 1-‚È‚µ 2-‚ ‚èj
+	        int addParam = (moveFunction * 100) + (nourishment * 10) + mouthFunction;
+	        
+	        switch(addParam) {
+	        // ‰^“®Ší‹@”\Œüã‰ÁZ
+	        case 211:
+	            // ‰^“®Ší‹@”\Œüã‰ÁZ
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5002");
+	            break;
+	        // ‰h—{‰ü‘P‰ÁZ
+	        case 121:
+	            // ‰h—{‰ü‘P‰ÁZ
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5003");
+	            break;
+	        // Œûo‹@”\Œüã‰ÁZ
+	        case 112:
+	            // Œûo‹@”\Œüã‰ÁZ
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5004");
+	            break;
+	        // ‰^“®Ší‹@”\Œüã‰ÁZ + ‰h—{‰ü‘P‰ÁZ
+	        case 221:
+	            // •¡”ƒT[ƒrƒXÀ{‰ÁZI‚P
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5006");
+	            break;
+	        // ‰^“®Ší‹@”\Œüã‰ÁZ + Œûo‹@”\Œüã‰ÁZ
+	        case 212:
+	            // •¡”ƒT[ƒrƒXÀ{‰ÁZI‚Q
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5007");
+	            break;
+	        // ‰h—{‰ü‘P‰ÁZ + Œûo‹@”\Œüã‰ÁZ
+	        case 122:
+	            // •¡”ƒT[ƒrƒXÀ{‰ÁZI‚R
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5008");
+	            break;
+	        // ‰^“®Ší‹@”\Œüã‰ÁZ + ‰h—{‰ü‘P‰ÁZ + Œûo‹@”\Œüã‰ÁZ
+	        case 222:
+	            // •¡”ƒT[ƒrƒXÀ{‰ÁZII
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z5009");
+	            break;
+	        }
+        }
+    }
 }

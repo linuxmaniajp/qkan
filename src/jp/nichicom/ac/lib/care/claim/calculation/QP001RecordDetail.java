@@ -133,8 +133,21 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     // 給付割合
     private int _301026 = 0;
     
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - begin 月額算定を印字しない判定用に設定追加
+    // 集計集合化区分（算定単位）
+    private int _301027 = 0;
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - end
+    
+    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+    // 総合事業（独自定率）給付率
+    private String _301028 = "";
+    
+    // 総合事業（独自定額）利用者負担額
+    private String _301029 = "";
+    // 2016/10/11 [Yoichiro Kamei] add - end
+    
     // 集計タイプ
-    private int totalGroupintType = 0;
+    private int totalGroupingType = 0;
     
     //特別地域加算用
     private VRMap serviceUnitMap = new VRHashMap();
@@ -556,7 +569,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     protected void set_301022(String _301022) {
         this._301022 = _301022;
     }
-
+    
     /**
      * 公費1公費タイプを取得します。
      * 
@@ -628,6 +641,60 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     protected void set_301026(int _301026) {
         this._301026 = _301026;
     }
+    
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - begin 月額算定を印字しない判定用に設定追加
+    /**
+     * 集計集合化区分（算定単位）を取得します。
+     * 
+     * @return
+     */
+    protected Integer get_301027() {
+        return _301027;
+    }
+
+    /**
+     * 集計集合化区分（算定単位）を設定します。
+     */
+    protected void set_301027(Integer _301027) {
+        this._301027 = _301027;
+    }
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - end
+    
+    
+    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 総合事業（独自定率）給付率を取得します。
+     * 
+     * @return
+     */
+    protected String get_301028() {
+		return _301028;
+	}
+    /**
+     * 総合事業（独自定率）給付率を設定します。
+     * 
+     * @param _301028
+     */
+    protected void set_301028(String _301028) {
+		this._301028 = _301028;
+	}
+    /**
+     * 総合事業（独自定額）利用者負担額を取得します。
+     * 
+     * @return
+     */
+    protected String get_301029() {
+		return _301029;
+	}
+    /**
+     * 総合事業（独自定額）利用者負担額を設定します。
+     * 
+     * @param _301029
+     */
+    protected void set_301029(String _301029) {
+		this._301029 = _301029;
+	}
+    // 2016/10/11 [Yoichiro Kamei] add - end
     
     /**
      * 特地加算算出用のMapを取得する。
@@ -855,6 +922,17 @@ public class QP001RecordDetail extends QP001RecordAbstract {
                 set_301026(0);
             }
             
+            // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - begin 月額算定を印字しない判定用に設定追加
+            // type の KEY : 301027(集計集合化区分（算定単位）) に
+            // VALUE : 集計集合化区分（算定単位）(serviceCodeより取得)を設定する。
+            set_301027(ACCastUtilities.toInt(serviceCode.get("TOTAL_GROUPING_TYPE"),0));
+            // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - end
+            
+            // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+            set_301028(ACCastUtilities.toString(serviceCode.get("KYUFURITSU"), ""));
+            set_301029(ACCastUtilities.toString(serviceCode.get("FUTANGAKU"), ""));
+            // 2016/10/11 [Yoichiro Kamei] add - end
+            
             //サービスの回数を設定(見取り看護加算対応)
             //[ID:0000720][Shin Fujihara] 2012/04 delete start 2012年度対応
             // QP001SpecialCaseに処理を移動
@@ -1019,7 +1097,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         
         //新規作成レコードであれば集計を許可する。
         if(isNew()){
-            totalGroupintType = ACCastUtilities.toInt(serviceCode.get("TOTAL_GROUPING_TYPE"),0); 
+            totalGroupingType = ACCastUtilities.toInt(serviceCode.get("TOTAL_GROUPING_TYPE"),0); 
             return result;
         }
         
@@ -1031,7 +1109,7 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         }
         
         //算定モードの確認
-        switch(totalGroupintType){
+        switch(totalGroupingType){
             //1-回数単位
             case 1:
                 break;
@@ -1429,9 +1507,11 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             return;
         }
         
-        //特定のサービスのみ単位数を0回に変更する。
-        if(QP001SpecialCase.isUnitNoCountService(get_301007(),get_301008())){
-            //単位数を0回に変更
+        //特定のサービスのみ単位数を0に変更する。
+        // [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod 算定単位パラメータ追加
+        // if(QP001SpecialCase.isUnitNoCountService(get_301007(),get_301008())){
+        if(QP001SpecialCase.isUnitNoCountService(get_301007(),get_301008(),get_301027())){
+            //単位数を0に変更
             set_301009(0);
         }
         if(QP001SpecialCase.isMaxCountService(get_301007(),get_301008())){
@@ -1574,7 +1654,15 @@ public class QP001RecordDetail extends QP001RecordAbstract {
 		//システム内サービス項目コード(SYSTEM_SERVICE_CODE_ITEM)
 		setData(result,"301022",get_301022());
 
-        return result;
+		//集計集合化区分（算定単位）(TOTAL_GROUPING_TYPE) add 2016.10.05
+		setData(result,"301027",get_301027());
+		
+		//総合事業（独自定率）給付率 add 2016.10.11
+		setData(result,"301028",get_301028());
+		//総合事業（独自定額）利用者負担額 add 2016.10.11
+		setData(result,"301029",get_301029());
+
+		return result;
     }
 
     private VRMap copyStyle(VRMap style) {
@@ -1619,6 +1707,9 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         result.append("[301023=" + get_301023() + "]\n");
         result.append("[301024=" + get_301024() + "]\n");
         result.append("[301025=" + get_301025() + "]\n");
+        result.append("[301027=" + get_301027() + "]\n"); // add 2016.10.05
+        result.append("[301028=" + get_301028() + "]\n"); // add 2016.10.11
+        result.append("[301029=" + get_301029() + "]\n"); // add 2016.10.11
         result.append(kohiManager);
         return result.toString();
     }

@@ -3,6 +3,8 @@ package jp.nichicom.ac.lib.care.claim.print.schedule;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +21,10 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001SpecialCase;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaNotFoundException;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
-import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACBorderBlankDateFormat;
 import jp.nichicom.ac.text.ACKanaConvert;
@@ -71,6 +75,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
      * サービス単位/金額の内容別小計をあらわす添字定数です。
      */
     public final static int INDEX_OF_SERVICE_UNIT_FOR_DETAIL = 0;
+ // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 利用者負担（保険対象分）の内容別小計をあらわす添字定数です。
+     */
+    public final static int INDEX_OF_USER_COST_ON_INSURE_FOR_DETAIL = 10;
+ // 2016/9/20 [Yoichiro Kamei] add - end
     /**
      * 30日超となる利用者自己負担をあらわす添字定数です。
      */
@@ -78,7 +88,7 @@ public class CareServiceSchedulePrintManager extends HashMap {
     /**
      * 別表用の配列個数定数です。
      */
-    public final static int INDEX_OF_TOTAL_ARRAY_SIZE = 10;
+    public final static int INDEX_OF_TOTAL_ARRAY_SIZE = 11;  // 2016/9/20 総合事業対応  10->11
     /**
      * 費用総額をあらわす添字定数です。
      */
@@ -199,6 +209,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
         return jigyotaishoLimitRate;
     }
 // 2016/7/19 [総合事業対応][Yoichiro Kamei] add - end
+
+// 2016/10 [総合事業独自対応][Yoichiro Kamei] add - begin
+    private QkanSjInsurerChecker sjInsurerChecker;
+// 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
     
     /**
      * 本票の自費に△を記載するか を返します。
@@ -277,6 +291,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
         // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
         this.selfPaymentNumberCalcurater = new SelfPaymentNumberCalcurater(getCalcurater(), services);
         // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
+        
+        // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - begin
+        this.sjInsurerChecker = new QkanSjInsurerChecker(getCalcurater());
+        // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
         
         int shortStayCount = 0;
         // 保険者番号-被保険者番号の階層以下にサービス情報の階層を構築する。
@@ -2233,6 +2251,30 @@ public class CareServiceSchedulePrintManager extends HashMap {
         private TreeMap outInsureOver30Units = new TreeMap();
         private TreeMap plan = new TreeMap();
         private TreeMap result = new TreeMap();
+        
+        // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+        private double tanka;// 単位数単価
+        private Map tankaMap;// 単価が格納されたマップ
+        private String sogoKyufuritsu = ""; //総合事業（独自定率）の給付率
+        private Map kyufuritsuMap;
+        
+        public String getSogoKyufuritsu() {
+            return sogoKyufuritsu;
+        }
+        public void setSogoKyufuritsu(String sogoKyufuritsu) {
+            this.sogoKyufuritsu = sogoKyufuritsu;
+        }
+        public void setKyufuritsuMap(Map kyufuritsuMap) {
+            this.kyufuritsuMap = kyufuritsuMap;
+        }
+        
+        public void setTanka(double tanka) {
+            this.tanka = tanka;
+        }
+        public void setTankaMap(Map tankaMap) {
+            this.tankaMap = tankaMap;
+        }
+        // 2016/9/20 [Yoichiro Kamei] add - end
 
         /**
          * 利用票本表を構築します。
@@ -2935,6 +2977,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         page = (DivedServiceUnit) val;
                     } else {
                         page = new DivedServiceUnit();
+                        // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+                        page.setTanka(tanka);
+                        page.setTankaMap(tankaMap);
+                        page.setSogoKyufuritsu(this.sogoKyufuritsu);
+                        page.setKyufuritsuMap(kyufuritsuMap);
+                        // 2016/9/20 [Yoichiro Kamei] add - end
                         targetMap.put(key, page);
                     }
 
@@ -2994,11 +3042,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
     protected class DivedServiceKind {
         private List codes;
         private int reductRate;
-        private int limitAmoutSize;
-        
-        private int limitAmoutSizeOver30;
-        private HashSet hadItemSet = new HashSet();
-        
+// 2016/9/27 [Yoichiro Kamei] mod - begin 総合事業対応
+//        private int limitAmoutSize;
+//        
+//        private int limitAmoutSizeOver30;
+//        private HashSet hadItemSet = new HashSet();
+// 2016/9/27 [Yoichiro Kamei] mod - end
         private TreeMap mainParseMap = new TreeMap();
         private TreeMap subParseMap = new TreeMap();
         // [ID:0000444][Tozo TANAKA] 2009/03/18 add begin 平成21年4月法改正対応
@@ -3008,6 +3057,11 @@ public class CareServiceSchedulePrintManager extends HashMap {
         private Map syoguMap = new HashMap();
         // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
 
+        // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+        private String systemServiceKindDetail;
+        private double tanka = 10.0d;
+        private TreeMap tankaMap = new TreeMap();
+        // 2016/9/20 [Yoichiro Kamei] add - end
         /**
          * コンストラクタです。
          * 
@@ -3103,11 +3157,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 it = removeKeys.iterator();
                 while (it.hasNext()) {
                     //除外対象のコードを省く
-                    DivedServiceKind.this.subParseMap.remove(it.next());
-                 // 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin 
-                 // 除外したコードの集計列が表示されていないのを修正
-                    DivedServiceKind.this.limitAmoutSize--;
-                 // 2016/7/30 [CCCX:2865] add - end
+                // 2016/9/27 [Yoichiro Kamei] mod - begin 総合事業対応
+//                    DivedServiceKind.this.subParseMap.remove(it.next());
+//                 // 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin 
+//                 // 除外したコードの集計列が表示されていないのを修正
+//                    DivedServiceKind.this.limitAmoutSize--;
+//                 // 2016/7/30 [CCCX:2865] add - end
+                 String key = (String) it.next();
+                 DivedServiceKind.this.subParseMap.remove(key);
+                 removeCode(key);
+                 // 2016/9/27 [Yoichiro Kamei] mod - end
                 }
             }
             //2006/06/21 Tozo TANAKA edit-end 予防訪問介護3級対応のため
@@ -3125,7 +3184,14 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     Map code = ((DivedServiceUnit) ent.getValue()).code;
                     if(CareServiceCommon.isSimpleUnit(code)){
                         //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
-                        simpleUnitHash.put(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), new Object[]{code, ent.getKey()});
+                        // 2016/10/20 [Yoichiro Kamei] mod - begin 総合事業独自対応
+                        //simpleUnitHash.put(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), new Object[]{code, ent.getKey()});
+                        String itemKey = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                        if (QkanSjServiceCodeManager.dokujiCodes.contains(ACCastUtilities.toString(systemServiceKindDetail))) {
+                            itemKey = itemKey + "-" + ACCastUtilities.toString(code.get("INSURER_ID"));
+                        }
+                        simpleUnitHash.put(itemKey, new Object[]{code, ent.getKey()});
+                        // 2016/10/20 [Yoichiro Kamei] mod - end
                     }
                 }
             }            
@@ -3368,18 +3434,20 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 int insureRate, int[] totals, boolean inLimitAmount, boolean isOver30Days)
                 throws Exception {
 
-            int limitAmount = isOver30Days? getLimitAmountSizeOver30(): getLimitAmountSize();
+// 2016/9/27 [Yoichiro Kamei] mod - begin 総合事業対応
+//            int limitAmount = isOver30Days? getLimitAmountSizeOver30(): getLimitAmountSize();
+//            
+//            Set regulationCache = new HashSet();
+//            int itemState;
+//            if (!inLimitAmount) {
+//                itemState = ITEM_STATE_OUT_LIMIT_AMOUNT;
+//            } else if (limitAmount > 1) {
+//                itemState = ITEM_STATE_MULTI_NOT_LAST;
+//            } else {
+//                itemState = ITEM_STATE_SINGLE;
+//            }
+// 2016/9/27 [Yoichiro Kamei] mod - end
             
-            Set regulationCache = new HashSet();
-            int itemState;
-            if (!inLimitAmount) {
-                itemState = ITEM_STATE_OUT_LIMIT_AMOUNT;
-            } else if (limitAmount > 1) {
-                itemState = ITEM_STATE_MULTI_NOT_LAST;
-            } else {
-                itemState = ITEM_STATE_SINGLE;
-            }
-
             // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
             int over30Count = 0;
             int temp30Count = 0;
@@ -3425,89 +3493,139 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
             }
             
-            // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
-            temp30Count = 0;
-            // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
-            //メインコード
-            int buildIndex = 0;
-            Iterator it = subParseMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry ent = (Map.Entry) it.next();
-                DivedServiceItem services = (DivedServiceItem) ent.getValue();
-                if (!services.isSubFormatPrintable()) {
-                    continue;
-                }
-                
-                if (itemState == ITEM_STATE_MULTI_NOT_LAST) {
-                    // 小計出力対象の場合
-                    if (++buildIndex >= limitAmount) {
-                        // 給付管理対象としては最後のサービスの場合は出力モードを変更
-                        itemState = ITEM_STATE_MULTI_LAST;
-
-                    }
-                }
-                
-                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
-                if(isOver30Days) {
-                    temp30Count++;
-                }
-                if(temp30Count >= subParseMap.size()) {
-                    if(over30Count == temp30Count) {
-                        itemState = ITEM_STATE_MULTI_LAST;
-                    }
-                }
-                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
-                
-                // 下位情報構築
-                int beforeIndex = buildParam.getCurrentRow();
-                int afterIndex = services.buildUserSubTable(buildParam,
-                        provider, insureRate, totals, itemState, regulationCache, isOver30Days);
-                if(beforeIndex!=afterIndex){
-                    buildParam.setCurrentRow(afterIndex);
-                }else{
-                    buildIndex--;
-                }
-//                buildParam.setCurrentRow(services.buildUserSubTable(buildParam,
-//                        provider, insureRate, totals, itemState, regulationCache, isOver30Days));
-                
-                //[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - begin
-                //30日超の場合に支給限度額対象外の項目を出力する（サービス提供体制強化加算が限度額管理外になったため）
-            	if (isOver30Days){
-	                int[] dummyTotal = new int[totals.length];
-	                Map outMap = ((DivedServiceItem) ent.getValue()).outInsureOver30Units;
-	                Iterator outIt = outMap.entrySet().iterator();
-	                while (outIt.hasNext()) {
-	                    Map.Entry outEnt = (Map.Entry) outIt.next();
-	                    DivedServiceUnit outService = (DivedServiceUnit)outEnt.getValue();
-	                    outService.buildUserSubTableDetailRow(buildParam, provider,
-	                        0, dummyTotal, isOver30Days);
-	                    buildParam.setCurrentRow(buildParam.getCurrentRow() + 1);
-	                }
-                }
-            	//[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - end
-            }
-        	
+          // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+          if (!tankaMap.isEmpty()) {
+              // 出力前の合計情報
+              int[] beforeTotals = Arrays.copyOf(totals, totals.length);
+              Iterator it = tankaMap.entrySet().iterator();
+              boolean kyufuritsuMulti = false;
+              while (it.hasNext()) {
+                  Map.Entry ent = (Map.Entry) it.next();
+                  DivedTanka page = (DivedTanka) ent.getValue();
+                  
+                  page.buildUserSubTable(buildParam, provider, insureRate
+                          , totals, inLimitAmount, isOver30Days, over30Count);
+                  if (page.getKyufuritsuSize() > 1) {
+                      kyufuritsuMulti = true;
+                  }
+                  
+                  if (inLimitAmount && !isOver30Days) {
+                      // 最後の単価の場合
+                      if (tankaMap.lastEntry().equals(ent)) {
+                          // 単価、または給付率が複数ある場合
+                          if (tankaMap.size() > 1 || kyufuritsuMulti) {
+                              // サービス種類の小計行を出力
+                              buildUserSubTableSubTotalRow(buildParam,
+                                  provider, insureRate, beforeTotals, totals);
+                          }
+                      }
+                  }
+              }
+              return buildParam.getCurrentRow();
+          }
+          // 2016/9/20 [Yoichiro Kamei] add - end
+            
+// 2016/9/27 [Yoichiro Kamei] mod - begin 総合事業対応
+//            // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+//            temp30Count = 0;
+//            // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+//            //メインコード
+//            int buildIndex = 0;
+//            Iterator it = subParseMap.entrySet().iterator();
+//            while (it.hasNext()) {
+//                Map.Entry ent = (Map.Entry) it.next();
+//                DivedServiceItem services = (DivedServiceItem) ent.getValue();
+//                if (!services.isSubFormatPrintable()) {
+//                    continue;
+//                }
+//                
+//                if (itemState == ITEM_STATE_MULTI_NOT_LAST) {
+//                    // 小計出力対象の場合
+//                    if (++buildIndex >= limitAmount) {
+//                        // 給付管理対象としては最後のサービスの場合は出力モードを変更
+//                        itemState = ITEM_STATE_MULTI_LAST;
+//
+//                    }
+//                }
+//                
+//                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+//                if(isOver30Days) {
+//                    temp30Count++;
+//                }
+//                if(temp30Count >= subParseMap.size()) {
+//                    if(over30Count == temp30Count) {
+//                        itemState = ITEM_STATE_MULTI_LAST;
+//                    }
+//                }
+//                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+//                
+//                // 下位情報構築
+//                int beforeIndex = buildParam.getCurrentRow();
+//                int afterIndex = services.buildUserSubTable(buildParam,
+//                        provider, insureRate, totals, itemState, regulationCache, isOver30Days);
+//                if(beforeIndex!=afterIndex){
+//                    buildParam.setCurrentRow(afterIndex);
+//                }else{
+//                    buildIndex--;
+//                }
+////                buildParam.setCurrentRow(services.buildUserSubTable(buildParam,
+////                        provider, insureRate, totals, itemState, regulationCache, isOver30Days));
+//                
+//                //[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - begin
+//                //30日超の場合に支給限度額対象外の項目を出力する（サービス提供体制強化加算が限度額管理外になったため）
+//            	if (isOver30Days){
+//	                int[] dummyTotal = new int[totals.length];
+//	                Map outMap = ((DivedServiceItem) ent.getValue()).outInsureOver30Units;
+//	                Iterator outIt = outMap.entrySet().iterator();
+//	                while (outIt.hasNext()) {
+//	                    Map.Entry outEnt = (Map.Entry) outIt.next();
+//	                    DivedServiceUnit outService = (DivedServiceUnit)outEnt.getValue();
+//	                    outService.buildUserSubTableDetailRow(buildParam, provider,
+//	                        0, dummyTotal, isOver30Days);
+//	                    buildParam.setCurrentRow(buildParam.getCurrentRow() + 1);
+//	                }
+//                }
+//            	//[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - end
+//            }
+// 2016/9/27 [Yoichiro Kamei] mod - end
             return buildParam.getCurrentRow();
         }
-
+// 2016/9/27 [Yoichiro Kamei] mod - begin 総合事業対応
+//        /**
+//         * 支給管理限度額内のサービス数を返します。
+//         * 
+//         * @return 支給管理限度額内のサービス数
+//         */
+//        protected int getLimitAmountSize() {
+//            return limitAmoutSize;
+//        }
+//
+//        /**
+//         * 30日超の支給管理限度額内のサービス数を返します。
+//         * 
+//         * @return 30日超の支給管理限度額内のサービス数
+//         */
+//        protected int getLimitAmountSizeOver30() {
+//            return limitAmoutSizeOver30;
+//        }
+// 2016/9/27 [Yoichiro Kamei] mod - end
+        
+// 2016/9/27 [Yoichiro Kamei] add - begin 総合事業対応
         /**
-         * 支給管理限度額内のサービス数を返します。
-         * 
-         * @return 支給管理限度額内のサービス数
+         * 解析済みのコードから対象のキーを削除します。
+         * @param key
          */
-        protected int getLimitAmountSize() {
-            return limitAmoutSize;
+        protected void removeCode(String key) {
+            if (!tankaMap.isEmpty()) {
+                Iterator it = tankaMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry ent = (Map.Entry) it.next();
+                    DivedTanka page = (DivedTanka) ent.getValue();
+                    page.removeCode(key);
+                }
+            }
         }
-
-        /**
-         * 30日超の支給管理限度額内のサービス数を返します。
-         * 
-         * @return 30日超の支給管理限度額内のサービス数
-         */
-        protected int getLimitAmountSizeOver30() {
-            return limitAmoutSizeOver30;
-        }
-
+// 2016/9/27 [Yoichiro Kamei] add - end
         /**
          * 1つめのサービス情報を返します。
          * 
@@ -3575,6 +3693,23 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     if (key == null) {
                         key = "";
                     }
+                    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                    // 他の保険者のコードがあれば別行に表示する
+                    String skind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"));
+                    // 独自定率・独自定額の場合（独自はコード名称は同じなので別行に表示しない）
+                    if (QkanSjServiceCodeManager.teiritsuTeigakuKinds.contains(skind)) {
+                    	Date serviceDate = ACCastUtilities.toDate(service.get("SERVICE_DATE"));
+                        String insurerId = "";
+                        try {
+                            insurerId = sjInsurerChecker.getSjInsurerIdByCode(serviceDate, code);
+                        } catch (QkanSjInsurerException e) {
+                            insurerId = "";
+                        }
+                        if (!"".equals(insurerId)) {
+                            key = key + insurerId;
+                        }
+                    }
+                    // 2016/10/11 [Yoichiro Kamei] add -end
                     Object val = DivedServiceKind.this.mainParseMap.get(key);
                     DivedServiceItem page;
                     // サービス内容で分岐
@@ -3664,7 +3799,11 @@ public class CareServiceSchedulePrintManager extends HashMap {
             
             // サービスコード取得
             codes = getCalcurater().getServiceCodes(service);
-
+            
+            // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+            systemServiceKindDetail = ACCastUtilities.toString(service.get("SYSTEM_SERVICE_KIND_DETAIL"));
+            // 2016/9/20 [Yoichiro Kamei] add - end
+            
             // [ID:0000444][Tozo TANAKA] 2009/03/18 add begin 平成21年4月法改正対応
             List simpleServiceCodeItems = new ArrayList();
             // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
@@ -3688,8 +3827,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // [ID:0000444][Tozo TANAKA] 2009/03/18 add begin 平成21年4月法改正対応
                 if(CareServiceCommon.isSimpleUnit(code)){
                     //このサービスの基本単価
-                    simpleServiceCodeItems.add(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")));
-                    serviceAddFlagMap.setData(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), code.get("TOTAL_GROUPING_TYPE"));
+                    // 2016/10/20 [Yoichiro Kamei] mod - begin 総合事業独自対応
+                    //simpleServiceCodeItems.add(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")));
+                    //serviceAddFlagMap.setData(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), code.get("TOTAL_GROUPING_TYPE"));
+                    String itemKey = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                    if (QkanSjServiceCodeManager.dokujiCodes.contains(systemServiceKindDetail)) {
+                        itemKey = itemKey + "-" + ACCastUtilities.toString(code.get("INSURER_ID"));
+                    }
+                    simpleServiceCodeItems.add(itemKey);
+                    serviceAddFlagMap.setData(itemKey, code.get("TOTAL_GROUPING_TYPE"));
+                    // 2016/10/20 [Yoichiro Kamei] mod - end
                 }
                 // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
             }
@@ -4017,15 +4164,101 @@ public class CareServiceSchedulePrintManager extends HashMap {
 //                return calcurateUnit;
 //            }
 //            // 2008/06/19 [Masahiko Higuchi] add - end
-            
+
             Object key = code.get("SERVICE_CODE_ITEM");
+            
             if (key == null) {
                 key = "";
             }
-            Object val = subParseMap.get(key);
-            DivedServiceItem page;
-            // サービス内容で分岐
-            if (val instanceof DivedServiceItem) {
+
+// 2016/9/27 [Yoichiro Kamei] mod - begin
+//            Object val = subParseMap.get(key);
+//            DivedServiceItem page;
+//            // サービス内容で分岐
+//            if (val instanceof DivedServiceItem) {
+//                //既出
+//                if(CareServiceCommon.isAddPercentage(code)){
+//                    // [ID:0000734][Masahiko.Higuchi] 2012/04 ％系加算の30日超対応 edit begin
+//                    // 30日超の場合はスキップを解除する
+//                    if(!CareServiceCommon.is30DayOver(service)) {
+//                        //%加算は1回だけ計上するのでスキップ
+//                        return calcurateUnit;
+//                    }
+//                    // [ID:0000734][Masahiko.Higuchi] 2012/04 edit end
+//                }                
+//                page = (DivedServiceItem) val;
+//            } else {
+//                //新規
+//                page = new DivedServiceItem();
+//                subParseMap.put(key, page);
+//                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+//                // 処遇改善加算を退避
+//                if(CareServiceCommon.isAddPercentageForSyogu(code)) {
+//                    syoguMap.put(key, page);
+//                }
+//                // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
+//            }
+//            
+//          if (CareServiceCommon.isInLimitAmount(code)) {
+//              //給付管理限度額対象のコードの場合
+//              //30日超とそれ以外を区別しつつ、給付管理限度額対象の項目数を重複なく計算する。
+//              String hadImteSetKey = ACCastUtilities.toString(key);
+//              if(CareServiceCommon.is30DayOver(service)){
+//                  //30日超ならばキーを連結して別のコードとみなす。
+//                  hadImteSetKey = hadImteSetKey+"&30";
+//                  if(!hadItemSet.contains(hadImteSetKey)){
+//                      //新規な項目であれば30日超の給付管理限度額対象の項目数を加算する。
+//                      hadItemSet.add(hadImteSetKey);
+//                      limitAmoutSizeOver30++;
+//                  }
+//              }else{
+//                  // 2008/01/07 [Masahiko Higuchi] edit - begin 定額報酬サービス日割対応
+//                  // === 日割りロジック変更に伴い、条件変更 ===
+//                  //if(!hadItemSet.contains(hadImteSetKey) && isSubParseCustom(service)){
+//                  if(!hadItemSet.contains(hadImteSetKey)){
+//                  // 2008/01/07 [Masahiko Higuchi] edit - end
+//                      //新規な項目であれば給付管理限度額対象の項目数を加算する。
+//                      hadItemSet.add(hadImteSetKey);
+//                      limitAmoutSize++;
+//                  }
+//              }
+//          } else {
+//              // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
+//              String hadImteSetKey = ACCastUtilities.toString(key);
+//              if(CareServiceCommon.is30DayOver(service) && CareServiceCommon.isAddPercentageForSyogu(code)){
+//                  //30日超ならばキーを連結して別のコードとみなす。
+//                  hadImteSetKey = hadImteSetKey+"&30";
+//                  if(!hadItemSet.contains(hadImteSetKey)){
+//                      //新規な項目であれば30日超の給付管理限度額対象の項目数を加算する。
+//                      hadItemSet.add(hadImteSetKey);
+//                      limitAmoutSizeOver30++;
+//                  }
+//              }
+//              // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
+//          }
+//          // 同一サービス内容内で分類
+//          return page.parseSub(service, code, totalGroupingCache,
+//                  calcurateUnit, reductRate);
+            
+            // 独自・独自定率・独自定額の場合
+            String insurerId = "";
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuCodes.contains(systemServiceKindDetail)) {
+                Date serviceDate = ACCastUtilities.toDate(service.get("SERVICE_DATE"));
+                try {
+                    insurerId = sjInsurerChecker.getSjInsurerIdByCode(serviceDate, code);
+                } catch (QkanSjInsurerException e) {
+                    insurerId = "";
+                }
+                
+                if (!"".equals(insurerId)) {
+                    key = key + insurerId;
+                } else {
+                   // 算定出来ないコードなのでスキップ
+                   return calcurateUnit;
+                }
+            }
+            
+            if (subParseMap.containsKey(key)) {
                 //既出
                 if(CareServiceCommon.isAddPercentage(code)){
                     // [ID:0000734][Masahiko.Higuchi] 2012/04 ％系加算の30日超対応 edit begin
@@ -4035,61 +4268,37 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         return calcurateUnit;
                     }
                     // [ID:0000734][Masahiko.Higuchi] 2012/04 edit end
-                }                
-                page = (DivedServiceItem) val;
+                }
+            }
+            
+            // 単位数単価の階層を付ける
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuCodes.contains(systemServiceKindDetail)) {
+                try {
+                    tanka = QkanSjTankaManager.getUnitPrice(insurerId, systemServiceKindDetail);
+                } catch (QkanSjTankaNotFoundException e) {
+                    // ここでは、単価10円に置き換えて進める。
+                    // 単価が設定されていない場合は、入力時に警告ダイアログを表示する。
+                    tanka = 10.0d;
+                }
+            } else {
+                Map provider = getCalcurater().getProvider(
+                        ACCastUtilities.toString(service.get("PROVIDER_ID")));
+                tanka = getCalcurater().getUnitPrice(ACCastUtilities.toInt(systemServiceKindDetail),
+                        provider);
+            }
+            
+            DivedTanka page;
+            if (tankaMap.containsKey(tanka)) {
+                page = (DivedTanka) tankaMap.get(tanka);
             } else {
                 //新規
-                page = new DivedServiceItem();
-                subParseMap.put(key, page);
-                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
-                // 処遇改善加算を退避
-                if(CareServiceCommon.isAddPercentageForSyogu(code)) {
-                    syoguMap.put(key, page);
-                }
-                // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
+                page = new DivedTanka(systemServiceKindDetail, tanka, tankaMap);
+                tankaMap.put(tanka, page);
             }
-
-            if (CareServiceCommon.isInLimitAmount(code)) {
-                //給付管理限度額対象のコードの場合
-                //30日超とそれ以外を区別しつつ、給付管理限度額対象の項目数を重複なく計算する。
-                String hadImteSetKey = ACCastUtilities.toString(key);
-                if(CareServiceCommon.is30DayOver(service)){
-                    //30日超ならばキーを連結して別のコードとみなす。
-                    hadImteSetKey = hadImteSetKey+"&30";
-                    if(!hadItemSet.contains(hadImteSetKey)){
-                        //新規な項目であれば30日超の給付管理限度額対象の項目数を加算する。
-                        hadItemSet.add(hadImteSetKey);
-                        limitAmoutSizeOver30++;
-                    }
-                }else{
-                    // 2008/01/07 [Masahiko Higuchi] edit - begin 定額報酬サービス日割対応
-                    // === 日割りロジック変更に伴い、条件変更 ===
-                    //if(!hadItemSet.contains(hadImteSetKey) && isSubParseCustom(service)){
-                    if(!hadItemSet.contains(hadImteSetKey)){
-                    // 2008/01/07 [Masahiko Higuchi] edit - end
-                        //新規な項目であれば給付管理限度額対象の項目数を加算する。
-                        hadItemSet.add(hadImteSetKey);
-                        limitAmoutSize++;
-                    }
-                }
-            } else {
-                // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
-                String hadImteSetKey = ACCastUtilities.toString(key);
-                if(CareServiceCommon.is30DayOver(service) && CareServiceCommon.isAddPercentageForSyogu(code)){
-                    //30日超ならばキーを連結して別のコードとみなす。
-                    hadImteSetKey = hadImteSetKey+"&30";
-                    if(!hadItemSet.contains(hadImteSetKey)){
-                        //新規な項目であれば30日超の給付管理限度額対象の項目数を加算する。
-                        hadItemSet.add(hadImteSetKey);
-                        limitAmoutSizeOver30++;
-                    }
-                }
-                // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
-            }
-
-            // 同一サービス内容内で分類
+            // 同一単価内で分類
             return page.parseSub(service, code, totalGroupingCache,
-                    calcurateUnit, reductRate);
+                    calcurateUnit, reductRate, subParseMap, syoguMap);
+// 2016/9/27 [Yoichiro Kamei] mod - end
         }
         
         public String toString() {
@@ -4108,6 +4317,97 @@ public class CareServiceSchedulePrintManager extends HashMap {
             return sb.toString();
         }
 
+        // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+        /**
+         * 利用票別表を構築します。
+         * <p>
+         * 単価または給付率が複数出力された際のサービス種類小計行を構築します。
+         * </p>
+         * 
+         * @param buildParam 印字内容集合
+         * @param provider 事業所
+         * @param insureRate 保険給付率
+         * @param unit 単位
+         * @param totals 集計情報　サービス種類出力前
+         * @param totalsAfter 集計情報　サービス種類出力後
+         * @throws Exception 処理例外
+         */
+        public void buildUserSubTableSubTotalRow(CareServicePrintParameter buildParam,
+                Map provider, int insureRate, int[] totals, int[] totalsAfter) throws Exception {
+            // 事業所情報を構築
+            String providerID = ACCastUtilities.toString(provider
+                    .get("PROVIDER_ID"));
+            // 事業所名
+            buildParam.getTargetPage().put(
+                    "main.y" + buildParam.getCurrentRow() + ".x1",
+                    provider.get("PROVIDER_NAME"));
+            // 事業所番号
+            buildParam.getTargetPage().put(
+                    "main.y" + buildParam.getCurrentRow() + ".x2", providerID);
+            
+            // サービス内容/種類
+            String serviceName = getCalcurater().getServiceKindName(
+                    getSubFormatFirstService())
+                    + "計";
+            buildParam.getTargetPage().put(
+                "main.y" + buildParam.getCurrentRow() + ".x3", serviceName);
+            String skind = ACTextUtilities.trim(ACCastUtilities.toString(
+            		getSubFormatFirstService().get("SYSTEM_SERVICE_KIND_DETAIL")));
+            buildParam.getTargetPage().put(
+                    "main.y" + buildParam.getCurrentRow() + ".skind",
+                    skind);
+                        
+            // サービス単位/金額
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x9",
+                    getDisplayUnit(totals, totalsAfter, INDEX_OF_SERVICE_UNIT));
+
+            // 区分支給限度基準を超える単位数
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x12",
+                    getDisplayUnit(totals, totalsAfter, INDEX_OF_LIMIT_OVER_UNIT));
+            
+            // 区分支給限度基準内単位数
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x13",
+                    getDisplayUnit(totals, totalsAfter, INDEX_OF_LIMIT_IN_UNIT));
+            
+            // 費用総額
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x15",
+                    getDisplayUnit(totals, totalsAfter, INDEX_OF_TOTAL_COST));
+            
+            // 保険給付額(切捨て)
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x17",
+                    getDisplayUnit(totals, totalsAfter, INDEX_OF_INSURE_COST));
+            
+            // 利用者負担（保険対象分）
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x18",
+                    getDisplayUnit(totals, totalsAfter, INDEX_OF_USER_COST_ON_INSURE));
+
+            // 利用者負担（全額負担分）
+            buildParam.getTargetPage().put("main.y" + buildParam.getCurrentRow() + ".x19",
+                getDisplayUnit(totals, totalsAfter, INDEX_OF_USER_COST_ON_FULL));
+            
+
+            buildParam.setCurrentRow(buildParam.getCurrentRow() + 1);
+            if (buildParam.getCurrentRow() >= getUserSubTableRowCount()) {
+                // ページ送り
+                buildParam.getPages().add(buildParam.getTargetPage());
+                buildParam.setTargetPage((VRMap) buildParam.getFormPage()
+                        .clone());
+                buildParam.setCurrentRow(1);
+            }
+
+        }
+        
+        private String getDisplayUnit(int[] totals, int[] totalsAfter, int index) {
+            StringBuilder sb = new StringBuilder();
+            int unit = totalsAfter[index] - totals[index];
+            if (unit > 0) {
+                sb.append("(");
+                sb.append(unit);
+                sb.append(")");
+            }
+            return sb.toString();
+        }
+        // 2016/9/20 [Yoichiro Kamei] add - end
     }
 
     /**
@@ -4217,7 +4517,29 @@ public class CareServiceSchedulePrintManager extends HashMap {
      */
     protected class DivedServiceUnit extends ArrayList {
         private Map code;
-
+        
+        // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+        private double tanka;// 単位数単価
+        private Map tankaMap;// 単価が格納されたマップ
+        private String sogoKyufuritsu = ""; //総合事業（独自定率）の給付率
+        private Map kyufuritsuMap; //同じサービス種類内での給付率の数を取得するために保持
+        public String getSogoKyufuritsu() {
+            return sogoKyufuritsu;
+        }
+        public void setSogoKyufuritsu(String sogoKyufuritsu) {
+            this.sogoKyufuritsu = sogoKyufuritsu;
+        }
+        public void setKyufuritsuMap(Map kyufuritsuMap) {
+            this.kyufuritsuMap = kyufuritsuMap;
+        }
+        public void setTanka(double tanka) {
+            this.tanka = tanka;
+        }
+        public void setTankaMap(Map tankaMap) {
+            this.tankaMap = tankaMap;
+        }
+        // 2016/9/20 [Yoichiro Kamei] add - end
+        
         /**
          * 利用票別表を構築します。
          * <p>
@@ -4301,10 +4623,25 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 Map provider, int insureRate, int[] totals, boolean isOver30Days) throws Exception {
             // 事業所情報を構築
             buildUserSubTableProviderFields(buildParam, provider);
-
+            
+            // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
+//            String serviceName = getCalcurater().getServiceKindName(
+//                    getFirstService())
+//                    + "計";
             String serviceName = getCalcurater().getServiceKindName(
-                    getFirstService())
-                    + "計";
+            getFirstService());
+            
+            // 独自定率の給付率が複数ある場合、小計対象の給付率を出力
+            if (kyufuritsuMap != null && kyufuritsuMap.size() > 1) {
+                int kyufuritsu = ACCastUtilities.toInt(getSogoKyufuritsu(), 0);
+                serviceName += " " + kyufuritsu + "% "; 
+            }
+            if (tankaMap != null && tankaMap.size() > 1) {
+                String tanka = getCalcurater().getTextOfUnitPrice(this.tanka);
+                serviceName += " " + tanka + "円 "; 
+            }
+            serviceName += "計";
+            // 2016/9/20 [Yoichiro Kamei] mod - end
             if(isOver30Days){
                 serviceName = "30日超"+ serviceName;
             }
@@ -4391,6 +4728,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         "main.y" + buildParam.getCurrentRow() + ".skind",
                         skind);
                 // 2016/7/30 [CCCX:2865] add - end
+                // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".sogokyufuritsu",
+                        getSogoKyufuritsu());
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".limitAmountObject",code
+                        .get("LIMIT_AMOUNT_OBJECT"));
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".isOver30Days", isOver30Days);
+                // 2016/9/20 [Yoichiro Kamei] add - end
                 
                 // サービス内容/種類
                 buildParam.getTargetPage().put(
@@ -4447,7 +4794,76 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     totals[INDEX_OF_SERVICE_UNIT_FOR_DETAIL] += reducedCost;
                     totals[INDEX_OF_SERVICE_UNIT] += reducedCost;
                 }
-                
+                // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+                // 独自定額の場合
+                if (QkanSjServiceCodeManager.teigakuCodes.contains(skind)) {
+                    // 定額利用者負担単価金額
+                    int futangaku = ACCastUtilities.toInt(code.get("FUTANGAKU"), 0);
+                    buildParam.getTargetPage().put(
+                            "main.y" + buildParam.getCurrentRow() + ".x20",
+                            futangaku);
+                    
+                    // 区分支給限度基準を超える単位数
+                    // サービスに設定された調整額を求める
+                    int overUnit = 0;
+                    Iterator it = DivedServiceUnit.this.iterator();
+                    while (it.hasNext()) {
+                        Map service = (Map) it.next();
+                        overUnit += ACCastUtilities.toInt(service.get("REGULATION_RATE"), 0);
+                    }
+                    
+                    int userCost = 0;
+                    if (overUnit > 0) {
+                        String overUnitText = String.valueOf(overUnit);
+                        overUnitText = "(" + overUnitText + ")";
+                        
+                        // 区分支給限度基準を超える単位数が設定されているとき
+                        printCell(buildParam, 12, overUnitText, isOver30Days);
+                        
+                        // 区分支給限度基準内単位数
+                        int totalUnit = reducedCost - overUnit;
+                        String totalUnitText = String.valueOf(totalUnit);
+                        totalUnitText = "(" + totalUnitText + ")";
+                        
+                        printCell(buildParam, 13, totalUnitText, isOver30Days);
+                        
+                        // 利用者負担（保険・事業対象分）
+                        // １単位あたりの負担額を計算
+                        BigDecimal unitBig = new BigDecimal(unit);
+                        BigDecimal futangakuBig = new BigDecimal(futangaku);
+                        BigDecimal totalUnitBig = new BigDecimal(totalUnit);
+                        BigDecimal userCostBig = futangakuBig.multiply(totalUnitBig).divide(unitBig, 0, BigDecimal.ROUND_DOWN);
+                        userCost = userCostBig.intValue();
+                        
+                    } else {
+                        // 超過分が無い時
+                        // 利用者負担（保険・事業対象分）
+                        userCost = futangaku * count;
+                    }
+                    // 公費も含めた給付率のチェックがある場合
+                    if (getCalcurater().isCalcWithPublicExpense()) {
+                        // 公費の給付率が100のときは、利用者負担を0にする。
+                        int rate = getCalcurater().checkPublicExpense(0, skind, null);
+                        if (rate == 100) {
+                            userCost = 0;
+                        }
+                    } else {
+                        // 公費も含めた給付率のチェックがない場合
+                        // 生保単独の場合
+                        if (ACCastUtilities.toString(buildParam.getFormPage()
+                                .get("insured.h1.insuredID")).startsWith("H")) {
+                            // 明細では利用者負担は表示しない
+                            userCost = 0;
+                        }
+                    }
+                    if (userCost > 0) {
+                        String userCostText = String.valueOf(userCost);
+                        userCostText = "(" + userCostText + ")";
+                        printCell(buildParam, 18, userCostText, isOver30Days);
+                    }
+                    totals[INDEX_OF_USER_COST_ON_INSURE_FOR_DETAIL] += userCost;
+                }
+                // 2016/9/20 [Yoichiro Kamei] add - end
             }
 
         }
@@ -4521,6 +4937,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         "main.y" + buildParam.getCurrentRow() + ".skind",
                         skind);
                 // 2016/7/30 [CCCX:2865] add - end
+                // 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".sogokyufuritsu",
+                        getSogoKyufuritsu());
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".limitAmountObject",code
+                        .get("LIMIT_AMOUNT_OBJECT"));
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".isOver30Days", isOver30Days);
+                // 2016/9/20 [Yoichiro Kamei] add -end
                 
                 // 区分支給限度基準を超える単位数
                 int overUnit = totals[INDEX_OF_LIMIT_OVER_UNIT_FOR_DETAIL];
@@ -4536,17 +4962,31 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 int totalUnit = totals[INDEX_OF_SERVICE_UNIT_FOR_DETAIL]
                         - overUnit;
                 String totalUnitText = String.valueOf(totalUnit);
+                // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
+//                if (addHesesOnUnit) {
+//                    totalUnitText = "(" + totalUnitText + ")";
+//                }
+                
+                // 限度額管理対象外の場合は、合計行に加算されないので、括弧を付ける
+                boolean outOfLimitAmount = CareServiceCommon.OUT_LIMIT_AMOUNT_SERVICE.equals(
+                    ACCastUtilities.toInt(code.get("LIMIT_AMOUNT_OBJECT"), 0));
                 if (addHesesOnUnit) {
-                    totalUnitText = "(" + totalUnitText + ")";
+                    if (outOfLimitAmount) {
+                        totalUnitText = "(" + totalUnitText + ")";
+                    }
                 }
+                // 2016/9/20 [Yoichiro Kamei] mod - end
                 printCell(buildParam, 13, totalUnitText, isOver30Days);
 
                 totals[INDEX_OF_LIMIT_IN_UNIT] += totalUnit;
 
                 // 単位数単価
+                // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
                 Object serviceKind = code.get("SYSTEM_SERVICE_KIND_DETAIL");
-                double unitPrice = getCalcurater().getUnitPrice(serviceKind,
-                        provider);
+//                double unitPrice = getCalcurater().getUnitPrice(serviceKind,
+//                        provider);
+                double unitPrice = tanka;
+                // 2016/9/20 [Yoichiro Kamei] mod - end
                 buildParam.getTargetPage().put(
                         "main.y" + buildParam.getCurrentRow() + ".x14",
                         getCalcurater().getTextOfUnitPrice(unitPrice));
@@ -4572,18 +5012,85 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // 給付率
                 insureRate = getCalcurater().checkPublicExpense(insureRate,
                         serviceKind, provider);
-                printCell(buildParam, 16, new Integer(insureRate), isOver30Days);
+                
+                // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
+                // 独自定率の場合
+                if (QkanSjServiceCodeManager.teiritsuCodes.contains(skind)) {
+                    if (getCalcurater().isCalcWithPublicExpense() && (insureRate == 100)) {
+                        //公費を含めた給付率が100の場合
+                        insureRate = 100;
+                    } else {
+                        insureRate = ACCastUtilities.toInt(getSogoKyufuritsu(), 0);
+                    }
+                }
+                String insureRateText = String.valueOf(insureRate);
+                // 独自定額の場合
+                if (QkanSjServiceCodeManager.teigakuCodes.contains(skind)) {
+                    insureRateText = "";
+                }
+//              printCell(buildParam, 16, new Integer(insureRate), isOver30Days);
+                printCell(buildParam, 16, insureRateText, isOver30Days);
+                // 2016/9/20 [Yoichiro Kamei] mod - end
+                
+                
+                // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
+//                // 保険給付額(切捨て)
+//                int insureCost = (int) Math.floor(cost * insureRate / 100.0);
+//                printCell(buildParam, 17, new Integer(insureCost), isOver30Days);
+//                totals[INDEX_OF_INSURE_COST] += insureCost;
+//
+//                // 利用者負担（保険対象分）
+//                int userCost = cost - insureCost;
+//                printCell(buildParam, 18, new Integer(userCost), isOver30Days);
+//                totals[INDEX_OF_USER_COST_ON_INSURE] += userCost;
 
-                // 保険給付額(切捨て)
-                int insureCost = (int) Math.floor(cost * insureRate / 100.0);
-                printCell(buildParam, 17, new Integer(insureCost), isOver30Days);
-                totals[INDEX_OF_INSURE_COST] += insureCost;
-
-                // 利用者負担（保険対象分）
-                int userCost = cost - insureCost;
-                printCell(buildParam, 18, new Integer(userCost), isOver30Days);
-                totals[INDEX_OF_USER_COST_ON_INSURE] += userCost;
-
+                // 独自定額以外の場合
+                if (!QkanSjServiceCodeManager.teigakuCodes.contains(skind)) {
+                    // 公費も含めた給付率のチェックがない場合
+                    if (!getCalcurater().isCalcWithPublicExpense()) {
+                        // 生保単独の場合
+                        if (ACCastUtilities.toString(buildParam.getFormPage()
+                                .get("insured.h1.insuredID")).startsWith("H")) {
+                            // 給付率を0に置き換え
+                            insureRate = 0;
+                        }
+                    }
+                    // 保険給付額(切捨て)
+                    int insureCost = (int) Math.floor(cost * insureRate / 100.0);
+                    printCell(buildParam, 17, new Integer(insureCost), isOver30Days);
+                    totals[INDEX_OF_INSURE_COST] += insureCost;
+  
+                    // 利用者負担（保険対象分）
+                    int userCost = cost - insureCost;
+                    printCell(buildParam, 18, new Integer(userCost), isOver30Days);
+                    totals[INDEX_OF_USER_COST_ON_INSURE] += userCost;
+                } else {
+                // 独自定額の場合
+                    
+                    // 利用者負担（保険対象分）
+                    int userCost = totals[INDEX_OF_USER_COST_ON_INSURE_FOR_DETAIL];
+                    // 公費も含めた給付率のチェックがない場合
+                    if (!getCalcurater().isCalcWithPublicExpense()) {
+                        // 生保単独の場合
+                        if (ACCastUtilities.toString(buildParam.getFormPage()
+                                .get("insured.h1.insuredID")).startsWith("H")) {
+                            // 費用総額を利用者負担へ
+                            userCost = cost;
+                        }
+                    }
+                    printCell(buildParam, 18, new Integer(userCost), isOver30Days);
+                    totals[INDEX_OF_USER_COST_ON_INSURE] += userCost;
+                    
+                    // 小計分をクリア
+                    totals[INDEX_OF_USER_COST_ON_INSURE_FOR_DETAIL] = 0;
+                    
+                    // 保険給付額
+                    int insureCost = cost - userCost;
+                    printCell(buildParam, 17, new Integer(insureCost), isOver30Days);
+                    totals[INDEX_OF_INSURE_COST] += insureCost;
+                }
+                // 2016/9/20 [Yoichiro Kamei] mod - end
+                
                 // [ID:0000441][Masahiko Higuchi] del begin 費用総額の丸め計算障害対応
                 // 2008/09/03 [Masahiko Higuchi] add - begin 全額自己負担計算式障害（V5.4.3）
                 // 何か丸め計算がおかしいので請求と同様の計算式に変更する
@@ -4602,10 +5109,21 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add end
                 // [ID:0000764][Masahiko.Higuchi] del - end
                 if (overUnit > 0) {
-
                     // 区分支給限度基準を超える単位数が設定されているとき
-                    printCell(buildParam, 12, new Integer(overUnit), isOver30Days);
-
+//                  printCell(buildParam, 12, new Integer(overUnit), isOver30Days);
+                    
+                    // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
+                    // 限度額管理対象外の場合は、合計行に加算されないので、括弧を付ける
+                    String overUnitText = String.valueOf(overUnit);
+                    if (addHesesOnUnit) {
+                        if (outOfLimitAmount) {
+                            overUnitText = "(" + overUnitText + ")";
+                        }
+                    }
+                    printCell(buildParam, 12, overUnitText, isOver30Days);
+                    // 2016/9/20 [Yoichiro Kamei] mod - begin 総合事業対応
+                    
+                    
                     // 2008/09/03 [Masahiko Higuchi] del - begin 全額自己負担計算式障害（V5.4.3）
                     // サービス計画費用総額=計画単位数*単位数単価
                     //int planCost = (int) Math.floor((overUnit + totalUnit)
@@ -4656,5 +5174,345 @@ public class CareServiceSchedulePrintManager extends HashMap {
         this.printKeisyo = printKeisyo;
     }
     // [2014年要望][Shinobu Hitaka] 2014/10/23 add end 敬称表示
+
+
+// 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 単位数単価で切り替わるページデータです。
+     */
+    protected class DivedTanka extends TreeMap {
+        private String systemServiceKindDetail;
+        // 給付率の降順に並ぶようComparatorを設定
+        private TreeMap kyufuritsuMap = new TreeMap(new Comparator<Integer>() { 
+            public int compare(Integer m, Integer n){
+                return ((Integer)m).compareTo(n) * -1;
+            }
+        });
+        private double tanka;// 単位数単価
+        private Map tankaMap;// 単価が格納されたマップ
+        
+        /**
+         * コンストラクタ。
+         * @param tanka 総合事業の単位数単価
+         */
+        public DivedTanka(String systemServiceKindDetail, double tanka, Map tankaMap) {
+            this.systemServiceKindDetail = systemServiceKindDetail;
+            this.tanka = tanka;
+            this.tankaMap = tankaMap;
+        }
+        // 別表用の解析
+        public int parseSub(VRMap service, Map code, Map[] totalGroupingCache,
+                int calcurateUnit, int reductRate, Map parentSubParseMap, Map syoguMap) throws Exception {
+
+            // 給付率の階層を付ける
+            int kyufuritsu = 0;
+            // 独自定率の場合はコードに設定された給付率を使用
+            if (QkanSjServiceCodeManager.teiritsuCodes.contains(systemServiceKindDetail)) {
+                kyufuritsu = ACCastUtilities.toInt(code.get("KYUFURITSU"), 0);
+            }
+            
+            DivedKyufuritsu page;
+            if (kyufuritsuMap.containsKey(kyufuritsu)) {
+                page = (DivedKyufuritsu) kyufuritsuMap.get(kyufuritsu);
+            } else {
+                //新規
+                page = new DivedKyufuritsu(tanka, tankaMap, 
+                        String.valueOf(kyufuritsu), kyufuritsuMap);
+                kyufuritsuMap.put(kyufuritsu, page);
+            }
+
+            // 同一給付率内で分類
+            return  page.parseSub(service, code, totalGroupingCache,
+                    calcurateUnit, reductRate, parentSubParseMap, syoguMap);
+        }
+        
+        /**
+         * 利用票別表を構築します。
+         * 
+         * @param buildParam 印字内容集合
+         * @param provider 事業所情報
+         * @param insureRate 保険給付率
+         * @param totals 集計情報
+         * @param inLimitAmount 給付管理限度額対象を出力するか
+         * @param isOver30Days 30日超
+         * @return 次の出力対象行
+         * @throws Exception 処理例外
+         */
+        public int buildUserSubTable(CareServicePrintParameter buildParam, Map provider,
+                int insureRate, int[] totals, boolean inLimitAmount, boolean isOver30Days, int over30Count)
+                throws Exception {
+            if (!kyufuritsuMap.isEmpty()) {
+                Iterator it = kyufuritsuMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry ent = (Map.Entry) it.next();
+                    DivedKyufuritsu page = (DivedKyufuritsu) ent.getValue();
+                    
+                    page.buildUserSubTable(buildParam, provider, insureRate
+                            , totals, inLimitAmount, isOver30Days, over30Count);
+                }
+            }
+            return buildParam.getCurrentRow();
+        }
+        
+        /**
+         * 給付率の数を返します。
+         * 
+         * @return 給付率の数
+         */
+        public int getKyufuritsuSize() {
+            return kyufuritsuMap.size();
+        }
+        
+        /**
+         * 解析済みのコードから対象のキーを削除します。
+         * @param key
+         */
+        protected void removeCode(String key) {
+            if (!kyufuritsuMap.isEmpty()) {
+                Iterator it = kyufuritsuMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry ent = (Map.Entry) it.next();
+                    DivedKyufuritsu page = (DivedKyufuritsu) ent.getValue();
+                    page.removeCode(key);
+                }
+            }
+        }
+    }
+    
+    /**
+     * 給付率単位で切り替わるページデータです。
+     */
+    protected class DivedKyufuritsu extends TreeMap {
+        private double tanka;// 単位数単価
+        private Map tankaMap;// 単価が格納されたマップ
+        private String sogoKyufuritsu; //総合事業（独自定率）の給付率
+        private Map kyufuritsuMap;
+        
+        private int limitAmoutSize = 0;
+        private int limitAmoutSizeOver30 = 0;
+        
+        private HashSet hadItemSet = new HashSet();
+        
+        private TreeMap subParseMap = new TreeMap();
+        
+        /**
+         * コンストラクタ。
+         */
+        public DivedKyufuritsu(double tanka, Map tankaMap, String sogoKyufuritsu, Map kyufuritsuMap) {
+            this.tanka = tanka;
+            this.tankaMap = tankaMap;
+            this.sogoKyufuritsu = sogoKyufuritsu;
+            this.kyufuritsuMap = kyufuritsuMap;
+        }
+        
+        // 別表用の解析
+        public int parseSub(VRMap service, Map code, Map[] totalGroupingCache,
+                int calcurateUnit, int reductRate, Map parentSubParseMap, Map syoguMap) throws Exception {
+
+            // サービス項目コード
+            String key = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
+            
+            // 総合事業で他の保険者のコードであれば別扱いにする
+            String insurerId = ACCastUtilities.toString(code.get("INSURER_ID"), "");
+            if (!"".equals(insurerId)) {
+                key = key + insurerId;
+            }
+            
+            Object val = subParseMap.get(key);
+            DivedServiceItem page;
+            // サービス内容で分岐
+            if (val instanceof DivedServiceItem) {
+                //既出
+                page = (DivedServiceItem) val;
+            } else {
+                //新規
+                page = new DivedServiceItem();
+                page.setTanka(tanka);
+                page.setTankaMap(tankaMap);
+                page.setSogoKyufuritsu(sogoKyufuritsu);
+                page.setKyufuritsuMap(kyufuritsuMap);
+                subParseMap.put(key, page);
+                
+                parentSubParseMap.put(key, page);
+                if (CareServiceCommon.isAddPercentageForSyogu(code)) {
+                    syoguMap.put(key, page);
+                }
+            }
+            
+            if (CareServiceCommon.isInLimitAmount(code)) {
+                //給付管理限度額対象のコードの場合
+                //30日超とそれ以外を区別しつつ、給付管理限度額対象の項目数を重複なく計算する。
+                String hadImteSetKey = key;
+                if(CareServiceCommon.is30DayOver(service)){
+                    //30日超ならばキーを連結して別のコードとみなす。
+                    hadImteSetKey = hadImteSetKey+"&30";
+                    if(!hadItemSet.contains(hadImteSetKey)){
+                        //新規な項目であれば30日超の給付管理限度額対象の項目数を加算する。
+                        hadItemSet.add(hadImteSetKey);
+                        limitAmoutSizeOver30++;
+                    }
+                }else{
+                    // 2008/01/07 [Masahiko Higuchi] edit - begin 定額報酬サービス日割対応
+                    // === 日割りロジック変更に伴い、条件変更 ===
+                    //if(!hadItemSet.contains(hadImteSetKey) && isSubParseCustom(service)){
+                    if(!hadItemSet.contains(hadImteSetKey)){
+                    // 2008/01/07 [Masahiko Higuchi] edit - end
+                        //新規な項目であれば給付管理限度額対象の項目数を加算する。
+                        hadItemSet.add(hadImteSetKey);
+                        limitAmoutSize++;
+                    }
+                }
+            } else {
+                // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
+                String hadImteSetKey = key;
+                if(CareServiceCommon.is30DayOver(service) && CareServiceCommon.isAddPercentageForSyogu(code)){
+                    //30日超ならばキーを連結して別のコードとみなす。
+                    hadImteSetKey = hadImteSetKey+"&30";
+                    if(!hadItemSet.contains(hadImteSetKey)){
+                        //新規な項目であれば30日超の給付管理限度額対象の項目数を加算する。
+                        hadItemSet.add(hadImteSetKey);
+                        limitAmoutSizeOver30++;
+                    }
+                }
+                // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
+            }
+
+            return page.parseSub(service, code, totalGroupingCache,
+                    calcurateUnit, reductRate);
+        }
+        
+        
+        /**
+         * 利用票別表を構築します。
+         * 
+         * @param buildParam 印字内容集合
+         * @param provider 事業所情報
+         * @param insureRate 保険給付率
+         * @param totals 集計情報
+         * @param inLimitAmount 給付管理限度額対象を出力するか
+         * @param isOver30Days 30日超
+         * @return 次の出力対象行
+         * @throws Exception 処理例外
+         */
+        public int buildUserSubTable(CareServicePrintParameter buildParam, Map provider,
+                int insureRate, int[] totals, boolean inLimitAmount, boolean isOver30Days, int over30Count)
+                throws Exception {
+
+            int limitAmount = isOver30Days? getLimitAmountSizeOver30(): getLimitAmountSize();
+            
+            Set regulationCache = new HashSet();
+            int itemState;
+            if (!inLimitAmount) {
+                itemState = ITEM_STATE_OUT_LIMIT_AMOUNT;
+            } else if (limitAmount > 1) {
+                itemState = ITEM_STATE_MULTI_NOT_LAST;
+            } else {
+                itemState = ITEM_STATE_SINGLE;
+            }
+            
+            // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+            int temp30Count = 0;
+            // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+            //メインコード
+            int buildIndex = 0;
+            Iterator it = subParseMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry ent = (Map.Entry) it.next();
+                DivedServiceItem services = (DivedServiceItem) ent.getValue();
+                if (!services.isSubFormatPrintable()) {
+                    continue;
+                }
+                
+                if (itemState == ITEM_STATE_MULTI_NOT_LAST) {
+                    // 小計出力対象の場合
+                    if (++buildIndex >= limitAmount) {
+                        // 給付管理対象としては最後のサービスの場合は出力モードを変更
+                        itemState = ITEM_STATE_MULTI_LAST;
+
+                    }
+                }
+                
+                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+                if(isOver30Days) {
+                    temp30Count++;
+                }
+                if(temp30Count >= subParseMap.size()) {
+                    if(over30Count == temp30Count) {
+                        itemState = ITEM_STATE_MULTI_LAST;
+                    }
+                }
+                // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+                
+                // 下位情報構築
+                int beforeIndex = buildParam.getCurrentRow();
+                int afterIndex = services.buildUserSubTable(buildParam,
+                        provider, insureRate, totals, itemState, regulationCache, isOver30Days);
+                if(beforeIndex!=afterIndex){
+                    buildParam.setCurrentRow(afterIndex);
+                }else{
+                    buildIndex--;
+                }
+//                buildParam.setCurrentRow(services.buildUserSubTable(buildParam,
+//                        provider, insureRate, totals, itemState, regulationCache, isOver30Days));
+                
+                //[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - begin
+                //30日超の場合に支給限度額対象外の項目を出力する（サービス提供体制強化加算が限度額管理外になったため）
+            	if (isOver30Days){
+	                int[] dummyTotal = new int[totals.length];
+	                Map outMap = ((DivedServiceItem) ent.getValue()).outInsureOver30Units;
+	                Iterator outIt = outMap.entrySet().iterator();
+	                while (outIt.hasNext()) {
+	                    Map.Entry outEnt = (Map.Entry) outIt.next();
+	                    DivedServiceUnit outService = (DivedServiceUnit)outEnt.getValue();
+	                    outService.buildUserSubTableDetailRow(buildParam, provider,
+	                        0, dummyTotal, isOver30Days);
+	                    buildParam.setCurrentRow(buildParam.getCurrentRow() + 1);
+	                }
+                }
+            	//[H27.4改正対応][Shinobu Hitaka] 2015/3/30 add - end
+            }
+
+            return buildParam.getCurrentRow();
+        }
+        
+        /**
+         * 支給管理限度額内のサービス数を返します。
+         * 
+         * @return 支給管理限度額内のサービス数
+         */
+        protected int getLimitAmountSize() {
+            return limitAmoutSize;
+        }
+        
+        /**
+         * 30日超の支給管理限度額内のサービス数を返します。
+         * 
+         * @return 30日超の支給管理限度額内のサービス数
+         */
+        protected int getLimitAmountSizeOver30() {
+            return limitAmoutSizeOver30;
+        }
+        
+        
+        /**
+         * 解析済みのコードから対象のキーを削除します。
+         * @param key
+         */
+        protected void removeCode(String key) {
+            if (subParseMap.containsKey(key)) {
+                Map code = ((DivedServiceItem) subParseMap.get(key)).subFormatCode;
+                String insurerId = ACCastUtilities.toString(code.get("INSURER_ID"), "");
+                if (!"".equals(insurerId)) {
+                    key = key + insurerId;
+                }
+                if (CareServiceCommon.isInLimitAmount(code)) {
+                    limitAmoutSize--;
+                }
+                subParseMap.remove(key);
+            }
+        }
+        
+    }
+ // 2016/9/20 [Yoichiro Kamei] add - end
 
 }

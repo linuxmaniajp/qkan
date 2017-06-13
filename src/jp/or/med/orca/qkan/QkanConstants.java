@@ -134,6 +134,11 @@ public interface QkanConstants {
     public static final int YOUKAIGODO_YOUSHIEN1 = 12;   // 要介護度 要支援１
     public static final int YOUKAIGODO_YOUSHIEN2 = 13;   // 要介護度 要支援２
 // 2016/7/19 [総合事業対応][Yoichiro Kamei] add - end
+
+// 2016/9/27 [総合事業対応][Shinobu Hitaka] add - begin
+    public static final int YOUKAIGODO_KEIKATEKI_YOUKAIGO = 11;     // 要介護度 経過的要介護 利用者の定義から移行
+    public static final int YOUKAIGODO_JIGYOTAISHO_OVER_LIMIT = 61; // 要介護度 事業対象者（要支援1の限度額越対象者）※給管鳥独自の定義
+// 2016/9/27 [総合事業対応][Shinobu Hitaka] add - end
     
     // サービス詳細取得
     /**

@@ -994,6 +994,8 @@ public class QP001PrintControl {
             // 利用者支払い金額を取得
             riyousya = userClaim.getClaimTotal();
             useClaimMap = userClaim.getRecord();
+            // 給付率
+            useClaimMap.put("FUTAN_WARIAI", calc_futanwariai(userClaim.get_kyufuritsu(), userClaim.get_dokujiFlag()));
             break;
         // 詳細版出力にチェックあり
         case 1:
@@ -1005,6 +1007,8 @@ public class QP001PrintControl {
             // 利用者支払い金額を取得
             riyousya = userClaimDetails.getClaimTotal();
             useClaimMap = userClaimDetails.getRecord();
+            // 給付率
+            useClaimMap.put("FUTAN_WARIAI", calc_futanwariai(userClaimDetails.get_kyufuritsu(), userClaimDetails.get_dokujiFlag()));
             break;
         }
 
@@ -1418,6 +1422,8 @@ public class QP001PrintControl {
             // 利用者支払い金額を取得
             riyousya = userClaim.getClaimTotal();
             useClaimMap = userClaim.getRecord();
+            // 給付率
+            useClaimMap.put("FUTAN_WARIAI", calc_futanwariai(userClaim.get_kyufuritsu(), userClaim.get_dokujiFlag()));
             break;
         // 詳細版出力にチェックあり
         case 1:
@@ -1429,6 +1435,8 @@ public class QP001PrintControl {
             // 利用者支払い金額を取得
             riyousya = userClaimDetails.getClaimTotal();
             useClaimMap = userClaimDetails.getRecord();
+            // 給付率
+            useClaimMap.put("FUTAN_WARIAI", calc_futanwariai(userClaimDetails.get_kyufuritsu(), userClaimDetails.get_dokujiFlag()));
             break;
         }
 
@@ -1798,5 +1806,30 @@ public class QP001PrintControl {
         }
     }
     // 2007/12/4 [Masahiko Higuchi] add - end
+    
+    //[2016年要望][Shinobu Hitaka] 2016/12/02 add begin 負担割合の表示文字列を取得します
+    /**
+     * 負担割合の表示文字列を取得する。
+     * @return
+     */
+    public String calc_futanwariai(int kyufuritsu, int dokujiFlag) {
+        int wariai = 100 - kyufuritsu;
+        String strWariai = "";
+        if (wariai > 0) {
+            if (wariai == 100) {
+                if (dokujiFlag == 1) {
+                    strWariai = "独自/定率";
+                } else if (dokujiFlag == 2) {
+                    strWariai = "独自/定額";
+                } else if (dokujiFlag == 3) {
+                    strWariai = "独自/定率定額";
+                }
+            } else {
+                strWariai = "負担割合:" + ACCastUtilities.toString(wariai, "") + "%";
+            }
+        }
+        return strWariai;
+    }
+    //[2016年要望][Shinobu Hitaka] 2016/12/02 add end
 
 }

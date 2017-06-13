@@ -857,33 +857,35 @@ public abstract class QP001StyleAbstract {
                 }
             }
         }
-        
-        //実績登録画面で計画単位数の入力が無い場合、予定のデータを見に行く
-        
-        if(styles == null) return planUnit;
-        
-        Iterator it = styles.keySet().iterator();
-        while(it.hasNext()){
-            QP001StyleAbstract style = (QP001StyleAbstract)styles.get(it.next());
-            if(style instanceof QP001Style11){
-                QP001Style11 target = (QP001Style11)style;
-                
-                Map supplyMap = (Map)target.getSupplyMap();
-                
-                Iterator supplyIt = supplyMap.keySet().iterator();
-                while(supplyIt.hasNext()){
-                    QP001RecordSupply supply = (QP001RecordSupply)supplyMap.get(supplyIt.next());
-                  //事業所番号と保険者番号,被保険者番号とサービス種類コードが等しいものを探す
-                  if(String.valueOf(supply.get_1201017()).equals(detail.get_301004())
-                          && (String.valueOf(supply.get_1201003()).equals(detail.get_301005()))
-                          && (String.valueOf(supply.get_1201009()).equals(detail.get_301006()))
-                          && (String.valueOf(supply.get_1201019()).equals(detail.get_301007()))){
-                      planUnit = supply.get_1201020();
-                      break;
-                  }
-                }
-            }
-        }
+// 2016/10/18 [Yoichiro Kamei] del - begin 総合事業対応
+// 予定読込時に計画単位数を設定するよう変更したため、予定のデータは見ない
+//        //実績登録画面で計画単位数の入力が無い場合、予定のデータを見に行く
+//        
+//        if(styles == null) return planUnit;
+//        
+//        Iterator it = styles.keySet().iterator();
+//        while(it.hasNext()){
+//            QP001StyleAbstract style = (QP001StyleAbstract)styles.get(it.next());
+//            if(style instanceof QP001Style11){
+//                QP001Style11 target = (QP001Style11)style;
+//                
+//                Map supplyMap = (Map)target.getSupplyMap();
+//                
+//                Iterator supplyIt = supplyMap.keySet().iterator();
+//                while(supplyIt.hasNext()){
+//                    QP001RecordSupply supply = (QP001RecordSupply)supplyMap.get(supplyIt.next());
+//                  //事業所番号と保険者番号,被保険者番号とサービス種類コードが等しいものを探す
+//                  if(String.valueOf(supply.get_1201017()).equals(detail.get_301004())
+//                          && (String.valueOf(supply.get_1201003()).equals(detail.get_301005()))
+//                          && (String.valueOf(supply.get_1201009()).equals(detail.get_301006()))
+//                          && (String.valueOf(supply.get_1201019()).equals(detail.get_301007()))){
+//                      planUnit = supply.get_1201020();
+//                      break;
+//                  }
+//                }
+//            }
+//        }
+// 2016/10/18 [Yoichiro Kamei] del - end
         
         //計画単位数が取得できなかった場合は、自己負担発生無し
         if (planUnit == 0) {

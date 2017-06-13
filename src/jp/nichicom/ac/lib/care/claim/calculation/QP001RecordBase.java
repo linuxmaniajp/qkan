@@ -1240,6 +1240,17 @@ public class QP001RecordBase extends QP001RecordAbstract {
 			set_201061(patientState.getShisetsuData("DISEASE"));
 
 		}
+		
+		// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+		if (!type.isDokujiTeiritsuTeigaku() 
+				&& (type.get_701040() > 0)) {
+			// 総合事業の独自定率・独自定額の場合、給付率が設定されていない
+			// 他のサービス種類の利用もある場合は、ここで給付率を設定する
+			if (get_201029() == 0) {
+				set_201029(type.get_701040());
+			}
+		}
+		// 2016/10/11 [Yoichiro Kamei] add - end
         
         //(合計情報 保険)サービス単位数8桁
         set_201033(get_201033() + type.get_701014());

@@ -38,7 +38,10 @@ import java.util.List;
 import java.util.Map;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001SjClaimCalc.KohiyusenType;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaManager;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.text.parsers.VRDateParser;
@@ -146,6 +149,10 @@ public class QP001ReTotal {
         patientState = new QP001PatientState(dbm, patient, targetDate);
 
         initUsedKohi(dbm, patientState, targetDate, style);
+        
+        // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+        QkanSjTankaManager.initialize(dbm, targetDate);
+        // 2016/10/11 [Yoichiro Kamei] add - end
 
         // 再集計実行
         doTotal();
@@ -1002,6 +1009,10 @@ public class QP001ReTotal {
             map.put("701038", "0");
 
         }
+        
+        // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+        createSjClaimCalc();
+        // 2016/10/11 [Yoichiro Kamei] add - end
 
         /* ====================================================== */
         // 明細情報を集計情報にまとめる
@@ -1086,6 +1097,13 @@ public class QP001ReTotal {
                 }
             }
             // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - begin サービスコード英数化
+            
+            // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuKinds.contains(serviceCodeKind)) {
+                QP001SjClaimCalc sjClaimCalc = getSjClaimCalc(serviceCodeKind);
+                sjClaimCalc.parseDetailForReTotal(map, getRate());
+            }
+            // 2016/10/11 [Yoichiro Kamei] add - end
         }
         
         /* ====================================================== */
@@ -1095,6 +1113,15 @@ public class QP001ReTotal {
         for (int i = 0; i < type.size(); i++) {
             VRMap map = (VRMap) type.get(i);
 
+            // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+            QP001SjClaimCalc sjClaimCalc = null;
+            String skind = toString(map, "701007");
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuKinds.contains(skind)) {
+                sjClaimCalc = getSjClaimCalc(skind);
+                sjClaimCalc.calculate();
+            }
+            // 2016/10/11 [Yoichiro Kamei] add - end
+            
             // 限度額管理対象単位数と限度額管理対象外単位数が0なら、集計レコード自体を削除
             if ((toInt(map, "701010") == 0) && (toInt(map, "701011") == 0)) {
                 type.remove(i);
@@ -1144,6 +1171,14 @@ public class QP001ReTotal {
                 // 保険給付率
                 totalUnit = (int) Math.floor((totalUnit * getRate()) / 100d);
                 map.put("701016", String.valueOf(totalUnit));
+                
+                // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                if (QkanSjServiceCodeManager.dokujiKinds.contains(skind)) {
+                    map.put("701016", String.valueOf(sjClaimCalc.getDokujiJigyohiSeikyugaku()));
+                } else if (QkanSjServiceCodeManager.teiritsuKinds.contains(skind)) {
+                    map.put("701016", String.valueOf(sjClaimCalc.getTeiritsuJigyohiSeikyugaku()));
+                }
+                // 2016/10/11 [Yoichiro Kamei] add - end
             }
 
             // 公費の単位数確定
@@ -1192,6 +1227,19 @@ public class QP001ReTotal {
                     }
                 }
                 kohiClaim = getKohiClaim(map, unit, getKohiRate(1), 0, usedRate);
+                
+                // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                if (QkanSjServiceCodeManager.dokujiKinds.contains(skind)) {
+                    kohiClaim = sjClaimCalc.calcDokujiKohiSeikyugaku(KohiyusenType.KOHI1,
+                        toInt(map, "701014"), toInt(map, "701018"), getKohiRate(1), reduction, usedRate, 0);
+                } else if (QkanSjServiceCodeManager.teiritsuKinds.contains(skind)) {
+                    kohiClaim = sjClaimCalc.calcTeiritsuKohiSeikyugaku(KohiyusenType.KOHI1,
+                        toInt(map, "701014"), toInt(map, "701018"), getKohiRate(1), reduction, -1, 0);
+                } else if (QkanSjServiceCodeManager.teigakuKinds.contains(skind)) {
+                    kohiClaim = sjClaimCalc.getTeigakuKohi1Seikyugaku();
+                }
+                // 2016/10/11 [Yoichiro Kamei] add - end
+                
                 //add - end
                 //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - start 感染症公費の処遇改善加算対応
                 
@@ -1258,6 +1306,19 @@ public class QP001ReTotal {
                     }
 // 2015/6/18 [Shinobu Hitaka] mod - end 
                     kohiClaim = getKohiClaim(map, unit, getKohiRate(2), reduction, usedRate);
+                    
+                    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                    if (QkanSjServiceCodeManager.dokujiKinds.contains(skind)) {
+                        kohiClaim = sjClaimCalc.calcDokujiKohiSeikyugaku(KohiyusenType.KOHI2,
+                            toInt(map, "701014"), toInt(map, "701021"), getKohiRate(2), reduction, usedRate, toInt(map, "701018"));
+                    } else if (QkanSjServiceCodeManager.teiritsuKinds.contains(skind)) {
+                        kohiClaim = sjClaimCalc.calcTeiritsuKohiSeikyugaku(KohiyusenType.KOHI2,
+                            toInt(map, "701014"), toInt(map, "701021"), getKohiRate(2), reduction, usedRate, toInt(map, "701018"));
+                    } else if (QkanSjServiceCodeManager.teigakuKinds.contains(skind)) {
+                        kohiClaim = sjClaimCalc.getTeigakuKohi2Seikyugaku();
+                    }
+                    // 2016/10/11 [Yoichiro Kamei] add - end
+                    
                     //[CCCX:1592][Shinobu Hitaka] 2014/03/12 add - end   感染症公費の処遇改善加算対応
                     
                     reduction += kohiClaim;
@@ -1308,6 +1369,21 @@ public class QP001ReTotal {
                 if (getKohiRate(3) > usedRate) {
                     kohiClaim = getKohiClaim(map, toInt(map, "701024"),
                             getKohiRate(3), reduction, usedRate);
+                    
+                    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+                    if (QkanSjServiceCodeManager.dokujiKinds.contains(skind)) {
+                        kohiClaim = sjClaimCalc.calcDokujiKohiSeikyugaku(KohiyusenType.KOHI3,
+                            toInt(map, "701014"), toInt(map, "701024"), getKohiRate(3)
+                            , reduction, usedRate, toInt(map, "701018") + toInt(map, "701021"));
+                    } else if (QkanSjServiceCodeManager.teiritsuKinds.contains(skind)) {
+                        kohiClaim = sjClaimCalc.calcTeiritsuKohiSeikyugaku(KohiyusenType.KOHI3,
+                            toInt(map, "701014"), toInt(map, "701024"), getKohiRate(3)
+                            , reduction, usedRate, toInt(map, "701018") + toInt(map, "701021"));
+                    } else if (QkanSjServiceCodeManager.teigakuKinds.contains(skind)) {
+                        kohiClaim = sjClaimCalc.getTeigakuKohi3Seikyugaku();
+                    }
+                    // 2016/10/11 [Yoichiro Kamei] add - end
+                    
                     reduction += kohiClaim;
                     // ((公費3)請求額)に値を設定する。
                     map.put("701025",
@@ -1429,6 +1505,29 @@ public class QP001ReTotal {
             sub(map, "701017", new String[] { "701017", "701016", "701019",
                     "701022", "701025", "701020", "701023", "701026" });
             
+            // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+            if (QkanSjServiceCodeManager.dokujiKinds.contains(skind)) {
+                // 独自
+                map.put("701017", String.valueOf(sjClaimCalc.getDokujiTotalSeikyugaku()));
+                sub(map, "701017", new String[] { "701017", "701016", "701019",
+                        "701022", "701025", "701020", "701023", "701026" });
+            } else if (QkanSjServiceCodeManager.teiritsuKinds.contains(skind)) {
+                // 独自定率
+                map.put("701017", String.valueOf(sjClaimCalc.getTeiritsuTotalSeikyugaku()));
+                sub(map, "701017", new String[] { "701017", "701016", "701019",
+                        "701022", "701025", "701020", "701023", "701026" });
+            } else if (QkanSjServiceCodeManager.teigakuKinds.contains(skind)) {
+                // 独自定額の事業費請求額
+                if (!QP001SpecialCase.isSeihoOnly(toString(map, "701006"))) {
+                    map.put("701016", String.valueOf(sjClaimCalc.getTeigakuJigyohiSeikyugaku(
+                    		toInt(map, "701019") + toInt(map, "701022") + toInt(map, "701025")
+                			,toInt(map, "701020") + toInt(map, "701023") + toInt(map, "701026"))));
+                }
+                // 独自定額の利用者負担額
+                map.put("701017", String.valueOf(sjClaimCalc.getTeigakuRiyoshaFutangaku()));
+            }
+            // 2016/10/11 [Yoichiro Kamei] add - end
+    		
             
             // 様式第六の三、様式第六の四の例外処理
             String identificationNo = ACCastUtilities.toString(map.get("701001"), ""); 
@@ -2130,6 +2229,36 @@ public class QP001ReTotal {
 
         return result;
     }
+    
+    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+    private Map<String , QP001SjClaimCalc> sjCalcMap = new HashMap<String , QP001SjClaimCalc>();
+    private void createSjClaimCalc() throws Exception {
+        sjCalcMap.clear();
+        for (int i = 0; i < type.size(); i++) {
+            VRMap map = (VRMap) type.get(i);
+            String skind = toString(map, "701007");
+            if (QkanSjServiceCodeManager.dokujiTeiritsuTeigakuKinds.contains(skind)) {
+                Map sogoLimitOverMap = new HashMap();
+                String limitOverInfo = toString(map, "701047");
+                if (!"".equals(limitOverInfo)) {
+                    for (String keyval :limitOverInfo.split(",")) {
+                        String[] keyvalArray = keyval.split("=");
+                        String key = keyvalArray[0];
+                        int value = ACCastUtilities.toInt(keyvalArray[1], 0);
+                        sogoLimitOverMap.put(key, value);
+                    }
+                }
+                QP001SjClaimCalc calc = new QP001SjClaimCalc(skind, sogoLimitOverMap);
+                sjCalcMap.put(skind, calc);
+            }
+        }
+    }
+    
+    private QP001SjClaimCalc getSjClaimCalc(String skind) {
+    	return sjCalcMap.get(skind);
+    }
+    // 2016/10/11 [Yoichiro Kamei] add - end
+    
 
     /**
      * 基本情報レコードの集計処理

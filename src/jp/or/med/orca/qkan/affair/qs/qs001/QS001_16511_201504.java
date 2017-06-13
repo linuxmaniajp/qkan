@@ -70,6 +70,7 @@ public class QS001_16511_201504 extends QS001_16511_201504Event {
         putRestrictProviderBindPath("‰^“®‹@”\Œüã‘Ì§", "1650102", "1650104");
         putRestrictProviderBindPath("‰h—{‰ü‘P‘Ì§", "1650103", "1650105");
         putRestrictProviderBindPath("Œûo‹@”\Œüã‘Ì§", "1650104", "1650106");
+        putRestrictProviderBindPath("‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZ", "1650109", "1650111");
         putRestrictProviderBindPath("Ž–‹ÆŠ•]‰¿‰ÁŽZ‚Ì—L–³", "1650105", "1650107");
 
     }
@@ -195,7 +196,9 @@ public class QS001_16511_201504 extends QS001_16511_201504Event {
                     || ACCastUtilities.toInt(
                             VRBindPathParser.get("1650103", provider), 1) > 1
                     || ACCastUtilities.toInt(
-                            VRBindPathParser.get("1650104", provider), 1) > 1) {
+                            VRBindPathParser.get("1650104", provider), 1) > 1
+                    || ACCastUtilities.toInt(
+                            VRBindPathParser.get("1650109", provider), 1) > 1) {
                 // ƒT[ƒrƒX‚Ì¶Šˆ‹@”\ŒüãƒOƒ‹[ƒvŠˆ“®‰ÁŽZŠÖ˜A‚Ì‰Šú‰»
                 VRBindPathParser.set("1650103", defaultMap, new Integer(1));
             }
@@ -290,19 +293,45 @@ public class QS001_16511_201504 extends QS001_16511_201504Event {
             setState_INVALID_MOVE_FUNCTION_ADD();
             setState_INVALID_NOURISHMENT_ADD();
             setState_INVALID_MOUTH_ADD();
+            setState_INVALID_SENTAKU_ADD();
         } else {
             setState_VALID_MOVE_FUNCTION_ADD();
             setState_VALID_NOURISHMENT_ADD();
             setState_VALID_MOUTH_ADD();
+            setState_VALID_SENTAKU_ADD();
         }
 
-        // ‰^“®Ší‹@”\Œüã‰ÁŽZE‰h—{‰ü‘P‰ÁŽZEŒûo‹@”\Œüã‰ÁŽZ‚Ì‚¢‚Ã‚ê‚©‚ª‚Â‚¢‚½ê‡
+        // ‰^“®Ší‹@”\Œüã‰ÁŽZE‰h—{‰ü‘P‰ÁŽZEŒûo‹@”\Œüã‰ÁŽZE‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZ‚Ì‚¢‚Ã‚ê‚©‚ª‚Â‚¢‚½ê‡
         if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
                 || getNourishmentImprovementAddRadio().getSelectedIndex() > 1
-                || getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+                || getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1
+                || getSentakutekiServiceRadio().getSelectedIndex() > 1) {
             setState_INVALID_ACTIVITY_ADD();
         } else {
             setState_VALID_ACTIVITY_ADD();
+        }
+        
+        // ‰^“®Ší‹@”\Œüã‰ÁŽZE‰h—{‰ü‘P‰ÁŽZEŒûo‹@”\Œüã‰ÁŽZ‚Ì‘g‚Ý‡‚í‚¹ƒ`ƒFƒbƒN
+        if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰^“®Ší‹@”\Œüã‰ÁŽZ + ‰h—{‰ü‘P‰ÁŽZ + Œûo‹@”\Œüã‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZII
+        	getSentakutekiServiceRadio().setSelectedIndex(5);
+        } else if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰^“®Ší‹@”\Œüã‰ÁŽZ + ‰h—{‰ü‘P‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZI1
+        	getSentakutekiServiceRadio().setSelectedIndex(2);
+        } else if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰^“®Ší‹@”\Œüã‰ÁŽZ + Œûo‹@”\Œüã‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZI2
+        	getSentakutekiServiceRadio().setSelectedIndex(3);
+        } else if (getNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// ‰h—{‰ü‘P‰ÁŽZ + Œûo‹@”\Œüã‰ÁŽZF‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZI3
+        	getSentakutekiServiceRadio().setSelectedIndex(4);
+        } else {
+        	// ‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZF‚È‚µ
+        	getSentakutekiServiceRadio().setSelectedIndex(1);
         }
 
         // Ž–‹ÆŠ‘Ì§‚Æ“¯Šú
@@ -339,6 +368,7 @@ public class QS001_16511_201504 extends QS001_16511_201504Event {
             getMoveFunctionImprovementAddRadio().setSelectedIndex(1);
             getNourishmentImprovementAddRadio().setSelectedIndex(1);
             getMouthFunctionImprovementAddRadio().setSelectedIndex(1);
+            getSentakutekiServiceRadio().setSelectedIndex(1);
         }
         // [ID:0000713][Masahiko.Higuchi] 2012/03 •½¬24”N4ŒŽ–@‰ü³‘Î‰ž add end
 
@@ -406,6 +436,31 @@ public class QS001_16511_201504 extends QS001_16511_201504Event {
             throws Exception {
         // ‰æ–Êó‘Ô§Œä
         checkState();
+
+    }
+
+    /**
+     * ‘I‘ð“IƒT[ƒrƒX•¡”ŽÀŽ{‰ÁŽZ
+     */
+    protected void sentakutekiServiceRadioSelectionChanged(
+            ListSelectionEvent e) throws Exception {
+        int idx = getSentakutekiServiceRadio().getSelectedIndex();
+        // ‰æ–Êó‘Ô§Œä
+        checkState();
+        // ‘S‚Äu‚È‚µv‚©‚P‚Â‚¾‚¯‘I‘ð‚Ìê‡‚ÍA‘I‘ð‚µ‚½‚à‚Ì‚É–ß‚·
+        int selCnt = 0;
+        if (getMoveFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (selCnt == 1 || selCnt == 0) {
+        	getSentakutekiServiceRadio().setSelectedIndex(idx);
+        }
 
     }
 }

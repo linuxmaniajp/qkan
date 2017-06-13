@@ -1239,7 +1239,10 @@ public class QP001P02_10Event extends QP001PrintEvent {
                                     .get("301008", detail)));
 
             //単位数を表示するサービスでなければ単位数単価を表示する。
-            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")))){
+            // [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod 算定単位パラメータ追加
+            // if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")))){
+            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")),
+            		ACCastUtilities.toInt(detail.get("301027"), 0))){
                 // 単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "tani" + j, pad(
                         VRBindPathParser.get("301009", detail), 4));

@@ -17,31 +17,73 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 田中　統蔵
- * 作成日: 2006/06/05  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2016/09/07  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム 計画単位数編集画面 (QS001032)
+ * プログラム 計画単位数編集画面 (QS001004)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Date;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.vr.util.VRArrayList;
-import jp.nichicom.vr.util.VRHashMap;
-import jp.nichicom.vr.util.VRList;
-import jp.nichicom.vr.util.VRMap;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
+import jp.nichicom.ac.lib.care.claim.print.schedule.*;
 
 /**
- * 計画単位数編集画面イベント定義(QS001032) 
+ * 計画単位数編集画面イベント定義(QS001004) 
  */
-@SuppressWarnings("serial")
 public abstract class QS001004Event extends QS001004SQL {
   /**
    * コンストラクタです。
@@ -132,7 +174,9 @@ public abstract class QS001004Event extends QS001004SQL {
   private VRMap planUnits = new VRHashMap();
   private boolean applied = false;
   private String selectedProviderID;
-  private Date targetDate; // H28.4改正対応 add
+  private Date targetDate;
+  private VRList targetProviderIds = new VRArrayList();
+  private VRList targetServiceCodeKinds = new VRArrayList();
   //getter/setter
 
   /**
@@ -206,8 +250,38 @@ public abstract class QS001004Event extends QS001004SQL {
    * targetDateを設定します。
    * @param targetDate targetDate
    */
-  public void setTargetDate(Date targetDate){
+  protected void setTargetDate(Date targetDate){
     this.targetDate = targetDate;
+  }
+
+  /**
+   * targetProviderIdsを返します。
+   * @return targetProviderIds
+   */
+  protected VRList getTargetProviderIds(){
+    return targetProviderIds;
+  }
+  /**
+   * targetProviderIdsを設定します。
+   * @param targetProviderIds targetProviderIds
+   */
+  protected void setTargetProviderIds(VRList targetProviderIds){
+    this.targetProviderIds = targetProviderIds;
+  }
+
+  /**
+   * targetServiceCodeKindsを返します。
+   * @return targetServiceCodeKinds
+   */
+  protected VRList getTargetServiceCodeKinds(){
+    return targetServiceCodeKinds;
+  }
+  /**
+   * targetServiceCodeKindsを設定します。
+   * @param targetServiceCodeKinds targetServiceCodeKinds
+   */
+  protected void setTargetServiceCodeKinds(VRList targetServiceCodeKinds){
+    this.targetServiceCodeKinds = targetServiceCodeKinds;
   }
 
   //内部関数

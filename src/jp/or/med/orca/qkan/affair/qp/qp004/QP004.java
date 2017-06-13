@@ -48,6 +48,7 @@ import jp.nichicom.ac.component.table.ACTableCellViewerCustomCell;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACCharacterConverter;
@@ -541,21 +542,35 @@ public class QP004 extends QP004Event {
 			if (new Integer(CATEGORY_NO3).equals(claimDataMap.getData("CATEGORY_NO")) ||
 				new Integer(CATEGORY_NO18).equals(claimDataMap.getData("CATEGORY_NO"))) {
 // 2015/1/14 [Yoichiro Kamei] mod - end
-				// SQL文取得用のHashMap：paramを生成し、システムサービス種類コード（KEY：301021）、システムサービス項目コード（KEY：301022）を
-				VRMap param = new VRHashMap();
-				// 取り出し、下記のKEY/VALUEで設定する。
-				// ・KEY：SYSTEM_SERVICE_KIND_DETAIL VALUE：取り出したシステムサービス種類コード
-				// ・KEY：SYSTEM_SERVICE_CODE_ITEM VALUE：取り出したシステムサービス項目コード
-				// ・KEY：TARGET_DATE VALUE：targetDate
+				
+				// 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+				VRMap firstServiceCodeMaster;
+				String systemServiceKindCode = ACCastUtilities.toString(claimDataMap.getData(SYSTEM_SERVICE_KIND_CODE));
+				String sjCodeKey = ACCastUtilities.toString(claimDataMap.getData(SYSTEM_SERVICE_ITEM_CODE));
+				if (QkanSjServiceCodeManager.teiritsuTeigakuCodes.contains(systemServiceKindCode)) {
+					firstServiceCodeMaster = QkanSjServiceCodeManager.getSjServiceCodeByKey(getDBManager(), sjCodeKey, getTargetDate());
+				} else {
+				// 2016/10/11 [Yoichiro Kamei] add - end
+					// SQL文取得用のHashMap：paramを生成し、システムサービス種類コード（KEY：301021）、システムサービス項目コード（KEY：301022）を
+					VRMap param = new VRHashMap();
+					// 取り出し、下記のKEY/VALUEで設定する。
+					// ・KEY：SYSTEM_SERVICE_KIND_DETAIL VALUE：取り出したシステムサービス種類コード
+					// ・KEY：SYSTEM_SERVICE_CODE_ITEM VALUE：取り出したシステムサービス項目コード
+					// ・KEY：TARGET_DATE VALUE：targetDate
 
-				param.setData("SYSTEM_SERVICE_KIND_DETAIL", claimDataMap.getData(SYSTEM_SERVICE_KIND_CODE));
-				param.setData("SYSTEM_SERVICE_CODE_ITEM", claimDataMap.getData(SYSTEM_SERVICE_ITEM_CODE));
-				param.setData("TARGET_DATE", getTargetDate());
+					param.setData("SYSTEM_SERVICE_KIND_DETAIL", claimDataMap.getData(SYSTEM_SERVICE_KIND_CODE));
+					param.setData("SYSTEM_SERVICE_CODE_ITEM", claimDataMap.getData(SYSTEM_SERVICE_ITEM_CODE));
+					param.setData("TARGET_DATE", getTargetDate());
 
-				// DB（M_SERVICE_CODE）より該当するサービス名称、摘要欄記載必須フラグ、摘要欄説明、クラス種類、コードIDを取得する。
-				VRList serviceCodeMaster = getDBManager().executeQuery(getSQL_GET_SERVICE_NAME(param));
-				// DBより取得したデータの最初のレコードの摘要欄記載必須フラグ（SUMMARY_FLAG）が0の場合
-				VRMap firstServiceCodeMaster = (VRMap) serviceCodeMaster.getData(0);
+					// DB（M_SERVICE_CODE）より該当するサービス名称、摘要欄記載必須フラグ、摘要欄説明、クラス種類、コードIDを取得する。
+					VRList serviceCodeMaster = getDBManager().executeQuery(getSQL_GET_SERVICE_NAME(param));
+					
+					// DBより取得したデータの最初のレコードの摘要欄記載必須フラグ（SUMMARY_FLAG）が0の場合
+					// 2016/10/11 [Yoichiro Kamei] mod - begin 総合事業対応
+					//VRMap firstServiceCodeMaster = (VRMap) serviceCodeMaster.getData(0);
+					firstServiceCodeMaster = (VRMap) serviceCodeMaster.getData(0);
+				}
+				// 2016/10/11 [Yoichiro Kamei] mod - end
 
 				if (new Integer(FLAG_OFF).equals(firstServiceCodeMaster.getData("SUMMARY_FLAG"))) {
 					// 明細情報レコードをclaimListHideDetail（表示しない明細情報レコード）に追加する。

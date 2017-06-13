@@ -17,50 +17,71 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 田中　統蔵
- * 作成日: 2006/06/05  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2016/10/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム 計画単位数編集画面 (QS001032)
+ * プログラム 計画単位数編集画面 (QS001004)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-
-import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.table.ACTable;
-import jp.nichicom.ac.component.table.ACTableCellViewer;
-import jp.nichicom.ac.component.table.ACTableColumn;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.vr.component.table.VRTableCellViewer;
-import jp.nichicom.vr.component.table.VRTableColumnModel;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairDialog;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.text.QkanServiceKindNameFormat;
-import jp.or.med.orca.qkan.text.QkanZeroToBlankIntegerFormat;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
- * 計画単位数編集画面画面項目デザイン(QS001032) 
+ * 計画単位数編集画面画面項目デザイン(QS001004) 
  */
-@SuppressWarnings("serial")
 public class QS001004Design extends QkanAffairDialog {
   //GUIコンポーネント
 
@@ -140,6 +161,8 @@ public class QS001004Design extends QkanAffairDialog {
       information2 = new ACLabel();
 
       information2.setText("計画単位数が未入力の場合は予定の情報を、予定が存在しない場合は実績の情報をもとに計画単位数を計算します。");
+
+      information2.setVisible(false);
 
       information2.setAutoWrap(true);
 

@@ -102,17 +102,20 @@ public class SC_16211_201504 extends Qkan10011_ServiceUnitGetter {
         // 6101 予防訪問入浴サービス提供体制加算
         switch (_1620103) {
         case 3:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
             break;
         case 2:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6101");//2015.04
             break;
         }
 
         // 介護職員処遇改善を返却
         switch (_17) {
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6105");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6105");//2015.04
             break;
         case 2:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6102");

@@ -16,6 +16,8 @@ import jp.nichicom.ac.lib.care.claim.calculation.QP001SpecialCase;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACTextUtilities;
@@ -96,6 +98,10 @@ public class CareServiceCodeCalcurater {
 
     private boolean oncePerMonthOfAddEmergencyNursingAndSpecialManagement = true;
 
+    // 2016/10/18 [総合事業対応][Yoichiro Kamei] add - begin
+    private VRList jushotiTokureiHistory;
+    // 2016/10/18 [総合事業対応][Yoichiro Kamei] add - end
+    
     /**
      * 対象の利用者が旧措置入所者であるかをあらわすフラグ を返します。
      * 
@@ -1459,5 +1465,149 @@ public class CareServiceCodeCalcurater {
     protected void setTargetDate(Date targetDate) {
         this.targetDate = targetDate;
     }
+    
+    
+    // 2016/10/18 [総合事業対応][Yoichiro Kamei] add - begin
+    /**
+     * 指定された日付の住所地特例の施設所在保険者番号を取得する。
+     * データが存在しない場合は、空文字を返す。
+     * @param targetDate
+     * @return
+     * @throws Exception
+     */
+    public String getJushotiTokureiInsurerId(Object targetDate) throws Exception{
+        return getJushotiTokureiData(targetDate,"JUSHOTI_INSURER_ID");
+    }
+    
+    /**
+     * 住所地特例履歴情報を初期化します。
+     * @param dbm DBコネクション
+     * @param patient_id 検索対象の利用者ID
+     * @param targetDate　対象日付(月まで有効)
+     */
+    private void initJushotiTokureiHistory(ACDBManager dbm,int patient_id, String targetDate) throws Exception{
+        Date targetDateEnd = ACDateUtilities.toLastDayOfMonth(ACCastUtilities.toDate(targetDate + "/01"));
+        
+        String valid_start = targetDate + "/01";
+        String valid_end = VRDateParser.format(targetDateEnd,"yyyy/MM/dd") ;
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT");
+        sb.append(" PATIENT_ID,");
+        sb.append(" JUSHOTI_HISTORY_ID,");
+        sb.append(" JUSHOTI_VALID_START,");
+        sb.append(" JUSHOTI_VALID_END,");
+        sb.append(" JUSHOTI_INSURER_ID");
+        sb.append(" FROM");
+        sb.append(" PATIENT_JUSHOTI_TOKUREI");
+        sb.append(" WHERE");
+        sb.append(" (PATIENT_ID = " + patient_id + ")");
+        sb.append(" AND (JUSHOTI_VALID_START  <= '" + valid_end + "')");
+        sb.append(" AND (JUSHOTI_VALID_END >= '" + valid_start + "')");
+        sb.append(" ORDER BY JUSHOTI_HISTORY_ID ASC");
+        
+        jushotiTokureiHistory = dbm.executeQuery(sb.toString());
+    }
+    /**
+     * 指定された日付に該当する住所地特例情報の取得を行います。
+     * @param targetDate 対象の日付
+     * @param key 取得するキー
+     * @return 取得データ
+     * @throws Exception
+     */
+    public String getJushotiTokureiData(Object targetDate,String key) throws Exception{
+        if (jushotiTokureiHistory == null) {
+            String target = VRDateParser.format(getTargetDate(),"yyyy/MM");
+            initJushotiTokureiHistory(dbm, patientID, target);
+        }
+        targetDate = toDateString(targetDate);
+        
+        String result = "";
+        String target = toDateString(String.valueOf(targetDate));
+        if(target == null) return result;
+        
+        if(jushotiTokureiHistory == null) return result;
+        int startYMD = 0;
+        int endYMD = 0;
+        VRMap map = null;        
+        int targetDateTemp = Integer.parseInt(target);
+        
+        for(int i = 0; i < jushotiTokureiHistory.getDataSize(); i++){
+            map = (VRMap)jushotiTokureiHistory.getData(i);
+            startYMD = getInt("JUSHOTI_VALID_START",map);
+            endYMD = getInt("JUSHOTI_VALID_END",map);
+
+            if((startYMD <= targetDateTemp) && (targetDateTemp <= endYMD)){
+                //指定された日付で有効な住所地特例情報が見つかった場合
+                result = String.valueOf(VRBindPathParser.get(key,map)); 
+                break;
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * 強制的にintに変換する。
+     * @param key
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    private int getInt(String key,VRMap map) throws Exception {
+        String target = String.valueOf(VRBindPathParser.get(key,map));
+        target = target.replaceAll("-|/","");
+        
+        return Integer.parseInt(target);
+    }
+    
+    /**
+     * 日付に変換可能な文字列へ変更する。
+     * @param value
+     * @return
+     * @throws Exception
+     */
+    private String toDateString(Object value) throws Exception {
+        if(value instanceof Date){
+            return toDateString((Date)value);
+        } else {
+            return toDateString(ACCastUtilities.toString(value));
+        }
+    }
+    
+    /**
+     * yyyyMMdd型式の文字列に変換する。
+     * @param value
+     * @return
+     * @throws Exception
+     */
+    private String toDateString(Date value) throws Exception {
+        return toDateString(VRDateParser.format(value,"yyyyMMdd"));
+    }
+    
+    /**
+     * 強制的に日付文字列に変換する。
+     * @param value
+     * @return
+     */
+    private String toDateString(String value){
+        if((value == null) || value.length() < 8) return null;
+        
+        StringBuilder esc = new StringBuilder();
+        char[] data = value.toCharArray();
+        
+        for(int i = 0; i < data.length; i++){
+            if("0123456789".indexOf(data[i]) != -1){
+                esc.append(data[i]);
+                if(esc.length() == 8) break;
+            }
+        }
+        if(esc.length() == 8) {
+            return esc.toString();
+        } else {
+            return null;
+        }
+    }
+    // 2016/10/18 [総合事業対応][Yoichiro Kamei] add - end
+    
 
 }

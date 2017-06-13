@@ -115,20 +115,24 @@ public class SC_16111_201504 extends Qkan10011_ServiceUnitGetter {
         
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch (_17) {
-        case 5:
+        case 6:
             // ˆ‹ö‰ü‘P‰ÁZI
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6270");//TODO:ƒR[ƒh’lŠm”F
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6269");//2017.04
+            break;
+        case 5:
+            // ˆ‹ö‰ü‘P‰ÁZII
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6270");//2015.04
             break;
         case 2:
-        	// ˆ‹ö‰ü‘P‰ÁZII
+        	// ˆ‹ö‰ü‘P‰ÁZIII
             putSystemServiceCodeItem(sysSvcCdItems, "Z6271");
             break;
         case 3:
-        	// ˆ‹ö‰ü‘P‰ÁZIII
+        	// ˆ‹ö‰ü‘P‰ÁZIV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6273");
             break;
         case 4:
-        	// ˆ‹ö‰ü‘P‰ÁZIV
+        	// ˆ‹ö‰ü‘P‰ÁZV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6275");
             break;
         }

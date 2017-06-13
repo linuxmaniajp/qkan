@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 
@@ -99,24 +100,9 @@ public class QkanServiceKindNameFormat extends Format {
         //サービス種類コードからサービスマスタを引くためのマップを作成
         cleateServiceMap();
         
-        
-        int path = ACCastUtilities.toInt(obj, 0);
-        String kind = "";
-        switch (path) {
-        // 総合事業 計画単位数のバインドパスからサービス種類コードに変換
-        case 1101:
-            kind = "A1";
-            break;
-        case 1105:
-            kind = "A5";
-            break;
-        default:
-        // 総合事業以外は、計画単位数のバインドパス - 1000の結果がサービス種類コードとなる
-            int val = ACCastUtilities.toInt(obj, 0) - 1000;
-            if (val > 0) {
-                kind = String.valueOf(val);
-            }
-        }
+        String path = ACCastUtilities.toString(obj, "");
+        // 計画単位数のバインドパスからサービス種類コードを取得
+        String kind = CareServiceCommon.getServiceKindFromPlanUnitBindPath(path);
         toAppendTo.append(getServiceName(kind));
 // 2016/7/15 [Yoichiro Kamei] mod - end
         return toAppendTo;
@@ -147,6 +133,9 @@ public class QkanServiceKindNameFormat extends Format {
         if (row != null) {
             result = ACCastUtilities.toString(row.get("SERVICE_KIND_NAME"), "");
         }
+        // 2016/9/6 [Yoichiro Kamei] add - begin サービス種類を付加
+        result = serviceKind + ":" + result;
+        // 2016/9/6 [Yoichiro Kamei] add - end
         return result;
     }
 // 2016/7/15 [Yoichiro Kamei] add - end

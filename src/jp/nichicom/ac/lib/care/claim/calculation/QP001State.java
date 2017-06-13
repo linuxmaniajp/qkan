@@ -18,8 +18,8 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2011/02/10  日本コンピューター株式会社 藤原　伸 新規作成
- * 更新日: 2016/07/15
+ * 作成日: 2016/12/05  日本コンピューター株式会社 藤原　伸 新規作成
+ * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定/請求書出力 (P)
  * プロセス 請求処理 (001)
@@ -90,6 +90,8 @@ public class QP001State extends QP001Design {
         getInfoTableColumn22().setVisible(false);
 
         getInfoTableColumn23().setVisible(false);
+
+        getInfoTableColumn24().setVisible(false);
 
         getPrintList().setVisible(false);
 
@@ -175,6 +177,8 @@ public class QP001State extends QP001Design {
 
         getInfoTableColumn22().setVisible(false);
 
+        getInfoTableColumn24().setVisible(false);
+
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
@@ -259,6 +263,8 @@ public class QP001State extends QP001Design {
 
         getInfoTableColumn23().setVisible(false);
 
+        getInfoTableColumn24().setVisible(false);
+
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
@@ -312,6 +318,8 @@ public class QP001State extends QP001Design {
         getInfoTableColumn4().setVisible(false);
 
         getInfoTableColumn23().setVisible(false);
+
+        getInfoTableColumn24().setVisible(false);
 
         getPrintList().setVisible(true);
 
@@ -376,6 +384,8 @@ public class QP001State extends QP001Design {
         getInfoTableColumn4().setVisible(false);
 
         getInfoTableColumn23().setVisible(false);
+
+        getInfoTableColumn24().setVisible(false);
 
         getPrintList().setVisible(true);
 
@@ -454,6 +464,8 @@ public class QP001State extends QP001Design {
         getInfoTableColumn21().setVisible(false);
 
         getInfoTableColumn23().setVisible(false);
+
+        getInfoTableColumn24().setVisible(false);
 
         getPrintList().setVisible(false);
 
@@ -541,6 +553,8 @@ public class QP001State extends QP001Design {
 
         getInfoTableColumn23().setVisible(false);
 
+        getInfoTableColumn24().setVisible(true);
+
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
@@ -626,6 +640,8 @@ public class QP001State extends QP001Design {
         getInfoTableColumn22().setVisible(false);
 
         getInfoTableColumn23().setVisible(false);
+
+        getInfoTableColumn24().setVisible(false);
 
         getPrintList().setVisible(false);
 

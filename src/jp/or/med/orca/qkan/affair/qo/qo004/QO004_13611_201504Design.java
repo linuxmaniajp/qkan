@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 松本　幸一
- * 作成日: 2015/02/28  日本コンピューター株式会社 松本　幸一 新規作成
+ * 作成日: 2017/02/24  日本コンピューター株式会社 松本　幸一 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -191,6 +191,8 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
   private ACRadioButtonItem staffUpgradeRadioItem5;
 
+  private ACRadioButtonItem staffUpgradeRadioItem6;
+
   private ACLabelContainer reduceRateContainer;
 
   private ACTextField reduceRate;
@@ -208,7 +210,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       mainGroup = new ACGroupBox();
 
-      mainGroup.setText("地域密着型特定施設入居者生活介護");
+      mainGroup.setText("地域密着型特定施設入居者生活介護（短期利用以外）");
 
       mainGroup.setFollowChildEnabled(true);
 
@@ -1010,7 +1012,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       serviceAddProvisionStructuralRadioItem3.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
-      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW);
+      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW_RETURN);
 
       addServiceAddProvisionStructuralRadioItem3();
     }
@@ -1069,7 +1071,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioGroup = new ACValueArrayRadioButtonGroup();
 
-      getStaffUpgradeRadioGroupContainer().setText("介護職員処遇改善加算");
+      getStaffUpgradeRadioGroupContainer().setText("<html>介護職員処遇改善加算<br>（旧加算：～H29.3）</html>");
 
       staffUpgradeRadioGroup.setBindPath("4");
 
@@ -1079,7 +1081,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioGroup.setModel(getStaffUpgradeRadioGroupModel());
 
-      staffUpgradeRadioGroup.setValues(new int[]{1,5,2,3,4});
+      staffUpgradeRadioGroup.setValues(new int[]{1,6,5,2,3,4});
 
       addStaffUpgradeRadioGroup();
     }
@@ -1147,7 +1149,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem2.setGroup(getStaffUpgradeRadioGroup());
 
-      staffUpgradeRadioItem2.setConstraints(VRLayout.FLOW);
+      staffUpgradeRadioItem2.setConstraints(VRLayout.FLOW_RETURN);
 
       addStaffUpgradeRadioItem2();
     }
@@ -1164,7 +1166,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem3 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem3.setText("加算II");
+      staffUpgradeRadioItem3.setText("加算II（旧加算I）");
 
       staffUpgradeRadioItem3.setGroup(getStaffUpgradeRadioGroup());
 
@@ -1185,11 +1187,11 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem4 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem4.setText("加算III");
+      staffUpgradeRadioItem4.setText("加算III（旧加算II）");
 
       staffUpgradeRadioItem4.setGroup(getStaffUpgradeRadioGroup());
 
-      staffUpgradeRadioItem4.setConstraints(VRLayout.FLOW);
+      staffUpgradeRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
 
       addStaffUpgradeRadioItem4();
     }
@@ -1206,7 +1208,7 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
       staffUpgradeRadioItem5 = new ACRadioButtonItem();
 
-      staffUpgradeRadioItem5.setText("加算IV");
+      staffUpgradeRadioItem5.setText("加算IV（旧加算III）");
 
       staffUpgradeRadioItem5.setGroup(getStaffUpgradeRadioGroup());
 
@@ -1215,6 +1217,27 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
       addStaffUpgradeRadioItem5();
     }
     return staffUpgradeRadioItem5;
+
+  }
+
+  /**
+   * 加算Vを取得します。
+   * @return 加算V
+   */
+  public ACRadioButtonItem getStaffUpgradeRadioItem6(){
+    if(staffUpgradeRadioItem6==null){
+
+      staffUpgradeRadioItem6 = new ACRadioButtonItem();
+
+      staffUpgradeRadioItem6.setText("加算V（旧加算IV）");
+
+      staffUpgradeRadioItem6.setGroup(getStaffUpgradeRadioGroup());
+
+      staffUpgradeRadioItem6.setConstraints(VRLayout.FLOW);
+
+      addStaffUpgradeRadioItem6();
+    }
+    return staffUpgradeRadioItem6;
 
   }
 
@@ -1702,21 +1725,25 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem1());
 
-    getStaffUpgradeRadioItem2().setButtonIndex(5);
+    getStaffUpgradeRadioItem2().setButtonIndex(6);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem2());
 
-    getStaffUpgradeRadioItem3().setButtonIndex(2);
+    getStaffUpgradeRadioItem3().setButtonIndex(5);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem3());
 
-    getStaffUpgradeRadioItem4().setButtonIndex(3);
+    getStaffUpgradeRadioItem4().setButtonIndex(2);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem4());
 
-    getStaffUpgradeRadioItem5().setButtonIndex(4);
+    getStaffUpgradeRadioItem5().setButtonIndex(3);
 
     getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem5());
+
+    getStaffUpgradeRadioItem6().setButtonIndex(4);
+
+    getStaffUpgradeRadioGroupModel().add(getStaffUpgradeRadioItem6());
 
   }
 
@@ -1752,6 +1779,13 @@ public class QO004_13611_201504Design extends QO004ProviderPanel {
    * 加算IVに内部項目を追加します。
    */
   protected void addStaffUpgradeRadioItem5(){
+
+  }
+
+  /**
+   * 加算Vに内部項目を追加します。
+   */
+  protected void addStaffUpgradeRadioItem6(){
 
   }
 

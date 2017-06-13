@@ -197,7 +197,7 @@ public class SC_12612_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1260214) {
         case 5:
             // 3700 —\f—Ã’ZŠúƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC
-            putSystemServiceCodeItem(sysSvcCdItems, "Z3700");//TODO:ƒR[ƒh’lŠm”F
+            putSystemServiceCodeItem(sysSvcCdItems, "Z3700");//2015.04
             break;
         case 2:
             // 3701 —\f—Ã’ZŠúƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒ
@@ -215,19 +215,24 @@ public class SC_12612_201504 extends Qkan10011_ServiceUnitGetter {
 
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch (_17) {
+        case 6:
+            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZI
+            putSystemServiceCodeItem(sysSvcCdItems, "Z3709");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z3710");//TODO:ƒR[ƒh’lŠm”F
+            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZII
+            putSystemServiceCodeItem(sysSvcCdItems, "Z3710");//2015.04
             break;
         case 2:
-            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZI
+            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZIII
             putSystemServiceCodeItem(sysSvcCdItems, "Z3711");
             break;
         case 3:
-            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZII
+            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZIV
             putSystemServiceCodeItem(sysSvcCdItems, "Z3712");
             break;
         case 4:
-            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZIII
+            // —\f—ÃŠ’ZŠúˆ‹ö‰ü‘P‰ÁZV
             putSystemServiceCodeItem(sysSvcCdItems, "Z3713");
             break;
         }

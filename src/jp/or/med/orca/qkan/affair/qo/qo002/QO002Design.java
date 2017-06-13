@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 小笠　貴志
- * 作成日: 2012/02/24  日本コンピューター株式会社 小笠　貴志 新規作成
+ * 作成日: 2016/09/29  日本コンピューター株式会社 小笠　貴志 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他 (O)
@@ -137,8 +137,6 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACClearableRadioButtonGroup insurerType;
 
-  private ACLabelContainer insurerTypeContainer;
-
   private ACListModelAdapter insurerTypeModel;
 
   private ACRadioButtonItem insurerTypeCare;
@@ -146,6 +144,144 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   private ACRadioButtonItem insurerTypeMedical;
 
   private ACLabel insurerTypeInfomation;
+
+  private JTabbedPane tabs;
+
+  private ACPanel tabInsurerUnitPrice;
+
+  private ACPanel insurerUnitPricePanel;
+
+  private ACGroupBox insurerUnitPriceInfos;
+
+  private ACPanel unitPriceSetInfos;
+
+  private ACPanel unitPriceSetPanel;
+
+  private ACComboBox unitPriceType;
+
+  private ACLabelContainer unitPriceTypeContainer;
+
+  private ACComboBoxModelAdapter unitPriceTypeModel;
+
+  private ACPanel unitPriceServicePanel1;
+
+  private ACComboBox unitPriceServiceA2;
+
+  private ACLabelContainer unitPriceServiceA2Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA2Model;
+
+  private ACComboBox unitPriceServiceA3;
+
+  private ACLabelContainer unitPriceServiceA3Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA3Model;
+
+  private ACComboBox unitPriceServiceA4;
+
+  private ACLabelContainer unitPriceServiceA4Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA4Model;
+
+  private ACComboBox unitPriceServiceA9;
+
+  private ACLabelContainer unitPriceServiceA9Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA9Model;
+
+  private ACComboBox unitPriceServiceAB;
+
+  private ACLabelContainer unitPriceServiceABContainer;
+
+  private ACComboBoxModelAdapter unitPriceServiceABModel;
+
+  private ACComboBox unitPriceServiceAD;
+
+  private ACLabelContainer unitPriceServiceADContainer;
+
+  private ACComboBoxModelAdapter unitPriceServiceADModel;
+
+  private ACPanel unitPriceServicePanel2;
+
+  private ACComboBox unitPriceServiceA6;
+
+  private ACLabelContainer unitPriceServiceA6Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA6Model;
+
+  private ACComboBox unitPriceServiceA7;
+
+  private ACLabelContainer unitPriceServiceA7Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA7Model;
+
+  private ACComboBox unitPriceServiceA8;
+
+  private ACLabelContainer unitPriceServiceA8Container;
+
+  private ACComboBoxModelAdapter unitPriceServiceA8Model;
+
+  private ACComboBox unitPriceServiceAA;
+
+  private ACLabelContainer unitPriceServiceAAContainer;
+
+  private ACComboBoxModelAdapter unitPriceServiceAAModel;
+
+  private ACComboBox unitPriceServiceAC;
+
+  private ACLabelContainer unitPriceServiceACContainer;
+
+  private ACComboBoxModelAdapter unitPriceServiceACModel;
+
+  private ACComboBox unitPriceServiceAE;
+
+  private ACLabelContainer unitPriceServiceAEContainer;
+
+  private ACComboBoxModelAdapter unitPriceServiceAEModel;
+
+  private ACPanel unitPriceServicePanel3;
+
+  private ACComboBox unitPriceServiceAF;
+
+  private ACLabelContainer unitPriceServiceAFContainer;
+
+  private ACComboBoxModelAdapter unitPriceServiceAFModel;
+
+  private ACLabelContainer unitPriceValidPeriodContena;
+
+  private QkanDateTextField unitPriceValidStart;
+
+  private ACLabel unitPriceValidLabel;
+
+  private QkanDateTextField unitPriceValidEnd;
+
+  private ACPanel unitPriceButtonPanel;
+
+  private ACPanel unitPriceButtons;
+
+  private ACButton unitPriceRegularButton;
+
+  private ACButton unitPriceInsertButton;
+
+  private ACButton unitPriceEditButton;
+
+  private ACButton unitPriceDeleteButton;
+
+  private ACPanel unitPriceInfo;
+
+  private ACTable unitPriceTable;
+
+  private VRTableColumnModel unitPriceTableColumnModel;
+
+  private ACTableColumn unitPriceTableColum1;
+
+  private ACTableColumn unitPriceTableColum2;
+
+  private ACTableColumn unitPriceTableColum3;
+
+  private ACTableColumn unitPriceTableColum4;
+
+  private ACPanel tabInsurerLimitRate;
 
   private ACPanel insurerLimitPanel;
 
@@ -155,57 +291,19 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel insurerLimitRateInfo;
 
-  private ACPanel insurerLimitRatePanel;
-
-  private ACTable insurerLimitRateTable;
-
-  private VRTableColumnModel insurerLimitRateTableColumnModel;
-
-  private ACTableColumn insurerLimitRateTableColum1;
-
-  private ACTableColumn insurerLimitRateTableColum10;
-
-  private ACTableColumn insurerLimitRateTableColum11;
-
-  private ACTableColumn insurerLimitRateTableColum2;
-
-  private ACTableColumn insurerLimitRateTableColum3;
-
-  private ACTableColumn insurerLimitRateTableColum4;
-
-  private ACTableColumn insurerLimitRateTableColum5;
-
-  private ACTableColumn insurerLimitRateTableColum6;
-
-  private ACTableColumn insurerLimitRateTableColum7;
-
-  private ACTableColumn insurerLimitRateTableColum8;
-
-  private ACTableColumn insurerLimitRateTableColum9;
-
   private ACPanel validPeriodPanel;
-
-  private ACPanel validPeriodRight;
-
-  private ACPanel insurerLimitRateButtons;
-
-  private ACButton insurerLimitRateRegularButton;
-
-  private ACButton insurerLimitRateInsertButton;
-
-  private ACButton insurerLimitRateEditButton;
-
-  private ACButton insurerLimitRateDeleteButton;
 
   private ACPanel validPeriodLeft;
 
-  private ACLabelContainer validPeriodCpntena;
+  private ACTextField jigyoTaishosha;
 
-  private QkanDateTextField validPeriodStart;
+  private ACLabelContainer jigyoTaishoshaContainer;
 
-  private ACLabel validPeriodLabel;
+  private ACTextField jigyoTaishoshaOver;
 
-  private QkanDateTextField validPeriodEnd;
+  private ACLabelContainer jigyoTaishoshaOverContainer;
+
+  private ACLabel jigyoTaishoshaOverComment;
 
   private ACTextField yosien1;
 
@@ -238,6 +336,42 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField yokaigo5;
 
   private ACLabelContainer yokaigo5Container;
+
+  private ACLabelContainer validPeriodCpntena;
+
+  private QkanDateTextField validPeriodStart;
+
+  private ACLabel validPeriodLabel;
+
+  private QkanDateTextField validPeriodEnd;
+
+  private ACPanel validPeriodRight;
+
+  private ACPanel insurerLimitRateButtons;
+
+  private ACButton insurerLimitRateRegularButton;
+
+  private ACButton insurerLimitRateInsertButton;
+
+  private ACButton insurerLimitRateEditButton;
+
+  private ACButton insurerLimitRateDeleteButton;
+
+  private ACPanel insurerLimitRatePanel;
+
+  private ACTable insurerLimitRateTable;
+
+  private VRTableColumnModel insurerLimitRateTableColumnModel;
+
+  private ACTableColumn insurerLimitRateTableColum1;
+
+  private ACTableColumn insurerLimitRateTableColum8;
+
+  private ACTableColumn insurerLimitRateTableColum9;
+
+  private ACTableColumn insurerLimitRateTableColum12;
+
+  private ACTableColumn insurerLimitRateTableColum13;
 
   //getter
 
@@ -766,9 +900,9 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
       insurerType = new ACClearableRadioButtonGroup();
 
-      getInsurerTypeContainer().setText("保険者区分");
-
       insurerType.setBindPath("INSURER_TYPE");
+
+      insurerType.setVisible(false);
 
       insurerType.setModel(getInsurerTypeModel());
 
@@ -776,20 +910,6 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
     }
     return insurerType;
 
-  }
-
-  /**
-   * 保険者区分コンテナを取得します。
-   * @return 保険者区分コンテナ
-   */
-  protected ACLabelContainer getInsurerTypeContainer(){
-    if(insurerTypeContainer==null){
-      insurerTypeContainer = new ACLabelContainer();
-      insurerTypeContainer.setFollowChildEnabled(true);
-      insurerTypeContainer.setVAlignment(VRLayout.CENTER);
-      insurerTypeContainer.add(getInsurerType(), null);
-    }
-    return insurerTypeContainer;
   }
 
   /**
@@ -853,11 +973,1265 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
       insurerTypeInfomation.setText("同一の保険者番号で介護と医療を対象にしている保険者は、クリアボタンで保険者区分を未選択状態にして登録します。");
 
+      insurerTypeInfomation.setVisible(false);
+
       insurerTypeInfomation.setIconPath(ACConstants.ICON_PATH_INFORMATION_16);
 
       addInsurerTypeInfomation();
     }
     return insurerTypeInfomation;
+
+  }
+
+  /**
+   * Tabを取得します。
+   * @return Tab
+   */
+  public JTabbedPane getTabs(){
+    if(tabs==null){
+
+      tabs = new JTabbedPane();
+
+      addTabs();
+    }
+    return tabs;
+
+  }
+
+  /**
+   * Tab「総合事業 単位数単価」を取得します。
+   * @return Tab「総合事業 単位数単価」
+   */
+  public ACPanel getTabInsurerUnitPrice(){
+    if(tabInsurerUnitPrice==null){
+
+      tabInsurerUnitPrice = new ACPanel();
+
+      addTabInsurerUnitPrice();
+    }
+    return tabInsurerUnitPrice;
+
+  }
+
+  /**
+   * パネルを取得します。
+   * @return パネル
+   */
+  public ACPanel getInsurerUnitPricePanel(){
+    if(insurerUnitPricePanel==null){
+
+      insurerUnitPricePanel = new ACPanel();
+
+      addInsurerUnitPricePanel();
+    }
+    return insurerUnitPricePanel;
+
+  }
+
+  /**
+   * 総合事業単位数単価情報領域を取得します。
+   * @return 総合事業単位数単価情報領域
+   */
+  public ACGroupBox getInsurerUnitPriceInfos(){
+    if(insurerUnitPriceInfos==null){
+
+      insurerUnitPriceInfos = new ACGroupBox();
+
+      insurerUnitPriceInfos.setText("総合事業単位数単価情報");
+
+      insurerUnitPriceInfos.setFollowChildEnabled(true);
+
+      insurerUnitPriceInfos.setVgap(5);
+
+      addInsurerUnitPriceInfos();
+    }
+    return insurerUnitPriceInfos;
+
+  }
+
+  /**
+   * 単位数単価設定領域を取得します。
+   * @return 単位数単価設定領域
+   */
+  public ACPanel getUnitPriceSetInfos(){
+    if(unitPriceSetInfos==null){
+
+      unitPriceSetInfos = new ACPanel();
+
+      unitPriceSetInfos.setAutoWrap(false);
+
+      unitPriceSetInfos.setFollowChildEnabled(true);
+
+      addUnitPriceSetInfos();
+    }
+    return unitPriceSetInfos;
+
+  }
+
+  /**
+   * 単位数単価入力領域を取得します。
+   * @return 単位数単価入力領域
+   */
+  public ACPanel getUnitPriceSetPanel(){
+    if(unitPriceSetPanel==null){
+
+      unitPriceSetPanel = new ACPanel();
+
+      unitPriceSetPanel.setAutoWrap(true);
+
+      unitPriceSetPanel.setFollowChildEnabled(true);
+
+      unitPriceSetPanel.setHgap(0);
+
+      unitPriceSetPanel.setLabelMargin(0);
+
+      addUnitPriceSetPanel();
+    }
+    return unitPriceSetPanel;
+
+  }
+
+  /**
+   * 地域区分コンボを取得します。
+   * @return 地域区分コンボ
+   */
+  public ACComboBox getUnitPriceType(){
+    if(unitPriceType==null){
+
+      unitPriceType = new ACComboBox();
+
+      getUnitPriceTypeContainer().setText("地域区分");
+
+      unitPriceType.setBindPath("UNIT_PRICE_TYPE");
+
+      unitPriceType.setEditable(false);
+
+      unitPriceType.setModelBindPath("UNIT_PRICE_TYPE");
+
+      unitPriceType.setRenderBindPath("CONTENT");
+
+      unitPriceType.setModel(getUnitPriceTypeModel());
+
+      addUnitPriceType();
+    }
+    return unitPriceType;
+
+  }
+
+  /**
+   * 地域区分コンボコンテナを取得します。
+   * @return 地域区分コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceTypeContainer(){
+    if(unitPriceTypeContainer==null){
+      unitPriceTypeContainer = new ACLabelContainer();
+      unitPriceTypeContainer.setFollowChildEnabled(true);
+      unitPriceTypeContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceTypeContainer.add(getUnitPriceType(), null);
+    }
+    return unitPriceTypeContainer;
+  }
+
+  /**
+   * 地域区分コンボモデルを取得します。
+   * @return 地域区分コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceTypeModel(){
+    if(unitPriceTypeModel==null){
+      unitPriceTypeModel = new ACComboBoxModelAdapter();
+      addUnitPriceTypeModel();
+    }
+    return unitPriceTypeModel;
+  }
+
+  /**
+   * 単位数単価パネル１を取得します。
+   * @return 単位数単価パネル１
+   */
+  public ACPanel getUnitPriceServicePanel1(){
+    if(unitPriceServicePanel1==null){
+
+      unitPriceServicePanel1 = new ACPanel();
+
+      addUnitPriceServicePanel1();
+    }
+    return unitPriceServicePanel1;
+
+  }
+
+  /**
+   * A2コンボを取得します。
+   * @return A2コンボ
+   */
+  public ACComboBox getUnitPriceServiceA2(){
+    if(unitPriceServiceA2==null){
+
+      unitPriceServiceA2 = new ACComboBox();
+
+      getUnitPriceServiceA2Container().setText("A2:訪問型(独自)");
+
+      unitPriceServiceA2.setBindPath("50211");
+
+      unitPriceServiceA2.setEditable(false);
+
+      unitPriceServiceA2.setModelBindPath("50211");
+
+      unitPriceServiceA2.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA2.setBlankable(true);
+
+      unitPriceServiceA2.setModel(getUnitPriceServiceA2Model());
+
+      addUnitPriceServiceA2();
+    }
+    return unitPriceServiceA2;
+
+  }
+
+  /**
+   * A2コンボコンテナを取得します。
+   * @return A2コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA2Container(){
+    if(unitPriceServiceA2Container==null){
+      unitPriceServiceA2Container = new ACLabelContainer();
+      unitPriceServiceA2Container.setFollowChildEnabled(true);
+      unitPriceServiceA2Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA2Container.add(getUnitPriceServiceA2(), null);
+    }
+    return unitPriceServiceA2Container;
+  }
+
+  /**
+   * A2コンボモデルを取得します。
+   * @return A2コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA2Model(){
+    if(unitPriceServiceA2Model==null){
+      unitPriceServiceA2Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA2Model();
+    }
+    return unitPriceServiceA2Model;
+  }
+
+  /**
+   * A3コンボを取得します。
+   * @return A3コンボ
+   */
+  public ACComboBox getUnitPriceServiceA3(){
+    if(unitPriceServiceA3==null){
+
+      unitPriceServiceA3 = new ACComboBox();
+
+      getUnitPriceServiceA3Container().setText("A3:訪問型(定率)");
+
+      unitPriceServiceA3.setBindPath("50311");
+
+      unitPriceServiceA3.setEditable(false);
+
+      unitPriceServiceA3.setModelBindPath("50311");
+
+      unitPriceServiceA3.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA3.setBlankable(true);
+
+      unitPriceServiceA3.setModel(getUnitPriceServiceA3Model());
+
+      addUnitPriceServiceA3();
+    }
+    return unitPriceServiceA3;
+
+  }
+
+  /**
+   * A3コンボコンテナを取得します。
+   * @return A3コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA3Container(){
+    if(unitPriceServiceA3Container==null){
+      unitPriceServiceA3Container = new ACLabelContainer();
+      unitPriceServiceA3Container.setFollowChildEnabled(true);
+      unitPriceServiceA3Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA3Container.add(getUnitPriceServiceA3(), null);
+    }
+    return unitPriceServiceA3Container;
+  }
+
+  /**
+   * A3コンボモデルを取得します。
+   * @return A3コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA3Model(){
+    if(unitPriceServiceA3Model==null){
+      unitPriceServiceA3Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA3Model();
+    }
+    return unitPriceServiceA3Model;
+  }
+
+  /**
+   * A4コンボを取得します。
+   * @return A4コンボ
+   */
+  public ACComboBox getUnitPriceServiceA4(){
+    if(unitPriceServiceA4==null){
+
+      unitPriceServiceA4 = new ACComboBox();
+
+      getUnitPriceServiceA4Container().setText("A4:訪問型(定額)");
+
+      unitPriceServiceA4.setBindPath("50411");
+
+      unitPriceServiceA4.setEditable(false);
+
+      unitPriceServiceA4.setModelBindPath("50411");
+
+      unitPriceServiceA4.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA4.setBlankable(true);
+
+      unitPriceServiceA4.setModel(getUnitPriceServiceA4Model());
+
+      addUnitPriceServiceA4();
+    }
+    return unitPriceServiceA4;
+
+  }
+
+  /**
+   * A4コンボコンテナを取得します。
+   * @return A4コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA4Container(){
+    if(unitPriceServiceA4Container==null){
+      unitPriceServiceA4Container = new ACLabelContainer();
+      unitPriceServiceA4Container.setFollowChildEnabled(true);
+      unitPriceServiceA4Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA4Container.add(getUnitPriceServiceA4(), null);
+    }
+    return unitPriceServiceA4Container;
+  }
+
+  /**
+   * A4コンボモデルを取得します。
+   * @return A4コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA4Model(){
+    if(unitPriceServiceA4Model==null){
+      unitPriceServiceA4Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA4Model();
+    }
+    return unitPriceServiceA4Model;
+  }
+
+  /**
+   * A9コンボを取得します。
+   * @return A9コンボ
+   */
+  public ACComboBox getUnitPriceServiceA9(){
+    if(unitPriceServiceA9==null){
+
+      unitPriceServiceA9 = new ACComboBox();
+
+      getUnitPriceServiceA9Container().setText("A9:生活配食(定率)");
+
+      unitPriceServiceA9.setBindPath("50911");
+
+      unitPriceServiceA9.setEditable(false);
+
+      unitPriceServiceA9.setModelBindPath("50911");
+
+      unitPriceServiceA9.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA9.setBlankable(true);
+
+      unitPriceServiceA9.setModel(getUnitPriceServiceA9Model());
+
+      addUnitPriceServiceA9();
+    }
+    return unitPriceServiceA9;
+
+  }
+
+  /**
+   * A9コンボコンテナを取得します。
+   * @return A9コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA9Container(){
+    if(unitPriceServiceA9Container==null){
+      unitPriceServiceA9Container = new ACLabelContainer();
+      unitPriceServiceA9Container.setFollowChildEnabled(true);
+      unitPriceServiceA9Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA9Container.add(getUnitPriceServiceA9(), null);
+    }
+    return unitPriceServiceA9Container;
+  }
+
+  /**
+   * A9コンボモデルを取得します。
+   * @return A9コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA9Model(){
+    if(unitPriceServiceA9Model==null){
+      unitPriceServiceA9Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA9Model();
+    }
+    return unitPriceServiceA9Model;
+  }
+
+  /**
+   * ABコンボを取得します。
+   * @return ABコンボ
+   */
+  public ACComboBox getUnitPriceServiceAB(){
+    if(unitPriceServiceAB==null){
+
+      unitPriceServiceAB = new ACComboBox();
+
+      getUnitPriceServiceABContainer().setText("AB:生活見守(定率)");
+
+      unitPriceServiceAB.setBindPath("51111");
+
+      unitPriceServiceAB.setEditable(false);
+
+      unitPriceServiceAB.setModelBindPath("51111");
+
+      unitPriceServiceAB.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceAB.setBlankable(true);
+
+      unitPriceServiceAB.setModel(getUnitPriceServiceABModel());
+
+      addUnitPriceServiceAB();
+    }
+    return unitPriceServiceAB;
+
+  }
+
+  /**
+   * ABコンボコンテナを取得します。
+   * @return ABコンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceABContainer(){
+    if(unitPriceServiceABContainer==null){
+      unitPriceServiceABContainer = new ACLabelContainer();
+      unitPriceServiceABContainer.setFollowChildEnabled(true);
+      unitPriceServiceABContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceABContainer.add(getUnitPriceServiceAB(), null);
+    }
+    return unitPriceServiceABContainer;
+  }
+
+  /**
+   * ABコンボモデルを取得します。
+   * @return ABコンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceABModel(){
+    if(unitPriceServiceABModel==null){
+      unitPriceServiceABModel = new ACComboBoxModelAdapter();
+      addUnitPriceServiceABModel();
+    }
+    return unitPriceServiceABModel;
+  }
+
+  /**
+   * ADコンボを取得します。
+   * @return ADコンボ
+   */
+  public ACComboBox getUnitPriceServiceAD(){
+    if(unitPriceServiceAD==null){
+
+      unitPriceServiceAD = new ACComboBox();
+
+      getUnitPriceServiceADContainer().setText("AD:生活他(定率)");
+
+      unitPriceServiceAD.setBindPath("51311");
+
+      unitPriceServiceAD.setEditable(false);
+
+      unitPriceServiceAD.setModelBindPath("51311");
+
+      unitPriceServiceAD.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceAD.setBlankable(true);
+
+      unitPriceServiceAD.setModel(getUnitPriceServiceADModel());
+
+      addUnitPriceServiceAD();
+    }
+    return unitPriceServiceAD;
+
+  }
+
+  /**
+   * ADコンボコンテナを取得します。
+   * @return ADコンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceADContainer(){
+    if(unitPriceServiceADContainer==null){
+      unitPriceServiceADContainer = new ACLabelContainer();
+      unitPriceServiceADContainer.setFollowChildEnabled(true);
+      unitPriceServiceADContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceADContainer.add(getUnitPriceServiceAD(), null);
+    }
+    return unitPriceServiceADContainer;
+  }
+
+  /**
+   * ADコンボモデルを取得します。
+   * @return ADコンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceADModel(){
+    if(unitPriceServiceADModel==null){
+      unitPriceServiceADModel = new ACComboBoxModelAdapter();
+      addUnitPriceServiceADModel();
+    }
+    return unitPriceServiceADModel;
+  }
+
+  /**
+   * 単位数単価パネル２を取得します。
+   * @return 単位数単価パネル２
+   */
+  public ACPanel getUnitPriceServicePanel2(){
+    if(unitPriceServicePanel2==null){
+
+      unitPriceServicePanel2 = new ACPanel();
+
+      addUnitPriceServicePanel2();
+    }
+    return unitPriceServicePanel2;
+
+  }
+
+  /**
+   * A6コンボを取得します。
+   * @return A6コンボ
+   */
+  public ACComboBox getUnitPriceServiceA6(){
+    if(unitPriceServiceA6==null){
+
+      unitPriceServiceA6 = new ACComboBox();
+
+      getUnitPriceServiceA6Container().setText("A6:通所型(独自)");
+
+      unitPriceServiceA6.setBindPath("50611");
+
+      unitPriceServiceA6.setEditable(false);
+
+      unitPriceServiceA6.setModelBindPath("50611");
+
+      unitPriceServiceA6.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA6.setBlankable(true);
+
+      unitPriceServiceA6.setModel(getUnitPriceServiceA6Model());
+
+      addUnitPriceServiceA6();
+    }
+    return unitPriceServiceA6;
+
+  }
+
+  /**
+   * A6コンボコンテナを取得します。
+   * @return A6コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA6Container(){
+    if(unitPriceServiceA6Container==null){
+      unitPriceServiceA6Container = new ACLabelContainer();
+      unitPriceServiceA6Container.setFollowChildEnabled(true);
+      unitPriceServiceA6Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA6Container.add(getUnitPriceServiceA6(), null);
+    }
+    return unitPriceServiceA6Container;
+  }
+
+  /**
+   * A6コンボモデルを取得します。
+   * @return A6コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA6Model(){
+    if(unitPriceServiceA6Model==null){
+      unitPriceServiceA6Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA6Model();
+    }
+    return unitPriceServiceA6Model;
+  }
+
+  /**
+   * A7コンボを取得します。
+   * @return A7コンボ
+   */
+  public ACComboBox getUnitPriceServiceA7(){
+    if(unitPriceServiceA7==null){
+
+      unitPriceServiceA7 = new ACComboBox();
+
+      getUnitPriceServiceA7Container().setText("A7:通所型(定率)");
+
+      unitPriceServiceA7.setBindPath("50711");
+
+      unitPriceServiceA7.setEditable(false);
+
+      unitPriceServiceA7.setModelBindPath("50711");
+
+      unitPriceServiceA7.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA7.setBlankable(true);
+
+      unitPriceServiceA7.setModel(getUnitPriceServiceA7Model());
+
+      addUnitPriceServiceA7();
+    }
+    return unitPriceServiceA7;
+
+  }
+
+  /**
+   * A7コンボコンテナを取得します。
+   * @return A7コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA7Container(){
+    if(unitPriceServiceA7Container==null){
+      unitPriceServiceA7Container = new ACLabelContainer();
+      unitPriceServiceA7Container.setFollowChildEnabled(true);
+      unitPriceServiceA7Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA7Container.add(getUnitPriceServiceA7(), null);
+    }
+    return unitPriceServiceA7Container;
+  }
+
+  /**
+   * A7コンボモデルを取得します。
+   * @return A7コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA7Model(){
+    if(unitPriceServiceA7Model==null){
+      unitPriceServiceA7Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA7Model();
+    }
+    return unitPriceServiceA7Model;
+  }
+
+  /**
+   * A8コンボを取得します。
+   * @return A8コンボ
+   */
+  public ACComboBox getUnitPriceServiceA8(){
+    if(unitPriceServiceA8==null){
+
+      unitPriceServiceA8 = new ACComboBox();
+
+      getUnitPriceServiceA8Container().setText("A8:通所型(定額)");
+
+      unitPriceServiceA8.setBindPath("50811");
+
+      unitPriceServiceA8.setEditable(false);
+
+      unitPriceServiceA8.setModelBindPath("50811");
+
+      unitPriceServiceA8.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceA8.setBlankable(true);
+
+      unitPriceServiceA8.setModel(getUnitPriceServiceA8Model());
+
+      addUnitPriceServiceA8();
+    }
+    return unitPriceServiceA8;
+
+  }
+
+  /**
+   * A8コンボコンテナを取得します。
+   * @return A8コンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceA8Container(){
+    if(unitPriceServiceA8Container==null){
+      unitPriceServiceA8Container = new ACLabelContainer();
+      unitPriceServiceA8Container.setFollowChildEnabled(true);
+      unitPriceServiceA8Container.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceA8Container.add(getUnitPriceServiceA8(), null);
+    }
+    return unitPriceServiceA8Container;
+  }
+
+  /**
+   * A8コンボモデルを取得します。
+   * @return A8コンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceA8Model(){
+    if(unitPriceServiceA8Model==null){
+      unitPriceServiceA8Model = new ACComboBoxModelAdapter();
+      addUnitPriceServiceA8Model();
+    }
+    return unitPriceServiceA8Model;
+  }
+
+  /**
+   * AAコンボを取得します。
+   * @return AAコンボ
+   */
+  public ACComboBox getUnitPriceServiceAA(){
+    if(unitPriceServiceAA==null){
+
+      unitPriceServiceAA = new ACComboBox();
+
+      getUnitPriceServiceAAContainer().setText("AA:生活配食(定額)");
+
+      unitPriceServiceAA.setBindPath("51011");
+
+      unitPriceServiceAA.setEditable(false);
+
+      unitPriceServiceAA.setModelBindPath("51011");
+
+      unitPriceServiceAA.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceAA.setBlankable(true);
+
+      unitPriceServiceAA.setModel(getUnitPriceServiceAAModel());
+
+      addUnitPriceServiceAA();
+    }
+    return unitPriceServiceAA;
+
+  }
+
+  /**
+   * AAコンボコンテナを取得します。
+   * @return AAコンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceAAContainer(){
+    if(unitPriceServiceAAContainer==null){
+      unitPriceServiceAAContainer = new ACLabelContainer();
+      unitPriceServiceAAContainer.setFollowChildEnabled(true);
+      unitPriceServiceAAContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceAAContainer.add(getUnitPriceServiceAA(), null);
+    }
+    return unitPriceServiceAAContainer;
+  }
+
+  /**
+   * AAコンボモデルを取得します。
+   * @return AAコンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceAAModel(){
+    if(unitPriceServiceAAModel==null){
+      unitPriceServiceAAModel = new ACComboBoxModelAdapter();
+      addUnitPriceServiceAAModel();
+    }
+    return unitPriceServiceAAModel;
+  }
+
+  /**
+   * ACコンボを取得します。
+   * @return ACコンボ
+   */
+  public ACComboBox getUnitPriceServiceAC(){
+    if(unitPriceServiceAC==null){
+
+      unitPriceServiceAC = new ACComboBox();
+
+      getUnitPriceServiceACContainer().setText("AC:生活見守(定額)");
+
+      unitPriceServiceAC.setBindPath("51211");
+
+      unitPriceServiceAC.setEditable(false);
+
+      unitPriceServiceAC.setModelBindPath("51211");
+
+      unitPriceServiceAC.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceAC.setBlankable(true);
+
+      unitPriceServiceAC.setModel(getUnitPriceServiceACModel());
+
+      addUnitPriceServiceAC();
+    }
+    return unitPriceServiceAC;
+
+  }
+
+  /**
+   * ACコンボコンテナを取得します。
+   * @return ACコンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceACContainer(){
+    if(unitPriceServiceACContainer==null){
+      unitPriceServiceACContainer = new ACLabelContainer();
+      unitPriceServiceACContainer.setFollowChildEnabled(true);
+      unitPriceServiceACContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceACContainer.add(getUnitPriceServiceAC(), null);
+    }
+    return unitPriceServiceACContainer;
+  }
+
+  /**
+   * ACコンボモデルを取得します。
+   * @return ACコンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceACModel(){
+    if(unitPriceServiceACModel==null){
+      unitPriceServiceACModel = new ACComboBoxModelAdapter();
+      addUnitPriceServiceACModel();
+    }
+    return unitPriceServiceACModel;
+  }
+
+  /**
+   * AEコンボを取得します。
+   * @return AEコンボ
+   */
+  public ACComboBox getUnitPriceServiceAE(){
+    if(unitPriceServiceAE==null){
+
+      unitPriceServiceAE = new ACComboBox();
+
+      getUnitPriceServiceAEContainer().setText("AE:生活他(定額)");
+
+      unitPriceServiceAE.setBindPath("51411");
+
+      unitPriceServiceAE.setEditable(false);
+
+      unitPriceServiceAE.setModelBindPath("51411");
+
+      unitPriceServiceAE.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceAE.setBlankable(true);
+
+      unitPriceServiceAE.setModel(getUnitPriceServiceAEModel());
+
+      addUnitPriceServiceAE();
+    }
+    return unitPriceServiceAE;
+
+  }
+
+  /**
+   * AEコンボコンテナを取得します。
+   * @return AEコンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceAEContainer(){
+    if(unitPriceServiceAEContainer==null){
+      unitPriceServiceAEContainer = new ACLabelContainer();
+      unitPriceServiceAEContainer.setFollowChildEnabled(true);
+      unitPriceServiceAEContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceAEContainer.add(getUnitPriceServiceAE(), null);
+    }
+    return unitPriceServiceAEContainer;
+  }
+
+  /**
+   * AEコンボモデルを取得します。
+   * @return AEコンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceAEModel(){
+    if(unitPriceServiceAEModel==null){
+      unitPriceServiceAEModel = new ACComboBoxModelAdapter();
+      addUnitPriceServiceAEModel();
+    }
+    return unitPriceServiceAEModel;
+  }
+
+  /**
+   * 単位数単価パネル３を取得します。
+   * @return 単位数単価パネル３
+   */
+  public ACPanel getUnitPriceServicePanel3(){
+    if(unitPriceServicePanel3==null){
+
+      unitPriceServicePanel3 = new ACPanel();
+
+      addUnitPriceServicePanel3();
+    }
+    return unitPriceServicePanel3;
+
+  }
+
+  /**
+   * AFコンボを取得します。
+   * @return AFコンボ
+   */
+  public ACComboBox getUnitPriceServiceAF(){
+    if(unitPriceServiceAF==null){
+
+      unitPriceServiceAF = new ACComboBox();
+
+      getUnitPriceServiceAFContainer().setText("AF:予防ケアマネ");
+
+      unitPriceServiceAF.setBindPath("51511");
+
+      unitPriceServiceAF.setEditable(false);
+
+      unitPriceServiceAF.setModelBindPath("51511");
+
+      unitPriceServiceAF.setRenderBindPath("UNIT_PRICE_VALUE");
+
+      unitPriceServiceAF.setBlankable(true);
+
+      unitPriceServiceAF.setModel(getUnitPriceServiceAFModel());
+
+      addUnitPriceServiceAF();
+    }
+    return unitPriceServiceAF;
+
+  }
+
+  /**
+   * AFコンボコンテナを取得します。
+   * @return AFコンボコンテナ
+   */
+  protected ACLabelContainer getUnitPriceServiceAFContainer(){
+    if(unitPriceServiceAFContainer==null){
+      unitPriceServiceAFContainer = new ACLabelContainer();
+      unitPriceServiceAFContainer.setFollowChildEnabled(true);
+      unitPriceServiceAFContainer.setVAlignment(VRLayout.CENTER);
+      unitPriceServiceAFContainer.add(getUnitPriceServiceAF(), null);
+    }
+    return unitPriceServiceAFContainer;
+  }
+
+  /**
+   * AFコンボモデルを取得します。
+   * @return AFコンボモデル
+   */
+  protected ACComboBoxModelAdapter getUnitPriceServiceAFModel(){
+    if(unitPriceServiceAFModel==null){
+      unitPriceServiceAFModel = new ACComboBoxModelAdapter();
+      addUnitPriceServiceAFModel();
+    }
+    return unitPriceServiceAFModel;
+  }
+
+  /**
+   * 有効期間コンテナを取得します。
+   * @return 有効期間コンテナ
+   */
+  public ACLabelContainer getUnitPriceValidPeriodContena(){
+    if(unitPriceValidPeriodContena==null){
+
+      unitPriceValidPeriodContena = new ACLabelContainer();
+
+      unitPriceValidPeriodContena.setText("有効期間");
+
+      unitPriceValidPeriodContena.setFollowChildEnabled(true);
+
+      addUnitPriceValidPeriodContena();
+    }
+    return unitPriceValidPeriodContena;
+
+  }
+
+  /**
+   * 有効期間テキスト(開始)を取得します。
+   * @return 有効期間テキスト(開始)
+   */
+  public QkanDateTextField getUnitPriceValidStart(){
+    if(unitPriceValidStart==null){
+
+      unitPriceValidStart = new QkanDateTextField();
+
+      unitPriceValidStart.setBindPath("UNIT_PRICE_VALID_START");
+
+      addUnitPriceValidStart();
+    }
+    return unitPriceValidStart;
+
+  }
+
+  /**
+   * 有効期間・ラベルを取得します。
+   * @return 有効期間・ラベル
+   */
+  public ACLabel getUnitPriceValidLabel(){
+    if(unitPriceValidLabel==null){
+
+      unitPriceValidLabel = new ACLabel();
+
+      unitPriceValidLabel.setText("から");
+
+      addUnitPriceValidLabel();
+    }
+    return unitPriceValidLabel;
+
+  }
+
+  /**
+   * 有効期間テキスト(終了)を取得します。
+   * @return 有効期間テキスト(終了)
+   */
+  public QkanDateTextField getUnitPriceValidEnd(){
+    if(unitPriceValidEnd==null){
+
+      unitPriceValidEnd = new QkanDateTextField();
+
+      unitPriceValidEnd.setBindPath("UNIT_PRICE_VALID_END");
+
+      addUnitPriceValidEnd();
+    }
+    return unitPriceValidEnd;
+
+  }
+
+  /**
+   * 有効期間領域右を取得します。
+   * @return 有効期間領域右
+   */
+  public ACPanel getUnitPriceButtonPanel(){
+    if(unitPriceButtonPanel==null){
+
+      unitPriceButtonPanel = new ACPanel();
+
+      unitPriceButtonPanel.setFollowChildEnabled(true);
+
+      addUnitPriceButtonPanel();
+    }
+    return unitPriceButtonPanel;
+
+  }
+
+  /**
+   * ボタン領域を取得します。
+   * @return ボタン領域
+   */
+  public ACPanel getUnitPriceButtons(){
+    if(unitPriceButtons==null){
+
+      unitPriceButtons = new ACPanel();
+
+      unitPriceButtons.setFollowChildEnabled(true);
+
+      addUnitPriceButtons();
+    }
+    return unitPriceButtons;
+
+  }
+
+  /**
+   * 規定を取得します。
+   * @return 規定
+   */
+  public ACButton getUnitPriceRegularButton(){
+    if(unitPriceRegularButton==null){
+
+      unitPriceRegularButton = new ACButton();
+
+      unitPriceRegularButton.setText("規定");
+
+      unitPriceRegularButton.setToolTipText("厚生労働省規定の総合事業単位数単価を設定します。");
+
+      unitPriceRegularButton.setIconPath(ACConstants.ICON_PATH_CLEAR_16);
+
+      addUnitPriceRegularButton();
+    }
+    return unitPriceRegularButton;
+
+  }
+
+  /**
+   * 追加を取得します。
+   * @return 追加
+   */
+  public ACButton getUnitPriceInsertButton(){
+    if(unitPriceInsertButton==null){
+
+      unitPriceInsertButton = new ACButton();
+
+      unitPriceInsertButton.setText("追加");
+
+      unitPriceInsertButton.setToolTipText("保険者の総合事業単位数単価情報を追加します。");
+
+      unitPriceInsertButton.setIconPath(ACConstants.ICON_PATH_RECORD_DOWNLOAD_16);
+
+      addUnitPriceInsertButton();
+    }
+    return unitPriceInsertButton;
+
+  }
+
+  /**
+   * 書替を取得します。
+   * @return 書替
+   */
+  public ACButton getUnitPriceEditButton(){
+    if(unitPriceEditButton==null){
+
+      unitPriceEditButton = new ACButton();
+
+      unitPriceEditButton.setText("書替");
+
+      unitPriceEditButton.setToolTipText("選択中の総合事業単位数単価情報を編集します。");
+
+      unitPriceEditButton.setIconPath(ACConstants.ICON_PATH_STATE_UPDATE_16);
+
+      addUnitPriceEditButton();
+    }
+    return unitPriceEditButton;
+
+  }
+
+  /**
+   * 削除を取得します。
+   * @return 削除
+   */
+  public ACButton getUnitPriceDeleteButton(){
+    if(unitPriceDeleteButton==null){
+
+      unitPriceDeleteButton = new ACButton();
+
+      unitPriceDeleteButton.setText("削除");
+
+      unitPriceDeleteButton.setToolTipText("選択中の総合事業単位数単価情報を削除します。");
+
+      unitPriceDeleteButton.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addUnitPriceDeleteButton();
+    }
+    return unitPriceDeleteButton;
+
+  }
+
+  /**
+   * 総合事業単位数単価情報パネルを取得します。
+   * @return 総合事業単位数単価情報パネル
+   */
+  public ACPanel getUnitPriceInfo(){
+    if(unitPriceInfo==null){
+
+      unitPriceInfo = new ACPanel();
+
+      addUnitPriceInfo();
+    }
+    return unitPriceInfo;
+
+  }
+
+  /**
+   * 総合事業単位数単価情報テーブルを取得します。
+   * @return 総合事業単位数単価情報テーブル
+   */
+  public ACTable getUnitPriceTable(){
+    if(unitPriceTable==null){
+
+      unitPriceTable = new ACTable();
+
+      unitPriceTable.setColumnModel(getUnitPriceTableColumnModel());
+
+      addUnitPriceTable();
+    }
+    return unitPriceTable;
+
+  }
+
+  /**
+   * 総合事業単位数単価情報テーブルカラムモデルを取得します。
+   * @return 総合事業単位数単価情報テーブルカラムモデル
+   */
+  protected VRTableColumnModel getUnitPriceTableColumnModel(){
+    if(unitPriceTableColumnModel==null){
+      unitPriceTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addUnitPriceTableColumnModel();
+    }
+    return unitPriceTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getUnitPriceTableColum1(){
+    if(unitPriceTableColum1==null){
+
+      unitPriceTableColum1 = new ACTableColumn();
+
+      unitPriceTableColum1.setHeaderValue("No.");
+
+      unitPriceTableColum1.setColumns(3);
+
+      unitPriceTableColum1.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      unitPriceTableColum1.setSortable(false);
+
+      addUnitPriceTableColum1();
+    }
+    return unitPriceTableColum1;
+
+  }
+
+  /**
+   * 総合事業単位数単価情報有効期間(開始)を取得します。
+   * @return 総合事業単位数単価情報有効期間(開始)
+   */
+  public ACTableColumn getUnitPriceTableColum2(){
+    if(unitPriceTableColum2==null){
+
+      unitPriceTableColum2 = new ACTableColumn(0);
+
+      unitPriceTableColum2.setHeaderValue("有効期間(開始)");
+
+      unitPriceTableColum2.setColumns(12);
+
+      unitPriceTableColum2.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addUnitPriceTableColum2();
+    }
+    return unitPriceTableColum2;
+
+  }
+
+  /**
+   * 総合事業単位数単価情報有効期間(終了)を取得します。
+   * @return 総合事業単位数単価情報有効期間(終了)
+   */
+  public ACTableColumn getUnitPriceTableColum3(){
+    if(unitPriceTableColum3==null){
+
+      unitPriceTableColum3 = new ACTableColumn(1);
+
+      unitPriceTableColum3.setHeaderValue("有効期間(終了)");
+
+      unitPriceTableColum3.setColumns(12);
+
+      unitPriceTableColum3.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addUnitPriceTableColum3();
+    }
+    return unitPriceTableColum3;
+
+  }
+
+  /**
+   * 地域区分を取得します。
+   * @return 地域区分
+   */
+  public ACTableColumn getUnitPriceTableColum4(){
+    if(unitPriceTableColum4==null){
+
+      unitPriceTableColum4 = new ACTableColumn(2);
+
+      unitPriceTableColum4.setHeaderValue("地域区分");
+
+      unitPriceTableColum4.setColumns(12);
+
+      addUnitPriceTableColum4();
+    }
+    return unitPriceTableColum4;
+
+  }
+
+  /**
+   * Tab「総合事業 限度額」を取得します。
+   * @return Tab「総合事業 限度額」
+   */
+  public ACPanel getTabInsurerLimitRate(){
+    if(tabInsurerLimitRate==null){
+
+      tabInsurerLimitRate = new ACPanel();
+
+      addTabInsurerLimitRate();
+    }
+    return tabInsurerLimitRate;
 
   }
 
@@ -902,7 +2276,7 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
       insurerLimitRateInfos = new ACGroupBox();
 
-      insurerLimitRateInfos.setText("区分支給限度額情報");
+      insurerLimitRateInfos.setText("総合事業限度額情報");
 
       insurerLimitRateInfos.setFollowChildEnabled(true);
 
@@ -942,269 +2316,6 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 支給限度額情報パネルを取得します。
-   * @return 支給限度額情報パネル
-   */
-  public ACPanel getInsurerLimitRatePanel(){
-    if(insurerLimitRatePanel==null){
-
-      insurerLimitRatePanel = new ACPanel();
-
-      insurerLimitRatePanel.setFollowChildEnabled(true);
-
-      addInsurerLimitRatePanel();
-    }
-    return insurerLimitRatePanel;
-
-  }
-
-  /**
-   * 支給限度額情報テーブルを取得します。
-   * @return 支給限度額情報テーブル
-   */
-  public ACTable getInsurerLimitRateTable(){
-    if(insurerLimitRateTable==null){
-
-      insurerLimitRateTable = new ACTable();
-
-      insurerLimitRateTable.setColumnModel(getInsurerLimitRateTableColumnModel());
-
-      addInsurerLimitRateTable();
-    }
-    return insurerLimitRateTable;
-
-  }
-
-  /**
-   * 支給限度額情報テーブルカラムモデルを取得します。
-   * @return 支給限度額情報テーブルカラムモデル
-   */
-  protected VRTableColumnModel getInsurerLimitRateTableColumnModel(){
-    if(insurerLimitRateTableColumnModel==null){
-      insurerLimitRateTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
-      addInsurerLimitRateTableColumnModel();
-    }
-    return insurerLimitRateTableColumnModel;
-  }
-
-  /**
-   * No.を取得します。
-   * @return No.
-   */
-  public ACTableColumn getInsurerLimitRateTableColum1(){
-    if(insurerLimitRateTableColum1==null){
-
-      insurerLimitRateTableColum1 = new ACTableColumn();
-
-      insurerLimitRateTableColum1.setHeaderValue("No.");
-
-      insurerLimitRateTableColum1.setColumns(3);
-
-      insurerLimitRateTableColum1.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
-
-      insurerLimitRateTableColum1.setSortable(false);
-
-      addInsurerLimitRateTableColum1();
-    }
-    return insurerLimitRateTableColum1;
-
-  }
-
-  /**
-   * 要支援1を取得します。
-   * @return 要支援1
-   */
-  public ACTableColumn getInsurerLimitRateTableColum10(){
-    if(insurerLimitRateTableColum10==null){
-
-      insurerLimitRateTableColum10 = new ACTableColumn(0);
-
-      insurerLimitRateTableColum10.setHeaderValue("要支援1");
-
-      insurerLimitRateTableColum10.setColumns(6);
-
-      addInsurerLimitRateTableColum10();
-    }
-    return insurerLimitRateTableColum10;
-
-  }
-
-  /**
-   * 要支援2を取得します。
-   * @return 要支援2
-   */
-  public ACTableColumn getInsurerLimitRateTableColum11(){
-    if(insurerLimitRateTableColum11==null){
-
-      insurerLimitRateTableColum11 = new ACTableColumn(1);
-
-      insurerLimitRateTableColum11.setHeaderValue("要支援2");
-
-      insurerLimitRateTableColum11.setColumns(7);
-
-      addInsurerLimitRateTableColum11();
-    }
-    return insurerLimitRateTableColum11;
-
-  }
-
-  /**
-   * 経過的要介護を取得します。
-   * @return 経過的要介護
-   */
-  public ACTableColumn getInsurerLimitRateTableColum2(){
-    if(insurerLimitRateTableColum2==null){
-
-      insurerLimitRateTableColum2 = new ACTableColumn(2);
-
-      insurerLimitRateTableColum2.setHeaderValue("経過的要介護");
-
-      insurerLimitRateTableColum2.setColumns(7);
-
-      addInsurerLimitRateTableColum2();
-    }
-    return insurerLimitRateTableColum2;
-
-  }
-
-  /**
-   * 要介護1を取得します。
-   * @return 要介護1
-   */
-  public ACTableColumn getInsurerLimitRateTableColum3(){
-    if(insurerLimitRateTableColum3==null){
-
-      insurerLimitRateTableColum3 = new ACTableColumn(3);
-
-      insurerLimitRateTableColum3.setHeaderValue("要介護1");
-
-      insurerLimitRateTableColum3.setColumns(7);
-
-      addInsurerLimitRateTableColum3();
-    }
-    return insurerLimitRateTableColum3;
-
-  }
-
-  /**
-   * 要介護2を取得します。
-   * @return 要介護2
-   */
-  public ACTableColumn getInsurerLimitRateTableColum4(){
-    if(insurerLimitRateTableColum4==null){
-
-      insurerLimitRateTableColum4 = new ACTableColumn(4);
-
-      insurerLimitRateTableColum4.setHeaderValue("要介護2");
-
-      insurerLimitRateTableColum4.setColumns(7);
-
-      addInsurerLimitRateTableColum4();
-    }
-    return insurerLimitRateTableColum4;
-
-  }
-
-  /**
-   * 要介護3を取得します。
-   * @return 要介護3
-   */
-  public ACTableColumn getInsurerLimitRateTableColum5(){
-    if(insurerLimitRateTableColum5==null){
-
-      insurerLimitRateTableColum5 = new ACTableColumn(5);
-
-      insurerLimitRateTableColum5.setHeaderValue("要介護3");
-
-      insurerLimitRateTableColum5.setColumns(7);
-
-      addInsurerLimitRateTableColum5();
-    }
-    return insurerLimitRateTableColum5;
-
-  }
-
-  /**
-   * 要介護4を取得します。
-   * @return 要介護4
-   */
-  public ACTableColumn getInsurerLimitRateTableColum6(){
-    if(insurerLimitRateTableColum6==null){
-
-      insurerLimitRateTableColum6 = new ACTableColumn(6);
-
-      insurerLimitRateTableColum6.setHeaderValue("要介護4");
-
-      insurerLimitRateTableColum6.setColumns(7);
-
-      addInsurerLimitRateTableColum6();
-    }
-    return insurerLimitRateTableColum6;
-
-  }
-
-  /**
-   * 要介護5を取得します。
-   * @return 要介護5
-   */
-  public ACTableColumn getInsurerLimitRateTableColum7(){
-    if(insurerLimitRateTableColum7==null){
-
-      insurerLimitRateTableColum7 = new ACTableColumn(7);
-
-      insurerLimitRateTableColum7.setHeaderValue("要介護5");
-
-      insurerLimitRateTableColum7.setColumns(7);
-
-      addInsurerLimitRateTableColum7();
-    }
-    return insurerLimitRateTableColum7;
-
-  }
-
-  /**
-   * 保険者情報有効期間(開始）を取得します。
-   * @return 保険者情報有効期間(開始）
-   */
-  public ACTableColumn getInsurerLimitRateTableColum8(){
-    if(insurerLimitRateTableColum8==null){
-
-      insurerLimitRateTableColum8 = new ACTableColumn(8);
-
-      insurerLimitRateTableColum8.setHeaderValue("有効期間(開始）");
-
-      insurerLimitRateTableColum8.setColumns(12);
-
-      insurerLimitRateTableColum8.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
-
-      addInsurerLimitRateTableColum8();
-    }
-    return insurerLimitRateTableColum8;
-
-  }
-
-  /**
-   * 保険者情報有効期間(終了）を取得します。
-   * @return 保険者情報有効期間(終了）
-   */
-  public ACTableColumn getInsurerLimitRateTableColum9(){
-    if(insurerLimitRateTableColum9==null){
-
-      insurerLimitRateTableColum9 = new ACTableColumn(9);
-
-      insurerLimitRateTableColum9.setHeaderValue("有効期間(終了）");
-
-      insurerLimitRateTableColum9.setColumns(12);
-
-      insurerLimitRateTableColum9.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
-
-      addInsurerLimitRateTableColum9();
-    }
-    return insurerLimitRateTableColum9;
-
-  }
-
-  /**
    * 有効期間領域を取得します。
    * @return 有効期間領域
    */
@@ -1220,124 +2331,6 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
       addValidPeriodPanel();
     }
     return validPeriodPanel;
-
-  }
-
-  /**
-   * 有効期間領域右を取得します。
-   * @return 有効期間領域右
-   */
-  public ACPanel getValidPeriodRight(){
-    if(validPeriodRight==null){
-
-      validPeriodRight = new ACPanel();
-
-      validPeriodRight.setFollowChildEnabled(true);
-
-      addValidPeriodRight();
-    }
-    return validPeriodRight;
-
-  }
-
-  /**
-   * ボタン領域を取得します。
-   * @return ボタン領域
-   */
-  public ACPanel getInsurerLimitRateButtons(){
-    if(insurerLimitRateButtons==null){
-
-      insurerLimitRateButtons = new ACPanel();
-
-      insurerLimitRateButtons.setFollowChildEnabled(true);
-
-      addInsurerLimitRateButtons();
-    }
-    return insurerLimitRateButtons;
-
-  }
-
-  /**
-   * 規定を取得します。
-   * @return 規定
-   */
-  public ACButton getInsurerLimitRateRegularButton(){
-    if(insurerLimitRateRegularButton==null){
-
-      insurerLimitRateRegularButton = new ACButton();
-
-      insurerLimitRateRegularButton.setText("規定");
-
-      insurerLimitRateRegularButton.setToolTipText("厚生労働省規定の支給限度額を設定します。");
-
-      insurerLimitRateRegularButton.setIconPath(ACConstants.ICON_PATH_CLEAR_16);
-
-      addInsurerLimitRateRegularButton();
-    }
-    return insurerLimitRateRegularButton;
-
-  }
-
-  /**
-   * 追加を取得します。
-   * @return 追加
-   */
-  public ACButton getInsurerLimitRateInsertButton(){
-    if(insurerLimitRateInsertButton==null){
-
-      insurerLimitRateInsertButton = new ACButton();
-
-      insurerLimitRateInsertButton.setText("追加");
-
-      insurerLimitRateInsertButton.setToolTipText("保険者の支給限度額情報を追加します。");
-
-      insurerLimitRateInsertButton.setIconPath(ACConstants.ICON_PATH_RECORD_DOWNLOAD_16);
-
-      addInsurerLimitRateInsertButton();
-    }
-    return insurerLimitRateInsertButton;
-
-  }
-
-  /**
-   * 書替を取得します。
-   * @return 書替
-   */
-  public ACButton getInsurerLimitRateEditButton(){
-    if(insurerLimitRateEditButton==null){
-
-      insurerLimitRateEditButton = new ACButton();
-
-      insurerLimitRateEditButton.setText("書替");
-
-      insurerLimitRateEditButton.setToolTipText("選択中の支給限度額情報を編集します。");
-
-      insurerLimitRateEditButton.setIconPath(ACConstants.ICON_PATH_STATE_UPDATE_16);
-
-      addInsurerLimitRateEditButton();
-    }
-    return insurerLimitRateEditButton;
-
-  }
-
-  /**
-   * 削除を取得します。
-   * @return 削除
-   */
-  public ACButton getInsurerLimitRateDeleteButton(){
-    if(insurerLimitRateDeleteButton==null){
-
-      insurerLimitRateDeleteButton = new ACButton();
-
-      insurerLimitRateDeleteButton.setText("削除");
-
-      insurerLimitRateDeleteButton.setToolTipText("選択中の保険者の全情報を削除します。");
-
-      insurerLimitRateDeleteButton.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
-
-      addInsurerLimitRateDeleteButton();
-    }
-    return insurerLimitRateDeleteButton;
 
   }
 
@@ -1365,72 +2358,105 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 有効期間コンテナを取得します。
-   * @return 有効期間コンテナ
+   * 事業対象者テキストを取得します。
+   * @return 事業対象者テキスト
    */
-  public ACLabelContainer getValidPeriodCpntena(){
-    if(validPeriodCpntena==null){
+  public ACTextField getJigyoTaishosha(){
+    if(jigyoTaishosha==null){
 
-      validPeriodCpntena = new ACLabelContainer();
+      jigyoTaishosha = new ACTextField();
 
-      validPeriodCpntena.setText("有効期間");
+      getJigyoTaishoshaContainer().setText("事業対象者");
 
-      validPeriodCpntena.setFollowChildEnabled(true);
+      jigyoTaishosha.setBindPath("6");
 
-      addValidPeriodCpntena();
+      jigyoTaishosha.setColumns(4);
+
+      jigyoTaishosha.setCharType(VRCharType.ONLY_DIGIT);
+
+      jigyoTaishosha.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      jigyoTaishosha.setIMEMode(InputSubset.LATIN);
+
+      jigyoTaishosha.setMaxLength(5);
+
+      addJigyoTaishosha();
     }
-    return validPeriodCpntena;
+    return jigyoTaishosha;
 
   }
 
   /**
-   * 有効期間テキスト（開始）を取得します。
-   * @return 有効期間テキスト（開始）
+   * 事業対象者テキストコンテナを取得します。
+   * @return 事業対象者テキストコンテナ
    */
-  public QkanDateTextField getValidPeriodStart(){
-    if(validPeriodStart==null){
-
-      validPeriodStart = new QkanDateTextField();
-
-      validPeriodStart.setBindPath("LIMIT_RATE_VALID_START");
-
-      addValidPeriodStart();
+  protected ACLabelContainer getJigyoTaishoshaContainer(){
+    if(jigyoTaishoshaContainer==null){
+      jigyoTaishoshaContainer = new ACLabelContainer();
+      jigyoTaishoshaContainer.setFollowChildEnabled(true);
+      jigyoTaishoshaContainer.setVAlignment(VRLayout.CENTER);
+      jigyoTaishoshaContainer.add(getJigyoTaishosha(), null);
     }
-    return validPeriodStart;
+    return jigyoTaishoshaContainer;
+  }
+
+  /**
+   * 事業対象者(要支援１超)テキストを取得します。
+   * @return 事業対象者(要支援１超)テキスト
+   */
+  public ACTextField getJigyoTaishoshaOver(){
+    if(jigyoTaishoshaOver==null){
+
+      jigyoTaishoshaOver = new ACTextField();
+
+      getJigyoTaishoshaOverContainer().setText("事業対象者(要支援１超)");
+
+      jigyoTaishoshaOver.setBindPath("61");
+
+      jigyoTaishoshaOver.setColumns(4);
+
+      jigyoTaishoshaOver.setCharType(VRCharType.ONLY_DIGIT);
+
+      jigyoTaishoshaOver.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      jigyoTaishoshaOver.setIMEMode(InputSubset.LATIN);
+
+      jigyoTaishoshaOver.setMaxLength(5);
+
+      addJigyoTaishoshaOver();
+    }
+    return jigyoTaishoshaOver;
 
   }
 
   /**
-   * 有効期間・ラベルを取得します。
-   * @return 有効期間・ラベル
+   * 事業対象者(要支援１超)テキストコンテナを取得します。
+   * @return 事業対象者(要支援１超)テキストコンテナ
    */
-  public ACLabel getValidPeriodLabel(){
-    if(validPeriodLabel==null){
-
-      validPeriodLabel = new ACLabel();
-
-      validPeriodLabel.setText("から");
-
-      addValidPeriodLabel();
+  protected ACLabelContainer getJigyoTaishoshaOverContainer(){
+    if(jigyoTaishoshaOverContainer==null){
+      jigyoTaishoshaOverContainer = new ACLabelContainer();
+      jigyoTaishoshaOverContainer.setFollowChildEnabled(true);
+      jigyoTaishoshaOverContainer.setVAlignment(VRLayout.CENTER);
+      jigyoTaishoshaOverContainer.add(getJigyoTaishoshaOver(), null);
     }
-    return validPeriodLabel;
-
+    return jigyoTaishoshaOverContainer;
   }
 
   /**
-   * 有効期間テキスト（終了）を取得します。
-   * @return 有効期間テキスト（終了）
+   * 事業対象者コメント・ラベルを取得します。
+   * @return 事業対象者コメント・ラベル
    */
-  public QkanDateTextField getValidPeriodEnd(){
-    if(validPeriodEnd==null){
+  public ACLabel getJigyoTaishoshaOverComment(){
+    if(jigyoTaishoshaOverComment==null){
 
-      validPeriodEnd = new QkanDateTextField();
+      jigyoTaishoshaOverComment = new ACLabel();
 
-      validPeriodEnd.setBindPath("LIMIT_RATE_VALID_END");
+      jigyoTaishoshaOverComment.setText("市町村にて事業対象者が要支援１の額を超えてサービスを利用" + ACConstants.LINE_SEPARATOR + "する場合の限度額が定められている場合は設定してください。");
 
-      addValidPeriodEnd();
+      addJigyoTaishoshaOverComment();
     }
-    return validPeriodEnd;
+    return jigyoTaishoshaOverComment;
 
   }
 
@@ -1779,6 +2805,343 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 有効期間コンテナを取得します。
+   * @return 有効期間コンテナ
+   */
+  public ACLabelContainer getValidPeriodCpntena(){
+    if(validPeriodCpntena==null){
+
+      validPeriodCpntena = new ACLabelContainer();
+
+      validPeriodCpntena.setText("有効期間");
+
+      validPeriodCpntena.setFollowChildEnabled(true);
+
+      addValidPeriodCpntena();
+    }
+    return validPeriodCpntena;
+
+  }
+
+  /**
+   * 有効期間テキスト(開始)を取得します。
+   * @return 有効期間テキスト(開始)
+   */
+  public QkanDateTextField getValidPeriodStart(){
+    if(validPeriodStart==null){
+
+      validPeriodStart = new QkanDateTextField();
+
+      validPeriodStart.setBindPath("LIMIT_RATE_VALID_START");
+
+      addValidPeriodStart();
+    }
+    return validPeriodStart;
+
+  }
+
+  /**
+   * 有効期間・ラベルを取得します。
+   * @return 有効期間・ラベル
+   */
+  public ACLabel getValidPeriodLabel(){
+    if(validPeriodLabel==null){
+
+      validPeriodLabel = new ACLabel();
+
+      validPeriodLabel.setText("から");
+
+      addValidPeriodLabel();
+    }
+    return validPeriodLabel;
+
+  }
+
+  /**
+   * 有効期間テキスト(終了)を取得します。
+   * @return 有効期間テキスト(終了)
+   */
+  public QkanDateTextField getValidPeriodEnd(){
+    if(validPeriodEnd==null){
+
+      validPeriodEnd = new QkanDateTextField();
+
+      validPeriodEnd.setBindPath("LIMIT_RATE_VALID_END");
+
+      addValidPeriodEnd();
+    }
+    return validPeriodEnd;
+
+  }
+
+  /**
+   * 有効期間領域右を取得します。
+   * @return 有効期間領域右
+   */
+  public ACPanel getValidPeriodRight(){
+    if(validPeriodRight==null){
+
+      validPeriodRight = new ACPanel();
+
+      validPeriodRight.setFollowChildEnabled(true);
+
+      addValidPeriodRight();
+    }
+    return validPeriodRight;
+
+  }
+
+  /**
+   * ボタン領域を取得します。
+   * @return ボタン領域
+   */
+  public ACPanel getInsurerLimitRateButtons(){
+    if(insurerLimitRateButtons==null){
+
+      insurerLimitRateButtons = new ACPanel();
+
+      insurerLimitRateButtons.setFollowChildEnabled(true);
+
+      addInsurerLimitRateButtons();
+    }
+    return insurerLimitRateButtons;
+
+  }
+
+  /**
+   * 規定を取得します。
+   * @return 規定
+   */
+  public ACButton getInsurerLimitRateRegularButton(){
+    if(insurerLimitRateRegularButton==null){
+
+      insurerLimitRateRegularButton = new ACButton();
+
+      insurerLimitRateRegularButton.setText("規定");
+
+      insurerLimitRateRegularButton.setToolTipText("厚生労働省規定の支給限度額を設定します。");
+
+      insurerLimitRateRegularButton.setIconPath(ACConstants.ICON_PATH_CLEAR_16);
+
+      addInsurerLimitRateRegularButton();
+    }
+    return insurerLimitRateRegularButton;
+
+  }
+
+  /**
+   * 追加を取得します。
+   * @return 追加
+   */
+  public ACButton getInsurerLimitRateInsertButton(){
+    if(insurerLimitRateInsertButton==null){
+
+      insurerLimitRateInsertButton = new ACButton();
+
+      insurerLimitRateInsertButton.setText("追加");
+
+      insurerLimitRateInsertButton.setToolTipText("保険者の支給限度額情報を追加します。");
+
+      insurerLimitRateInsertButton.setIconPath(ACConstants.ICON_PATH_RECORD_DOWNLOAD_16);
+
+      addInsurerLimitRateInsertButton();
+    }
+    return insurerLimitRateInsertButton;
+
+  }
+
+  /**
+   * 書替を取得します。
+   * @return 書替
+   */
+  public ACButton getInsurerLimitRateEditButton(){
+    if(insurerLimitRateEditButton==null){
+
+      insurerLimitRateEditButton = new ACButton();
+
+      insurerLimitRateEditButton.setText("書替");
+
+      insurerLimitRateEditButton.setToolTipText("選択中の支給限度額情報を編集します。");
+
+      insurerLimitRateEditButton.setIconPath(ACConstants.ICON_PATH_STATE_UPDATE_16);
+
+      addInsurerLimitRateEditButton();
+    }
+    return insurerLimitRateEditButton;
+
+  }
+
+  /**
+   * 削除を取得します。
+   * @return 削除
+   */
+  public ACButton getInsurerLimitRateDeleteButton(){
+    if(insurerLimitRateDeleteButton==null){
+
+      insurerLimitRateDeleteButton = new ACButton();
+
+      insurerLimitRateDeleteButton.setText("削除");
+
+      insurerLimitRateDeleteButton.setToolTipText("選択中の支給限度額情報を削除します。");
+
+      insurerLimitRateDeleteButton.setIconPath(ACConstants.ICON_PATH_STATE_DELETE_16);
+
+      addInsurerLimitRateDeleteButton();
+    }
+    return insurerLimitRateDeleteButton;
+
+  }
+
+  /**
+   * 支給限度額情報パネルを取得します。
+   * @return 支給限度額情報パネル
+   */
+  public ACPanel getInsurerLimitRatePanel(){
+    if(insurerLimitRatePanel==null){
+
+      insurerLimitRatePanel = new ACPanel();
+
+      insurerLimitRatePanel.setFollowChildEnabled(true);
+
+      addInsurerLimitRatePanel();
+    }
+    return insurerLimitRatePanel;
+
+  }
+
+  /**
+   * 支給限度額情報テーブルを取得します。
+   * @return 支給限度額情報テーブル
+   */
+  public ACTable getInsurerLimitRateTable(){
+    if(insurerLimitRateTable==null){
+
+      insurerLimitRateTable = new ACTable();
+
+      insurerLimitRateTable.setColumnModel(getInsurerLimitRateTableColumnModel());
+
+      addInsurerLimitRateTable();
+    }
+    return insurerLimitRateTable;
+
+  }
+
+  /**
+   * 支給限度額情報テーブルカラムモデルを取得します。
+   * @return 支給限度額情報テーブルカラムモデル
+   */
+  protected VRTableColumnModel getInsurerLimitRateTableColumnModel(){
+    if(insurerLimitRateTableColumnModel==null){
+      insurerLimitRateTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addInsurerLimitRateTableColumnModel();
+    }
+    return insurerLimitRateTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getInsurerLimitRateTableColum1(){
+    if(insurerLimitRateTableColum1==null){
+
+      insurerLimitRateTableColum1 = new ACTableColumn();
+
+      insurerLimitRateTableColum1.setHeaderValue("No.");
+
+      insurerLimitRateTableColum1.setColumns(3);
+
+      insurerLimitRateTableColum1.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      insurerLimitRateTableColum1.setSortable(false);
+
+      addInsurerLimitRateTableColum1();
+    }
+    return insurerLimitRateTableColum1;
+
+  }
+
+  /**
+   * 保険者情報有効期間(開始)を取得します。
+   * @return 保険者情報有効期間(開始)
+   */
+  public ACTableColumn getInsurerLimitRateTableColum8(){
+    if(insurerLimitRateTableColum8==null){
+
+      insurerLimitRateTableColum8 = new ACTableColumn(0);
+
+      insurerLimitRateTableColum8.setHeaderValue("有効期間(開始)");
+
+      insurerLimitRateTableColum8.setColumns(12);
+
+      insurerLimitRateTableColum8.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addInsurerLimitRateTableColum8();
+    }
+    return insurerLimitRateTableColum8;
+
+  }
+
+  /**
+   * 保険者情報有効期間(終了)を取得します。
+   * @return 保険者情報有効期間(終了)
+   */
+  public ACTableColumn getInsurerLimitRateTableColum9(){
+    if(insurerLimitRateTableColum9==null){
+
+      insurerLimitRateTableColum9 = new ACTableColumn(1);
+
+      insurerLimitRateTableColum9.setHeaderValue("有効期間(終了)");
+
+      insurerLimitRateTableColum9.setColumns(12);
+
+      insurerLimitRateTableColum9.setFormat(new ACBorderBlankDateFormat("gggee年MM月dd日"));
+
+      addInsurerLimitRateTableColum9();
+    }
+    return insurerLimitRateTableColum9;
+
+  }
+
+  /**
+   * 事業対象者を取得します。
+   * @return 事業対象者
+   */
+  public ACTableColumn getInsurerLimitRateTableColum12(){
+    if(insurerLimitRateTableColum12==null){
+
+      insurerLimitRateTableColum12 = new ACTableColumn(2);
+
+      insurerLimitRateTableColum12.setHeaderValue("事業対象者");
+
+      insurerLimitRateTableColum12.setColumns(7);
+
+      addInsurerLimitRateTableColum12();
+    }
+    return insurerLimitRateTableColum12;
+
+  }
+
+  /**
+   * 事業対象者(要支援１超)を取得します。
+   * @return 事業対象者(要支援１超)
+   */
+  public ACTableColumn getInsurerLimitRateTableColum13(){
+    if(insurerLimitRateTableColum13==null){
+
+      insurerLimitRateTableColum13 = new ACTableColumn(3);
+
+      insurerLimitRateTableColum13.setHeaderValue("事業対象者(要支援１超)");
+
+      insurerLimitRateTableColum13.setColumns(12);
+
+      addInsurerLimitRateTableColum13();
+    }
+    return insurerLimitRateTableColum13;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QO002Design() {
@@ -1855,9 +3218,7 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
     contents.add(getInsurerSetInfos(), VRLayout.NORTH);
 
-    contents.add(getInsurerLimitPanel(), VRLayout.NORTH);
-
-    contents.add(getInsurerLimitRateInfos(), VRLayout.NORTH);
+    contents.add(getTabs(), VRLayout.CLIENT);
 
   }
 
@@ -1887,12 +3248,10 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
     insurerInfos.add(getInsurerTelConteinar(), VRLayout.FLOW_INSETLINE_RETURN);
 
-// 2015/02/12 Shinobu Hitaka del - start 訪問看護（医療）の請求はできない為設定不要ということで非表示
-//    insurerInfos.add(getInsurerTypeContainer(), VRLayout.FLOW_INSETLINE);
-//
-//    insurerInfos.add(getInsurerTypeInfomation(), VRLayout.FLOW_RETURN);
-// 2015/02/12 Shinobu Hitaka del - end
-    
+    insurerInfos.add(getInsurerType(), VRLayout.FLOW_INSETLINE);
+
+    insurerInfos.add(getInsurerTypeInfomation(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -2053,6 +3412,473 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * Tabに内部項目を追加します。
+   */
+  protected void addTabs(){
+
+    tabs.addTab("総合事業 単位数単価", getTabInsurerUnitPrice());
+
+    tabs.addTab("総合事業 限度額", getTabInsurerLimitRate());
+
+  }
+
+  /**
+   * Tab「総合事業 単位数単価」に内部項目を追加します。
+   */
+  protected void addTabInsurerUnitPrice(){
+
+    tabInsurerUnitPrice.add(getInsurerUnitPricePanel(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * パネルに内部項目を追加します。
+   */
+  protected void addInsurerUnitPricePanel(){
+
+    insurerUnitPricePanel.add(getInsurerUnitPriceInfos(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 総合事業単位数単価情報領域に内部項目を追加します。
+   */
+  protected void addInsurerUnitPriceInfos(){
+
+    insurerUnitPriceInfos.add(getUnitPriceSetInfos(), VRLayout.NORTH);
+
+    insurerUnitPriceInfos.add(getUnitPriceInfo(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 単位数単価設定領域に内部項目を追加します。
+   */
+  protected void addUnitPriceSetInfos(){
+
+    unitPriceSetInfos.add(getUnitPriceSetPanel(), VRLayout.NORTH);
+
+    unitPriceSetInfos.add(getUnitPriceButtonPanel(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 単位数単価入力領域に内部項目を追加します。
+   */
+  protected void addUnitPriceSetPanel(){
+
+    unitPriceSetPanel.add(getUnitPriceTypeContainer(), VRLayout.FLOW_RETURN);
+
+    unitPriceSetPanel.add(getUnitPriceServicePanel1(), VRLayout.FLOW);
+
+    unitPriceSetPanel.add(getUnitPriceServicePanel2(), VRLayout.FLOW);
+
+    unitPriceSetPanel.add(getUnitPriceServicePanel3(), VRLayout.FLOW_RETURN);
+
+    unitPriceSetPanel.add(getUnitPriceValidPeriodContena(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 地域区分コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceType(){
+
+  }
+
+  /**
+   * 地域区分コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceTypeModel(){
+
+  }
+
+  /**
+   * 単位数単価パネル１に内部項目を追加します。
+   */
+  protected void addUnitPriceServicePanel1(){
+
+    unitPriceServicePanel1.add(getUnitPriceServiceA2Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel1.add(getUnitPriceServiceA3Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel1.add(getUnitPriceServiceA4Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel1.add(getUnitPriceServiceA9Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel1.add(getUnitPriceServiceABContainer(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel1.add(getUnitPriceServiceADContainer(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * A2コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA2(){
+
+  }
+
+  /**
+   * A2コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA2Model(){
+
+  }
+
+  /**
+   * A3コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA3(){
+
+  }
+
+  /**
+   * A3コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA3Model(){
+
+  }
+
+  /**
+   * A4コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA4(){
+
+  }
+
+  /**
+   * A4コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA4Model(){
+
+  }
+
+  /**
+   * A9コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA9(){
+
+  }
+
+  /**
+   * A9コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA9Model(){
+
+  }
+
+  /**
+   * ABコンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAB(){
+
+  }
+
+  /**
+   * ABコンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceABModel(){
+
+  }
+
+  /**
+   * ADコンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAD(){
+
+  }
+
+  /**
+   * ADコンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceADModel(){
+
+  }
+
+  /**
+   * 単位数単価パネル２に内部項目を追加します。
+   */
+  protected void addUnitPriceServicePanel2(){
+
+    unitPriceServicePanel2.add(getUnitPriceServiceA6Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel2.add(getUnitPriceServiceA7Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel2.add(getUnitPriceServiceA8Container(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel2.add(getUnitPriceServiceAAContainer(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel2.add(getUnitPriceServiceACContainer(), VRLayout.FLOW_INSETLINE);
+
+    unitPriceServicePanel2.add(getUnitPriceServiceAEContainer(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * A6コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA6(){
+
+  }
+
+  /**
+   * A6コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA6Model(){
+
+  }
+
+  /**
+   * A7コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA7(){
+
+  }
+
+  /**
+   * A7コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA7Model(){
+
+  }
+
+  /**
+   * A8コンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA8(){
+
+  }
+
+  /**
+   * A8コンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceA8Model(){
+
+  }
+
+  /**
+   * AAコンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAA(){
+
+  }
+
+  /**
+   * AAコンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAAModel(){
+
+  }
+
+  /**
+   * ACコンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAC(){
+
+  }
+
+  /**
+   * ACコンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceACModel(){
+
+  }
+
+  /**
+   * AEコンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAE(){
+
+  }
+
+  /**
+   * AEコンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAEModel(){
+
+  }
+
+  /**
+   * 単位数単価パネル３に内部項目を追加します。
+   */
+  protected void addUnitPriceServicePanel3(){
+
+    unitPriceServicePanel3.add(getUnitPriceServiceAFContainer(), VRLayout.FLOW_INSETLINE);
+
+  }
+
+  /**
+   * AFコンボに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAF(){
+
+  }
+
+  /**
+   * AFコンボモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceServiceAFModel(){
+
+  }
+
+  /**
+   * 有効期間コンテナに内部項目を追加します。
+   */
+  protected void addUnitPriceValidPeriodContena(){
+
+    unitPriceValidPeriodContena.add(getUnitPriceValidStart(), VRLayout.FLOW);
+
+    unitPriceValidPeriodContena.add(getUnitPriceValidLabel(), VRLayout.FLOW);
+
+    unitPriceValidPeriodContena.add(getUnitPriceValidEnd(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間テキスト(開始)に内部項目を追加します。
+   */
+  protected void addUnitPriceValidStart(){
+
+  }
+
+  /**
+   * 有効期間・ラベルに内部項目を追加します。
+   */
+  protected void addUnitPriceValidLabel(){
+
+  }
+
+  /**
+   * 有効期間テキスト(終了)に内部項目を追加します。
+   */
+  protected void addUnitPriceValidEnd(){
+
+  }
+
+  /**
+   * 有効期間領域右に内部項目を追加します。
+   */
+  protected void addUnitPriceButtonPanel(){
+
+    unitPriceButtonPanel.add(getUnitPriceButtons(), VRLayout.WEST);
+
+  }
+
+  /**
+   * ボタン領域に内部項目を追加します。
+   */
+  protected void addUnitPriceButtons(){
+
+    unitPriceButtons.add(getUnitPriceRegularButton(), VRLayout.WEST);
+
+    unitPriceButtons.add(getUnitPriceInsertButton(), VRLayout.WEST);
+
+    unitPriceButtons.add(getUnitPriceEditButton(), VRLayout.WEST);
+
+    unitPriceButtons.add(getUnitPriceDeleteButton(), VRLayout.WEST);
+
+  }
+
+  /**
+   * 規定に内部項目を追加します。
+   */
+  protected void addUnitPriceRegularButton(){
+
+  }
+
+  /**
+   * 追加に内部項目を追加します。
+   */
+  protected void addUnitPriceInsertButton(){
+
+  }
+
+  /**
+   * 書替に内部項目を追加します。
+   */
+  protected void addUnitPriceEditButton(){
+
+  }
+
+  /**
+   * 削除に内部項目を追加します。
+   */
+  protected void addUnitPriceDeleteButton(){
+
+  }
+
+  /**
+   * 総合事業単位数単価情報パネルに内部項目を追加します。
+   */
+  protected void addUnitPriceInfo(){
+
+    unitPriceInfo.add(getUnitPriceTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 総合事業単位数単価情報テーブルに内部項目を追加します。
+   */
+  protected void addUnitPriceTable(){
+
+  }
+
+  /**
+   * 総合事業単位数単価情報テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addUnitPriceTableColumnModel(){
+
+    getUnitPriceTableColumnModel().addColumn(getUnitPriceTableColum1());
+
+    getUnitPriceTableColumnModel().addColumn(getUnitPriceTableColum2());
+
+    getUnitPriceTableColumnModel().addColumn(getUnitPriceTableColum3());
+
+    getUnitPriceTableColumnModel().addColumn(getUnitPriceTableColum4());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addUnitPriceTableColum1(){
+
+  }
+
+  /**
+   * 総合事業単位数単価情報有効期間(開始)に内部項目を追加します。
+   */
+  protected void addUnitPriceTableColum2(){
+
+  }
+
+  /**
+   * 総合事業単位数単価情報有効期間(終了)に内部項目を追加します。
+   */
+  protected void addUnitPriceTableColum3(){
+
+  }
+
+  /**
+   * 地域区分に内部項目を追加します。
+   */
+  protected void addUnitPriceTableColum4(){
+
+  }
+
+  /**
+   * Tab「総合事業 限度額」に内部項目を追加します。
+   */
+  protected void addTabInsurerLimitRate(){
+
+    tabInsurerLimitRate.add(getInsurerLimitPanel(), VRLayout.CLIENT);
+
+    tabInsurerLimitRate.add(getInsurerLimitRateInfos(), VRLayout.CLIENT);
+
+  }
+
+  /**
    * パネルに内部項目を追加します。
    */
   protected void addInsurerLimitPanel(){
@@ -2082,131 +3908,9 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addInsurerLimitRateInfo(){
 
-    insurerLimitRateInfo.add(getInsurerLimitRatePanel(), VRLayout.NORTH);
+    insurerLimitRateInfo.add(getValidPeriodPanel(), VRLayout.NORTH);
 
-    insurerLimitRateInfo.add(getValidPeriodPanel(), VRLayout.CLIENT);
-
-  }
-
-  /**
-   * 支給限度額情報パネルに内部項目を追加します。
-   */
-  protected void addInsurerLimitRatePanel(){
-
-    insurerLimitRatePanel.add(getInsurerLimitRateTable(), VRLayout.CLIENT);
-
-  }
-
-  /**
-   * 支給限度額情報テーブルに内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTable(){
-
-  }
-
-  /**
-   * 支給限度額情報テーブルカラムモデルに内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColumnModel(){
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum1());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum10());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum11());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum2());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum3());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum4());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum5());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum6());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum7());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum8());
-
-    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum9());
-
-  }
-
-  /**
-   * No.に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum1(){
-
-  }
-
-  /**
-   * 要支援1に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum10(){
-
-  }
-
-  /**
-   * 要支援2に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum11(){
-
-  }
-
-  /**
-   * 経過的要介護に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum2(){
-
-  }
-
-  /**
-   * 要介護1に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum3(){
-
-  }
-
-  /**
-   * 要介護2に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum4(){
-
-  }
-
-  /**
-   * 要介護3に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum5(){
-
-  }
-
-  /**
-   * 要介護4に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum6(){
-
-  }
-
-  /**
-   * 要介護5に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum7(){
-
-  }
-
-  /**
-   * 保険者情報有効期間(開始）に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum8(){
-
-  }
-
-  /**
-   * 保険者情報有効期間(終了）に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateTableColum9(){
+    insurerLimitRateInfo.add(getInsurerLimitRatePanel(), VRLayout.CLIENT);
 
   }
 
@@ -2215,56 +3919,9 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addValidPeriodPanel(){
 
-    validPeriodPanel.add(getValidPeriodRight(), VRLayout.NORTH);
-
     validPeriodPanel.add(getValidPeriodLeft(), VRLayout.NORTH);
 
-  }
-
-  /**
-   * 有効期間領域右に内部項目を追加します。
-   */
-  protected void addValidPeriodRight(){
-
-    validPeriodRight.add(getInsurerLimitRateButtons(), VRLayout.EAST);
-  }
-
-  /**
-   * ボタン領域に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateButtons(){
-
-    insurerLimitRateButtons.add(getInsurerLimitRateDeleteButton(), VRLayout.EAST);
-    insurerLimitRateButtons.add(getInsurerLimitRateEditButton(), VRLayout.EAST);
-    insurerLimitRateButtons.add(getInsurerLimitRateInsertButton(), VRLayout.EAST);
-    insurerLimitRateButtons.add(getInsurerLimitRateRegularButton(), VRLayout.EAST);
-  }
-
-  /**
-   * 規定に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateRegularButton(){
-
-  }
-
-  /**
-   * 追加に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateInsertButton(){
-
-  }
-
-  /**
-   * 書替に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateEditButton(){
-
-  }
-
-  /**
-   * 削除に内部項目を追加します。
-   */
-  protected void addInsurerLimitRateDeleteButton(){
+    validPeriodPanel.add(getValidPeriodRight(), VRLayout.NORTH);
 
   }
 
@@ -2273,7 +3930,11 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addValidPeriodLeft(){
 
-    validPeriodLeft.add(getValidPeriodCpntena(), VRLayout.FLOW_RETURN);
+    validPeriodLeft.add(getJigyoTaishoshaContainer(), VRLayout.FLOW_INSETLINE);
+
+    validPeriodLeft.add(getJigyoTaishoshaOverContainer(), VRLayout.FLOW_INSETLINE);
+
+    validPeriodLeft.add(getJigyoTaishoshaOverComment(), VRLayout.FLOW_INSETLINE_RETURN);
 
     validPeriodLeft.add(getYosien1Container(), VRLayout.FLOW_INSETLINE);
 
@@ -2291,39 +3952,28 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
 
     validPeriodLeft.add(getYokaigo5Container(), VRLayout.FLOW_INSETLINE);
 
-  }
-
-  /**
-   * 有効期間コンテナに内部項目を追加します。
-   */
-  protected void addValidPeriodCpntena(){
-
-    validPeriodCpntena.add(getValidPeriodStart(), VRLayout.FLOW);
-
-    validPeriodCpntena.add(getValidPeriodLabel(), VRLayout.FLOW);
-
-    validPeriodCpntena.add(getValidPeriodEnd(), VRLayout.FLOW);
+    validPeriodLeft.add(getValidPeriodCpntena(), VRLayout.FLOW_RETURN);
 
   }
 
   /**
-   * 有効期間テキスト（開始）に内部項目を追加します。
+   * 事業対象者テキストに内部項目を追加します。
    */
-  protected void addValidPeriodStart(){
+  protected void addJigyoTaishosha(){
 
   }
 
   /**
-   * 有効期間・ラベルに内部項目を追加します。
+   * 事業対象者(要支援１超)テキストに内部項目を追加します。
    */
-  protected void addValidPeriodLabel(){
+  protected void addJigyoTaishoshaOver(){
 
   }
 
   /**
-   * 有効期間テキスト（終了）に内部項目を追加します。
+   * 事業対象者コメント・ラベルに内部項目を追加します。
    */
-  protected void addValidPeriodEnd(){
+  protected void addJigyoTaishoshaOverComment(){
 
   }
 
@@ -2380,6 +4030,160 @@ public class QO002Design extends QkanAffairContainer implements ACAffairable {
    * 要介護度5テキストに内部項目を追加します。
    */
   protected void addYokaigo5(){
+
+  }
+
+  /**
+   * 有効期間コンテナに内部項目を追加します。
+   */
+  protected void addValidPeriodCpntena(){
+
+    validPeriodCpntena.add(getValidPeriodStart(), VRLayout.FLOW);
+
+    validPeriodCpntena.add(getValidPeriodLabel(), VRLayout.FLOW);
+
+    validPeriodCpntena.add(getValidPeriodEnd(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 有効期間テキスト(開始)に内部項目を追加します。
+   */
+  protected void addValidPeriodStart(){
+
+  }
+
+  /**
+   * 有効期間・ラベルに内部項目を追加します。
+   */
+  protected void addValidPeriodLabel(){
+
+  }
+
+  /**
+   * 有効期間テキスト(終了)に内部項目を追加します。
+   */
+  protected void addValidPeriodEnd(){
+
+  }
+
+  /**
+   * 有効期間領域右に内部項目を追加します。
+   */
+  protected void addValidPeriodRight(){
+
+    validPeriodRight.add(getInsurerLimitRateButtons(), VRLayout.WEST);
+
+  }
+
+  /**
+   * ボタン領域に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateButtons(){
+
+    insurerLimitRateButtons.add(getInsurerLimitRateRegularButton(), VRLayout.WEST);
+
+    insurerLimitRateButtons.add(getInsurerLimitRateInsertButton(), VRLayout.WEST);
+
+    insurerLimitRateButtons.add(getInsurerLimitRateEditButton(), VRLayout.WEST);
+
+    insurerLimitRateButtons.add(getInsurerLimitRateDeleteButton(), VRLayout.WEST);
+
+  }
+
+  /**
+   * 規定に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateRegularButton(){
+
+  }
+
+  /**
+   * 追加に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateInsertButton(){
+
+  }
+
+  /**
+   * 書替に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateEditButton(){
+
+  }
+
+  /**
+   * 削除に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateDeleteButton(){
+
+  }
+
+  /**
+   * 支給限度額情報パネルに内部項目を追加します。
+   */
+  protected void addInsurerLimitRatePanel(){
+
+    insurerLimitRatePanel.add(getInsurerLimitRateTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 支給限度額情報テーブルに内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTable(){
+
+  }
+
+  /**
+   * 支給限度額情報テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTableColumnModel(){
+
+    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum1());
+
+    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum8());
+
+    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum9());
+
+    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum12());
+
+    getInsurerLimitRateTableColumnModel().addColumn(getInsurerLimitRateTableColum13());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTableColum1(){
+
+  }
+
+  /**
+   * 保険者情報有効期間(開始)に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTableColum8(){
+
+  }
+
+  /**
+   * 保険者情報有効期間(終了)に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTableColum9(){
+
+  }
+
+  /**
+   * 事業対象者に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTableColum12(){
+
+  }
+
+  /**
+   * 事業対象者(要支援１超)に内部項目を追加します。
+   */
+  protected void addInsurerLimitRateTableColum13(){
 
   }
 

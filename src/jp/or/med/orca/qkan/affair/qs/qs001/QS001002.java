@@ -31,12 +31,9 @@ package jp.or.med.orca.qkan.affair.qs.qs001;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
@@ -45,14 +42,9 @@ import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrecomputed;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServicePrintParameter;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSchedulePrintManager;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
-import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSummaryManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
-import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceManager;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
@@ -62,7 +54,6 @@ import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
-import jp.or.med.orca.qkan.text.QkanServiceAbbreviationFormat;
 
 /**
  * 月間表(QS001002)
@@ -142,67 +133,69 @@ public class QS001002 extends QS001002Event {
 
     // コンポーネントイベント
 
-    /**
-     * 「自費調整」イベントです。
-     * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void coordinatePrivateExpensesActionPerformed(ActionEvent e)
-            throws Exception {
-// ■選択されているサービスに対する自費調整を行う
-// ※集計情報再計算
-// サービス種類ごとに下記の情報の再集計を行う。
-// 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
-// 調整分(サービス毎に設定した自費・調整単位の合計)
-//            集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。                   
-
-        if (getSelectedServiceListBox() != null) {
-            Date date = getMonthlySchedule().getTargetDate(
-                    getSelectedServiceListBox());
-            if (date != null) {
-                VRMap service = getSelectedServiceListBox().getSelectedService();
-                if (service != null) {
-                     if(CareServiceCommon.is30DayOver(service)){
-                         //30日超のサービスの場合
-                         //30日超のサービスは全額自費扱いになるメッセージを表示して処理を終了する。
-                         QkanMessageList.getInstance().QS001_ERROR_OF_EDIT_ON_30_DAY_OVER_SERVICE();
-                         return;
-                     }
-                     
-                    // 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象
-                    service.setData("SERVICE_DATE", date);
-                    int reductedUnit = getCalcurater().getReductedUnit(service, false, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE, null);
-                    if (reductedUnit > 0) {
-                        
-                        // ※調整画面
-                        // 「QS001029 自費・調整画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
-                        // 「自費・調整画面」の終了方法をチェックする。
-                        if (new QS001006().showModal(service, getMonthlySchedule()
-                                .getMasterService(),
-                                (VRMap) getHashedProviders().get(
-                                        service.getData("PROVIDER_ID")),
-                                reductedUnit)) {
-                            // 「決定」で戻ってきた場合
-                            // 「調整額」「自費フラグ」を更新する。
-                            getOwnerAffair().setServiceModify(true);
-                        }
-                        // 「閉じる」で戻ってきた場合
-                        // 何もしない。
-                        
-                        // 2009/01/13 [Mizuki Tsutsumi] : add begin / 自己負担額発生時、色変更
-                        //設定後、再描画をかける
-                        this.revalidate();
-                        // 2009/01/13 [Mizuki Tsutsumi] : end begin
-                    }else{
-                        QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_UNIT_ADJUST();
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
+// 2016/9/22 [Yoichiro Kamei] del - begin 総合事業対応
+//    /**
+//     * 「自費調整」イベントです。
+//     * 
+//     * @param e イベント情報
+//     * @throws Exception 処理例外
+//     */
+//    protected void coordinatePrivateExpensesActionPerformed(ActionEvent e)
+//            throws Exception {
+//// ■選択されているサービスに対する自費調整を行う
+//// ※集計情報再計算
+//// サービス種類ごとに下記の情報の再集計を行う。
+//// 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
+//// 調整分(サービス毎に設定した自費・調整単位の合計)
+////            集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。                   
+//
+//        if (getSelectedServiceListBox() != null) {
+//            Date date = getMonthlySchedule().getTargetDate(
+//                    getSelectedServiceListBox());
+//            if (date != null) {
+//                VRMap service = getSelectedServiceListBox().getSelectedService();
+//                if (service != null) {
+//                     if(CareServiceCommon.is30DayOver(service)){
+//                         //30日超のサービスの場合
+//                         //30日超のサービスは全額自費扱いになるメッセージを表示して処理を終了する。
+//                         QkanMessageList.getInstance().QS001_ERROR_OF_EDIT_ON_30_DAY_OVER_SERVICE();
+//                         return;
+//                     }
+//                     
+//                    // 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象
+//                    service.setData("SERVICE_DATE", date);
+//                    int reductedUnit = getCalcurater().getReductedUnit(service, false, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE, null);
+//                    if (reductedUnit > 0) {
+//                        
+//                        // ※調整画面
+//                        // 「QS001029 自費・調整画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
+//                        // 「自費・調整画面」の終了方法をチェックする。
+//                        if (new QS001006().showModal(service, getMonthlySchedule()
+//                                .getMasterService(),
+//                                (VRMap) getHashedProviders().get(
+//                                        service.getData("PROVIDER_ID")),
+//                                reductedUnit)) {
+//                            // 「決定」で戻ってきた場合
+//                            // 「調整額」「自費フラグ」を更新する。
+//                            getOwnerAffair().setServiceModify(true);
+//                        }
+//                        // 「閉じる」で戻ってきた場合
+//                        // 何もしない。
+//                        
+//                        // 2009/01/13 [Mizuki Tsutsumi] : add begin / 自己負担額発生時、色変更
+//                        //設定後、再描画をかける
+//                        this.revalidate();
+//                        // 2009/01/13 [Mizuki Tsutsumi] : end begin
+//                    }else{
+//                        QkanMessageList.getInstance().QS001_ERROR_OF_INVALID_UNIT_ADJUST();
+//                        return;
+//                    }
+//                }
+//            }
+//        }
+//    }
+// 2016/9/22 [Yoichiro Kamei] del - end
+    
     public static void main(String[] args) {
         // デフォルトデバッグ起動
         ACFrame.getInstance().setFrameEventProcesser(
@@ -232,117 +225,149 @@ public class QS001002 extends QS001002Event {
             //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
             useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
         }
-
-            // ※集計情報再計算
-            // 下記の情報の再集計を行う。
-            // 限度額(利用者の限度額)
-            // 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT =
-            // 1であり、かつ30日超でないもの）
-            // 超過分(限度額≧管理内の場合、0。限度額＜管理内の場合、管理内－限度額)
-            // 調整分(サービス毎に設定した自費・調整単位の合計)
-            // 調整後合計(管理対象内 - 調整分)
         
-            // [ID:0000494][Tozo TANAKA] 2009/04/28 replace begin 【サービス予定】単位数概算の利用票別表同期化対応
+// 2016/9/22 [Yoichiro Kamei] mod - begin 総合事業対応
+// 集計ロジックを集計明細と共通化
+//
+//            // ※集計情報再計算
+//            // 下記の情報の再集計を行う。
+//            // 限度額(利用者の限度額)
+//            // 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT =
+//            // 1であり、かつ30日超でないもの）
+//            // 超過分(限度額≧管理内の場合、0。限度額＜管理内の場合、管理内－限度額)
+//            // 調整分(サービス毎に設定した自費・調整単位の合計)
+//            // 調整後合計(管理対象内 - 調整分)
+//        
+//            // [ID:0000494][Tozo TANAKA] 2009/04/28 replace begin 【サービス予定】単位数概算の利用票別表同期化対応
+////            int adjustTotal = 0;
+////            int managementTotal = 0;
+////            Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
+////            VRList list = getSchedule(useType, false);
+////            
+////            // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
+////            // 再集計処理もパース処理を通してみる
+////            QkanValidServiceCommon parser = new QkanValidServiceCommon();
+////            VRList cloneServices = new VRArrayList();
+////            // データのクローンを作成する。
+////            cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+////            list = new VRArrayList();
+////            if(cloneServices != null && !cloneServices.isEmpty()){
+////                VRMap patientMap = getCalcurater().getPatientInfo();
+////                // 対象日付
+////                Date targetDate = getCalcurater().getTargetDate();
+////                list = parser.createValidService(QkanValidServiceManager
+////                        .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
+////                        cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
+////            }
+////            // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
+////            
+////            
+////            Iterator it = list.iterator();
+////            while (it.hasNext()) {
+////                // サービスコードデータを取得
+////                VRMap row = (VRMap) it.next();
+////                managementTotal += getCalcurater().getReductedUnit(row, true, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT,totalGroupingCache);
+////                adjustTotal += ACCastUtilities.toInt(row
+////                        .getData("REGULATION_RATE"), 0);
+////            }
+//
+//            //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
+//            CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
+//            mng.initialize(getCalcurater());
+//            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 del begin
+//            //mng.parse(getSchedule(useType, false));
+//            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 del end
+//            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
+//            List monthData = getSchedule(useType, false);
+//            for(int i=monthData.size()-1; i >= 0; i--) {
+//                // 30日超の処遇改善加算を無理やり別表に表示しているため強制的に調整する。
+//                VRMap service = (VRMap)monthData.get(i);
+//                if(CareServiceCommon.is30DayOver(service)) {
+//                    monthData.remove(i);
+//                }
+//            }
+//            mng.parse(monthData);
+//            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add end
+//            mng.setBuildDivedProvider(false);
+//
+//            CareServicePrintParameter buildParam = new CareServicePrintParameter();
+//            buildParam.setPrintParameter(new VRHashMap());
+//            List list=new ArrayList();
+//            mng.buildUserSubTable(buildParam, list);
+//
 //            int adjustTotal = 0;
 //            int managementTotal = 0;
-//            Map[] totalGroupingCache=new Map[]{new HashMap(), new HashMap()};
-//            VRList list = getSchedule(useType, false);
-//            
-//            // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
-//            // 再集計処理もパース処理を通してみる
-//            QkanValidServiceCommon parser = new QkanValidServiceCommon();
-//            VRList cloneServices = new VRArrayList();
-//            // データのクローンを作成する。
-//            cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
-//            list = new VRArrayList();
-//            if(cloneServices != null && !cloneServices.isEmpty()){
-//                VRMap patientMap = getCalcurater().getPatientInfo();
-//                // 対象日付
-//                Date targetDate = getCalcurater().getTargetDate();
-//                list = parser.createValidService(QkanValidServiceManager
-//                        .QKAN_CLAIM_PARSE_TYPE, getDBManager(), targetDate,
-//                        cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
-//            }
-//            // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
-//            
-//            
 //            Iterator it = list.iterator();
 //            while (it.hasNext()) {
-//                // サービスコードデータを取得
-//                VRMap row = (VRMap) it.next();
-//                managementTotal += getCalcurater().getReductedUnit(row, true, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT,totalGroupingCache);
-//                adjustTotal += ACCastUtilities.toInt(row
-//                        .getData("REGULATION_RATE"), 0);
+//                Iterator provIt = ((List) it.next()).iterator();
+//                while (provIt.hasNext()) {
+//                    List ins = (List) provIt.next();
+//                    if (!ins.isEmpty()) {
+//                        Map page = (Map) ins.get(0);
+//                        
+//                        // 区分支給限度基準内単位数
+//                        managementTotal += ACCastUtilities.toInt(page
+//                                .get("main.total.x9"), 0);
+//                        // 区分支給限度基準を超える単位数
+//                        adjustTotal += ACCastUtilities.toInt(page
+//                                .get("main.total.x12"), 0);
+//                    }
+//                }
 //            }
-
-            //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
-            CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
-            mng.initialize(getCalcurater());
-            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 del begin
-            //mng.parse(getSchedule(useType, false));
-            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 del end
-            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add begin
-            List monthData = getSchedule(useType, false);
-            for(int i=monthData.size()-1; i >= 0; i--) {
-                // 30日超の処遇改善加算を無理やり別表に表示しているため強制的に調整する。
-                VRMap service = (VRMap)monthData.get(i);
-                if(CareServiceCommon.is30DayOver(service)) {
-                    monthData.remove(i);
-                }
-            }
-            mng.parse(monthData);
-            // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add end
-            mng.setBuildDivedProvider(false);
-
-            CareServicePrintParameter buildParam = new CareServicePrintParameter();
-            buildParam.setPrintParameter(new VRHashMap());
-            List list=new ArrayList();
-            mng.buildUserSubTable(buildParam, list);
-
-            int adjustTotal = 0;
-            int managementTotal = 0;
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                Iterator provIt = ((List) it.next()).iterator();
-                while (provIt.hasNext()) {
-                    List ins = (List) provIt.next();
-                    if (!ins.isEmpty()) {
-                        Map page = (Map) ins.get(0);
-                        
-                        // 区分支給限度基準内単位数
-                        managementTotal += ACCastUtilities.toInt(page
-                                .get("main.total.x9"), 0);
-                        // 区分支給限度基準を超える単位数
-                        adjustTotal += ACCastUtilities.toInt(page
-                                .get("main.total.x12"), 0);
-                    }
-                }
-            }
-                        
-            // [ID:0000494][Tozo TANAKA] 2009/04/28 replace end 【サービス予定】単位数概算の利用票別表同期化対応
+//                        
+//            // [ID:0000494][Tozo TANAKA] 2009/04/28 replace end 【サービス予定】単位数概算の利用票別表同期化対応
+//            
+//            
+//      updateTotal(managementTotal, adjustTotal);
+        
+            VRList monthData = getSchedule(useType, false);
+            CareServiceSummaryManager summary = new CareServiceSummaryManager(
+                getCalcurater(), getPatientInsureInfoHeaviest(),
+                getMonthlySchedule().getMasterService());
             
-            
-            updateTotal(managementTotal, adjustTotal);
+            // データのクローンを作成する。
+            VRList cloneServices = new VRArrayList();
+            cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(monthData));
+            summary.initialize(getCalcurater(), cloneServices);
+            // 集計情報の表示更新
+            updateTotal(summary);
+// 2016/9/22 [Yoichiro Kamei] mod - end
     }
+
+// 2016/9/22 [Yoichiro Kamei] mod - begin 総合事業対応
+//    /**
+//     * 「集計明細の表示更新」に関する処理を行ないます。
+//     * 
+//     * @param managementTotal int
+//     * @param adjustTotal int
+//     * @throws Exception 処理例外
+//     */
+//    public void updateTotal(int managementTotal, int adjustTotal)
+//            throws Exception {
+//        int limit = ACCastUtilities.toInt(getLimit().getText(), 0);
+//        getLimitAmount().setText(ACCastUtilities.toString(managementTotal));
+//        getAdjustment().setText(ACCastUtilities.toString(adjustTotal));
+//        getAfterAdjustment().setText(
+//                ACCastUtilities.toString(managementTotal - adjustTotal));
+//        getOver().setText(
+//                ACCastUtilities.toString(Math.max(0, managementTotal- adjustTotal - limit)));
+//    }
 
     /**
      * 「集計明細の表示更新」に関する処理を行ないます。
-     * 
-     * @param managementTotal int
-     * @param adjustTotal int
+     *
+     * @param summary CareServiceSummaryManager
      * @throws Exception 処理例外
+     *
      */
-    public void updateTotal(int managementTotal, int adjustTotal)
+    public void updateTotal(CareServiceSummaryManager summary)
             throws Exception {
-        int limit = ACCastUtilities.toInt(getLimit().getText(), 0);
-        getLimitAmount().setText(ACCastUtilities.toString(managementTotal));
-        getAdjustment().setText(ACCastUtilities.toString(adjustTotal));
-        getAfterAdjustment().setText(
-                ACCastUtilities.toString(managementTotal - adjustTotal));
-        getOver().setText(
-                ACCastUtilities.toString(Math.max(0, managementTotal- adjustTotal - limit)));
+        // 集計情報の表示更新
+        getSumups().setSource(summary.getUnitInfoResults());
+        getSumups().bindSource();
     }
-
+// 2016/9/22 [Yoichiro Kamei] mod - end
+    
     /**
      * 「対象年月を設定」に関する処理を行ないます。
      * 
@@ -502,165 +527,166 @@ public class QS001002 extends QS001002Event {
         recalcServiceTotal();
 
     }
-
-    /**
-     * 「集計明細」イベントです。
-     * 
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void detailsbuttonActionPerformed(ActionEvent e) throws Exception {
-        // ■集計明細を表示する
-        // ※予定/実績判定
-        // サービス予定なのか、サービス実績なのかをチェックする。
-        int useType=0;
-        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
-        // サービス予定の場合
-        // 取得対象を月間予定(SERVICE_DETAIL_GET_PLAN)とする。
-            useType = QkanConstants.SERVICE_DETAIL_GET_PLAN;
-        }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
-        // サービス実績の場合
-            //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
-            useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
-        }
-
-        // ※集計情報再計算
-        // サービス種類ごとに下記の情報の再集計を行う。
-        // 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
-        // 調整分(サービス毎に設定した自費・調整単位の合計)
-        
-        VRList list = getSchedule(useType, false);
-        
-        // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
-        // 集計明細もパース処理を通してみる
-        QkanValidServiceCommon parser = new QkanValidServiceCommon();
-        VRList cloneServices = new VRArrayList();
-        // データのクローンを作成する。
-        cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
-        list = new VRArrayList();
-        if(cloneServices != null && !cloneServices.isEmpty()){
-            VRMap patientMap = getCalcurater().getPatientInfo();
-            // 対象日付
-            Date targetDate = getCalcurater().getTargetDate();
-            list = parser.createValidService(getDBManager(), targetDate,
-                    cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
-        }
-        // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
-
-// 2016/7/30 [CCCX:2865][Yoichiro Kamei] mod - begin
-// 集計明細の限度額管理対象サービスを別表のデータをもとに出力するよう変更
-//        CareServiceUnitCalcurateResult inLimitAmout = getCalcurater()
-//                .getServiceUnitCalcurateResult(list,
-//                        CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT);
-        
-        CareServiceUnitCalcurateResult inLimitAmout = calcInLimitAmount(list);
-// 2016/7/5 [Yoichiro Kamei] mod - end
-
-        // 集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。
-        updateTotal(inLimitAmout.getManagementTotal(), inLimitAmout.getAdjustTotal());
-
-        // ※集計明細画面
-        // 「QS001030 集計明細画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
-        new QS001005().showModal(inLimitAmout, getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater(), list);
-    }
-
-// 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin
-// 集計明細を別表のデータをもとに出力するよう変更
-    /**
-     * 別表の結果をもとに支給管理対象の単位数の合計を求めます。
-     * @param monthData サービスのリスト
-     * @return
-     * @throws Exception 
-     */
-    public CareServiceUnitCalcurateResult calcInLimitAmount(VRList monthData) throws Exception {
-        //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
-        CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
-        mng.initialize(getCalcurater());
-        for(int i=monthData.size()-1; i >= 0; i--) {
-            // 30日超の処遇改善加算を無理やり別表に表示しているため強制的に調整する。
-            VRMap service = (VRMap)monthData.get(i);
-            if(CareServiceCommon.is30DayOver(service)) {
-                monthData.remove(i);
-            }
-        }
-        mng.parse(monthData);
-        mng.setBuildDivedProvider(false);
-        CareServicePrintParameter buildParam = new CareServicePrintParameter();
-        buildParam.setPrintParameter(new VRHashMap());
-        List list=new ArrayList();
-        mng.buildUserSubTable(buildParam, list);
-        
-        TreeMap sorter = new TreeMap();
-        
-        // 先にサービスからサービス種類ごとの調整額の合計を求める
-        Iterator it = monthData.iterator();
-        while (it.hasNext()) {
-            Map service = (Map) it.next();
-            int skind = ACCastUtilities.toInteger(service.get("SYSTEM_SERVICE_KIND_DETAIL"), 0);
-            int adjust = ACCastUtilities.toInteger(service.get("REGULATION_RATE"), 0);
-            if (skind != 0) {
-                calcInAmountTotalByService(skind, 0, adjust, sorter);
-            }
-        }
-        
-        it = list.iterator();
-        while (it.hasNext()) {
-            Iterator provIt = ((List) it.next()).iterator();
-            while (provIt.hasNext()) {
-                List ins = (List) provIt.next();
-                if (!ins.isEmpty()) {
-                    Iterator pageIt = ins.iterator();
-                    while (pageIt.hasNext()) {
-                        Map page = (Map) pageIt.next();
-                        for (int row = 1; row <=19; row++) {
-                            // サービス種類
-                            int skind = ACCastUtilities.toInteger(page.get("main.y"+row+".skind"), 0);
-                            if (skind == 0) break;
-                            
-                            // サービス単位数
-                            int unit = ACCastUtilities.toInteger(page.get("main.y"+row+".x9"), 0);
-                            
-                            calcInAmountTotalByService(skind, unit, 0, sorter);
-                        }
-                    }
-                }
-            }
-        }
-        return new CareServiceUnitCalcurateResult(sorter.values());
-    }
+// 2016/9/20 [Yoichiro Kamei] del - begin 総合事業対応
+//    /**
+//     * 「集計明細」イベントです。
+//     * 
+//     * @param e イベント情報
+//     * @throws Exception 処理例外
+//     */
+//    protected void detailsbuttonActionPerformed(ActionEvent e) throws Exception {
+//        // ■集計明細を表示する
+//        // ※予定/実績判定
+//        // サービス予定なのか、サービス実績なのかをチェックする。
+//        int useType=0;
+//        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
+//        // サービス予定の場合
+//        // 取得対象を月間予定(SERVICE_DETAIL_GET_PLAN)とする。
+//            useType = QkanConstants.SERVICE_DETAIL_GET_PLAN;
+//        }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
+//        // サービス実績の場合
+//            //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
+//            useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
+//        }
+//
+//        // ※集計情報再計算
+//        // サービス種類ごとに下記の情報の再集計を行う。
+//        // 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
+//        // 調整分(サービス毎に設定した自費・調整単位の合計)
+//        
+//        VRList list = getSchedule(useType, false);
+//        
+//        // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
+//        // 集計明細もパース処理を通してみる
+//        QkanValidServiceCommon parser = new QkanValidServiceCommon();
+//        VRList cloneServices = new VRArrayList();
+//        // データのクローンを作成する。
+//        cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+//        list = new VRArrayList();
+//        if(cloneServices != null && !cloneServices.isEmpty()){
+//            VRMap patientMap = getCalcurater().getPatientInfo();
+//            // 対象日付
+//            Date targetDate = getCalcurater().getTargetDate();
+//            list = parser.createValidService(getDBManager(), targetDate,
+//                    cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
+//        }
+//        // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
+//
+//// 2016/7/30 [CCCX:2865][Yoichiro Kamei] mod - begin
+//// 集計明細の限度額管理対象サービスを別表のデータをもとに出力するよう変更
+////        CareServiceUnitCalcurateResult inLimitAmout = getCalcurater()
+////                .getServiceUnitCalcurateResult(list,
+////                        CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT);
+//        
+//        CareServiceUnitCalcurateResult inLimitAmout = calcInLimitAmount(new VRArrayList(list));
+//// 2016/7/5 [Yoichiro Kamei] mod - end
+//
+//        // 集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。
+//        updateTotal(inLimitAmout.getManagementTotal(), inLimitAmout.getAdjustTotal());
+//
+//        // ※集計明細画面
+//        // 「QS001030 集計明細画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
+//        new QS001005().showModal(inLimitAmout, getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater(), list);
+//    }
+//
+//// 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin
+//// 集計明細を別表のデータをもとに出力するよう変更
+//    /**
+//     * 別表の結果をもとに支給管理対象の単位数の合計を求めます。
+//     * @param monthData サービスのリスト
+//     * @return
+//     * @throws Exception 
+//     */
+//    public CareServiceUnitCalcurateResult calcInLimitAmount(VRList monthData) throws Exception {
+//        //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
+//        CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
+//        mng.initialize(getCalcurater());
+//        for(int i=monthData.size()-1; i >= 0; i--) {
+//            // 30日超の処遇改善加算を無理やり別表に表示しているため強制的に調整する。
+//            VRMap service = (VRMap)monthData.get(i);
+//            if(CareServiceCommon.is30DayOver(service)) {
+//                monthData.remove(i);
+//            }
+//        }
+//        mng.parse(monthData);
+//        mng.setBuildDivedProvider(false);
+//        CareServicePrintParameter buildParam = new CareServicePrintParameter();
+//        buildParam.setPrintParameter(new VRHashMap());
+//        List list=new ArrayList();
+//        mng.buildUserSubTable(buildParam, list);
+//        
+//        TreeMap sorter = new TreeMap();
+//        
+//        // 先にサービスからサービス種類ごとの調整額の合計を求める
+//        Iterator it = monthData.iterator();
+//        while (it.hasNext()) {
+//            Map service = (Map) it.next();
+//            int skind = ACCastUtilities.toInteger(service.get("SYSTEM_SERVICE_KIND_DETAIL"), 0);
+//            int adjust = ACCastUtilities.toInteger(service.get("REGULATION_RATE"), 0);
+//            if (skind != 0) {
+//                calcInAmountTotalByService(skind, 0, adjust, sorter);
+//            }
+//        }
+//        
+//        it = list.iterator();
+//        while (it.hasNext()) {
+//            Iterator provIt = ((List) it.next()).iterator();
+//            while (provIt.hasNext()) {
+//                List ins = (List) provIt.next();
+//                if (!ins.isEmpty()) {
+//                    Iterator pageIt = ins.iterator();
+//                    while (pageIt.hasNext()) {
+//                        Map page = (Map) pageIt.next();
+//                        for (int row = 1; row <=19; row++) {
+//                            // サービス種類
+//                            int skind = ACCastUtilities.toInteger(page.get("main.y"+row+".skind"), 0);
+//                            if (skind == 0) break;
+//                            
+//                            // サービス単位数
+//                            int unit = ACCastUtilities.toInteger(page.get("main.y"+row+".x9"), 0);
+//                            
+//                            calcInAmountTotalByService(skind, unit, 0, sorter);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return new CareServiceUnitCalcurateResult(sorter.values());
+//    }
+//    
+//    // サービス種類ごとに合計を計算します
+//    private void calcInAmountTotalByService(int skind, int reductedUnit, int adjustPoint, TreeMap sorter) {
+//        VRMap serviceMaster = QkanServiceAbbreviationFormat.getInstance().getMasterService();
+//        
+//        if (reductedUnit != 0 || adjustPoint != 0) {
+//
+//            int sortKey = skind;
+//            if (serviceMaster != null) {
+//                Map rec = (Map) serviceMaster.get(skind);
+//                if (rec != null) {
+//                    // サービスのソート順とする
+//                    sortKey = ACCastUtilities.toInt(rec.get("SERVICE_SORT"), skind);
+//                }
+//            }
+//            VRMap val;
+//            if (sorter.containsKey(sortKey)) {
+//                val = (VRMap) sorter.get(sortKey);
+//                reductedUnit += ACCastUtilities.toInt(val.getData("UNIT"), 0);
+//                adjustPoint += ACCastUtilities.toInt(val.getData("ADJUST"), 0);
+//            } else {
+//                val = new VRHashMap();
+//                sorter.put(sortKey, val);
+//                val.setData("SYSTEM_SERVICE_KIND_DETAIL", skind);
+//            }
+//
+//            val.setData("UNIT", new Integer(reductedUnit));
+//            val.setData("ADJUST", new Integer(adjustPoint));
+//            val.setData("RESULT", new Integer(reductedUnit - adjustPoint));
+//        }
+//    }
+//// 2016/7/30 [CCCX:2865] add - end
+// 2016/9/20 [Yoichiro Kamei] del - end 総合事業対応
     
-    // サービス種類ごとに合計を計算します
-    private void calcInAmountTotalByService(int skind, int reductedUnit, int adjustPoint, TreeMap sorter) {
-        VRMap serviceMaster = QkanServiceAbbreviationFormat.getInstance().getMasterService();
-        
-        if (reductedUnit != 0 || adjustPoint != 0) {
-
-            int sortKey = skind;
-            if (serviceMaster != null) {
-                Map rec = (Map) serviceMaster.get(skind);
-                if (rec != null) {
-                    // サービスのソート順とする
-                    sortKey = ACCastUtilities.toInt(rec.get("SERVICE_SORT"), skind);
-                }
-            }
-            VRMap val;
-            if (sorter.containsKey(sortKey)) {
-                val = (VRMap) sorter.get(sortKey);
-                reductedUnit += ACCastUtilities.toInt(val.getData("UNIT"), 0);
-                adjustPoint += ACCastUtilities.toInt(val.getData("ADJUST"), 0);
-            } else {
-                val = new VRHashMap();
-                sorter.put(sortKey, val);
-                val.setData("SYSTEM_SERVICE_KIND_DETAIL", skind);
-            }
-
-            val.setData("UNIT", new Integer(reductedUnit));
-            val.setData("ADJUST", new Integer(adjustPoint));
-            val.setData("RESULT", new Integer(reductedUnit - adjustPoint));
-        }
-    }
-// 2016/7/30 [CCCX:2865] add - end
-
     /**
      * 「印刷可能要件チェック」に関する処理を行ないます。
      * 
@@ -746,28 +772,30 @@ public class QS001002 extends QS001002Event {
         return getMonthlySchedule().getDayFreeServices();
     }
 
-    /**
-     * 「計画単位数編集」イベントです。
-     * @param e イベント情報
-     * @throws Exception 処理例外
-     */
-    protected void planUnitActionPerformed(ActionEvent e) throws Exception {
-        // ※計画単位数編集画面の表示
-        QS001004 form = new QS001004();
-        
-        // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add begin
-        // 対象年月がH28.4以前の場合、追加サービス種類名を表示しないため
-        form.setTargetDate(getCalcurater().getTargetDate());
-        // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add end
-        
-        // 計画単位数表示画面を「決定」ボタンで閉じた場合
-        if (form.showModal(getPlanUnits())) {
-            // 保持している計画単位数を差し替える。
-            setPlanUnits(form.getAppliedValue());
-            getOwnerAffair().setServiceModify(true);
-        }
-    }
-
+// 2016/9/20 [Yoichiro Kamei] del - begin 総合事業対応
+//    /**
+//     * 「計画単位数編集」イベントです。
+//     * @param e イベント情報
+//     * @throws Exception 処理例外
+//     */
+//    protected void planUnitActionPerformed(ActionEvent e) throws Exception {
+//        // ※計画単位数編集画面の表示
+//        QS001004 form = new QS001004();
+//        
+//        // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add begin
+//        // 対象年月がH28.4以前の場合、追加サービス種類名を表示しないため
+//        form.setTargetDate(getCalcurater().getTargetDate());
+//        // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add end
+//        
+//        // 計画単位数表示画面を「決定」ボタンで閉じた場合
+//        if (form.showModal(getPlanUnits())) {
+//            // 保持している計画単位数を差し替える。
+//            setPlanUnits(form.getAppliedValue());
+//            getOwnerAffair().setServiceModify(true);
+//        }
+//    }
+// 2016/9/20 [Yoichiro Kamei] del - end
+    
     /**
      * 「計画単位数を取得」に関する処理を行ないます。
      *
@@ -818,5 +846,115 @@ public class QS001002 extends QS001002Event {
         form.showModal(mng.getDiagnosisDateMap(), getCalcurater().getTargetDate());
 		
 	}
+
+// 2016/9/20 [Yoichiro Kamei] add - begin 総合事業対応
+	  /**
+	   * 「集計明細・負担額調整」イベントです。
+	   * @param e イベント情報
+	   * @throws Exception 処理例外
+	   */
+	@Override
+	protected void detailsbutton2ActionPerformed(ActionEvent e)
+			throws Exception {
+		displaySummaryDetailsDlg();
+    }
+
+	  /**
+	   * 「集計明細・計画単位数」イベントです。
+	   * @param e イベント情報
+	   * @throws Exception 処理例外
+	   */
+	@Override
+	protected void detailsbutton3ActionPerformed(ActionEvent e)
+			throws Exception {
+		displaySummaryDetailsDlg();
+	}
+	
+	//「集計明細・負担額調整」、「集計明細・計画単位数」を表示する
+	private void displaySummaryDetailsDlg() throws Exception {
+        // ※予定/実績判定
+        // サービス予定なのか、サービス実績なのかをチェックする。
+        int useType=0;
+        if (getProcessType() == QkanConstants.PROCESS_TYPE_PLAN) {
+        // サービス予定の場合
+        // 取得対象を月間予定(SERVICE_DETAIL_GET_PLAN)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_PLAN;
+        }else if(getProcessType()==QkanConstants.PROCESS_TYPE_RESULT){
+        // サービス実績の場合
+            //取得対象を月間実績(SERVICE_DETAIL_GET_RESULT)とする。
+            useType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
+        }
+
+        // ※集計情報再計算
+        // サービス種類ごとに下記の情報の再集計を行う。
+        // 管理対象内(サービスのうち、M_SERVICE_CODE.LIMIT_AMOUNT_OBJECT = 1であり、かつ30日超でないもの）
+        // 調整分(サービス毎に設定した自費・調整単位の合計)
+        
+        VRList list = getSchedule(useType, false);
+        
+        // 調整額を設定するための一時的なIDを付ける
+        Map<String, Object> updateKeyMap = new HashMap<String, Object>();
+        for (int i = 0; i < list.size(); i++) {
+            VRMap service = (VRMap) list.get(i);
+            String id = String.valueOf(i); //IDは連番
+            service.put(QS001009Event.QS001009_UPDATE_KEY, id);
+            //後で更新対象のサービスをIDから取得するために格納
+            updateKeyMap.put(id, service);
+        }
+        
+        // 2008/01/07 [Masahiko Higuchi] add - begin 対応内容
+        // 集計明細もパース処理を通してみる
+        QkanValidServiceCommon parser = new QkanValidServiceCommon();
+        VRList cloneServices = new VRArrayList();
+        // データのクローンを作成する。
+        cloneServices.addAll(QkanValidServiceCommon.deepCopyVRList(list));
+        VRList tmpList = new VRArrayList();
+        if(cloneServices != null && !cloneServices.isEmpty()){
+            VRMap patientMap = getCalcurater().getPatientInfo();
+            // 対象日付
+            Date targetDate = getCalcurater().getTargetDate();
+            tmpList = parser.createValidService(getDBManager(), targetDate,
+                    cloneServices,ACCastUtilities.toInt(patientMap.getData("PATIENT_ID"),0));
+        }
+        // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
+
+        // ※集計明細・負担額調整画面
+        // 「QS001009 集計明細・負担額調整画面」を開く(ダイアログ)。
+        // 戻り値は、更新対象のIDと調整額が格納されたマップ
+        QS001009 summaryDlg =  new QS001009();
+        
+        Map<String, Integer> results = summaryDlg.showModal(
+        		getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater()
+        		, tmpList, getPlanUnits(), getMonthlySchedule().getMasterService());
+        
+        if (summaryDlg.getServiceModify()) {
+            // 更新フラグON
+            getOwnerAffair().setServiceModify(true);
+        }
+        
+        // サービスが更新された場合
+        if (!results.isEmpty()) {
+            
+            // 入力された調整額をサービスに反映させる
+            for (String id : results.keySet()) {
+                int adjust = results.get(id);
+                VRMap service = (VRMap) updateKeyMap.get(id);
+                service.put("REGULATION_RATE", adjust);
+            }
+            
+            //設定後、再描画をかける
+            this.revalidate();
+            
+            // 集計情報の表示更新
+            updateTotal(summaryDlg.getSummary());
+        }
+        
+        // 調整額を設定するための一時的なIDを削除する
+        for (int i = 0; i < list.size(); i++) {
+            VRMap service = (VRMap) list.get(i);
+            service.remove(QS001009Event.QS001009_UPDATE_KEY);
+        }
+    }
+// 2016/9/20 [Yoichiro Kamei] add - end
 
 }

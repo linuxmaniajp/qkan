@@ -109,16 +109,19 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
             
             if (_1160111 == 3) {
                 // 通所リハマネジメント加算Ⅱ１
-                putSystemServiceCodeItem(sysSvcCdItems, "Z5608");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z5608");//2015.04
             } else if (_1160111 == 4) {
                 // 通所リハマネジメント加算Ⅱ２
-                putSystemServiceCodeItem(sysSvcCdItems, "Z5609");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z5609");//2015.04
             }
             
             // 介護職員処遇改善を返却
             switch(_17){
+            case 6:
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//2017.04
+                break;
             case 5:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//TODO:コード値確認
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//2015.04
                 break;
             case 2:
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6103");
@@ -228,17 +231,17 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
             break;
         case 3:
             // 通所リハマネジメント加算Ⅱ１
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5608");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z5608");//2015.04
             break;
         case 4:
             // 通所リハマネジメント加算Ⅱ２
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5609");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z5609");//2015.04
             break;
         }
         
         // 短期集中個別リハビリ実施加算
         if (_1160112 > 1) {
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5613");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z5613");//2015.04
         }
         
         
@@ -248,17 +251,17 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
             putSystemServiceCodeItem(sysSvcCdItems, "Z6253");
             break;
         case 3:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6254");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6254");//2015.04
             break;
         }
         
         // 1160124 生活行為向上リハビリ実施加算
         switch (_1160124) {
         case 2:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6255");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6255");//2015.04
             break;
         case 3:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6256");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6256");//2015.04
             break;
         }
         
@@ -290,20 +293,20 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 1160125 中重度者ケア体制加算
         if (_1160125 > 1) {
-            putSystemServiceCodeItem(sysSvcCdItems, "Z5614");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z5614");//2015.04
         }
         
         // 1160126 社会参加支援加算
         if (_1160126 > 1) {
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6110");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6110");//2015.04
         }
         
         // 送迎減算
         switch (_18) {
         case 3: // 往復
-            putSystemServiceCodeItem(sysSvcCdItems, "Z56122");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z56122");//2015.04
         case 2: // 片道
-            putSystemServiceCodeItem(sysSvcCdItems, "Z56121");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z56121");//2015.04
             break;
         }
 
@@ -312,7 +315,7 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1160122) {
         // 通所リハサービス提供体制加算Iイ
         case 4:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
             break;
         // 通所リハサービス提供体制加算Iロ
         case 2:
@@ -326,8 +329,11 @@ public class SC_11611_201504 extends Qkan10011_ServiceUnitGetter {
         
         // 介護職員処遇改善を返却
         switch(_17){
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//TODO:コード値確認
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6106");//2015.04
             break;
         case 2:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6103");

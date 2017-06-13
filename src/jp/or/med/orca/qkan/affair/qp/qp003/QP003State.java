@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2009/08/10  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/12/06  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 帳票管理 (P)
@@ -28,6 +28,56 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp003;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
 /**
  * 利用者向け請求詳細編集状態定義(QP003) 
  */
@@ -139,6 +189,82 @@ public class QP003State extends QP003Design {
   public void setState_CALENDER_UNSELECT() throws Exception {
 
         getOpen().setEnabled(true);
+
+  }
+
+  /**
+   * 「医療費控除補助操作可能」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_KOUJO_ENABLE_TRUE() throws Exception {
+
+        getContentHoken().setVisible(true);
+
+        getContentKoujyoPanel().setVisible(true);
+
+        getContentJikohutanKoujoTitle().setVisible(true);
+
+        getContentJikohutanKoujoCheck1().setVisible(true);
+
+        getContentJikohutanKoujoCheck2().setVisible(true);
+
+        getContentJikohutanKoujoCheck3().setVisible(true);
+
+        getContentJikohutanKoujoSubtotal().setVisible(true);
+
+        getContentEtcKoujoTitle().setVisible(true);
+
+        getContentEtcKoujoCheck1().setVisible(true);
+
+        getContentEtcKoujoCheck2().setVisible(true);
+
+        getContentEtcKoujoCheck3().setVisible(true);
+
+        getContentEtcKoujoCheck4().setVisible(true);
+
+        getContentEtcKoujoCheck5().setVisible(true);
+
+        getContentEtcKoujoCheck6().setVisible(true);
+
+        getContentEtcKoujoSubtotal().setVisible(true);
+
+  }
+
+  /**
+   * 「医療費控除補助操作不可」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_KOUJO_ENABLE_FALSE() throws Exception {
+
+        getContentHoken().setVisible(false);
+
+        getContentKoujyoPanel().setVisible(false);
+
+        getContentJikohutanKoujoTitle().setVisible(false);
+
+        getContentJikohutanKoujoCheck1().setVisible(false);
+
+        getContentJikohutanKoujoCheck2().setVisible(false);
+
+        getContentJikohutanKoujoCheck3().setVisible(false);
+
+        getContentJikohutanKoujoSubtotal().setVisible(false);
+
+        getContentEtcKoujoTitle().setVisible(false);
+
+        getContentEtcKoujoCheck1().setVisible(false);
+
+        getContentEtcKoujoCheck2().setVisible(false);
+
+        getContentEtcKoujoCheck3().setVisible(false);
+
+        getContentEtcKoujoCheck4().setVisible(false);
+
+        getContentEtcKoujoCheck5().setVisible(false);
+
+        getContentEtcKoujoCheck6().setVisible(false);
+
+        getContentEtcKoujoSubtotal().setVisible(false);
 
   }
 

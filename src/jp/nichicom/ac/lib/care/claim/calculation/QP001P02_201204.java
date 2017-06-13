@@ -73,7 +73,7 @@ public class QP001P02_201204 extends QP001P02_10Event {
         VRList detailJushotiTokureiList = getDetailJushotiTokureiList();
  // 2015/1/14 [Yoichiro Kamei] add - end
         
-        // 印刷頁数を算出する。（1頁あたりの明細情報は14件、集計情報は4件)
+        // 印刷頁数を算出する。（1頁あたりの明細情報は14件=>10件(2015改正より)、集計情報は4件)
         // ※複数公費の受給を受けている場合は、受給公費分帳票を出力する。
         int pageCount = 1;
         int pageTemp = 1;
@@ -307,7 +307,9 @@ public class QP001P02_201204 extends QP001P02_10Event {
                                     .get("301008", detail)));
 
             //単位数を表示するサービスでなければ単位数単価を表示する。
-            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")))){
+//            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")))){
+            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("301007")),String.valueOf(detail.get("301008")),
+            		ACCastUtilities.toInt(detail.get("301027"), 0))){
                 // 単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "tani" + j, pad(
                         VRBindPathParser.get("301009", detail), 4));
@@ -389,7 +391,10 @@ public class QP001P02_201204 extends QP001P02_10Event {
                                     .get("1801008", detail)));
 
             //単位数を表示するサービスでなければ単位数単価を表示する。
-            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("1801007")),String.valueOf(detail.get("1801008")))){
+            // [総合事業独自対応][Shinobu Hitaka] 2016/09/30 mod 算定単位パラメータ追加
+            // if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("1801007")),String.valueOf(detail.get("1801008")))){
+            if(!QP001SpecialCase.isUnitNotShowService(String.valueOf(detail.get("1801007")),String.valueOf(detail.get("1801008")),
+            		ACCastUtilities.toInt(detail.get("1801028"), 0))){
                 // 単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "j_tani" + j, pad(
                         VRBindPathParser.get("1801009", detail), 4));
@@ -503,7 +508,9 @@ public class QP001P02_201204 extends QP001P02_10Event {
     }
     
     public double getDetailRowCount() {
-        return 12d;
+        //[CCCX:03725][Shinobu Hitaka] 2016.12.05 明細行は10行
+        //return 12d;
+        return 10d;
     }
     
 }

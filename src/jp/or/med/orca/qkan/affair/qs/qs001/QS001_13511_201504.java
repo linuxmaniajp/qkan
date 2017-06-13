@@ -1013,4 +1013,273 @@ public class QS001_13511_201504 extends QS001_13511_201504Event {
 
     }
 
+    /**
+     * 「通所介護・運動器機能向上加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingMovementFunctionImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceNursingCheckState();
+    }
+
+    /**
+     * 「通所介護・栄養改善加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingNourishmentImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceNursingCheckState();
+    }
+
+    /**
+     * 「通所介護・口腔機能向上加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingMouthFunctionImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceNursingCheckState();
+    }
+
+    /**
+     * 「通所介護・選択的サービス複数実施加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingSentakutekiServiceRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        int idx = getExpertPlaceNursingSentakutekiServiceRadio().getSelectedIndex();
+        // 画面状態制御
+        expertPlaceNursingCheckState();
+        // 全て「なし」か１つだけ選択の場合は、選択したものに戻す
+        int selCnt = 0;
+        if (getExpertPlaceNursingMovementFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getExpertPlaceNursingNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getExpertPlaceNursingMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (selCnt == 1 || selCnt == 0) {
+        	getExpertPlaceNursingSentakutekiServiceRadio().setSelectedIndex(idx);
+        }
+    }
+    
+    /**
+     * 「通所介護・選択的サービス状態制御」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public void expertPlaceNursingCheckState() throws Exception {
+
+        // 運動器機能向上加算・栄養改善加算・口腔機能向上加算の組み合わせチェック
+        if (getExpertPlaceNursingMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算II
+        	getExpertPlaceNursingSentakutekiServiceRadio().setSelectedIndex(5);
+        } else if (getExpertPlaceNursingMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算：選択的サービス複数実施加算I1
+        	getExpertPlaceNursingSentakutekiServiceRadio().setSelectedIndex(2);
+        } else if (getExpertPlaceNursingMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 口腔機能向上加算：選択的サービス複数実施加算I2
+        	getExpertPlaceNursingSentakutekiServiceRadio().setSelectedIndex(3);
+        } else if (getExpertPlaceNursingNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算I3
+        	getExpertPlaceNursingSentakutekiServiceRadio().setSelectedIndex(4);
+        } else {
+        	// 選択的サービス複数実施加算：なし
+        	getExpertPlaceNursingSentakutekiServiceRadio().setSelectedIndex(1);
+        }
+    }
+    
+    /**
+     * 「通所リハ運動器機能向上加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceRehabiliMovementFunctionImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceRehabiliCheckState();
+    }
+    
+    /**
+     * 「通所リハ栄養改善加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceRehabiliNourishmentImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceRehabiliCheckState();
+    }
+    
+    /**
+     * 「通所リハ口腔機能向上加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceRehabiliMouthFunctionImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceRehabiliCheckState();
+    }
+    
+    /**
+     * 「通所リハ選択的サービス複数実施加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceRehabiliSentakutekiServiceRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        int idx = getExpertPlaceRehabiliSentakutekiServiceRadio().getSelectedIndex();
+        // 画面状態制御
+        expertPlaceRehabiliCheckState();
+        // 全て「なし」か１つだけ選択の場合は、選択したものに戻す
+        int selCnt = 0;
+        if (getExpertPlaceRehabiliMovementFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getExpertPlaceRehabiliNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getExpertPlaceRehabiliMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (selCnt == 1 || selCnt == 0) {
+        	getExpertPlaceRehabiliSentakutekiServiceRadio().setSelectedIndex(idx);
+        }
+    }
+    
+    /**
+     * 「通所リハ・選択的サービス状態制御」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public void expertPlaceRehabiliCheckState() throws Exception {
+
+        // 運動器機能向上加算・栄養改善加算・口腔機能向上加算の組み合わせチェック
+        if (getExpertPlaceRehabiliMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceRehabiliNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceRehabiliMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算II
+        	getExpertPlaceRehabiliSentakutekiServiceRadio().setSelectedIndex(5);
+        } else if (getExpertPlaceRehabiliMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceRehabiliNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算：選択的サービス複数実施加算I1
+        	getExpertPlaceRehabiliSentakutekiServiceRadio().setSelectedIndex(2);
+        } else if (getExpertPlaceRehabiliMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceRehabiliMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 口腔機能向上加算：選択的サービス複数実施加算I2
+        	getExpertPlaceRehabiliSentakutekiServiceRadio().setSelectedIndex(3);
+        } else if (getExpertPlaceRehabiliNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceRehabiliMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算I3
+        	getExpertPlaceRehabiliSentakutekiServiceRadio().setSelectedIndex(4);
+        } else {
+        	// 選択的サービス複数実施加算：なし
+        	getExpertPlaceRehabiliSentakutekiServiceRadio().setSelectedIndex(1);
+        }
+    }
+    
+    /**
+     * 「通所型サービス・運動器機能向上加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingServiceMovementFunctionImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceNursingServiceCheckState();
+    }
+    
+    /**
+     * 「通所型サービス・栄養改善加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingServiceNourishmentImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceNursingServiceCheckState();
+    }
+    
+    /**
+     * 「通所型サービス・口腔機能向上加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingServiceMouthFunctionImprovementAddRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        // 画面状態制御
+    	expertPlaceNursingServiceCheckState();    	
+    }
+    
+    /**
+     * 「通所型サービス・選択的サービス複数実施加算」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void expertPlaceNursingServiceSentakutekiServiceRadioSelectionChanged(
+    		ListSelectionEvent e) throws Exception {
+        int idx = getExpertPlaceNursingServiceSentakutekiServiceRadio().getSelectedIndex();
+        // 画面状態制御
+        expertPlaceNursingServiceCheckState();
+        // 全て「なし」か１つだけ選択の場合は、選択したものに戻す
+        int selCnt = 0;
+        if (getExpertPlaceNursingServiceMovementFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getExpertPlaceNursingServiceNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (getExpertPlaceNursingServiceMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	selCnt = selCnt + 1;
+        }
+        if (selCnt == 1 || selCnt == 0) {
+        	getExpertPlaceNursingServiceSentakutekiServiceRadio().setSelectedIndex(idx);
+        }
+    }
+    
+    /**
+     * 「通所型サービス・選択的サービス状態制御」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public void expertPlaceNursingServiceCheckState() throws Exception {
+
+        // 運動器機能向上加算・栄養改善加算・口腔機能向上加算の組み合わせチェック
+        if (getExpertPlaceNursingServiceMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingServiceNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingServiceMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算II
+        	getExpertPlaceNursingServiceSentakutekiServiceRadio().setSelectedIndex(5);
+        } else if (getExpertPlaceNursingServiceMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingServiceNourishmentImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 栄養改善加算：選択的サービス複数実施加算I1
+        	getExpertPlaceNursingServiceSentakutekiServiceRadio().setSelectedIndex(2);
+        } else if (getExpertPlaceNursingServiceMovementFunctionImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingServiceMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 運動器機能向上加算 + 口腔機能向上加算：選択的サービス複数実施加算I2
+        	getExpertPlaceNursingServiceSentakutekiServiceRadio().setSelectedIndex(3);
+        } else if (getExpertPlaceNursingServiceNourishmentImprovementAddRadio().getSelectedIndex() > 1
+        		&& getExpertPlaceNursingServiceMouthFunctionImprovementAddRadio().getSelectedIndex() > 1) {
+        	// 栄養改善加算 + 口腔機能向上加算：選択的サービス複数実施加算I3
+        	getExpertPlaceNursingServiceSentakutekiServiceRadio().setSelectedIndex(4);
+        } else {
+        	// 選択的サービス複数実施加算：なし
+        	getExpertPlaceNursingServiceSentakutekiServiceRadio().setSelectedIndex(1);
+        }
+    }
 }

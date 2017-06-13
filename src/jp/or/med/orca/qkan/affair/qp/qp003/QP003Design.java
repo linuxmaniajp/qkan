@@ -18,7 +18,7 @@
  *****************************************************************
  * ƒAƒvƒŠ: QKANCHO
  * ŠJ”­Ò: “¡Œ´@L
- * ì¬“ú: 2016/02/01  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ “¡Œ´@L V‹Kì¬
+ * ì¬“ú: 2016/12/15  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ “¡Œ´@L V‹Kì¬
  * XV“ú: ----/--/--
  * ƒVƒXƒeƒ€ ‹‹•tŠÇ—‘ä’  (Q)
  * ƒTƒuƒVƒXƒeƒ€ ¿‹ƒf[ƒ^ì¬ (P)
@@ -121,6 +121,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel contentMoney;
 
+  private ACPanel contentMeisaiArea;
+
   private ACPanel contentJikohutanArea;
 
   private ACPanel contentJikohutanTitle;
@@ -128,6 +130,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField contentJikohutanHimokuTitle;
 
   private ACTextField contentJikohutanUseTitle;
+
+  private ACTextField contentJikohutanKoujoTitle;
 
   private ACPanel contentJikohutan1;
 
@@ -137,6 +141,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentJikohutanUse1;
 
+  private ACIntegerCheckBox contentJikohutanKoujoCheck1;
+
   private ACPanel contentJikohutan2;
 
   private ACComboBox contentJikohutanHimoku2;
@@ -144,6 +150,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACComboBoxModelAdapter contentJikohutanHimoku2Model;
 
   private ACTextField contentJikohutanUse2;
+
+  private ACIntegerCheckBox contentJikohutanKoujoCheck2;
 
   private ACPanel contentJikohutan3;
 
@@ -153,13 +161,15 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentJikohutanUse3;
 
+  private ACIntegerCheckBox contentJikohutanKoujoCheck3;
+
   private ACPanel contentJikohutanTitleArea;
 
   private ACTextField contentJikohutanSubtotalTitle;
 
   private ACTextField contentJikohutanSubtotal;
 
-  private ACLabel contentSpace2;
+  private ACTextField contentJikohutanKoujoSubtotal;
 
   private ACPanel contentEtcs;
 
@@ -173,6 +183,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcUseTitle;
 
+  private ACTextField contentEtcKoujoTitle;
+
   private ACPanel contentEtc1;
 
   private ACComboBox contentEtcHimoku1;
@@ -184,6 +196,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField contentEtcCount1;
 
   private ACTextField contentEtcUse1;
+
+  private ACIntegerCheckBox contentEtcKoujoCheck1;
 
   private ACPanel contentEtc2;
 
@@ -197,6 +211,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcUse2;
 
+  private ACIntegerCheckBox contentEtcKoujoCheck2;
+
   private ACPanel contentEtc3;
 
   private ACComboBox contentEtcHimoku3;
@@ -208,6 +224,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField contentEtcCount3;
 
   private ACTextField contentEtcUse3;
+
+  private ACIntegerCheckBox contentEtcKoujoCheck3;
 
   private ACPanel contentEtc4;
 
@@ -221,6 +239,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcUse4;
 
+  private ACIntegerCheckBox contentEtcKoujoCheck4;
+
   private ACPanel contentEtc5;
 
   private ACComboBox contentEtcHimoku5;
@@ -232,6 +252,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField contentEtcCount5;
 
   private ACTextField contentEtcUse5;
+
+  private ACIntegerCheckBox contentEtcKoujoCheck5;
 
   private ACPanel contentEtc6;
 
@@ -245,13 +267,45 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTextField contentEtcUse6;
 
+  private ACIntegerCheckBox contentEtcKoujoCheck6;
+
   private ACPanel contentEtcTitleArea;
 
   private ACTextField contentEtcSubtotalTitle;
 
   private ACTextField contentEtcSubtotal;
 
-  private ACLabel contentSpace3;
+  private ACTextField contentEtcKoujoSubtotal;
+
+  private ACIntegerCheckBox koujoDispCheck;
+
+  private ACPanel contentHoken;
+
+  private ACPanel contentHokenTitle;
+
+  private ACTextField contentHokenHimokuTitle;
+
+  private ACTextField contentHokenUseTitle;
+
+  private ACTextField contentHokenKoujoTitle;
+
+  private ACPanel contentHokenIryo;
+
+  private ACTextField contentHokenIryoHimoku;
+
+  private ACTextField contentHokenIryoUse;
+
+  private ACIntegerCheckBox contentHokenIryoKoujoCheck;
+
+  private ACPanel contentHokenFukushi;
+
+  private ACTextField contentHokenFukushiHimoku;
+
+  private ACTextField contentHokenFukushiUse;
+
+  private ACIntegerCheckBox contentHokenFukushiKoujoCheck;
+
+  private ACLabel contentKoujyoLabelMemo;
 
   private ACPanel contentBottoms;
 
@@ -268,6 +322,14 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel contentKoujyoLabel;
 
   private ACTextField contentKoujyoText;
+
+  private ACPanel contentKoujyoPanel;
+
+  private ACButton reflection;
+
+  private ACLabel contentKoujyoLabel2;
+
+  private ACTextField contentKoujyoText2;
 
   private ACPanel contentBikou;
 
@@ -694,6 +756,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * –¾×—Ìˆæ‚ğæ“¾‚µ‚Ü‚·B
+   * @return –¾×—Ìˆæ
+   */
+  public ACPanel getContentMeisaiArea(){
+    if(contentMeisaiArea==null){
+
+      contentMeisaiArea = new ACPanel();
+
+      contentMeisaiArea.setAutoWrap(false);
+
+      addContentMeisaiArea();
+    }
+    return contentMeisaiArea;
+
+  }
+
+  /**
    * ©ŒÈ•‰’S•ª—Ìˆæ‚ğæ“¾‚µ‚Ü‚·B
    * @return ©ŒÈ•‰’S•ª—Ìˆæ
    */
@@ -740,7 +819,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimokuTitle.setEditable(false);
 
-      contentJikohutanHimokuTitle.setColumns(26);
+      contentJikohutanHimokuTitle.setColumns(34);
 
       contentJikohutanHimokuTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -774,6 +853,29 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛƒ^ƒCƒgƒ‹
+   */
+  public ACTextField getContentJikohutanKoujoTitle(){
+    if(contentJikohutanKoujoTitle==null){
+
+      contentJikohutanKoujoTitle = new ACTextField();
+
+      contentJikohutanKoujoTitle.setText("ˆã—Ã”ïTœ");
+
+      contentJikohutanKoujoTitle.setEditable(false);
+
+      contentJikohutanKoujoTitle.setColumns(6);
+
+      contentJikohutanKoujoTitle.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentJikohutanKoujoTitle();
+    }
+    return contentJikohutanKoujoTitle;
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª‚P‚ğæ“¾‚µ‚Ü‚·B
    * @return ‘SŠz©ŒÈ•‰’S•ª‚P
    */
@@ -803,7 +905,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimoku1.setEditable(true);
 
-      contentJikohutanHimoku1.setColumns(25);
+      contentJikohutanHimoku1.setColumns(33);
 
       contentJikohutanHimoku1.setModelBindPath("SELF_PAY");
 
@@ -813,7 +915,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimoku1.setMaxLength(75);
 
-      contentJikohutanHimoku1.setMaxColumns(25);
+      contentJikohutanHimoku1.setMaxColumns(34);
 
       contentJikohutanHimoku1.setModel(getContentJikohutanHimoku1Model());
 
@@ -863,6 +965,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚P‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚P
+   */
+  public ACIntegerCheckBox getContentJikohutanKoujoCheck1(){
+    if(contentJikohutanKoujoCheck1==null){
+
+      contentJikohutanKoujoCheck1 = new ACIntegerCheckBox();
+
+      addContentJikohutanKoujoCheck1();
+    }
+    return contentJikohutanKoujoCheck1;
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª‚Q‚ğæ“¾‚µ‚Ü‚·B
    * @return ‘SŠz©ŒÈ•‰’S•ª‚Q
    */
@@ -892,7 +1009,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimoku2.setEditable(true);
 
-      contentJikohutanHimoku2.setColumns(25);
+      contentJikohutanHimoku2.setColumns(33);
 
       contentJikohutanHimoku2.setModelBindPath("SELF_PAY");
 
@@ -902,7 +1019,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimoku2.setMaxLength(75);
 
-      contentJikohutanHimoku2.setMaxColumns(25);
+      contentJikohutanHimoku2.setMaxColumns(34);
 
       contentJikohutanHimoku2.setModel(getContentJikohutanHimoku2Model());
 
@@ -952,6 +1069,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚Q‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚Q
+   */
+  public ACIntegerCheckBox getContentJikohutanKoujoCheck2(){
+    if(contentJikohutanKoujoCheck2==null){
+
+      contentJikohutanKoujoCheck2 = new ACIntegerCheckBox();
+
+      addContentJikohutanKoujoCheck2();
+    }
+    return contentJikohutanKoujoCheck2;
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª‚R‚ğæ“¾‚µ‚Ü‚·B
    * @return ‘SŠz©ŒÈ•‰’S•ª‚R
    */
@@ -981,7 +1113,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimoku3.setEditable(true);
 
-      contentJikohutanHimoku3.setColumns(25);
+      contentJikohutanHimoku3.setColumns(33);
 
       contentJikohutanHimoku3.setModelBindPath("SELF_PAY");
 
@@ -991,7 +1123,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanHimoku3.setMaxLength(75);
 
-      contentJikohutanHimoku3.setMaxColumns(25);
+      contentJikohutanHimoku3.setMaxColumns(34);
 
       contentJikohutanHimoku3.setModel(getContentJikohutanHimoku3Model());
 
@@ -1041,6 +1173,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚R‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚R
+   */
+  public ACIntegerCheckBox getContentJikohutanKoujoCheck3(){
+    if(contentJikohutanKoujoCheck3==null){
+
+      contentJikohutanKoujoCheck3 = new ACIntegerCheckBox();
+
+      addContentJikohutanKoujoCheck3();
+    }
+    return contentJikohutanKoujoCheck3;
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª¬Œv‚ğæ“¾‚µ‚Ü‚·B
    * @return ‘SŠz©ŒÈ•‰’S•ª¬Œv
    */
@@ -1070,7 +1217,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
       contentJikohutanSubtotalTitle.setEditable(false);
 
-      contentJikohutanSubtotalTitle.setColumns(26);
+      contentJikohutanSubtotalTitle.setColumns(34);
 
       contentJikohutanSubtotalTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -1102,19 +1249,23 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ƒXƒy[ƒT[‚ğæ“¾‚µ‚Ü‚·B
-   * @return ƒXƒy[ƒT[
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ¬Œv‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ¬Œv
    */
-  public ACLabel getContentSpace2(){
-    if(contentSpace2==null){
+  public ACTextField getContentJikohutanKoujoSubtotal(){
+    if(contentJikohutanKoujoSubtotal==null){
 
-      contentSpace2 = new ACLabel();
+      contentJikohutanKoujoSubtotal = new ACTextField();
 
-      contentSpace2.setText(" ");
+      contentJikohutanKoujoSubtotal.setEditable(false);
 
-      addContentSpace2();
+      contentJikohutanKoujoSubtotal.setColumns(6);
+
+      contentJikohutanKoujoSubtotal.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addContentJikohutanKoujoSubtotal();
     }
-    return contentSpace2;
+    return contentJikohutanKoujoSubtotal;
 
   }
 
@@ -1239,6 +1390,29 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUseTitle();
     }
     return contentEtcUseTitle;
+
+  }
+
+  /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœƒ^ƒCƒgƒ‹
+   */
+  public ACTextField getContentEtcKoujoTitle(){
+    if(contentEtcKoujoTitle==null){
+
+      contentEtcKoujoTitle = new ACTextField();
+
+      contentEtcKoujoTitle.setText("ˆã—Ã”ïTœ");
+
+      contentEtcKoujoTitle.setEditable(false);
+
+      contentEtcKoujoTitle.setColumns(6);
+
+      contentEtcKoujoTitle.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentEtcKoujoTitle();
+    }
+    return contentEtcKoujoTitle;
 
   }
 
@@ -1390,6 +1564,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚P‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚P
+   */
+  public ACIntegerCheckBox getContentEtcKoujoCheck1(){
+    if(contentEtcKoujoCheck1==null){
+
+      contentEtcKoujoCheck1 = new ACIntegerCheckBox();
+
+      addContentEtcKoujoCheck1();
+    }
+    return contentEtcKoujoCheck1;
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚Q‚ğæ“¾‚µ‚Ü‚·B
    * @return ‚»‚Ì‘¼‚Q
    */
@@ -1533,6 +1722,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse2();
     }
     return contentEtcUse2;
+
+  }
+
+  /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚Q‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚Q
+   */
+  public ACIntegerCheckBox getContentEtcKoujoCheck2(){
+    if(contentEtcKoujoCheck2==null){
+
+      contentEtcKoujoCheck2 = new ACIntegerCheckBox();
+
+      addContentEtcKoujoCheck2();
+    }
+    return contentEtcKoujoCheck2;
 
   }
 
@@ -1684,6 +1888,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚R‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚R
+   */
+  public ACIntegerCheckBox getContentEtcKoujoCheck3(){
+    if(contentEtcKoujoCheck3==null){
+
+      contentEtcKoujoCheck3 = new ACIntegerCheckBox();
+
+      addContentEtcKoujoCheck3();
+    }
+    return contentEtcKoujoCheck3;
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚S‚ğæ“¾‚µ‚Ü‚·B
    * @return ‚»‚Ì‘¼‚S
    */
@@ -1827,6 +2046,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentEtcUse4();
     }
     return contentEtcUse4;
+
+  }
+
+  /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚S‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚S
+   */
+  public ACIntegerCheckBox getContentEtcKoujoCheck4(){
+    if(contentEtcKoujoCheck4==null){
+
+      contentEtcKoujoCheck4 = new ACIntegerCheckBox();
+
+      addContentEtcKoujoCheck4();
+    }
+    return contentEtcKoujoCheck4;
 
   }
 
@@ -1978,6 +2212,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚T‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚T
+   */
+  public ACIntegerCheckBox getContentEtcKoujoCheck5(){
+    if(contentEtcKoujoCheck5==null){
+
+      contentEtcKoujoCheck5 = new ACIntegerCheckBox();
+
+      addContentEtcKoujoCheck5();
+    }
+    return contentEtcKoujoCheck5;
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚U‚ğæ“¾‚µ‚Ü‚·B
    * @return ‚»‚Ì‘¼‚U
    */
@@ -2125,6 +2374,21 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚U‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚U
+   */
+  public ACIntegerCheckBox getContentEtcKoujoCheck6(){
+    if(contentEtcKoujoCheck6==null){
+
+      contentEtcKoujoCheck6 = new ACIntegerCheckBox();
+
+      addContentEtcKoujoCheck6();
+    }
+    return contentEtcKoujoCheck6;
+
+  }
+
+  /**
    * ‚»‚Ì‘¼¬Œv‚ğæ“¾‚µ‚Ü‚·B
    * @return ‚»‚Ì‘¼¬Œv
    */
@@ -2186,25 +2450,324 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ƒXƒy[ƒT[‚ğæ“¾‚µ‚Ü‚·B
-   * @return ƒXƒy[ƒT[
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ¬Œv‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ¬Œv
    */
-  public ACLabel getContentSpace3(){
-    if(contentSpace3==null){
+  public ACTextField getContentEtcKoujoSubtotal(){
+    if(contentEtcKoujoSubtotal==null){
 
-      contentSpace3 = new ACLabel();
+      contentEtcKoujoSubtotal = new ACTextField();
 
-      contentSpace3.setText(" ");
+      contentEtcKoujoSubtotal.setEditable(false);
 
-      addContentSpace3();
+      contentEtcKoujoSubtotal.setColumns(6);
+
+      contentEtcKoujoSubtotal.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      addContentEtcKoujoSubtotal();
     }
-    return contentSpace3;
+    return contentEtcKoujoSubtotal;
 
   }
 
   /**
-   * ‰æ–Ê‰º•”ƒpƒlƒ‹‚ğæ“¾‚µ‚Ü‚·B
-   * @return ‰æ–Ê‰º•”ƒpƒlƒ‹
+   * ˆã—Ã”ïTœŒvZ•â••\¦‚ğæ“¾‚µ‚Ü‚·B
+   * @return ˆã—Ã”ïTœŒvZ•â••\¦
+   */
+  public ACIntegerCheckBox getKoujoDispCheck(){
+    if(koujoDispCheck==null){
+
+      koujoDispCheck = new ACIntegerCheckBox();
+
+      koujoDispCheck.setText("ˆã—Ã”ïTœŒvZ‚Ì•â•‚ğ•\¦‚·‚é");
+
+      addKoujoDispCheck();
+    }
+    return koujoDispCheck;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯—Ìˆæ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯—Ìˆæ
+   */
+  public ACPanel getContentHoken(){
+    if(contentHoken==null){
+
+      contentHoken = new ACPanel();
+
+      addContentHoken();
+    }
+    return contentHoken;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ªƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ªƒ^ƒCƒgƒ‹
+   */
+  public ACPanel getContentHokenTitle(){
+    if(contentHokenTitle==null){
+
+      contentHokenTitle = new ACPanel();
+
+      contentHokenTitle.setAutoWrap(false);
+
+      addContentHokenTitle();
+    }
+    return contentHokenTitle;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ª”ï–Úƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ª”ï–Úƒ^ƒCƒgƒ‹
+   */
+  public ACTextField getContentHokenHimokuTitle(){
+    if(contentHokenHimokuTitle==null){
+
+      contentHokenHimokuTitle = new ACTextField();
+
+      contentHokenHimokuTitle.setText("‰îŒì•ÛŒ¯");
+
+      contentHokenHimokuTitle.setEditable(false);
+
+      contentHokenHimokuTitle.setColumns(34);
+
+      contentHokenHimokuTitle.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentHokenHimokuTitle();
+    }
+    return contentHokenHimokuTitle;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ª—˜—p—¿ƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ª—˜—p—¿ƒ^ƒCƒgƒ‹
+   */
+  public ACTextField getContentHokenUseTitle(){
+    if(contentHokenUseTitle==null){
+
+      contentHokenUseTitle = new ACTextField();
+
+      contentHokenUseTitle.setText("—˜—pÒ•‰’SŠz");
+
+      contentHokenUseTitle.setEditable(false);
+
+      contentHokenUseTitle.setColumns(9);
+
+      contentHokenUseTitle.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentHokenUseTitle();
+    }
+    return contentHokenUseTitle;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—Ã”ïTœ‘ÎÛƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯ˆã—Ã”ïTœ‘ÎÛƒ^ƒCƒgƒ‹
+   */
+  public ACTextField getContentHokenKoujoTitle(){
+    if(contentHokenKoujoTitle==null){
+
+      contentHokenKoujoTitle = new ACTextField();
+
+      contentHokenKoujoTitle.setText("ˆã—Ã”ïTœ");
+
+      contentHokenKoujoTitle.setEditable(false);
+
+      contentHokenKoujoTitle.setColumns(6);
+
+      contentHokenKoujoTitle.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentHokenKoujoTitle();
+    }
+    return contentHokenKoujoTitle;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª
+   */
+  public ACPanel getContentHokenIryo(){
+    if(contentHokenIryo==null){
+
+      contentHokenIryo = new ACPanel();
+
+      contentHokenIryo.setAutoWrap(false);
+
+      addContentHokenIryo();
+    }
+    return contentHokenIryo;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª”ï–Ú‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª”ï–Ú
+   */
+  public ACTextField getContentHokenIryoHimoku(){
+    if(contentHokenIryoHimoku==null){
+
+      contentHokenIryoHimoku = new ACTextField();
+
+      contentHokenIryoHimoku.setText("ˆã—ÃŒnƒT[ƒrƒX");
+
+      contentHokenIryoHimoku.setEditable(false);
+
+      contentHokenIryoHimoku.setColumns(34);
+
+      addContentHokenIryoHimoku();
+    }
+    return contentHokenIryoHimoku;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª—˜—p—¿‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª—˜—p—¿
+   */
+  public ACTextField getContentHokenIryoUse(){
+    if(contentHokenIryoUse==null){
+
+      contentHokenIryoUse = new ACTextField();
+
+      contentHokenIryoUse.setEditable(false);
+
+      contentHokenIryoUse.setColumns(9);
+
+      contentHokenIryoUse.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentHokenIryoUse.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentHokenIryoUse.setIMEMode(InputSubset.LATIN);
+
+      contentHokenIryoUse.setMaxLength(8);
+
+      addContentHokenIryoUse();
+    }
+    return contentHokenIryoUse;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ
+   */
+  public ACIntegerCheckBox getContentHokenIryoKoujoCheck(){
+    if(contentHokenIryoKoujoCheck==null){
+
+      contentHokenIryoKoujoCheck = new ACIntegerCheckBox();
+
+      addContentHokenIryoKoujoCheck();
+    }
+    return contentHokenIryoKoujoCheck;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª
+   */
+  public ACPanel getContentHokenFukushi(){
+    if(contentHokenFukushi==null){
+
+      contentHokenFukushi = new ACPanel();
+
+      contentHokenFukushi.setAutoWrap(false);
+
+      addContentHokenFukushi();
+    }
+    return contentHokenFukushi;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª”ï–Ú‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª”ï–Ú
+   */
+  public ACTextField getContentHokenFukushiHimoku(){
+    if(contentHokenFukushiHimoku==null){
+
+      contentHokenFukushiHimoku = new ACTextField();
+
+      contentHokenFukushiHimoku.setText("•ŸƒŒnƒT[ƒrƒX");
+
+      contentHokenFukushiHimoku.setEditable(false);
+
+      contentHokenFukushiHimoku.setColumns(34);
+
+      addContentHokenFukushiHimoku();
+    }
+    return contentHokenFukushiHimoku;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª—˜—p—¿‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª—˜—p—¿
+   */
+  public ACTextField getContentHokenFukushiUse(){
+    if(contentHokenFukushiUse==null){
+
+      contentHokenFukushiUse = new ACTextField();
+
+      contentHokenFukushiUse.setEditable(false);
+
+      contentHokenFukushiUse.setColumns(9);
+
+      contentHokenFukushiUse.setCharType(VRCharType.ONLY_NUMBER);
+
+      contentHokenFukushiUse.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentHokenFukushiUse.setIMEMode(InputSubset.LATIN);
+
+      contentHokenFukushiUse.setMaxLength(8);
+
+      addContentHokenFukushiUse();
+    }
+    return contentHokenFukushiUse;
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ
+   */
+  public ACIntegerCheckBox getContentHokenFukushiKoujoCheck(){
+    if(contentHokenFukushiKoujoCheck==null){
+
+      contentHokenFukushiKoujoCheck = new ACIntegerCheckBox();
+
+      addContentHokenFukushiKoujoCheck();
+    }
+    return contentHokenFukushiKoujoCheck;
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœà–¾ƒ‰ƒxƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ˆã—Ã”ïTœà–¾ƒ‰ƒxƒ‹
+   */
+  public ACLabel getContentKoujyoLabelMemo(){
+    if(contentKoujyoLabelMemo==null){
+
+      contentKoujyoLabelMemo = new ACLabel();
+
+      contentKoujyoLabelMemo.setText("<html><br>Eˆã—Ã”ïTœ‚Ìƒ`ƒFƒbƒNó‘Ô‚Í•Û‘¶‚³‚ê‚Ü‚¹‚ñB<br>E—Ìû‘‚É‚Íu‚¤‚¿ˆã—Ã”ïTœ‘ÎÛŠzv‚ªˆóš‚³‚ê‚Ü‚·B<br>E–K–â‰îŒì“™‚Åˆê•”‘ÎÛŠO‚Æ‚È‚éê‡‚ÌŒvZ‚É‚Í‘Î‰‚µ‚Ä‚¨‚è‚Ü‚¹‚ñ‚Ì‚ÅAu‚¤‚¿ˆã—Ã”ïTœ‘ÎÛŠzv‚ğ’¼ÚC³‚µ‚Ä‚­‚¾‚³‚¢B</html>");
+
+      addContentKoujyoLabelMemo();
+    }
+    return contentKoujyoLabelMemo;
+
+  }
+
+  /**
+   * ‡Œv•\¦—Ìˆæ‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‡Œv•\¦—Ìˆæ
    */
   public ACPanel getContentBottoms(){
     if(contentBottoms==null){
@@ -2218,8 +2781,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ‹àŠzƒpƒlƒ‹‚ğæ“¾‚µ‚Ü‚·B
-   * @return ‹àŠzƒpƒlƒ‹
+   * ‡Œv‹àŠzƒpƒlƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‡Œv‹àŠzƒpƒlƒ‹
    */
   public ACPanel getContentTotals(){
     if(contentTotals==null){
@@ -2357,6 +2920,92 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentKoujyoText();
     }
     return contentKoujyoText;
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœƒpƒlƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ˆã—Ã”ïTœƒpƒlƒ‹
+   */
+  public ACPanel getContentKoujyoPanel(){
+    if(contentKoujyoPanel==null){
+
+      contentKoujyoPanel = new ACPanel();
+
+      contentKoujyoPanel.setAutoWrap(false);
+
+      contentKoujyoPanel.setHgap(0);
+
+      contentKoujyoPanel.setVgap(6);
+
+      addContentKoujyoPanel();
+    }
+    return contentKoujyoPanel;
+
+  }
+
+  /**
+   * ”½‰f‚ğæ“¾‚µ‚Ü‚·B
+   * @return ”½‰f
+   */
+  public ACButton getReflection(){
+    if(reflection==null){
+
+      reflection = new ACButton();
+
+      reflection.setText("”½‰f");
+
+      reflection.setToolTipText("ƒ`ƒFƒbƒN‚ğ“ü‚ê‚½€–Ú‚Ì‡Œv‚ğˆã—Ã”ïTœ‘ÎÛŠz‚Ö”½‰f‚µ‚Ü‚·B");
+
+      reflection.setIconPath(ACConstants.ICON_PATH_UP_24);
+
+      addReflection();
+    }
+    return reflection;
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœ‘ÎÛŠzƒ‰ƒxƒ‹‚ğæ“¾‚µ‚Ü‚·B
+   * @return ˆã—Ã”ïTœ‘ÎÛŠzƒ‰ƒxƒ‹
+   */
+  public ACLabel getContentKoujyoLabel2(){
+    if(contentKoujyoLabel2==null){
+
+      contentKoujyoLabel2 = new ACLabel();
+
+      contentKoujyoLabel2.setText("ˆã—Ã”ïTœƒ`ƒFƒbƒN‡Œv");
+
+      addContentKoujyoLabel2();
+    }
+    return contentKoujyoLabel2;
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœ‘ÎÛŠz‚ğæ“¾‚µ‚Ü‚·B
+   * @return ˆã—Ã”ïTœ‘ÎÛŠz
+   */
+  public ACTextField getContentKoujyoText2(){
+    if(contentKoujyoText2==null){
+
+      contentKoujyoText2 = new ACTextField();
+
+      contentKoujyoText2.setEditable(false);
+
+      contentKoujyoText2.setColumns(10);
+
+      contentKoujyoText2.setCharType(VRCharType.ONLY_DIGIT);
+
+      contentKoujyoText2.setHorizontalAlignment(SwingConstants.RIGHT);
+
+      contentKoujyoText2.setIMEMode(InputSubset.LATIN);
+
+      contentKoujyoText2.setMaxLength(8);
+
+      addContentKoujyoText2();
+    }
+    return contentKoujyoText2;
 
   }
 
@@ -3184,6 +3833,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     tabs.addTab("¿‹‹àŠz", getContentMoney());
 
+    tabs.addTab("”õl", getContentBikou());
+
     tabs.addTab("ƒT[ƒrƒX’ñ‹Ÿ“ú", getContentDay());
 
   }
@@ -3193,15 +3844,24 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentMoney(){
 
-    contentMoney.add(getContentJikohutanArea(), VRLayout.FLOW_RETURN);
+    contentMoney.add(getContentMeisaiArea(), VRLayout.WEST);
 
-    contentMoney.add(getContentSpace2(), VRLayout.FLOW_RETURN);
+    contentMoney.add(getContentBottoms(), VRLayout.FLOW);
 
-    contentMoney.add(getContentEtcs(), VRLayout.FLOW_RETURN);
+  }
 
-    contentMoney.add(getContentSpace3(), VRLayout.FLOW_RETURN);
+  /**
+   * –¾×—Ìˆæ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentMeisaiArea(){
 
-    contentMoney.add(getContentBottoms(), VRLayout.FLOW_RETURN);
+    contentMeisaiArea.add(getContentJikohutanArea(), VRLayout.FLOW_RETURN);
+
+    contentMeisaiArea.add(getContentEtcs(), VRLayout.FLOW_RETURN);
+
+    contentMeisaiArea.add(getKoujoDispCheck(), VRLayout.FLOW_RETURN);
+
+    contentMeisaiArea.add(getContentHoken(), VRLayout.FLOW_RETURN);
 
   }
 
@@ -3229,6 +3889,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentJikohutanTitle.add(getContentJikohutanHimokuTitle(), VRLayout.CLIENT);
 
+    contentJikohutanTitle.add(getContentJikohutanKoujoTitle(), VRLayout.EAST);
     contentJikohutanTitle.add(getContentJikohutanUseTitle(), VRLayout.EAST);
   }
 
@@ -3247,12 +3908,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛƒ^ƒCƒgƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentJikohutanKoujoTitle(){
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª‚P‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentJikohutan1(){
 
     contentJikohutan1.add(getContentJikohutanHimoku1(), VRLayout.CLIENT);
 
+    contentJikohutan1.add(getContentJikohutanKoujoCheck1(), VRLayout.EAST);
     contentJikohutan1.add(getContentJikohutanUse1(), VRLayout.EAST);
   }
 
@@ -3278,12 +3947,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚P‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentJikohutanKoujoCheck1(){
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª‚Q‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentJikohutan2(){
 
     contentJikohutan2.add(getContentJikohutanHimoku2(), VRLayout.CLIENT);
 
+    contentJikohutan2.add(getContentJikohutanKoujoCheck2(), VRLayout.EAST);
     contentJikohutan2.add(getContentJikohutanUse2(), VRLayout.EAST);
   }
 
@@ -3309,12 +3986,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚Q‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentJikohutanKoujoCheck2(){
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª‚R‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentJikohutan3(){
 
     contentJikohutan3.add(getContentJikohutanHimoku3(), VRLayout.CLIENT);
 
+    contentJikohutan3.add(getContentJikohutanKoujoCheck3(), VRLayout.EAST);
     contentJikohutan3.add(getContentJikohutanUse3(), VRLayout.EAST);
   }
 
@@ -3340,12 +4025,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚R‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentJikohutanKoujoCheck3(){
+
+  }
+
+  /**
    * ‘SŠz©ŒÈ•‰’S•ª¬Œv‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentJikohutanTitleArea(){
 
     contentJikohutanTitleArea.add(getContentJikohutanSubtotalTitle(), VRLayout.CLIENT);
 
+    contentJikohutanTitleArea.add(getContentJikohutanKoujoSubtotal(), VRLayout.EAST);
     contentJikohutanTitleArea.add(getContentJikohutanSubtotal(), VRLayout.EAST);
   }
 
@@ -3364,9 +4057,9 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ƒXƒy[ƒT[‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   * ‘SŠz©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ¬Œv‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
-  protected void addContentSpace2(){
+  protected void addContentJikohutanKoujoSubtotal(){
 
   }
 
@@ -3400,6 +4093,7 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentEtcTitle.add(getContentEtcHimokuTitle(), VRLayout.CLIENT);
 
+    contentEtcTitle.add(getContentEtcKoujoTitle(), VRLayout.EAST);
     contentEtcTitle.add(getContentEtcUseTitle(), VRLayout.EAST);
     contentEtcTitle.add(getContentEtcCount(), VRLayout.EAST);
     contentEtcTitle.add(getContentEtcUnit(), VRLayout.EAST);
@@ -3434,12 +4128,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœƒ^ƒCƒgƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoTitle(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚P‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtc1(){
 
     contentEtc1.add(getContentEtcHimoku1(), VRLayout.CLIENT);
 
+    contentEtc1.add(getContentEtcKoujoCheck1(), VRLayout.EAST);
     contentEtc1.add(getContentEtcUse1(), VRLayout.EAST);
     contentEtc1.add(getContentEtcCount1(), VRLayout.EAST);
     contentEtc1.add(getContentEtcUnit1(), VRLayout.EAST);
@@ -3481,12 +4183,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚P‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoCheck1(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚Q‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtc2(){
 
     contentEtc2.add(getContentEtcHimoku2(), VRLayout.CLIENT);
 
+    contentEtc2.add(getContentEtcKoujoCheck2(), VRLayout.EAST);
     contentEtc2.add(getContentEtcUse2(), VRLayout.EAST);
     contentEtc2.add(getContentEtcCount2(), VRLayout.EAST);
     contentEtc2.add(getContentEtcUnit2(), VRLayout.EAST);
@@ -3528,12 +4238,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚Q‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoCheck2(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚R‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtc3(){
 
     contentEtc3.add(getContentEtcHimoku3(), VRLayout.CLIENT);
 
+    contentEtc3.add(getContentEtcKoujoCheck3(), VRLayout.EAST);
     contentEtc3.add(getContentEtcUse3(), VRLayout.EAST);
     contentEtc3.add(getContentEtcCount3(), VRLayout.EAST);
     contentEtc3.add(getContentEtcUnit3(), VRLayout.EAST);
@@ -3575,12 +4293,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚R‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoCheck3(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚S‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtc4(){
 
     contentEtc4.add(getContentEtcHimoku4(), VRLayout.CLIENT);
 
+    contentEtc4.add(getContentEtcKoujoCheck4(), VRLayout.EAST);
     contentEtc4.add(getContentEtcUse4(), VRLayout.EAST);
     contentEtc4.add(getContentEtcCount4(), VRLayout.EAST);
     contentEtc4.add(getContentEtcUnit4(), VRLayout.EAST);
@@ -3622,12 +4348,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚S‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoCheck4(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚T‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtc5(){
 
     contentEtc5.add(getContentEtcHimoku5(), VRLayout.CLIENT);
 
+    contentEtc5.add(getContentEtcKoujoCheck5(), VRLayout.EAST);
     contentEtc5.add(getContentEtcUse5(), VRLayout.EAST);
     contentEtc5.add(getContentEtcCount5(), VRLayout.EAST);
     contentEtc5.add(getContentEtcUnit5(), VRLayout.EAST);
@@ -3669,12 +4403,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚T‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoCheck5(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼‚U‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtc6(){
 
     contentEtc6.add(getContentEtcHimoku6(), VRLayout.CLIENT);
 
+    contentEtc6.add(getContentEtcKoujoCheck6(), VRLayout.EAST);
     contentEtc6.add(getContentEtcUse6(), VRLayout.EAST);
     contentEtc6.add(getContentEtcCount6(), VRLayout.EAST);
     contentEtc6.add(getContentEtcUnit6(), VRLayout.EAST);
@@ -3716,12 +4458,20 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ‚U‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentEtcKoujoCheck6(){
+
+  }
+
+  /**
    * ‚»‚Ì‘¼¬Œv‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentEtcTitleArea(){
 
     contentEtcTitleArea.add(getContentEtcSubtotalTitle(), VRLayout.CLIENT);
 
+    contentEtcTitleArea.add(getContentEtcKoujoSubtotal(), VRLayout.EAST);
     contentEtcTitleArea.add(getContentEtcSubtotal(), VRLayout.EAST);
   }
 
@@ -3740,25 +4490,148 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ƒXƒy[ƒT[‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   * ‚»‚Ì‘¼ˆã—Ã”ïTœ‘ÎÛ¬Œv‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
-  protected void addContentSpace3(){
+  protected void addContentEtcKoujoSubtotal(){
 
   }
 
   /**
-   * ‰æ–Ê‰º•”ƒpƒlƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   * ˆã—Ã”ïTœŒvZ•â••\¦‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addKoujoDispCheck(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯—Ìˆæ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHoken(){
+
+    contentHoken.add(getContentHokenTitle(), VRLayout.FLOW_RETURN);
+
+    contentHoken.add(getContentHokenIryo(), VRLayout.FLOW_RETURN);
+
+    contentHoken.add(getContentHokenFukushi(), VRLayout.FLOW_RETURN);
+
+    contentHoken.add(getContentKoujyoLabelMemo(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ªƒ^ƒCƒgƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenTitle(){
+
+    contentHokenTitle.add(getContentHokenHimokuTitle(), VRLayout.CLIENT);
+
+    contentHokenTitle.add(getContentHokenKoujoTitle(), VRLayout.EAST);
+    contentHokenTitle.add(getContentHokenUseTitle(), VRLayout.EAST);
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ª”ï–Úƒ^ƒCƒgƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenHimokuTitle(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ª—˜—p—¿ƒ^ƒCƒgƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenUseTitle(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—Ã”ïTœ‘ÎÛƒ^ƒCƒgƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenKoujoTitle(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenIryo(){
+
+    contentHokenIryo.add(getContentHokenIryoHimoku(), VRLayout.CLIENT);
+
+    contentHokenIryo.add(getContentHokenIryoKoujoCheck(), VRLayout.EAST);
+    contentHokenIryo.add(getContentHokenIryoUse(), VRLayout.EAST);
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª”ï–Ú‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenIryoHimoku(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ª—˜—p—¿‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenIryoUse(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯ˆã—ÃŒn©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenIryoKoujoCheck(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenFukushi(){
+
+    contentHokenFukushi.add(getContentHokenFukushiHimoku(), VRLayout.CLIENT);
+
+    contentHokenFukushi.add(getContentHokenFukushiKoujoCheck(), VRLayout.EAST);
+    contentHokenFukushi.add(getContentHokenFukushiUse(), VRLayout.EAST);
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª”ï–Ú‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenFukushiHimoku(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ª—˜—p—¿‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenFukushiUse(){
+
+  }
+
+  /**
+   * ‰îŒì•ÛŒ¯•ŸƒŒn©ŒÈ•‰’S•ªˆã—Ã”ïTœ‘ÎÛ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentHokenFukushiKoujoCheck(){
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœà–¾ƒ‰ƒxƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentKoujyoLabelMemo(){
+
+  }
+
+  /**
+   * ‡Œv•\¦—Ìˆæ‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentBottoms(){
 
-    contentBottoms.add(getContentTotals(), VRLayout.WEST);
-
-    contentBottoms.add(getContentBikou(), VRLayout.FLOW_RETURN);
+    contentBottoms.add(getContentTotals(), VRLayout.FLOW);
 
   }
 
   /**
-   * ‹àŠzƒpƒlƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   * ‡Œv‹àŠzƒpƒlƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentTotals(){
 
@@ -3768,11 +4641,13 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentTotals.add(getContentInnerTaxLabel(), VRLayout.FLOW_RETURN);
 
-    contentTotals.add(getContentInnerTaxText(), VRLayout.FLOW);
+    contentTotals.add(getContentInnerTaxText(), VRLayout.FLOW_RETURN);
 
     contentTotals.add(getContentKoujyoLabel(), VRLayout.FLOW_RETURN);
 
-    contentTotals.add(getContentKoujyoText(), VRLayout.FLOW);
+    contentTotals.add(getContentKoujyoText(), VRLayout.FLOW_RETURN);
+
+    contentTotals.add(getContentKoujyoPanel(), VRLayout.FLOW);
 
   }
 
@@ -3815,6 +4690,40 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * ˆã—Ã”ïTœ‘ÎÛŠz‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addContentKoujyoText(){
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœƒpƒlƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentKoujyoPanel(){
+
+    contentKoujyoPanel.add(getReflection(), VRLayout.FLOW_RETURN);
+
+    contentKoujyoPanel.add(getContentKoujyoLabel2(), VRLayout.FLOW_RETURN);
+
+    contentKoujyoPanel.add(getContentKoujyoText2(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * ”½‰f‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addReflection(){
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœ‘ÎÛŠzƒ‰ƒxƒ‹‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentKoujyoLabel2(){
+
+  }
+
+  /**
+   * ˆã—Ã”ïTœ‘ÎÛŠz‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addContentKoujyoText2(){
 
   }
 

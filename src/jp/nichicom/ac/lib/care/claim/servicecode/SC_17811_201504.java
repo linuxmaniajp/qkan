@@ -212,18 +212,22 @@ public class SC_17811_201504 extends Qkan10011_ServiceUnitGetter {
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch(_17){
         // ˆ‹ö‰ü‘P‰ÁZI
+        case 6:
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//2017.04
+            break;
+        // ˆ‹ö‰ü‘P‰ÁZII
         case 5:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6107");
             break;
-        // ˆ‹ö‰ü‘P‰ÁZII
+        // ˆ‹ö‰ü‘P‰ÁZIII
         case 2:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6104");
             break;
-        // ˆ‹ö‰ü‘P‰ÁZIII
+        // ˆ‹ö‰ü‘P‰ÁZIV
         case 3:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6105");
             break;
-        // ˆ‹ö‰ü‘P‰ÁZIV
+        // ˆ‹ö‰ü‘P‰ÁZV
         case 4:
             putSystemServiceCodeItem(sysSvcCdItems, "Z6106");
             break;

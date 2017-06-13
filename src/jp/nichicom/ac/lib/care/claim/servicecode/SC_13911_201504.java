@@ -84,10 +84,10 @@ public class SC_13911_201504 extends Qkan10011_ServiceUnitGetter {
             //{İ‹æ•ª‚É‚æ‚è•ªŠò
             switch (_1390109) {
             case 1: // IŒ^
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6161");//TODO:ƒR[ƒh’lŠm”F
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6161");//2015.04
                 break;
             case 2: // IIŒ^
-                putSystemServiceCodeItem(sysSvcCdItems, "Z6171");//TODO:ƒR[ƒh’lŠm”F
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6171");//2015.04
                 break;
             }
         }
@@ -105,7 +105,7 @@ public class SC_13911_201504 extends Qkan10011_ServiceUnitGetter {
         switch (_1390106) {
         case 5:
             // 6100 —\”F’m‘Î‰ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒC
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//TODO:ƒR[ƒh’lŠm”F
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2015.04
             break;
         case 2:
             // 6101 —\”F’m‘Î‰ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZIƒ
@@ -123,19 +123,24 @@ public class SC_13911_201504 extends Qkan10011_ServiceUnitGetter {
 
         // ‰îŒìEˆõˆ‹ö‰ü‘P‚ğ•Ô‹p
         switch (_17) {
+        case 6:
+            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZI
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6108");//2017.04
+            break;
         case 5:
-            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//TODO:ƒR[ƒh’lŠm”F
+            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZII
+            putSystemServiceCodeItem(sysSvcCdItems, "Z6107");//2015.04
             break;
         case 2:
-            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZI
+            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZIII
             putSystemServiceCodeItem(sysSvcCdItems, "Z6104");
             break;
         case 3:
-            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZII
+            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZIV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6105");
             break;
         case 4:
-            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZIII
+            // —\’ZŠú‹¤“¯¶Šˆˆ‹ö‰ü‘P‰ÁZV
             putSystemServiceCodeItem(sysSvcCdItems, "Z6106");
             break;
         }

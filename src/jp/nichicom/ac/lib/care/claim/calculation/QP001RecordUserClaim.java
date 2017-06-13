@@ -95,6 +95,11 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
     //[2014年要望][Shinobu Hitaka] 2015/04/15 add begin 「利用者負担額0円も印刷可能にする」のチェック状況
     private int zeroPrint = 0;
     //[2014年要望][Shinobu Hitaka] 2015/04/15 add end
+    
+    //[2016年要望][Shinobu Hitaka] 2016/12/02 add begin 給付率
+    private int kyufuritsu = 0;
+    private int dokujiFlag = 0; // 1:独自定率, 2:独自定額, 3:独自定率・定額
+    //[2016年要望][Shinobu Hitaka] 2016/12/02 add end
 
     protected String getSerialId() {
         // TODO 自動生成されたメソッド・スタブ
@@ -545,6 +550,23 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
     }
     // 2007/11/09 [Masahiko Higuchi] add - end
     
+    //[2016年要望][Shinobu Hitaka] 2016/12/02 add begin 給付率を取得します
+    /**
+     * 保険給付率を取得する。
+     * @return
+     */
+    public int get_kyufuritsu() {
+        return kyufuritsu;
+    }
+    /**
+     * 独自定率定額フラグを取得する。
+     * @return
+     */
+    public int get_dokujiFlag() {
+        return dokujiFlag;
+    }
+    //[2016年要望][Shinobu Hitaka] 2016/12/02 add end
+
     public void parse(VRList claimList,QP001Manager manager) throws Exception {
         
         // 集計情報レコード退避用
@@ -595,6 +617,33 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
                     unitCalc.parseBase(claim);
                     //[H20.5 法改正対応] fujihara add end
                     
+                    //[2016年要望][Shinobu Hitaka] 2016/12/02 add begin 給付率を設定する
+                    if(!ACTextUtilities.isNullText(VRBindPathParser.get("201029",claim))){
+                        int kyufu = ACCastUtilities.toInt(claim.get("201029"),0);
+                        if (kyufu > kyufuritsu) {
+                            kyufuritsu = kyufu;
+                        }
+                    }
+                    if(!ACTextUtilities.isNullText(VRBindPathParser.get("201030",claim))){
+                        int kohi = ACCastUtilities.toInt(claim.get("201030"),0);
+                        if (kohi > kyufuritsu) {
+                        	kyufuritsu = kohi;
+                        }
+                    }
+                    if(!ACTextUtilities.isNullText(VRBindPathParser.get("201031",claim))){
+                        int kohi = ACCastUtilities.toInt(claim.get("201031"),0);
+                        if (kohi > kyufuritsu) {
+                        	kyufuritsu = kohi;
+                        }
+                    }
+                    if(!ACTextUtilities.isNullText(VRBindPathParser.get("201032",claim))){
+                        int kohi = ACCastUtilities.toInt(claim.get("201032"),0);
+                        if (kohi > kyufuritsu) {
+                        	kyufuritsu = kohi;
+                        }
+                    }
+                    //[2016年要望][Shinobu Hitaka] 2016/12/02 add end
+                    
                     break;
                     
                 //[H20.5 法改正対応] fujihara add start
@@ -610,6 +659,30 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
                 //集計情報レコード
                 case 7:
                     typeList.add(claim);
+                    
+                    //[2016年要望][Shinobu Hitaka] 2016/12/12 add begin 給付率 定率定額のフラグを設定
+                    if(!ACTextUtilities.isNullText(VRBindPathParser.get("701007",claim))){
+                        String service_kind = ACCastUtilities.toString(claim.get("701007"),"");
+                        if ("A3".equals(service_kind) || "A7".equals(service_kind)
+                            || "A9".equals(service_kind) || "AB".equals(service_kind)
+                            || "AD".equals(service_kind)) {
+                            if (dokujiFlag >= 2) {
+                                dokujiFlag = 3; // 定率＋定額
+                            } else {
+                                dokujiFlag = 1; // 定率
+                            }
+                        } else if ("A4".equals(service_kind) || "A8".equals(service_kind)
+                            || "AA".equals(service_kind) || "AC".equals(service_kind)
+                            || "AE".equals(service_kind)) {
+                            if (dokujiFlag == 1 || dokujiFlag == 3) {
+                                dokujiFlag = 3; // 定率＋定額
+                            } else {
+                                dokujiFlag = 2; // 定額
+                            }
+                        }
+                    }
+                    //[2016年要望][Shinobu Hitaka] 2016/12/12 add end
+                    
                     break;
                     
                 //特定入所者介護サービス費用情報レコード

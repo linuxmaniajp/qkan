@@ -95,6 +95,19 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
     // 給付割合
     private int _1801027 = 0;
     
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - begin 月額算定を印字しない判定用に設定追加
+    // 集計集合化区分（算定単位）
+    private int _1801028 = 0;
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - end
+    
+    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+    // 総合事業（独自定率）給付率
+    private String _1801029 = "";
+    
+    // 総合事業（独自定額）利用者負担額
+    private String _1801030 = "";
+    // 2016/10/11 [Yoichiro Kamei] add - end
+    
     /**
      * 交換情報識別番号4桁を取得します。
      * 
@@ -570,6 +583,61 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
         this._1801027 = _301026;
     }
     
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/05 add - begin 月額算定を印字しない判定用に設定追加
+    /**
+     * 集計集合化区分（算定単位）を取得します。
+     * 
+     * @return
+     */
+    protected Integer get_301027() {
+        return _1801028;
+    }
+
+    /**
+     * 集計集合化区分（算定単位）を設定します。
+     * 
+     * @param _301027
+     */
+    protected void set_301027(Integer _301027) {
+        this._1801028 = _301027;
+    }
+    // [H27.4改正対応][Shinobu Hitaka] 2016/10/05 add - end
+    
+    // 2016/10/11 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 総合事業（独自定率）給付率を取得します。
+     * 
+     * @return
+     */
+    protected String get_301028() {
+		return _1801029;
+	}
+    /**
+     * 総合事業（独自定率）給付率を設定します。
+     * 
+     * @param _301028
+     */
+    protected void set_301028(String _301028) {
+		this._1801029 = _301028;
+	}
+    /**
+     * 総合事業（独自定額）利用者負担額を取得します。
+     * 
+     * @return
+     */
+    protected String get_301029() {
+		return _1801030;
+	}
+    /**
+     * 総合事業（独自定額）利用者負担額を設定します。
+     * 
+     * @param _301029
+     */
+    protected void set_301029(String _301029) {
+		this._1801030 = _301029;
+	}
+    // 2016/10/11 [Yoichiro Kamei] add - end
+    
     protected static QP001RecordDetailJushotiTokurei getInstance(String identificationNo,
             Date targetDate, Object targetServiceDate, VRMap serviceDetail,
             VRMap serviceCode, QP001PatientState patientState,VRMap detailMap,QP001Manager manager, String jushotiTokureiInsurerId) throws Exception {
@@ -706,6 +774,14 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
 		//システム内サービス項目コード(SYSTEM_SERVICE_CODE_ITEM)
 		setData(result,"1801023",get_301022());
 
+		//集計集合化区分（算定単位）(TOTAL_GROUPING_TYPE) add 2016.10.05
+		setData(result,"1801028",get_301027());
+		
+		//総合事業（独自定率）給付率 add 2016.10.11
+		setData(result,"1801029",get_301028());
+		//総合事業（独自定額）利用者負担額 add 2016.10.11
+		setData(result,"1801030",get_301029());
+
         return result;
     }
 
@@ -752,6 +828,7 @@ public class QP001RecordDetailJushotiTokurei  extends QP001RecordDetail {
         result.append("[1801025=" + get_301024() + "]\n");
         result.append("[1801026=" + get_301025() + "]\n");
         result.append("[1801027=" + get_301026() + "]\n");
+        result.append("[1801028=" + get_301027() + "]\n"); // add 2016.10.05
         //result.append(kohiManager);
         return result.toString();
     }    

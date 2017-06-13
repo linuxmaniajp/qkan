@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2012/08/07  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2016/09/22  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -95,7 +95,7 @@ public abstract class QS001002Event extends QS001002State {
    * イベント発生条件を定義します。
    */
   protected void addEvents() {
-    getCoordinatePrivateExpenses().addActionListener(new ActionListener(){
+    getDetailsbutton2().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -103,7 +103,7 @@ public abstract class QS001002Event extends QS001002State {
             }
             lockFlag = true;
             try {
-                coordinatePrivateExpensesActionPerformed(e);
+                detailsbutton2ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -111,7 +111,7 @@ public abstract class QS001002Event extends QS001002State {
             }
         }
     });
-    getDetailsbutton().addActionListener(new ActionListener(){
+    getDetailsbutton3().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
             if (lockFlag) {
@@ -119,7 +119,7 @@ public abstract class QS001002Event extends QS001002State {
             }
             lockFlag = true;
             try {
-                detailsbuttonActionPerformed(e);
+                detailsbutton3ActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -159,39 +159,23 @@ public abstract class QS001002Event extends QS001002State {
             }
         }
     });
-    getPlanUnit().addActionListener(new ActionListener(){
-        private boolean lockFlag = false;
-        public void actionPerformed(ActionEvent e) {
-            if (lockFlag) {
-                return;
-            }
-            lockFlag = true;
-            try {
-                planUnitActionPerformed(e);
-            }catch(Throwable ex){
-                ACCommon.getInstance().showExceptionMessage(ex);
-            }finally{
-                lockFlag = false;
-            }
-        }
-    });
 
   }
   //コンポーネントイベント
 
   /**
-   * 「自費調整」イベントです。
+   * 「集計明細・負担額調整」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void coordinatePrivateExpensesActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void detailsbutton2ActionPerformed(ActionEvent e) throws Exception;
 
   /**
-   * 「集計明細」イベントです。
+   * 「集計明細・計画単位数」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
    */
-  protected abstract void detailsbuttonActionPerformed(ActionEvent e) throws Exception;
+  protected abstract void detailsbutton3ActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「特定診療費・特別療養費の取得」イベントです。
@@ -206,13 +190,6 @@ public abstract class QS001002Event extends QS001002State {
    * @throws Exception 処理例外
    */
   protected abstract void calcurateActionPerformed(ActionEvent e) throws Exception;
-
-  /**
-   * 「計画単位数編集」イベントです。
-   * @param e イベント情報
-   * @throws Exception 処理例外
-   */
-  protected abstract void planUnitActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
@@ -457,12 +434,11 @@ public abstract class QS001002Event extends QS001002State {
   /**
    * 「集計明細の表示更新」に関する処理を行ないます。
    *
-   * @param managementTotal int
-   * @param adjustTotal int
+   * @param summary CareServiceSummaryManager
    * @throws Exception 処理例外
    *
    */
-  public abstract void updateTotal(int managementTotal, int adjustTotal) throws Exception;
+  public abstract void updateTotal(CareServiceSummaryManager summary) throws Exception;
 
   /**
    * 「印刷可能要件チェック」に関する処理を行ないます。

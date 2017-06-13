@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/03/08  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/11/28  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -193,6 +193,28 @@ public class QS001_16511_201504State extends QS001_16511_201504Design {
 
         getMouthFunctionImprovementAddRadio().setEnabled(false);
         getMouthFunctionImprovementAddRadio().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「選択的サービス複数実施加算」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_SENTAKU_ADD() throws Exception {
+
+        getSentakutekiServiceRadio().setEnabled(true);
+        getSentakutekiServiceRadio().getParent().setEnabled(true);
+
+  }
+
+  /**
+   * 「選択的サービス複数実施加算」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_SENTAKU_ADD() throws Exception {
+
+        getSentakutekiServiceRadio().setEnabled(false);
+        getSentakutekiServiceRadio().getParent().setEnabled(false);
 
   }
 

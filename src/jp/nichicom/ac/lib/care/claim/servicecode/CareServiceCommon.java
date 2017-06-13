@@ -2,6 +2,8 @@ package jp.nichicom.ac.lib.care.claim.servicecode;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -260,10 +262,15 @@ public class CareServiceCommon {
             "Z8000".equals(item)
             // 特別地域(日割)
                     || "Z8001".equals(item)
+                    // 特別地域加算回数 -- add 2016.10 総合事業対応
+                    || "Z8002".equals(item) 
                     // 中山間地域等の小規模事業所
                     || "Z8100".equals(item)
                     // 中山間地域等の小規模事業所(日割)
-                    || "Z8101".equals(item)) {
+                    || "Z8101".equals(item)
+                    // 小規模事業所加算回数 -- add 2016.10 総合事業対応
+                    || "Z8102".equals(item)
+            ) {
                 return true;
             }
         }
@@ -638,6 +645,7 @@ public class CareServiceCommon {
         case 16111: // 介護予防訪問介護
         case 17611: // 定期巡回・随時対応型訪問介護看護
         case 50111: // 訪問型サービス（みなし） H27.4
+        case 50211: // 訪問型サービス（独自） H27.4
             return true;
         }
         return false;
@@ -783,6 +791,7 @@ public class CareServiceCommon {
         case 17411: // 介護予防認知症対応型通所介護
         case 17811: // 地域密着型通所介護 H28.4
         case 50511: // 通所型サービス（みなし） H27.4
+        case 50611: // 通所型サービス（独自） H27.4
             return true;
         }
         return false;
@@ -1574,7 +1583,75 @@ public class CareServiceCommon {
         	}
         }
         // 2016/7/21 [Yoichiro Kamei] add - end
-        
+        // 2016/10/6 [Shinobu Hitaka] add - begin 総合事業独自対応
+        // 総合事業の独自分も追加
+        if ("A2".equals(serviceCodeKind)) {	// 訪問型サービス
+        	if ("1111".equals(serviceCodeItem)		//訪問型独自サービス１
+				|| "1113".equals(serviceCodeItem)	//訪問型独自サービス１・初任
+				|| "1114".equals(serviceCodeItem)	//訪問型独自サービス１・同一
+				|| "1115".equals(serviceCodeItem)	//訪問型独自サービス１・初任・同一
+				|| "1211".equals(serviceCodeItem)	//訪問型独自サービス２
+				|| "1213".equals(serviceCodeItem)	//訪問型独自サービス２・初任
+				|| "1214".equals(serviceCodeItem)	//訪問型独自サービス２・同一
+				|| "1215".equals(serviceCodeItem)	//訪問型独自サービス２・初任・同一
+				|| "1321".equals(serviceCodeItem)	//訪問型独自サービス３
+				|| "1323".equals(serviceCodeItem)	//訪問型独自サービス３・初任
+				|| "1324".equals(serviceCodeItem)	//訪問型独自サービス３・同一
+				|| "1325".equals(serviceCodeItem)	//訪問型独自サービス３・初任・同一
+				|| "1121".equals(serviceCodeItem)	//訪問型独自サービス１／２
+				|| "1123".equals(serviceCodeItem)	//訪問型独自サービス１／２・初任
+				|| "1124".equals(serviceCodeItem)	//訪問型独自サービス１／２・同一
+				|| "1125".equals(serviceCodeItem)	//訪問型独自サービス１／２・初任・同一
+				|| "1221".equals(serviceCodeItem)	//訪問型独自サービス２／２
+				|| "1223".equals(serviceCodeItem)	//訪問型独自サービス２／２・初任
+				|| "1224".equals(serviceCodeItem)	//訪問型独自サービス２／２・同一
+				|| "1225".equals(serviceCodeItem)	//訪問型独自サービス２／２・初任・同一
+				|| "1331".equals(serviceCodeItem)	//訪問型独自サービス３／２
+				|| "1333".equals(serviceCodeItem)	//訪問型独自サービス３／２・初任
+				|| "1334".equals(serviceCodeItem)	//訪問型独自サービス３／２・同一
+				|| "1335".equals(serviceCodeItem)	//訪問型独自サービス３／２・初任・同一
+				|| "1131".equals(serviceCodeItem)	//訪問型独自サービス１／３
+				|| "1133".equals(serviceCodeItem)	//訪問型独自サービス１／３・初任
+				|| "1134".equals(serviceCodeItem)	//訪問型独自サービス１／３・同一
+				|| "1135".equals(serviceCodeItem)	//訪問型独自サービス１／３・初任・同一
+				|| "1231".equals(serviceCodeItem)	//訪問型独自サービス２／３
+				|| "1233".equals(serviceCodeItem)	//訪問型独自サービス２／３・初任
+				|| "1234".equals(serviceCodeItem)	//訪問型独自サービス２／３・同一
+				|| "1235".equals(serviceCodeItem)	//訪問型独自サービス２／３・初任・同一
+				|| "1341".equals(serviceCodeItem)	//訪問型独自サービス３／３
+				|| "1343".equals(serviceCodeItem)	//訪問型独自サービス３／３・初任
+				|| "1344".equals(serviceCodeItem)	//訪問型独自サービス３／３・同一
+				|| "1345".equals(serviceCodeItem)	//訪問型独自サービス３／３・初任・同一
+				|| "1141".equals(serviceCodeItem)	//訪問型独自サービス１／４
+				|| "1143".equals(serviceCodeItem)	//訪問型独自サービス１／４・初任
+				|| "1144".equals(serviceCodeItem)	//訪問型独自サービス１／４・同一
+				|| "1145".equals(serviceCodeItem)	//訪問型独自サービス１／４・初任・同一
+				|| "1241".equals(serviceCodeItem)	//訪問型独自サービス２／４
+				|| "1243".equals(serviceCodeItem)	//訪問型独自サービス２／４・初任
+				|| "1244".equals(serviceCodeItem)	//訪問型独自サービス２／４・同一
+				|| "1245".equals(serviceCodeItem)	//訪問型独自サービス２／４・初任・同一
+				|| "1351".equals(serviceCodeItem)	//訪問型独自サービス３／４
+				|| "1353".equals(serviceCodeItem)	//訪問型独自サービス３／４・初任
+				|| "1354".equals(serviceCodeItem)	//訪問型独自サービス３／４・同一
+				|| "1355".equals(serviceCodeItem)	//訪問型独自サービス３／４・初任・同一
+				|| "1151".equals(serviceCodeItem)	//訪問型独自サービス１／５
+				|| "1153".equals(serviceCodeItem)	//訪問型独自サービス１／５・初任
+				|| "1154".equals(serviceCodeItem)	//訪問型独自サービス１／５・同一
+				|| "1155".equals(serviceCodeItem)	//訪問型独自サービス１／５・初任・同一
+				|| "1251".equals(serviceCodeItem)	//訪問型独自サービス２／５
+				|| "1253".equals(serviceCodeItem)	//訪問型独自サービス２／５・初任
+				|| "1254".equals(serviceCodeItem)	//訪問型独自サービス２／５・同一
+				|| "1255".equals(serviceCodeItem)	//訪問型独自サービス２／５・初任・同一
+				|| "1361".equals(serviceCodeItem)	//訪問型独自サービス３／５
+				|| "1363".equals(serviceCodeItem)	//訪問型独自サービス３／５・初任
+				|| "1364".equals(serviceCodeItem)	//訪問型独自サービス３／５・同一
+				|| "1365".equals(serviceCodeItem)	//訪問型独自サービス３／５・初任・同一
+        		) {
+        		return true;
+        	}
+        }
+        // 2016/10/6 [Shinobu Hitaka] add - end
+
         return false;
     }
 
@@ -1616,20 +1693,89 @@ public class CareServiceCommon {
      * 計画単位数のバインドパス配列を返します。
      * [H27.4改正対応][Shinobu Hitaka] 2015/03/06 68,69,79のサービス種類追加
      * [H28.4改正対応][Shinobu Hitaka] 2016/01/29 78のサービス種類追加
-     * [総合事業みなし対応][Y.Kamei]   2016/07/15 A1,A5のサービス種類追加
+     * [総合事業対応][Y.Kamei]   2016/09/06 A1-AFのサービス種類追加
      * @return 計画単位数のバインドパス配列
      */
+// 2016/9/6 [Yoichiro Kamei] add - begin 総合事業対応
+    // サービス種類コードをキーに計画単位数のバインドパスを値に持つマップ
+    private static Map<String, String> planUnitBindPathKindKeyMap = new LinkedHashMap<String, String>();
+    static {
+    	planUnitBindPathKindKeyMap.put("11","1011");
+    	planUnitBindPathKindKeyMap.put("12","1012");
+    	planUnitBindPathKindKeyMap.put("13","1013");
+    	planUnitBindPathKindKeyMap.put("14","1014");
+    	planUnitBindPathKindKeyMap.put("15","1015");
+    	planUnitBindPathKindKeyMap.put("16","1016");
+    	planUnitBindPathKindKeyMap.put("17","1017");
+    	planUnitBindPathKindKeyMap.put("21","1021");
+    	planUnitBindPathKindKeyMap.put("22","1022");
+    	planUnitBindPathKindKeyMap.put("23","1023");
+    	planUnitBindPathKindKeyMap.put("71","1071");
+    	planUnitBindPathKindKeyMap.put("27","1027");
+    	planUnitBindPathKindKeyMap.put("72","1072");
+    	planUnitBindPathKindKeyMap.put("73","1073");
+    	planUnitBindPathKindKeyMap.put("68","1068");
+    	planUnitBindPathKindKeyMap.put("38","1038");
+    	planUnitBindPathKindKeyMap.put("28","1028");
+    	planUnitBindPathKindKeyMap.put("76","1076");
+    	planUnitBindPathKindKeyMap.put("77","1077");
+    	planUnitBindPathKindKeyMap.put("79","1079");
+    	planUnitBindPathKindKeyMap.put("78","1078");
+    	planUnitBindPathKindKeyMap.put("61","1061");
+    	planUnitBindPathKindKeyMap.put("62","1062");
+    	planUnitBindPathKindKeyMap.put("63","1063");
+    	planUnitBindPathKindKeyMap.put("64","1064");
+    	planUnitBindPathKindKeyMap.put("65","1065");
+    	planUnitBindPathKindKeyMap.put("66","1066");
+    	planUnitBindPathKindKeyMap.put("67","1067");
+    	planUnitBindPathKindKeyMap.put("24","1024");
+    	planUnitBindPathKindKeyMap.put("25","1025");
+    	planUnitBindPathKindKeyMap.put("26","1026");
+    	planUnitBindPathKindKeyMap.put("39","1039");
+    	planUnitBindPathKindKeyMap.put("74","1074");
+    	planUnitBindPathKindKeyMap.put("75","1075");
+    	planUnitBindPathKindKeyMap.put("69","1069");
+    	// 総合事業
+    	planUnitBindPathKindKeyMap.put("A1","1101");
+    	planUnitBindPathKindKeyMap.put("A2","1102");
+    	planUnitBindPathKindKeyMap.put("A3","1103");
+    	planUnitBindPathKindKeyMap.put("A4","1104");
+    	planUnitBindPathKindKeyMap.put("A5","1105");
+    	planUnitBindPathKindKeyMap.put("A6","1106");
+    	planUnitBindPathKindKeyMap.put("A7","1107");
+    	planUnitBindPathKindKeyMap.put("A8","1108");
+    	planUnitBindPathKindKeyMap.put("A9","1109");
+    	planUnitBindPathKindKeyMap.put("AA","1110");
+    	planUnitBindPathKindKeyMap.put("AB","1111");
+    	planUnitBindPathKindKeyMap.put("AC","1112");
+    	planUnitBindPathKindKeyMap.put("AD","1113");
+    	planUnitBindPathKindKeyMap.put("AE","1114");
+    }
+    
+    // 計画単位数のバインドパスをキーにサービス種類コードを値に持つマップ
+    private static Map<String, String> planUnitBindPathKeyMap = new HashMap<String, String>();
+    static {
+    	for (String kind : planUnitBindPathKindKeyMap.keySet()) {
+    		String path = planUnitBindPathKindKeyMap.get(kind);
+    		planUnitBindPathKeyMap.put(path, kind);
+    	}
+    }
+// 2016/9/6 [Yoichiro Kamei] add - end 総合事業対応
+
     public static String[] getPlanUnitBindPathes() {
-        return new String[] { 
-        		"1011", "1012", "1013", "1014", "1015",
-        		"1016", "1017", "1021", "1022", "1023",
-        		"1071", "1027", "1072", "1073", "1068",
-        		"1038", "1028", "1076", "1077", "1079",
-        		"1078",
-                "1061", "1062", "1063", "1064", "1065",
-                "1066", "1067", "1024", "1025", "1026",
-                "1039", "1074", "1075", "1069", 
-                "1101", "1105" };
+// 2016/9/6 [Yoichiro Kamei] mod - begin 総合事業対応
+//        return new String[] { 
+//        		"1011", "1012", "1013", "1014", "1015",
+//        		"1016", "1017", "1021", "1022", "1023",
+//        		"1071", "1027", "1072", "1073", "1068",
+//        		"1038", "1028", "1076", "1077", "1079",
+//        		"1078",
+//                "1061", "1062", "1063", "1064", "1065",
+//                "1066", "1067", "1024", "1025", "1026",
+//                "1039", "1074", "1075", "1069", 
+//                "1101", "1105" };
+    	return (String[]) planUnitBindPathKindKeyMap.values().toArray(new String[0]);
+// 2016/9/6 [Yoichiro Kamei] mod - end 総合事業対応
     };
 
     /**
@@ -1876,45 +2022,28 @@ public class CareServiceCommon {
  	 * @param serviceKind
  	 * @return 計画単位数のバインドパス
  	 */
- 	public static String getPlanUnitBindPath(String serviceKind)  throws Exception {
+ 	public static String getPlanUnitBindPath(String serviceKind) {
  		if (ACTextUtilities.isNullText(serviceKind)) {
  			return "";
  		}
- 		
- 		if ("A1".equals(serviceKind)) {
- 			return "1101";
- 		} else if ("A2".equals(serviceKind)) {
- 			return "1102";
- 		} else if ("A3".equals(serviceKind)) {
- 			return "1103";
- 		} else if ("A4".equals(serviceKind)) {
- 			return "1104";
- 		} else if ("A5".equals(serviceKind)) {
- 			return "1105";
- 		} else if ("A6".equals(serviceKind)) {
- 			return "1106";
- 		} else if ("A7".equals(serviceKind)) {
- 			return "1107";
- 		} else if ("A8".equals(serviceKind)) {
- 			return "1108";
- 		} else if ("A9".equals(serviceKind)) {
- 			return "1109";
- 		} else if ("AA".equals(serviceKind)) {
- 			return "1110";
- 		} else if ("AB".equals(serviceKind)) {
- 			return "1111";
- 		} else if ("AC".equals(serviceKind)) {
- 			return "1112";
- 		} else if ("AD".equals(serviceKind)) {
- 			return "1113";
- 		} else if ("AE".equals(serviceKind)) {
- 			return "1114";
- 		} else if ("AF".equals(serviceKind)) {
- 			return "1115";
- 		} else {
- 			//総合事業ではない場合
- 			return "10" + serviceKind;
+ 		String path = planUnitBindPathKindKeyMap.get(serviceKind);
+ 		if (path != null) {
+ 			return path;
  		}
+ 		// マップから取得出来ない場合
+ 		return "10" + serviceKind;
+ 	}
+ 	
+ 	/**
+ 	 * 計画単位数のバインドパスから対応するサービス種類コードを取得します。
+ 	 * @param path 計画単位数のバインドパス
+ 	 * @return サービス種類コード
+ 	 */
+ 	public static String getServiceKindFromPlanUnitBindPath(String path) {
+ 		if (ACTextUtilities.isNullText(path)) {
+ 			return "";
+ 		}
+ 		return planUnitBindPathKeyMap.get(path);
  	}
  // 2016/7/15 [Yoichiro Kamei] add - end
 

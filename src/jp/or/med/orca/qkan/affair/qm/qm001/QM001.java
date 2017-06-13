@@ -687,7 +687,7 @@ public class QM001 extends QM001Event {
                     ACFrame.getInstance().setVisible(true);
                     // 集計ボタン押下
                     buttonActionPerformed(affair.getMonthlyPanel()
-                            .getDetailsbutton());
+                            .getDetailsbutton2());
                 } else if ("showResultCalc".equals(args[0])) {
                     // 利用者一覧(実績集計)
                     if (!canLink()) {
@@ -770,7 +770,7 @@ public class QM001 extends QM001Event {
                     ACFrame.getInstance().setVisible(true);
                     // 集計ボタン押下
                     buttonActionPerformed(affair.getMonthlyPanel()
-                            .getDetailsbutton());
+                            .getDetailsbutton3());
                 } else if ("showResultPlanUnit".equals(args[0])) {
                     // 実績から計画単位数画面
                     if (!canLink()) {
@@ -784,7 +784,7 @@ public class QM001 extends QM001Event {
                     ACFrame.getInstance().setVisible(true);
                     // 集計ボタン押下
                     buttonActionPerformed(affair.getMonthlyPanel()
-                            .getPlanUnit());
+                            .getDetailsbutton3());
                 }
             } catch (Throwable ex) {
                 ACMessageBox.showExclamation("連携処理に失敗しました。"
