@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2015/06/08  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2016/07/27  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -277,10 +277,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
   private QkanDateTextField kaigoInfoValidLimit3;
 
-  private ACLabelContainer kaigoInfoJigyoTaisyos;
-
-  private ACIntegerCheckBox kaigoInfoJigyoTaisyo;
-
   private QkanDateTextField kaigoInfoRequestDate;
 
   private ACLabelContainer kaigoInfoRequestDateContainer;
@@ -288,6 +284,10 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   private QkanDateTextField kaigoInfoAuthorizeDate;
 
   private ACLabelContainer kaigoInfoAuthorizeDateContainer;
+
+  private ACLabelContainer kaigoInfoLimitChanges;
+
+  private ACIntegerCheckBox kaigoInfoLimitChange;
 
   private ACGroupBox kaigoInfoProvideLimitGroup;
 
@@ -2441,44 +2441,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (月途中で事業対象者→要支援１となった・コンテナ)を取得します。
-   * @return (月途中で事業対象者→要支援１となった・コンテナ)
-   */
-  public ACLabelContainer getKaigoInfoJigyoTaisyos(){
-    if(kaigoInfoJigyoTaisyos==null){
-
-      kaigoInfoJigyoTaisyos = new ACLabelContainer();
-
-      addKaigoInfoJigyoTaisyos();
-    }
-    return kaigoInfoJigyoTaisyos;
-
-  }
-
-  /**
-   * 月途中で事業対象者→要支援１となったを取得します。
-   * @return 月途中で事業対象者→要支援１となった
-   */
-  public ACIntegerCheckBox getKaigoInfoJigyoTaisyo(){
-    if(kaigoInfoJigyoTaisyo==null){
-
-      kaigoInfoJigyoTaisyo = new ACIntegerCheckBox();
-
-      kaigoInfoJigyoTaisyo.setText("月途中で事業対象者→要支援１となった");
-
-      kaigoInfoJigyoTaisyo.setBindPath("JIGYOTAISYO_FLAG");
-
-      kaigoInfoJigyoTaisyo.setSelectValue(2);
-
-      kaigoInfoJigyoTaisyo.setUnSelectValue(1);
-
-      addKaigoInfoJigyoTaisyo();
-    }
-    return kaigoInfoJigyoTaisyo;
-
-  }
-
-  /**
    * 申請日を取得します。
    * @return 申請日
    */
@@ -2542,6 +2504,44 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
       kaigoInfoAuthorizeDateContainer.add(getKaigoInfoAuthorizeDate(), null);
     }
     return kaigoInfoAuthorizeDateContainer;
+  }
+
+  /**
+   * (要支援１の額を超えてサービスを利用・コンテナ)を取得します。
+   * @return (要支援１の額を超えてサービスを利用・コンテナ)
+   */
+  public ACLabelContainer getKaigoInfoLimitChanges(){
+    if(kaigoInfoLimitChanges==null){
+
+      kaigoInfoLimitChanges = new ACLabelContainer();
+
+      addKaigoInfoLimitChanges();
+    }
+    return kaigoInfoLimitChanges;
+
+  }
+
+  /**
+   * 要支援１の額を超えてサービスを利用を取得します。
+   * @return 要支援１の額を超えてサービスを利用
+   */
+  public ACIntegerCheckBox getKaigoInfoLimitChange(){
+    if(kaigoInfoLimitChange==null){
+
+      kaigoInfoLimitChange = new ACIntegerCheckBox();
+
+      kaigoInfoLimitChange.setText("要支援１の額を超えてサービスを利用");
+
+      kaigoInfoLimitChange.setBindPath("LIMIT_CHANGE_FLAG");
+
+      kaigoInfoLimitChange.setSelectValue(2);
+
+      kaigoInfoLimitChange.setUnSelectValue(1);
+
+      addKaigoInfoLimitChange();
+    }
+    return kaigoInfoLimitChange;
+
   }
 
   /**
@@ -6054,13 +6054,13 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
     kaigoInfo.add(getKaigoInfoYokaigoInfoContainer(), VRLayout.FLOW);
 
-    kaigoInfo.add(getKaigoInfoValidLimits(), VRLayout.FLOW);
-
-    kaigoInfo.add(getKaigoInfoJigyoTaisyos(), VRLayout.FLOW_RETURN);
+    kaigoInfo.add(getKaigoInfoValidLimits(), VRLayout.FLOW_RETURN);
 
     kaigoInfo.add(getKaigoInfoRequestDateContainer(), VRLayout.FLOW_INSETLINE);
 
-    kaigoInfo.add(getKaigoInfoAuthorizeDateContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    kaigoInfo.add(getKaigoInfoAuthorizeDateContainer(), VRLayout.FLOW_INSETLINE);
+
+    kaigoInfo.add(getKaigoInfoLimitChanges(), VRLayout.FLOW_RETURN);
 
     kaigoInfo.add(getKaigoInfoProvideLimitGroup(), VRLayout.FLOW);
 
@@ -6357,22 +6357,6 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * (月途中で事業対象者→要支援１となった・コンテナ)に内部項目を追加します。
-   */
-  protected void addKaigoInfoJigyoTaisyos(){
-
-    kaigoInfoJigyoTaisyos.add(getKaigoInfoJigyoTaisyo(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 月途中で事業対象者→要支援１となったに内部項目を追加します。
-   */
-  protected void addKaigoInfoJigyoTaisyo(){
-
-  }
-
-  /**
    * 申請日に内部項目を追加します。
    */
   protected void addKaigoInfoRequestDate(){
@@ -6383,6 +6367,22 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
    * 認定日に内部項目を追加します。
    */
   protected void addKaigoInfoAuthorizeDate(){
+
+  }
+
+  /**
+   * (要支援１の額を超えてサービスを利用・コンテナ)に内部項目を追加します。
+   */
+  protected void addKaigoInfoLimitChanges(){
+
+    kaigoInfoLimitChanges.add(getKaigoInfoLimitChange(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 要支援１の額を超えてサービスを利用に内部項目を追加します。
+   */
+  protected void addKaigoInfoLimitChange(){
 
   }
 

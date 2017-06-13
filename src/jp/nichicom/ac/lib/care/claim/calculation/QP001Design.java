@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/04/12  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/07/15  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定/請求書出力 (P)
@@ -28,43 +28,57 @@
  *****************************************************************
  */
 package jp.nichicom.ac.lib.care.claim.calculation;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACAffairButton;
-import jp.nichicom.ac.component.ACAffairButtonBar;
-import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.component.table.ACCheckBoxTableColumnPopupMenu;
-import jp.nichicom.ac.component.table.ACTable;
-import jp.nichicom.ac.component.table.ACTableCellViewer;
-import jp.nichicom.ac.component.table.ACTableColumn;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACAffairable;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.text.ACBorderBlankDateFormat;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.vr.component.table.VRTableCellViewer;
-import jp.nichicom.vr.component.table.VRTableColumnModel;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.QkanConstants;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.component.QkanDateTextField;
-import jp.or.med.orca.qkan.component.QkanYearDateTextField;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 利用者一覧（請求）画面項目デザイン(QP001) 
  */
@@ -104,6 +118,18 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   private QkanYearDateTextField claimDate;
 
   private ACLabelContainer claimDateContainer;
+
+  private ACValueArrayRadioButtonGroup seikyuType;
+
+  private ACLabelContainer seikyuTypeContainer;
+
+  private ACListModelAdapter seikyuTypeModel;
+
+  private ACRadioButtonItem seikyuTypeRadioItem1;
+
+  private ACRadioButtonItem seikyuTypeRadioItem2;
+
+  private ACRadioButtonItem seikyuTypeRadioItem3;
 
   private ACIntegerCheckBox notOutputDistinction;
 
@@ -192,6 +218,10 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField type10Count;
 
   private ACLabelContainer type10CountContainer;
+
+  private ACTextField type23Count;
+
+  private ACLabelContainer type23CountContainer;
 
   private ACTextField visitCount;
 
@@ -566,7 +596,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       targetDate.setBindPath("REST_TARGET_DATE");
 
       try{
-        targetDate.setMinimumDate(QkanConstants.H2704);
+        targetDate.setMinimumDate(ACCastUtilities.toDate(QkanConstants.H2704));
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("targetDate の最小年月日に不正な日付が指定されています。"));
       }
@@ -625,6 +655,118 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       claimDateContainer.add(getClaimDate(), null);
     }
     return claimDateContainer;
+  }
+
+  /**
+   * 保険／事業費を取得します。
+   * @return 保険／事業費
+   */
+  public ACValueArrayRadioButtonGroup getSeikyuType(){
+    if(seikyuType==null){
+
+      seikyuType = new ACValueArrayRadioButtonGroup();
+
+      getSeikyuTypeContainer().setText("保険／事業費");
+
+      seikyuType.setUseClearButton(false);
+
+      seikyuType.setModel(getSeikyuTypeModel());
+
+      seikyuType.setValues(new int[]{1,2,3});
+
+      addSeikyuType();
+    }
+    return seikyuType;
+
+  }
+
+  /**
+   * 保険／事業費コンテナを取得します。
+   * @return 保険／事業費コンテナ
+   */
+  protected ACLabelContainer getSeikyuTypeContainer(){
+    if(seikyuTypeContainer==null){
+      seikyuTypeContainer = new ACLabelContainer();
+      seikyuTypeContainer.setFollowChildEnabled(true);
+      seikyuTypeContainer.setVAlignment(VRLayout.CENTER);
+      seikyuTypeContainer.add(getSeikyuType(), null);
+    }
+    return seikyuTypeContainer;
+  }
+
+  /**
+   * 保険／事業費モデルを取得します。
+   * @return 保険／事業費モデル
+   */
+  protected ACListModelAdapter getSeikyuTypeModel(){
+    if(seikyuTypeModel==null){
+      seikyuTypeModel = new ACListModelAdapter();
+      addSeikyuTypeModel();
+    }
+    return seikyuTypeModel;
+  }
+
+  /**
+   * 全てを取得します。
+   * @return 全て
+   */
+  public ACRadioButtonItem getSeikyuTypeRadioItem1(){
+    if(seikyuTypeRadioItem1==null){
+
+      seikyuTypeRadioItem1 = new ACRadioButtonItem();
+
+      seikyuTypeRadioItem1.setText("全て");
+
+      seikyuTypeRadioItem1.setGroup(getSeikyuType());
+
+      seikyuTypeRadioItem1.setConstraints(VRLayout.FLOW);
+
+      addSeikyuTypeRadioItem1();
+    }
+    return seikyuTypeRadioItem1;
+
+  }
+
+  /**
+   * 保険請求のみを取得します。
+   * @return 保険請求のみ
+   */
+  public ACRadioButtonItem getSeikyuTypeRadioItem2(){
+    if(seikyuTypeRadioItem2==null){
+
+      seikyuTypeRadioItem2 = new ACRadioButtonItem();
+
+      seikyuTypeRadioItem2.setText("保険請求");
+
+      seikyuTypeRadioItem2.setGroup(getSeikyuType());
+
+      seikyuTypeRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addSeikyuTypeRadioItem2();
+    }
+    return seikyuTypeRadioItem2;
+
+  }
+
+  /**
+   * 事業費請求のみを取得します。
+   * @return 事業費請求のみ
+   */
+  public ACRadioButtonItem getSeikyuTypeRadioItem3(){
+    if(seikyuTypeRadioItem3==null){
+
+      seikyuTypeRadioItem3 = new ACRadioButtonItem();
+
+      seikyuTypeRadioItem3.setText("事業費請求");
+
+      seikyuTypeRadioItem3.setGroup(getSeikyuType());
+
+      seikyuTypeRadioItem3.setConstraints(VRLayout.FLOW);
+
+      addSeikyuTypeRadioItem3();
+    }
+    return seikyuTypeRadioItem3;
+
   }
 
   /**
@@ -890,7 +1032,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       claimDateUpdate.setBindPath("CLAIM_UPDATE_DATE");
 
       try{
-        claimDateUpdate.setMinimumDate(QkanConstants.H2704);
+        claimDateUpdate.setMinimumDate(ACCastUtilities.toDate(QkanConstants.H2704));
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("claimDateUpdate の最小年月日に不正な日付が指定されています。"));
       }
@@ -1437,6 +1579,43 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 様式第二の三・テキストを取得します。
+   * @return 様式第二の三・テキスト
+   */
+  public ACTextField getType23Count(){
+    if(type23Count==null){
+
+      type23Count = new ACTextField();
+
+      getType23CountContainer().setText("様式第二の三件数");
+
+      type23Count.setBindPath("STYLE_23");
+
+      type23Count.setColumns(3);
+
+      type23Count.setEditable(false);
+
+      addType23Count();
+    }
+    return type23Count;
+
+  }
+
+  /**
+   * 様式第二の三・テキストコンテナを取得します。
+   * @return 様式第二の三・テキストコンテナ
+   */
+  protected ACLabelContainer getType23CountContainer(){
+    if(type23CountContainer==null){
+      type23CountContainer = new ACLabelContainer();
+      type23CountContainer.setFollowChildEnabled(true);
+      type23CountContainer.setVAlignment(VRLayout.CENTER);
+      type23CountContainer.add(getType23Count(), null);
+    }
+    return type23CountContainer;
+  }
+
+  /**
    * 訪問看護療養費明細書・テキストを取得します。
    * @return 訪問看護療養費明細書・テキスト
    */
@@ -1695,15 +1874,15 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険請求額・テキストを取得します。
-   * @return 保険請求額・テキスト
+   * 保険／事業費請求額・テキストを取得します。
+   * @return 保険／事業費請求額・テキスト
    */
   public ACTextField getDemandMoneyInsuranceMoneyText(){
     if(demandMoneyInsuranceMoneyText==null){
 
       demandMoneyInsuranceMoneyText = new ACTextField();
 
-      getDemandMoneyInsuranceMoneyTextContainer().setText("保険請求額");
+      getDemandMoneyInsuranceMoneyTextContainer().setText("保険／事業費請求額");
 
       demandMoneyInsuranceMoneyText.setColumns(10);
 
@@ -1722,8 +1901,8 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険請求額・テキストコンテナを取得します。
-   * @return 保険請求額・テキストコンテナ
+   * 保険／事業費請求額・テキストコンテナを取得します。
+   * @return 保険／事業費請求額・テキストコンテナ
    */
   protected ACLabelContainer getDemandMoneyInsuranceMoneyTextContainer(){
     if(demandMoneyInsuranceMoneyTextContainer==null){
@@ -2326,19 +2505,19 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険請求額(列を取得します。
-   * @return 保険請求額(列
+   * 保険／事業費請求額(列を取得します。
+   * @return 保険／事業費請求額(列
    */
   public ACTableColumn getInfoTableColumn20(){
     if(infoTableColumn20==null){
 
       infoTableColumn20 = new ACTableColumn();
 
-      infoTableColumn20.setHeaderValue("保険請求額");
+      infoTableColumn20.setHeaderValue("保険／事業費請求額");
 
       infoTableColumn20.setColumnName("HOKEN");
 
-      infoTableColumn20.setColumns(6);
+      infoTableColumn20.setColumns(9);
 
       infoTableColumn20.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -2534,6 +2713,8 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
     extractCondition.add(getClaimDateContainer(), VRLayout.FLOW);
 
+    extractCondition.add(getSeikyuTypeContainer(), VRLayout.FLOW);
+
     extractCondition.add(getNotOutputDistinction(), VRLayout.FLOW_RETURN);
 
     extractCondition.add(getInsurerContena(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -2575,6 +2756,53 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
    * 請求年月・テキストに内部項目を追加します。
    */
   protected void addClaimDate(){
+
+  }
+
+  /**
+   * 保険／事業費に内部項目を追加します。
+   */
+  protected void addSeikyuType(){
+
+  }
+
+  /**
+   * 保険／事業費モデルに内部項目を追加します。
+   */
+  protected void addSeikyuTypeModel(){
+
+    getSeikyuTypeRadioItem1().setButtonIndex(1);
+
+    getSeikyuTypeModel().add(getSeikyuTypeRadioItem1());
+
+    getSeikyuTypeRadioItem2().setButtonIndex(2);
+
+    getSeikyuTypeModel().add(getSeikyuTypeRadioItem2());
+
+    getSeikyuTypeRadioItem3().setButtonIndex(3);
+
+    getSeikyuTypeModel().add(getSeikyuTypeRadioItem3());
+
+  }
+
+  /**
+   * 全てに内部項目を追加します。
+   */
+  protected void addSeikyuTypeRadioItem1(){
+
+  }
+
+  /**
+   * 保険請求のみに内部項目を追加します。
+   */
+  protected void addSeikyuTypeRadioItem2(){
+
+  }
+
+  /**
+   * 事業費請求のみに内部項目を追加します。
+   */
+  protected void addSeikyuTypeRadioItem3(){
 
   }
 
@@ -2727,11 +2955,13 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
     typeCountInfomation.add(getType6CountContainer(), VRLayout.FLOW_INSETLINE);
 
-    typeCountInfomation.add(getType8CountContainer(), VRLayout.FLOW_INSETLINE);
+    typeCountInfomation.add(getType8CountContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     typeCountInfomation.add(getType9CountContainer(), VRLayout.FLOW_INSETLINE);
 
     typeCountInfomation.add(getType10CountContainer(), VRLayout.FLOW_INSETLINE);
+
+    typeCountInfomation.add(getType23CountContainer(), VRLayout.FLOW_INSETLINE);
 
     typeCountInfomation.add(getVisitCountContainer(), VRLayout.FLOW_INSETLINE);
 
@@ -2821,6 +3051,13 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 様式第二の三・テキストに内部項目を追加します。
+   */
+  protected void addType23Count(){
+
+  }
+
+  /**
    * 訪問看護療養費明細書・テキストに内部項目を追加します。
    */
   protected void addVisitCount(){
@@ -2889,7 +3126,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険請求額・テキストに内部項目を追加します。
+   * 保険／事業費請求額・テキストに内部項目を追加します。
    */
   protected void addDemandMoneyInsuranceMoneyText(){
 
@@ -3119,7 +3356,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 保険請求額(列に内部項目を追加します。
+   * 保険／事業費請求額(列に内部項目を追加します。
    */
   protected void addInfoTableColumn20(){
 

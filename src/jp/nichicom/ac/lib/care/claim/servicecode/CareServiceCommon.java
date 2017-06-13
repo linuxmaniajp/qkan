@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Map;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanConstants;
@@ -636,6 +637,7 @@ public class CareServiceCommon {
         case 17111:// 夜間対応型訪問介護
         case 16111: // 介護予防訪問介護
         case 17611: // 定期巡回・随時対応型訪問介護看護
+        case 50111: // 訪問型サービス（みなし） H27.4
             return true;
         }
         return false;
@@ -780,6 +782,7 @@ public class CareServiceCommon {
         case 16511: // 介護予防通所介護
         case 17411: // 介護予防認知症対応型通所介護
         case 17811: // 地域密着型通所介護 H28.4
+        case 50511: // 通所型サービス（みなし） H27.4
             return true;
         }
         return false;
@@ -1480,6 +1483,36 @@ public class CareServiceCommon {
         return false;
     }
 
+// 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 総合事業のサービスであるかを返します。
+     * 
+     * @param systemServiceKindDetail サービス種類
+     * @return 総合事業のサービススであるか
+     */
+    public static boolean isSogojigyoService(int systemServiceKindDetail) {
+        switch (systemServiceKindDetail) {
+        case 50111: // 訪問型サービス（みなし）
+        case 50211: // 訪問型サービス（独自）
+        case 50311: // 訪問型サービス（独自／定率）
+        case 50411: // 訪問型サービス（独自／定額）
+        case 50511: // 通所型サービス（みなし）
+        case 50611: // 通所型サービス（独自）
+        case 50711: // 通所型サービス（独自／定率）
+        case 50811: // 通所型サービス（独自／定額）
+        case 50911: // その他の生活支援サービス（配食／定率）
+        case 51011: // その他の生活支援サービス（配食／定額）
+        case 51111: // その他の生活支援サービス（見守り／定率）
+        case 51211: // その他の生活支援サービス（見守り／定額）
+        case 51311: // その他の生活支援サービス（その他／定率）
+        case 51411: // その他の生活支援サービス（その他／定額）
+        case 51511: // 介護予防ケアマネジメント
+            return true;
+        }
+        return false;
+    }
+// 2016/7/21 [Yoichiro Kamei] add - end
+    
     /**
      * 予防訪問介護の日割でない合成単位を意味するサービスコードであるかを返します。
      * 
@@ -1520,6 +1553,27 @@ public class CareServiceCommon {
         	}
         }
         // [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - end
+        
+        // 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
+        // 総合事業のみなし分も追加
+        if ("A1".equals(serviceCodeKind)) {	// 訪問型サービス
+        	if ("1111".equals(serviceCodeItem)		//訪問型サービス１
+				|| "1113".equals(serviceCodeItem)	//訪問型サービス１・初任
+				|| "1114".equals(serviceCodeItem)	//訪問型サービス１・同一
+				|| "1115".equals(serviceCodeItem)	//訪問型サービス１・初任・同一
+				|| "1211".equals(serviceCodeItem)	//訪問型サービス２
+				|| "1213".equals(serviceCodeItem)	//訪問型サービス２・初任
+				|| "1214".equals(serviceCodeItem)	//訪問型サービス２・同一
+				|| "1215".equals(serviceCodeItem)	//訪問型サービス２・初任・同一
+				|| "1321".equals(serviceCodeItem)	//訪問型サービス３
+				|| "1323".equals(serviceCodeItem)	//訪問型サービス３・初任
+				|| "1324".equals(serviceCodeItem)	//訪問型サービス３・同一
+				|| "1325".equals(serviceCodeItem)	//訪問型サービス３・初任・同一
+        		) {
+        		return true;
+        	}
+        }
+        // 2016/7/21 [Yoichiro Kamei] add - end
         
         return false;
     }
@@ -1562,6 +1616,7 @@ public class CareServiceCommon {
      * 計画単位数のバインドパス配列を返します。
      * [H27.4改正対応][Shinobu Hitaka] 2015/03/06 68,69,79のサービス種類追加
      * [H28.4改正対応][Shinobu Hitaka] 2016/01/29 78のサービス種類追加
+     * [総合事業みなし対応][Y.Kamei]   2016/07/15 A1,A5のサービス種類追加
      * @return 計画単位数のバインドパス配列
      */
     public static String[] getPlanUnitBindPathes() {
@@ -1573,7 +1628,8 @@ public class CareServiceCommon {
         		"1078",
                 "1061", "1062", "1063", "1064", "1065",
                 "1066", "1067", "1024", "1025", "1026",
-                "1039", "1074", "1075", "1069", };
+                "1039", "1074", "1075", "1069", 
+                "1101", "1105" };
     };
 
     /**
@@ -1813,4 +1869,53 @@ public class CareServiceCommon {
         }
         return  bFlg;
     }
+    
+ // 2016/7/15 [Yoichiro Kamei] add - begin 総合事業対応
+ 	/**
+ 	 * サービス種類コードから実績管理の計画単位数のバインドパスを取得します。
+ 	 * @param serviceKind
+ 	 * @return 計画単位数のバインドパス
+ 	 */
+ 	public static String getPlanUnitBindPath(String serviceKind)  throws Exception {
+ 		if (ACTextUtilities.isNullText(serviceKind)) {
+ 			return "";
+ 		}
+ 		
+ 		if ("A1".equals(serviceKind)) {
+ 			return "1101";
+ 		} else if ("A2".equals(serviceKind)) {
+ 			return "1102";
+ 		} else if ("A3".equals(serviceKind)) {
+ 			return "1103";
+ 		} else if ("A4".equals(serviceKind)) {
+ 			return "1104";
+ 		} else if ("A5".equals(serviceKind)) {
+ 			return "1105";
+ 		} else if ("A6".equals(serviceKind)) {
+ 			return "1106";
+ 		} else if ("A7".equals(serviceKind)) {
+ 			return "1107";
+ 		} else if ("A8".equals(serviceKind)) {
+ 			return "1108";
+ 		} else if ("A9".equals(serviceKind)) {
+ 			return "1109";
+ 		} else if ("AA".equals(serviceKind)) {
+ 			return "1110";
+ 		} else if ("AB".equals(serviceKind)) {
+ 			return "1111";
+ 		} else if ("AC".equals(serviceKind)) {
+ 			return "1112";
+ 		} else if ("AD".equals(serviceKind)) {
+ 			return "1113";
+ 		} else if ("AE".equals(serviceKind)) {
+ 			return "1114";
+ 		} else if ("AF".equals(serviceKind)) {
+ 			return "1115";
+ 		} else {
+ 			//総合事業ではない場合
+ 			return "10" + serviceKind;
+ 		}
+ 	}
+ // 2016/7/15 [Yoichiro Kamei] add - end
+
 }

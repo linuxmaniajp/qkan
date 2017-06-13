@@ -1220,10 +1220,13 @@ public class QU002 extends QU002Event {
 		// テーブル表示用に編集
 		map = toKaigoTableList(map);
 
-		// 要介護度が非該当の場合、上限・下限日付を有効期間に設定する。
-		if (getNonCorrespondenceFlg() == 1) {
-			setMaxAndMinDate(map);
-		}
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		// 要介護度が非該当の場合、上限・下限日付を有効期間に設定する。
+//		if (getNonCorrespondenceFlg() == 1) {
+//			setMaxAndMinDate(map);
+//		}
+		setMaxAndMinDate(map);
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 		// StringからIntegerに型変換　※ソート時対策
 		final String[] keys = new String[] { "INSURE_RATE", "LIMIT_RATE",
@@ -1345,10 +1348,13 @@ public class QU002 extends QU002Event {
 		// テーブル表示用に編集する。
 		map = toKaigoTableList(map);
 
-		// 要介護度が非該当の場合、上限・下限日付を有効期間に設定する。
-		if (getNonCorrespondenceFlg() == 1) {
-			setMaxAndMinDate(map);
-		}
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		// 要介護度が非該当の場合、上限・下限日付を有効期間に設定する。
+//		if (getNonCorrespondenceFlg() == 1) {
+//			setMaxAndMinDate(map);
+//		}
+		setMaxAndMinDate(map);
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 		// StringからIntegerに型変換　※ソート時対策
 		final String[] keys = new String[] { "INSURE_RATE", "LIMIT_RATE",
@@ -1401,6 +1407,14 @@ public class QU002 extends QU002Event {
 		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
 			VRBindPathParser.set("INSURE_VALID_END", map, MAX_DATE);
 		}
+		
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+		// システム有効期間終了日が入力されていない場合
+		// 上限日付を自動設定
+		if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+			VRBindPathParser.set("SYSTEM_INSURE_VALID_END", map, MAX_DATE);
+		}
+// 2016/7/5 [Yoichiro Kamei] add - end
 	}
 
 	/**
@@ -1995,9 +2009,10 @@ public class QU002 extends QU002Event {
 		doFindLimitRate();
 
 		doFindExternalUseLimit();
-
-		// 要支援１の場合事業対象者からの変更かをチェックする。
-		doCheckJigyoTaisyo();
+		
+		// 2016/7/18 [Yoichiro Kamei] add - begin 総合事業対応 事業対象者の限度額変更フラグ
+		doCheckLimitChange();
+		// 2016/7/18 [Yoichiro Kamei] add - end
 	}
 
 	/**
@@ -2015,9 +2030,6 @@ public class QU002 extends QU002Event {
 
 		doFindExternalUseLimit();
 		
-		// 要支援１の場合事業対象者からの変更かをチェックする。
-		doCheckJigyoTaisyo();
-
 	}
 
 	/**
@@ -2508,25 +2520,64 @@ public class QU002 extends QU002Event {
 			return null;
 		}
 
-		// 有効期間終了日のチェック
-		// ・kaigoInfoValidLimit3（有効期間終了日）
-		// 入力されているかどうか
-		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
-			// 入力されていない場合
-			return null;
+		
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		// 有効期間終了日のチェック
+//		// ・kaigoInfoValidLimit3（有効期間終了日）
+//		// 入力されているかどうか
+//		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+//			// 入力されていない場合
+//			return null;
+//		}
+//
+//		// 存在しない日付が入力されていないかどうか
+//		if (!getKaigoInfoValidLimit3().isValidDate()) {
+//			// 存在しない日付が入力されている場合
+//			return null;
+//		}
+		
+		
+		// 要介護度に事業対象者が選択されているかどうか
+		boolean isJigyotaisho = isJigyotaisho();
+		if (!isJigyotaisho) {
+			// 入力されているかどうか
+			if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+				// 入力されていない場合
+				return null;
+			}
+	
+			// 存在しない日付が入力されていないかどうか
+			if (!getKaigoInfoValidLimit3().isValidDate()) {
+				// 存在しない日付が入力されている場合
+				return null;
+			}
+		} else {
+			if (!ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+				// 存在しない日付が入力されていないかどうか
+				if (!getKaigoInfoValidLimit3().isValidDate()) {
+					// 存在しない日付が入力されている場合
+					return null;
+				}
+			}
 		}
+		
+// 2016/7/5 [Yoichiro Kamei] mod - end
+				
 
-		// 存在しない日付が入力されていないかどうか
-		if (!getKaigoInfoValidLimit3().isValidDate()) {
-			// 存在しない日付が入力されている場合
-			return null;
-		}
 
 		// 有効期間の前後関係が誤っていないかどうか
 		// ・kaigoInfoValidLimit1（有効期間開始日）
 		// ・kaigoInfoValidLimit2（有効期間終了日）
 		Date start = getKaigoInfoValidLimit1().getDate();
-		Date end = getKaigoInfoValidLimit3().getDate();
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		Date end = getKaigoInfoValidLimit3().getDate();
+		Date end;
+		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+		    end = MAX_DATE;
+		} else {
+		    end = getKaigoInfoValidLimit3().getDate();
+		}
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 		if (ACDateUtilities.getDifferenceOnDay(start, end) > 0) {
 			// 前後関係が誤っている場合
@@ -2544,17 +2595,52 @@ public class QU002 extends QU002Event {
 				.getText());
 		VRMap yokaigo = (VRMap) getKaigoInfoYokaigoInfo()
 				.getSelectedModelItem();
-		VRBindPathParser.set("JOTAI_CODE", param,
-				VRBindPathParser.get("JOTAI_CODE", yokaigo));
+		
+// 2016/7/18 [Yoichiro Kamei] add - begin 総合事業対応 事業対象者の限度額変更フラグ
+//		VRBindPathParser.set("JOTAI_CODE", param,
+//				VRBindPathParser.get("JOTAI_CODE", yokaigo));
+		int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get("JOTAI_CODE", yokaigo), -1);
+		// 事業対象者で「要支援１の額を超えてサービスを利用」のチェック有の場合
+		// 要支援２の基準額を表示
+		if (isJigyotaisho) {
+			if (getKaigoInfoLimitChange().isSelected()) {
+				jotaiCode = YOUKAIGODO_YOUSHIEN2;
+			}
+		}
+		VRBindPathParser.set("JOTAI_CODE", param, jotaiCode);
+// 2016/7/18 [Yoichiro Kamei] add - end
+
 		VRBindPathParser.set("VALID_START", param, getKaigoInfoValidLimit1()
 				.getDate());
-		VRBindPathParser.set("VALID_END", param, getKaigoInfoValidLimit3()
-				.getDate());
+		
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+//		VRBindPathParser.set("VALID_END", param, getKaigoInfoValidLimit3()
+//				.getDate());
+		VRBindPathParser.set("VALID_END", param, end);
+// 2016/7/5 [Yoichiro Kamei] add - end
 
 		// 戻り値としてmapを返す。
 		return param;
 	}
 
+	// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+	// 介護保険情報の「要介護度」に事業対象者が選択されているかどうか
+	private boolean isJigyotaisho() throws Exception {
+		boolean isJigyotaisho = false;
+		if (getKaigoInfoYokaigoInfo().isSelected()) {
+			VRMap temp = (VRMap) getKaigoInfoYokaigoInfo()
+		            .getSelectedModelItem();
+			int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get(
+		            "JOTAI_CODE", temp));
+			if (jotaiCode == YOUKAIGODO_JIGYOTAISHO) {
+				isJigyotaisho = true;
+			}
+		}
+		return isJigyotaisho;
+	}
+	// 2016/7/5 [Yoichiro Kamei] add - begin
+			
+			
 	/**
 	 * 「外部利用型上限単位数表示」に関する処理を行ないます。
 	 * 
@@ -2652,25 +2738,63 @@ public class QU002 extends QU002Event {
 			return null;
 		}
 
-		// 有効期間終了日のチェック
-		// ・kaigoInfoValidLimit3（有効期間終了日）
-		// 入力されているかどうか
-		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
-			// 入力されていない場合
-			return null;
+		
+		// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		// 有効期間終了日のチェック
+//		// ・kaigoInfoValidLimit3（有効期間終了日）
+//		// 入力されているかどうか
+//		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+//			// 入力されていない場合
+//			return null;
+//		}
+//
+//		// 存在しない日付が入力されていないかどうか
+//		if (!getKaigoInfoValidLimit3().isValidDate()) {
+//			// 存在しない日付が入力されている場合
+//			return null;
+//		}
+		
+		
+		// 要介護度に事業対象者が選択されているかどうか
+		boolean isJigyotaisho = isJigyotaisho();
+		if (!isJigyotaisho) {
+			// 入力されているかどうか
+			if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+				// 入力されていない場合
+				return null;
+			}
+	
+			// 存在しない日付が入力されていないかどうか
+			if (!getKaigoInfoValidLimit3().isValidDate()) {
+				// 存在しない日付が入力されている場合
+				return null;
+			}
+		} else {
+			if (!ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+				// 存在しない日付が入力されていないかどうか
+				if (!getKaigoInfoValidLimit3().isValidDate()) {
+					// 存在しない日付が入力されている場合
+					return null;
+				}
+			}
 		}
-
-		// 存在しない日付が入力されていないかどうか
-		if (!getKaigoInfoValidLimit3().isValidDate()) {
-			// 存在しない日付が入力されている場合
-			return null;
-		}
-
+		
+// 2016/7/5 [Yoichiro Kamei] mod - end
+		
 		// 有効期間の前後関係が誤っていないかどうか
 		// ・kaigoInfoValidLimit1（有効期間開始日）
 		// ・kaigoInfoValidLimit2（有効期間終了日）
 		Date start = getKaigoInfoValidLimit1().getDate();
-		Date end = getKaigoInfoValidLimit3().getDate();
+		
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		Date end = getKaigoInfoValidLimit3().getDate();
+		Date end;
+		if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+		    end = MAX_DATE;
+		} else {
+		    end = getKaigoInfoValidLimit3().getDate();
+		}
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 		if (ACDateUtilities.getDifferenceOnDay(start, end) > 0) {
 			// 前後関係が誤っている場合
@@ -2689,9 +2813,13 @@ public class QU002 extends QU002Event {
 				VRBindPathParser.get("JOTAI_CODE", yokaigo));
 		VRBindPathParser.set("VALID_START", param, getKaigoInfoValidLimit1()
 				.getDate());
-		VRBindPathParser.set("VALID_END", param, getKaigoInfoValidLimit3()
-				.getDate());
 
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+//		VRBindPathParser.set("VALID_END", param, getKaigoInfoValidLimit3()
+//				.getDate());
+		VRBindPathParser.set("VALID_END", param, end);
+// 2016/7/5 [Yoichiro Kamei] add - end
+		
 		// 戻り値としてmapを返す。
 		return param;
 	}
@@ -2719,6 +2847,11 @@ public class QU002 extends QU002Event {
 		Date reservedStart = null;
 		Date reservedEnd = null;
 
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+		// 要介護度に事業対象者が選択されているかどうか
+		boolean isJigyotaisho = isJigyotaisho();
+// 2016/7/5 [Yoichiro Kamei] add - begin
+        
 		if (getNonCorrespondenceFlg() == 0) { // ※要介護度-非該当の場合は処理を通らない。
 			// 保険者番号のチェック
 			// ・kaigoInfoInsurerId（保険者番号）
@@ -2940,13 +3073,26 @@ public class QU002 extends QU002Event {
 			// ・kaigoInfoValidLimit3（有効期間終了日）
 			// 入力されているかどうか
 			// ※エラーの場合、String：msgParam1を宣言し、"有効期間終了日"を代入する。
-			if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
-				getKaigoInfoValidLimit3().requestFocus(); // フォーカス
-				msgParam1 = "有効期間終了日";
-				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
-						msgParam1);
-				return false;
-			}
+		    
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//          if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+//                getKaigoInfoValidLimit3().requestFocus(); // フォーカス
+//                msgParam1 = "有効期間終了日";
+//                QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+//                        msgParam1);
+//                return false;
+//          }
+		    // 事業対象者の場合、認定期間終了日の必須チェックはしない
+		    if (!isJigyotaisho) {
+		        if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+                    getKaigoInfoValidLimit3().requestFocus(); // フォーカス
+                    msgParam1 = "有効期間終了日";
+                    QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+                              msgParam1);
+                    return false;
+		        }
+		    }
+// 2016/7/5 [Yoichiro Kamei] mod - end
 		}
 
 		// 存在する日付が入力されているかどうか　※要介護度-非該当の場合は行わない。
@@ -2971,7 +3117,15 @@ public class QU002 extends QU002Event {
 			// ※エラーの場合、String：msgParam3を宣言し、"終了日"を代入する。
 
 			Date start = getKaigoInfoValidLimit1().getDate();
-			Date end = getKaigoInfoValidLimit3().getDate();
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//			Date end = getKaigoInfoValidLimit3().getDate();
+			Date end;
+			if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+			    end = MAX_DATE;
+			} else {
+			    end = getKaigoInfoValidLimit3().getDate();
+			}
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 			if (ACDateUtilities.getDifferenceOnDay(start, end) > 0) {
 				getKaigoInfoValidLimit1().requestFocus();
@@ -3131,9 +3285,17 @@ public class QU002 extends QU002Event {
 			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit1().getText())) {
 				warn1 = true;
 			}
-			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
-				warn2 = true;
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+//				warn2 = true;
+//			}
+			if (!isJigyotaisho) {
+				if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+					warn2 = true;
+				}
 			}
+// 2016/7/5 [Yoichiro Kamei] mod - end
+			
 			//システム適用期間が未入力のとき
 			if (warn1 || warn2) {
 				switch (QkanMessageList.getInstance()
@@ -3159,11 +3321,30 @@ public class QU002 extends QU002Event {
 		}
 		if (getNonCorrespondenceFlg() == 0) { // ※要介護度-非該当の場合は処理を通らない。
 			
-			//システム適用期間が認定有効期間の範囲外のとき
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//			//システム適用期間が認定有効期間の範囲外のとき
+//			Date validStart = getKaigoInfoValidLimit1().getDate();
+//			Date validEnd = getKaigoInfoValidLimit3().getDate();
+//			Date sysValidStart = getKaigoInfoSystemValidLimit1().getDate();
+//			Date sysValidEnd = getKaigoInfoSystemValidLimit3().getDate();
+			
 			Date validStart = getKaigoInfoValidLimit1().getDate();
-			Date validEnd = getKaigoInfoValidLimit3().getDate();
 			Date sysValidStart = getKaigoInfoSystemValidLimit1().getDate();
-			Date sysValidEnd = getKaigoInfoSystemValidLimit3().getDate();
+		    
+			Date validEnd;
+			if (ACTextUtilities.isNullText(getKaigoInfoValidLimit3().getText())) {
+				validEnd = MAX_DATE;
+			} else {
+				validEnd = getKaigoInfoValidLimit3().getDate();
+			}
+			
+			Date sysValidEnd;
+			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+				sysValidEnd = MAX_DATE;
+			} else {
+				sysValidEnd = getKaigoInfoSystemValidLimit3().getDate();
+			}
+// 2016/7/5 [Yoichiro Kamei] mod - end
 			
 			boolean warn1 = false;
 			boolean warn2 = false;
@@ -3225,13 +3406,25 @@ public class QU002 extends QU002Event {
 		// ・kaigoInfoSystemValidLimit3（有効期間終了日）
 		// 入力されているかどうか
 		// ※エラーの場合、String：msgParam1を宣言し、"有効期間終了日"を代入する。
-		if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
-			getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
-			msgParam1 = "システム有効期間終了日";
-			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
-					msgParam1);
-			return false;
+		
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//		if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+//			getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
+//			msgParam1 = "システム有効期間終了日";
+//			QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(
+//					msgParam1);
+//			return false;
+//		}
+		// 事業対象者の場合、システム有効期間終了日の必須チェックはしない
+		if (!isJigyotaisho) {
+			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+				getKaigoInfoSystemValidLimit3().requestFocus(); // フォーカス
+				msgParam1 = "システム有効期間終了日";
+				QkanMessageList.getInstance().ERROR_OF_NEED_CHECK_FOR_INPUT(msgParam1);
+				return false;
+		    }
 		}
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 		// 存在する日付が入力されているかどうか　※要介護度-非該当の場合は行わない。
 		// ※エラーの場合、String：msgParamを宣言し、"有効期間終了日の"を代入する。
@@ -3246,8 +3439,6 @@ public class QU002 extends QU002Event {
 		
 		
 
-		
-
 		// システム有効期間開始日とシステム有効期間終了日の前後関係のチェック
 		// ・kaigoInfoSystemValidLimit1（システム有効期間開始日）
 		// ・kaigoInfoSystemValidLimit3（システム有効期間終了日）
@@ -3256,8 +3447,16 @@ public class QU002 extends QU002Event {
 		// ※エラーの場合、String：msgParam3を宣言し、"終了日"を代入する。
 
 		Date start = getKaigoInfoSystemValidLimit1().getDate();
-		Date end = getKaigoInfoSystemValidLimit3().getDate();
-
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//      Date end = getKaigoInfoSystemValidLimit3().getDate();
+		Date end;
+		if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+			end = MAX_DATE;
+		} else {
+			end = getKaigoInfoSystemValidLimit3().getDate();
+		}
+//2016/7/5 [Yoichiro Kamei] mod - end
+        
 		if (ACDateUtilities.getDifferenceOnDay(start, end) > 0) {
 			getKaigoInfoSystemValidLimit1().requestFocus();
 			msgParam1 = "システム有効期間は";
@@ -3462,7 +3661,16 @@ public class QU002 extends QU002Event {
 //			Date start = getKaigoInfoValidLimit1().getDate();
 //			Date end = getKaigoInfoValidLimit3().getDate();
 			start = getKaigoInfoSystemValidLimit1().getDate();
-			end = getKaigoInfoSystemValidLimit3().getDate();			
+			
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//          end = getKaigoInfoSystemValidLimit3().getDate();
+			if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+				end = MAX_DATE;
+			} else {
+				end = getKaigoInfoSystemValidLimit3().getDate();
+			}
+// 2016/7/5 [Yoichiro Kamei] mod - end
+						
 // 2014/12/17 [Yoichiro Kamei] mod - end
 			
 			// 1月（ひとつき）に、異なる被保険者番号が3つ以上存在することにならないかチェックする。
@@ -3605,7 +3813,16 @@ public class QU002 extends QU002Event {
 //				Date start = getKaigoInfoValidLimit1().getDate();
 //				Date end = getKaigoInfoValidLimit3().getDate();
 				start = getKaigoInfoSystemValidLimit1().getDate();
-				end = getKaigoInfoSystemValidLimit3().getDate();			
+				
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//	          end = getKaigoInfoSystemValidLimit3().getDate();
+				if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+					end = MAX_DATE;
+				} else {
+					end = getKaigoInfoSystemValidLimit3().getDate();
+				}
+// 2016/7/5 [Yoichiro Kamei] mod - end
+
 // 2014/12/17 [Yoichiro Kamei] mod - end
 				if (ACDateUtilities
 						.getDifferenceOnDay(QkanConstants.H2104, end) < 1) {
@@ -3660,8 +3877,18 @@ public class QU002 extends QU002Event {
 //							getKaigoInfoValidLimit3().getDate());
 					VRBindPathParser.set("VALID_START", param,
 							getKaigoInfoSystemValidLimit1().getDate());
-					VRBindPathParser.set("VALID_END", param,
-							getKaigoInfoSystemValidLimit3().getDate());
+					
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+//                  VRBindPathParser.set("VALID_END", param,
+//                  getKaigoInfoSystemValidLimit3().getDate());
+					if (ACTextUtilities.isNullText(getKaigoInfoSystemValidLimit3().getText())) {
+						VRBindPathParser.set("VALID_END", param, MAX_DATE);
+					} else {
+						VRBindPathParser.set("VALID_END", param,
+								getKaigoInfoSystemValidLimit3().getDate());
+					}
+// 2016/7/5 [Yoichiro Kamei] mod - end
+
 // 2014/12/17 [Yoichiro Kamei] mod - end
 				}
 
@@ -3809,12 +4036,11 @@ public class QU002 extends QU002Event {
 // 2014/12/17 [Yoichiro Kamei] mod - end
 			}
 		}
-		
-// 2015/3/31 [Shinobu Hitaka] add - begin
-		// 要支援１の場合事業対象者からの変更かをチェックする。
-		doCheckJigyoTaisyo();
-// 2015/3/31 [Shinobu Hitaka] add - end
 
+// 2016/7/18 [Yoichiro Kamei] add - begin 総合事業対応 事業対象者の限度額変更フラグ
+		doCheckLimitChange();
+// 2016/7/18 [Yoichiro Kamei] add - end
+		
 // 2015/4/15 [Yoichiro Kamei] add - begin 短期入所利用日数の初期値対応
         if (getNonCorrespondenceFlg() == 0) { // 非該当の場合は処理を通らない。
             //短期入所利用日数の初期値が設定されていて、
@@ -4471,6 +4697,27 @@ public class QU002 extends QU002Event {
 			setKaigoDataFlg(1);
 		}
 
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+		// 「経過的要介護」が履歴にあれば、コンボにも追加する
+		boolean keikatekiAri = false;
+		for (int i = 0; i < list.size(); i++) {
+			// データよりレコードを取り出す。
+			VRMap map = (VRMap) list.get(i);
+			Integer yokaigodo = ACCastUtilities.toInteger(map.get("JOTAI_CODE"));
+			if (yokaigodo == YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+				keikatekiAri = true;
+				break;
+			}
+		}
+		if (keikatekiAri) {
+			VRMap map = (VRMap) getKaigoInfoYokaigoInfo().getModelSource();
+			VRBindPathParser
+			.set("JOTAI_CODE", map, QkanCommon.getArrayFromMasterCode(
+					CODE_YOKAIGODO, "JOTAI_CODE"));
+			getKaigoInfoYokaigoInfo().setModelSource(map);
+			getKaigoInfoYokaigoInfo().bindModelSource();
+		}
+// 2016/7/5 [Yoichiro Kamei] mod - end
 	}
 
 	/**
@@ -4582,6 +4829,24 @@ public class QU002 extends QU002Event {
 		// 負担限度額領域を無効にする。
 		setState_ENABLE_TOKUTEI_NYUSHO_FALSE();
 
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+		// 要介護度のコンボボックスの内容をクリア
+		// 「経過的要介護」は詳細画面に表示しない
+		VRList list = QkanCommon.getArrayFromMasterCode(CODE_YOKAIGODO, "JOTAI_CODE");
+		VRList newList = new VRArrayList();
+		for (int i = 0; i < list.size(); i++) {
+			VRMap yokaigoMap = (VRMap) list.get(i);
+			Integer yokaigo = ACCastUtilities.toInteger(yokaigoMap.get("CONTENT_KEY"));
+			if (yokaigo != YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+				newList.add(yokaigoMap);
+			}
+		}
+		VRMap modelSource = (VRMap) getKaigoInfoYokaigoInfo().getModelSource();
+		VRBindPathParser.set("JOTAI_CODE", modelSource, newList);
+		getKaigoInfoYokaigoInfo().setModelSource(modelSource);
+		getKaigoInfoYokaigoInfo().bindModelSource();
+// 2016/7/5 [Yoichiro Kamei] add - end
+				
 		// ※プライベート変数クリア
 		// 以下のプライベート変数を初期化する。
 		// ・patientId
@@ -4801,11 +5066,29 @@ public class QU002 extends QU002Event {
 		// コードマスタデータの取得
 		setMasterCode(QkanSystemInformation.getInstance().getMasterCode());
 
+		
+
 		// コードマスタから下記のCODE_IDのレコードを抽出し、下記のKEYでmapに設定する。
 		// ・CODE_ID：CODE_YOKAIGODO　KEY：JOTAI_CODE
-		VRBindPathParser
-				.set("JOTAI_CODE", map, QkanCommon.getArrayFromMasterCode(
-						CODE_YOKAIGODO, "JOTAI_CODE"));
+
+// 2016/7/5 [Yoichiro Kamei] mod - begin 総合事業対応
+// 「経過的要介護」は詳細画面に表示しない
+// 履歴に登録されている場合は、介護保険情報の取得後にコンボに追加する。
+//		VRBindPathParser
+//				.set("JOTAI_CODE", map, QkanCommon.getArrayFromMasterCode(
+//						CODE_YOKAIGODO, "JOTAI_CODE"));
+		
+		VRList list = QkanCommon.getArrayFromMasterCode(CODE_YOKAIGODO, "JOTAI_CODE");
+		VRList newList = new VRArrayList();
+		for (int i = 0; i < list.size(); i++) {
+			VRMap yokaigoMap = (VRMap) list.get(i);
+			Integer yokaigo = ACCastUtilities.toInteger(yokaigoMap.get("CONTENT_KEY"));
+			if (yokaigo != YOUKAIGODO_KEIKATEKI_YOUKAIGO) {
+				newList.add(yokaigoMap);
+			}
+		}
+		VRBindPathParser.set("JOTAI_CODE", map, newList);
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
 		// ・CODE_ID：CODE_INSURE_RATE　KEY：INSURE_RATE
 		// VRBindPathParser.set(
@@ -4865,6 +5148,12 @@ public class QU002 extends QU002Event {
 		serviceKind = new VRArrayList();
 		serviceKind.add(new Integer(SERVICE_TYPE_YOBOU_SHIEN));
 		serviceKind.add(new Integer(SERVICE_TYPE_YOBOU_SHOKIBO));
+		
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+		// 介護予防ケアマネジメントを提供している事業所
+		serviceKind.add(new Integer(SERVICE_TYPE_YOBOU_CAREMGM));
+// 2016/7/5 [Yoichiro Kamei] add - end
+		
 		setProviderListYobouShien(QkanCommon.getProviderInfo(getDBManager(),
 				serviceKind));
 
@@ -4994,16 +5283,17 @@ public class QU002 extends QU002Event {
 						VRBindPathParser.get("CONTENT", temp));
 			}
 		}
-
-		// [H27.4改正対応][Shinobu Hitaka] 2015/3/31 add - begin 項目追加に伴う初期値設定
-		// 事業対象者から要支援１のフラグ値がNULLの場合１を設定する
-		if (VRBindPathParser.has("JIGYOTAISYO_FLAG", map)) {
-			if (VRBindPathParser.get("JIGYOTAISYO_FLAG", map) == null) {
-				VRBindPathParser.set("JIGYOTAISYO_FLAG", map, 1);
+		
+		
+		// 2016/7/18 [Yoichiro Kamei] add - begin 総合事業対応
+		// 事業対象者の限度額変更フラグ値がNULLの場合１を設定する
+		if (VRBindPathParser.has("LIMIT_CHANGE_FLAG", map)) {
+			if (VRBindPathParser.get("LIMIT_CHANGE_FLAG", map) == null) {
+				VRBindPathParser.set("LIMIT_CHANGE_FLAG", map, 1);
 			}
 		}
-		// [H27.4改正対応][Shinobu Hitaka] 2015/3/31 add - end
-		
+		// 2016/7/18 [Yoichiro Kamei] add - end
+				
 		return map;
 
 	}
@@ -5345,8 +5635,19 @@ public class QU002 extends QU002Event {
 //						"INSURE_VALID_END", temp));
 				Date start = ACCastUtilities.toDate(VRBindPathParser.get(
 						"SYSTEM_INSURE_VALID_START", temp));
-				Date end = ACCastUtilities.toDate(VRBindPathParser.get(
-						"SYSTEM_INSURE_VALID_END", temp));
+				
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+//				Date end = ACCastUtilities.toDate(VRBindPathParser.get(
+//						"SYSTEM_INSURE_VALID_END", temp));
+				Date end;
+				if (ACTextUtilities.isNullText(VRBindPathParser.get("SYSTEM_INSURE_VALID_END", temp))) {
+					end = MAX_DATE;
+				} else {
+					end = ACCastUtilities.toDate(VRBindPathParser.get(
+							"SYSTEM_INSURE_VALID_END", temp));
+				}
+// 2016/7/5 [Yoichiro Kamei] mod - end
+				
 // 2014/12/17 [Yoichiro Kamei] mod - end
 				if (isValidTermOnTargetDate(getSystemDate(), start, end)) {
 					// システム日付において有効な認定履歴である場合
@@ -6652,40 +6953,47 @@ public class QU002 extends QU002Event {
 		}
 	}
 // 2015/1/14 [Yoichiro Kamei] add - end
-	
-// 2015/3/31 [Shinobu Hitaka] add - begin 事業対象者→要支援１の区分変更対応
+
+
+// 2016/7/18 [Yoichiro Kamei] add - begin 総合事業対応 事業対象者の限度額変更フラグ
 	/**
-	 * 「月途中で事業対象者→要支援１になった」の設定チェックに関する処理を行ないます。
+	 * 「要支援１の額を超えてサービスを利用」の設定チェックに関する処理を行ないます。
 	 * 
 	 * @throws Exception
 	 *             処理例外
 	 */
-	public void doCheckJigyoTaisyo() throws Exception {
+	public void doCheckLimitChange() throws Exception {
 
-		// 月途中の要支援１設定でない場合、事業対象者→要支援１のフラグ設定を初期化する。
+		// 要介護度が事業対象者でない場合、要支援１の額を超えてサービスを利用のフラグ設定を初期化する。
 		// 要介護度をチェック
 		if (getKaigoInfoYokaigoInfo().isSelected()) {
 			VRMap temp = (VRMap) getKaigoInfoYokaigoInfo()
 					.getSelectedModelItem();
 			int jotaiCode = ACCastUtilities.toInt(VRBindPathParser.get(
 					"JOTAI_CODE", temp));
-			// 要支援１が選択されていない場合
-			if (jotaiCode != YOUKAIGODO_YOUSHIEN1) {
-				getKaigoInfoJigyoTaisyo().setSelected(false);
-			}
-		}
-		// 認定期間開始日が月途中でない場合
-		if (!ACTextUtilities.isNullText(getKaigoInfoValidLimit1().getText())) {
-			Date validStart = getKaigoInfoValidLimit1().getDate();
-			String tmpDay = VRDateParser.format(validStart, "dd");
-        	if ("01".equals(tmpDay)) {
-				getKaigoInfoJigyoTaisyo().setSelected(false);
+			// 事業対象者が選択されていない場合
+			if (jotaiCode != YOUKAIGODO_JIGYOTAISHO) {
+				getKaigoInfoLimitChange().setSelected(false);
+				setState_VISIBLE_LIMIT_CHANGE_FALSE();
+			} else {
+				setState_VISIBLE_LIMIT_CHANGE_TRUE();
 			}
 		}
 
 	}
-// 2015/3/31 [Shinobu Hitaka] add - end
 	
+	/* 
+	 * 「要支援１の額を超えてサービスを利用」チェッククリック時のイベント処理
+	 */
+	@Override
+	protected void kaigoInfoLimitChangeActionPerformed(ActionEvent e)
+			throws Exception {
+		// 支給限度額を支給限度額テキストフィールド（kaigoInfoProvideLimit）に表示する。
+		doFindLimitRate();
+	}
+	
+// 2016/7/18 [Yoichiro Kamei] add - end
+		
 // [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - begin 施設情報有効期間の日付設定
 	/**
 	 * 「上限、下限日付設定」処理です。
@@ -6711,5 +7019,7 @@ public class QU002 extends QU002Event {
 		}
 	}
 // [CCCX:2930][Shinobu Hitaka] 2015/10/15 add - end
+
+
 	
 }

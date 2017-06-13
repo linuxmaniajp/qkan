@@ -330,6 +330,11 @@ public class QP001 extends QP001Event {
         //請求書日付をログイン日付にする。
         getClaimDatePrint().setDate(QkanSystemInformation.getInstance().getSystemDate());
         
+        // [H27.4法改正対応][Shinobu Hitaka] 2016/07/15 add begin 総合事業対応
+        // 保険／事業費の請求種別を「全て」にする。
+        getSeikyuTypeRadioItem1().setSelected(true);
+        // [H27.4法改正対応][Shinobu Hitaka] 2016/07/15 add end
+        
         //詳細編集画面から戻ってきた場合の再描画処理
         VRMap param = affair.getParameters();
         if( VRBindPathParser.has("QP001_DATA", param) ){
@@ -746,7 +751,7 @@ public class QP001 extends QP001Event {
 
     }
     private void setPrintInfoPanel() throws Exception {
-        int[] printCount = new int[18];
+        int[] printCount = new int[19];	// 2016.7.15 edit 18->19
         // 合計単位数
         int service_unit = 0;
         // 合計金額
@@ -778,6 +783,10 @@ public class QP001 extends QP001Event {
                 case QkanConstants.CLAIM_STYLE_FORMAT_2:
                 case QkanConstants.CLAIM_STYLE_FORMAT_2_2:
                     printCount[2]++;
+                    printCount[1] = 1;
+                    break;
+                case QkanConstants.CLAIM_STYLE_FORMAT_2_3:	// 2016.7.8 add
+                    printCount[18]++;
                     printCount[1] = 1;
                     break;
                 case QkanConstants.CLAIM_STYLE_FORMAT_3:
@@ -893,6 +902,7 @@ public class QP001 extends QP001Event {
         getType8Count().setText(ACCastUtilities.toString(printCount[8]));
         getType9Count().setText(ACCastUtilities.toString(printCount[9]));
         getType10Count().setText(ACCastUtilities.toString(printCount[10]));
+        getType23Count().setText(ACCastUtilities.toString(printCount[18]));	// 2016.7.15 add
         getSupplyCount().setText(ACCastUtilities.toString(printCount[11]));
         getVisitCount().setText(ACCastUtilities.toString(printCount[13]));
         
@@ -1088,6 +1098,11 @@ public class QP001 extends QP001Event {
         // 画面上の国保処理月をyyyyMMdd型式で param の KEY : SEIKYU_DATE に設定する。
         param.put("SEIKYU_DATE", VRDateParser.format(getClaimDate().getDate(),
                 "yyyyMMdd"));
+
+        // [H27.4法改正対応][Shinobu Hitaka] 2016/07/15 add begin 総合事業対応
+        // 画面の請求費（保険・事業費）の選択を取得する。
+        param.put("SEIKYU_TYPE", getSeikyuType().getSelectedIndex());
+        // [H27.4法改正対応][Shinobu Hitaka] 2016/07/15 add end
 
         // 処理モードを追加する。
         param.put("AFFAIR", getAffair());
@@ -1945,6 +1960,7 @@ public class QP001 extends QP001Event {
                     //(様式第2)の場合
                     case QkanConstants.CLAIM_STYLE_FORMAT_2:
                     case QkanConstants.CLAIM_STYLE_FORMAT_2_2:
+                    case QkanConstants.CLAIM_STYLE_FORMAT_2_3:
                         QP001Style2 style2 = null;
                         serial = QP001Style2.getSerialId(getTargetDate().getDate(), serviceDetail,
                                 patientState,type);

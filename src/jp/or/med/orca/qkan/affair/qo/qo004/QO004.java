@@ -32,6 +32,7 @@ package jp.or.med.orca.qkan.affair.qo.qo004;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -407,6 +408,7 @@ public class QO004 extends QO004Event {
             if (panel instanceof iProviderServicePanel) {
                 setProviderServiceClass((iProviderServicePanel) panel);
             }
+
             getProviderServiceClass().initialize();
 
             if (panel instanceof QO004ProviderPanel) {
@@ -439,6 +441,10 @@ public class QO004 extends QO004Event {
             getProviderDetailServiceDetails().revalidate();
             getProviderDetailServiceDetails().repaint();
 
+            // [H27.4改正対応][Shinobu Hitaka] 2016/7/7 add - begin 「みなし」の場合は予防の設定を初期値にする
+            setMinashiServiceInfo(selectedServiceType, selectedService);
+            // [H27.4改正対応][Shinobu Hitaka] 2016/7/7 add - end
+            
             // servicePanel に選択されたセルのレコードをソースとして設定する。
             panel.setSource(selectedService);
 
@@ -2074,6 +2080,12 @@ public class QO004 extends QO004Event {
                 getOfferCheck().setValue(1);
                 setState_SERVICE_PANEL_ENABLE_TRUE();
                 // [ID:0000725][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+                
+                // [CCCX:3366][Shinobu Hitaka] 2016/4/7 add - begin 削除不可の場合、画面上のサービス詳細情報を取得しなおす処理を追加
+                getProviderServiceClass().getDetails(map);
+                VRBindPathParser.set("OFFER", map, new Boolean(true));
+                // [CCCX:3366][Shinobu Hitaka] 2016/4/7 add - end
+                
                 return false;
             } else {
                 // 削除可能だった場合
@@ -2260,5 +2272,56 @@ public class QO004 extends QO004Event {
             return debugCompName(cp.getParent());
         }
         
+    }
+    
+    /**
+     * [H27.4改正対応][Shinobu Hitaka] 2016/7/7 add
+     * サービス種類「みなし」の元になる予防サービス種類の設定情報を取得します。
+     * 
+     * 50111：訪問型みなし→16111：予防訪問介護の設定情報
+     * 50511：通所型みなし→16511：予防通所介護の設定情報
+     * 
+     * @param selectedService サービス種類
+     * @return VRMap 設定情報
+     * @throws Exception 処理例外
+     */
+    public void setMinashiServiceInfo(int selectedService, VRMap serviceMap) throws Exception {
+    	boolean minashiOffer = ACCastUtilities.toBoolean(VRBindPathParser.get("OFFER", serviceMap));
+    	boolean offer = false;
+    	if (selectedService == SERVICE_TYPE_HOMON_MINASHI) {
+    		// 50111：訪問型みなし→16111：予防訪問介護の設定情報
+    		VRMap temp = getServiceInfos(SERVICE_TYPE_HOMON);
+    		if (temp != null) {
+    			offer = ACCastUtilities.toBoolean(VRBindPathParser.get("OFFER", temp));
+    		}
+            if (!minashiOffer && offer) {
+            	VRBindPathParser.set("5010101", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1610105", temp), 0));
+            	VRBindPathParser.set("1", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1", temp), 0));
+            	VRBindPathParser.set("2", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("2", temp), 0));
+            	VRBindPathParser.set("3", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("3", temp), 0));
+            	VRBindPathParser.set("4", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("4", temp), 0));
+            	VRBindPathParser.set("REDUCT_RATE", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("REDUCT_RATE", temp), 0));
+            }
+    	} else if (selectedService == SERVICE_TYPE_TSUSHO_MINASHI) {
+    		// 50511：通所型みなし→16511：予防通所介護の設定情報
+    		VRMap temp = getServiceInfos(SERVICE_TYPE_TSUSHO);
+    		if (temp != null) {
+    			offer = ACCastUtilities.toBoolean(VRBindPathParser.get("OFFER", temp));
+    		}
+            if (!minashiOffer && offer) {
+            	VRBindPathParser.set("5050101", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650101", temp), 0));
+            	VRBindPathParser.set("5050102", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650102", temp), 0));
+            	VRBindPathParser.set("5050103", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650103", temp), 0));
+            	VRBindPathParser.set("5050104", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650104", temp), 0));
+            	VRBindPathParser.set("5050105", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650105", temp), 0));
+            	VRBindPathParser.set("5050106", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650106", temp), 0));
+            	VRBindPathParser.set("5050107", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650107", temp), 0));
+            	VRBindPathParser.set("5050108", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650108", temp), 0));
+            	VRBindPathParser.set("5050109", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1650109", temp), 0));
+            	VRBindPathParser.set("1", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("1", temp), 0));
+            	VRBindPathParser.set("4", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("4", temp), 0));
+            	VRBindPathParser.set("REDUCT_RATE", serviceMap, ACCastUtilities.toInt(VRBindPathParser.get("REDUCT_RATE", temp), 0));
+            }
+    	}
     }
 }

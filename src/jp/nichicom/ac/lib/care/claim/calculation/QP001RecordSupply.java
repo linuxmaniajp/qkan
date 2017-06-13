@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
@@ -705,43 +706,67 @@ public class QP001RecordSupply extends QP001RecordAbstract {
             //性別コード1桁　1-男 2-女
             set_1201011(patientState.getPatientData("PATIENT_SEX"));
             
-            //要介護状態区分コード2桁　01-非該当 11-要支援(経過的要介護) 12-要支援1 13-要支援2 21-要介護1 22-要介護2 23-要介護3 24-要介護4 25-要介護5
+            //要介護状態区分コード2桁　01-非該当 06-事業対象者 11-要支援(経過的要介護) 12-要支援1 13-要支援2 21-要介護1 22-要介護2 23-要介護3 24-要介護4 25-要介護5
             //set_1201012(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"JOTAI_CODE"));
             //要介護度は当月の一番重いものを採用する。
             set_1201012(patientState.getNinteiDataHeavy(get_1201003(), get_1201009(),"JOTAI_CODE"));
                         
             //限度額適用期間(開始)6桁(YYYYMM)
-            Date start = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"INSURE_VALID_START"));
+            //Date start = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"INSURE_VALID_START"));
+            // [H27.4改正対応][Shinobu Hitaka] 2016/7/27 edit 当月の一番重いものを採用する。
+            Date start = ACCastUtilities.toDate(patientState.getNinteiDataHeavy(get_1201003(), get_1201009(),"INSURE_VALID_START"));
             set_1201013(VRDateParser.format(start, "yyyyMM"));
             
-            Date end = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"INSURE_VALID_END"));
             //限度額適用期間(終了)6桁(YYYYMM)
-            set_1201014(VRDateParser.format(end, "yyyyMM"));
-            
-            // [H27.4改正対応][Shinobu Hitaka] 事業対象者から要支援１へ変更時の対応 2015/3/31 add - begin
-            // 要支援１
-            if (get_1201012().equals("12")) {
-            	// 対象年月と限度額適用期間(開始)年月が同じ
-            	if (get_1201002().equals(get_1201013())) {
-            		// 月途中
-	            	String tmpDay = VRDateParser.format(start, "dd");
-	            	if (!"01".equals(tmpDay)) {
-	            		String tmpJigyoFlg = patientState.getNinteiDataLast(get_1201003(), get_1201009(), "JIGYOTAISYO_FLAG");
-	            		// 事業対象者フラグがON
-	            		if ("2".equals(tmpJigyoFlg)) {
-	            			// 要介護状態区分を 06-事業対象者 に差替える
-	            			set_1201012("06");
-	            		}
-	            	}
-            	}
+            //Date end = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"INSURE_VALID_END"));
+            // [H27.4改正対応][Shinobu Hitaka] 2016/7/27 edit 当月の一番重いものを採用する。
+            Date end = ACCastUtilities.toDate(patientState.getNinteiDataHeavy(get_1201003(), get_1201009(),"INSURE_VALID_END"));
+            if (ACCastUtilities.toDate("9999/12/31").equals(end)) {
+                // 9999-12-31の場合は空欄
+            	set_1201014("");
+            } else {
+                set_1201014(VRDateParser.format(end, "yyyyMM"));
             }
-            // [H27.4改正対応][Shinobu Hitaka] 事業対象者から要支援１へ変更時の対応 2015/3/31 add - end
             
+            // [H27.4改正対応][Shinobu Hitaka] 2016/7/26 del - begin 総合事業対応によりコメント化
+            // [H27.4改正対応][Shinobu Hitaka] 2015/3/31 add - begin 事業対象者から要支援１へ変更時の対応
+            // 要支援１
+            //if (get_1201012().equals("12")) {
+            //    // 対象年月と限度額適用期間(開始)年月が同じ
+            //    if (get_1201002().equals(get_1201013())) {
+            //        // 月途中
+            //        String tmpDay = VRDateParser.format(start, "dd");
+            //        if (!"01".equals(tmpDay)) {
+            //            String tmpJigyoFlg = patientState.getNinteiDataLast(get_1201003(), get_1201009(), "JIGYOTAISYO_FLAG");
+            //            // 事業対象者フラグがON
+            //            if ("2".equals(tmpJigyoFlg)) {
+            //                // 要介護状態区分を 06-事業対象者 に差替える
+            //                set_1201012("06");
+            //            }
+            //        }
+            //    }
+            //}
+            // [H27.4改正対応][Shinobu Hitaka] 事業対象者から要支援１へ変更時の対応 2015/3/31 add - end
+            // [H27.4改正対応][Shinobu Hitaka] 2016/7/26 del - end 総合事業対応によりコメント化
             
             //居宅・介護予防支給限度額6桁
             //set_1201015(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"LIMIT_RATE"));
             //限度額は当月の一番重いものを採用する。
             set_1201015(patientState.getNinteiDataHeavy(get_1201003(), get_1201009(),"LIMIT_RATE"));
+            
+            
+// 2016/8/16 [総合事業対応][Yoichiro Kamei] add - begin
+            // 事業対象者で要支援１の基準額を超える場合は、国基準の要支援１の基準額を設定する
+            int limitRate = ACCastUtilities.toInt(get_1201015(), 0);
+            int jotaiCode = ACCastUtilities.toInt(get_1201012(), 0);
+            if (jotaiCode == QkanConstants.YOUKAIGODO_JIGYOTAISHO) {
+                int jigyoTaishoLimitRate = manager.getJigyotaishoLimitRate();
+                if (limitRate > jigyoTaishoLimitRate) {
+                    //居宅・介護予防支給限度額6桁
+                    set_1201015(String.valueOf(jigyoTaishoLimitRate));
+                }
+            }
+//2016/8/16 [総合事業対応][Yoichiro Kamei] add - end
             
             //居宅サービス計画作成区分コード1桁　1-居宅介護支援事業所作成　2-自己作成　3-介護予防支援事業所作成
             set_1201016(ACCastUtilities.toInt(patientState.getNinteiDataLast(get_1201003(), get_1201009(),"PLANNER")));
@@ -754,6 +779,9 @@ public class QP001RecordSupply extends QP001RecordAbstract {
             if(QP001SpecialCase.isRegionStickingService(ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceCode)))){
                 //地域密着のサービスであれば、5-地域密着型サービスを出力する。
                 set_1201018(5);
+            } else if (CareServiceCommon.isSogojigyoService(ACCastUtilities.toInt(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", serviceCode)))) {
+                //総合事業のサービスであれば、6-総合事業を出力する。
+                set_1201018(6);
             } else {
                 set_1201018(manager.getProviderJigyouType(get_1201017()));
             }

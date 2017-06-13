@@ -480,6 +480,41 @@ public class QP001InformationProcessing {
 		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
 	}
 	
+	// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - begin 総合事業対応
+	/**
+	 * 様式第二の三(基本情報)の結果反映処理
+	 * @param map
+	 * @throws Exception
+	 */
+	private void reflect23base(VRMap map) throws Exception {
+		//開始年月日
+		//異動情報が設定されていない場合
+		if (ACTextUtilities.isNullText(map.get("201021"))) {
+			//集計前のデータが設定できれば、設定する
+			setSameBase(map,"201021");
+		}
+		
+		//中止年月日
+		if (ACTextUtilities.isNullText(map.get("201022"))) {
+			setSameBase(map,"201022");
+		}
+		
+		//中止理由コードは設定しない
+		if (!ACTextUtilities.isNullText(map.get("201023"))) {
+			map.setData("201023", "");
+		}
+	}
+	
+	/**
+	 * 様式第二の三(明細情報)の結果反映処理
+	 * @param map
+	 * @throws Exception
+	 */
+	private void reflect23details(VRMap map) throws Exception {
+		//nothing
+	}
+	// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
+	
 	/**
 	 * 様式第三(基本情報)の結果反映処理
 	 * @param map
@@ -1556,6 +1591,15 @@ public class QP001InformationProcessing {
 				reflect22details(map);
 				reflectDetails(map);
 			}
+		// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - begin 総合事業対応
+		} else if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(style[0])){
+			if ("2".equals(style[1])){
+				reflect23base(map);
+			} else if ("3".equals(style[1])){
+				reflect23details(map);
+				reflectDetails(map);
+			}
+		// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
 		} else if (QP001StyleAbstract.IDENTIFICATION_NO_3_201204.equals(style[0])){
 			if ("2".equals(style[1])){
 				reflect3base(map);

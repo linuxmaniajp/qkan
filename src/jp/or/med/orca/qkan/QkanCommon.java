@@ -1102,6 +1102,9 @@ public class QkanCommon {
 // 2015/4/15 [H27.04改正対応][Yoichiro Kamei] add - begin 短期入所日数の初期値対応
         sb.append(" PATIENT_NINTEI_HISTORY.SHORTSTAY_USE_INIT_COUNT,");
 // 2015/4/15 [H27.04改正対応][Yoichiro Kamei] add - end
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - begin 事業対象者の限度額変更フラグ
+        sb.append(" PATIENT_NINTEI_HISTORY.LIMIT_CHANGE_FLAG,");
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
         sb.append(" PATIENT_NINTEI_HISTORY.LAST_TIME");
         sb.append(" FROM");
         sb.append(" PATIENT_NINTEI_HISTORY");
@@ -1128,8 +1131,20 @@ public class QkanCommon {
             VRMap record = (VRMap) list.get(j);
             int limitRate = -1;
             
-            // 厚生労働省規定の区分支給限度額を取得する。
-            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), record.getData("JOTAI_CODE").toString());
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - begin 事業対象者の限度額変更フラグ
+//            // 厚生労働省規定の区分支給限度額を取得する。
+//            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), record.getData("JOTAI_CODE").toString());
+            
+            // 事業対象者で「要支援１の額を超えてサービスを利用」の場合は、要支援２の限度額を使用
+            int jotaiCode = ACCastUtilities.toInt(record.getData("JOTAI_CODE"), 0);
+            int limitChangeFlg = ACCastUtilities.toInt(record.getData("LIMIT_CHANGE_FLAG"), 0);
+            if (limitChangeFlg == 2) {
+                if (QkanConstants.YOUKAIGODO_JIGYOTAISHO == jotaiCode) {
+                    jotaiCode = QkanConstants.YOUKAIGODO_YOUSHIEN2;
+                }
+            }            
+            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(jotaiCode));
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
             if (limitRate > 0) {
                 record.setData("LIMIT_RATE", limitRate);
             }
@@ -1210,6 +1225,9 @@ public class QkanCommon {
         sb.append(" PATIENT_NINTEI_HISTORY.REPORTED_DATE,");
         sb.append(" PATIENT_NINTEI_HISTORY.LIMIT_RATE,");
         sb.append(" PATIENT_NINTEI_HISTORY.EXTERNAL_USE_LIMIT,");
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - begin 事業対象者の限度額変更フラグ
+        sb.append(" PATIENT_NINTEI_HISTORY.LIMIT_CHANGE_FLAG,");
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
         sb.append(" PATIENT_NINTEI_HISTORY.LAST_TIME");
         sb.append(" FROM");
         sb.append(" PATIENT_NINTEI_HISTORY");
@@ -1232,8 +1250,21 @@ public class QkanCommon {
             VRMap record = (VRMap) list.get(j);
             int limitRate = -1;
             
-            // 厚生労働省規定の区分支給限度額を取得する。
-            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), record.getData("JOTAI_CODE").toString());
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - begin 事業対象者の限度額変更フラグ
+//            // 厚生労働省規定の区分支給限度額を取得する。
+//            limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), record.getData("JOTAI_CODE").toString());
+          
+          // 事業対象者で「要支援１の額を超えてサービスを利用」の場合は、要支援２の限度額を使用
+          int jotaiCode = ACCastUtilities.toInt(record.getData("JOTAI_CODE"), 0);
+          int limitChangeFlg = ACCastUtilities.toInt(record.getData("LIMIT_CHANGE_FLAG"), 0);
+          if (limitChangeFlg == 2) {
+              if (QkanConstants.YOUKAIGODO_JIGYOTAISHO == jotaiCode) {
+                  jotaiCode = QkanConstants.YOUKAIGODO_YOUSHIEN2;
+              }
+          }            
+          limitRate = getOfficialLimitRate(dbm, targetMonth, new Integer(1), String.valueOf(jotaiCode));
+//2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
+
             if (limitRate > 0) {
                 record.setData("LIMIT_RATE", limitRate);
             }
@@ -4106,6 +4137,8 @@ public class QkanCommon {
         case 12811: // 地域密着型特定施設入居者生活介護（短期利用）
             return lowVersion;
         case 17711: // 複合型サービス（短期利用以外）
+            return lowVersion;
+        case 17811: // 地域密着型通所介護 [H28.4法改正対応] add
             return lowVersion;
         case 17911: // 複合型サービス（短期利用）[H27.4法改正対応] add
             return lowVersion;

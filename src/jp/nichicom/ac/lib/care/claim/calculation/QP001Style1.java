@@ -89,12 +89,31 @@ public class QP001Style1{
     
     private QP001Manager manager = null;
     
+    
     /**
      * コンストラクタ
      */
-    public QP001Style1(QP001Manager manager){
-        this.manager = manager;
-    }
+// 2016/7/12 [Yoichiro Kamei] mod - begin 総合事業対応
+//    public QP001Style1(QP001Manager manager){
+//        this.manager = manager;
+//    }
+	public QP001Style1(int claimStyleFormat, QP001Manager manager){
+	  this.manager = manager;
+	  
+	  // 様式１－２のとき、交換識別番号を設定
+	  if (QkanConstants.CLAIM_STYLE_BENEFIT_BILL_2 == claimStyleFormat) {
+		  this.insurance1.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+		  this.insurance2.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+		  
+		  this.publicExpense12_1.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+		  this.publicExpense12_2.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+		  this.publicExpense81.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+		  this.publicExpense58.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+		  this.publicExpense25.set_101001(QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+	  }
+	}
+// 2016/7/12 [Yoichiro Kamei] mod - end
+    
     
     /**
      * サービス提供日付を取得し、オブジェクトのシリアルとして返却する。
@@ -172,7 +191,14 @@ public class QP001Style1{
                 //居宅・施設サービス／介護予防サービス／地域密着型サービス等サービス費用
                 //生保単独以外の場合のみ計上する。
                 if(!QP001SpecialCase.isSeihoOnly(String.valueOf(map.get("201006")))){
-                    insurance1.parse(map,1,"00","01");
+                    // [H27.4法改正対応][Shinobu Hitaka] 2016/07/21 edit - begin 総合事業対応
+                    //insurance1.parse(map,1,"00","01");
+                    if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(String.valueOf(map.get("201001")))) {
+                        insurance1.parse(map,1,"00","05");
+                    } else {
+                        insurance1.parse(map,1,"00","01");
+                    }
+                    // [H27.4法改正対応][Shinobu Hitaka] 2016/07/21 edit - end
                 }
                 String[] kohi = new String[3];
                 //公費の情報を退避
@@ -347,6 +373,12 @@ public class QP001Style1{
                 case QkanConstants.CLAIM_STYLE_FORMAT_7_2:
                     publicExpense12_2.parseKohi(map,2,"12","02",kohiPosition);
                     break;
+                // [H27.4法改正対応][Shinobu Hitaka] 2016/07/25 add - begin 総合事業対応
+                //様式第二の三の場合
+                case QkanConstants.CLAIM_STYLE_FORMAT_2_3:
+                    publicExpense12_1.parseKohi(map,2,"12","05",kohiPosition);
+                    break;
+                // [H27.4法改正対応][Shinobu Hitaka] 2016/07/25 add - end
                 //様式第七以外の場合
                 default:
                     publicExpense12_1.parseKohi(map,2,"12","01",kohiPosition);

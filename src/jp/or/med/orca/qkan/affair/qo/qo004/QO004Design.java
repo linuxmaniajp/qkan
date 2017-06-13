@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 日高　しのぶ
- * 作成日: 2015/01/30  日本コンピューター株式会社 日高　しのぶ 新規作成
+ * 作成日: 2016/07/11  MIS九州株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -170,6 +170,8 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
   private ACRadioButtonItem providerMainContentBusinessStandard;
 
   private ACRadioButtonItem providerMainContentBusinessRegion;
+
+  private ACRadioButtonItem providerMainContentBusinessSogo;
 
   private ACIntegerCheckBox medical;
 
@@ -1099,7 +1101,7 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
       providerMainContentBusiness.setModel(getProviderMainContentBusinessModel());
 
-      providerMainContentBusiness.setValues(new int[]{1,2,5});
+      providerMainContentBusiness.setValues(new int[]{1,2,5,6});
 
       addProviderMainContentBusiness();
     }
@@ -1187,6 +1189,25 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
       addProviderMainContentBusinessRegion();
     }
     return providerMainContentBusinessRegion;
+
+  }
+
+  /**
+   * 総合事業を取得します。
+   * @return 総合事業
+   */
+  public ACRadioButtonItem getProviderMainContentBusinessSogo(){
+    if(providerMainContentBusinessSogo==null){
+
+      providerMainContentBusinessSogo = new ACRadioButtonItem();
+
+      providerMainContentBusinessSogo.setText("総合事業");
+
+      providerMainContentBusinessSogo.setGroup(getProviderMainContentBusiness());
+
+      addProviderMainContentBusinessSogo();
+    }
+    return providerMainContentBusinessSogo;
 
   }
 
@@ -2829,6 +2850,10 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
 
     getProviderMainContentBusinessModel().add(getProviderMainContentBusinessRegion());
 
+    getProviderMainContentBusinessSogo().setButtonIndex(6);
+
+    getProviderMainContentBusinessModel().add(getProviderMainContentBusinessSogo());
+
   }
 
   /**
@@ -2849,6 +2874,13 @@ public class QO004Design extends QkanAffairContainer implements ACAffairable {
    * 地域密着に内部項目を追加します。
    */
   protected void addProviderMainContentBusinessRegion(){
+
+  }
+
+  /**
+   * 総合事業に内部項目を追加します。
+   */
+  protected void addProviderMainContentBusinessSogo(){
 
   }
 

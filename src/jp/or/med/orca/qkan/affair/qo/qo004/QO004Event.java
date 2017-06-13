@@ -368,6 +368,10 @@ public abstract class QO004Event extends QO004SQL {
   public static final int SERVICE_TYPE_CARE_PLAN = 14311;
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
+  public static final int SERVICE_TYPE_HOMON = 16111;			//2016.07.07 add
+  public static final int SERVICE_TYPE_TSUSHO = 16511;			//2016.07.07 add
+  public static final int SERVICE_TYPE_HOMON_MINASHI = 50111;	//2016.07.07 add
+  public static final int SERVICE_TYPE_TSUSHO_MINASHI = 50511;	//2016.07.07 add
   public static final int CODE_PROVIDER_TYPE = 195;
   public static final int CODE_LAW_VERSION = 202;
   public static final int DEFAULT_LAW_VERSION = 0;

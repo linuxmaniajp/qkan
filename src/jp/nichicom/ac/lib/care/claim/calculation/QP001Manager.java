@@ -45,6 +45,7 @@ import jp.nichicom.vr.util.VRLinkedHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * 実績集計時のマスタデータを管理する。
@@ -112,6 +113,19 @@ public class QP001Manager {
     // [ID:0000641][Shin Fujihara] 2011/04/14 add end
 	
     
+// 2016/8/16 [総合事業対応][Yoichiro Kamei] add - begin
+    private int jigyotaishoLimitRate = 0; // 事業対象者の国基準の区分支給限度額
+    
+    private void setJigyotaishoLimitRate(ACDBManager dbm,Date targetDate) throws Exception {
+        this.jigyotaishoLimitRate = QkanCommon.getOfficialLimitRate(dbm,
+            targetDate, new Integer(1), String.valueOf(QkanConstants.YOUKAIGODO_JIGYOTAISHO));
+    }
+    
+    // 事業対象者の国基準の区分支給限度額を取得します
+    public int getJigyotaishoLimitRate() {
+        return this.jigyotaishoLimitRate;
+    }
+// 2016/8/16 [総合事業対応][Yoichiro Kamei] add - end
     
 	/**
 	 * コンストラクタ
@@ -143,6 +157,10 @@ public class QP001Manager {
         //[H20.4 法改正対応] fujihara add start
         this.targetDate = targetDate;
         //[H20.4 法改正対応] fujihara add end
+        
+        // 2016/8/16 [総合事業対応][Yoichiro Kamei] add - begin
+        setJigyotaishoLimitRate(dbm, targetDate);
+        // 2016/8/16 [総合事業対応][Yoichiro Kamei] add - end
 	}
 	
 	/**

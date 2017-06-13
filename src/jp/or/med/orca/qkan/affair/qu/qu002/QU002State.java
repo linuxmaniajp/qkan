@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2015/06/08  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2016/07/18  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -438,6 +438,26 @@ public class QU002State extends QU002Design {
         getJushotiTokureiInfoButtonEdit().setEnabled(true);
 
         getJushotiTokureiInfoButtonDelete().setEnabled(true);
+
+  }
+
+  /**
+   * 「要支援１の額を超えてサービスを利用非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VISIBLE_LIMIT_CHANGE_FALSE() throws Exception {
+
+        getKaigoInfoLimitChange().setVisible(false);
+
+  }
+
+  /**
+   * 「要支援１の額を超えてサービスを利用表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VISIBLE_LIMIT_CHANGE_TRUE() throws Exception {
+
+        getKaigoInfoLimitChange().setVisible(true);
 
   }
 

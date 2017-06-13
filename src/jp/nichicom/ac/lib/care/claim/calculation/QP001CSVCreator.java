@@ -53,11 +53,13 @@ import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 
@@ -103,6 +105,10 @@ public class QP001CSVCreator {
         
         // 請求情報退避用の VRArrayList claim_temp を生成する。
         TreeMap claimSorter = new TreeMap();
+// 2016/7/11 [Yoichiro Kamei] add - begin 総合事業対応
+        //様式１－２用
+        TreeMap claimSorter1_2 = new TreeMap();
+// 2016/7/11 [Yoichiro Kamei] end
         List style11 = new ArrayList();
         
 //        //介護給付費請求書印刷用
@@ -205,18 +211,79 @@ public class QP001CSVCreator {
                 // claimより様式第十の情報(識別レコードの値が71A3)を取得し、clime_tempに設定する。
                 
                 CSVData data = null;
-                //既に登録がある場合
-                if(claimSorter.containsKey(serviceDate)){
-                    data = (CSVData)claimSorter.get(serviceDate);
-                } else {
-                    data = new CSVData(manager);
-                    claimSorter.put(serviceDate,data);
-                }
-                claimListTemp = data.getCSVList();
-                style1 = data.getTotalObject();
                 
-                setTargetRecord(claim,claimListTemp, QP001SpecialCase.getPerformanceCodes());
-                style1.parse(claim);
+                
+// 2016/7/11 [Yoichiro Kamei] add - begin 総合事業対応
+                //総合事業対象用の請求に分ける
+                VRList claimListTmp = new VRArrayList();
+                VRList claimListSogo = new VRArrayList();
+                for (int k = 0; k < claim.size(); k++) {
+                	VRMap row = (VRMap)claim.get(k);
+                	int claimStypeType = ACCastUtilities.toInt(row.get("CLAIM_STYLE_TYPE"), 0);
+                	if (QkanConstants.CLAIM_STYLE_BILL_FOR_PATIENT == claimStypeType ||
+                    		QkanConstants.CLAIM_STYLE_BENEFIT_MANAGEMENT == claimStypeType) {
+                		// 利用者向け請求・給付管理票のデータは不要なのでスキップ
+                		continue;
+                	}
+                	if (QkanConstants.CLAIM_STYLE_FORMAT_2_3 == claimStypeType) {
+                        //総合事業の場合は社福軽減のデータは出力しない
+                		int categoryNo = ACCastUtilities.toInt(row.get("CATEGORY_NO"), 0);
+                        if (categoryNo == QkanConstants.CATEGORY_NO_SOCIAL_WELFARE_REDUCE) {
+                            continue;
+                        }
+                		claimListSogo.add(row);
+                	} else {
+                		claimListTmp.add(row);
+                	}
+                }
+                claim = claimListTmp; //総合事業を除いた分
+// 2016/7/11 [Yoichiro Kamei] add - end
+                
+                
+// 2016/7/11 [Yoichiro Kamei] mod - begin 総合事業対応
+//                //既に登録がある場合
+//                if(claimSorter.containsKey(serviceDate)){
+//                    data = (CSVData)claimSorter.get(serviceDate);
+//                } else {
+//                    data = new CSVData(manager);
+//                    claimSorter.put(serviceDate,data);
+//                }
+//                claimListTemp = data.getCSVList();
+//                style1 = data.getTotalObject();
+//                
+//                setTargetRecord(claim,claimListTemp, QP001SpecialCase.getPerformanceCodes());
+//                style1.parse(claim);
+                
+                if (claim.size() > 0) {
+                    //既に登録がある場合
+                    if(claimSorter.containsKey(serviceDate)){
+                        data = (CSVData)claimSorter.get(serviceDate);
+                    } else {
+                        data = new CSVData(QkanConstants.CLAIM_STYLE_BENEFIT_BILL, manager);
+                        claimSorter.put(serviceDate,data);
+                    }
+                    claimListTemp = data.getCSVList();
+                    style1 = data.getTotalObject();
+                    
+                    setTargetRecord(claim,claimListTemp, QP001SpecialCase.getPerformanceCodes());
+                    style1.parse(claim);
+                }
+                
+
+                if (claimListSogo.size() > 0) {
+                    if (claimSorter1_2.containsKey(serviceDate)) {
+                        data = (CSVData) claimSorter1_2.get(serviceDate);
+                    } else {
+                        data = new CSVData(QkanConstants.CLAIM_STYLE_BENEFIT_BILL_2, manager);
+                        claimSorter1_2.put(serviceDate,data);
+                    }
+                    claimListTemp = data.getCSVList();
+                    style1 = data.getTotalObject();
+                    
+                    setTargetRecord(claimListSogo, claimListTemp, QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504);
+                    style1.parse(claimListSogo);
+                }
+// 2016/7/11 [Yoichiro Kamei] mod - end
                 
             }
         }
@@ -239,7 +306,7 @@ public class QP001CSVCreator {
             claim_temp_list = new ArrayList();
             String key = String.valueOf(it.next());
             CSVData data = (CSVData)claimSorter.get(key);
-            setTargetRecord(data.getTotalObject().getRecords(),claim_temp_list,"7111");
+            setTargetRecord(data.getTotalObject().getRecords(),claim_temp_list, "7111");
             claim_temp_list.addAll(data.getCSVList());
             
             Collections.sort(claim_temp_list,new StringComparator());
@@ -262,6 +329,31 @@ public class QP001CSVCreator {
             claimSorter.put(key,null);
             Runtime.getRuntime().gc();
         }
+        
+// 2016/7/11 [Yoichiro Kamei] add - begin 総合事業対応
+        dataType = "71R";
+        it = claimSorter1_2.keySet().iterator();
+        while(it.hasNext()) {
+            claim_temp_list = new ArrayList();
+            String key = String.valueOf(it.next());
+            CSVData data = (CSVData) claimSorter1_2.get(key);
+            setTargetRecord(data.getTotalObject().getRecords(), claim_temp_list, QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504);
+            claim_temp_list.addAll(data.getCSVList());
+            
+            Collections.sort(claim_temp_list, new StringComparator());
+            
+            if(!ACTextUtilities.isNullText(result)){
+                result += "\n　　　　　　　　";
+            }
+            settings.put("IS_YOSHIKI1_2", 1);
+            String temp = makeCSV(claim_temp_list, claimDate, settings, claimTargetDate);
+            if(temp == null){
+                return null;
+            }
+            result += temp;
+        }
+        
+// 2016/7/11 [Yoichiro Kamei] add - end
         
         // CSVファイルを作成する。
         return result;
@@ -837,6 +929,12 @@ public class QP001CSVCreator {
             //[CCCX:1938][Shinobu Hitaka] 2014/10 edit end   平成26年11月インターネット請求開始対応
         }
         
+// 2016/7/12 [Yoichiro Kamei] add - begin 総合事業対応
+        //総合事業の様式１－２の請求CSVの場合は、先頭に「S」を付加
+        if (1 == ACCastUtilities.toInt((VRBindPathParser.get("IS_YOSHIKI1_2",settings)), 0)) {
+            fileNameHeader = "S" +  fileNameHeader;
+        }
+// 2016/7/12 [Yoichiro Kamei] add - end
         
         //FDが選択されているかフラグ
         boolean fdSelect = (ACCastUtilities.toInt(settings.get("MEDIUM_DIVISION")) == 1);
@@ -1055,8 +1153,14 @@ public class QP001CSVCreator {
             tokuteiOut = 3;
         }
         
+        // 2016/7/21 [Shinobu Hitaka] add - begin 総合事業対応
+        if (QP001StyleAbstract.IDENTIFICATION_NO_1_2_201504.equals(getData(map, "101001"))) {
+        	tokuteiOut = 4;
+        }
+        // 2016/7/21 [Shinobu Hitaka] add - end
+        
         //以下の文字列をカンマ区切りで生成する。
-        // 交換情報識別番号4桁(7111固定)
+        // 交換情報識別番号4桁(7111固定) or 7113 (2016.7.21 add)
         sb.append("\"");
         sb.append(getData(map,"101001"));
         sb.append(spliter);
@@ -1072,7 +1176,8 @@ public class QP001CSVCreator {
         // 法別番号2桁※保険請求分の場合は0
         sb.append(getData(map,"101005"));
         sb.append(spliter);
-        // 請求情報区分コード2桁　法別番号=0 OR 12→01-居宅・施設サービス　02-居宅介護支援　法別番号=それ以外→0固定
+        // 請求情報区分コード2桁　7111の場合：法別番号=0 OR 12→01-居宅・施設・介護予防・地域密着型サービス　02-居宅介護支援・介護予防支援　法別番号=それ以外→0固定
+        // 請求情報区分コード2桁　7113の場合：法別番号=0 OR 12→05：訪問型サービス費・通所型サービス費・その他の生活支援サービス費 06：介護予防ケアマネジメント費 　法別番号=それ以外→0固定
         sb.append(getData(map,"101006"));
         sb.append(spliter);
         
@@ -1085,7 +1190,7 @@ public class QP001CSVCreator {
         //(サービス費用)費用合計12桁 
         sb.append(getData(map,"101009"));
         sb.append(spliter);
-        
+
         switch(tokuteiOut){
         //0:特定入所者　件数・費用合計・公費請求額を出力
         case 0:
@@ -1213,7 +1318,35 @@ public class QP001CSVCreator {
             // (特定入所者介サービス費等)保険請求額12桁
             sb.append("\"");
             break;
+            
+        // 2016/7/21 [Shinobu Hitaka] add - begin 総合事業対応
+        //4:総合事業用（サービス費用のみ。特定入所者費用は出力しない。）
+        case 4:
+        	// 公費の場合、事業費請求額と利用者負担は0
+            if ("2".equals(getData(map, "101004"))) {
+                // (サービス費用)事業費請求額12桁
+                sb.append("0");
+                sb.append(spliter);
+                // (サービス費用)公費請求額12桁
+                sb.append(getData(map,"101011"));
+                sb.append(spliter);
+                // (サービス費用)利用者負担12桁
+                sb.append("0");
+                sb.append("\"");
+            } else {
+                // (サービス費用)事業費請求額12桁
+                sb.append(getData(map,"101010"));
+                sb.append(spliter);
+                // (サービス費用)公費請求額12桁
+                sb.append(getData(map,"101011"));
+                sb.append(spliter);
+                // (サービス費用)利用者負担12桁
+                sb.append(getData(map,"101012"));
+                sb.append("\"");
+            }
+            break;
         }
+        // 2016/7/21 [Shinobu Hitaka] add - end
         
         return sb.toString();
 
@@ -2621,11 +2754,14 @@ public class QP001CSVCreator {
     private class CSVData {
         private QP001Style1 style1 = null;
         private List csvList = new ArrayList();
-        
-        public CSVData(QP001Manager manager) {
-            this.style1 = new QP001Style1(manager);
+// 2016/7/12 [Yoichiro Kamei] mod - begin 総合事業対応
+//        public CSVData(QP001Manager manager) {
+//            this.style1 = new QP001Style1(manager);
+//        }
+        public CSVData(int claimStyleFormat, QP001Manager manager) {
+            this.style1 = new QP001Style1(claimStyleFormat, manager);
         }
-        
+// 2016/7/12 [Yoichiro Kamei] mod - end
         public QP001Style1 getTotalObject() {
             return style1;
         }

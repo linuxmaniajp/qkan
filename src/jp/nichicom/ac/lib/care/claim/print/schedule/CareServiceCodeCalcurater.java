@@ -165,8 +165,14 @@ public class CareServiceCodeCalcurater {
                 + ACCastUtilities.toString(code
                         .get("SYSTEM_SERVICE_KIND_DETAIL"))
                 + " "
+// 2016/7/30 [CCCX:2865][Yoichiro Kamei] mod - begin 
+// 月途中で要支援１⇒要支援２へ変更となった場合別サービスとして算定されてしまうのを修正
+                
+//                + ACCastUtilities
+//                        .toString(code.get("SYSTEM_SERVICE_CODE_ITEM"))
                 + ACCastUtilities
-                        .toString(code.get("SYSTEM_SERVICE_CODE_ITEM"))
+                        .toString(code.get("SERVICE_CODE_ITEM"))
+// 2016/7/30 [CCCX:2865] mod - end
                 + " "
                 + ACCastUtilities.toString(service.get("PROVIDER_ID")
                         // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin

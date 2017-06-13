@@ -836,6 +836,7 @@ public abstract class QP005Event extends QP005SQL {
   public static final int CATEGORY_NO18 = 18;
   public static final int FORMAT_STYLE2 = 10211;
   public static final int FORMAT_STYLE22 = 10212;
+  public static final int FORMAT_STYLE23 = 10213;	// 2016.7.8 add
   public static final int FORMAT_STYLE3 = 10311;
   public static final int FORMAT_STYLE32 = 10312;
   public static final int FORMAT_STYLE4 = 10411;

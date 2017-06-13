@@ -520,8 +520,30 @@ public class QP001P02_10Event extends QP001PrintEvent {
         // 被保険者の要介護常態区分を取得する。 ※201015より取得
         if(!ACTextUtilities.isNullText(VRBindPathParser.get("201015", baseMap))){
             switch (ACCastUtilities.toInt(VRBindPathParser.get("201015", baseMap))) {
+            // 「6-事業対象者」の場合
+            case 6:
+                // 要支援１の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
+                // 要支援２の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youshien2");
+                // 要支援の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youshien");
+                // 要介護１の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youkaigo1");
+                // 要介護２の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youkaigo2");
+                // 要介護３の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youkaigo3");
+                // 要介護４の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youkaigo4");
+                // 要介護５の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "youkaigo5");
+                break;
+                    
             // 「11-要支援(経過的要介護)」の場合
             case 11:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -540,6 +562,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 
             // 「12-要支援１」の場合
             case 12:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援２の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien2");
                 // 要支援の○を非表示にする。
@@ -558,6 +582,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 
             // 「13-要支援２」の場合
             case 13:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援の○を非表示にする。
@@ -576,6 +602,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
     
             // 「21-要介護１」の場合
             case 21:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -594,6 +622,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
     
             // 「22-要介護２」の場合
             case 22:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -612,6 +642,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
     
             // 「23-要介護３」の場合
             case 23:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -630,6 +662,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
     
             // 「24-要介護４」の場合
             case 24:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -648,6 +682,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
     
             // 「25-要介護５」の場合
             case 25:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -666,6 +702,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
     
             // 上記以外の場合
             default:
+                // 事業対象者の○を非表示にする。
+                ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
                 // 要支援１の○を非表示にする。
                 ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
                 // 要支援２の○を非表示にする。
@@ -685,6 +723,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 break;
             }
         } else {
+            // 事業対象者の○を非表示にする。
+            ACChotarouXMLUtilities.setInvisible(writer, "jigyotaisho");
             // 要支援１の○を非表示にする。
             ACChotarouXMLUtilities.setInvisible(writer, "youshien1");
             // 要支援２の○を非表示にする。

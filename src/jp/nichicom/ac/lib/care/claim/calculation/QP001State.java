@@ -19,7 +19,7 @@
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
  * 作成日: 2011/02/10  日本コンピューター株式会社 藤原　伸 新規作成
- * 更新日: ----/--/--
+ * 更新日: 2016/07/15
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定/請求書出力 (P)
  * プロセス 請求処理 (001)
@@ -95,6 +95,8 @@ public class QP001State extends QP001Design {
 
         getPrintList().setEnabled(false);
 
+        getSeikyuTypeContainer().setVisible(false);
+
   }
 
   /**
@@ -145,6 +147,8 @@ public class QP001State extends QP001Design {
 
         getType10CountContainer().setVisible(false);
 
+        getType23CountContainer().setVisible(false);
+
         getVisitCountContainer().setVisible(false);
 
         getSyahoCountContainer().setVisible(false);
@@ -174,6 +178,8 @@ public class QP001State extends QP001Design {
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
+
+        getSeikyuTypeContainer().setVisible(false);
 
   }
 
@@ -225,6 +231,8 @@ public class QP001State extends QP001Design {
 
         getType10CountContainer().setVisible(false);
 
+        getType23CountContainer().setVisible(false);
+
         getVisitCountContainer().setVisible(false);
 
         getSyahoCountContainer().setVisible(false);
@@ -254,6 +262,8 @@ public class QP001State extends QP001Design {
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
+
+        getSeikyuTypeContainer().setVisible(false);
 
   }
 
@@ -353,6 +363,8 @@ public class QP001State extends QP001Design {
 
         getType6CountContainer().setVisible(false);
 
+        getType23CountContainer().setVisible(false);
+
         getVisitCountContainer().setVisible(false);
 
         getSyahoCountContainer().setVisible(false);
@@ -368,6 +380,8 @@ public class QP001State extends QP001Design {
         getPrintList().setVisible(true);
 
         getPrintList().setEnabled(false);
+
+        getSeikyuTypeContainer().setVisible(false);
 
   }
 
@@ -417,6 +431,8 @@ public class QP001State extends QP001Design {
 
         getType10CountContainer().setVisible(false);
 
+        getType23CountContainer().setVisible(false);
+
         getServiceCountContainer().setVisible(false);
 
         getTotalDenominationTextContainer().setVisible(false);
@@ -442,6 +458,8 @@ public class QP001State extends QP001Design {
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
+
+        getSeikyuTypeContainer().setVisible(false);
 
   }
 
@@ -493,6 +511,8 @@ public class QP001State extends QP001Design {
 
         getType10CountContainer().setVisible(false);
 
+        getType23CountContainer().setVisible(false);
+
         getVisitCountContainer().setVisible(false);
 
         getSyahoCountContainer().setVisible(false);
@@ -524,6 +544,8 @@ public class QP001State extends QP001Design {
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
+
+        getSeikyuTypeContainer().setVisible(false);
 
   }
 
@@ -573,6 +595,8 @@ public class QP001State extends QP001Design {
 
         getType10CountContainer().setVisible(false);
 
+        getType23CountContainer().setVisible(false);
+
         getVisitCountContainer().setVisible(false);
 
         getSyahoCountContainer().setVisible(false);
@@ -606,6 +630,8 @@ public class QP001State extends QP001Design {
         getPrintList().setVisible(false);
 
         getPrintList().setEnabled(false);
+
+        getSeikyuTypeContainer().setVisible(false);
 
   }
 

@@ -571,6 +571,22 @@ public class QO012 extends QO012Event {
                     // パーサを実行して、解析に問題が有った場合はスキップする
                     continue;
                 }
+            //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 add begin 総合事業対応
+            } else if (exchangeType.equals("7113")) {
+                // 7113 様式第1-2
+            	// チェックは 7111 と同じ
+                if (!dataRecord7111Parser(rowIndex)) {
+                    // パーサを実行して、解析に問題が有った場合はスキップする
+                    continue;
+                }
+            } else if (exchangeType.equals("71R1")) {
+                // 71R1 様式第2-3
+                // チェックは 71系 と同じ
+                if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
+                    // パーサを実行して、解析に問題が有った場合はスキップする
+                    continue;
+                }
+            //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 add end
             } else {
                 // 交換識別番号が該当しない場合(4月以前の交換識別番号はスキップする)
                 continue;
@@ -665,32 +681,19 @@ public class QO012 extends QO012Event {
          * csvDataTableSchema[44] = "UNIT_TOTAL";
          */
 
-        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 edit begin 68,69,79サービス種類追加
-////        String[] csvDataTableSchema = new String[] { "YEAR_AND_MONTH",
-////                "INSURED_ID", "NAME", "CARE_LEVEL", "11", "12", "13", "14",
-////                "15", "16", "17", "21", "22", "23", "31", "32", "33", "27",
-////                "36", "29", "38", "51", "52", "53", "54", "71", "72", "76",
-////                "77", "73", "43", "61", "62", "63", "64", "65", "66", "67",
-////                "24", "25", "26", "34", "35", "28", "46", "74", "75", "37",
-////                "39", "UNIT_TOTAL" };
-//        
-//        String[] csvDataTableSchema = new String[] { "YEAR_AND_MONTH",
-//                "INSURED_ID", "NAME", "CARE_LEVEL", "11", "12", "13", "14",
-//                "15", "16", "17", "21", "22", "23", "31", "32", "33", "27",
-//                "36", "28", "38", "51", "52", "53", "54", "71", "72", "76",
-//                "77", "79", "73", "68", "43", "61", "62", "63", "64", "65",
-//                "66", "67", "24", "25", "26", "34", "35", "46", "74", "75", 
-//                "69", "37", "39", "UNIT_TOTAL" };
-        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 edit end
-        //[H28.4 改正対応][Shinobu Hitaka] 2016/01 edit begin 78サービス種類追加
-        String[] csvDataTableSchema = new String[] { "YEAR_AND_MONTH",
-                "INSURED_ID", "NAME", "CARE_LEVEL", "11", "12", "13", "14",
-                "15", "16", "17", "21", "22", "23", "31", "32", "33", "27",
-                "36", "28", "38", "51", "52", "53", "54", "71", "72", "76",
-                "77", "79", "73", "68", "78", "43", "61", "62", "63", "64", "65",
-                "66", "67", "24", "25", "26", "34", "35", "46", "74", "75", 
-                "69", "37", "39", "UNIT_TOTAL" };
-        //[H28.4 改正対応][Shinobu Hitaka] 2016/01 edit end
+        //[H27.4 改正対応][Shinobu Hitaka] 2015/02 add 68,69,79 追加
+        //[H28.4 改正対応][Shinobu Hitaka] 2016/01 add 78 追加
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07 add A1,A5 追加
+        String[] csvDataTableSchema = new String[] {
+                "YEAR_AND_MONTH", "INSURED_ID", "NAME", "CARE_LEVEL",
+                "11", "12", "13", "14", "15", "16", "17", "21", "22", "23",
+                "31", "32", "33", "27", "36", "28", "38", "51", "52", "53",
+                "54", "71", "72", "76", "77", "79", "73", "68", "78",
+                "43", "61", "62", "63", "64", "65", "66", "67", "24", "25",
+                "26", "34", "35", "46", "74", "75", "69", "37", "39",
+                "A1", "A5",
+                "UNIT_TOTAL"
+                };
 
         // 格納
         ACTableModelAdapter csvDataTableModel = new ACTableModelAdapter();
@@ -774,7 +777,10 @@ public class QO012 extends QO012Event {
                     totalMap.setData("TOTAL1",
                             claimTotalData.getData("YEAR_AND_MONTH"));
 
-                    if ("01".equals(claimTotalData.getData("CLAIM_STATUS"))) {
+                    //[H27.4 改正対応][Shinobu Hitaka] 2016/07/13 edit 総合事業対応（[請求情報区分コード] 01：介護給付 05：総合事業）
+                    //if ("01".equals(claimTotalData.getData("CLAIM_STATUS"))) {
+                    if ("01".equals(claimTotalData.getData("CLAIM_STATUS")) || 
+                            "05".equals(claimTotalData.getData("CLAIM_STATUS"))) {
                         // サービス件数を取得
                         // FIXME
                         // totalMap.setData("TOTAL3",
@@ -863,30 +869,58 @@ public class QO012 extends QO012Event {
         if (ACTextUtilities.isNullText(dataType)) {
             return false;
         }
-        switch (ACCastUtilities.toInt(dataType)) {
-        case 711:
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 edit begin 総合事業対応
+        //データ種別は英数字であるため、switch-caseを廃止
+        //switch (ACCastUtilities.toInt(dataType)) {
+        //case 711:
+        //    // データ種別が711の場合
+        //    // headerMapに文字列"介護給付費明細書情報" BINDPATH FILE_TYPEで格納する
+        //    // そのまま継続する
+        //    getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_711);
+        //    break;
+        //case 812:
+        //    // データ種別が812の場合
+        //    // headerMapに文字列"介護給付費請求明細書（居宅サービス計画費）情報" BINDPATH FILE_TYPEで格納する
+        //    // そのまま継続する
+        //    getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_812);
+        //    break;
+        //case 821:
+        //    // データ種別が821の場合
+        //    // headerMapに文字列"介護給付費請求明細書（居宅サービス計画費）情報" BINDPATH FILE_TYPEで格納する
+        //    // そのまま継続する
+        //    getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_821);
+        //    break;
+        //default:
+        //    // データ種別がそれら以外の場合
+        //    // falseを返却する
+        //    return false;
+        //}
+        if (dataType.equals("711")) {
             // データ種別が711の場合
             // headerMapに文字列"介護給付費明細書情報" BINDPATH FILE_TYPEで格納する
             // そのまま継続する
             getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_711);
-            break;
-        case 812:
+        } else if (dataType.equals("812")) {
             // データ種別が812の場合
             // headerMapに文字列"介護給付費請求明細書（居宅サービス計画費）情報" BINDPATH FILE_TYPEで格納する
             // そのまま継続する
             getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_812);
-            break;
-        case 821:
+        } else if (dataType.equals("821")) {
             // データ種別が821の場合
             // headerMapに文字列"介護給付費請求明細書（居宅サービス計画費）情報" BINDPATH FILE_TYPEで格納する
             // そのまま継続する
             getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_821);
-            break;
-        default:
+        } else if (dataType.equals("71R")) {
+            // データ種別が71Rの場合
+            // headerMapに文字列"介護予防・日常生活支援総合事業費請求書情報" BINDPATH FILE_TYPEで格納する
+            // そのまま継続する
+            getHeaderMap().setData("FILE_TYPE", CSV_FILE_TYPE_71R);
+        } else {
             // データ種別がそれら以外の場合
             // falseを返却する
             return false;
         }
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 edit end
 
         return true;
     }
@@ -928,7 +962,7 @@ public class QO012 extends QO012Event {
             // headerMapに文字列"FD"をBINDPATH MEDIA_TYPEで格納する
             getHeaderMap().setData("MEDIA_TYPE", MEDIA_TYPE7);
             break;
-        //[CCCX:1938][Shinobu Hitaka] 2014/10 edit begin 平成26年11月インターネット請求開始対応
+        //[CCCX:1938][Shinobu Hitaka] 2014/10 edit end
         default:
             // 媒体区分がそれら以外の場合
             return false;
@@ -948,6 +982,10 @@ public class QO012 extends QO012Event {
         }
 
         switch (ACCastUtilities.toInt(careLevelCode)) {
+        case 6:	// [H27.4 改正対応][Shinobu Hitaka] 2016/07/12 add 総合事業対応（事業対象者追加）
+            careLevel = NURSING_NECESSARY_LEVEL06;
+            break;
+
         case 11:
             careLevel = NURSING_NECESSARY_LEVEL11;
             break;
@@ -1074,17 +1112,18 @@ public class QO012 extends QO012Event {
         } else {
             return false;
         }
-
-        if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(
-                rowIndex, BASIC_RECORD_15_CARE_LEVEL))) {
+        
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/26 edit - begin 総合事業対応（要介護度を保持）
+        String careLevel = getInputCSVFile().getValueAtString(rowIndex, BASIC_RECORD_15_CARE_LEVEL);
+        if (!ACTextUtilities.isNullText(careLevel)) {
             // 18.要介護度状態区分コードを取得してreturnDataMapにBIND PATH CARE_LEVELで格納する
             returnDataMap.setData(
                     "CARE_LEVEL",
-                    checkCareLevel(getInputCSVFile().getValueAtString(rowIndex,
-                            BASIC_RECORD_15_CARE_LEVEL)));
+                    checkCareLevel(careLevel));
         } else {
             return false;
         }
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/26 edit - end
 
         // 被保険者番号から利用者名を取得する、取得した値はBIND PATH NAMEで格納する
         // SQLパラメータ
@@ -1112,7 +1151,12 @@ public class QO012 extends QO012Event {
                     ACCastUtilities.toDate(getInputCSVFile().getValueAtString(
                             rowIndex, BASIC_RECORD_18_INSURED_END_DATE)));
         } else {
-            return false;
+            //[H27.4 改正対応][Shinobu Hitaka] 2016/07/26 edit - begin 総合事業対応
+            // 「18.要介護度状態区分コード=06 事業対象者」は「21.認定有効期間終了年月日」省略可
+            if (!"06".equals(careLevel)) {
+                return false;
+            }
+            //[H27.4 改正対応][Shinobu Hitaka] 2016/07/26 edit - end
         }
 
         if (!ACTextUtilities.isNullText(getInputCSVFile().getValueAtString(
@@ -1967,6 +2011,11 @@ public class QO012 extends QO012Event {
         
         planCodeSet.add("43"); //居宅介護支援
         planCodeSet.add("46"); //介護予防支援
+
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 add begin 総合事業追加
+        serviceCodeSet.add("A1"); //訪問型サービス
+        serviceCodeSet.add("A5"); //通所型サービス
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/12 add end
     }
 
     private Integer getServiceCount(List list) {

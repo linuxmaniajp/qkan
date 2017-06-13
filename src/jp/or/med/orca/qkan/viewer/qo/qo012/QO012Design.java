@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2016/01/29  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2016/07/26  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -105,15 +105,15 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACLabel mediaType;
 
+  private ACLabel targetYearAndMonthLabel;
+
+  private ACLabel targetYearAndMonth;
+
   private ACLabel providerLabel;
 
   private ACLabel providerId;
 
   private ACLabel providerName;
-
-  private ACLabel targetYearAndMonthLabel;
-
-  private ACLabel targetYearAndMonth;
 
   private ACTable totalInfoTable;
 
@@ -239,6 +239,10 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn csvDataTableColumn44;
 
+  private ACTableColumn csvDataTableColumn54;
+
+  private ACTableColumn csvDataTableColumn55;
+
   private ACTableColumn csvDataTableColumn45;
 
   //getter
@@ -362,7 +366,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       fileTypeLabel = new ACLabel();
 
-      fileTypeLabel.setText("種類：");
+      fileTypeLabel.setText("【　種　類　】");
 
       addFileTypeLabel();
     }
@@ -396,7 +400,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       mediaTypeLabel = new ACLabel();
 
-      mediaTypeLabel.setText("媒体：");
+      mediaTypeLabel.setText("【　媒　体　】");
 
       addMediaTypeLabel();
     }
@@ -422,6 +426,42 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 処理対象年月ラベルを取得します。
+   * @return 処理対象年月ラベル
+   */
+  public ACLabel getTargetYearAndMonthLabel(){
+    if(targetYearAndMonthLabel==null){
+
+      targetYearAndMonthLabel = new ACLabel();
+
+      targetYearAndMonthLabel.setText("【処理対象月】");
+
+      addTargetYearAndMonthLabel();
+    }
+    return targetYearAndMonthLabel;
+
+  }
+
+  /**
+   * 処理対象年月を取得します。
+   * @return 処理対象年月
+   */
+  public ACLabel getTargetYearAndMonth(){
+    if(targetYearAndMonth==null){
+
+      targetYearAndMonth = new ACLabel();
+
+      targetYearAndMonth.setBindPath("TARGET_MONTH");
+
+      targetYearAndMonth.setFormat(new ACBorderBlankDateFormat("yyyy年MM月"));
+
+      addTargetYearAndMonth();
+    }
+    return targetYearAndMonth;
+
+  }
+
+  /**
    * 事業所ラベルを取得します。
    * @return 事業所ラベル
    */
@@ -430,7 +470,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       providerLabel = new ACLabel();
 
-      providerLabel.setText("事業所：");
+      providerLabel.setText("【事　業　所】");
 
       addProviderLabel();
     }
@@ -469,42 +509,6 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
       addProviderName();
     }
     return providerName;
-
-  }
-
-  /**
-   * 処理対象年月ラベルを取得します。
-   * @return 処理対象年月ラベル
-   */
-  public ACLabel getTargetYearAndMonthLabel(){
-    if(targetYearAndMonthLabel==null){
-
-      targetYearAndMonthLabel = new ACLabel();
-
-      targetYearAndMonthLabel.setText("処理対象月：");
-
-      addTargetYearAndMonthLabel();
-    }
-    return targetYearAndMonthLabel;
-
-  }
-
-  /**
-   * 処理対象年月を取得します。
-   * @return 処理対象年月
-   */
-  public ACLabel getTargetYearAndMonth(){
-    if(targetYearAndMonth==null){
-
-      targetYearAndMonth = new ACLabel();
-
-      targetYearAndMonth.setBindPath("TARGET_MONTH");
-
-      targetYearAndMonth.setFormat(new ACBorderBlankDateFormat("yyyy年MM月"));
-
-      addTargetYearAndMonth();
-    }
-    return targetYearAndMonth;
 
   }
 
@@ -667,7 +671,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       totalInfoTableColumn6 = new ACTableColumn();
 
-      totalInfoTableColumn6.setHeaderValue("保険請求額");
+      totalInfoTableColumn6.setHeaderValue("保険／事業費請求額");
 
       totalInfoTableColumn6.setColumnName("TOTAL6");
 
@@ -831,7 +835,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn5.setEditable(false);
 
-      csvDataTableColumn5.setColumns(4);
+      csvDataTableColumn5.setColumns(3);
 
       csvDataTableColumn5.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -856,7 +860,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn6.setEditable(false);
 
-      csvDataTableColumn6.setColumns(4);
+      csvDataTableColumn6.setColumns(3);
 
       csvDataTableColumn6.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -881,7 +885,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn7.setEditable(false);
 
-      csvDataTableColumn7.setColumns(4);
+      csvDataTableColumn7.setColumns(3);
 
       csvDataTableColumn7.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -906,7 +910,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn8.setEditable(false);
 
-      csvDataTableColumn8.setColumns(4);
+      csvDataTableColumn8.setColumns(3);
 
       csvDataTableColumn8.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -931,7 +935,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn9.setEditable(false);
 
-      csvDataTableColumn9.setColumns(4);
+      csvDataTableColumn9.setColumns(3);
 
       csvDataTableColumn9.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -956,7 +960,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn10.setEditable(false);
 
-      csvDataTableColumn10.setColumns(4);
+      csvDataTableColumn10.setColumns(3);
 
       csvDataTableColumn10.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -981,7 +985,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn11.setEditable(false);
 
-      csvDataTableColumn11.setColumns(4);
+      csvDataTableColumn11.setColumns(3);
 
       csvDataTableColumn11.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1006,7 +1010,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn12.setEditable(false);
 
-      csvDataTableColumn12.setColumns(4);
+      csvDataTableColumn12.setColumns(3);
 
       csvDataTableColumn12.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1031,7 +1035,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn13.setEditable(false);
 
-      csvDataTableColumn13.setColumns(4);
+      csvDataTableColumn13.setColumns(3);
 
       csvDataTableColumn13.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1056,7 +1060,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn14.setEditable(false);
 
-      csvDataTableColumn14.setColumns(4);
+      csvDataTableColumn14.setColumns(3);
 
       csvDataTableColumn14.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1081,7 +1085,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn15.setEditable(false);
 
-      csvDataTableColumn15.setColumns(4);
+      csvDataTableColumn15.setColumns(3);
 
       csvDataTableColumn15.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1106,7 +1110,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn16.setEditable(false);
 
-      csvDataTableColumn16.setColumns(4);
+      csvDataTableColumn16.setColumns(3);
 
       csvDataTableColumn16.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1131,7 +1135,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn17.setEditable(false);
 
-      csvDataTableColumn17.setColumns(4);
+      csvDataTableColumn17.setColumns(3);
 
       csvDataTableColumn17.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1156,7 +1160,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn46.setEditable(false);
 
-      csvDataTableColumn46.setColumns(4);
+      csvDataTableColumn46.setColumns(3);
 
       csvDataTableColumn46.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1181,7 +1185,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn18.setEditable(false);
 
-      csvDataTableColumn18.setColumns(4);
+      csvDataTableColumn18.setColumns(3);
 
       csvDataTableColumn18.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1206,7 +1210,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn47.setEditable(false);
 
-      csvDataTableColumn47.setColumns(4);
+      csvDataTableColumn47.setColumns(3);
 
       csvDataTableColumn47.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1231,7 +1235,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn19.setEditable(false);
 
-      csvDataTableColumn19.setColumns(4);
+      csvDataTableColumn19.setColumns(3);
 
       csvDataTableColumn19.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1256,7 +1260,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn20.setEditable(false);
 
-      csvDataTableColumn20.setColumns(4);
+      csvDataTableColumn20.setColumns(3);
 
       csvDataTableColumn20.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1281,7 +1285,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn21.setEditable(false);
 
-      csvDataTableColumn21.setColumns(4);
+      csvDataTableColumn21.setColumns(3);
 
       csvDataTableColumn21.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1306,7 +1310,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn22.setEditable(false);
 
-      csvDataTableColumn22.setColumns(4);
+      csvDataTableColumn22.setColumns(3);
 
       csvDataTableColumn22.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1331,7 +1335,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn23.setEditable(false);
 
-      csvDataTableColumn23.setColumns(4);
+      csvDataTableColumn23.setColumns(3);
 
       csvDataTableColumn23.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1356,7 +1360,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn24.setEditable(false);
 
-      csvDataTableColumn24.setColumns(4);
+      csvDataTableColumn24.setColumns(3);
 
       csvDataTableColumn24.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1381,7 +1385,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn25.setEditable(false);
 
-      csvDataTableColumn25.setColumns(4);
+      csvDataTableColumn25.setColumns(3);
 
       csvDataTableColumn25.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1406,7 +1410,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn48.setEditable(false);
 
-      csvDataTableColumn48.setColumns(4);
+      csvDataTableColumn48.setColumns(3);
 
       csvDataTableColumn48.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1431,7 +1435,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn49.setEditable(false);
 
-      csvDataTableColumn49.setColumns(4);
+      csvDataTableColumn49.setColumns(3);
 
       csvDataTableColumn49.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1456,7 +1460,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn50.setEditable(false);
 
-      csvDataTableColumn50.setColumns(4);
+      csvDataTableColumn50.setColumns(3);
 
       csvDataTableColumn50.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1481,7 +1485,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn26.setEditable(false);
 
-      csvDataTableColumn26.setColumns(4);
+      csvDataTableColumn26.setColumns(3);
 
       csvDataTableColumn26.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1506,7 +1510,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn51.setEditable(false);
 
-      csvDataTableColumn51.setColumns(4);
+      csvDataTableColumn51.setColumns(3);
 
       csvDataTableColumn51.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1531,7 +1535,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn53.setEditable(false);
 
-      csvDataTableColumn53.setColumns(4);
+      csvDataTableColumn53.setColumns(3);
 
       csvDataTableColumn53.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1556,7 +1560,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn27.setEditable(false);
 
-      csvDataTableColumn27.setColumns(4);
+      csvDataTableColumn27.setColumns(3);
 
       csvDataTableColumn27.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1581,7 +1585,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn28.setEditable(false);
 
-      csvDataTableColumn28.setColumns(4);
+      csvDataTableColumn28.setColumns(3);
 
       csvDataTableColumn28.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1606,7 +1610,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn29.setEditable(false);
 
-      csvDataTableColumn29.setColumns(4);
+      csvDataTableColumn29.setColumns(3);
 
       csvDataTableColumn29.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1631,7 +1635,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn30.setEditable(false);
 
-      csvDataTableColumn30.setColumns(4);
+      csvDataTableColumn30.setColumns(3);
 
       csvDataTableColumn30.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1656,7 +1660,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn31.setEditable(false);
 
-      csvDataTableColumn31.setColumns(4);
+      csvDataTableColumn31.setColumns(3);
 
       csvDataTableColumn31.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1681,7 +1685,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn32.setEditable(false);
 
-      csvDataTableColumn32.setColumns(4);
+      csvDataTableColumn32.setColumns(3);
 
       csvDataTableColumn32.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1706,7 +1710,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn33.setEditable(false);
 
-      csvDataTableColumn33.setColumns(4);
+      csvDataTableColumn33.setColumns(3);
 
       csvDataTableColumn33.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1731,7 +1735,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn34.setEditable(false);
 
-      csvDataTableColumn34.setColumns(4);
+      csvDataTableColumn34.setColumns(3);
 
       csvDataTableColumn34.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1756,7 +1760,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn35.setEditable(false);
 
-      csvDataTableColumn35.setColumns(4);
+      csvDataTableColumn35.setColumns(3);
 
       csvDataTableColumn35.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1781,7 +1785,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn36.setEditable(false);
 
-      csvDataTableColumn36.setColumns(4);
+      csvDataTableColumn36.setColumns(3);
 
       csvDataTableColumn36.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1806,7 +1810,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn37.setEditable(false);
 
-      csvDataTableColumn37.setColumns(4);
+      csvDataTableColumn37.setColumns(3);
 
       csvDataTableColumn37.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1831,7 +1835,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn38.setEditable(false);
 
-      csvDataTableColumn38.setColumns(4);
+      csvDataTableColumn38.setColumns(3);
 
       csvDataTableColumn38.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1856,7 +1860,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn39.setEditable(false);
 
-      csvDataTableColumn39.setColumns(4);
+      csvDataTableColumn39.setColumns(3);
 
       csvDataTableColumn39.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1881,7 +1885,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn40.setEditable(false);
 
-      csvDataTableColumn40.setColumns(4);
+      csvDataTableColumn40.setColumns(3);
 
       csvDataTableColumn40.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1906,7 +1910,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn41.setEditable(false);
 
-      csvDataTableColumn41.setColumns(4);
+      csvDataTableColumn41.setColumns(3);
 
       csvDataTableColumn41.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1931,7 +1935,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn42.setEditable(false);
 
-      csvDataTableColumn42.setColumns(4);
+      csvDataTableColumn42.setColumns(3);
 
       csvDataTableColumn42.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1956,7 +1960,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn52.setEditable(false);
 
-      csvDataTableColumn52.setColumns(4);
+      csvDataTableColumn52.setColumns(3);
 
       csvDataTableColumn52.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -1981,7 +1985,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn43.setEditable(false);
 
-      csvDataTableColumn43.setColumns(4);
+      csvDataTableColumn43.setColumns(3);
 
       csvDataTableColumn43.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
@@ -2006,13 +2010,63 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn44.setEditable(false);
 
-      csvDataTableColumn44.setColumns(4);
+      csvDataTableColumn44.setColumns(3);
 
       csvDataTableColumn44.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
 
       addCsvDataTableColumn44();
     }
     return csvDataTableColumn44;
+
+  }
+
+  /**
+   * 総訪みカラムを取得します。
+   * @return 総訪みカラム
+   */
+  public ACTableColumn getCsvDataTableColumn54(){
+    if(csvDataTableColumn54==null){
+
+      csvDataTableColumn54 = new ACTableColumn();
+
+      csvDataTableColumn54.setHeaderValue("<html>総<br>訪<br>み</html>");
+
+      csvDataTableColumn54.setColumnName("A1");
+
+      csvDataTableColumn54.setEditable(false);
+
+      csvDataTableColumn54.setColumns(3);
+
+      csvDataTableColumn54.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn54();
+    }
+    return csvDataTableColumn54;
+
+  }
+
+  /**
+   * 総通みカラムを取得します。
+   * @return 総通みカラム
+   */
+  public ACTableColumn getCsvDataTableColumn55(){
+    if(csvDataTableColumn55==null){
+
+      csvDataTableColumn55 = new ACTableColumn();
+
+      csvDataTableColumn55.setHeaderValue("<html>総<br>通<br>み</html>");
+
+      csvDataTableColumn55.setColumnName("A5");
+
+      csvDataTableColumn55.setEditable(false);
+
+      csvDataTableColumn55.setColumns(3);
+
+      csvDataTableColumn55.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn55();
+    }
+    return csvDataTableColumn55;
 
   }
 
@@ -2030,6 +2084,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
       csvDataTableColumn45.setColumnName("UNIT_TOTAL");
 
       csvDataTableColumn45.setEditable(false);
+
+      csvDataTableColumn45.setColumns(6);
 
       csvDataTableColumn45.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -2128,17 +2184,17 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
     fileInfoGroup.add(getMediaTypeLabel(), null);
 
-    fileInfoGroup.add(getMediaType(), null);
+    fileInfoGroup.add(getMediaType(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    fileInfoGroup.add(getTargetYearAndMonthLabel(), null);
+
+    fileInfoGroup.add(getTargetYearAndMonth(), null);
 
     fileInfoGroup.add(getProviderLabel(), null);
 
     fileInfoGroup.add(getProviderId(), null);
 
     fileInfoGroup.add(getProviderName(), null);
-
-    fileInfoGroup.add(getTargetYearAndMonthLabel(), null);
-
-    fileInfoGroup.add(getTargetYearAndMonth(), null);
 
   }
 
@@ -2171,6 +2227,20 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 処理対象年月ラベルに内部項目を追加します。
+   */
+  protected void addTargetYearAndMonthLabel(){
+
+  }
+
+  /**
+   * 処理対象年月に内部項目を追加します。
+   */
+  protected void addTargetYearAndMonth(){
+
+  }
+
+  /**
    * 事業所ラベルに内部項目を追加します。
    */
   protected void addProviderLabel(){
@@ -2188,20 +2258,6 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * 事業所名称に内部項目を追加します。
    */
   protected void addProviderName(){
-
-  }
-
-  /**
-   * 処理対象年月ラベルに内部項目を追加します。
-   */
-  protected void addTargetYearAndMonthLabel(){
-
-  }
-
-  /**
-   * 処理対象年月に内部項目を追加します。
-   */
-  protected void addTargetYearAndMonth(){
 
   }
 
@@ -2388,6 +2444,10 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn43());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn44());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn54());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn55());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn45());
 
@@ -2754,6 +2814,20 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * 予認短カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn44(){
+
+  }
+
+  /**
+   * 総訪みカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn54(){
+
+  }
+
+  /**
+   * 総通みカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn55(){
 
   }
 

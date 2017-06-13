@@ -56,6 +56,29 @@ public class QP004State extends QP004Design {
   }
 
   /**
+   * 「状態コントロール様式第二の三」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STATE_TYPE_23() throws Exception {
+
+        getTekiyos().setVisible(true);
+
+        getShinryos().setVisible(false);
+
+        getKyotakuIdouGroup().setVisible(true);
+
+        getShisetsuIdouGroup().setVisible(false);
+
+        if(getContentsStopReasons().getParent()!=null){
+          Container parentContainer = getContentsStopReasons().getParent();
+          if(parentContainer.getParent()!=null){
+            parentContainer.getParent().remove(parentContainer);
+          }
+        }
+
+  }
+
+  /**
    * 「状態コントロール様式第三」の状態に設定します。
    * @throws Exception 処理例外
    */

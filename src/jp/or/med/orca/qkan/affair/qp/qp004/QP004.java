@@ -694,6 +694,14 @@ public class QP004 extends QP004Event {
 			setState_STATE_NYUSYO_HIDE();
 		}
 
+		// 帳票様式第2の3の場合（claimStyleType = 23）
+		// 画面のVisible制御を行う。
+		if (getClaimStyleType() == CLAIM_STYLE_TYPE23) {
+			setState_STATE_TYPE_23();
+			// ・状態ID：STATE_TYPE_2
+			setState_STATE_NYUSYO_HIDE();
+		}
+
 		// 帳票様式第3の場合（claimStyleType = 3）
 		// 画面のVisible制御を行う。
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE31 || getClaimStyleType() == CLAIM_STYLE_TYPE32) {

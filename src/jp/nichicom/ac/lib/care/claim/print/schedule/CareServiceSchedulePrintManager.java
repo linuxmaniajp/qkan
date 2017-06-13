@@ -183,6 +183,23 @@ public class CareServiceSchedulePrintManager extends HashMap {
     private SelfPaymentNumberCalcurater selfPaymentNumberCalcurater;
     // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
     
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] add - begin
+    private int jigyotaishoLimitRate; // 事業対象者のときに表示する区分支給限度額
+    private static final Date MAX_DATE = ACCastUtilities.toDate("9999/12/31", null);
+    
+    // 事業対象者の国基準の区分支給限度額を取得します
+    private int getJigyotaishoLimitRate() throws Exception {
+        if (jigyotaishoLimitRate > 0) {
+            return jigyotaishoLimitRate;
+        }
+        Date targetDate = getCalcurater().getTargetDate();
+        jigyotaishoLimitRate = QkanCommon.getOfficialLimitRate(getCalcurater().getDBManager(),
+                targetDate, new Integer(1), String.valueOf(QkanConstants.YOUKAIGODO_JIGYOTAISHO));
+        
+        return jigyotaishoLimitRate;
+    }
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] add - end
+    
     /**
      * 本票の自費に△を記載するか を返します。
      * 
@@ -1810,23 +1827,53 @@ public class CareServiceSchedulePrintManager extends HashMap {
             // 最も重い要介護度
             VRMap insureInfo = target.getMostHeavyInsureInfo();
             if (insureInfo != null) {
+
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - begin
+//              // 区分支給限度基準額
+//              buildParam.getFormPage().put(
+//                      "limitAmountContent",
+//                      NumberFormat.getIntegerInstance().format(
+//                              ACCastUtilities.toInt(insureInfo
+//                                      .get("LIMIT_RATE"), 0)));
+                // 事業対象者で要支援１の基準額を超える場合は、国基準の額を表示する
+                int limitRate = ACCastUtilities.toInt(insureInfo.get("LIMIT_RATE"), 0);
+                int jotaiCode = ACCastUtilities.toInt(insureInfo.get("JOTAI_CODE"), 0);
+                if (jotaiCode == QkanConstants.YOUKAIGODO_JIGYOTAISHO) {
+                    if (limitRate > getJigyotaishoLimitRate()) {
+                        limitRate = getJigyotaishoLimitRate();
+                    }
+                }
                 // 区分支給限度基準額
                 buildParam.getFormPage().put(
                         "limitAmountContent",
-                        NumberFormat.getIntegerInstance().format(
-                                ACCastUtilities.toInt(insureInfo
-                                        .get("LIMIT_RATE"), 0)));
+                        NumberFormat.getIntegerInstance().format(limitRate));
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - end
+
 
                 // 限度額適用期間開始
                 buildParam.getFormPage().put(
                         "validDateStart",
                         yearMonthFormat.format(ACCastUtilities
                                 .toDate(insureInfo.get("INSURE_VALID_START"))));
-                // 限度額適用期間終了
-                buildParam.getFormPage().put(
-                        "validDateEnd",
-                        yearMonthFormat.format(ACCastUtilities
-                                .toDate(insureInfo.get("INSURE_VALID_END"))));
+                
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - begin
+//                // 限度額適用期間終了
+//                buildParam.getFormPage().put(
+//                        "validDateEnd",
+//                        yearMonthFormat.format(ACCastUtilities
+//                                .toDate(insureInfo.get("INSURE_VALID_END"))));
+                
+                Date end = ACCastUtilities.toDate(insureInfo.get("INSURE_VALID_END"));
+                if (MAX_DATE.equals(end)) {
+                    // 9999-12-31の場合は空欄
+                    buildParam.getFormPage().put("validDateEnd", "");
+                } else {
+                  buildParam.getFormPage().put(
+                  "validDateEnd",
+                  yearMonthFormat.format(ACCastUtilities
+                          .toDate(insureInfo.get("INSURE_VALID_END"))));
+                }
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - end
             }
         }
 
@@ -1852,10 +1899,21 @@ public class CareServiceSchedulePrintManager extends HashMap {
             // 最も重い要介護度
             insureInfo = target.getMostHeavyInsureInfo();
             if (insureInfo != null) {
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - begin
+//                // 区分支給限度基準額
+//                buildParam.getFormPage().put("main.total.x5",
+//                        insureInfo.get("LIMIT_RATE"));
+                // 事業対象者で要支援１の基準額を超える場合は、国基準の額を表示する
+                int limitRate = ACCastUtilities.toInt(insureInfo.get("LIMIT_RATE"), 0);
+                int jotaiCode = ACCastUtilities.toInt(insureInfo.get("JOTAI_CODE"), 0);
+                if (jotaiCode == QkanConstants.YOUKAIGODO_JIGYOTAISHO) {
+                    if (limitRate > getJigyotaishoLimitRate()) {
+                        limitRate = getJigyotaishoLimitRate();
+                    }
+                }
                 // 区分支給限度基準額
-                buildParam.getFormPage().put("main.total.x5",
-                        insureInfo.get("LIMIT_RATE"));
-
+                buildParam.getFormPage().put("main.total.x5",limitRate);
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - end
             }
         }
     }
@@ -3009,7 +3067,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
         public void parseSubSecond(String providerID, int systemServiceKindDetail) throws Exception{
             //2006/06/21 Tozo TANAKA edit-begin 予防訪問介護3級対応のため
             if(CareServiceCommon.isHomeVisitCare(systemServiceKindDetail)&&
-                    CareServiceCommon.isPreventService(systemServiceKindDetail)){
+                // 2016/7/21 [Yoichiro Kamei] mod - begin 総合事業対応
+                    //CareServiceCommon.isPreventService(systemServiceKindDetail)){
+                   (CareServiceCommon.isPreventService(systemServiceKindDetail)
+                    || CareServiceCommon.isSogojigyoService(systemServiceKindDetail))){
+                // 2016/7/21 [Yoichiro Kamei] mod - begin 総合事業対応
+                
                 //予防訪問介護の場合
                 int minUnit = 9999999;
                 Object minKey=null;
@@ -3041,6 +3104,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 while (it.hasNext()) {
                     //除外対象のコードを省く
                     DivedServiceKind.this.subParseMap.remove(it.next());
+                 // 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin 
+                 // 除外したコードの集計列が表示されていないのを修正
+                    DivedServiceKind.this.limitAmoutSize--;
+                 // 2016/7/30 [CCCX:2865] add - end
                 }
             }
             //2006/06/21 Tozo TANAKA edit-end 予防訪問介護3級対応のため
@@ -4315,6 +4382,15 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     //30日超なら名称に30日超をつける
                     serviceName = "30日超" + serviceName;
                 }
+                // 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin
+                // 集計明細を別表のデータをもとに出力するためにサービス種類を追加
+                // サービス種類
+                String skind = ACTextUtilities.trim(ACCastUtilities.toString(code
+                        .get("SYSTEM_SERVICE_KIND_DETAIL")));
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".skind",
+                        skind);
+                // 2016/7/30 [CCCX:2865] add - end
                 
                 // サービス内容/種類
                 buildParam.getTargetPage().put(
@@ -4436,7 +4512,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 boolean addHesesOnUnit, boolean isOver30Days) throws Exception {
 
             if (code != null) {
-
+                // 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin
+                // 集計明細を別表のデータをもとに出力するためにサービス種類を追加
+                // サービス種類
+                String skind = ACTextUtilities.trim(ACCastUtilities.toString(code
+                        .get("SYSTEM_SERVICE_KIND_DETAIL")));
+                buildParam.getTargetPage().put(
+                        "main.y" + buildParam.getCurrentRow() + ".skind",
+                        skind);
+                // 2016/7/30 [CCCX:2865] add - end
+                
                 // 区分支給限度基準を超える単位数
                 int overUnit = totals[INDEX_OF_LIMIT_OVER_UNIT_FOR_DETAIL];
 

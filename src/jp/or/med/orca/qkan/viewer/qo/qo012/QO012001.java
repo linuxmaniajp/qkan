@@ -355,30 +355,54 @@ public class QO012001 extends QO012001Event {
 		if (ACTextUtilities.isNullText(dataType)) {
 			return false;
 		}
-		switch (ACCastUtilities.toInt(dataType)) {
-			case 711:
-				// データ種別が711の場合
-				// そのまま継続する
-				returnField.setText(CSV_FILE_TYPE_711);
-				break;
-
-			case 812:
-				// データ種別が812の場合
-				// そのまま継続する
-				returnField.setText(CSV_FILE_TYPE_812);
-				break;
-
-			case 821:
-				// データ種別が821の場合
-				// そのまま継続する
-				returnField.setText(CSV_FILE_TYPE_821);
-				break;
-
-			default:
-				// データ種別がそれら以外の場合
-				// falseを返却する
-				return false;
-		}
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/13 edit begin 総合事業対応
+        //データ種別は英数字であるため、switch-caseを廃止
+		//switch (ACCastUtilities.toInt(dataType)) {
+		//	case 711:
+		//		// データ種別が711の場合
+		//		// そのまま継続する
+		//		returnField.setText(CSV_FILE_TYPE_711);
+		//		break;
+		//
+		//	case 812:
+		//		// データ種別が812の場合
+		//		// そのまま継続する
+		//		returnField.setText(CSV_FILE_TYPE_812);
+		//		break;
+		//
+		//	case 821:
+		//		// データ種別が821の場合
+		//		// そのまま継続する
+		//		returnField.setText(CSV_FILE_TYPE_821);.
+		//		break;
+		//
+		//	default:
+		//		// データ種別がそれら以外の場合
+		//		// falseを返却する
+		//		return false;
+		//}
+        if (dataType.equals("711")) {
+			// データ種別が711の場合
+			// そのまま継続する
+			returnField.setText(CSV_FILE_TYPE_711);
+        } else if (dataType.equals("812")) {
+			// データ種別が812の場合
+			// そのまま継続する
+			returnField.setText(CSV_FILE_TYPE_812);
+        } else if (dataType.equals("821")) {
+			// データ種別が821の場合
+			// そのまま継続する
+			returnField.setText(CSV_FILE_TYPE_821);
+        } else if (dataType.equals("71R")) {
+			// データ種別が71Rの場合
+			// そのまま継続する
+			returnField.setText(CSV_FILE_TYPE_71R);
+        } else {
+            // データ種別がそれら以外の場合
+            // falseを返却する
+            return false;
+        }
+        //[H27.4 改正対応][Shinobu Hitaka] 2016/07/13 edit end
 
 		return true;
 	}

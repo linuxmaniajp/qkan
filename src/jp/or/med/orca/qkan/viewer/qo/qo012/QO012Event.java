@@ -158,6 +158,8 @@ public abstract class QO012Event extends QO012SQL {
 
 	public static final String CSV_FILE_TYPE_711 = "介護給付費請求書情報";
 
+	public static final String CSV_FILE_TYPE_71R = "介護予防・日常生活支援総合事業費請求書情報";	// 2016.7.12 add 総合事業対応
+
 	public static final String NURSING_NECESSARY_LEVEL25 = "要介護5";
 
 	public static final String NURSING_NECESSARY_LEVEL24 = "要介護4";
@@ -171,6 +173,8 @@ public abstract class QO012Event extends QO012SQL {
 	public static final String NURSING_NECESSARY_LEVEL13 = "要支援2";
 
 	public static final String NURSING_NECESSARY_LEVEL12 = "要支援1";
+
+	public static final String NURSING_NECESSARY_LEVEL06 = "事業対象者";	// 2016.7.12 add 総合事業対応
 
 	public static final String NURSING_NECESSARY_LEVEL11 = "経過的要介護";
 
@@ -189,7 +193,7 @@ public abstract class QO012Event extends QO012SQL {
 	
 	public static final String ERROR_SERVICE_PROVIDE_YEAR_AND_MONTH_NOT_FOUND = "サービス提供年月を取得できませんでした";
 	
-	public static final String ERROR_NON_CORRESPONDENCE_DATA_RECORD_TYPE = "介護給付費請求や居宅サービス計画費を格納したCSVではありません";
+	public static final String ERROR_NON_CORRESPONDENCE_DATA_RECORD_TYPE = "介護給付費請求・居宅サービス計画費や総合事業費請求を格納したCSVではありません";	// 2016.7.12 edit 総合事業対応
 
 	public static final String ERROR_CONTROL_RECORD_NOT_FOUND = "コントロールレコードが存在しません";
 

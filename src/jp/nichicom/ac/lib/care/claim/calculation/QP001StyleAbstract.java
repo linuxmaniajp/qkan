@@ -44,12 +44,18 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
-import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanConstants;
 
 public abstract class QP001StyleAbstract {
+
+// 2016/7/12 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 様式第一の二　交換識別番号
+     */
+    protected static final String IDENTIFICATION_NO_1_2_201504 = "7113";
+// 2016/7/12 [Yoichiro Kamei] add - end
 
     /**
      * 様式第二　交換識別番号
@@ -59,6 +65,12 @@ public abstract class QP001StyleAbstract {
      * 様式第二の二　交換識別番号
      */
     protected static final String IDENTIFICATION_NO_2_2_201204 = "7132";
+// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - begin 総合事業対応
+    /**
+     * 様式第二の三　交換識別番号
+     */
+    protected static final String IDENTIFICATION_NO_2_3_201504 = "71R1";
+// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
     /**
      * 様式第三 交換識別番号
      */
@@ -173,6 +185,9 @@ public abstract class QP001StyleAbstract {
             break;
         case QkanConstants.CLAIM_STYLE_FORMAT_2_2:
             result = IDENTIFICATION_NO_2_2_201204;
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_2_3:	// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add 総合事業対応
+            result = IDENTIFICATION_NO_2_3_201504;
             break;
         case QkanConstants.CLAIM_STYLE_FORMAT_3:
             result = IDENTIFICATION_NO_3_201204;
@@ -823,8 +838,12 @@ public abstract class QP001StyleAbstract {
         
         //実績登録画面で入力された計画単位数を参照する。
         if(planUnitMap != null){
-            String key = "10" + detail.get_301007();
-            // 10 + サービス種類コードのキーが存在するか確認
+// 2016/7/15 [Yoichiro Kamei] mod - begin 総合事業対応
+//        // 10 + サービス種類コードのキーが存在するか確認
+//            String key = "10" + detail.get_301007();
+            String key = CareServiceCommon.getPlanUnitBindPath(detail.get_301007());
+// 2016/7/15 [Yoichiro Kamei] mod - end
+            
             if(planUnitMap.containsKey(key)){
                 planUnit = ACCastUtilities.toInt(planUnitMap.get(key),0);
                 

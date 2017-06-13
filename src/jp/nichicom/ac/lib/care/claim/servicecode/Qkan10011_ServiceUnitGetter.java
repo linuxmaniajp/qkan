@@ -131,7 +131,13 @@ public abstract class Qkan10011_ServiceUnitGetter {
         case 1: // 自立
             systemYokaigodo = 1;
             break;
-
+            
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+        case 6: // 経過的要介護
+            systemYokaigodo = 10;
+            break;
+// 2016/7/5 [Yoichiro Kamei] add - end
+            
         case 11: // 経過的要介護
             systemYokaigodo = 2;
             break;

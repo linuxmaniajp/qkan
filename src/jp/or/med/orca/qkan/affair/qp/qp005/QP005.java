@@ -1412,6 +1412,14 @@ public class QP005 extends QP005Event {
 			return "様式第二の二";
 		}
 		
+		// 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
+		// claimStyleTypeの値が10213の場合
+		// "様式第二の三"を返す。	
+		if (getClaimStyleType() == FORMAT_STYLE23) {
+			return "様式第二の三";
+		}
+		// 2016/7/8 [Shinobu Hitaka] add - end
+		
 		// claimStyleTypeの値が10311の場合
 		// "様式第三"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE3) {
@@ -1541,13 +1549,22 @@ public class QP005 extends QP005Event {
 		}
 
 		// claimStyleTypeの値が10212の場合
-		// 様式2
+		// 様式2の2
 		if (getClaimStyleType() == FORMAT_STYLE22) {
 			// 画面のVisible制御・Enable制御を行う。
 			setState_TYPE1();
 			// 状態ID：TYPE1
 		}
 		
+		// 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
+		// claimStyleTypeの値が10213の場合
+		// 様式2の3
+		if (getClaimStyleType() == FORMAT_STYLE23) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE1();
+			// 状態ID：TYPE1
+		}
+		// 2016/7/8 [Shinobu Hitaka] add - end
 		
 		// claimStyleTypeの値が10311の場合
 		// 様式3
@@ -1747,13 +1764,21 @@ public class QP005 extends QP005Event {
 		switch (getClaimStyleType()){
 		case FORMAT_STYLE2:
 		case FORMAT_STYLE22:
+		case FORMAT_STYLE23: // 2016.7.22 [Shinobu Hitaka] add 総合事業対応
 			Integer categoryNo = new Integer("2");
 			Integer commentId = new Integer("22");
 			for (int i = 0; i < getDetailCommentList().getDataSize(); i++){
 				VRMap map = (VRMap)getDetailCommentList().get(i);
 				if (categoryNo.equals(map.get("CATEGORY_NO"))
 					&&	commentId.equals(map.get("COMMENT_ID"))){
-					map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院");
+					// 2016.7.22 [Shinobu Hitaka] edit - begin 総合事業対応
+					//map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院");
+					if (getClaimStyleType() != FORMAT_STYLE23) {
+						map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院");
+					} else {
+						map.put("COMMENT", "設定不要です。");
+					}
+					// 2016.7.22 [Shinobu Hitaka] edit - end
 					break;
 				}
 			}
@@ -1868,6 +1893,19 @@ public class QP005 extends QP005Event {
 				
 				break;
 
+			// 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
+			case FORMAT_STYLE23:
+				// claimStyleTypeの値が10213の場合
+				// テーブルモデルの設定を行う。
+				//・第一引数：10011001010（2進数表記）
+				doSetTableModel(1226);
+				
+				// テーブルの各行の設定を行う。
+				//・第一引数：10011001010（2進数表記）
+				doSetTableRow(1226);
+				
+				break;
+			// 2016/7/8 [Shinobu Hitaka] add - end
 							
 			case FORMAT_STYLE3:
 				// claimStyleTypeの値が10311の場合

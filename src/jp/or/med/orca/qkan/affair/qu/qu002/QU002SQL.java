@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 利用者登録
- * 作成日: 2015/06/08  日本コンピューター株式会社 利用者登録 新規作成
+ * 作成日: 2016/07/27  日本コンピューター株式会社 利用者登録 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者管理 (U)
@@ -149,9 +149,9 @@ public class QU002SQL extends QU002State {
 
     sb.append(",SYSTEM_INSURE_VALID_END");
 
-    sb.append(",JIGYOTAISYO_FLAG");
-
     sb.append(",SHORTSTAY_USE_INIT_COUNT");
+
+    sb.append(",LIMIT_CHANGE_FLAG");
 
     sb.append(" FROM");
 
@@ -809,6 +809,8 @@ public class QU002SQL extends QU002State {
 
     sb.append(",SHORTSTAY_USE_INIT_COUNT");
 
+    sb.append(",LIMIT_CHANGE_FLAG");
+
     sb.append(")VALUES(");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
@@ -899,11 +901,15 @@ public class QU002SQL extends QU002State {
 
     sb.append(",");
 
-    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("JIGYOTAISYO_FLAG", sqlParam)));
+    sb.append(" 1");
 
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SHORTSTAY_USE_INIT_COUNT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("LIMIT_CHANGE_FLAG", sqlParam)));
 
     sb.append(")");
 

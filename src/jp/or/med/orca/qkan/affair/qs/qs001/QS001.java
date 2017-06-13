@@ -349,26 +349,42 @@ public class QS001 extends QS001Event {
                             getSQL_GET_USED_PROVIDER_SERVICE_WITHOUT_WEEKLY_SERVICE(sqlParam));
         }
 
-        // 平成21年4月法改正対応
-        if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104,
-                getTargetDate()) < 1) {
-            // 基準適合診療所は除外する。
-            // 12314 : 短期入所療養介護(基準適合診療所)
-            // 13411 : 介護予防短期入所療養介護(基準適合診療所)
-            int[] h2104RemoveServices = { 12314, 12614 };
-            for (int i = 0; i < services.size(); i++) {
-                VRMap row = (VRMap) services.get(i);
-                for (int j = 0; j < h2104RemoveServices.length; j++) {
-                    int removeSystemServiceKindDetail = h2104RemoveServices[j];
-                    if (ACCastUtilities.toInt(
-                            row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == removeSystemServiceKindDetail) {
-                        services.remove(i);
-                        break;
-                    }
-                }
+// 2016/7/5 [Yoichiro Kamei] add - begin 総合事業対応
+
+//下記は不要なのでコメントアウト（ver7以降では既にM_SERVICEに該当データが無いため）
+//        // 平成21年4月法改正対応
+//        if (ACDateUtilities.getDifferenceOnDay(QkanConstants.H2104,
+//                getTargetDate()) < 1) {
+//            // 基準適合診療所は除外する。
+//            // 12314 : 短期入所療養介護(基準適合診療所)
+//            // 13411 : 介護予防短期入所療養介護(基準適合診療所)
+//            int[] h2104RemoveServices = { 12314, 12614 };
+//            for (int i = 0; i < services.size(); i++) {
+//                VRMap row = (VRMap) services.get(i);
+//                for (int j = 0; j < h2104RemoveServices.length; j++) {
+//                    int removeSystemServiceKindDetail = h2104RemoveServices[j];
+//                    if (ACCastUtilities.toInt(
+//                            row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == removeSystemServiceKindDetail) {
+//                        services.remove(i);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+
+
+        // AF:介護予防ケアマネジメントには対応していないので除外
+        for (int i = 0; i < services.size(); i++) {
+            VRMap row = (VRMap) services.get(i);
+            if (ACCastUtilities.toInt(
+                    row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == 51511) {
+                services.remove(i);
+                break;
             }
         }
-
+// 2016/7/5 [Yoichiro Kamei] add - end 
+        
+        
         // 2016/01/28 [Shinobu Hitaka] add - begin サービス種類番号を一覧に表示
         for (int i = 0; i < services.size(); i++) {
             VRMap row = (VRMap) services.get(i);
@@ -1813,6 +1829,9 @@ public class QS001 extends QS001Event {
         }
 
         // ※その他の回数超過警告チェック
+        int[] countOf50111 = {0, 0, 0, 0};
+        int[] countOf50511 = {0, 0};
+        String sogoErrorService = null;
 
         // 月n回を上限とする加算
         String[][] monthlyAddCountChecks = new String[][] {
@@ -2027,6 +2046,75 @@ public class QS001 extends QS001Event {
                     }
                 }
             }
+            
+            // [H27.4法改正対応][Shinobu Hitaka] 2016/07/19 add begin 総合事業（みなし）対応
+            if ("50111".equals(systemServiceKindDetail)) {
+                // 訪問型サービス（みなし）の回数チェック
+                if (ACCastUtilities.toInt(row.getData("5010101"),1) == 4) {
+                    countOf50111[0]++;
+                    if (countOf50111[0] > 4) {
+                        warningTargetName = "訪問型サービスIV ";
+                        warningTargetSpan = "ひと月に";
+                        warningTargetLimit = "4回まで";
+                    }
+                } else if (ACCastUtilities.toInt(row.getData("5010101"),1) == 5) {
+                    countOf50111[1]++;
+                    if (countOf50111[1] > 8) {
+                        warningTargetName = "訪問型サービスV ";
+                        warningTargetSpan = "ひと月に";
+                        warningTargetLimit = "5回から8回まで";
+                    }
+                } else if (ACCastUtilities.toInt(row.getData("5010101"),1) == 6) {
+                    countOf50111[2]++;
+                    if (countOf50111[2] > 12) {
+                        warningTargetName = "訪問型サービスVI ";
+                        warningTargetSpan = "ひと月に";
+                        warningTargetLimit = "9回から12回まで";
+                    }
+                } else if (ACCastUtilities.toInt(row.getData("5010101"),1) == 7) {
+                    countOf50111[3]++;
+                    if (countOf50111[3] > 22) {
+                        warningTargetName = "訪問型短時間サービス";
+                        warningTargetSpan = "ひと月に";
+                        warningTargetLimit = "22回まで";
+                    }
+                }
+            }else if ("50511".equals(systemServiceKindDetail)) {
+                // 通所型サービス（みなし）の回数チェック
+                // 算定区分：通常 ＆ 回数
+                if (ACCastUtilities.toInt(row.getData("9"),1) == 1 && ACCastUtilities.toInt(row.getData("5050102"),1) == 2) {
+                    if (ACCastUtilities.toInt(row.getData("5050101"),1) == 1) {
+                        // サービス１
+                        countOf50511[0]++;
+                        if (countOf50511[0] > 4) {
+                            warningTargetName = "通所型サービス１回数";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "4回まで";
+                        }
+                    } else if (ACCastUtilities.toInt(row.getData("5050101"),1) == 2) {
+                        // サービス２
+                        countOf50511[1]++;
+                        if (countOf50511[1] > 8) {
+                            warningTargetName = "通所型サービス２回数";
+                            warningTargetSpan = "ひと月に";
+                            warningTargetLimit = "5回から8回まで";
+                        }
+                    }
+                }
+            }
+            // 警告メッセージQS001_WARNING_OF_SERVICE_COUNT_OVERを表示する。
+            if  (warningTargetName != null) {
+                if (QkanMessageList.getInstance()
+                        .QS001_WARNING_OF_SERVICE_COUNT_OVER(
+                                warningTargetName,
+                                warningTargetSpan,
+                                warningTargetLimit) != ACMessageBox.RESULT_OK) {
+                    // 「OK」以外選択時
+                    // 戻り値としてfalseを返す。
+                    return false;
+                }
+            }
+            // [H27.4法改正対応][Shinobu Hitaka] 2016/07/19 add end
         }
 
         // 回数関連のチェックが全て終わった後に認定履歴の絡むチェック

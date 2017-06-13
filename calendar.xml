@@ -145,6 +145,12 @@
 					<term type="M">12</term>
 					<term type="d">23</term>
 				</holyday>
+				<holyday id="山の日">
+					<begin>2016-01-01</begin>
+					<end>9999-12-31</end>
+					<term type="M">8</term>
+					<term type="d">11</term>
+				</holyday>
 				<calcurate id="jp.nichicom.vr.text.parsers.VRDateParserHolydayCalculaterJAPAN" />
 			</holydays>
 		</locale> 

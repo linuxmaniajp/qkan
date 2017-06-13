@@ -149,6 +149,16 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     //中山間地域加算算定オブジェクト
     private QP001MountainousAreaAdder mountainousAreaAdder = new QP001MountainousAreaAdder();
     //[ID:0000467][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
+ 
+// 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
+    /**
+     * 中山間地域加算算定オブジェクトを取得する。
+     * @return 中山間地域加算算定オブジェクト
+     */
+    protected QP001MountainousAreaAdder getMountainousAreaAdder() {
+        return mountainousAreaAdder;
+    }
+// 2016/7/21 [Yoichiro Kamei] add - end
     
     //[ID:0000682][Shin Fujihara] add begin 【法改正対応】介護職員処遇改善加算
     //処遇改善単位数の計算に使用する割合

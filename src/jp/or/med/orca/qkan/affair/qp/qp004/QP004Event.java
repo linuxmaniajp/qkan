@@ -229,6 +229,7 @@ public abstract class QP004Event extends QP004SQL {
   
   public static final int CLAIM_STYLE_TYPE21 = 10211;
   public static final int CLAIM_STYLE_TYPE22	= 10212;
+  public static final int CLAIM_STYLE_TYPE23	= 10213;	// 2016.7.8 add
   public static final int CLAIM_STYLE_TYPE31	= 10311;
   public static final int CLAIM_STYLE_TYPE32	= 10312;
   public static final int CLAIM_STYLE_TYPE41	= 10411;

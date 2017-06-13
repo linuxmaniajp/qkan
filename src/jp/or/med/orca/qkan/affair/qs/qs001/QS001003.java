@@ -599,9 +599,13 @@ public class QS001003 extends QS001003Event {
 		// [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
 		setSupportProviders(QkanCommon.getProviderInfo(getDBManager(),
 				new int[] { 14311, 17311, 17711 }));
-		// [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+		// [ID:0000724][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+		// 2016/8/3 [総合事業対応][Shinobu Hitaka] mod - begin AF:予防ケアマネジメントを追加
+		//setPreventSupportProviders(QkanCommon.getProviderInfo(getDBManager(),
+		//		new int[] { 14611, 17511 }));
 		setPreventSupportProviders(QkanCommon.getProviderInfo(getDBManager(),
-				new int[] { 14611, 17511 }));
+				new int[] { 14611, 17511, 51511 }));
+		// 2016/8/3 [総合事業対応][Shinobu Hitaka] mod - end
 
 		getSupportProviderName().setModel(getSupportProviders());
 		// コンボの選択項目として、利用者情報より取得した「居宅サービス提供者」を設定する。
@@ -808,11 +812,26 @@ public class QS001003 extends QS001003Event {
 				yearMonthFormat.format(ACCastUtilities.toDate(
 						patientInsureInfoHeaviest.get("INSURE_VALID_START"),
 						null)));
-		getApplicationPeriodEnd()
-				.setText(
-						yearMonthFormat.format(ACCastUtilities.toDate(
-								patientInsureInfoHeaviest
-										.get("INSURE_VALID_END"), null)));
+		
+		
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - begin
+//		getApplicationPeriodEnd()
+//		.setText(
+//				yearMonthFormat.format(ACCastUtilities.toDate(
+//						patientInsureInfoHeaviest
+//								.get("INSURE_VALID_END"), null)));
+		Date endDate = ACCastUtilities.toDate(
+				patientInsureInfoHeaviest
+				.get("INSURE_VALID_END"), null);
+		
+	    // 9999-12-31のときは空欄を表示
+		if (ACCastUtilities.toDate("9999/12/31").equals(endDate)) {
+			getApplicationPeriodEnd().setText("");
+		} else {
+			getApplicationPeriodEnd().setText(yearMonthFormat.format(endDate));
+		}
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] mod - end
+
 		// ※前月までの短期入所利用日数(要介護度認定期間中の前月までの短期入所系サービス実績回数をカウント)
 		// ※要介護度の有効期間を取得する。
 		// 有効期間開始日格納用の内部変数 insureValidStart を生成する。

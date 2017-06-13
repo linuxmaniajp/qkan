@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
@@ -61,6 +62,7 @@ import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
+import jp.or.med.orca.qkan.text.QkanServiceAbbreviationFormat;
 
 /**
  * 月間表(QS001002)
@@ -545,10 +547,14 @@ public class QS001002 extends QS001002Event {
         }
         // 2008/01/07 [Masahiko Higuchi] add - end 対応内容
 
+// 2016/7/30 [CCCX:2865][Yoichiro Kamei] mod - begin
+// 集計明細の限度額管理対象サービスを別表のデータをもとに出力するよう変更
+//        CareServiceUnitCalcurateResult inLimitAmout = getCalcurater()
+//                .getServiceUnitCalcurateResult(list,
+//                        CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT);
         
-        CareServiceUnitCalcurateResult inLimitAmout = getCalcurater()
-                .getServiceUnitCalcurateResult(list,
-                        CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT);
+        CareServiceUnitCalcurateResult inLimitAmout = calcInLimitAmount(list);
+// 2016/7/5 [Yoichiro Kamei] mod - end
 
         // 集計によって洗い出された各サービスごとに、調整後合計(管理対象内 - 調整分)をもとめる。
         updateTotal(inLimitAmout.getManagementTotal(), inLimitAmout.getAdjustTotal());
@@ -557,6 +563,103 @@ public class QS001002 extends QS001002Event {
         // 「QS001030 集計明細画面」を開く(ダイアログ)。その際、上記で準備したパラメータを送る。
         new QS001005().showModal(inLimitAmout, getPatientInsureInfoHeaviest(), getProcessType(), getCalcurater(), list);
     }
+
+// 2016/7/30 [CCCX:2865][Yoichiro Kamei] add - begin
+// 集計明細を別表のデータをもとに出力するよう変更
+    /**
+     * 別表の結果をもとに支給管理対象の単位数の合計を求めます。
+     * @param monthData サービスのリスト
+     * @return
+     * @throws Exception 
+     */
+    public CareServiceUnitCalcurateResult calcInLimitAmount(VRList monthData) throws Exception {
+        //別表の集計ロジックを通して、別表に記載される給付管理対象内単位数と調整単位数を取得する。
+        CareServiceSchedulePrintManager mng = new CareServiceSchedulePrintManager();
+        mng.initialize(getCalcurater());
+        for(int i=monthData.size()-1; i >= 0; i--) {
+            // 30日超の処遇改善加算を無理やり別表に表示しているため強制的に調整する。
+            VRMap service = (VRMap)monthData.get(i);
+            if(CareServiceCommon.is30DayOver(service)) {
+                monthData.remove(i);
+            }
+        }
+        mng.parse(monthData);
+        mng.setBuildDivedProvider(false);
+        CareServicePrintParameter buildParam = new CareServicePrintParameter();
+        buildParam.setPrintParameter(new VRHashMap());
+        List list=new ArrayList();
+        mng.buildUserSubTable(buildParam, list);
+        
+        TreeMap sorter = new TreeMap();
+        
+        // 先にサービスからサービス種類ごとの調整額の合計を求める
+        Iterator it = monthData.iterator();
+        while (it.hasNext()) {
+            Map service = (Map) it.next();
+            int skind = ACCastUtilities.toInteger(service.get("SYSTEM_SERVICE_KIND_DETAIL"), 0);
+            int adjust = ACCastUtilities.toInteger(service.get("REGULATION_RATE"), 0);
+            if (skind != 0) {
+                calcInAmountTotalByService(skind, 0, adjust, sorter);
+            }
+        }
+        
+        it = list.iterator();
+        while (it.hasNext()) {
+            Iterator provIt = ((List) it.next()).iterator();
+            while (provIt.hasNext()) {
+                List ins = (List) provIt.next();
+                if (!ins.isEmpty()) {
+                    Iterator pageIt = ins.iterator();
+                    while (pageIt.hasNext()) {
+                        Map page = (Map) pageIt.next();
+                        for (int row = 1; row <=19; row++) {
+                            // サービス種類
+                            int skind = ACCastUtilities.toInteger(page.get("main.y"+row+".skind"), 0);
+                            if (skind == 0) break;
+                            
+                            // サービス単位数
+                            int unit = ACCastUtilities.toInteger(page.get("main.y"+row+".x9"), 0);
+                            
+                            calcInAmountTotalByService(skind, unit, 0, sorter);
+                        }
+                    }
+                }
+            }
+        }
+        return new CareServiceUnitCalcurateResult(sorter.values());
+    }
+    
+    // サービス種類ごとに合計を計算します
+    private void calcInAmountTotalByService(int skind, int reductedUnit, int adjustPoint, TreeMap sorter) {
+        VRMap serviceMaster = QkanServiceAbbreviationFormat.getInstance().getMasterService();
+        
+        if (reductedUnit != 0 || adjustPoint != 0) {
+
+            int sortKey = skind;
+            if (serviceMaster != null) {
+                Map rec = (Map) serviceMaster.get(skind);
+                if (rec != null) {
+                    // サービスのソート順とする
+                    sortKey = ACCastUtilities.toInt(rec.get("SERVICE_SORT"), skind);
+                }
+            }
+            VRMap val;
+            if (sorter.containsKey(sortKey)) {
+                val = (VRMap) sorter.get(sortKey);
+                reductedUnit += ACCastUtilities.toInt(val.getData("UNIT"), 0);
+                adjustPoint += ACCastUtilities.toInt(val.getData("ADJUST"), 0);
+            } else {
+                val = new VRHashMap();
+                sorter.put(sortKey, val);
+                val.setData("SYSTEM_SERVICE_KIND_DETAIL", skind);
+            }
+
+            val.setData("UNIT", new Integer(reductedUnit));
+            val.setData("ADJUST", new Integer(adjustPoint));
+            val.setData("RESULT", new Integer(reductedUnit - adjustPoint));
+        }
+    }
+// 2016/7/30 [CCCX:2865] add - end
 
     /**
      * 「印刷可能要件チェック」に関する処理を行ないます。

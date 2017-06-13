@@ -53,6 +53,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 
 /**
@@ -194,9 +195,9 @@ public class QP001PatientState {
 		sb.append(" h.REPORTED_DATE,");
 		sb.append(" h.LIMIT_RATE,");
 		sb.append(" h.LAST_TIME,");
-// 2015/3/31 [Shinobu Hitaka] add - begin 事業対象者から要支援１変更フラグ
-		sb.append(" h.JIGYOTAISYO_FLAG,");
-// 2015/3/31 [Shinobu Hitaka] add - end
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - begin 事業対象者の限度額変更フラグ
+        sb.append(" h.LIMIT_CHANGE_FLAG,");
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
 		sb.append(" lrd_ex.LIMIT_RATE_VALUE AS EXTERNAL_USE_LIMIT");
 		sb.append(" FROM");
 		sb.append(" PATIENT_NINTEI_HISTORY h,");
@@ -229,8 +230,21 @@ public class QP001PatientState {
             map = (VRMap) ninteiHistory.getData(i);
             int limitRate = -1;
             
-            // 厚生労働省規定の区分支給限度額を取得する。
-            limitRate = QkanCommon.getOfficialLimitRate(dbm, targetDateEnd, new Integer(1), map.get("JOTAI_CODE").toString());
+            
+// 2016/7/18 [総合事業対応][Yoichiro Kamei] add - begin 事業対象者の限度額変更フラグ
+//            // 厚生労働省規定の区分支給限度額を取得する。
+//            limitRate = QkanCommon.getOfficialLimitRate(dbm, targetDateEnd, new Integer(1), map.get("JOTAI_CODE").toString());
+
+			// 事業対象者で「要支援１の額を超えてサービスを利用」の場合は、要支援２の限度額を使用
+			int jotaiCode = ACCastUtilities.toInt(map.getData("JOTAI_CODE"), 0);
+			int limitChangeFlg = ACCastUtilities.toInt(map.getData("LIMIT_CHANGE_FLAG"), 0);
+			if (limitChangeFlg == 2) {
+			    if (QkanConstants.YOUKAIGODO_JIGYOTAISHO == jotaiCode) {
+			        jotaiCode = QkanConstants.YOUKAIGODO_YOUSHIEN2;
+			    }
+			}
+			limitRate = QkanCommon.getOfficialLimitRate(dbm, targetDateEnd, new Integer(1), String.valueOf(jotaiCode));
+//2016/7/18 [総合事業対応][Yoichiro Kamei] add - end
             if (limitRate > 0) {
                 map.setData("LIMIT_RATE", limitRate);
             }
@@ -812,6 +826,12 @@ public class QP001PatientState {
         if(resultMap != null){
             result = String.valueOf(resultMap.get(key));
         }
+        
+// 2016/7/21 [SHinobu Hitaka] add - begin 事業対象者は前にゼロをつけて"06"を返す
+        if ("JOTAI_CODE".equals(key) && result.length() == 1) {
+            result = "0" + result;
+        }
+// 2016/7/21 [SHinobu Hitaka] add - end
 
         return result;
     }
@@ -861,8 +881,18 @@ public class QP001PatientState {
                 }
             }
         }
+        
+        if(resultMap != null){
+            result = String.valueOf(resultMap.get(key));
+        }
 
-        return result = String.valueOf(resultMap.get(key));
+// 2016/7/21 [SHinobu Hitaka] add - begin 事業対象者は前にゼロをつけて"06"を返す
+        if ("JOTAI_CODE".equals(key) && result.length() == 1) {
+            result = "0" + result;
+        }
+// 2016/7/21 [SHinobu Hitaka] add - end
+
+        return result;
     }
     
     
@@ -914,6 +944,59 @@ public class QP001PatientState {
 		
 	}
 	
+// 2016/8/15 [Shinobu Hitaka] add - begin 総合事業対応
+    /**
+     * 保険者番号、被保険者番号をキーに当月最後の要支援または事業対象者の認定履歴情報を取得する。
+     * @param insurer_id 保険者番号
+     * @param insured_id 被保険者番号
+     * @return 取得した認定履歴情報Mapデータ
+     * @throws Exception 実行時エラー
+     */
+    protected VRMap getNinteiDataLastShien(String insurer_id, String insured_id) throws Exception {
+        
+        VRMap resultMap = null;
+
+        if (ninteiHistory == null)
+            return resultMap;
+
+        for (int i = 0; i < ninteiHistory.getDataSize(); i++) {
+            VRMap map = (VRMap) ninteiHistory.getData(i);
+
+            if ((String.valueOf(map.get("INSURER_ID")).equals(insurer_id))
+                    && (String.valueOf(map.get("INSURED_ID")).equals(insured_id))) {
+                //要介護度区分が要支援・事業対象者以外なら処理を行わない
+            	int jotaiCode = ACCastUtilities.toInt(map.get("JOTAI_CODE"),1);
+                if (jotaiCode != QkanConstants.YOUKAIGODO_JIGYOTAISHO && 
+    	            jotaiCode != QkanConstants.YOUKAIGODO_YOUSHIEN1 && 
+    	            jotaiCode != QkanConstants.YOUKAIGODO_YOUSHIEN2){
+                    continue;
+                }
+                
+                if (resultMap == null) {
+                    resultMap = (VRMap) ninteiHistory.getData(i);
+                } else {
+                    
+                    //有効期間開始を比較する。
+                    if (ACDateUtilities.compareOnDay(ACCastUtilities.toDate(resultMap.get("SYSTEM_INSURE_VALID_START")),
+                            ACCastUtilities.toDate(map.get("SYSTEM_INSURE_VALID_START"))) < 0) {
+                        resultMap = (VRMap) ninteiHistory.getData(i);
+                    }
+                }
+            }
+        }
+        
+        if (resultMap != null) {
+        	String result = String.valueOf(resultMap.get("JOTAI_CODE"));
+            if (result.length() == 1) {
+                result = "0" + result;
+                resultMap.setData("JOTAI_CODE", result);
+            }
+        }
+
+        return resultMap;
+    }
+// 2016/8/15 [Shinobu Hitaka] add - end 総合事業対応
+
 // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
 	/**
 	 * 指定された日付に該当する住所地特例情報の取得を行います。

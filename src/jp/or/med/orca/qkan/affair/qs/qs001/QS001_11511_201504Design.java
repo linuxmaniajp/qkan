@@ -409,7 +409,7 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       tsuusyoKaigoTimeContenaFacilityDivisionItem2.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
 
-      tsuusyoKaigoTimeContenaFacilityDivisionItem2.setConstraints(VRLayout.FLOW_RETURN);
+      tsuusyoKaigoTimeContenaFacilityDivisionItem2.setConstraints(VRLayout.FLOW);
 
       addTsuusyoKaigoTimeContenaFacilityDivisionItem2();
     }

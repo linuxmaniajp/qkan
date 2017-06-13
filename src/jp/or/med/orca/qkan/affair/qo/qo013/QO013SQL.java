@@ -795,6 +795,8 @@ public class QO013SQL extends QO013State {
 
     sb.append(",SHORTSTAY_USE_INIT_COUNT");
 
+    sb.append(",LIMIT_CHANGE_FLAG");
+
     sb.append(")VALUES(");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
@@ -890,6 +892,10 @@ public class QO013SQL extends QO013State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SHORTSTAY_USE_INIT_COUNT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" 1");
 
     sb.append(")");
 

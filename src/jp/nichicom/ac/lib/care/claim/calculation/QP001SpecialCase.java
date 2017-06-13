@@ -296,7 +296,7 @@ public class QP001SpecialCase {
      * @throws Exception
      */
     public static boolean isOutRealDay(String discriminationNo) throws Exception {
-        //様式第二、第二の二、第三、第三の二、第四、第四の二、第五、第五の二、第六の五、第六の六
+        //様式第二、第二の二、第二の三、第三、第三の二、第四、第四の二、第五、第五の二、第六の五、第六の六
         //return ("7131,7132,7143,7144,7153,7154,7164,7165,7175,7176,7155,7156".indexOf(discriminationNo) != -1);
         if (QP001StyleAbstract.IDENTIFICATION_NO_2_201204.equals(discriminationNo)) {
             return true;
@@ -304,6 +304,11 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_2_2_201204.equals(discriminationNo)) {
             return true;
         }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - begin 総合事業対応
+        if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(discriminationNo)) {
+            return true;
+        }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
         if (QP001StyleAbstract.IDENTIFICATION_NO_3_201204.equals(discriminationNo)) {
             return true;
         }
@@ -342,7 +347,7 @@ public class QP001SpecialCase {
      * @throws Exception
      */
     public static boolean isOutLimitUncontrolledUnit(String discriminationNo) throws Exception {
-        //様式第二、二の二、三、三の二、四、四の二、五、五の二
+        //様式第二、二の二、二の三、三、三の二、四、四の二、五、五の二
         //return ("7131,7132,7143,7144,7153,7154,7164,7165,7155,7156".indexOf(discriminationNo) != -1);
         if (QP001StyleAbstract.IDENTIFICATION_NO_2_201204.equals(discriminationNo)) {
             return true;
@@ -350,6 +355,11 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_2_2_201204.equals(discriminationNo)) {
             return true;
         }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - begin 総合事業対応
+        if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(discriminationNo)) {
+            return true;
+        }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
         if (QP001StyleAbstract.IDENTIFICATION_NO_3_201204.equals(discriminationNo)) {
             return true;
         }
@@ -1225,6 +1235,62 @@ public class QP001SpecialCase {
                 result = true;
             }
         }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/21 add - begin 総合事業対応
+        //訪問型サービス（みなし）
+        if ("A1".equals(kind)) {
+        	if ("1111".equals(item)		//訪問型サービス１
+            	|| "1113".equals(item)	//訪問型サービス１・初任
+            	|| "1114".equals(item)	//訪問型サービス１・同一
+            	|| "1115".equals(item)	//訪問型サービス１・初任・同一
+            	|| "1211".equals(item)	//訪問型サービス２
+            	|| "1213".equals(item)	//訪問型サービス２・初任
+            	|| "1214".equals(item)	//訪問型サービス２・同一
+            	|| "1215".equals(item)	//訪問型サービス２・初任・同一
+            	|| "1321".equals(item)	//訪問型サービス３
+            	|| "1323".equals(item)	//訪問型サービス３・初任
+            	|| "1324".equals(item)	//訪問型サービス３・同一
+            	|| "1325".equals(item)	//訪問型サービス３・初任・同一
+            	|| "4001".equals(item)	//訪問型サービス初回加算
+            	|| "4002".equals(item)	//訪問型サービス生活機能向上加算
+            	|| "8000".equals(item)	//訪問型サービス特別地域加算
+            	|| "8100".equals(item)	//訪問型サービス小規模事業所加算
+            	|| "8110".equals(item)	//訪問型サービス中山間地域等提供加算
+            	) {
+                result = true;
+            }
+        }
+        //通所型サービス（みなし）
+        if ("A5".equals(kind)) {
+            if ("1111".equals(item)		//通所型サービス１
+            	|| "1121".equals(item)	//通所型サービス２
+            	|| "5002".equals(item)	//通所型サービス運動器機能向上加算
+            	|| "5003".equals(item)	//通所型サービス栄養改善加算
+            	|| "5004".equals(item)	//通所型サービス口腔機能向上加算
+            	|| "5005".equals(item)	//通所型サービス事業所評価加算
+            	|| "5006".equals(item)	//通所型複数サービス実施加算Ⅰ１
+            	|| "5007".equals(item)	//通所型複数サービス実施加算Ⅰ２
+            	|| "5008".equals(item)	//通所型複数サービス実施加算Ⅰ３
+            	|| "5009".equals(item)	//通所型複数サービス実施加算Ⅱ
+            	|| "5010".equals(item)	//通所型生活向上グループ活動加算
+            	|| "6107".equals(item)	//通所型サービス提供体制加算Ⅰ１１
+            	|| "6108".equals(item)	//通所型サービス提供体制加算Ⅰ１２
+            	|| "6101".equals(item)	//通所型サービス提供体制加算Ⅰ２１
+            	|| "6102".equals(item)	//通所型サービス提供体制加算Ⅰ２２
+            	|| "6103".equals(item)	//通所型サービス提供体制加算Ⅱ１
+            	|| "6104".equals(item)	//通所型サービス提供体制加算Ⅱ２
+            	|| "6105".equals(item)	//通所型サービス同一建物減算１
+            	|| "6106".equals(item)	//通所型サービス同一建物減算２
+            	|| "6109".equals(item)	//通所型サービス若年性認知症受入加算
+            	|| "8001".equals(item)	//通所型サービス１・定超
+            	|| "8011".equals(item)	//通所型サービス２・定超
+            	|| "8110".equals(item)	//通所型サービス中山間地域等提供加算
+            	|| "9001".equals(item)	//通所型サービス１・人欠
+            	|| "9011".equals(item)	//通所型サービス２・人欠
+            	) {
+                result = true;
+            }
+        }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/21 add - end
         
         return result;
         // [H27.4改正対応][Shinobu Hitaka] 2015/1/20 add - end サービスコード英数化
@@ -2762,6 +2828,14 @@ public class QP001SpecialCase {
             ) {
             result = true;
         }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/22 add - begin 総合事業対応
+        if (   "A1".equals(serviceCodeKind) //訪問型サービス
+            || "A5".equals(serviceCodeKind) //通所型サービス
+            ) {
+                result = true;
+        }
+        // [H27.4改正対応][Shinobu Hitaka] 2016/7/22 add - end
+        
         return result;
     }
 // 2014/12/24 [Yoichiro Kamei] add - end
@@ -3321,6 +3395,27 @@ public class QP001SpecialCase {
 		}
 		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
 		
+        // 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
+        // 総合事業のみなし分も追加
+        if ("A1".equals(serviceCodeKind)) {	// 訪問型サービス
+        	if ("1111".equals(serviceCodeItem)		//訪問型サービス１
+				|| "1113".equals(serviceCodeItem)	//訪問型サービス１・初任
+				|| "1114".equals(serviceCodeItem)	//訪問型サービス１・同一
+				|| "1115".equals(serviceCodeItem)	//訪問型サービス１・初任・同一
+				|| "1211".equals(serviceCodeItem)	//訪問型サービス２
+				|| "1213".equals(serviceCodeItem)	//訪問型サービス２・初任
+				|| "1214".equals(serviceCodeItem)	//訪問型サービス２・同一
+				|| "1215".equals(serviceCodeItem)	//訪問型サービス２・初任・同一
+				|| "1321".equals(serviceCodeItem)	//訪問型サービス３
+				|| "1323".equals(serviceCodeItem)	//訪問型サービス３・初任
+				|| "1324".equals(serviceCodeItem)	//訪問型サービス３・同一
+				|| "1325".equals(serviceCodeItem)	//訪問型サービス３・初任・同一
+        		) {
+        		return true;
+        	}
+        }
+        // 2016/7/21 [Yoichiro Kamei] add - end
+        
 		return result;
     }
     
@@ -3364,6 +3459,31 @@ public class QP001SpecialCase {
     		}
     	}
     	//[ID:0000586][Shin Fujihara] 2010/01 add end 2009年度対応
+    	
+    	//[CCCX:2904][Shinobu Hitaka] 2016/05/11 add begin 訪問・通所リハマネ加算(2)の加算のみは実日数にカウントしない
+    	//14訪問リハ、または16通所リハである場合
+    	if ("11411".equals(systemServiceKindDetail) || "11611".equals(systemServiceKindDetail)) {
+    		//加算のみで算定されている場合は、実日数として計上しない
+    		//加算のみの場合は、マネジメント加算(2)の時のみのため、サービスコードは参照しない
+    		if (serviceDetail.containsKey("9")) {
+    			if (ACCastUtilities.toInt(serviceDetail.get("9"), 0) == 2) {
+    				return false;
+    			}
+    		}
+    	}
+    	//[CCCX:2904][Shinobu Hitaka] 2016/05/11 add end
+    	
+    	//[CCCX:2929][Shinobu Hitaka] 2016/05/11 add begin 訪問看護特別指示減算が設定されている場合は実日数にカウントしない
+    	//13訪問看護である場合
+    	if ("11311".equals(systemServiceKindDetail)) {
+    		//訪問看護特別指示減算が算定されている場合は、実日数として計上しない
+    		if (serviceDetail.containsKey("1130120")) {
+    			if (ACCastUtilities.toInt(serviceDetail.get("1130120"), 0) == 2) {
+    				return false;
+    			}
+    		}
+    	}
+    	//[CCCX:2929][Shinobu Hitaka] 2016/05/11 add end
     	
     	return true;
     }

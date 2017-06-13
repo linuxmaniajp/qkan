@@ -1939,8 +1939,12 @@ public class QP001RecordType extends QP001RecordAbstract {
         
         //実績登録画面で入力された計画単位数を参照する。
         if(planUnitMap != null){
-        	String key = "10" + get_701007();
-        	// 10 + サービス種類コードのキーが存在するか確認
+// 2016/7/15 [Yoichiro Kamei] mod - begin 総合事業対応
+//        	String key = "10" + get_701007();
+//        	// 10 + サービス種類コードのキーが存在するか確認
+            String key = CareServiceCommon.getPlanUnitBindPath(get_701007());
+// 2016/7/15 [Yoichiro Kamei] mod - end
+        	
         	if(planUnitMap.containsKey(key)){
         		result = ACCastUtilities.toInt(planUnitMap.get(key),0);
         		

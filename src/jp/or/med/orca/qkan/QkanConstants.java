@@ -128,7 +128,13 @@ public interface QkanConstants {
     public static final int PROCESS_MODE_SELECT = 2; // 検索
     public static final int PROCESS_MODE_UPDATE = 3; // 更新
     public static final int PROCESS_MODE_INSERT = 4; // 登録
-
+    
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] add - begin
+    public static final int YOUKAIGODO_JIGYOTAISHO = 6;  // 要介護度 事業対象者
+    public static final int YOUKAIGODO_YOUSHIEN1 = 12;   // 要介護度 要支援１
+    public static final int YOUKAIGODO_YOUSHIEN2 = 13;   // 要介護度 要支援２
+// 2016/7/19 [総合事業対応][Yoichiro Kamei] add - end
+    
     // サービス詳細取得
     /**
      * 101-サービス予定全体を表すサービス詳細取得モード定数です。
@@ -412,9 +418,15 @@ public interface QkanConstants {
 
     // 請求情報帳票様式種類
     /**
-     * 10101-介護給付費請求書情報を表す帳票の様式番号定数です。
+     * 10101-様式第1 介護給付費請求書情報を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_BENEFIT_BILL = 10101;
+// 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
+    /**
+     * 10102-様式第1-2 介護給付費請求書情報を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_BENEFIT_BILL_2 = 10102;
+// 2016/7/8 [Shinobu Hitaka] add - end
     /**
      * 10211-様式第2を表す帳票の様式番号定数です。
      */
@@ -423,6 +435,12 @@ public interface QkanConstants {
      * 10212-様式第2-2を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_FORMAT_2_2 = 10212;
+ // 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
+    /**
+     * 10213-様式第2-3を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_FORMAT_2_3 = 10213;
+ // 2016/7/8 [Shinobu Hitaka] add - end
     /**
      * 10311-様式第3を表す帳票の様式番号定数です。
      */
@@ -536,8 +554,7 @@ public interface QkanConstants {
     /**
      * 2：基本情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_RECORD_BASIC_INFOMATION = new Integer(
-            2);
+    public static final Integer CATEGORY_NO_RECORD_BASIC_INFOMATION = new Integer(2);
     /**
      * 3：明細情報レコードを表す分類の情報定数です。
      */
@@ -545,18 +562,15 @@ public interface QkanConstants {
     /**
      * 4：緊急時施設療養情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_RECORD_EMERGENCY_INSTITUTION = new Integer(
-            4);
+    public static final Integer CATEGORY_NO_RECORD_EMERGENCY_INSTITUTION = new Integer(4);
     /**
      * 5：特定診療費情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_RECORD_SPECIAL_TREATMENT = new Integer(
-            5);
+    public static final Integer CATEGORY_NO_RECORD_SPECIAL_TREATMENT = new Integer(5);
     /**
      * 6：食事費用情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_RECORD_MEAT_EXPENSES = new Integer(
-            6);
+    public static final Integer CATEGORY_NO_RECORD_MEAT_EXPENSES = new Integer(6);
     /**
      * 7：集計情報レコードを表す分類の情報定数です。
      */
@@ -564,13 +578,11 @@ public interface QkanConstants {
     /**
      * 8：特定入所者介護サービス費用情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_RECODE_SPECIAL_ENTER_SERVICE = new Integer(
-            8);
+    public static final Integer CATEGORY_NO_RECODE_SPECIAL_ENTER_SERVICE = new Integer(8);
     /**
      * 9：社会福祉法人軽減額情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_SOCIAL_WELFARE_REDUCE = new Integer(
-            9);
+    public static final Integer CATEGORY_NO_SOCIAL_WELFARE_REDUCE = new Integer(9);
     /**
      * 10：介護給付費請求明細書(居宅サービス計画費)情報を表す分類の情報定数です。
      */
@@ -590,13 +602,11 @@ public interface QkanConstants {
     /**
      * 14-訪問看護療養費請求書（社保）を表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_VISIT_BILL_SOCIAL_INSURANCE = new Integer(
-            14);
+    public static final Integer CATEGORY_NO_VISIT_BILL_SOCIAL_INSURANCE = new Integer(14);
     /**
      * 15-訪問看護療養費請求書（国保）を表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_VISIT_BILL_NATIONAL_INSURANCE = new Integer(
-            15);
+    public static final Integer CATEGORY_NO_VISIT_BILL_NATIONAL_INSURANCE = new Integer(15);
     /**
      * 16-利用者向け請求を表す分類の情報定数です。
      */
@@ -604,8 +614,7 @@ public interface QkanConstants {
     /**
      * 17：緊急時施設療養・自施設療養費情報レコードを表す分類の情報定数です。
      */
-    public static final Integer CATEGORY_NO_RECORD_EMERGENCY_OWN_FACILITY_INSTITUTION = new Integer(
-            17);
+    public static final Integer CATEGORY_NO_RECORD_EMERGENCY_OWN_FACILITY_INSTITUTION = new Integer(17);
  // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
     /**
      * 18：明細情報（住所地特例）レコードを表す分類の情報定数です。

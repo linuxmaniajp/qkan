@@ -547,6 +547,7 @@ public class QP001P11_201204 extends QP001PrintEvent {
             ACChotarouXMLUtilities.setValue(writer, header, "1201027","itakusenmoninno");
             
             // 給付管理件数分ループする。※20件を超える場合は、次ページに印字
+            // [H27.4法改正対応][Shinobu.Hitaka] 2016.7.26 edit 総合事業の○追加
             for (int j = 1; j < 21; j++) {
                 if (styles.size() <= 0) {
                     // 指定事業所の○を非表示にする。
@@ -555,6 +556,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "kijyun" + j);
                     // 地域密着の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "tiiki" + j);
+                    // 総合事業の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "sogo" + j);
                     continue;
                 }
                 
@@ -581,6 +584,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                         ACChotarouXMLUtilities.setInvisible(writer, "kijyun" + j);
                         // 地域密着の○を非表示にする。
                         ACChotarouXMLUtilities.setInvisible(writer, "tiiki" + j);
+                        // 総合事業の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "sogo" + j);
                         break;
 
                     // 「2-基準該当事業所」の場合。
@@ -589,6 +594,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                         ACChotarouXMLUtilities.setInvisible(writer, "sitei" + j);
                         // 地域密着の○を非表示にする。
                         ACChotarouXMLUtilities.setInvisible(writer, "tiiki" + j);
+                        // 総合事業の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "sogo" + j);
                         break;
                         
                     // 「3-地域密着事業所」の場合。
@@ -597,6 +604,18 @@ public class QP001P11_201204 extends QP001PrintEvent {
                         ACChotarouXMLUtilities.setInvisible(writer, "kijyun" + j);
                         // 指定事業所の○を非表示にする。
                         ACChotarouXMLUtilities.setInvisible(writer, "sitei" + j);
+                        // 総合事業の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "sogo" + j);
+                        break;
+
+                    // 「6-総合事業」の場合。
+                    case 6:
+                        // 指定事業所の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "sitei" + j);
+                        // 基準該当の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "kijyun" + j);
+                        // 地域密着の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "tiiki" + j);
                         break;
 
                     // 上記以外の場合
@@ -607,6 +626,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                         ACChotarouXMLUtilities.setInvisible(writer, "kijyun" + j);
                         // 地域密着の○を非表示にする。
                         ACChotarouXMLUtilities.setInvisible(writer, "tiiki" + j);
+                        // 総合事業の○を非表示にする。
+                        ACChotarouXMLUtilities.setInvisible(writer, "sogo" + j);
                         break;
 
                     }
@@ -617,6 +638,8 @@ public class QP001P11_201204 extends QP001PrintEvent {
                     ACChotarouXMLUtilities.setInvisible(writer, "kijyun" + j);
                     // 地域密着の○を非表示にする。
                     ACChotarouXMLUtilities.setInvisible(writer, "tiiki" + j);
+                    // 総合事業の○を非表示にする。
+                    ACChotarouXMLUtilities.setInvisible(writer, "sogo" + j);
                 }
 
                 // サービス種類名を設定する。 ※サービス種類のマスタと突合する。

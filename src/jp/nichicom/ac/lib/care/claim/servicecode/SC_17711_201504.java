@@ -38,6 +38,7 @@ public class SC_17711_201504 extends Qkan10011_ServiceUnitGetter {
         case 1: // ©—§
         case 3: // —vx‰‡‚P
         case 4: // —vx‰‡‚Q
+        case 10: // –‹Æ‘ÎÛÒ
             return new ArrayList<HashMap<String, String>>();
         }
 
@@ -278,11 +279,6 @@ public class SC_17711_201504 extends Qkan10011_ServiceUnitGetter {
             // ’ñ‹Ÿ‘Ì§‰ÁZIII
             putSystemServiceCodeItem(sysSvcCdItems, "Z6103");
             break;
-        }
-
-        // 1770108 ‹Ù‹}–K–âŠÅŒì‰ÁZ
-        if (_1770108 > 1) {
-            putSystemServiceCodeItem(sysSvcCdItems, "Z3100");
         }
 
         // 1770119 –K–âŠÅŒì‘Ì§‹­‰»‰ÁZ 2015.04

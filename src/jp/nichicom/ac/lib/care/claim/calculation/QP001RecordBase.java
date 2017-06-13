@@ -36,6 +36,7 @@ import java.util.Iterator;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
@@ -1177,7 +1178,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
 			set_201013(patientState.getPatientData("PATIENT_BIRTHDAY").replaceAll("-",""));
 			//(被保険者情報)性別コード1桁1-男 2-女
 			set_201014(patientState.getPatientData("PATIENT_SEX"));
-			//(被保険者情報)要介護状態区分コード2桁01-非該当 11-要支援 21-要介護1 22-要介護2 23-要介護3 24-要介護4 25-要介護5
+			//(被保険者情報)要介護状態区分コード2桁01-非該当 06-事業対象者 11-要支援 21-要介護1 22-要介護2 23-要介護3 24-要介護4 25-要介護5
 			set_201015(patientState.getNinteiDataLast(get_201005(),get_201006(),"JOTAI_CODE"));
 			//(被保険者情報)旧措置入所者特例コード1桁1-なし 2-あり
             set_201016(patientState.getShisetsuData("KYUSOCHI_FLAG"));
@@ -1185,6 +1186,31 @@ public class QP001RecordBase extends QP001RecordAbstract {
 			set_201017(patientState.getNinteiDataLast(get_201005(),get_201006(),"INSURE_VALID_START").replaceAll("-",""));
 			//(被保険者情報)認定有効期間 終了年月日8桁(YYYYMMDD)
 			set_201018(patientState.getNinteiDataLast(get_201005(),get_201006(),"INSURE_VALID_END").replaceAll("-",""));
+
+			// [H27.4改正対応][Shinobu Hitaka] 2016/8/15 edit - begin 総合事業対応
+			// 様式２－３の要介護状態区分と認定有効期間
+			//（月途中で総合事業利用対象（事業対象者・要支援）から要介護になった）
+			if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_201001())) {
+				//月末時点の (被保険者情報)要介護状態区分コードが事業対象者・要支援以外（非該当・要介護）の場合
+				int jotaiCode = ACCastUtilities.toInt(get_201015(), 1);
+	            if (jotaiCode != QkanConstants.YOUKAIGODO_JIGYOTAISHO && 
+	            	jotaiCode != QkanConstants.YOUKAIGODO_YOUSHIEN1 && 
+	            	jotaiCode != QkanConstants.YOUKAIGODO_YOUSHIEN2) {
+	            	
+	            	//最後に受けていた要介護状態区分コードと認定有効期間を取得する
+	            	VRMap resultMap = patientState.getNinteiDataLastShien(get_201005(),get_201006());
+	            	if (resultMap != null) {
+	            		set_201015(String.valueOf(VRBindPathParser.get("JOTAI_CODE", resultMap)));
+	            		set_201017(String.valueOf(VRBindPathParser.get("INSURE_VALID_START", resultMap)).replaceAll("-",""));
+	            		set_201018(String.valueOf(VRBindPathParser.get("INSURE_VALID_END", resultMap)).replaceAll("-",""));
+	            	}
+	            }
+			}
+			//事業対象者の(被保険者情報)認定有効期間 終了年月日8桁(YYYYMMDD)は空白
+			if (ACCastUtilities.toInt(get_201015(), 0) == QkanConstants.YOUKAIGODO_JIGYOTAISHO) {
+				set_201018("");
+			}
+			// [H27.4改正対応][Shinobu Hitaka] 2016/8/15 edit - end
             
             //居宅介護支援専門員番号が必用な様式であれば設定する。
             if(QP001SpecialCase.isServicePlanMakerLiving(get_201001())){
@@ -1756,11 +1782,18 @@ public class QP001RecordBase extends QP001RecordAbstract {
 	private void setStopDate(QP001PatientState patientState) throws Exception {
 
 		//[ID:0000539][Shin Fujihara] 2009/08 add begin 2009年度障害対応
-		//様式第二、第二の二以外の様式であれば、処理を中断する
+		//様式第二、第二の二、第二の三以外の様式であれば、処理を中断する
+		// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 edit - begin 総合事業対応（第二の三追加）
+		//if (!QP001StyleAbstract.IDENTIFICATION_NO_2_201204.equals(get_201001())
+		//	&& !QP001StyleAbstract.IDENTIFICATION_NO_2_2_201204.equals(get_201001())) {
+		//	return;
+		//}
 		if (!QP001StyleAbstract.IDENTIFICATION_NO_2_201204.equals(get_201001())
-			&& !QP001StyleAbstract.IDENTIFICATION_NO_2_2_201204.equals(get_201001())) {
-			return;
+				&& !QP001StyleAbstract.IDENTIFICATION_NO_2_2_201204.equals(get_201001())
+				&& !QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_201001())) {
+				return;
 		}
+		// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 edit - end
 		//[ID:0000539][Shin Fujihara] 2009/08 add end 2009年度障害対応
 		
 		/*
@@ -1778,8 +1811,8 @@ public class QP001RecordBase extends QP001RecordAbstract {
 		//様式第二
 		if(QP001StyleAbstract.IDENTIFICATION_NO_2_201204.equals(get_201001())){
 			//要介護状態区分
-			//要支援１、要支援２ではない場合は正常な帳票とみなす
-			if(!"12".equals(get_201015()) && !"13".equals(get_201015())){
+			//事業対象者、要支援１、要支援２ではない場合は正常な帳票とみなす
+			if(!"06".equals(get_201015()) && !"12".equals(get_201015()) && !"13".equals(get_201015())){
 				return;
 			}
 		}
@@ -1792,6 +1825,17 @@ public class QP001RecordBase extends QP001RecordAbstract {
 				return;
 			}
 		}
+		
+		// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - begin 総合事業対応（第二の三追加）
+		//様式第二の三
+		if(QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(get_201001())){
+			//要介護状態区分
+			//事業対象者、要支援１、要支援２の場合は正常な帳票とみなす
+			if("06".equals(get_201015()) || "12".equals(get_201015()) || "13".equals(get_201015())){
+				return;
+			}
+		}
+		// [H27.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
 		
 		Date startDate = ACCastUtilities.toDate(patientState.getNinteiDataLast(get_201005(),get_201006(),"INSURE_VALID_START"),null);
 		
@@ -1852,7 +1896,7 @@ public class QP001RecordBase extends QP001RecordAbstract {
 		setData(result,"201013",get_201013());
 		//(被保険者情報)性別コード1桁1-男 2-女
 		setData(result,"201014",get_201014());
-		//(被保険者情報)要介護状態区分コード2桁01-非該当 11-要支援 21-要介護1 22-要介護2 23-要介護3 24-要介護4 25-要介護5
+		//(被保険者情報)要介護状態区分コード2桁01-非該当 06-事業対象者 11-要支援 21-要介護1 22-要介護2 23-要介護3 24-要介護4 25-要介護5
 		setData(result,"201015",get_201015());
 		//(被保険者情報)旧措置入所者特例コード1桁1-なし 2-あり
 		setData(result,"201016",get_201016());

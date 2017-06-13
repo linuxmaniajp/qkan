@@ -34,6 +34,19 @@ public class SC_16511_201504 extends Qkan10011_ServiceUnitGetter {
         // 1 要介護度
         int _1 = convertYokaigodo(getIntValue(map, "1"));
 
+        // 明らかに要介護度がおかしい場合は空を返す
+        switch (_1) {
+        case 1: // 自立
+        case 2: // 経過的要介護
+        case 5: // 要介護１
+        case 6: // 要介護２
+        case 7: // 要介護３
+        case 8: // 要介護４
+        case 9: // 要介護５
+        case 10: // 事業対象者
+            return new ArrayList<HashMap<String, String>>();
+        }
+        
         // 1650101 人員減算　1-なし 2-定員超過 3-看護・介護職員が欠員
         int _1650101 = getIntValue(map, "1650101", 1);
 

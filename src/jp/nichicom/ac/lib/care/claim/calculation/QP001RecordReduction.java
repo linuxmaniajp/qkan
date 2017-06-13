@@ -563,7 +563,9 @@ public class QP001RecordReduction extends QP001RecordAbstract {
         	"76".equals(serviceCodeKind) || 	//様式2-1(定期巡回)
         	"77".equals(serviceCodeKind) || 	//様式2-1(複合型)
         	"79".equals(serviceCodeKind) || 	//様式2-1(複合型・短期) H27.4改正
-        	"78".equals(serviceCodeKind)    	//様式2-1(地域密着型通所) H28.4改正
+        	"78".equals(serviceCodeKind) || 	//様式2-1(地域密着型通所) H28.4改正
+        	"A1".equals(serviceCodeKind) || 	//様式2-3(総合事業：訪問型) H27.4改正 add 2016.7.22
+        	"A5".equals(serviceCodeKind)    	//様式2-3(総合事業：通所型) H27.4改正 add 2016.7.22
         	) {
             if (patientState.getKohiRatio(targetDate,
                     String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")),

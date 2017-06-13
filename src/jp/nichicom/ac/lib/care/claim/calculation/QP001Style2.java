@@ -192,54 +192,109 @@ public class QP001Style2 extends QP001StyleAbstract{
      * @throws Exception
      */
     public void arrangement() throws Exception {
-    	//様式第二の二以外は処理を行なわない。
-    	if(!"7132".equals(identificationNo)){
+// 2016/7/21 [Yoichiro Kamei] mod - begin 総合事業対応 
+// 中山間地域等提供加算の計算値がおかしかったので処理を見直した
+//
+//    	//様式第二の二以外は処理を行なわない。
+//    	if(!"7132".equals(identificationNo)){
+//    		return;
+//    	}
+//    	
+//    	int unit = Integer.MAX_VALUE;
+//    	
+//		//明細情報レコードの確定処理
+//		Iterator it = detailMap.keySet().iterator();
+//		while(it.hasNext()){
+//			//作成した明細情報レコードの確定を行う。
+//			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
+//			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
+//				//単位数を比較
+//				if(detail.get_301009() < unit){
+//					unit = detail.get_301009();
+//				} else {
+//					it.remove();
+//				}
+//			}
+//		}
+//		
+//		it = detailMap.keySet().iterator();
+//		while(it.hasNext()){
+//			//作成した明細情報レコードの確定を行う。
+//			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
+//			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
+//				if(detail.get_301009() != unit){
+//					it.remove();
+//				}
+//			}
+//			
+//			//特地加算のレコードであるか確認
+//			// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化 
+//			//if(ACCastUtilities.toInt(detail.get_301007(),0) == 61){
+//			//	if(ACCastUtilities.toInt(detail.get_301008(),0) == 8000){
+//			if("61".equals(detail.get_301007())){
+//				if("8000".equals(detail.get_301008())){
+//			// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化 
+//					VRMap mainMap = new VRHashMap();
+//					VRMap map = new VRHashMap();
+//					map.put("UNIT",new Integer(unit));
+//					map.put("TIMES",new Integer(1));
+//					mainMap.put(detail.get_301007() + "-" + detail.get_301008(),map);
+//					detail.setServiceUnitMap(mainMap);
+//				}
+//			}
+//		}
+		
+    	//様式第二の二、様式第二の三以外は処理を行なわない。
+    	if(!IDENTIFICATION_NO_2_2_201204.equals(identificationNo)
+    		&& !IDENTIFICATION_NO_2_3_201504.equals(identificationNo)){
     		return;
     	}
     	
     	int unit = Integer.MAX_VALUE;
-    	
-		//明細情報レコードの確定処理
 		Iterator it = detailMap.keySet().iterator();
 		while(it.hasNext()){
-			//作成した明細情報レコードの確定を行う。
 			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
 			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
-				//単位数を比較
+				// 対象の単位数の中で最小のものを取得する
 				if(detail.get_301009() < unit){
 					unit = detail.get_301009();
-				} else {
-					it.remove();
 				}
 			}
 		}
-		
+		if (unit == Integer.MAX_VALUE) {
+			return;
+		}
+		// 上記で取得した単位数以外のものは削除する
+		List<String> removeKeys = new ArrayList<String>();
 		it = detailMap.keySet().iterator();
 		while(it.hasNext()){
 			//作成した明細情報レコードの確定を行う。
 			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
 			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
 				if(detail.get_301009() != unit){
+	                String key = String.valueOf(detail.get_301021()) + "-"
+	                        + String.valueOf(detail.get_301022()) + "-"
+	                        + String.valueOf(3);
+	                removeKeys.add(key);
 					it.remove();
 				}
 			}
-			
-			//特地加算のレコードであるか確認
-			// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化 
-			//if(ACCastUtilities.toInt(detail.get_301007(),0) == 61){
-			//	if(ACCastUtilities.toInt(detail.get_301008(),0) == 8000){
-			if("61".equals(detail.get_301007())){
-				if("8000".equals(detail.get_301008())){
-			// [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - begin サービスコード英数化 
-					VRMap mainMap = new VRHashMap();
-					VRMap map = new VRHashMap();
-					map.put("UNIT",new Integer(unit));
-					map.put("TIMES",new Integer(1));
-					mainMap.put(detail.get_301007() + "-" + detail.get_301008(),map);
-					detail.setServiceUnitMap(mainMap);
-				}
+		}
+		if (removeKeys.isEmpty()) {
+			return;
+		}
+		// %加算のために保持している情報から削除したサービス分を除外する
+		it = detailMap.keySet().iterator();
+		while(it.hasNext()){
+			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
+			for (String key : removeKeys) {
+				// 特別地域加算
+				detail.getServiceUnitMap().remove(key);
+				// 中山間地域等提供加算
+				detail.getMountainousAreaAdder().removeService(key);
 			}
 		}
+// 2016/7/21 [Yoichiro Kamei] mod - end
     }
     
 	

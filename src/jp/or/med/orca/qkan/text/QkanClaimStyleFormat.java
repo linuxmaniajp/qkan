@@ -108,6 +108,9 @@ public class QkanClaimStyleFormat extends Format{
     		// 10212-様式第ニの二
         } else if ("10212".equals(code)) {
             toAppendTo.append("様式第ニの二");
+    		// 10213-様式第ニの三 2016.7.8 add
+        } else if ("10213".equals(code)) {
+            toAppendTo.append("様式第ニの三");
     		// 10311-様式第三
         } else if ("10311".equals(code)) {
             toAppendTo.append("様式第三");
@@ -241,6 +244,9 @@ public class QkanClaimStyleFormat extends Format{
     		// 10212-様式第ニの二
         } else if ("様式第ニの二".equals(source)) {
             result = "10212";
+    		// 10213-様式第ニの三 2016.7.8 add
+        } else if ("様式第ニの三".equals(source)) {
+            result = "10213";
     		// 10311-様式第三
         } else if ("様式第三".equals(source)) {
             result = "10311";

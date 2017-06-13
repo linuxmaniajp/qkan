@@ -156,5 +156,22 @@ public class QP001MountainousAreaAdder {
         }
         return totalUnit;
 	}
+	
+// 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
+	/**
+	 * 保持しているサービスからkeyに指定したサービスを除外します。
+	 * 
+	 * keyは以下の結合文字列となります。
+	 * "SYSTEM_SERVICE_KIND_DETAIL"-"SYSTEM_SERVICE_CODE_ITEM"-"TOTAL_GROUPING_TYPE"
+	 */
+	public void removeService(String key) {
+		if (!serviceUnitAddMap.isEmpty()){
+			serviceUnitAddMap.remove(key);
+		}
+		if (!serviceUnitMap.isEmpty()){
+			serviceUnitMap.remove(key);
+		}
+	}
+// 2016/7/21 [Yoichiro Kamei] add - end
 
 }

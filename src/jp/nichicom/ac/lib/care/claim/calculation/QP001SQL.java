@@ -326,7 +326,14 @@ public class QP001SQL extends QP001State {
 
             // 利用者一覧（在宅サービス提供事業所請求）
         } else if ("04".equals(affair)) {
-            sb.append(" AND (CLAIM.CLAIM_STYLE_TYPE IN ("
+            sb.append(" AND (CLAIM.CLAIM_STYLE_TYPE IN (");
+            
+            String seikyuType = "1";
+            if (VRBindPathParser.has("SEIKYU_TYPE", sqlParam)) {
+                seikyuType = ACCastUtilities.toString(sqlParam.get("SEIKYU_TYPE"));
+            }
+            if ("1".equals(seikyuType) || "2".equals(seikyuType)) {
+                sb.append(
                     + QkanConstants.CLAIM_STYLE_FORMAT_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_2_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_3 + ","
@@ -345,7 +352,16 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_8 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_9 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_10
-                    + "))");
+                    );
+            }
+            if ("1".equals(seikyuType)) {
+            	sb.append(",");
+            }
+            if ("1".equals(seikyuType) || "3".equals(seikyuType)) {
+            	sb.append(QkanConstants.CLAIM_STYLE_FORMAT_2_3 );
+            }
+                    
+            sb.append("))");
             sb.append(" AND (CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
 
             // 利用者一覧（施設サービス提供事業者請求）※仕様変更に伴い欠番
@@ -367,6 +383,7 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_BENEFIT_BILL + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_2_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_2_3 + ","	// 2016.7.8 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_3 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_3_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4 + ","
@@ -393,6 +410,7 @@ public class QP001SQL extends QP001State {
             sb.append(" AND (CLAIM.CLAIM_STYLE_TYPE IN ("
                     + QkanConstants.CLAIM_STYLE_FORMAT_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_2_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_2_3 + ","	// 2016.7.8 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_3 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_3_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4 + ","

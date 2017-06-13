@@ -495,6 +495,22 @@ public abstract class QU002Event extends QU002SQL {
             }
         }
     });
+    getKaigoInfoLimitChange().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                kaigoInfoLimitChangeActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getShisetsuInfoTokuteiCheck().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -881,7 +897,14 @@ public abstract class QU002Event extends QU002SQL {
    * @throws Exception 処理例外
    */
   protected abstract void basicInfoBirthFocusLost(FocusEvent e) throws Exception;
-
+  
+  /**
+   * 「画面処理」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void kaigoInfoLimitChangeActionPerformed(ActionEvent e) throws Exception;
+  
   /**
    * 「画面処理」イベントです。
    * @param e イベント情報
@@ -1032,11 +1055,14 @@ public abstract class QU002Event extends QU002SQL {
   public static final int SERVICE_TYPE_SHOKIBO = 17311;
   public static final int SERVICE_TYPE_YOBOU_SHOKIBO = 17511;
   public static final int SERVICE_TYPE_FUKUGOUGATA = 17711;
+  public static final int SERVICE_TYPE_YOBOU_CAREMGM = 51511;	//2016/7/5 Kamei add
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
   public static final int YOUKAIGODO_HIGAITOU = 1;
+  public static final int YOUKAIGODO_JIGYOTAISHO = 6;   //2016/7/5 Kamei add
   public static final int YOUKAIGODO_KEIKATEKI_YOUKAIGO = 11;
   public static final int YOUKAIGODO_YOUSHIEN1 = 12;	//2015/3/31 Hitaka add
+  public static final int YOUKAIGODO_YOUSHIEN2 = 13;	//2016/7/18 Kamei add
   public static final int CODE_IDOU_REASON_NYUSYO_NYUIN = 278;
   public static final int IDOU_START_SHISETSU1 = 1;
   public static final int IDOU_START_SHISETSU2 = 1;

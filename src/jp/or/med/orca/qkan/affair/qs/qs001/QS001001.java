@@ -839,11 +839,14 @@ public class QS001001 extends QS001001Event {
                 getExceptionEndCombo().setSelectedIndex(1);
                 setState_WELFARE_EQUIPMENT_SELECTED();
             } else {
-                // 福祉用具貸与以外の場合
-                // 期間コンボを「末迄」にする。
-                getExceptionEndCombo().setSelectedIndex(
-                        getExceptionEndCombo().getItemCount() - 1);
-                setState_WELFARE_EQUIPMENT_UNSELECTED();
+                // [Shinobu Hitaka] 2016/05/11 add サービスが「主な日常生活上の活動」ではない場合の判定を追加
+                if (getMondayCheck().isVisible()) {
+                    // 福祉用具貸与以外の場合
+                    // 期間コンボを「末迄」にする。
+                    getExceptionEndCombo().setSelectedIndex(
+                    	            getExceptionEndCombo().getItemCount() - 1);
+                    setState_WELFARE_EQUIPMENT_UNSELECTED();
+            	}
             }
         }
 

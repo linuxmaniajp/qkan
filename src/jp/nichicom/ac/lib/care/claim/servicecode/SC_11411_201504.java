@@ -37,6 +37,7 @@ public class SC_11411_201504 extends Qkan10011_ServiceUnitGetter {
         case 1: // ©—§
         case 3: // —vx‰‡‚P
         case 4: // —vx‰‡‚Q
+        case 10: // –‹Æ‘ÎÛÒ
             return new ArrayList<HashMap<String, String>>();
         }
         
