@@ -801,6 +801,7 @@ public class QP001 extends QP001Event {
                 case QkanConstants.CLAIM_STYLE_FORMAT_6_4:
                 case QkanConstants.CLAIM_STYLE_FORMAT_6_5:
                 case QkanConstants.CLAIM_STYLE_FORMAT_6_6:
+                case QkanConstants.CLAIM_STYLE_FORMAT_6_7:
                     printCount[6]++;
                     printCount[1] = 1;
                     break;

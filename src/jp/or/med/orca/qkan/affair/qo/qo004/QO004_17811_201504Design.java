@@ -17,13 +17,13 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2016/01/27  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 日高しのぶ
+ * 作成日: 2016/01/27  日本コンピューター株式会社 日高しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
  * プロセス 事業者登録 (004)
- * プログラム 通所介護 (QO004_11511_201504)
+ * プログラム 地域密着型通所介護 (QO004_17811_201504)
  *
  *****************************************************************
  */
@@ -58,7 +58,7 @@ import jp.nichicom.ac.sql.*;
 import jp.nichicom.ac.text.*;
 import jp.nichicom.ac.util.*;
 import jp.nichicom.ac.util.adapter.*;
-
+import jp.nichicom.vr.*;
 import jp.nichicom.vr.bind.*;
 import jp.nichicom.vr.bind.event.*;
 import jp.nichicom.vr.border.*;
@@ -80,9 +80,9 @@ import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 import jp.or.med.orca.qkan.text.*;
 /**
- * 通所介護画面項目デザイン(QO004_11511_201504) 
+ * 地域密着型通所介護画面項目デザイン(QO004_17811_201504) 
  */
-public class QO004_11511_201504Design extends QO004ProviderPanel {
+public class QO004_17811_201504Design extends QO004ProviderPanel {
   //GUIコンポーネント
 
   private ACGroupBox mainGroup;
@@ -98,12 +98,6 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   private ACRadioButtonItem facilitiesDivisionItem1;
 
   private ACRadioButtonItem facilitiesDivisionItem2;
-
-  private ACRadioButtonItem facilitiesDivisionItem4;
-
-  private ACRadioButtonItem facilitiesDivisionItem5;
-
-  private ACRadioButtonItem facilitiesDivisionItem3;
 
   private ACValueArrayRadioButtonGroup staffLack;
 
@@ -272,7 +266,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       mainGroup = new ACGroupBox();
 
-      mainGroup.setText("通所介護");
+      mainGroup.setText("地域密着型通所介護");
 
       mainGroup.setFollowChildEnabled(true);
 
@@ -343,13 +337,13 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       facilitiesDivision = new ACValueArrayRadioButtonGroup();
 
-      facilitiesDivision.setBindPath("1150115");
+      facilitiesDivision.setBindPath("1780101");
 
       facilitiesDivision.setUseClearButton(false);
 
       facilitiesDivision.setModel(getFacilitiesDivisionModel());
 
-      facilitiesDivision.setValues(new int[]{1,2,4,5,3});
+      facilitiesDivision.setValues(new int[]{1,2});
 
       addFacilitiesDivision();
     }
@@ -370,19 +364,19 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   }
 
   /**
-   * 小規模型を取得します。
-   * @return 小規模型
+   * 地域密着型通所介護を取得します。
+   * @return 地域密着型通所介護
    */
   public ACRadioButtonItem getFacilitiesDivisionItem1(){
     if(facilitiesDivisionItem1==null){
 
       facilitiesDivisionItem1 = new ACRadioButtonItem();
 
-      facilitiesDivisionItem1.setText("小規模型（H28.4廃止）");
+      facilitiesDivisionItem1.setText("地域密着型通所介護");
 
       facilitiesDivisionItem1.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem1.setConstraints(VRLayout.FLOW_RETURN);
+      facilitiesDivisionItem1.setConstraints(VRLayout.FLOW);
 
       addFacilitiesDivisionItem1();
     }
@@ -391,86 +385,23 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   }
 
   /**
-   * 通常規模型を取得します。
-   * @return 通常規模型
+   * 療養通所介護を取得します。
+   * @return 療養通所介護
    */
   public ACRadioButtonItem getFacilitiesDivisionItem2(){
     if(facilitiesDivisionItem2==null){
 
       facilitiesDivisionItem2 = new ACRadioButtonItem();
 
-      facilitiesDivisionItem2.setText("通常規模型");
+      facilitiesDivisionItem2.setText("療養通所介護");
 
       facilitiesDivisionItem2.setGroup(getFacilitiesDivision());
 
-      facilitiesDivisionItem2.setConstraints(VRLayout.FLOW_RETURN);
+      facilitiesDivisionItem2.setConstraints(VRLayout.FLOW);
 
       addFacilitiesDivisionItem2();
     }
     return facilitiesDivisionItem2;
-
-  }
-
-  /**
-   * 大規模型I（利用者数900人以内）を取得します。
-   * @return 大規模型I（利用者数900人以内）
-   */
-  public ACRadioButtonItem getFacilitiesDivisionItem4(){
-    if(facilitiesDivisionItem4==null){
-
-      facilitiesDivisionItem4 = new ACRadioButtonItem();
-
-      facilitiesDivisionItem4.setText("大規模型I（利用者数900人以内）");
-
-      facilitiesDivisionItem4.setGroup(getFacilitiesDivision());
-
-      facilitiesDivisionItem4.setConstraints(VRLayout.FLOW_RETURN);
-
-      addFacilitiesDivisionItem4();
-    }
-    return facilitiesDivisionItem4;
-
-  }
-
-  /**
-   * 大規模型II（利用者数900人超）を取得します。
-   * @return 大規模型II（利用者数900人超）
-   */
-  public ACRadioButtonItem getFacilitiesDivisionItem5(){
-    if(facilitiesDivisionItem5==null){
-
-      facilitiesDivisionItem5 = new ACRadioButtonItem();
-
-      facilitiesDivisionItem5.setText("大規模型II（利用者数900人超）");
-
-      facilitiesDivisionItem5.setGroup(getFacilitiesDivision());
-
-      facilitiesDivisionItem5.setConstraints(VRLayout.FLOW_RETURN);
-
-      addFacilitiesDivisionItem5();
-    }
-    return facilitiesDivisionItem5;
-
-  }
-
-  /**
-   * 療養通所介護を取得します。
-   * @return 療養通所介護
-   */
-  public ACRadioButtonItem getFacilitiesDivisionItem3(){
-    if(facilitiesDivisionItem3==null){
-
-      facilitiesDivisionItem3 = new ACRadioButtonItem();
-
-      facilitiesDivisionItem3.setText("療養通所介護（H28.4廃止）");
-
-      facilitiesDivisionItem3.setGroup(getFacilitiesDivision());
-
-      facilitiesDivisionItem3.setConstraints(VRLayout.FLOW);
-
-      addFacilitiesDivisionItem3();
-    }
-    return facilitiesDivisionItem3;
 
   }
 
@@ -485,7 +416,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getStaffLackContainer().setText("職員の欠員による減算の状況");
 
-      staffLack.setBindPath("1150106");
+      staffLack.setBindPath("1780102");
 
       staffLack.setUseClearButton(false);
 
@@ -599,7 +530,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getExtendTimeContainer().setText("時間延長サービス体制");
 
-      extendTime.setBindPath("1150110");
+      extendTime.setBindPath("1780103");
 
       extendTime.setUseClearButton(false);
 
@@ -692,7 +623,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getBathingHelpSystemContainer().setText("入浴介助体制");
 
-      bathingHelpSystem.setBindPath("1150103");
+      bathingHelpSystem.setBindPath("1780104");
 
       bathingHelpSystem.setUseClearButton(false);
 
@@ -785,7 +716,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getMediumSeverePersonCareContainer().setText("中重度者ケア体制加算");
 
-      mediumSeverePersonCare.setBindPath("1150117");
+      mediumSeverePersonCare.setBindPath("1780105");
 
       mediumSeverePersonCare.setUseClearButton(false);
 
@@ -878,7 +809,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getFunctionTrainingGuidanceSystemH2104Container().setText("個別機能訓練体制");
 
-      functionTrainingGuidanceSystemH2104.setBindPath("1150116");
+      functionTrainingGuidanceSystemH2104.setBindPath("1780106");
 
       functionTrainingGuidanceSystemH2104.setNoSelectIndex(0);
 
@@ -994,7 +925,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getDementiaAddContainer().setText("認知症加算");
 
-      dementiaAdd.setBindPath("1150118");
+      dementiaAdd.setBindPath("1780107");
 
       dementiaAdd.setUseClearButton(false);
 
@@ -1087,7 +1018,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getYoungDementiaPatinetAddRadioGroupContainer().setText("若年性認知症利用者受入加算");
 
-      youngDementiaPatinetAddRadioGroup.setBindPath("1150112");
+      youngDementiaPatinetAddRadioGroup.setBindPath("1780108");
 
       youngDementiaPatinetAddRadioGroup.setNoSelectIndex(0);
 
@@ -1182,7 +1113,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getNourishmentImprovementContainer().setText("栄養改善体制");
 
-      nourishmentImprovement.setBindPath("1150113");
+      nourishmentImprovement.setBindPath("1780109");
 
       nourishmentImprovement.setUseClearButton(false);
 
@@ -1271,7 +1202,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getMouthImprovementAddContainer().setText("口腔機能向上体制");
 
-      mouthImprovementAdd.setBindPath("1150109");
+      mouthImprovementAdd.setBindPath("1780110");
 
       mouthImprovementAdd.setUseClearButton(false);
 
@@ -1364,7 +1295,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getIndividualPickupSystemContainer().setText("個別送迎体制強化加算");
 
-      individualPickupSystem.setBindPath("1150119");
+      individualPickupSystem.setBindPath("1780111");
 
       individualPickupSystem.setUseClearButton(false);
 
@@ -1432,7 +1363,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       individualPickupSystemItem2 = new ACRadioButtonItem();
 
-      individualPickupSystemItem2.setText("あり（H28.4廃止）");
+      individualPickupSystemItem2.setText("あり");
 
       individualPickupSystemItem2.setGroup(getIndividualPickupSystem());
 
@@ -1453,7 +1384,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getBathingAssistanceSystemContainer().setText("入浴介助体制強化加算");
 
-      bathingAssistanceSystem.setBindPath("1150120");
+      bathingAssistanceSystem.setBindPath("1780112");
 
       bathingAssistanceSystem.setUseClearButton(false);
 
@@ -1523,7 +1454,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       bathingAssistanceSystemItem2 = new ACRadioButtonItem();
 
-      bathingAssistanceSystemItem2.setText("あり（H28.4廃止）");
+      bathingAssistanceSystemItem2.setText("あり");
 
       bathingAssistanceSystemItem2.setGroup(getBathingAssistanceSystem());
 
@@ -1546,7 +1477,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       getServiceAddProvisionStructuralRadioGroupContainer().setText("サービス提供体制強化加算");
 
-      serviceAddProvisionStructuralRadioGroup.setBindPath("1150114");
+      serviceAddProvisionStructuralRadioGroup.setBindPath("1780113");
 
       serviceAddProvisionStructuralRadioGroup.setVisible(true);
 
@@ -1558,7 +1489,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       serviceAddProvisionStructuralRadioGroup.setModel(getServiceAddProvisionStructuralRadioGroupModel());
 
-      serviceAddProvisionStructuralRadioGroup.setValues(new int[]{1,5,2,3,4});
+      serviceAddProvisionStructuralRadioGroup.setValues(new int[]{1,2,3,4,5});
 
       addServiceAddProvisionStructuralRadioGroup();
     }
@@ -1668,7 +1599,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       serviceAddProvisionStructuralRadioItem4.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
-      serviceAddProvisionStructuralRadioItem4.setConstraints(VRLayout.FLOW_RETURN);
+      serviceAddProvisionStructuralRadioItem4.setConstraints(VRLayout.FLOW);
 
       addServiceAddProvisionStructuralRadioItem4();
     }
@@ -1685,7 +1616,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
       serviceAddProvisionStructuralRadioItem5 = new ACRadioButtonItem();
 
-      serviceAddProvisionStructuralRadioItem5.setText("加算III（H28.4廃止）");
+      serviceAddProvisionStructuralRadioItem5.setText("加算III");
 
       serviceAddProvisionStructuralRadioItem5.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
@@ -1967,7 +1898,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   /**
    * コンストラクタです。
    */
-  public QO004_11511_201504Design() {
+  public QO004_17811_201504Design() {
 
     try {
       initialize();
@@ -2068,52 +1999,19 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
     getFacilitiesDivisionModel().add(getFacilitiesDivisionItem2());
 
-    getFacilitiesDivisionItem4().setButtonIndex(4);
-
-    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem4());
-
-    getFacilitiesDivisionItem5().setButtonIndex(5);
-
-    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem5());
-
-    getFacilitiesDivisionItem3().setButtonIndex(3);
-
-    getFacilitiesDivisionModel().add(getFacilitiesDivisionItem3());
-
   }
 
   /**
-   * 小規模型に内部項目を追加します。
+   * 地域密着型通所介護に内部項目を追加します。
    */
   protected void addFacilitiesDivisionItem1(){
 
   }
 
   /**
-   * 通常規模型に内部項目を追加します。
-   */
-  protected void addFacilitiesDivisionItem2(){
-
-  }
-
-  /**
-   * 大規模型I（利用者数900人以内）に内部項目を追加します。
-   */
-  protected void addFacilitiesDivisionItem4(){
-
-  }
-
-  /**
-   * 大規模型II（利用者数900人超）に内部項目を追加します。
-   */
-  protected void addFacilitiesDivisionItem5(){
-
-  }
-
-  /**
    * 療養通所介護に内部項目を追加します。
    */
-  protected void addFacilitiesDivisionItem3(){
+  protected void addFacilitiesDivisionItem2(){
 
   }
 
@@ -2551,19 +2449,19 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
 
     getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem1());
 
-    getServiceAddProvisionStructuralRadioItem2().setButtonIndex(5);
+    getServiceAddProvisionStructuralRadioItem2().setButtonIndex(2);
 
     getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem2());
 
-    getServiceAddProvisionStructuralRadioItem3().setButtonIndex(2);
+    getServiceAddProvisionStructuralRadioItem3().setButtonIndex(3);
 
     getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem3());
 
-    getServiceAddProvisionStructuralRadioItem4().setButtonIndex(3);
+    getServiceAddProvisionStructuralRadioItem4().setButtonIndex(4);
 
     getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem4());
 
-    getServiceAddProvisionStructuralRadioItem5().setButtonIndex(4);
+    getServiceAddProvisionStructuralRadioItem5().setButtonIndex(5);
 
     getServiceAddProvisionStructuralRadioGroupModel().add(getServiceAddProvisionStructuralRadioItem5());
 
@@ -2739,7 +2637,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
     //デフォルトデバッグ起動
     try {
       ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
-      ACFrame.debugStart(new ACAffairInfo(QO004_11511_201504Design.class.getName()));
+      ACFrame.debugStart(new ACAffairInfo(QO004_17811_201504Design.class.getName()));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -2748,7 +2646,7 @@ public class QO004_11511_201504Design extends QO004ProviderPanel {
   /**
    * 自身を返します。
    */
-  protected QO004_11511_201504Design getThis() {
+  protected QO004_17811_201504Design getThis() {
     return this;
   }
 }

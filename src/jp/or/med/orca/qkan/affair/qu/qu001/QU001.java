@@ -56,6 +56,7 @@ import jp.nichicom.ac.util.splash.ACSplash;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.component.table.VRSortableTableModel;
+import jp.nichicom.vr.text.VRDateFormat;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -1094,7 +1095,7 @@ public class QU001 extends QU001Event {
 	private VRMap getNinteiRireki() throws Exception {
 
 		Date now = QkanSystemInformation.getInstance().getSystemDate();
-
+		VRDateFormat df = new VRDateFormat();
 		VRList list = getDBManager().executeQuery(getSQL_GET_NINTEI_ALL(null));
 		VRMap result = new VRHashMap();
 		// PATIENT_ID
@@ -1115,10 +1116,29 @@ public class QU001 extends QU001Event {
 			// 期間範囲内
 			if ((ACDateUtilities.compareOnDay(start, now) <= 0)
 					&& (ACDateUtilities.compareOnDay(end, now) >= 0)) {
-				// 一番当たりなので常に上書き
-				row.put("marge_state", new Integer(0));
-				result.put(id, row);
-				continue;
+			    
+// 2016/01/19 [CCCX: 03068] mod - begin 
+// 要介護度「非該当」の移行データがシステム有効期間0001-01-01-9999-12-31で
+// 移行されており、期間範囲内として優先されてしまうので、優先度低にして登録
+// 一番当たりなので常に上書き
+//				row.put("marge_state", new Integer(0));
+//				result.put(id, row);
+//				continue;
+                if (("0001-01-01".equals(df.format(start, "yyyy-MM-dd")))
+                        && ("9999-12-31".equals(df.format(end, "yyyy-MM-dd")))) {
+                    // 設定されていなければ、優先度低にして登録
+                    if (!result.containsKey(id)) {
+                        row.put("marge_state", new Integer(2));
+                        result.put(id, row);
+                        continue;  
+                    }
+                } else {
+                    // 一番当たりなので常に上書き
+                    row.put("marge_state", new Integer(0));
+                    result.put(id, row);
+                    continue;
+                }
+// 2016/01/19 [CCCX: 03068] mod - end
 			}
 
 			// 未来

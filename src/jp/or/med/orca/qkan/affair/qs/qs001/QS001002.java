@@ -651,6 +651,12 @@ public class QS001002 extends QS001002Event {
     protected void planUnitActionPerformed(ActionEvent e) throws Exception {
         // ※計画単位数編集画面の表示
         QS001004 form = new QS001004();
+        
+        // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add begin
+        // 対象年月がH28.4以前の場合、追加サービス種類名を表示しないため
+        form.setTargetDate(getCalcurater().getTargetDate());
+        // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add end
+        
         // 計画単位数表示画面を「決定」ボタンで閉じた場合
         if (form.showModal(getPlanUnits())) {
             // 保持している計画単位数を差し替える。

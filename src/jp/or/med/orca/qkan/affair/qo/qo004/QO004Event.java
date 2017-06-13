@@ -363,6 +363,7 @@ public abstract class QO004Event extends QO004SQL {
   public static final Date TARGET_DATE_20051001 = ACCastUtilities.toDate("2005/10/1", null);
   public static final Date TARGET_DATE_20120401 = ACCastUtilities.toDate("2012/4/1", null);
   public static final Date TARGET_DATE_20150401 = ACCastUtilities.toDate("2015/4/1", null);
+  public static final Date TARGET_DATE_20160401 = ACCastUtilities.toDate("2016/4/1", null);
   public static final int SERVICE_TYPE_KAIGO_KANGO = 11311;
   public static final int SERVICE_TYPE_CARE_PLAN = 14311;
   public static final int SERVICE_TYPE_OTHER = 90101;

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2006/05/09  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2016/02/03  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -34,10 +34,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.component.table.ACCheckBoxTableColumnPopupMenu;
+import jp.nichicom.ac.component.table.event.ACCheckBoxTableColumnPopupMenuAdapter;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
@@ -67,6 +71,22 @@ public abstract class QP002Event extends QP002SQL {
             lockFlag = true;
             try {
                 seikyuActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getDelete().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                deleteActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -124,7 +144,77 @@ public abstract class QP002Event extends QP002SQL {
             }
         }
     });
-
+    getProviderTableColumn9().addCellEditorListener(new CellEditorListener(){
+        private boolean lockFlag = false;
+        public void editingStopped(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void editingCanceled(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void cellEditing(ChangeEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                providerTableColumn9CheckMenuActionPerformed(null);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    if(getProviderTableColumn9().getHeaderPopupMenu() instanceof ACCheckBoxTableColumnPopupMenu){      ((ACCheckBoxTableColumnPopupMenu)getProviderTableColumn9().getHeaderPopupMenu()).addPopupMenuListener(new ACCheckBoxTableColumnPopupMenuAdapter(){
+          private boolean lockFlag = false;
+          public void allCheckMenuActionPerformed(ActionEvent e) {
+              if (lockFlag) {
+                  return;
+              }
+              lockFlag = true;
+              try {
+                  providerTableColumn9CheckMenuActionPerformed(e);
+              }catch(Throwable ex){
+                  ACCommon.getInstance().showExceptionMessage(ex);
+              }finally{
+                  lockFlag = false;
+              }
+          }
+       });
+      ((ACCheckBoxTableColumnPopupMenu)getProviderTableColumn9().getHeaderPopupMenu()).addPopupMenuListener(new ACCheckBoxTableColumnPopupMenuAdapter(){
+          private boolean lockFlag = false;
+          public void allUncheckMenuActionPerformed(ActionEvent e) {
+              if (lockFlag) {
+                  return;
+              }
+              lockFlag = true;
+              try {
+                  providerTableColumn9CheckMenuActionPerformed(e);
+              }catch(Throwable ex){
+                  ACCommon.getInstance().showExceptionMessage(ex);
+              }finally{
+                  lockFlag = false;
+              }
+          }
+       });
+      ((ACCheckBoxTableColumnPopupMenu)getProviderTableColumn9().getHeaderPopupMenu()).addPopupMenuListener(new ACCheckBoxTableColumnPopupMenuAdapter(){
+          private boolean lockFlag = false;
+          public void reverseCheckMenuActionPerformed(ActionEvent e) {
+              if (lockFlag) {
+                  return;
+              }
+              lockFlag = true;
+              try {
+                  providerTableColumn9CheckMenuActionPerformed(e);
+              }catch(Throwable ex){
+                  ACCommon.getInstance().showExceptionMessage(ex);
+              }finally{
+                  lockFlag = false;
+              }
+          }
+       });
+    }
   }
   //コンポーネントイベント
 
@@ -134,6 +224,13 @@ public abstract class QP002Event extends QP002SQL {
    * @throws Exception 処理例外
    */
   protected abstract void seikyuActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「請求データ削除」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void deleteActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「画面遷移処理」イベントです。
@@ -155,6 +252,13 @@ public abstract class QP002Event extends QP002SQL {
    * @throws Exception 処理例外
    */
   protected abstract void providerTableSelectionChanged(ListSelectionEvent e) throws Exception;
+
+  /**
+   * 「選択操作メニュークリック」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void providerTableColumn9CheckMenuActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 

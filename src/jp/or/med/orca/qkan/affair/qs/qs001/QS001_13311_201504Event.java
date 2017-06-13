@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/01/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -207,6 +207,22 @@ public abstract class QS001_13311_201504Event extends QS001_13311_201504State im
             }
         }
     });
+    getChiikiDayCareCombo().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                chiikiDayCareComboActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getVisitNursingFacilitiesDivisionRadio().addActionListener(new ActionListener(){
         private boolean lockFlag = false;
         public void actionPerformed(ActionEvent e) {
@@ -264,6 +280,22 @@ public abstract class QS001_13311_201504Event extends QS001_13311_201504State im
             lockFlag = true;
             try {
                 providerDivisionRadioActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getChiikiDayCareRadio().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                chiikiDayCareRadioActionPerformed(e);
             }catch(Throwable ex){
                 ACCommon.getInstance().showExceptionMessage(ex);
             }finally{
@@ -389,6 +421,13 @@ public abstract class QS001_13311_201504Event extends QS001_13311_201504State im
   protected abstract void expertPlaceRehabiliComboActionPerformed(ActionEvent e) throws Exception;
 
   /**
+   * 「地域密着型通所介護時間区分選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void chiikiDayCareComboActionPerformed(ActionEvent e) throws Exception;
+
+  /**
    * 「訪問看護施設区分選択」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -415,6 +454,13 @@ public abstract class QS001_13311_201504Event extends QS001_13311_201504State im
    * @throws Exception 処理例外
    */
   protected abstract void providerDivisionRadioActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「地域密着型通所介護施設区分選択」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void chiikiDayCareRadioActionPerformed(ActionEvent e) throws Exception;
 
   /**
    * 「認知症対応型通所介護時間区分選択」イベントです。
@@ -594,6 +640,22 @@ public abstract class QS001_13311_201504Event extends QS001_13311_201504State im
    * @return int
    */
   public abstract int getTuusyoRihaTime() throws Exception;
+
+  /**
+   * 「地域密着型通所介護時間取得」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return int
+   */
+  public abstract int getChiikiDayCareTime() throws Exception;
+
+  /**
+   * 「地域密着型通所介護時間取得_2」に関する処理を行ないます。
+   *
+   * @throws Exception 処理例外
+   * @return int
+   */
+  public abstract int getChiikiDayCareTimeSpecial() throws Exception;
 
   /**
    * 「画面状態制御」に関する処理を行ないます。

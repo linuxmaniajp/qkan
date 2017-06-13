@@ -17,50 +17,45 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2016/02/03  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 日高　しのぶ
+ * 作成日: 2016/01/27  MIS九州株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
- * サブシステム 請求データ作成 (P)
- * プロセス 確認・修正 (002)
- * プログラム 帳票(様式)選択 (QP002)
+ * サブシステム その他機能 (O)
+ * プロセス 事業所登録 (004)
+ * プログラム 地域密着型通所介護 (QO004_17811_201504)
  *
  *****************************************************************
  */
-package jp.or.med.orca.qkan.affair.qp.qp002;
+package jp.or.med.orca.qkan.affair.qo.qo004;
 /**
- * 帳票(様式)選択状態定義(QP002) 
+ * 地域密着型通所介護状態定義(QO004_17811_201504) 
  */
-public class QP002State extends QP002Design {
+@SuppressWarnings("serial")
+public class QO004_17811_201504State extends QO004_17811_201504Design {
   /**
    * コンストラクタです。
    */
-  public QP002State(){
+  public QO004_17811_201504State(){
   }
 
   /**
-   * 「業務ボタン・無効」の状態に設定します。
+   * 「パネル全体有効」の状態に設定します。
    * @throws Exception 処理例外
    */
-  public void setState_AFFAIR_BUTTON_ENABLE_FALSE() throws Exception {
+  public void setState_SET_PANEL_TRUE() throws Exception {
 
-        getSeikyu().setEnabled(false);
-
-        getDelete().setEnabled(false);
-
-        getSelect().setEnabled(false);
+        getMainGroup().setEnabled(true);
 
   }
 
   /**
-   * 「業務ボタン・有効」の状態に設定します。
+   * 「パネル全体無効」の状態に設定します。
    * @throws Exception 処理例外
    */
-  public void setState_AFFAIR_BUTTON_ENABLE_TRUE() throws Exception {
+  public void setState_SET_PANEL_FALSE() throws Exception {
 
-        getSeikyu().setEnabled(true);
-
-        getSelect().setEnabled(true);
+        getMainGroup().setEnabled(false);
 
   }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 日医標準レセプトソフト連携
- * 作成日: 2012/01/25  日本コンピューター株式会社 日医標準レセプトソフト連携 新規作成
+ * 作成日: 2016/02/04  日本コンピューター株式会社 日医標準レセプトソフト連携 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -526,6 +526,370 @@ public class QO013SQL extends QO013State {
     sb.append(" =");
 
     sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("LOCAL_IP", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「保険者情報を取得する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_INSURER_INFO(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(",INSURER_NAME");
+
+    sb.append(",INSURER_TYPE");
+
+    sb.append(",DELETE_FLAG");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(" FROM");
+
+    sb.append(" INSURER");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「保険者情報を復活させる。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_UPDATE_INSURER_INFO(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("UPDATE");
+
+    sb.append(" INSURER");
+
+    sb.append(" SET");
+
+    sb.append(" DELETE_FLAG");
+
+    sb.append(" =");
+
+    sb.append(" 0");
+
+    sb.append(",");
+
+    sb.append(" LAST_TIME");
+
+    sb.append(" =");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" DELETE_FLAG");
+
+    sb.append(" =");
+
+    sb.append(" 1");
+
+    sb.append(")");
+
+    sb.append("AND");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「保険者の情報を登録する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_INSERT_INSURER_INFO(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("INSERT INTO");
+
+    sb.append(" INSURER");
+
+    sb.append("(");
+
+    sb.append(" INSURER_ID");
+
+    sb.append(",INSURER_NAME");
+
+    sb.append(",INSURER_TYPE");
+
+    sb.append(",DELETE_FLAG");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(")VALUES(");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_NAME", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" 1");
+
+    sb.append(",");
+
+    sb.append(" 0");
+
+    sb.append(",");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「保険者マスタを検索する。」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_GET_FIND_M_INSURER_INFO(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("SELECT");
+
+    sb.append(" INSURER_NAME");
+
+    sb.append(",INSURER_NO");
+
+    sb.append(" FROM");
+
+    sb.append(" M_INSURER");
+
+    sb.append(" WHERE");
+
+    sb.append("(");
+
+    sb.append(" INSURER_NO");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(")");
+
+    return sb.toString();
+  }
+
+  /**
+   * 「要介護認定履歴追加」のためのSQLを返します。
+   * @param sqlParam SQL構築に必要なパラメタを格納したハッシュマップ
+   * @throws Exception 処理例外
+   * @return SQL文
+   */
+  public String getSQL_INSERT_NINTEI_HISTORY(VRMap sqlParam) throws Exception{
+    StringBuilder sb = new StringBuilder();
+    Object[] inValues;
+    Stack conditionStack = new Stack(), conditionStackOfFrom = new Stack();
+    boolean firstCondition = true, firstConditionOfFrom = true;
+    Object obj;
+
+    sb.append("INSERT INTO");
+
+    sb.append(" PATIENT_NINTEI_HISTORY");
+
+    sb.append("(");
+
+    sb.append(" PATIENT_ID");
+
+    sb.append(",NINTEI_HISTORY_ID");
+
+    sb.append(",INSURER_ID");
+
+    sb.append(",INSURED_ID");
+
+    sb.append(",INSURE_RATE");
+
+    sb.append(",PLANNER");
+
+    sb.append(",PROVIDER_ID");
+
+    sb.append(",SHUBETSU_CODE");
+
+    sb.append(",CHANGE_CODE");
+
+    sb.append(",JOTAI_CODE");
+
+    sb.append(",SHINSEI_DATE");
+
+    sb.append(",NINTEI_DATE");
+
+    sb.append(",INSURE_VALID_START");
+
+    sb.append(",INSURE_VALID_END");
+
+    sb.append(",STOP_DATE");
+
+    sb.append(",STOP_REASON");
+
+    sb.append(",REPORTED_DATE");
+
+    sb.append(",LIMIT_RATE");
+
+    sb.append(",EXTERNAL_USE_LIMIT");
+
+    sb.append(",LAST_TIME");
+
+    sb.append(",SYSTEM_INSURE_VALID_START");
+
+    sb.append(",SYSTEM_INSURE_VALID_END");
+
+    sb.append(",JIGYOTAISYO_FLAG");
+
+    sb.append(",SHORTSTAY_USE_INIT_COUNT");
+
+    sb.append(")VALUES(");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("PATIENT_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("NINTEI_HISTORY_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURER_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("INSURED_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("INSURE_RATE", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" 0");
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("PROVIDER_ID", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" 1");
+
+    sb.append(",");
+
+    sb.append(" 0");
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("JOTAI_CODE", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SHINSEI_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("NINTEI_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("INSURE_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("INSURE_VALID_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("STOP_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(" 0");
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("REPORTED_DATE", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("LIMIT_RATE", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("EXTERNAL_USE_LIMIT", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(" CURRENT_TIMESTAMP");
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SYSTEM_INSURE_VALID_START", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(dateFormat.format(VRBindPathParser.get("SYSTEM_INSURE_VALID_END", sqlParam), "yyyy-MM-dd"));
+
+    sb.append(",");
+
+    sb.append(" 1");
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("SHORTSTAY_USE_INIT_COUNT", sqlParam)));
 
     sb.append(")");
 

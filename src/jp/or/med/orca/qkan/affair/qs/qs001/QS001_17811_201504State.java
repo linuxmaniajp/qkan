@@ -17,13 +17,13 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2015/02/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 日高　しのぶ
+ * 作成日: 2016/01/27  日本コンピューター株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
- * プロセス サービスパターン通所介護 (001)
- * プログラム サービスパターン通所介護 (QS001_11511_201504)
+ * プロセス サービス予定 (001)
+ * プログラム サービスパターン地域密着型通所介護 (QS001_17811_201504)
  *
  *****************************************************************
  */
@@ -79,13 +79,13 @@ import jp.or.med.orca.qkan.*;
 import jp.or.med.orca.qkan.affair.*;
 import jp.or.med.orca.qkan.component.*;
 /**
- * サービスパターン通所介護状態定義(QS001_11511_201504) 
+ * サービスパターン地域密着型通所介護状態定義(QS001_17811_201504) 
  */
-public class QS001_11511_201504State extends QS001_11511_201504Design {
+public class QS001_17811_201504State extends QS001_17811_201504Design {
   /**
    * コンストラクタです。
    */
-  public QS001_11511_201504State(){
+  public QS001_17811_201504State(){
   }
 
   /**
@@ -200,56 +200,16 @@ public class QS001_11511_201504State extends QS001_11511_201504Design {
         getSevereCareRecipientsAccepted().setEnabled(false);
         getSevereCareRecipientsAccepted().getParent().setEnabled(false);
 
-        // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - begin H28.3以前の場合は選択可とする。
-        if (getCalculater().getTargetDate() != null && 
-                ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getCalculater().getTargetDate()) > 0) {
-            // 個別送迎体制強化加算
-            getIndividualPickupSystem().setEnabled(true);
-            getIndividualPickupSystem().getParent().setEnabled(true);
-            // 入浴介助体制強化加算
-            getBathingAssistanceSystem().setEnabled(true);
-            getBathingAssistanceSystem().getParent().setEnabled(true);
-        }
-        // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - end
+        getIndividualPickupSystem().setEnabled(true);
+        getIndividualPickupSystem().getParent().setEnabled(true);
+
+        getBathingAssistanceSystem().setEnabled(true);
+        getBathingAssistanceSystem().getParent().setEnabled(true);
 
   }
 
   /**
-   * 「通常規模選択時」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_STATE_NORMAL() throws Exception {
-
-        getTsuusyoKaigoAdditionFunctionTrainingRadio().setEnabled(true);
-
-        getTsuusyoKaigoAdditionFunctionBathRadio().setEnabled(true);
-        getTsuusyoKaigoAdditionFunctionBathRadio().getParent().setEnabled(true);
-
-        getTsuusyoKaigoNourishmentManagementAddRadio().setEnabled(true);
-        getTsuusyoKaigoNourishmentManagementAddRadio().getParent().setEnabled(true);
-
-        getTsuusyoKaigoMouthFunctionAddRadio().setEnabled(true);
-        getTsuusyoKaigoMouthFunctionAddRadio().getParent().setEnabled(true);
-
-        getYoungDementiaPatinetAddRadioGroup().setEnabled(true);
-        getYoungDementiaPatinetAddRadioGroup().getParent().setEnabled(true);
-
-        getDementiaElderlyAccepted().setEnabled(true);
-        getDementiaElderlyAccepted().getParent().setEnabled(true);
-
-        getSevereCareRecipientsAccepted().setEnabled(true);
-        getSevereCareRecipientsAccepted().getParent().setEnabled(true);
-
-        getIndividualPickupSystem().setEnabled(false);
-        getIndividualPickupSystem().getParent().setEnabled(false);
-
-        getBathingAssistanceSystem().setEnabled(false);
-        getBathingAssistanceSystem().getParent().setEnabled(false);
-
-  }
-
-  /**
-   * 「小規模選択時」の状態に設定します。
+   * 「地域密着型通所選択時」の状態に設定します。
    * @throws Exception 処理例外
    */
   public void setState_STATE_SMALL() throws Exception {

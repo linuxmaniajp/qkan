@@ -39,14 +39,20 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.calculation.QP001;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRLinkedHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import jp.or.med.orca.qkan.affair.QkanMessageList;
 import jp.or.med.orca.qkan.affair.qp.qp003.QP003;
 import jp.or.med.orca.qkan.affair.qp.qp004.QP004;
 import jp.or.med.orca.qkan.affair.qp.qp005.QP005;
@@ -121,6 +127,11 @@ public class QP002 extends QP002Event {
         // bindSource(contents);
         getContents().bindSource();
 
+        doFind();
+
+    }
+    
+    private void doFind() throws Exception {
         // 利用者の請求データを取得する。
         // SQLを取得するためのHashMap：paramを生成し、下記のKEY/VALUEを設定する。
         VRMap param = new VRHashMap();
@@ -140,9 +151,9 @@ public class QP002 extends QP002Event {
         editRecord();
 
         ACTableModelAdapter providerTableModel = new ACTableModelAdapter();
-        String[] ada = { "TARGET_DATE", "PROVIDER_ID", "PROVIDER_NAME",
-                "INSURED_ID", "CLAIM_STYLE_TYPE","INSURER_ID","UNIT_INSURED_ID" };
-
+        String[] ada = { "NO", "DELETE", "TARGET_DATE", "INSURER_ID", "UNIT_INSURED_ID" 
+                        , "PROVIDER_ID", "PROVIDER_NAME", "INSURED_ID", "CLAIM_STYLE_TYPE"};
+        
         getProviderTableColumn6().setFormat(QkanClaimStyleFormat.getInstance());
         getProviderTableColumn5().setFormat(new QkanInsureTypeDivision());
         
@@ -385,5 +396,87 @@ public class QP002 extends QP002Event {
             setState_AFFAIR_BUTTON_ENABLE_TRUE();
         }
     }
+
+ // 2016/2/3 [2015年要望][Yoichiro Kamei] add - begin 削除機能追加
+    /**
+     * 「請求データ削除」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void deleteActionPerformed(ActionEvent e) throws Exception {
+        // 削除確認メッセージを表示する。
+        if (QkanMessageList.getInstance().WARNING_OF_DELETE_SELECTION() != ACMessageBox.RESULT_OK) {
+            return;
+        }
+        // 選択された様式の集計データを削除する。
+        for (int i = 0; i < getClaimList().getDataSize(); i++) {
+            VRMap map = (VRMap) getClaimList().get(i);
+            String choise = String.valueOf(VRBindPathParser.get("DELETE", map));
+            // 選択されていれば削除実行
+            if ("TRUE".equalsIgnoreCase(choise)) {
+                // 条件
+                String condition = createCondition(map, QkanSystemInformation.getInstance().getLoginProviderID(), getPatientId());
+                Date targetDate = ACCastUtilities.toDate(VRBindPathParser.get("TARGET_DATE",map));
+                try {
+                    getDBManager().beginTransaction();
+                    QkanCommon.updateClaimDetailCustom(getDBManager(), new VRArrayList(), targetDate, condition);
+                    getDBManager().commitTransaction();
+                } catch (Exception e1) {
+                    getDBManager().rollbackTransaction();
+                    throw e1;
+                }
+            }
+        }
+        // 再検索
+        doFind();
+    }
+    
+    //削除条件構築
+    private String createCondition(VRMap param, String providerId, int patientID) throws Exception {
+        String styleType = ACCastUtilities.toString(VRBindPathParser.get("CLAIM_STYLE_TYPE",param));
+        String insurerId = ACCastUtilities.toString(VRBindPathParser.get("INSURER_ID",param));
+        String insuredId = ACCastUtilities.toString(VRBindPathParser.get("UNIT_INSURED_ID",param));
+        Date targetDate = ACCastUtilities.toDate(VRBindPathParser.get("TARGET_DATE",param));
+        Date claimDate = ACCastUtilities.toDate(VRBindPathParser.get("CLAIM_DATE",param));
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(" (CLAIM.CLAIM_DATE = '" + VRDateParser.format(claimDate, "yyyy-MM-dd") + "')");
+        sb.append(" AND(CLAIM.PATIENT_ID = " + patientID + ")");
+        if (!ACTextUtilities.isNullText(insuredId)) {
+            sb.append(" AND(CLAIM.INSURED_ID = '" + insuredId + "')");
+        }
+        sb.append(" AND(CLAIM.TARGET_DATE = '" + VRDateParser.format(targetDate, "yyyy-MM-dd") + "')");
+        if (!ACTextUtilities.isNullText(providerId)) {
+            sb.append(" AND(CLAIM.PROVIDER_ID = '" + providerId + "')");
+        }
+        sb.append(" AND(CLAIM.CLAIM_STYLE_TYPE = " + styleType + ")");
+        if (!ACTextUtilities.isNullText(insurerId)) {
+            sb.append(" AND(CLAIM.INSURER_ID = '" + insurerId + "')");
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * 「選択操作メニュークリック」イベントです。
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void providerTableColumn9CheckMenuActionPerformed(ActionEvent e)
+            throws Exception {
+        if(getClaimList() == null) return;
+        String choise;
+        for (int i = 0; i < getClaimList().getDataSize(); i++) {
+            choise = String.valueOf(VRBindPathParser.get("DELETE",
+                    (VRLinkedHashMap) getClaimList().get(i)));
+            // 選択されていれば押下可能
+            if ("TRUE".equalsIgnoreCase(choise)) {
+                getDelete().setEnabled(true);
+                return;
+            }
+        }
+        getDelete().setEnabled(false);
+        
+    }
+ // 2016/2/3 add - end
     
 }

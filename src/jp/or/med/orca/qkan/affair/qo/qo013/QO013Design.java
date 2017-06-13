@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2012/01/24  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2016/02/26  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その多機能 (O)
@@ -129,6 +129,8 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
   private ACIntegerCheckBox toHiragana;
 
   private ACIntegerCheckBox allPageCheck;
+
+  private ACIntegerCheckBox kaigoHokenCheck;
 
   private ACButton previewPage;
 
@@ -769,6 +771,25 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 介護保険・介護認定情報も取り込む（最新1件のみ）を取得します。
+   * @return 介護保険・介護認定情報も取り込む（最新1件のみ）
+   */
+  public ACIntegerCheckBox getKaigoHokenCheck(){
+    if(kaigoHokenCheck==null){
+
+      kaigoHokenCheck = new ACIntegerCheckBox();
+
+      kaigoHokenCheck.setText("介護保険・介護認定情報も取り込む（最新1件のみ）");
+
+      kaigoHokenCheck.setVisible(false);
+
+      addKaigoHokenCheck();
+    }
+    return kaigoHokenCheck;
+
+  }
+
+  /**
    * 前へを取得します。
    * @return 前へ
    */
@@ -1402,7 +1423,9 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
 
     importPanel.add(getToHiragana(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    importPanel.add(getAllPageCheck(), VRLayout.FLOW_INSETLINE);
+    importPanel.add(getAllPageCheck(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    importPanel.add(getKaigoHokenCheck(), VRLayout.FLOW_INSETLINE);
 
   }
 
@@ -1417,6 +1440,13 @@ public class QO013Design extends QkanAffairContainer implements ACAffairable {
    * 500件目以降の患者も取り込むに内部項目を追加します。
    */
   protected void addAllPageCheck(){
+
+  }
+
+  /**
+   * 介護保険・介護認定情報も取り込む（最新1件のみ）に内部項目を追加します。
+   */
+  protected void addKaigoHokenCheck(){
 
   }
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2006/05/22  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2016/02/03  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -30,12 +30,15 @@
 package jp.or.med.orca.qkan.affair.qp.qp002;
 import java.awt.Component;
 
+import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.component.table.ACCheckBoxTableColumnPopupMenu;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableCellViewer;
 import jp.nichicom.ac.component.table.ACTableColumn;
@@ -44,6 +47,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.text.ACBorderBlankDateFormat;
+import jp.nichicom.vr.component.table.VRTableCellViewer;
 import jp.nichicom.vr.component.table.VRTableColumnModel;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRMap;
@@ -61,6 +65,8 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
   private ACAffairButtonBar buttons;
 
   private ACAffairButton seikyu;
+
+  private ACAffairButton delete;
 
   private ACAffairButton select;
 
@@ -83,6 +89,8 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
   private VRTableColumnModel providerTableColumnModel;
 
   private ACTableColumn providerTableColumn1;
+
+  private ACTableColumn providerTableColumn9;
 
   private ACTableColumn providerTableColumn2;
 
@@ -152,6 +160,31 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
       addSeikyu();
     }
     return seikyu;
+
+  }
+
+  /**
+   * 削除ボタンを取得します。
+   * @return 削除ボタン
+   */
+  public ACAffairButton getDelete(){
+    if(delete==null){
+
+      delete = new ACAffairButton();
+
+      delete.setText("削除(D)");
+
+      delete.setEnabled(false);
+
+      delete.setToolTipText("明細書情報を削除します。");
+
+      delete.setMnemonic('D');
+
+      delete.setIconPath(ACConstants.ICON_PATH_DELETE_24);
+
+      addDelete();
+    }
+    return delete;
 
   }
 
@@ -364,6 +397,37 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 削除(列を取得します。
+   * @return 削除(列
+   */
+  public ACTableColumn getProviderTableColumn9(){
+    if(providerTableColumn9==null){
+
+      providerTableColumn9 = new ACTableColumn();
+
+      providerTableColumn9.setHeaderValue("削除");
+
+      providerTableColumn9.setColumnName("DELETE");
+
+      providerTableColumn9.setEditable(true);
+
+      providerTableColumn9.setColumns(4);
+
+      providerTableColumn9.setHorizontalAlignment(SwingConstants.CENTER);
+
+      providerTableColumn9.setRendererType(VRTableCellViewer.RENDERER_TYPE_CHECK_BOX);
+
+      providerTableColumn9.setEditorType(VRTableCellViewer.EDITOR_TYPE_CHECK_BOX);
+
+      providerTableColumn9.setHeaderPopupMenu( new ACCheckBoxTableColumnPopupMenu(getProviderTable(), "DELETE", new Boolean(true), new Boolean(false)) );
+
+      addProviderTableColumn9();
+    }
+    return providerTableColumn9;
+
+  }
+
+  /**
    * 年月度を取得します。
    * @return 年月度
    */
@@ -560,6 +624,7 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
   protected void addButtons(){
 
     buttons.add(getSelect(), VRLayout.EAST);
+    buttons.add(getDelete(), VRLayout.EAST);
     buttons.add(getSeikyu(), VRLayout.EAST);
   }
 
@@ -567,6 +632,13 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
    * 利用請求に内部項目を追加します。
    */
   protected void addSeikyu(){
+
+  }
+
+  /**
+   * 削除ボタンに内部項目を追加します。
+   */
+  protected void addDelete(){
 
   }
 
@@ -652,6 +724,8 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
 
     getProviderTableColumnModel().addColumn(getProviderTableColumn1());
 
+    getProviderTableColumnModel().addColumn(getProviderTableColumn9());
+
     getProviderTableColumnModel().addColumn(getProviderTableColumn2());
 
     getProviderTableColumnModel().addColumn(getProviderTableColumn7());
@@ -672,6 +746,13 @@ public class QP002Design extends QkanAffairContainer implements ACAffairable {
    * No.に内部項目を追加します。
    */
   protected void addProviderTableColumn1(){
+
+  }
+
+  /**
+   * 削除(列に内部項目を追加します。
+   */
+  protected void addProviderTableColumn9(){
 
   }
 

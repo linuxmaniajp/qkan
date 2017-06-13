@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/16  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/02/26  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -175,6 +175,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACButton taxChange;
 
   private ACIntegerCheckBox showOldLowProviderElements;
+
+  private ACIntegerCheckBox kaigoHoken;
 
   private ACGroupBox backupResotres;
 
@@ -921,7 +923,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
       oncePerMonth = new ACIntegerCheckBox();
 
-      oncePerMonth.setText("<html>緊急時訪問看護加算・特別管理加算を<br>月1回算定に設定する</html>");
+      oncePerMonth.setText("<html>緊急時訪問看護加算・特別管理加算を月1回算定に設定する</html>");
 
       oncePerMonth.setBindPath("ONCE_PER_MONTH");
 
@@ -1027,6 +1029,25 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       addShowOldLowProviderElements();
     }
     return showOldLowProviderElements;
+
+  }
+
+  /**
+   * 介護保険・介護認定情報も取り込む（最新1件のみ）を取得します。
+   * @return 介護保険・介護認定情報も取り込む（最新1件のみ）
+   */
+  public ACIntegerCheckBox getKaigoHoken(){
+    if(kaigoHoken==null){
+
+      kaigoHoken = new ACIntegerCheckBox();
+
+      kaigoHoken.setText("<html>日レセ連携時に介護保険・介護認定情報を取り込む（最新1件分）<br>※dbsパッケージ（jma-receipt-dbs）を最新にしてご利用ください。</html>");
+
+      kaigoHoken.setBindPath("KAIGO_HOKEN");
+
+      addKaigoHoken();
+    }
+    return kaigoHoken;
 
   }
 
@@ -1432,6 +1453,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     others.add(getShowOldLowProviderElements(), VRLayout.FLOW_RETURN);
 
+    others.add(getKaigoHoken(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -1479,6 +1502,13 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 過去の事業所体制情報も表示するに内部項目を追加します。
    */
   protected void addShowOldLowProviderElements(){
+
+  }
+
+  /**
+   * 介護保険・介護認定情報も取り込む（最新1件のみ）に内部項目を追加します。
+   */
+  protected void addKaigoHoken(){
 
   }
 

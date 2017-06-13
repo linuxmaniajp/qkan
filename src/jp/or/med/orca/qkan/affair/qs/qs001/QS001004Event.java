@@ -30,6 +30,7 @@
 package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.vr.util.VRArrayList;
@@ -131,6 +132,7 @@ public abstract class QS001004Event extends QS001004SQL {
   private VRMap planUnits = new VRHashMap();
   private boolean applied = false;
   private String selectedProviderID;
+  private Date targetDate; // H28.4‰ü³‘Î‰ add
   //getter/setter
 
   /**
@@ -191,6 +193,21 @@ public abstract class QS001004Event extends QS001004SQL {
    */
   protected void setSelectedProviderID(String selectedProviderID){
     this.selectedProviderID = selectedProviderID;
+  }
+
+  /**
+   * targetDate‚ğ•Ô‚µ‚Ü‚·B
+   * @return targetDate
+   */
+  protected Date getTargetDate(){
+    return targetDate;
+  }
+  /**
+   * targetDate‚ğİ’è‚µ‚Ü‚·B
+   * @param targetDate targetDate
+   */
+  public void setTargetDate(Date targetDate){
+    this.targetDate = targetDate;
   }
 
   //“à•”ŠÖ”

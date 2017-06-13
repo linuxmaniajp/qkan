@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/02/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/02/02  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -384,11 +384,11 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       tsuusyoKaigoTimeContenaFacilityDivisionItem1 = new ACRadioButtonItem();
 
-      tsuusyoKaigoTimeContenaFacilityDivisionItem1.setText("小規模");
+      tsuusyoKaigoTimeContenaFacilityDivisionItem1.setText("小規模（H28.4廃止）");
 
       tsuusyoKaigoTimeContenaFacilityDivisionItem1.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
 
-      tsuusyoKaigoTimeContenaFacilityDivisionItem1.setConstraints(VRLayout.FLOW);
+      tsuusyoKaigoTimeContenaFacilityDivisionItem1.setConstraints(VRLayout.FLOW_RETURN);
 
       addTsuusyoKaigoTimeContenaFacilityDivisionItem1();
     }
@@ -468,7 +468,7 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       tsuusyoKaigoTimeContenaFacilityDivisionItem3 = new ACRadioButtonItem();
 
-      tsuusyoKaigoTimeContenaFacilityDivisionItem3.setText("療養通所");
+      tsuusyoKaigoTimeContenaFacilityDivisionItem3.setText("療養通所（H28.4廃止）");
 
       tsuusyoKaigoTimeContenaFacilityDivisionItem3.setGroup(getTsuusyoKaigoTimeContenaFacilityDivision());
 
@@ -1357,7 +1357,7 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       serviceAddProvisionStructuralRadioItem3.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
-      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW);
+      serviceAddProvisionStructuralRadioItem3.setConstraints(VRLayout.FLOW_RETURN);
 
       addServiceAddProvisionStructuralRadioItem3();
     }
@@ -1374,7 +1374,7 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       serviceAddProvisionStructuralRadioItem4 = new ACRadioButtonItem();
 
-      serviceAddProvisionStructuralRadioItem4.setText("III型");
+      serviceAddProvisionStructuralRadioItem4.setText("III型（H28.4廃止）");
 
       serviceAddProvisionStructuralRadioItem4.setGroup(getServiceAddProvisionStructuralRadioGroup());
 
@@ -1841,7 +1841,7 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       individualPickupSystemItem2 = new ACRadioButtonItem();
 
-      individualPickupSystemItem2.setText("あり");
+      individualPickupSystemItem2.setText("あり（H28.4廃止）");
 
       individualPickupSystemItem2.setGroup(getIndividualPickupSystem());
 
@@ -1932,7 +1932,7 @@ public class QS001_11511_201504Design extends QS001ServicePanel {
 
       bathingAssistanceSystemItem2 = new ACRadioButtonItem();
 
-      bathingAssistanceSystemItem2.setText("あり");
+      bathingAssistanceSystemItem2.setText("あり（H28.4廃止）");
 
       bathingAssistanceSystemItem2.setGroup(getBathingAssistanceSystem());
 

@@ -300,6 +300,9 @@ public class SC_13311_201504 extends Qkan10011_ServiceUnitGetter {
                 getSystemServiceCodeItemNinchishoTaiogataTushoKaigo(map,
                         sysSvcCdItems);
                 break;
+            case 10: // 地域密着型通所介護 2016.4
+                getSystemServiceCodeItemChiikiDayCare(map, sysSvcCdItems);
+                break;
             }
         }
 
@@ -501,7 +504,7 @@ public class SC_13311_201504 extends Qkan10011_ServiceUnitGetter {
     }
 
     /**
-     * 通所介護
+     * 外部サービス・通所介護
      * 
      * @param map
      * @param sysSvcCdItems
@@ -564,7 +567,7 @@ public class SC_13311_201504 extends Qkan10011_ServiceUnitGetter {
     }
 
     /**
-     * 通所リハ
+     * 外部サービス・通所リハ
      * 
      * @param map
      * @param sysSvcCdItems
@@ -714,6 +717,71 @@ public class SC_13311_201504 extends Qkan10011_ServiceUnitGetter {
 
         // 要介護度
         sb.append(CODE_CHAR[_1]);
+
+        putSystemServiceCodeItem(sysSvcCdItems, sb.toString());
+
+        return sysSvcCdItems;
+    }
+
+    /**
+     * 外部サービス・地域密着型通所介護 H28.4改正
+     * 
+     * @param map
+     * @param sysSvcCdItems
+     * @return
+     */
+    public ArrayList<HashMap<String, String>> getSystemServiceCodeItemChiikiDayCare(
+            Map<String, String> map,
+            ArrayList<HashMap<String, String>> sysSvcCdItems) {
+        // パラメータ抽出
+        // =========================================================================
+        // 1330105 施設区分
+        int _1330105 = getIntValue(map, "1330105");
+
+        // 1330107 外部サービス
+        // H27.3までは「9:なし」であるため、画面上では「10:地域密着型」と設定される。
+        // サービスコードマスタは「9:地域密着型」で作成されているので、固定で置き換える。
+        int _1330107 = 9;
+
+        // 1330134 地域密着型通所介護-施設区分 1-地域密着型通所 2-療養通所
+        int _1330134 = getIntValue(map, "1330134");
+
+        // 1330135 地域密着型通所介護-時間区分
+        int _1330135 = getIntValue(map, "1330135");
+
+        // 1 要介護度
+        int _1 = convertYokaigodo(getIntValue(map, "1"));
+
+        // 独自コード生成
+        // ===========================================================================
+        StringBuilder sb = new StringBuilder();
+
+        // 施設区分
+        sb.append(CODE_CHAR[_1330105]);
+
+        // 外部サービス
+        sb.append(CODE_CHAR[_1330107]);
+
+        // 地域密着型通所介護-施設区分 1-地域密着型通所 2-療養通所
+        sb.append(CODE_CHAR[_1330134]);
+
+        // 地域密着型通所介護-時間区分
+        // 療養通所の場合
+        if (_1330134 == 2) {
+            sb.append(DEFAULT_CHAR);
+            sb.append(CODE_CHAR[_1330135]);
+        } else {
+            sb.append(CODE_CHAR[_1330135]);
+            sb.append(DEFAULT_CHAR);
+        }
+
+        // 要介護度
+        if (_1330134 == 2) {
+            // 療養通所の場合、要介護度は絡まない
+            sb.append(DEFAULT_CHAR);
+        } else {
+            sb.append(CODE_CHAR[_1]);
+        }
 
         putSystemServiceCodeItem(sysSvcCdItems, sb.toString());
 

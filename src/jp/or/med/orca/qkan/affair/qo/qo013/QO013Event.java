@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2012/03/05  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/02/26  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その多機能 (O)
@@ -156,6 +156,8 @@ public abstract class QO013Event extends QO013SQL {
   private String dbsVer;
   private String toHiraganaConvert;
   private String receiptVersion;
+  private String kaigoHoken;
+  private String importMessage;
   public static final int PAGE_COUNT = 500;
   public static final int CODE_RECEIPT_VERSION = 271;
   public static final int DEFAULT_RECEIPT_VERSION_INDEX = 1;
@@ -270,6 +272,36 @@ public abstract class QO013Event extends QO013SQL {
     this.receiptVersion = receiptVersion;
   }
 
+  /**
+   * kaigoHokenを返します。
+   * @return kaigoHoken
+   */
+  protected String getKaigoHoken(){
+    return kaigoHoken;
+  }
+  /**
+   * kaigoHokenを設定します。
+   * @param kaigoHoken kaigoHoken
+   */
+  protected void setKaigoHoken(String kaigoHoken){
+    this.kaigoHoken = kaigoHoken;
+  }
+  
+  /**
+   * importMessageを返します。
+   * @return importMessage
+   */
+  protected String getImportMessage(){
+    return importMessage;
+  }
+  /**
+   * importMessageを設定します。
+   * @param importMessage importMessage
+   */
+  protected void setImportMessage(String importMessage){
+    this.importMessage = importMessage;
+  }
+  
   /**
    * nowPageを返します。
    * @return nowPage

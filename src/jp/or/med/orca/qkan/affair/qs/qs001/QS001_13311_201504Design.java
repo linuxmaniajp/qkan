@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/01/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -237,6 +237,8 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
   private ACRadioButtonItem outsideServiceRadioItem8;
 
+  private ACRadioButtonItem outsideServiceRadioItem9;
+
   private ACBackLabelContainer specificFacilityTimeContena;
 
   private ACTimeComboBox specificFacilityBeginTime;
@@ -432,6 +434,26 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
   private ACRadioButtonItem timeDivisionRadioItem3;
 
   private ACRadioButtonItem timeDivisionRadioItem4;
+
+  private ACPanel tabPanel8;
+
+  private ACGroupBox chiikiDayCareGroup;
+
+  private ACValueArrayRadioButtonGroup chiikiDayCareRadio;
+
+  private ACLabelContainer chiikiDayCareRadioContainer;
+
+  private ACListModelAdapter chiikiDayCareRadioModel;
+
+  private ACRadioButtonItem chiikiDayCareRadioItem1;
+
+  private ACRadioButtonItem chiikiDayCareRadioItem2;
+
+  private ACComboBox chiikiDayCareCombo;
+
+  private ACLabelContainer chiikiDayCareComboContainer;
+
+  private ACComboBoxModelAdapter chiikiDayCareComboModel;
 
   //getter
 
@@ -1672,7 +1694,7 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
       outsideServiceRadio.setModel(getOutsideServiceRadioModel());
 
-      outsideServiceRadio.setValues(new int[]{9,1,2,3,4,5,6,7,8});
+      outsideServiceRadio.setValues(new int[]{9,1,2,3,4,5,6,7,8,10});
 
       addOutsideServiceRadio();
     }
@@ -1866,7 +1888,7 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
       outsideServiceRadioItem7.setGroup(getOutsideServiceRadio());
 
-      outsideServiceRadioItem7.setConstraints(VRLayout.FLOW_RETURN);
+      outsideServiceRadioItem7.setConstraints(VRLayout.FLOW);
 
       addOutsideServiceRadioItem7();
     }
@@ -1887,11 +1909,32 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
       outsideServiceRadioItem8.setGroup(getOutsideServiceRadio());
 
-      outsideServiceRadioItem8.setConstraints(VRLayout.FLOW);
+      outsideServiceRadioItem8.setConstraints(VRLayout.FLOW_RETURN);
 
       addOutsideServiceRadioItem8();
     }
     return outsideServiceRadioItem8;
+
+  }
+
+  /**
+   * 地域密着型通所介護を取得します。
+   * @return 地域密着型通所介護
+   */
+  public ACRadioButtonItem getOutsideServiceRadioItem9(){
+    if(outsideServiceRadioItem9==null){
+
+      outsideServiceRadioItem9 = new ACRadioButtonItem();
+
+      outsideServiceRadioItem9.setText("地域密着型通所介護");
+
+      outsideServiceRadioItem9.setGroup(getOutsideServiceRadio());
+
+      outsideServiceRadioItem9.setConstraints(VRLayout.FLOW);
+
+      addOutsideServiceRadioItem9();
+    }
+    return outsideServiceRadioItem9;
 
   }
 
@@ -2803,7 +2846,7 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
       expertPlaceNursingRadioItem1 = new ACRadioButtonItem();
 
-      expertPlaceNursingRadioItem1.setText("小規模事業所");
+      expertPlaceNursingRadioItem1.setText("小規模事業所（H28.4廃止）");
 
       expertPlaceNursingRadioItem1.setGroup(getExpertPlaceNursingRadio());
 
@@ -2887,7 +2930,7 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
       expertPlaceNursingRadioItem5 = new ACRadioButtonItem();
 
-      expertPlaceNursingRadioItem5.setText("療養通所");
+      expertPlaceNursingRadioItem5.setText("療養通所（H28.4廃止）");
 
       expertPlaceNursingRadioItem5.setGroup(getExpertPlaceNursingRadio());
 
@@ -3738,6 +3781,190 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
   }
 
   /**
+   * タブパネル8を取得します。
+   * @return タブパネル8
+   */
+  public ACPanel getTabPanel8(){
+    if(tabPanel8==null){
+
+      tabPanel8 = new ACPanel();
+
+      tabPanel8.setFollowChildEnabled(true);
+
+      tabPanel8.setHgap(0);
+
+      addTabPanel8();
+    }
+    return tabPanel8;
+
+  }
+
+  /**
+   * 地域密着型通所介護グループを取得します。
+   * @return 地域密着型通所介護グループ
+   */
+  public ACGroupBox getChiikiDayCareGroup(){
+    if(chiikiDayCareGroup==null){
+
+      chiikiDayCareGroup = new ACGroupBox();
+
+      chiikiDayCareGroup.setText("地域密着型通所介護");
+
+      chiikiDayCareGroup.setFollowChildEnabled(true);
+
+      addChiikiDayCareGroup();
+    }
+    return chiikiDayCareGroup;
+
+  }
+
+  /**
+   * 施設等の区分を取得します。
+   * @return 施設等の区分
+   */
+  public ACValueArrayRadioButtonGroup getChiikiDayCareRadio(){
+    if(chiikiDayCareRadio==null){
+
+      chiikiDayCareRadio = new ACValueArrayRadioButtonGroup();
+
+      getChiikiDayCareRadioContainer().setText("施設等の区分");
+
+      chiikiDayCareRadio.setBindPath("1330134");
+
+      chiikiDayCareRadio.setUseClearButton(false);
+
+      chiikiDayCareRadio.setModel(getChiikiDayCareRadioModel());
+
+      chiikiDayCareRadio.setValues(new int[]{1,2});
+
+      addChiikiDayCareRadio();
+    }
+    return chiikiDayCareRadio;
+
+  }
+
+  /**
+   * 施設等の区分コンテナを取得します。
+   * @return 施設等の区分コンテナ
+   */
+  protected ACLabelContainer getChiikiDayCareRadioContainer(){
+    if(chiikiDayCareRadioContainer==null){
+      chiikiDayCareRadioContainer = new ACLabelContainer();
+      chiikiDayCareRadioContainer.setFollowChildEnabled(true);
+      chiikiDayCareRadioContainer.setVAlignment(VRLayout.CENTER);
+      chiikiDayCareRadioContainer.add(getChiikiDayCareRadio(), null);
+    }
+    return chiikiDayCareRadioContainer;
+  }
+
+  /**
+   * 施設等の区分モデルを取得します。
+   * @return 施設等の区分モデル
+   */
+  protected ACListModelAdapter getChiikiDayCareRadioModel(){
+    if(chiikiDayCareRadioModel==null){
+      chiikiDayCareRadioModel = new ACListModelAdapter();
+      addChiikiDayCareRadioModel();
+    }
+    return chiikiDayCareRadioModel;
+  }
+
+  /**
+   * 地域密着型通所介護を取得します。
+   * @return 地域密着型通所介護
+   */
+  public ACRadioButtonItem getChiikiDayCareRadioItem1(){
+    if(chiikiDayCareRadioItem1==null){
+
+      chiikiDayCareRadioItem1 = new ACRadioButtonItem();
+
+      chiikiDayCareRadioItem1.setText("地域密着型通所介護");
+
+      chiikiDayCareRadioItem1.setGroup(getChiikiDayCareRadio());
+
+      chiikiDayCareRadioItem1.setConstraints(VRLayout.FLOW_RETURN);
+
+      addChiikiDayCareRadioItem1();
+    }
+    return chiikiDayCareRadioItem1;
+
+  }
+
+  /**
+   * 療養通所介護を取得します。
+   * @return 療養通所介護
+   */
+  public ACRadioButtonItem getChiikiDayCareRadioItem2(){
+    if(chiikiDayCareRadioItem2==null){
+
+      chiikiDayCareRadioItem2 = new ACRadioButtonItem();
+
+      chiikiDayCareRadioItem2.setText("療養通所介護");
+
+      chiikiDayCareRadioItem2.setGroup(getChiikiDayCareRadio());
+
+      chiikiDayCareRadioItem2.setConstraints(VRLayout.FLOW);
+
+      addChiikiDayCareRadioItem2();
+    }
+    return chiikiDayCareRadioItem2;
+
+  }
+
+  /**
+   * 時間区分コンボを取得します。
+   * @return 時間区分コンボ
+   */
+  public ACComboBox getChiikiDayCareCombo(){
+    if(chiikiDayCareCombo==null){
+
+      chiikiDayCareCombo = new ACComboBox();
+
+      getChiikiDayCareComboContainer().setText("時間区分");
+
+      chiikiDayCareCombo.setBindPath("1330135");
+
+      chiikiDayCareCombo.setEditable(false);
+
+      chiikiDayCareCombo.setModelBindPath("1330135");
+
+      chiikiDayCareCombo.setRenderBindPath("CONTENT");
+
+      chiikiDayCareCombo.setModel(getChiikiDayCareComboModel());
+
+      addChiikiDayCareCombo();
+    }
+    return chiikiDayCareCombo;
+
+  }
+
+  /**
+   * 時間区分コンボコンテナを取得します。
+   * @return 時間区分コンボコンテナ
+   */
+  protected ACLabelContainer getChiikiDayCareComboContainer(){
+    if(chiikiDayCareComboContainer==null){
+      chiikiDayCareComboContainer = new ACLabelContainer();
+      chiikiDayCareComboContainer.setFollowChildEnabled(true);
+      chiikiDayCareComboContainer.setVAlignment(VRLayout.CENTER);
+      chiikiDayCareComboContainer.add(getChiikiDayCareCombo(), null);
+    }
+    return chiikiDayCareComboContainer;
+  }
+
+  /**
+   * 時間区分コンボモデルを取得します。
+   * @return 時間区分コンボモデル
+   */
+  protected ACComboBoxModelAdapter getChiikiDayCareComboModel(){
+    if(chiikiDayCareComboModel==null){
+      chiikiDayCareComboModel = new ACComboBoxModelAdapter();
+      addChiikiDayCareComboModel();
+    }
+    return chiikiDayCareComboModel;
+  }
+
+  /**
    * コンストラクタです。
    */
   public QS001_13311_201504Design() {
@@ -3784,6 +4011,8 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
     tabs.addTab("6", getTabPanel6());
 
     tabs.addTab("7", getTabPanel7());
+
+    tabs.addTab("8", getTabPanel8());
 
   }
 
@@ -4344,6 +4573,10 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
 
     getOutsideServiceRadioModel().add(getOutsideServiceRadioItem8());
 
+    getOutsideServiceRadioItem9().setButtonIndex(10);
+
+    getOutsideServiceRadioModel().add(getOutsideServiceRadioItem9());
+
   }
 
   /**
@@ -4406,6 +4639,13 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
    * 認知症対応通所介護に内部項目を追加します。
    */
   protected void addOutsideServiceRadioItem8(){
+
+  }
+
+  /**
+   * 地域密着型通所介護に内部項目を追加します。
+   */
+  protected void addOutsideServiceRadioItem9(){
 
   }
 
@@ -5131,6 +5371,76 @@ public class QS001_13311_201504Design extends QS001ServicePanel {
    * 6から8時間に内部項目を追加します。
    */
   protected void addTimeDivisionRadioItem4(){
+
+  }
+
+  /**
+   * タブパネル8に内部項目を追加します。
+   */
+  protected void addTabPanel8(){
+
+    tabPanel8.add(getChiikiDayCareGroup(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 地域密着型通所介護グループに内部項目を追加します。
+   */
+  protected void addChiikiDayCareGroup(){
+
+    chiikiDayCareGroup.add(getChiikiDayCareRadioContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
+    chiikiDayCareGroup.add(getChiikiDayCareComboContainer(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 施設等の区分に内部項目を追加します。
+   */
+  protected void addChiikiDayCareRadio(){
+
+  }
+
+  /**
+   * 施設等の区分モデルに内部項目を追加します。
+   */
+  protected void addChiikiDayCareRadioModel(){
+
+    getChiikiDayCareRadioItem1().setButtonIndex(1);
+
+    getChiikiDayCareRadioModel().add(getChiikiDayCareRadioItem1());
+
+    getChiikiDayCareRadioItem2().setButtonIndex(2);
+
+    getChiikiDayCareRadioModel().add(getChiikiDayCareRadioItem2());
+
+  }
+
+  /**
+   * 地域密着型通所介護に内部項目を追加します。
+   */
+  protected void addChiikiDayCareRadioItem1(){
+
+  }
+
+  /**
+   * 療養通所介護に内部項目を追加します。
+   */
+  protected void addChiikiDayCareRadioItem2(){
+
+  }
+
+  /**
+   * 時間区分コンボに内部項目を追加します。
+   */
+  protected void addChiikiDayCareCombo(){
+
+  }
+
+  /**
+   * 時間区分コンボモデルに内部項目を追加します。
+   */
+  protected void addChiikiDayCareComboModel(){
 
   }
 

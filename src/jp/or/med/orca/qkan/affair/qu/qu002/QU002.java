@@ -4815,12 +4815,16 @@ public class QU002 extends QU002Event {
 		// サービスマスタレコードを取得し、以下のKEYでmapに設定する。
 		// ・KEY：SERVICE
 		VRList service = new VRArrayList();
-// 2014/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
+// 2016/2/8 [Shinobu Hitaka] mod - begin H28.4改正対応
+//// 2015/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
+////		setMasterService(QkanCommon.getMasterService(getDBManager(),
+////				QkanConstants.H2404));
 //		setMasterService(QkanCommon.getMasterService(getDBManager(),
-//				QkanConstants.H2404));
+//		QkanConstants.H2704));
+//// 2015/1/9 [Yoichiro Kamei] mod - end
 		setMasterService(QkanCommon.getMasterService(getDBManager(),
-		QkanConstants.H2704));
-// 2014/1/9 [Yoichiro Kamei] mod - end
+		QkanConstants.H2804));
+// 2016/2/8 [Shinobu Hitaka] mod - end
 		VRList temp = new VRArrayList(getMasterService().values());
 
 		if (!(temp == null || temp.size() == 0)) {
@@ -4832,6 +4836,12 @@ public class QU002 extends QU002Event {
 
 				// 「その他」「主な日常生活上の活動」を排除
 				if (!(systemServiceKindDetail == SERVICE_TYPE_OTHER || systemServiceKindDetail == SERVICE_TYPE_ROUTINE)) {
+					// 2016/2/8 [Shinobu Hitaka] add - begin 「サービス種類:サービス名」を表示
+					String serviceName = ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceMap))
+							+ ":"
+							+ ACCastUtilities.toString(VRBindPathParser.get("SERVICE_ABBREVIATION", serviceMap));
+					// 2016/2/8 [Shinobu Hitaka] add - end
+					VRBindPathParser.set("SERVICE_ABBREVIATION", serviceMap, serviceName);
 					service.add(serviceMap);
 				}
 

@@ -90,6 +90,14 @@ public class ACMessageBoxExceptionPanel extends ACPanel {
     }
 
     /**
+     * 環境情報に任意の文字を設定。
+     * [H28.4 要望][Shnobu Hitaka] 2016/02/28 add 日レセ連携で取込失敗情報を表示するため
+     */
+    public void setEnvironment(String info) {
+        environments.setText(info);
+    }
+
+    /**
      * 表示する情報を設定。
      * 
      * @param info 表示する情報

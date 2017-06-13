@@ -399,7 +399,11 @@ public class QP001P20Event {
             ACChotarouXMLUtilities.setValue(writer, "seikyutotal", getFormatData(riyousya + zengaku + kohi + etc));
             
         }
-
+// 2016/1/28 [2015îNóvñ]][Yoichiro Kamei] add - begin îıçlóìí«â¡
+        if(serviceDetail != null){
+            ACChotarouXMLUtilities.setValue(writer, serviceDetail, "REMARKS","comment");
+        }
+// 2016/1/28 add - end
     }
     
     private String getFormatData(int value) throws Exception {

@@ -553,8 +553,8 @@ public class QP001RecordReduction extends QP001RecordAbstract {
         	"54".equals(serviceCodeKind) || 	//様式8
         	"61".equals(serviceCodeKind) || 	//様式2-2
         	"65".equals(serviceCodeKind) || 	//様式2-2
-        	"68".equals(serviceCodeKind) || 	//様式2-1(小規模多機能型居宅介護・短期)
-        	"69".equals(serviceCodeKind) || 	//様式2-2(予防小規模多機能型居宅介護・短期)
+        	"68".equals(serviceCodeKind) || 	//様式2-1(小規模多機能型居宅介護・短期) H27.4改正
+        	"69".equals(serviceCodeKind) || 	//様式2-2(予防小規模多機能型居宅介護・短期) H27.4改正
         	"71".equals(serviceCodeKind) || 	//様式2-1
         	"72".equals(serviceCodeKind) || 	//様式2-1
         	"73".equals(serviceCodeKind) || 	//様式2-1(小規模多機能型居宅介護)
@@ -562,7 +562,8 @@ public class QP001RecordReduction extends QP001RecordAbstract {
         	"75".equals(serviceCodeKind) || 	//様式2-2
         	"76".equals(serviceCodeKind) || 	//様式2-1(定期巡回)
         	"77".equals(serviceCodeKind) || 	//様式2-1(複合型)
-        	"79".equals(serviceCodeKind)    	//様式2-1(複合型・短期)
+        	"79".equals(serviceCodeKind) || 	//様式2-1(複合型・短期) H27.4改正
+        	"78".equals(serviceCodeKind)    	//様式2-1(地域密着型通所) H28.4改正
         	) {
             if (patientState.getKohiRatio(targetDate,
                     String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")),

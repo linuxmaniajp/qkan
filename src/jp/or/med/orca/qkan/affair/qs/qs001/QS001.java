@@ -369,6 +369,15 @@ public class QS001 extends QS001Event {
             }
         }
 
+        // 2016/01/28 [Shinobu Hitaka] add - begin サービス種類番号を一覧に表示
+        for (int i = 0; i < services.size(); i++) {
+            VRMap row = (VRMap) services.get(i);
+            if (row.get("SERVICE_CODE_KIND") != null) {
+            	row.setData("SERVICE_ABBREVIATION", row.get("SERVICE_CODE_KIND") + ":" + row.get("SERVICE_ABBREVIATION"));
+            }
+        }
+        // 2016/01/28 [Shinobu Hitaka] add - end 
+        
         setServiceKindsList(services);
         getServiceKindList().setModel(new ACListModelAdapter(services));
         getServiceKindList().setCellRenderer(
@@ -1713,6 +1722,44 @@ public class QS001 extends QS001Event {
                     }
                 }
             }
+            // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add begin 
+            // 対象年月がH28.4以降は、下記サービス種類にて 1:小規模型,5:療養 はNGとする
+            // 15:通所介護の施設区分(115113), 33:外部利用通所介護の施設区分(1330126)
+            if (ACDateUtilities.getDifferenceOnMonth(getTargetDate(),ACDateUtilities.createDate(2016, 4)) >= 0) {
+                int kubun = 0;
+                if ("11511".equals(ACCastUtilities.toString(VRBindPathParser
+                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
+                    kubun = ACCastUtilities.toInt(row.getData("1150113"), 0);
+                }
+                if ("13311".equals(ACCastUtilities.toString(VRBindPathParser
+                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
+                    kubun = ACCastUtilities.toInt(row.getData("1330126"), 0);
+                }
+
+                // 施設区分が「1:小規模型」「5:療養」は設定不可
+                if (kubun == 1 || kubun == 5) {
+                    Date serviceDate = ACCastUtilities.toDate(
+                    	    VRBindPathParser.get("SERVICE_DATE", row), null);
+                    String dayOfMonth = "";
+                    if (serviceDate != null) {
+                        dayOfMonth = ACDateUtilities.getDayOfMonth(serviceDate) + "日の";
+                    }
+                    VRMap serviceKind = ACBindUtilities.getMatchRowFromValue(
+                            getServiceKindsList(), "SYSTEM_SERVICE_KIND_DETAIL",
+                            row.get("SYSTEM_SERVICE_KIND_DETAIL"));
+                    String serviceKindName = "サービス";
+                    if (serviceKind != null) {
+                        serviceKindName = ACCastUtilities.toString(serviceKind
+                                .get("SERVICE_ABBREVIATION"));
+                        }
+                    // エラーメッセージ
+                    QkanMessageList.getInstance()
+                        .QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(dayOfMonth,
+                                serviceKindName);
+                    return false;
+                    }
+            }
+            // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add end 
         }
 
         // ※回数チェック
@@ -1770,7 +1817,7 @@ public class QS001 extends QS001Event {
         // 月n回を上限とする加算
         String[][] monthlyAddCountChecks = new String[][] {
                 // SERVICE_NAME,SYSTEM_SERVICE_KIND_DETAIL,加算名,SYSTEM_BIND_PATH,計上する値,上限
-                // ※通所介護・通所リハ
+                // ※通所介護・通所リハ・認知症対応型通所介護・地域密着型通所介護（H28.4 改正）
                 // 栄養改善加算：月2回
                 // 口腔機能：月2回
                 { "通所介護", "11511", "栄養改善加算", "1150116", "2", "2", },
@@ -1779,6 +1826,8 @@ public class QS001 extends QS001Event {
                 { "通所リハ", "11611", "口腔機能向上加算", "1160115", "2", "2", },
                 { "認知症対応型通所介護", "17211", "栄養改善加算", "1720105", "2", "2", },
                 { "認知症対応型通所介護", "17211", "口腔機能向上加算", "1720108", "2", "2", },
+                { "地域密着型通所介護", "17811", "栄養改善加算", "1780110", "2", "2", },
+                { "地域密着型通所介護", "17811", "口腔機能向上加算", "1780111", "2", "2", },
                 // ※通所リハ
                 // 個別リハ加算：月13回
                 { "通所リハ", "11611", "個別リハビリ実施加算", "1160118", "2", "13", },

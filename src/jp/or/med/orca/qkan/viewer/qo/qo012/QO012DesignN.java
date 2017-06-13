@@ -91,6 +91,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACAffairButton unitingButton;
 
+  private ACAffairButton printButton;
+
   private ACPanel contents;
 
   private ACPanel fileInfoPanel;
@@ -134,6 +136,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   private ACTable csvDataTable;
 
   private VRTableColumnModel csvDataTableColumnModel;
+
+  private ACTableColumn csvDataTableColumn0;
 
   private ACTableColumn csvDataTableColumn1;
 
@@ -303,6 +307,28 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     return unitingButton;
 
   }
+
+  /**
+   * 印刷ボタン
+   *
+   */
+  public ACAffairButton getPrintButton(){
+    if(printButton==null){
+
+      printButton = new ACAffairButton();
+
+      printButton.setText("印刷(P)");
+
+      printButton.setMnemonic('P');
+
+      printButton.setIconPath(ACConstants.ICON_PATH_PRINT_24);
+
+      addPrintButton();
+    }
+    return printButton;
+
+  }
+
 
   /**
    * クライアント領域を取得します。
@@ -712,6 +738,30 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
       addCsvDataTableColumnModel();
     }
     return csvDataTableColumnModel;
+  }
+
+  /**
+   * 区分カラムを取得します。
+   * @return 区分カラム
+   */
+  public ACTableColumn getCsvDataTableColumn0(){
+    if(csvDataTableColumn0==null){
+
+      csvDataTableColumn0 = new ACTableColumn();
+
+      csvDataTableColumn0.setHeaderValue("区分");
+
+      csvDataTableColumn0.setColumnName("KUBUN");
+
+      csvDataTableColumn0.setEditable(false);
+
+      csvDataTableColumn0.setColumns(3);
+
+      csvDataTableColumn0.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+      addCsvDataTableColumn0();
+    }
+    return csvDataTableColumn0;
+
   }
 
   /**
@@ -2077,6 +2127,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addButtons(){
 
+    buttons.add(getPrintButton(), VRLayout.EAST);
     buttons.add(getUnitingButton(), VRLayout.EAST);
     buttons.add(getOpenButton(), VRLayout.EAST);
   }
@@ -2092,6 +2143,13 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * 結合に内部項目を追加します。
    */
   protected void addUnitingButton(){
+
+  }
+
+  /**
+   * 印刷に内部項目を追加します。
+   */
+  protected void addPrintButton(){
 
   }
 
@@ -2285,6 +2343,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addCsvDataTableColumnModel(){
 
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn0());
+
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn1());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn2());
@@ -2390,6 +2450,13 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn44());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn45());
+
+  }
+
+  /**
+   * 区分カラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn0(){
 
   }
 

@@ -975,6 +975,17 @@ public class QO005 extends QO005Event {
         }
         // [ID:0000651][Shin Fujihara] 2011/07/06 add end 負担限度額0円表示対応
 
+        // [H28.4 要望][Shnobu Hitaka] 2016/02/26 add - begin 介護情報連携対応
+        if (ACFrame.getInstance().hasProperty("ReceiptAccess/KaigoHoken")) {
+            // paramsの KEY : KAIGO_HOKENのVALUEに、設定ファイルの
+            // ID : ReceiptAccess/KaigoHoken の値を設定する。
+            params.setData("KAIGO_HOKEN",
+                    getProperty("ReceiptAccess/KaigoHoken"));
+        } else {
+            params.setData("KAIGO_HOKEN", new Integer(CHECKBOX_OFF));
+        }
+        // [H28.4 要望][Shnobu Hitaka] 2016/02/26 add - end
+        
         // 関数の変数として、paramsを返す。
         return params;
     }
@@ -1074,7 +1085,7 @@ public class QO005 extends QO005Event {
             // PRINT_SYOGU_KAIZEN のVALUEを設定する。
             setProperty("PrintConfig/PrintSyoguKaizen",
                     String.valueOf(params.getData("PRINT_SYOGU_KAIZEN")));
-            // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - begin
+            // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - end
             
             // 設定ファイルの ID : PrintConfig/oncePerMonth の値に、paramsの KEY :
             // ONCE_PER_MONTH のVALUEを設定する。
@@ -1108,6 +1119,13 @@ public class QO005 extends QO005Event {
                     String.valueOf(params.getData("PRINT_NURSING_LIMIT_ZERO")));
             // [ID:0000651][Shin Fujihara] 2011/07/06 add end 負担限度額0円表示対応
 
+            // [H28.4 要望][Shnobu Hitaka] 2016/02/26 add - begin 介護情報連携対応
+            // 設定ファイルの ID : ReceiptAccess/KaigoHoken の値に、paramsの KEY :
+            // KAIGO_HOKEN のVALUEを設定する。
+            setProperty("ReceiptAccess/KaigoHoken",
+                    String.valueOf(params.getData("KAIGO_HOKEN")));
+            // [H28.4 要望][Shnobu Hitaka] 2016/02/26 add - end
+            
             saveProperty();
 
             return true;

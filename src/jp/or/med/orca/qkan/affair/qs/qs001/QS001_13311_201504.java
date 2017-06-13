@@ -43,6 +43,7 @@ import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 
@@ -169,6 +170,13 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
                 setState_SELECT_NINTITUUSHO();
             }
             break;
+        case 10:
+            // 地域密着型通所介護
+            // 外部サービス利用型が選ばれていた場合
+            if (getOutsideServiceRadio().isEnabled()) {
+            	setState_SELECT_CHIKI_DAYCARE();
+            }
+            break;
         case 9:
             // なし
             // 外部サービス利用型が選ばれていた場合
@@ -177,6 +185,9 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
             }
             break;
         }
+        // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
+        checkShokiboHaishi();
+        // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - end
 
     }
 
@@ -247,12 +258,21 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
                 // 外部サービス利用型が選ばれていた場合
                 setState_SELECT_NINTITUUSHO();
                 break;
+            case 10:
+                // 地域密着型通所介護
+                // 外部サービス利用型が選ばれていた場合
+            	setState_SELECT_CHIKI_DAYCARE();
+                break;
             case 9:
                 // なし
                 // 外部サービス利用型が選ばれていた場合
                 setState_SELECT_ONLY_BASE();
                 break;
             }
+            
+            // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
+            checkShokiboHaishi();
+            // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - end
         }
 
         // 上記処理で有効になったコントロールでも、事業所体制で制約を受けるものは上書きで制御する。
@@ -328,6 +348,19 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
     protected void expertPlaceRehabiliComboActionPerformed(ActionEvent e)
             throws Exception {
         // 通所リハ時間区分選択
+        checkEndTime();
+
+    }
+
+    /**
+     * 「地域密着型通所介護時間区分選択」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void chiikiDayCareComboActionPerformed(ActionEvent e)
+            throws Exception {
+        // 通所介護時間区分選択
         checkEndTime();
 
     }
@@ -477,6 +510,27 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         }
 
     }
+    
+    // 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
+    private void checkShokiboHaishi() throws Exception {
+        // H28.4以降
+        if (getCalculater().getTargetDate() != null && 
+                ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getCalculater().getTargetDate()) < 1) {
+            // 選択不可：小規模事業所、療養通所
+        	getExpertPlaceNursingRadioItem1().setEnabled(false);
+        	getExpertPlaceNursingRadioItem5().setEnabled(false);
+        	getOutsideServiceRadioItem9().setEnabled(true);
+        } else {
+        	if (getOutsideServiceRadioItem5().isSelected()) {
+	        	// 選択可：小規模事業所、療養通所
+	        	getExpertPlaceNursingRadioItem1().setEnabled(true);
+	        	getExpertPlaceNursingRadioItem5().setEnabled(true);
+        	}
+        	getOutsideServiceRadioItem9().setEnabled(false);
+        	getChiikiDayCareGroup().setEnabled(false);
+        }
+    }
+    // 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - end
 
     /**
      * 「認知症対応通所介護施設区分」イベントです。
@@ -513,6 +567,46 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         // 認知症対応型通所介護時間区分
         checkEndTime();
 
+    }
+
+    /**
+     * 「地域密着型通所介護施設区分選択」イベントです。
+     * 
+     * @param e イベント情報
+     * @throws Exception 処理例外
+     */
+    protected void chiikiDayCareRadioActionPerformed(ActionEvent e)
+            throws Exception {
+        // 地域密着型通所介護施設区分選択
+        // 療養通所が選択されていた場合
+        VRMap comboItemMap = new VRHashMap();
+        switch (getChiikiDayCareRadio().getSelectedIndex()) {
+        case 1: // 地域密着型通所介護
+            // ※時間区分
+            // コードマスタデータよりCODE_ID：40 地域密着型通所介護（時間区分）を取得する。
+            // 取得した値を、comboItemMapの KEY : 1330135 の VALUE として設定する。
+            comboItemMap.setData("1330135",
+                    QkanCommon.getArrayFromMasterCode(240, "1330135"));
+            // ※展開
+            // 自身(this)にcomboItemMapに設定する。
+            getThis().setModelSource(comboItemMap);
+            // コンボアイテムを展開する。
+            getThis().bindModelSource();
+            break;
+        case 2:
+            // 療養通所選択時
+            // ※時間区分
+            // コードマスタデータよりCODE_ID：40 地域密着型通所介護（時間区分）を取得する。
+            // 取得した値を、comboItemMapの KEY : 1330135 の VALUE として設定する。
+            comboItemMap.setData("1330135",
+                    QkanCommon.getArrayFromMasterCode(238, "1330135"));
+            // ※展開
+            // 自身(this)にcomboItemMapに設定する。
+            getThis().setModelSource(comboItemMap);
+            // コンボアイテムを展開する。
+            getThis().bindModelSource();
+            break;
+        }
     }
 
     /**
@@ -591,6 +685,11 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         // 福祉用具
         comboItemMap.setData("1330118",
                 QkanCommon.getArrayFromMasterCode(47, "1330118"));
+        // ※時間区分
+        // コードマスタデータよりCODE_ID：240 地域密着型通所介護（時間区分）を取得する。
+        // 取得した値を、comboItemMapの KEY : 1330135 の VALUE として設定する。
+        comboItemMap.setData("1330135",
+                QkanCommon.getArrayFromMasterCode(240, "1330135"));
         // ※展開
         // 自身(this)にcomboItemMapに設定する。
         getThis().setModelSource(comboItemMap);
@@ -717,6 +816,20 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         }
         // 通所介護 時刻コンボが有効な場合
         if (getExpertPlaceNursingCombo().isEnabled()) {
+        	// 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
+            if (getCalculater().getTargetDate() != null && 
+                    ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getCalculater().getTargetDate()) < 1) {
+                // 選択不可：小規模事業所、療養通所
+            	int kubun = getExpertPlaceNursingRadio().getSelectedIndex();
+                if (kubun == 1 || kubun == 5) {
+                    // 内容詳細の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
+                    QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+    	            // nullを返す。
+    	            return null;
+                }
+            }
+            // 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - end
+            
             if (!getExpertPlaceNursingCombo().isSelected()) {
                 // 内容の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
                 QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
@@ -752,7 +865,29 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
             }
 
         }
-
+        
+        // 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - begin H28.3以前選択不可項目を制御する。
+        // 地域密着型通所介護 時刻コンボが有効な場合
+        if (getChiikiDayCareCombo().isEnabled()) {
+            if (!getChiikiDayCareCombo().isSelected()) {
+                // 内容の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
+                QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+                // nullを返す。
+                return null;
+            }
+        }
+        // 地域密着型通所介護 H28.4より前は選択不可
+        if (getCalculater().getTargetDate() != null && 
+                ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getCalculater().getTargetDate()) > 0) {
+            if (getOutsideServiceRadioItem9().isSelected() == true) {
+                // 内容詳細の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
+                QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
+	            // nullを返す。
+	            return null;
+            }
+        }
+        // 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - end
+        
         // ※返却用のレコード(data)を生成
         VRMap data = new VRHashMap();
         // 自身(this)のソースとして生成レコードを設定する。
@@ -832,17 +967,17 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
             case 3:
                 // 訪問看護
                 // 訪問看護ステーションでなおかつPT・OT・STだった場合
-                if (getVisitNursingStaffDivisionRadioItem2().isSelected()
-                        && getVisitNursingFacilitiesDivisionRadioItem1()
-                                .isSelected()) {
-                    addTime = getHoumonKangoTimeSpecial();
-                } else {
+                //if (getVisitNursingStaffDivisionRadioItem2().isSelected()
+                //        && getVisitNursingFacilitiesDivisionRadioItem1()
+                //                .isSelected()) {
+                //    addTime = getHoumonKangoTimeSpecial();
+                //} else {
                     addTime = getHoumonKangoTime();
-                }
+                //}
                 break;
             case 5:
                 // 通所介護
-                if (getExpertPlaceNursingRadioItem3().isSelected()) {
+                if (getExpertPlaceNursingRadioItem5().isSelected()) {
                     addTime = getTuusyoKaigoTimeSpecial();
                 } else {
                     addTime = getTuusyoKaigoTime();
@@ -856,6 +991,15 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
                 addTime = getNintiTaiouTusyoKaigoTime();
                 break;
 
+            case 10:
+                // 地域密着型通所介護
+                if (getChiikiDayCareRadioItem2().isSelected()) {
+                    addTime = getChiikiDayCareTimeSpecial();
+                } else {
+                    addTime = getChiikiDayCareTime();
+                }
+                break;
+                
             default:
                 return;
             }
@@ -879,11 +1023,9 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         switch (getVisitNursingCombo().getSelectedIndex()) {
         case 0:
             // 20分以上の場合
-            // 戻り値として180を返す。
             return 20;
         case 1:
             // 30分以上の場合
-            // 戻り値として240を返す。
             return 30;
         case 2:
             // 1時間以上の場合
@@ -924,35 +1066,12 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         // ※訪問介護時間取得
         // ※時間区分(VisitCareCombo)の時間を取得
         // 時間区分(VisitCareCombo)の値をチェックする。
-        switch (getVisitCareCombo().getSelectedIndex()) {
-        case 0:
-            // 15分未満の場合
-            // 戻り値として180を返す。
-            return 15;
-        case 1:
-            // 30分未満の場合
-            // 戻り値として240を返す。
-            return 30;
-        case 2:
-            // 45分未満の場合
-            // 戻り値として360を返す。
-            return 45;
-        case 3:
-            // 1時間未満の場合
-            // 戻り値として480を返す。
-            return 60;
-        case 4:
-            // 1時間15分未満の場合
-            // 戻り値として540を返す。
-            return 75;
-        case 5:
-        case 6:
-            // 1時間30分未満の場合
-            // 1時間30分以上の場合
-            // 戻り値として600を返す。
-            return 90;
+        int addMinute = 0;
+        if (getVisitCareCombo().isEnabled()
+                && getVisitCareCombo().isSelected()) {
+        	addMinute = (getVisitCareCombo().getSelectedIndex()) * 15 + 15;
         }
-        return 0;
+        return addMinute;
     }
 
     /**
@@ -966,19 +1085,17 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         // 時間区分(timeDivisionRadio)の値をチェックする。
         switch (getTimeDivisionRadio().getSelectedIndex()) {
         case 1:
-            // 3時間未満の場合
-            // 戻り値として180を返す。
+            // ２時間以上３時間未満の場合
             return 180;
         case 2:
-            // 4時間未満の場合
-            // 戻り値として240を返す。
-            return 240;
+            // ３時間以上５時間未満の場合
+            return 300;
         case 3:
-            // 6時間以上の場合
-            return 360;
+            // ５時間以上７時間未満の場合
+            return 420;
         case 4:
-            // 8時間以上の場合
-            return 480;
+            // ７時間以上９時間未満の場合
+            return 540;
         }
 
         return 0;
@@ -996,28 +1113,16 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         switch (getExpertPlaceNursingCombo().getSelectedIndex()) {
         case 0:
             // ２時間以上３時間未満の場合
-            // 戻り値として180を返す。
             return 180;
         case 1:
-            // ３時間以上４時間未満の場合
-            // 戻り値として240を返す。
-            return 240;
+            // ３時間以上５時間未満の場合
+            return 300;
         case 2:
-            // ４時間以上６時間未満の場合
-            // 戻り値として360を返す。
-            return 360;
+            // ５時間以上７時間未満の場合
+            return 420;
         case 3:
-            // ６時間以上８時間未満の場合
-            // 戻り値として480を返す。
-            return 480;
-        case 4:
-            // ８時間以上９時間未満の場合
-            // 戻り値として540を返す。
+            // ７時間以上９時間未満の場合
             return 540;
-        case 5:
-            // ９時間以上１０時間未満の場合
-            // 戻り値として600を返す。
-            return 600;
         }
         return 0;
     }
@@ -1033,12 +1138,10 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         // 時間区分(VisitCareCombo)の値をチェックする。
         switch (getExpertPlaceNursingCombo().getSelectedIndex()) {
         case 0:
-            // 2時間以上6時間未満の場合
-            // 戻り値として180を返す。
+            // 3時間以上6時間未満の場合
             return 360;
         case 1:
             // 6時間以上8時間未満の場合
-            // 戻り値として240を返す。
             return 480;
         }
         return 0;
@@ -1055,11 +1158,9 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
         switch (getExpertPlaceRehabiliCombo().getSelectedIndex()) {
         case 0:
             // 2時間未満の場合
-            // 戻り値として180を返す。
             return 120;
         case 1:
             // 3時間未満の場合
-            // 戻り値として240を返す。
             return 180;
         case 2:
             // 4時間以上の場合
@@ -1069,6 +1170,58 @@ public class QS001_13311_201504 extends QS001_13311_201504Event {
             return 360;
         case 4:
             // 8時間未満
+            return 480;
+        }
+        return 0;
+    }
+
+    /**
+     * 「地域密着型通所介護時間取得」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public int getChiikiDayCareTime() throws Exception {
+        // ※地域密着型通所介護時間取得
+        // ※時間区分(ChiikiDayCareCombo)の時間を取得
+        // 時間区分(ChiikiDayCareCombo)の値をチェックする。
+        switch (getChiikiDayCareCombo().getSelectedIndex()) {
+        case 0:
+            // ２時間以上３時間未満の場合
+            // 戻り値として180を返す。
+            return 180;
+        case 1:
+            // ３時間以上５時間未満の場合
+            // 戻り値として300を返す。
+            return 300;
+        case 2:
+            // ４時間以上７時間未満の場合
+            // 戻り値として420を返す。
+            return 420;
+        case 3:
+            // ６時間以上９時間未満の場合
+            // 戻り値として540を返す。
+            return 540;
+        }
+        return 0;
+    }
+
+    /**
+     * 「地域密着型通所介護時間取得_療養」に関する処理を行ないます。
+     * 
+     * @throws Exception 処理例外
+     */
+    public int getChiikiDayCareTimeSpecial() throws Exception {
+        // ※地域密着型通所介護時間取得_療養
+        // ※時間区分(ChiikiDayCareCombo)の時間を取得
+        // 時間区分(ChiikiDayCareCombo)の値をチェックする。
+        switch (getChiikiDayCareCombo().getSelectedIndex()) {
+        case 0:
+            // 2時間以上6時間未満の場合
+            // 戻り値として360を返す。
+            return 360;
+        case 1:
+            // 6時間以上8時間未満の場合
+            // 戻り値として480を返す。
             return 480;
         }
         return 0;

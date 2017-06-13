@@ -30,6 +30,7 @@
 package jp.or.med.orca.qkan.affair.qs.qs001;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.VRCharType;
@@ -48,6 +50,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 
@@ -131,7 +134,6 @@ public class QS001004 extends QS001004Event {
                 ACBindUtilities.getMatchIndexFromValue(providers,
                         "PROVIDER_ID", QkanSystemInformation.getInstance()
                                 .getLoginProviderID()));
-
         // ※計画単位数列のエディタをテキストフィールドとみなし、以下のプロパティ設定を行う。
         Component unitEditor = getPlanUnitTableUnit().getCellEditorComponent();
         if (unitEditor instanceof ACTextField) {
@@ -181,7 +183,20 @@ public class QS001004 extends QS001004Event {
             VRArrayList units = new VRArrayList();
             String[] pathes = CareServiceCommon.getPlanUnitBindPathes();
             int end = pathes.length;
+        	// [H28.4法改正対応][Shinobu Hitaka] 2016/02/02 add - begin
+            // 78:地域密着型通所介護は対象年月がH28.4以降の場合とする
+            boolean h2804flag = true;
+        	if (getTargetDate() != null && 
+                    ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getTargetDate()) > 0) {
+        		h2804flag = false;
+        	}
+        	// [H28.4法改正対応][Shinobu Hitaka] 2016/02/02 add - end
             for (int i = 0; i < end; i++) {
+            	// [H28.4法改正対応][Shinobu Hitaka] 2016/02/02 add - begin
+            	if (h2804flag == false && pathes[i].equals("1078")) {
+            		continue;
+            	}
+            	// [H28.4法改正対応][Shinobu Hitaka] 2016/02/02 add - end
                 VRMap row = new VRHashMap();
                 row.setData("SERVICE_KIND_NAME", pathes[i]);
                 row.setData("UNIT", ACCastUtilities.toInteger(VRBindPathParser

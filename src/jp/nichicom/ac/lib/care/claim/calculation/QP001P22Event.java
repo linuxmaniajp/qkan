@@ -370,7 +370,12 @@ public class QP001P22Event {
         }
         
         printCalendar(riyousya, isSyokuhiOnly);
-
+        
+// 2016/1/28 [2015îNóvñ]][Yoichiro Kamei] add - begin îıçlóìí«â¡
+        if(serviceDetail != null){
+            ACChotarouXMLUtilities.setValue(writer, serviceDetail, "REMARKS","comment");
+        }
+// 2016/1/28 add - end
     }
     
     /**

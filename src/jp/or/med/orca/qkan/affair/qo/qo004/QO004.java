@@ -1057,9 +1057,13 @@ public class QO004 extends QO004Event {
     	// [H27.4改正対応][Shinobu Hitaka] 2015/1/29 edit - begin 
         //VRMap temp = QkanCommon.getMasterService(getDBManager(),
         //        TARGET_DATE_20120401);
-        VRMap temp = QkanCommon.getMasterService(getDBManager(),
-                TARGET_DATE_20150401);
+        //VRMap temp = QkanCommon.getMasterService(getDBManager(),
+        //        TARGET_DATE_20150401);
     	// [H27.4改正対応][Shinobu Hitaka] 2015/1/29 edit - end
+    	// [H28.4改正対応][Shinobu Hitaka] 2016/1/25 edit - begin 
+        VRMap temp = QkanCommon.getMasterService(getDBManager(),
+                TARGET_DATE_20160401);
+    	// [H28.4改正対応][Shinobu Hitaka] 2016/1/25 edit - end
         
         if (temp == null) {
             // マスタデータを取得できなかった場合

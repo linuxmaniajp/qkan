@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 確認・修正
- * 作成日: 2010/02/01  日本コンピューター株式会社 確認・修正 新規作成
+ * 作成日: 2016/01/28  日本コンピューター株式会社 確認・修正 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -28,13 +28,56 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp003;
-import java.util.Stack;
-
-import jp.nichicom.ac.text.ACSQLSafeDateFormat;
-import jp.nichicom.ac.text.ACSQLSafeIntegerFormat;
-import jp.nichicom.ac.text.ACSQLSafeStringFormat;
-import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.util.VRMap;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.text.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
 
 /**
  * 利用者向け請求詳細編集SQL定義(QP003) 
@@ -434,6 +477,8 @@ public class QP003SQL extends QP003State {
 
     sb.append(",CLAIM_PATIENT_DETAIL.MARK7_SERVICE_DATE_BIT");
 
+    sb.append(",CLAIM_PATIENT_DETAIL.REMARKS");
+
     sb.append(" FROM");
 
     sb.append(" CLAIM");
@@ -616,6 +661,8 @@ public class QP003SQL extends QP003State {
 
     sb.append(",OTHER_PAY_NO6");
 
+    sb.append(",REMARKS");
+
     sb.append(")VALUES(");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("CLAIM_ID", sqlParam)));
@@ -751,6 +798,10 @@ public class QP003SQL extends QP003State {
     sb.append(",");
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("OTHER_PAY_NO6", sqlParam)));
+
+    sb.append(",");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("REMARKS", sqlParam)));
 
     sb.append(")");
 
@@ -1192,6 +1243,14 @@ public class QP003SQL extends QP003State {
 
     sb.append(ACSQLSafeIntegerFormat.getInstance().format(VRBindPathParser.get("MARK7_SERVICE_DATE_BIT", sqlParam)));
 
+    sb.append(",");
+
+    sb.append(" REMARKS");
+
+    sb.append(" =");
+
+    sb.append(ACSQLSafeStringFormat.getInstance().format(VRBindPathParser.get("REMARKS", sqlParam)));
+
     sb.append(" WHERE");
 
     sb.append("(");
@@ -1529,6 +1588,8 @@ public class QP003SQL extends QP003State {
     sb.append(",OTHER_COUNT_NO6");
 
     sb.append(",OTHER_PAY_NO6");
+
+    sb.append(",REMARKS");
 
     sb.append(" FROM");
 

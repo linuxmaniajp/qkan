@@ -42,10 +42,12 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.calculation.QP001SpecialCase;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.text.ACKanaConvert;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.ACMessageBoxExceptionPanel;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.ac.util.splash.ACSplash;
 import jp.nichicom.ac.util.splash.ACSplashable;
@@ -58,8 +60,10 @@ import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
+import jp.or.med.orca.qkan.affair.qo.qo002.QO002_M_InsurerBridgeFirebirdDBManager;
 
 /**
  * 日医標準レセプトソフト連携(QO013)
@@ -178,8 +182,30 @@ public class QO013 extends QO013Event {
             // 結果を格納する。
             getReceiptTableModel().setAdaptee(list);
             // メッセージ表示
-            QkanMessageList.getInstance().QO013_SUCCESS_INSERT();
+            // [H28.4 要望][Shnobu Hitaka] 2016/02/03 edit - begin 介護情報連携対応
+            // QkanMessageList.getInstance().QO013_SUCCESS_INSERT();
+            if (getImportMessage().length() > 0) {
+	            ACMessageBoxExceptionPanel pnl = new ACMessageBoxExceptionPanel();
+	            String msg1 = "患者情報を取り込みました。";
+	            String msg2 = "介護認定・介護保険情報が取り込めない患者がありました。" + ACConstants.LINE_SEPARATOR + "詳細をご確認の上、利用者情報詳細画面で認定情報を登録してください。";
+	            pnl.setEnvironment(msg2);
+	            pnl.setInfomation(ACConstants.LINE_SEPARATOR + getImportMessage() + ACConstants.LINE_SEPARATOR + ACConstants.LINE_SEPARATOR);
+	            ACMessageBox.show(msg1, pnl, true);
+	            if (pnl.getParent() != null) {
+	                pnl.getParent().remove(pnl);
+	            }
+	            pnl = null;
+            } else {
+            	QkanMessageList.getInstance().QO013_SUCCESS_INSERT();
+            }
+            // [H28.4 要望][Shnobu Hitaka] 2016/02/03 edit - end
         } else {
+        	// [H28.4 要望][Shnobu Hitaka] 2016/02/03 add - begin 介護情報連携対応
+            QkanMessageList.getInstance().QO013_ERROR_OF_CONECT_CUSTOM(
+                    "介護保険・介護認定情報の取り込み", 
+                    ACConstants.LINE_SEPARATOR + "最新のdbsパッケージ(jma-receipt-dbs)をインストールするか、" +
+                    ACConstants.LINE_SEPARATOR + "設定変更・メンテナンス画面で介護保険・介護認定情報の取り込みチェックをはずしてください。");
+            // [H28.4 要望][Shnobu Hitaka] 2016/02/03 add - end
             return;
         }
     }
@@ -408,6 +434,17 @@ public class QO013 extends QO013Event {
         }
         // 2008/01/15 [Masahiko Higuchi] add - end
 
+        // [H28.4 要望][Shnobu Hitaka] 2016/02/26 add - begin 介護情報連携対応
+        // 設定ファイルが読込めるかチェックする。
+        if (ACFrame.getInstance().hasProperty("ReceiptAccess/KaigoHoken")) {
+            // 読込めた場合
+            // パスワードを読込み toHiraganaConvert に格納する。
+            setKaigoHoken(ACFrame.getInstance().getProperty(
+                    "ReceiptAccess/KaigoHoken"));
+        } else {
+        	setKaigoHoken("");
+        }
+        // [H28.4 要望][Shnobu Hitaka] 2016/02/26 add - end
     }
 
     /**
@@ -526,6 +563,12 @@ public class QO013 extends QO013Event {
         //[ID:0000679][Shin Fujihara] 2012/01/23 add - end 日レセ連携機能追加対応
         
         ACDBManager dbm = getDBManager();
+        
+        // [H28.4 要望][Shnobu Hitaka] 2016/02/03 add - begin 介護情報連携対応
+        ACDBManager insurerDbm = null;
+        setImportMessage("");
+        // [H28.4 要望][Shnobu Hitaka] 2016/02/03 add - end
+        
         try {
             
             //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
@@ -560,8 +603,102 @@ public class QO013 extends QO013Event {
                 }
                 // 登録
                 dbm.executeUpdate(getSQL_INSERT_PATIENT(sqlParam));
+                
+                // [H28.4 要望][Shnobu Hitaka] 2016/02/03 add - begin 介護情報連携対応
+                if("1".equals(getKaigoHoken())){
+	                // 入力チェック後、介護認定情報を登録する。生保単独などの公費情報は登録しない。
+	                // 保険者番号:6桁
+	                // 被保険者番号:10桁
+	                String insurerId = ACCastUtilities.toString(sqlParam.getData("INSURER_ID"));
+	                String insuredId = ACCastUtilities.toString(sqlParam.getData("INSURED_ID"));
+	                // 要介護状態区分
+	                String jotaiCode = ACCastUtilities.toString(sqlParam.getData("JOTAI_CODE"));
+	                
+	                // 取り込めない患者のログを作成する
+	                String msg = "";
+	                if (insurerId.length() != 6 && jotaiCode.length() > 0) {
+	                	msg = "：保険者番号を６桁にしてください";
+	                }
+	                if (insuredId.length() != 10 && jotaiCode.length() > 0) {
+	                	msg = "：被保険者番号を１０桁にしてください";
+	                }
+	                if (insurerId.length() == 0 && jotaiCode.length() > 0) {
+	                	msg = "：介護認定期間に有効な介護保険情報が存在しません。";
+	                }
+	                if (msg.length() > 0) {
+		                msg = ACCastUtilities.toString(sqlParam.getData("PATIENT_FAMILY_NAME"))
+		                	+ ACCastUtilities.toString(sqlParam.getData("PATIENT_FIRST_NAME"))
+		                	+ msg
+		                	+ ACConstants.LINE_SEPARATOR;
+		                setImportMessage(getImportMessage() + msg);
+	                }
+	                
+	                if (insurerId != null && insurerId.length() == 6
+	                		&& insuredId != null && insuredId.length() == 10) {
+	
+	                    // 利用者IDを取得し、sqlParamに格納する。
+	                    String strSql = getSQL_GET_NEW_PATIENT_ID(sqlParam);
+	                    VRList list = dbm.executeQuery(strSql);
+	                    VRMap temp = (VRMap) list.get(0);
+	                    VRBindPathParser.set("PATIENT_ID", sqlParam, ACCastUtilities.toInt(VRBindPathParser.get(
+	                    		"PATIENT_ID", temp)));
+	                    
+	                    // 保険者の登録有無チェック
+	                    strSql = getSQL_GET_INSURER_INFO(sqlParam);
+	                    list = dbm.executeQuery(strSql);
+	                    if (list.isEmpty()){
+	                        String insureName = "日レセ連携仮保険者";
+	                        // 保険者マスタから名称を取得する。なければ仮の名称とする。
+	                        if (QkanSystemInformation.getInstance().isInsurerMasterDatabese()
+	                        	    && insurerDbm == null) {
+	                            insurerDbm = new QO002_M_InsurerBridgeFirebirdDBManager();
+	                        }
+	                        if (insurerDbm != null) {
+	                            list = insurerDbm.executeQuery(getSQL_GET_FIND_M_INSURER_INFO(sqlParam));
+	                            if (!list.isEmpty()){
+	                                temp = (VRMap) list.get(0);
+	                                insureName = ACCastUtilities.toString(VRBindPathParser.get("INSURER_NAME", temp));
+	                            }
+	                        }
+	                        // 保険者を新規追加
+	                        VRBindPathParser.set("INSURER_NAME", sqlParam, insureName);
+	                        dbm.executeUpdate(getSQL_INSERT_INSURER_INFO(sqlParam));
+	                    } else {
+	                        // 保険者の削除フラグを0に更新
+	                        dbm.executeUpdate(getSQL_UPDATE_INSURER_INFO(sqlParam));
+	                    }
+	                    
+	                    // 初期値を設定する。
+	                    VRBindPathParser.set("NINTEI_HISTORY_ID", sqlParam, new Integer(1));
+	                    VRBindPathParser.set("SYSTEM_INSURE_VALID_START", sqlParam, sqlParam.getData("INSURE_VALID_START"));
+	                    VRBindPathParser.set("SYSTEM_INSURE_VALID_END", sqlParam, sqlParam.getData("INSURE_VALID_END"));
+	                    // 生保単独の場合は給付率0%とする。
+	                    if (QP001SpecialCase.isSeihoOnly(insuredId)) {
+	                    	VRBindPathParser.set("INSURE_RATE", sqlParam, new Integer(0));
+	                    } else {
+	                    	VRBindPathParser.set("INSURE_RATE", sqlParam, new Integer(90));
+	                    }
+	                    // 厚生労働省規定の区分支給限度額を取得する。
+	                    int limitRate = -1;
+	                    limitRate = QkanCommon.getOfficialLimitRate(dbm, ACCastUtilities.toDate(sqlParam.getData("INSURE_VALID_START")), 
+	                    		new Integer(1), sqlParam.getData("JOTAI_CODE").toString());
+	                    if (limitRate > 0) {
+	                        VRBindPathParser.set("LIMIT_RATE", sqlParam, limitRate);
+	                    }
+	                    // 厚生労働省規定の外部利用型給付上限単位数を取得する。
+	                    limitRate = QkanCommon.getOfficialLimitRate(dbm, ACCastUtilities.toDate(sqlParam.getData("INSURE_VALID_START")), 
+	                    		new Integer(2), sqlParam.getData("JOTAI_CODE").toString());
+	                    if (limitRate > 0) {
+	                    	VRBindPathParser.set("EXTERNAL_USE_LIMIT", sqlParam, limitRate);
+	                    }
+	                    
+	                    // 介護認定情報を登録する。
+	                    strSql = getSQL_INSERT_NINTEI_HISTORY(sqlParam);
+	                    dbm.executeUpdate(strSql);
+	                }
+                }
+                // [H28.4 要望][Shnobu Hitaka] 2016/02/03 add - end
             }
-            
             
             //[ID:0000679][Shin Fujihara] 2012/01/23 add - begin 日レセ連携機能追加対応
             //500件以降も取り込むにチェックがついている場合は、データベースのフラグを未チェックで更新
@@ -689,26 +826,125 @@ public class QO013 extends QO013Event {
         for (int i = 0; i < count; i++) {
             VRMap row = (VRMap)result.get(i);
             
-            String patientCode = ACCastUtilities.toString(row.get("PATIENT_CODE"), null);
-            if (patientCode == null) {
-                continue;
+            // [Shnobu Hitaka] 2016/02/18 add - begin 1度取得したら取得しない（連続で同じ患者取込の場合を考慮）
+            String ptnumGetFlag = ACCastUtilities.toString(row.get("PTNUM_GET_FLAG"), null);
+            if (ptnumGetFlag == null || ptnumGetFlag.length() == 0) {
+            // [Shnobu Hitaka] 2016/02/18 add - end
+            	
+	            String patientCode = ACCastUtilities.toString(row.get("PATIENT_CODE"), null);
+	            if (patientCode == null || patientCode.length() == 0) {
+	                continue;
+	            }
+	            
+	            findParam.put("tbl_ptnum.PTID", patientCode);
+	            try {
+	                
+	                // 通信準備
+	                receiptDbm.executeSetUp();
+	                Map sqlResult = receiptDbm.executeQueryData("tbl_ptnum", "key", findParam);
+	                // トランザクションの終了
+	                receiptDbm.commitTransaction();
+	                
+	                patientCode = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptnum.PTNUM"), ""));
+	                row.put("PATIENT_CODE", patientCode);
+	                
+	                // [Shnobu Hitaka] 2016/02/18 add 1度取得したら取得フラグをON
+	                row.put("PTNUM_GET_FLAG", "1");
+	                
+	            } catch (Exception e) {
+	                VRLogger.warning(e);
+	            }
+	            
+	        // [Shnobu Hitaka] 2016/02/18 add - begin
             }
+            // [Shnobu Hitaka] 2016/02/18 add - end
             
-            findParam.put("tbl_ptnum.PTID", patientCode);
-            try {
-                
-                // 通信準備
-                receiptDbm.executeSetUp();
-                Map sqlResult = receiptDbm.executeQueryData("tbl_ptnum", "key", findParam);
-                // トランザクションの終了
-                receiptDbm.commitTransaction();
-                
-                patientCode = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptnum.PTNUM"), ""));
-                row.put("PATIENT_CODE", patientCode);
-                
-            } catch (Exception e) {
-                VRLogger.warning(e);
+            // [H28.4 要望][Shnobu Hitaka] 2016/01/20 add - begin 介護情報連携対応
+            if("1".equals(getKaigoHoken())){
+            	try {
+		            VRMap findCareParam = new VRHashMap();
+		            String tekstymd = "";
+		            String tekedymd = "";
+		            Map sqlResult = new VRHashMap();
+		            
+		            String patientId = ACCastUtilities.toString(row.get("PTID"), null);
+		            if (patientId == null || patientId.length() == 0) {
+		                continue;
+		            }
+//	                【TEST】dbsパッケージの定義体（dbs.dbd）には、介護保険・介護認定情報がない。
+//	                そのまま接続した場合はエラーとなるので処理を中断する。エラーを無視するとタスクが終了しないので注意。
+//	                公費情報でテスト。
+//	                findCareParam.clear();
+//	                findCareParam.put("tbl_ptkohinf.HOSPNUM", getHospNum());
+//	                findCareParam.put("tbl_ptkohinf.PTID", patientId);
+//	                findCareParam.put("tbl_ptkohinf.KOHID", "1");
+//	                // 通信準備
+//	                receiptDbm.executeSetUp();
+//	                sqlResult = receiptDbm.executeQueryData("tbl_ptkohinf", "key2", findCareParam);
+//	                // トランザクションの終了
+//	                receiptDbm.commitTransaction();
+	
+		            // 介護認定情報取得
+		            findCareParam.clear();
+		            findCareParam.put("tbl_ptcare_nintei.HOSPNUM", getHospNum());
+		            findCareParam.put("tbl_ptcare_nintei.PTID", patientId);
+		            
+		            // 通信準備
+		            receiptDbm.executeSetUp();
+		            sqlResult = receiptDbm.executeQueryData("tbl_ptcare_nintei", "key2", findCareParam);
+		            // トランザクションの終了
+		            receiptDbm.commitTransaction();
+		            
+		            if ((sqlResult != null) && (sqlResult.size() > 0)) {
+		                String val = "";
+		                // 摘要開始日TEKSTYMDの取得
+		                tekstymd = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptcare_nintei.TEKSTYMD"), ""));
+		                row.put("INSURE_VALID_START", ACCastUtilities.toDate(tekstymd));
+		                // 摘要終了日TEKEDYMDの取得
+		                tekedymd = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptcare_nintei.TEKEDYMD"), ""));
+		                row.put("INSURE_VALID_END", ACCastUtilities.toDate(tekedymd));
+		                // 要介護状態区分CAREJOTAICDの取得
+		                val = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptcare_nintei.CAREJOTAICD"), ""));
+		                row.put("JOTAI_CODE", val);
+		                // 認定日NINTEIYMDの取得
+		                val = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptcare_nintei.NINTEIYMD"), ""));
+		                row.put("NINTEI_DATE", ACCastUtilities.toDate(val, null));
+		            }
+		
+		            // 介護保険情報取得（介護認定情報が取得できた場合のみ）
+		            if (tekstymd != null && tekstymd.length() > 0) {
+		                findCareParam.clear();
+		                findCareParam.put("tbl_ptcare_hkninf.HOSPNUM", getHospNum());
+		                findCareParam.put("tbl_ptcare_hkninf.PTID", patientId);
+		                findCareParam.put("tbl_ptcare_hkninf.TEKSTYMD", tekstymd);
+		                findCareParam.put("tbl_ptcare_hkninf.TEKEDYMD", tekedymd);
+		                
+		                // 通信準備
+		                receiptDbm.executeSetUp();
+		                sqlResult = receiptDbm.executeQueryData("tbl_ptcare_hkninf", "key1", findCareParam);
+		                // トランザクションの終了
+		                receiptDbm.commitTransaction();
+		                
+		                //System.out.println(sqlResult);
+		                if ((sqlResult != null) && (sqlResult.size() > 0)) {
+			                String val = "";
+			                // 保険者番号HKNJANUMの取得
+			                val = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptcare_hkninf.HKNJANUM"), ""));
+			                row.put("INSURER_ID", val);
+			                // 被保険者番号HIHKNJANUMの取得
+			                val = ACTextUtilities.trim(ACCastUtilities.toString(sqlResult.get("tbl_ptcare_hkninf.HIHKNJANUM"), ""));
+			                row.put("INSURED_ID", val);
+		                }
+		                
+		            }
+		            //System.out.println(row);
+            	} catch (Exception e) {
+                    VRLogger.warning(e);
+                    throw e;
+                }
             }
+            // [H28.4 要望][Shinobu Hitaka] 2016/01/20 add - end 介護情報連携対応
+            
         }
         
         try {

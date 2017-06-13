@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2009/07/29  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2016/02/01  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -28,30 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp003;
-import java.awt.Component;
-import java.awt.im.InputSubset;
-
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACAffairButton;
-import jp.nichicom.ac.component.ACAffairButtonBar;
-import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACAffairable;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.text.ACBorderBlankDateFormat;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 利用者向け請求詳細編集画面項目デザイン(QP003) 
  */
@@ -70,6 +97,10 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
   private ACPanel contentsCommon;
 
+  private ACPanel contentBillTitle;
+
+  private ACTextField contentBill;
+
   private ACPanel contentPatients;
 
   private ACTextField contentPatientText;
@@ -85,10 +116,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel contentProviderId;
 
   private ACLabel contentProviderName;
-
-  private ACPanel contentBillTitle;
-
-  private ACTextField contentBill;
 
   private JTabbedPane tabs;
 
@@ -241,6 +268,18 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   private ACLabel contentKoujyoLabel;
 
   private ACTextField contentKoujyoText;
+
+  private ACPanel contentBikou;
+
+  private ACGroupBox bikouGroup;
+
+  private ACPanel bikouPanel;
+
+  private ACTextArea bikou;
+
+  private ACLabelContainer bikouContainer;
+
+  private ACLabel bikouInfoLabel;
 
   private ACPanel contentDay;
 
@@ -435,6 +474,48 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 項目タイトルを取得します。
+   * @return 項目タイトル
+   */
+  public ACPanel getContentBillTitle(){
+    if(contentBillTitle==null){
+
+      contentBillTitle = new ACPanel();
+
+      addContentBillTitle();
+    }
+    return contentBillTitle;
+
+  }
+
+  /**
+   * 請求対象年月を取得します。
+   * @return 請求対象年月
+   */
+  public ACTextField getContentBill(){
+    if(contentBill==null){
+
+      contentBill = new ACTextField();
+
+      contentBill.setText("平成○○年○○月分請求");
+
+      contentBill.setBindPath("TARGET_DATE");
+
+      contentBill.setEditable(false);
+
+      contentBill.setColumns(12);
+
+      contentBill.setFormat(new ACBorderBlankDateFormat("gggee年MM月"));
+
+      contentBill.setHorizontalAlignment(SwingConstants.CENTER);
+
+      addContentBill();
+    }
+    return contentBill;
+
+  }
+
+  /**
    * 利用者情報領域を取得します。
    * @return 利用者情報領域
    */
@@ -579,48 +660,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
       addContentProviderName();
     }
     return contentProviderName;
-
-  }
-
-  /**
-   * 項目タイトルを取得します。
-   * @return 項目タイトル
-   */
-  public ACPanel getContentBillTitle(){
-    if(contentBillTitle==null){
-
-      contentBillTitle = new ACPanel();
-
-      addContentBillTitle();
-    }
-    return contentBillTitle;
-
-  }
-
-  /**
-   * 請求対象年月を取得します。
-   * @return 請求対象年月
-   */
-  public ACTextField getContentBill(){
-    if(contentBill==null){
-
-      contentBill = new ACTextField();
-
-      contentBill.setText("平成○○年○○月分請求");
-
-      contentBill.setBindPath("TARGET_DATE");
-
-      contentBill.setEditable(false);
-
-      contentBill.setColumns(26);
-
-      contentBill.setFormat(new ACBorderBlankDateFormat("gggee年MM月"));
-
-      contentBill.setHorizontalAlignment(SwingConstants.CENTER);
-
-      addContentBill();
-    }
-    return contentBill;
 
   }
 
@@ -2322,6 +2361,129 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 備考パネルを取得します。
+   * @return 備考パネル
+   */
+  public ACPanel getContentBikou(){
+    if(contentBikou==null){
+
+      contentBikou = new ACPanel();
+
+      addContentBikou();
+    }
+    return contentBikou;
+
+  }
+
+  /**
+   * 備考グループを取得します。
+   * @return 備考グループ
+   */
+  public ACGroupBox getBikouGroup(){
+    if(bikouGroup==null){
+
+      bikouGroup = new ACGroupBox();
+
+      bikouGroup.setText("備考(55×3) ");
+
+      bikouGroup.setHgap(0);
+
+      bikouGroup.setLabelMargin(0);
+
+      bikouGroup.setVgap(0);
+
+      bikouGroup.setHgrid(0);
+
+      addBikouGroup();
+    }
+    return bikouGroup;
+
+  }
+
+  /**
+   * 領域パネルを取得します。
+   * @return 領域パネル
+   */
+  public ACPanel getBikouPanel(){
+    if(bikouPanel==null){
+
+      bikouPanel = new ACPanel();
+
+      bikouPanel.setHgap(0);
+
+      bikouPanel.setLabelMargin(0);
+
+      bikouPanel.setVgap(0);
+
+      addBikouPanel();
+    }
+    return bikouPanel;
+
+  }
+
+  /**
+   * 備考を取得します。
+   * @return 備考
+   */
+  public ACTextArea getBikou(){
+    if(bikou==null){
+
+      bikou = new ACTextArea();
+
+      bikou.setBindPath("REMARKS");
+
+      bikou.setColumns(110);
+
+      bikou.setRows(4);
+
+      bikou.setMaxRows(3);
+
+      bikou.setIMEMode(InputSubset.KANJI);
+
+      bikou.setMaxLength(165);
+
+      bikou.setLineWrap(true);
+
+      addBikou();
+    }
+    return bikou;
+
+  }
+
+  /**
+   * 備考コンテナを取得します。
+   * @return 備考コンテナ
+   */
+  protected ACLabelContainer getBikouContainer(){
+    if(bikouContainer==null){
+      bikouContainer = new ACLabelContainer();
+      bikouContainer.setFollowChildEnabled(true);
+      bikouContainer.setVAlignment(VRLayout.CENTER);
+      bikouContainer.add(getBikou(), null);
+    }
+    return bikouContainer;
+  }
+
+  /**
+   * 説明文ラベル1を取得します。
+   * @return 説明文ラベル1
+   */
+  public ACLabel getBikouInfoLabel(){
+    if(bikouInfoLabel==null){
+
+      bikouInfoLabel = new ACLabel();
+
+      bikouInfoLabel.setText("詳細版は、1行 83文字まで印字可");
+
+      bikouInfoLabel.setIconPath(ACConstants.ICON_PATH_INFORMATION_16);
+
+      addBikouInfoLabel();
+    }
+    return bikouInfoLabel;
+
+  }
+
+  /**
    * 日付領域を取得します。
    * @return 日付領域
    */
@@ -2923,11 +3085,27 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    */
   protected void addContentsCommon(){
 
-    contentsCommon.add(getContentPatients(), VRLayout.FLOW_RETURN);
+    contentsCommon.add(getContentBillTitle(), VRLayout.FLOW);
+
+    contentsCommon.add(getContentPatients(), VRLayout.FLOW);
 
     contentsCommon.add(getContentProviders(), VRLayout.FLOW_RETURN);
 
-    contentsCommon.add(getContentBillTitle(), VRLayout.FLOW_RETURN);
+  }
+
+  /**
+   * 項目タイトルに内部項目を追加します。
+   */
+  protected void addContentBillTitle(){
+
+    contentBillTitle.add(getContentBill(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 請求対象年月に内部項目を追加します。
+   */
+  protected void addContentBill(){
 
   }
 
@@ -2996,22 +3174,6 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * 事業所名称に内部項目を追加します。
    */
   protected void addContentProviderName(){
-
-  }
-
-  /**
-   * 項目タイトルに内部項目を追加します。
-   */
-  protected void addContentBillTitle(){
-
-    contentBillTitle.add(getContentBill(), VRLayout.FLOW);
-
-  }
-
-  /**
-   * 請求対象年月に内部項目を追加します。
-   */
-  protected void addContentBill(){
 
   }
 
@@ -3591,6 +3753,8 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
 
     contentBottoms.add(getContentTotals(), VRLayout.WEST);
 
+    contentBottoms.add(getContentBikou(), VRLayout.FLOW_RETURN);
+
   }
 
   /**
@@ -3651,6 +3815,49 @@ public class QP003Design extends QkanAffairContainer implements ACAffairable {
    * 医療費控除対象額に内部項目を追加します。
    */
   protected void addContentKoujyoText(){
+
+  }
+
+  /**
+   * 備考パネルに内部項目を追加します。
+   */
+  protected void addContentBikou(){
+
+    contentBikou.add(getBikouGroup(), VRLayout.NORTH);
+
+  }
+
+  /**
+   * 備考グループに内部項目を追加します。
+   */
+  protected void addBikouGroup(){
+
+    bikouGroup.add(getBikouPanel(), VRLayout.FLOW);
+
+    bikouGroup.add(getBikouInfoLabel(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 領域パネルに内部項目を追加します。
+   */
+  protected void addBikouPanel(){
+
+    bikouPanel.add(getBikouContainer(), VRLayout.FLOW_RETURN);
+
+  }
+
+  /**
+   * 備考に内部項目を追加します。
+   */
+  protected void addBikou(){
+
+  }
+
+  /**
+   * 説明文ラベル1に内部項目を追加します。
+   */
+  protected void addBikouInfoLabel(){
 
   }
 

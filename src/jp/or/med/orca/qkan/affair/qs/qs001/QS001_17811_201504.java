@@ -16,13 +16,13 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 樋口　雅彦
- * 作成日: 2011/11/15  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 開発者: 日高　しのぶ
+ * 作成日: 2016/01/27  MIS九州株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム サービスパターン通所介護 (QS001_11511_201504)
+ * プログラム サービスパターン地域密着型通所介護 (QS001_17811_201504)
  *
  *****************************************************************
  */
@@ -46,37 +46,33 @@ import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
 
 /**
- * サービスパターン通所介護(QS001_11511_201504)
+ * サービスパターン地域密着型通所介護(QS001_17811_201504)
  */
 @SuppressWarnings("serial")
-public class QS001_11511_201504 extends QS001_11511_201504Event {
+public class QS001_17811_201504 extends QS001_17811_201504Event {
     /**
      * コンストラクタです。
      */
-    public QS001_11511_201504() {
+    public QS001_17811_201504() {
         // 必須の事業所設定項目
         putCheckProviderBindPath("介護職員処遇改善加算", "4");
 
         // 値を転記する事業所設定項目
-        putImportProviderBindPath("入浴介助", "1150103", "1150106");
-        // 2015.03.02 del putImportProviderBindPath("栄養改善体制", "1150113", "1150116");
-        // 2015.03.02 del putImportProviderBindPath("口腔機能向上加算", "1150109", "1150112");
-        putImportProviderBindPath("サービス提供体制強化加算", "1150114", "1150117");
-        
-        putImportProviderBindPath("中重度者ケア体制加算", "1150117", "1150122");
+        putImportProviderBindPath("入浴介助", "1780104", "1780104");
+        putImportProviderBindPath("サービス提供体制強化加算", "1780113", "1780114");
+        putImportProviderBindPath("中重度者ケア体制加算", "1780105", "1780105");
         
 
         // 値により入力を禁止する事業所設定項目
-        putRestrictProviderBindPath("入浴介助", "1150103", "1150106");
-        putRestrictProviderBindPath("栄養改善体制", "1150113", "1150116");
-        putRestrictProviderBindPath("口腔機能向上加算", "1150109", "1150112");
-        putRestrictProviderBindPath("若年性認知症利用者受入加算", "1150112", "1150115");
-        putRestrictProviderBindPath("個別機能訓練体制", "1150116", "1150119");
-        putRestrictProviderBindPath("個別機能訓練体制", "1150116", "1150120");
-        
-        putRestrictProviderBindPath("認知症加算", "1150118", "1150121");
-        putRestrictProviderBindPath("個別送迎体制強化加算", "1150119", "1150123");
-        putRestrictProviderBindPath("入浴介助体制強化加算", "1150120", "1150124");
+        putRestrictProviderBindPath("入浴介助", "1780104", "1780104");
+        putRestrictProviderBindPath("栄養改善体制", "1780109", "1780110");
+        putRestrictProviderBindPath("口腔機能向上加算", "1780110", "1780111");
+        putRestrictProviderBindPath("若年性認知症利用者受入加算", "1780108", "1780109");
+        putRestrictProviderBindPath("個別機能訓練体制", "1780106", "1780106");
+        putRestrictProviderBindPath("個別機能訓練体制", "1780106", "1780107");
+        putRestrictProviderBindPath("認知症加算", "1780107", "1780108");
+        putRestrictProviderBindPath("個別送迎体制強化加算", "1780111", "1780112");
+        putRestrictProviderBindPath("入浴介助体制強化加算", "1780112", "1780113");
     }
 
     // コンポーネントイベント
@@ -94,13 +90,13 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
         VRMap comboItemMap;
         switch (getTsuusyoKaigoTimeContenaFacilityDivision().getSelectedIndex()) {
         case 1:
-            // 小規模
+            // 地域密着型
             setState_STATE_SMALL();
             comboItemMap = new VRHashMap();
             // コードマスタデータよりCODE_ID：40（時間区分）を取得する。
-            // 取得した値を、comboItemMapの KEY : 1150104 の VALUE として設定する。
-            comboItemMap.setData("1150104",
-                    QkanCommon.getArrayFromMasterCode(40, "1150104"));
+            // 取得した値を、comboItemMapの KEY : 1780102 の VALUE として設定する。
+            comboItemMap.setData("1780102",
+                    QkanCommon.getArrayFromMasterCode(40, "1780102"));
             // ※展開
             // 自身(this)にcomboItemMapに設定する。
             getThis().setModelSource(comboItemMap);
@@ -108,29 +104,13 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
             getThis().bindModelSource();
             break;
         case 2:
-        case 3:
-        case 4:
-            // 通常規模選択時
-            setState_STATE_NORMAL();
-            comboItemMap = new VRHashMap();
-            // コードマスタデータよりCODE_ID：40（時間区分）を取得する。
-            // 取得した値を、comboItemMapの KEY : 1150104 の VALUE として設定する。
-            comboItemMap.setData("1150104",
-                    QkanCommon.getArrayFromMasterCode(40, "1150104"));
-            // ※展開
-            // 自身(this)にcomboItemMapに設定する。
-            getThis().setModelSource(comboItemMap);
-            // コンボアイテムを展開する。
-            getThis().bindModelSource();
-            break;
-        case 5:
             // 療養通所選択時
             setState_STATE_RYOYO();
             comboItemMap = new VRHashMap();
             // コードマスタデータよりCODE_ID：40（時間区分）を取得する。
-            // 取得した値を、comboItemMapの KEY : 1150104 の VALUE として設定する。
-            comboItemMap.setData("1150104",
-                    QkanCommon.getArrayFromMasterCode(238, "1150104"));
+            // 取得した値を、comboItemMapの KEY : 1780102 の VALUE として設定する。
+            comboItemMap.setData("1780102",
+                    QkanCommon.getArrayFromMasterCode(238, "1780102"));
             // ※展開
             // 自身(this)にcomboItemMapに設定する。
             getThis().setModelSource(comboItemMap);
@@ -140,76 +120,12 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
         }
         
         // 上記処理で有効になったコントロールでも、事業所体制で制約を受けるものは上書きで制御する。
-        // 2015/03/09 [H27.4改正対応][Shinobu Hitaka] edit - begin 
         resetStateByRestrictBindPath();
-        /*
-        VRBindSource provider = getSelectedProvider();
-        if (provider != null) {
-            Object obj;
-            // 栄養改善体制
-            obj = VRBindPathParser.get("1150113", provider);
-            if (obj != null) {
-                switch (ACCastUtilities.toInt(obj)) {
-                case 1:
-                    // 体制なしだった場合
-                    // 無効にする。
-                    setState_INVALID_NOURISHMENT_MANAGEMENT();
-                    break;
-                }
-            }
-            // 個別機能訓練体制（事業所パネル）KEY：1150116の値をチェックする。
-            obj = VRBindPathParser.get("1150116", provider);
-            switch (ACCastUtilities.toInt(obj, 0)) {
-            // 値が次のいずれかだった場合
-            case 2:
-                // 2（加算型I）
-            case 3:
-                // 3（加算型II）
-                // なにもしない。
-                break;
-            default:
-                // 値が上記以外だった場合
-                // 無効にする。
-                setState_INVALID_FUNCTION_TRAINING();
-                break;
-            }
 
-            // 口腔機能向上体制（事業所パネル）KEY：1150109の値をチェックする。
-            obj = VRBindPathParser.get("1150109", provider);
-            switch (ACCastUtilities.toInt(obj, 0)) {
-            // 値が次のいずれかだった場合
-            case 2:
-                // 2（あり）
-                // なにもしない。
-                break;
-            default:
-                // 値が上記以外だった場合
-                // 無効にする。
-                setState_INVALID_MOUTH_FUNCTION();
-                break;
-            }
-
-            // 若年性認知症利用者受入加算（事業所パネル）KEY：1150112の値をチェックする。
-            obj = VRBindPathParser.get("1150112", provider);
-            switch (ACCastUtilities.toInt(obj, 0)) {
-            // 値が次のいずれかだった場合
-            case 2:
-                // 2（あり）
-                break;
-            default:
-                // 値が上記以外だった場合
-                // 無効にする。
-                setState_INVALID_YOUNG_DEMENTIA_PATINET();
-                break;
-            }
-
-        }
-        */
         // 認知症加算が設定されていたら無効にする。それ以外はなにもしない。
     	if (getDementiaElderlyAccepted().isEnabled() == true && getDementiaElderlyAccepted().getSelectedIndex() == 2) {
     		setState_INVALID_YOUNG_DEMENTIA_PATINET();
     	}
-        // 2015/03/09 [H27.4改正対応][Shinobu Hitaka] edit - end 
 
     }
 
@@ -262,7 +178,7 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
         QkanCommon.debugInitialize();
         VRMap param = new VRHashMap();
         // paramに渡りパラメタを詰めて実行することで、簡易デバッグが可能です。
-        ACFrame.debugStart(new ACAffairInfo(QS001_11511_201504.class.getName(),
+        ACFrame.debugStart(new ACAffairInfo(QS001_17811_201504.class.getName(),
                 param));
     }
 
@@ -289,9 +205,9 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
         // 取得した値を、comboItemMapの KEY : 4 の VALUE として設定する。
         comboItemMap.setData("4", QkanCommon.getArrayFromMasterCode(23, "4"));
         // コードマスタデータよりCODE_ID：40（時間区分）を取得する。
-        // 取得した値を、comboItemMapの KEY : 1150104 の VALUE として設定する。
-        comboItemMap.setData("1150104",
-                QkanCommon.getArrayFromMasterCode(40, "1150104"));
+        // 取得した値を、comboItemMapの KEY : 1780102 の VALUE として設定する。
+        comboItemMap.setData("1780102",
+                QkanCommon.getArrayFromMasterCode(40, "1780102"));
         // ※展開
         // 自身(this)にcomboItemMapに設定する。
         getThis().setModelSource(comboItemMap);
@@ -329,67 +245,46 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
             Object obj;
 
             // 施設等の区分
-            obj = VRBindPathParser.get("1150115", provider);
+            obj = VRBindPathParser.get("1780101", provider);
             if (obj != null) {
-                // 事業所登録の減算項目に合わせ初期値を調整
-                switch (ACCastUtilities.toInt(obj, 1)) {
-                case 1: // 小規模型
-                case 2: // 通常規模型
-                    VRBindPathParser.set("1150113", defaultMap,
-                            ACCastUtilities.toInt(obj, 1));
-                    break;
-                case 4: // 大規模I
-                    VRBindPathParser.set("1150113", defaultMap, new Integer(3));
-                    break;
-                case 5: // 大規模II
-                    VRBindPathParser.set("1150113", defaultMap, new Integer(4));
-                    break;
-                case 3: // 療養通所介護
-                    VRBindPathParser.set("1150113", defaultMap, new Integer(5));
-                    break;
-                }
+            	VRBindPathParser.set("1780101", defaultMap, ACCastUtilities.toInt(obj, 1));
             }
 
             // 人員減算
-            obj = VRBindPathParser.get("1150106", provider);
+            obj = VRBindPathParser.get("1780102", provider);
             if (obj != null) {
                 // 事業所登録の減算項目に合わせ初期値を調整
                 switch (ACCastUtilities.toInt(obj)) {
                 case 1: // なしだった場合
-                    VRBindPathParser.set("1150108", defaultMap, new Integer(1));
+                    VRBindPathParser.set("1780103", defaultMap, new Integer(1));
                     break;
                 case 2: // 医師だった場合
                 case 3: // 看護職員だった場合
-                    VRBindPathParser.set("1150108", defaultMap, new Integer(3));
+                    VRBindPathParser.set("1780103", defaultMap, new Integer(3));
                     break;
                 }
             }
 
             // 個別機能訓練指導加算
             switch (ACCastUtilities.toInt(
-                    VRBindPathParser.get("1150116", provider), 1)) {
+                    VRBindPathParser.get("1780106", provider), 1)) {
             case 2: // I型
-                VRBindPathParser.set("1150119", defaultMap, new Integer(2));
+                VRBindPathParser.set("1780106", defaultMap, new Integer(2));
                 break;
             case 3: // II型
-                VRBindPathParser.set("1150120", defaultMap, new Integer(2));
+                VRBindPathParser.set("1780107", defaultMap, new Integer(2));
                 break;
             }
             
-            // 2015/03/02 [H27.4改正対応][Shinobu Hitaka] edit - begin 体制があってもなしを選択する。
+            // 体制があってもなしを選択する。
             // 栄養改善体制
-            VRBindPathParser.set("1150116", defaultMap, new Integer(1));
+            VRBindPathParser.set("1780110", defaultMap, new Integer(1));
             // 口腔機能向上加算
-            VRBindPathParser.set("1150112", defaultMap, new Integer(1));
+            VRBindPathParser.set("1780111", defaultMap, new Integer(1));
             // 認知症加算が設定されていたら無効にする。それ以外はなにもしない。
             if (getDementiaElderlyAccepted().isEnabled() == true && getDementiaElderlyAccepted().getSelectedIndex() == 2) {
                 setState_INVALID_YOUNG_DEMENTIA_PATINET();
             }
-            // 2015/03/02 [H27.4改正対応][Shinobu Hitaka] edit - end
-            
-            // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
-            checkShokiboHaishi();
-            // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - end
             
             // ※展開
             // 自身(this)にdefaultMapに設定する。
@@ -399,7 +294,6 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
             // ※以下の内容詳細項目は、選択事業所の「なし」「あり」によって、無効/有効を切り替える。
 
             resetStateByRestrictBindPath();
-
         }
 
     }
@@ -410,20 +304,6 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
      * @throws Exception 処理例外
      */
     public VRMap getValidData() throws Exception {
-    	// 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
-        if (getCalculater().getTargetDate() != null && 
-                ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getCalculater().getTargetDate()) < 1) {
-            // 選択不可：小規模事業所、療養通所
-        	int kubun = getTsuusyoKaigoTimeContenaFacilityDivision().getSelectedIndex();
-            if (kubun == 1 || kubun == 5) {
-                // 内容詳細の不備メッセージを表示する。※ID=QS001_ERROR_OF_NO_CONTENT
-                QkanMessageList.getInstance().QS001_ERROR_OF_NO_CONTENT();
-	            // nullを返す。
-	            return null;
-            }
-        }
-        // 2016/02/01 [H28.4改正対応][Shinobu Hitaka] add - end
-        
         // ※入力内容に不備がないかをチェックし、サービスデータを返す。
         if (!getTsuusyoKaigoTimeDivision().isSelected()) {
             // 時間区分(tsuusyoKaigoTimeDivision)が未選択の場合
@@ -506,7 +386,7 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
             int kaigoTime = 0;
             // 開始時間コンボ(houmonKangoKaigoBeginTime)の値が空欄および不正でない場合
             // 時間退避用の変数kangoTimeに、訪問看護時間区分から取得した時間を設定する。
-            if (getTsuusyoKaigoTimeContenaFacilityDivisionItem3().isSelected()) {
+            if (getTsuusyoKaigoTimeContenaFacilityDivisionItem2().isSelected()) {
                 kaigoTime = getRyouyoTuusyoKaigoTime();
             } else {
                 kaigoTime = getKaigoTime();
@@ -583,30 +463,5 @@ public class QS001_11511_201504 extends QS001_11511_201504Event {
         }
         return 0;
     }
-    
-    // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - begin H28.4以降選択不可項目を制御する。
-    private void checkShokiboHaishi() throws Exception {
-        // H28.4以降
-        if (getCalculater().getTargetDate() != null && 
-                ACDateUtilities.getDifferenceOnDay(QkanConstants.H2804, getCalculater().getTargetDate()) < 1) {
-            // 選択不可：小規模事業所、療養通所、サービス提供体制強化加算III
-            getTsuusyoKaigoTimeContenaFacilityDivisionItem1().setEnabled(false);
-            getTsuusyoKaigoTimeContenaFacilityDivisionItem3().setEnabled(false);
-            getServiceAddProvisionStructuralRadioItem4().setEnabled(false);
-            // 療養通所の場合のみ選択できていた加算を強制選択不可
-            //   個別送迎体制強化加算
-            getIndividualPickupSystem().setEnabled(false);
-            getIndividualPickupSystem().getParent().setEnabled(false);
-            //   入浴介助体制強化加算
-            getBathingAssistanceSystem().setEnabled(false);
-            getBathingAssistanceSystem().getParent().setEnabled(false);
-        } else {
-        	// 選択可：小規模事業所、療養通所、サービス提供体制強化加算III
-            getTsuusyoKaigoTimeContenaFacilityDivisionItem1().setEnabled(true);
-            getTsuusyoKaigoTimeContenaFacilityDivisionItem3().setEnabled(true);
-            getServiceAddProvisionStructuralRadioItem4().setEnabled(true);
-        }
-    }
-    // 2016/01/19 [H28.4改正対応][Shinobu Hitaka] add - end
 
 }

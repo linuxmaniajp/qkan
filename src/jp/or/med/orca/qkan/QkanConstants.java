@@ -656,13 +656,20 @@ public interface QkanConstants {
      */
     public static final Date H2701 = ACDateUtilities.createDate(2015, 1, 1);
 
- // 2014/1/9 [Yoichiro Kamei] add - begin H27.4改正対応
+ // 2015/1/9 [Yoichiro Kamei] add - begin H27.4改正対応
     /**
      * 平成27年4月1日の定数です。
      */
     public static final Date H2704 = ACDateUtilities.createDate(2015, 4, 1);
- // 2014/1/9 [Yoichiro Kamei] add - end
-    
+ // 2015/1/9 [Yoichiro Kamei] add - end
+
+ // 2016/1/28 [Shinobu Hitaka] add - begin H28.4改正対応
+   /**
+    * 平成28年4月1日の定数です。
+    */
+   public static final Date H2804 = ACDateUtilities.createDate(2016, 4, 1);
+ // 2016/1/28 [Shinobu Hitaka] add - end
+       
     /**
      * 20090401-サービスの法改正区分における[平成21年4月1日以降]を表す定数です。
      */
@@ -674,12 +681,12 @@ public interface QkanConstants {
      */
     public static final int SERVICE_LOW_VERSION_H2404 = 20120401;
 
- // 2014/1/9 [Yoichiro Kamei] add - begin H27.4改正対応
+ // 2015/1/9 [Yoichiro Kamei] add - begin H27.4改正対応
     /**
      * 20150401-サービスの法改正区分における[平成27年4月1日以降]を表す定数です。
      */
     public static final int SERVICE_LOW_VERSION_H2704 = 20150401;
- // 2014/1/9 [Yoichiro Kamei] add - end
+ // 2015/1/9 [Yoichiro Kamei] add - end
     
     /**
      * 平成24年5月1日の定数です。

@@ -2694,6 +2694,7 @@ public class QP001SpecialCase {
     		|| "68".equals(serviceCodeKind)	//小規模多機能短期 2015.03.04 add
     		|| "69".equals(serviceCodeKind)	//予防小規模多機能短期 2015.03.04 add
     		|| "79".equals(serviceCodeKind)	//複合型短期 2015.03.04 add
+    		|| "78".equals(serviceCodeKind)	//地域密着型通所 2016.02.01 add
     		) {
     		result = true;
     	}
@@ -2757,6 +2758,7 @@ public class QP001SpecialCase {
             || "68".equals(serviceCodeKind) //小規模多機能（短期利用）
             || "69".equals(serviceCodeKind) //介護予防小規模（短期利用）
             || "79".equals(serviceCodeKind) //複合型サービス（短期利用）
+            || "78".equals(serviceCodeKind) //地域密着型通所 2016.02.01 add
             ) {
             result = true;
         }

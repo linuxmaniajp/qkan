@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/09  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2016/01/27  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -132,6 +132,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getTerminalCareAddRadioGroup().setEnabled(true);
         getTerminalCareAddRadioGroup().getParent().setEnabled(true);
 
+        getChiikiDayCareGroup().setEnabled(false);
+
   }
 
   /**
@@ -178,6 +180,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getTerminalCareAddRadioGroup().setEnabled(false);
         getTerminalCareAddRadioGroup().getParent().setEnabled(false);
 
+        getChiikiDayCareGroup().setEnabled(true);
+
   }
 
   /**
@@ -199,6 +203,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getWelfareToolsGroup().setEnabled(false);
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
+
+        getChiikiDayCareGroup().setEnabled(false);
 
   }
 
@@ -222,6 +228,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
 
+        getChiikiDayCareGroup().setEnabled(false);
+
   }
 
   /**
@@ -243,6 +251,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getWelfareToolsGroup().setEnabled(false);
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
+
+        getChiikiDayCareGroup().setEnabled(false);
 
   }
 
@@ -266,6 +276,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
 
+        getChiikiDayCareGroup().setEnabled(false);
+
   }
 
   /**
@@ -287,6 +299,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getWelfareToolsGroup().setEnabled(false);
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
+
+        getChiikiDayCareGroup().setEnabled(false);
 
   }
 
@@ -310,10 +324,12 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
 
+        getChiikiDayCareGroup().setEnabled(false);
+
   }
 
   /**
-   * 「訪問入浴介護選択医時」の状態に設定します。
+   * 「訪問入浴介護選択時」の状態に設定します。
    * @throws Exception 処理例外
    */
   public void setState_SELECT_VISIT_BATH() throws Exception {
@@ -331,6 +347,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getWelfareToolsGroup().setEnabled(false);
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
+
+        getChiikiDayCareGroup().setEnabled(false);
 
   }
 
@@ -396,6 +414,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
 
         getNinchishoTaioTsushoGroup().setEnabled(true);
 
+        getChiikiDayCareGroup().setEnabled(false);
+
   }
 
   /**
@@ -417,6 +437,8 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
         getWelfareToolsGroup().setEnabled(false);
 
         getNinchishoTaioTsushoGroup().setEnabled(false);
+
+        getChiikiDayCareGroup().setEnabled(false);
 
   }
 
@@ -549,6 +571,30 @@ public class QS001_13311_201504State extends QS001_13311_201504Design {
 
         getKaigoWelfareFacilityTakingCareNursingAddDays().setEnabled(false);
         getKaigoWelfareFacilityTakingCareNursingAddDays().getParent().setEnabled(false);
+
+  }
+
+  /**
+   * 「地域密着型通所介護選択時」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_SELECT_CHIKI_DAYCARE() throws Exception {
+
+        getVisitCareGroup().setEnabled(false);
+
+        getVisitNursingRadioGroup().setEnabled(false);
+
+        getVisitRehabiliGroup().setEnabled(false);
+
+        getExpertPlaceNursingGroup().setEnabled(false);
+
+        getExpertPlaceRehabiliGroup().setEnabled(false);
+
+        getWelfareToolsGroup().setEnabled(false);
+
+        getNinchishoTaioTsushoGroup().setEnabled(false);
+
+        getChiikiDayCareGroup().setEnabled(true);
 
   }
 
