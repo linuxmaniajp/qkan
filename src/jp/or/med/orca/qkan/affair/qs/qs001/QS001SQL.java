@@ -670,7 +670,7 @@ public class QS001SQL extends QS001State {
 
     sb.append(" IN");
 
-    sb.append(" (14311,17311,14611,17511,17711)");
+    sb.append(" (14311,17311,14611,17511,17711,51511)");
 
     sb.append(")");
 

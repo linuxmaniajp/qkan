@@ -46,6 +46,7 @@ import jp.nichicom.ac.lib.care.claim.calculation.QP001SjClaimCalc.KohiyusenType;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon; //20140210 add
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjLimitOverUnitException;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjTankaManager;
 
 /**
  * 集計情報レコード
@@ -1012,6 +1013,26 @@ public class QP001RecordType extends QP001RecordAbstract {
 			set_701014(detail.get_301014());
 			//単位数単価(double)
 			set_701015(manager.getAreaUnitPrice(get_701004(),detail.get_301021(),get_701003()));
+			
+			// 2017/06 [Yoichiro Kamei] add - begin AF対応
+			if (QkanSjServiceCodeManager.afKinds.contains(get_701007())) {
+				// 保険者番号
+				String insurerId;
+				if (detail instanceof QP001RecordDetailJushotiTokurei) {
+					insurerId = ((QP001RecordDetailJushotiTokurei) detail).get_1801018();
+				} else {
+					insurerId = ACCastUtilities.toString(detail.get_301005());
+				}
+				String systemServiceKindDetail = ACCastUtilities.toString(detail.get_301021());
+				// 総合事業の単位数単価
+				Double unitPrice = QkanSjTankaManager.getUnitPrice(insurerId,
+						systemServiceKindDetail);
+				// AFの保険者の単位数単価が0でなければ、こちらを使用する
+				if (unitPrice != 0.0d) {
+					set_701015(unitPrice);
+				}
+			}
+			// 2017/06 [Yoichiro Kamei] add - end
 			
 			//detail の KEY : 701018((公費1)単位数合計)に
 			//VALUE : type の KEY :301015(公費1対象サービス単位数)を設定する。

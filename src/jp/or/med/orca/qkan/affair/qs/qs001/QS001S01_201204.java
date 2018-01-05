@@ -199,10 +199,16 @@ public class QS001S01_201204 extends QS001S01_201204Event {
       if (!getConcentratedRehabilitation().isSelected()) {
           getValues().remove(getConcentratedRehabilitation().getBindPath());
       }
-      // 集団コミュニケーション療法
-      if(!getGroupCommunication().isSelected()) {
-          getValues().remove(getGroupCommunication().getBindPath());
+      // [CCCX: 04176][Shinobu Hitaka] 2017/07/14 edit begin
+//      // 集団コミュニケーション療法
+//      if(!getGroupCommunication().isSelected()) {
+//          getValues().remove(getGroupCommunication().getBindPath());
+//      }
+      // 集団コミュニケーション療法コンボ(groupCommunicationCombo)が無効ならば、集団コミュニケーション療法コンボ(groupCommunicationCombo)のbindPathを削除する。
+      if (!getGroupCommunicationCombo().isSelected()) {
+          getValues().remove(getGroupCommunicationCombo().getBindPath());
       }
+      // [CCCX: 04176][Shinobu Hitaka] 2017/07/14 edit end
       
       // 認知症短期集中リハビリ加算
       if(!getDementiaShortRehabilitation().isSelected()) {
@@ -477,6 +483,29 @@ public class QS001S01_201204 extends QS001S01_201204Event {
       }
   }
   
+  /**
+   * 「集団コミュニケーション療法の有効状態変更」イベントです。
+   * [CCCX: 04176][Shinobu Hitaka] 2017/07/14 add
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected void groupCommunicationActionPerformed(ActionEvent e) throws Exception{
+      // ※集団コミュニケーション療法のチェック有無に応じてコンボの有効状態を変更
+      if (getGroupCommunication().isSelected()) {
+          // 集団コミュニケーション療法チェック(getGroupCommunication)が選択されている場合
+          // 集団コミュニケーション療法コンボ(getGroupCommunicationCombo)を有効にする。
+          setState_VALID_GROUP();
+          // 集団コミュニケーション療法コンボ(getGroupCommunicationCombo)の1つ目の項目を選択する。
+          getGroupCommunicationCombo().setSelectedIndex(0);
+      } else {
+          // 集団コミュニケーション療法チェック(getGroupCommunication)が選択されていない場合
+          // 集団コミュニケーション療法コンボ(getGroupCommunicationCombo)を無効にする。
+          setState_INVALID_GROUP();
+          // 集団コミュニケーション療法コンボ(getGroupCommunicationCombo)を未選択状態にする。
+          getGroupCommunicationCombo().clearSelection();
+      }
+  }
+  
   public static void main(String[] args) {
     //デフォルトデバッグ起動
     ACFrame.getInstance().setFrameEventProcesser(new QkanFrameEventProcesser());
@@ -502,7 +531,7 @@ public class QS001S01_201204 extends QS001S01_201204Event {
       // コンボアイテム設定用のレコード comboItemMap を生成する。
       VRMap comboItemMap = new VRHashMap();
 
-      // ※食事提供
+      // ※提供回数
       // コードマスタデータよりCODE_ID：109（理学療法(I)）を取得する。
       // 取得した値を、comboItemMapの KEY : 109 の VALUE として設定する。
       VRList codes = QkanCommon.getArrayFromMasterCode(109, "3010116");
@@ -516,6 +545,7 @@ public class QS001S01_201204 extends QS001S01_201204Event {
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010139");
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010140");
       ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010141");
+      ACBindUtilities.copyBindPath(codes, "CONTENT_KEY", "3010150"); // [CCCX: 04176][Shinobu Hitaka] 2017/07/14 add
       comboItemMap.setData("109", codes);
       // ※コンボアイテムの設定
       getSpecificConsultationFeePattern().setModelSource(comboItemMap);
@@ -788,6 +818,14 @@ public class QS001S01_201204 extends QS001S01_201204Event {
       if(getRehabilitationSystem3().isSelected()){
           setState_VALID_RIHABIRI_SYSTEM3();
       }
+      // [CCCX: 04176][Shinobu Hitaka] 2017/07/14 add begin
+      // 集団コミュニケーション療法コンボ(getGroupCommunicationCombo)が選択されていれば、集団コミュニケーション療法チェック(getGroupCommunication)を選択する。
+      getGroupCommunication()
+              .setSelected(getGroupCommunicationCombo().isSelected());
+      if(getGroupCommunication().isSelected()){
+          setState_VALID_GROUP();
+      }
+      // [CCCX: 04176][Shinobu Hitaka] 2017/07/14 add end
 
       // [ID:0000499][Masahiko Higuchi] 2009/04/30 add begin 【特定診療費】平成21年4月以降の認知症短期集中リハの表示
       // 介護療養型医療施設（認知症疾患型）の場合

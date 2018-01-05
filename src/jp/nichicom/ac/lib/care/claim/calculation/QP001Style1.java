@@ -195,6 +195,8 @@ public class QP001Style1{
                     //insurance1.parse(map,1,"00","01");
                     if (QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504.equals(String.valueOf(map.get("201001")))) {
                         insurance1.parse(map,1,"00","05");
+                    } else if (QP001StyleAbstract.IDENTIFICATION_NO_7_3_201504.equals(String.valueOf(map.get("201001")))) {	// 2017.6 add
+                        insurance2.parse(map,1,"00","06");
                     } else {
                         insurance1.parse(map,1,"00","01");
                     }
@@ -379,6 +381,12 @@ public class QP001Style1{
                     publicExpense12_1.parseKohi(map,2,"12","05",kohiPosition);
                     break;
                 // [H27.4法改正対応][Shinobu Hitaka] 2016/07/25 add - end
+                // 2017.6 add-begin AF対応
+                //様式第七の三の場合
+                case QkanConstants.CLAIM_STYLE_FORMAT_7_3:	
+                    publicExpense12_2.parseKohi(map,2,"12","06",kohiPosition);
+                    break; 
+                // 2017.6 add-end    
                 //様式第七以外の場合
                 default:
                     publicExpense12_1.parseKohi(map,2,"12","01",kohiPosition);
@@ -482,6 +490,7 @@ public class QP001Style1{
                 //様式第七の場合
                 case QkanConstants.CLAIM_STYLE_FORMAT_7:
                 case QkanConstants.CLAIM_STYLE_FORMAT_7_2:
+                case QkanConstants.CLAIM_STYLE_FORMAT_7_3:	// 2017.6 add AF対応
                     publicExpense12_2.parseCategory7(map);
                     break;
                 //様式第七以外の場合

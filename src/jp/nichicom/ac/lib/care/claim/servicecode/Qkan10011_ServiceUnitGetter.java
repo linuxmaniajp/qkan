@@ -252,7 +252,8 @@ public abstract class Qkan10011_ServiceUnitGetter {
                         "SYSTEM_SERVICE_KIND_DETAIL").toString();
                 
              // 2016/8/23 [Yoichiro Kamei] add - begin ëççáéñã∆ëŒâû
-                if (QkanSjServiceCodeManager.teiritsuTeigakuCodes.contains(systemServiceCodeDetail)) {
+                if (QkanSjServiceCodeManager.teiritsuTeigakuCodes.contains(systemServiceCodeDetail)
+                		|| QkanSjServiceCodeManager.afCodes.contains(systemServiceCodeDetail)) {// 2017/6/20 AFëŒâû
                     VRMap ret = QkanSjServiceCodeManager.getSjServiceCodeByKey(dbm, systemServiceCodeItem, sysYmd);
                     if (!ret.isEmpty()) {
                         serviceCode.add(ret);

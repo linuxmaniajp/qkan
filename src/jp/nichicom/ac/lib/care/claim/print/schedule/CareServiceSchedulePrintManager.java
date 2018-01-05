@@ -305,7 +305,7 @@ public class CareServiceSchedulePrintManager extends HashMap {
 
             // TODO デバッグモード begin ★★★★★★★★★★★★★★★★★
             if(isDebugMode()){
-               
+            	
             }else{
             //TODO デバッグモード end ★★★★★★★★★★★★★★★★★★
             
@@ -2598,14 +2598,26 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 }else{
                     targetMap = inInsureUnits;
                 }
-                //2006/6/20 Tozo TANAKA 同サービスコード異単位数の福祉用具貸与の対応-begin
-                if(itemState == ITEM_STATE_SINGLE) {
-                    //単一行と指定されたが、サービスコードは同一でも単位数は2種類というケースを考慮
-                    if(targetMap.size()>1){
-                        itemState = ITEM_STATE_MULTI_LAST;
+                
+                // 2017/3/24 [CCCX:03973][Yoichiro Kamei] mod - begin
+//              //2006/6/20 Tozo TANAKA 同サービスコード異単位数の福祉用具貸与の対応-begin
+//              if(itemState == ITEM_STATE_SINGLE) {
+//                  //単一行と指定されたが、サービスコードは同一でも単位数は2種類というケースを考慮
+//                  if(targetMap.size()>1){
+//                      itemState = ITEM_STATE_MULTI_LAST;
+//                  }
+//              }
+//              //2006/6/20 Tozo TANAKA 同サービスコード異単位数の福祉用具貸与のお試し対応-end
+                // 外部利用型の福祉用具貸与で下記を適用すると集計明細のサービス単位数が不正となるため適用しない
+                if (!CareServiceCommon.isOuterServiceLimitAmount(subFormatCode)) {
+                    if(itemState == ITEM_STATE_SINGLE) {
+                        //単一行と指定されたが、サービスコードは同一でも単位数は2種類というケースを考慮
+                        if(targetMap.size()>1){
+                            itemState = ITEM_STATE_MULTI_LAST;
+                        }
                     }
                 }
-                //2006/6/20 Tozo TANAKA 同サービスコード異単位数の福祉用具貸与のお試し対応-end
+                // 2017/3/24 [CCCX:03973] mod - end
             } else {
                 targetMap = outInsureUnits;
             }
@@ -5062,6 +5074,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
   
                     // 利用者負担（保険対象分）
                     int userCost = cost - insureCost;
+	            	// 2017/06 [AF対応][Yoichiro Kamei] add - begin
+	            	// 集計明細の負担額概算に計画費の自己負担分を計上しない
+	                if (CareServiceCommon.isCareManagement(skind)) {
+	                	userCost = 0;
+	                }
+	                // 2017/06 [AF対応][Yoichiro Kamei] add - end
                     printCell(buildParam, 18, new Integer(userCost), isOver30Days);
                     totals[INDEX_OF_USER_COST_ON_INSURE] += userCost;
                 } else {

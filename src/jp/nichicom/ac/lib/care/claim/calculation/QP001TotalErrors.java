@@ -92,6 +92,17 @@ public class QP001TotalErrors {
 	
 	// 2016/10/25 [Yoichiro Kamei] add - end
 	
+	// 2017/6 [Yoichiro Kamei] add - begin AF対応
+	private VRList sjAfIncorrectCodes = new VRArrayList();
+	/**
+	 * AFと一緒に算定出来ないコード設定エラーを登録する。
+	 * @param patient
+	 */
+	public void addSjAfIncorrectCodes(VRMap patient) {
+		addErrorArray(getFullName(patient), sjAfIncorrectCodes);
+	}
+	// 2017/6 [Yoichiro Kamei] add - end
+	
 	//private ACDateFormat errorDateFormat = new ACDateFormat("MM月dd日");
 	
 	/**
@@ -199,6 +210,8 @@ public class QP001TotalErrors {
 		if (sjTankaNotFound.size() != 0) return true; // add 2016.10 総合事業独自対応
 		if (sjIncorrectInsurers.size() != 0) return true; // add 2016.10 総合事業独自対応
 		if (sjIncorrectLimitOverUnits.size() != 0) return true; // add 2016.10 総合事業独自対応
+		if (sjAfIncorrectCodes.size() != 0) return true; // add 2017.06 AF対応
+		
 		
 		return false;
 	}
@@ -217,6 +230,7 @@ public class QP001TotalErrors {
 		makeErrorMessage(getSjTankaNotFoundMessage(), sjTankaNotFound, msg);// add 2016.10 総合事業独自対応
 		makeErrorMessage("総合事業で請求できない保険者のサービスが設定されています。", sjIncorrectInsurers, msg);// add 2016.10 総合事業独自対応
 		makeErrorMessage("区分支給超単位数が不正です。実績管理で[総合事業 区分支給超単位数調整]を行ってください。", sjIncorrectLimitOverUnits, msg);// add 2016.10 総合事業独自対応
+		makeErrorMessage("介護予防支援と介護予防ケアマネジメントは同時に登録できません。", sjAfIncorrectCodes, msg);// add 2017.06 AF対応
 		
 		return msg.toString();
 	}

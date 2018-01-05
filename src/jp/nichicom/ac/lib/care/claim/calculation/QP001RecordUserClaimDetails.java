@@ -822,6 +822,13 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
             if(!claim.containsKey("CATEGORY_NO")){
             	continue;
             }
+            // 2017/6 [Yoichiro Kamei] add - begin AF‘Î‰
+            // AF‚Í—˜—pÒŒü‚¯¿‹‚Ì‘ÎÛŠO‚Æ‚·‚é
+            int claimStypeType = ACCastUtilities.toInt(claim.get("CLAIM_STYLE_TYPE"), 0);
+            if (QkanConstants.CLAIM_STYLE_FORMAT_7_3 == claimStypeType) {
+            	continue;
+            }
+            // 2017/6 [Yoichiro Kamei] add - end
             
             
             switch(ACCastUtilities.toInt(claim.get("CATEGORY_NO"),0)){

@@ -547,7 +547,8 @@ public class QP004 extends QP004Event {
 				VRMap firstServiceCodeMaster;
 				String systemServiceKindCode = ACCastUtilities.toString(claimDataMap.getData(SYSTEM_SERVICE_KIND_CODE));
 				String sjCodeKey = ACCastUtilities.toString(claimDataMap.getData(SYSTEM_SERVICE_ITEM_CODE));
-				if (QkanSjServiceCodeManager.teiritsuTeigakuCodes.contains(systemServiceKindCode)) {
+				if (QkanSjServiceCodeManager.teiritsuTeigakuCodes.contains(systemServiceKindCode) ||
+						QkanSjServiceCodeManager.afCodes.contains(systemServiceKindCode)) {
 					firstServiceCodeMaster = QkanSjServiceCodeManager.getSjServiceCodeByKey(getDBManager(), sjCodeKey, getTargetDate());
 				} else {
 				// 2016/10/11 [Yoichiro Kamei] add - end

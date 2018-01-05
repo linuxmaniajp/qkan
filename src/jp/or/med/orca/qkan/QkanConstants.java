@@ -506,6 +506,12 @@ public interface QkanConstants {
      * 10712-様式第7-2を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_FORMAT_7_2 = 10712;
+ // 2017/6/30 [Yoichiro Kamei] add - begin AF対応
+    /**
+     * 10713-様式第7-3を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_FORMAT_7_3 = 10713;
+ // 2017/6/30 add - end
     /**
      * 10811-様式第8を表す帳票の様式番号定数です。
      */

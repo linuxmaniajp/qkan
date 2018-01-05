@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 日高　しのぶ
- * 作成日: 2017/02/24  日本コンピューター株式会社 日高　しのぶ 新規作成
+ * 作成日: 2017/07/07  日本コンピューター株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -158,6 +158,16 @@ public class QO004_50611_201504Design extends QO004ProviderPanel {
   private ACRadioButtonItem selectiveServiceRadioItem1;
 
   private ACRadioButtonItem selectiveServiceRadioItem2;
+
+  private ACValueArrayRadioButtonGroup providerEvaluation;
+
+  private ACLabelContainer providerEvaluationContainer;
+
+  private ACListModelAdapter providerEvaluationModel;
+
+  private ACRadioButtonItem providerEvaluationItem1;
+
+  private ACRadioButtonItem providerEvaluationItem2;
 
   private ACValueArrayRadioButtonGroup serviceAddProvisionStructuralRadioGroup;
 
@@ -901,6 +911,99 @@ public class QO004_50611_201504Design extends QO004ProviderPanel {
   }
 
   /**
+   * 事業所評価加算（申出）の有無ラジオグループを取得します。
+   * @return 事業所評価加算（申出）の有無ラジオグループ
+   */
+  public ACValueArrayRadioButtonGroup getProviderEvaluation(){
+    if(providerEvaluation==null){
+
+      providerEvaluation = new ACValueArrayRadioButtonGroup();
+
+      getProviderEvaluationContainer().setText("事業所評価加算（申出）の有無");
+
+      providerEvaluation.setBindPath("5060105");
+
+      providerEvaluation.setUseClearButton(false);
+
+      providerEvaluation.setModel(getProviderEvaluationModel());
+
+      providerEvaluation.setValues(new int[]{1,2});
+
+      addProviderEvaluation();
+    }
+    return providerEvaluation;
+
+  }
+
+  /**
+   * 事業所評価加算（申出）の有無ラジオグループコンテナを取得します。
+   * @return 事業所評価加算（申出）の有無ラジオグループコンテナ
+   */
+  protected ACLabelContainer getProviderEvaluationContainer(){
+    if(providerEvaluationContainer==null){
+      providerEvaluationContainer = new ACLabelContainer();
+      providerEvaluationContainer.setFollowChildEnabled(true);
+      providerEvaluationContainer.setVAlignment(VRLayout.CENTER);
+      providerEvaluationContainer.add(getProviderEvaluation(), null);
+    }
+    return providerEvaluationContainer;
+  }
+
+  /**
+   * 事業所評価加算（申出）の有無ラジオグループモデルを取得します。
+   * @return 事業所評価加算（申出）の有無ラジオグループモデル
+   */
+  protected ACListModelAdapter getProviderEvaluationModel(){
+    if(providerEvaluationModel==null){
+      providerEvaluationModel = new ACListModelAdapter();
+      addProviderEvaluationModel();
+    }
+    return providerEvaluationModel;
+  }
+
+  /**
+   * なしを取得します。
+   * @return なし
+   */
+  public ACRadioButtonItem getProviderEvaluationItem1(){
+    if(providerEvaluationItem1==null){
+
+      providerEvaluationItem1 = new ACRadioButtonItem();
+
+      providerEvaluationItem1.setText("なし");
+
+      providerEvaluationItem1.setGroup(getProviderEvaluation());
+
+      providerEvaluationItem1.setConstraints(VRLayout.FLOW);
+
+      addProviderEvaluationItem1();
+    }
+    return providerEvaluationItem1;
+
+  }
+
+  /**
+   * ありを取得します。
+   * @return あり
+   */
+  public ACRadioButtonItem getProviderEvaluationItem2(){
+    if(providerEvaluationItem2==null){
+
+      providerEvaluationItem2 = new ACRadioButtonItem();
+
+      providerEvaluationItem2.setText("あり");
+
+      providerEvaluationItem2.setGroup(getProviderEvaluation());
+
+      providerEvaluationItem2.setConstraints(VRLayout.FLOW);
+
+      addProviderEvaluationItem2();
+    }
+    return providerEvaluationItem2;
+
+  }
+
+  /**
    * サービス提供体制強化加算を取得します。
    * @return サービス提供体制強化加算
    */
@@ -1371,6 +1474,8 @@ public class QO004_50611_201504Design extends QO004ProviderPanel {
 
     mainGroup.add(getSelectiveServiceRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
+    mainGroup.add(getProviderEvaluationContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+
     mainGroup.add(getServiceAddProvisionStructuralRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     mainGroup.add(getStaffUpgradeRadioGroupContainer(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -1643,6 +1748,42 @@ public class QO004_50611_201504Design extends QO004ProviderPanel {
    * ありに内部項目を追加します。
    */
   protected void addSelectiveServiceRadioItem2(){
+
+  }
+
+  /**
+   * 事業所評価加算（申出）の有無ラジオグループに内部項目を追加します。
+   */
+  protected void addProviderEvaluation(){
+
+  }
+
+  /**
+   * 事業所評価加算（申出）の有無ラジオグループモデルに内部項目を追加します。
+   */
+  protected void addProviderEvaluationModel(){
+
+    getProviderEvaluationItem1().setButtonIndex(1);
+
+    getProviderEvaluationModel().add(getProviderEvaluationItem1());
+
+    getProviderEvaluationItem2().setButtonIndex(2);
+
+    getProviderEvaluationModel().add(getProviderEvaluationItem2());
+
+  }
+
+  /**
+   * なしに内部項目を追加します。
+   */
+  protected void addProviderEvaluationItem1(){
+
+  }
+
+  /**
+   * ありに内部項目を追加します。
+   */
+  protected void addProviderEvaluationItem2(){
 
   }
 

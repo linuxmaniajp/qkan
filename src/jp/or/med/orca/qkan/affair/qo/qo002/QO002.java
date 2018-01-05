@@ -2663,8 +2663,9 @@ public class QO002 extends QO002Event {
 			doFindAreaUnitPrice(getUnitPriceServiceA7(), map, "50711", "50711");
 			doFindAreaUnitPrice(getUnitPriceServiceA8(), map, "50811", "50811");
 			
-			// 介護予防ケアマネジメント
-			doFindAreaUnitPrice(getUnitPriceServiceAF(), map, "51511", "51511");
+			// 介護予防ケアマネジメント 2017.07 コンボの内容は固定
+			// doFindAreaUnitPrice(getUnitPriceServiceAF(), map, "51511", "51511");
+			doFindAreaUnitPriceAF(getUnitPriceServiceAF(), "51511");
 			
 			VRMap param = new VRHashMap();
 			param.setData("UNIT_PRICE_TYPE", VRBindPathParser.get("UNIT_PRICE_TYPE", map));
@@ -2711,7 +2712,36 @@ public class QO002 extends QO002Event {
 		unitPriceServiceCombo.setSelectedIndex(selIndex);
 
 	}
+	
+	/**
+	 *  AFの単位数単価を設定します
+	 *  [AF請求対応][Shinobu Hitaka] 2017/07 add
+	 * 
+	 * @param unitPriceServiceCombo 単位数単価コンボ
+	 *        bindPathKey コンボ用のバインドキー
+	 * @throws Exception
+	 *             処理例外
+	 */
+	protected void doFindAreaUnitPriceAF(ACComboBox unitPriceServiceCombo, String bindPathKey)
+			throws Exception {
 
+		VRList list = new VRArrayList();
+		VRMap param = new VRHashMap();
+		param.setData("UNIT_PRICE_VALUE", "10.0");
+		param.setData(bindPathKey, 10.0);
+		list.add(param);
+		param = new VRHashMap();
+		param.setData("UNIT_PRICE_VALUE", "事業所の地域単価");
+		param.setData(bindPathKey, 0.0);
+		list.add(param);
+		int selIndex = list.size();
+
+		// コンボ設定
+		unitPriceServiceCombo.setModel(list);
+		unitPriceServiceCombo.setSelectedIndex(selIndex);
+
+	}
+	
 	/**
 	 * 「単位数単価情報チェック処理」に関する処理を行ないます。
 	 *  [総合事業対応][Keiko Yano] 2016/08 add

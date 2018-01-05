@@ -62,7 +62,8 @@ import jp.nichicom.ac.core.debugger.ACStaticDebugger;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceSummaryManager;
-import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceUnitCalcurateResult;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjAfChecker;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjAfException;
 import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerChecker;
 import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerException;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
@@ -381,16 +382,17 @@ public class QS001 extends QS001Event {
 //            }
 //        }
 
-
-        // AF:介護予防ケアマネジメントには対応していないので除外
-        for (int i = 0; i < services.size(); i++) {
-            VRMap row = (VRMap) services.get(i);
-            if (ACCastUtilities.toInt(
-                    row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == 51511) {
-                services.remove(i);
-                break;
-            }
-        }
+// 2017/6/19 [Yoichiro Kamei] mod - begin 介護予防ケアマネジメント対応
+//        // AF:介護予防ケアマネジメントには対応していないので除外
+//        for (int i = 0; i < services.size(); i++) {
+//            VRMap row = (VRMap) services.get(i);
+//            if (ACCastUtilities.toInt(
+//                    row.get("SYSTEM_SERVICE_KIND_DETAIL"), 0) == 51511) {
+//                services.remove(i);
+//                break;
+//            }
+//        }
+// 2017/6/19 [Yoichiro Kamei] mod - end
 // 2016/7/5 [Yoichiro Kamei] add - end 
         
         
@@ -1070,6 +1072,10 @@ public class QS001 extends QS001Event {
         if (getMonthlyPanel().isVisible()) {
             if (QkanMessageList.getInstance().QS001_WARNING_OF_CLEAR_MONTHLY() == ACMessageBox.RESULT_OK) {
                 getMonthlyPanel().clearSchedule();
+                
+                // [CCCX: 03987][Shinobu Hitaka] 2017/07/25 add begin 計画単位数クリア
+                getMonthlyPanel().getPlanUnits().clear();
+                // [CCCX: 03987][Shinobu Hitaka] 2017/07/25 add end
             }
         } else {
             if (QkanMessageList.getInstance().QS001_WARNING_OF_CLEAR_WEEKLY() == ACMessageBox.RESULT_OK) {
@@ -1521,7 +1527,9 @@ public class QS001 extends QS001Event {
 			                // 配列の後方を検索
 			                for (int i = selectedIndex+1; i < selServices.size(); i++) {
 			                    VRMap destService = (VRMap) selServices.get(i);
-			                    Date destDate = ACCastUtilities.toDate(destService.get("SERVICE_DATE"));
+			                    Object destServiceDate = destService.get("SERVICE_DATE"); // 2017/06/26 add
+			                    if (destServiceDate == null) continue; // 2017/06/26 add
+			                    Date destDate = ACCastUtilities.toDate(destServiceDate);
 			                    String destSystemServiceKindDetail = ACCastUtilities.toString(destService.get("SYSTEM_SERVICE_KIND_DETAIL"), "");
 			                    // 日付とサービス種類コードが同じ場合
 			                    if (srcDate.equals(destDate) && srcSystemServiceKindDetail.equals(destSystemServiceKindDetail)){
@@ -1647,6 +1655,11 @@ public class QS001 extends QS001Event {
         QkanSjInsurerChecker sjInsurerChecker = new QkanSjInsurerChecker(getCalcurater());
         boolean isSogoAdjudtUnitCheck = false; //総合事業の調整額のチェックを行うかどうか
         // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
+        
+        // 2017/06 [Yoichiro Kamei] add - begin AF対応
+        boolean isAfExists = false; //AFが登録されているかどうか
+        boolean isGendogakuYoboSvExists = false; //限度額管理対象の予防サービスが登録されているかどうか
+        // 2017/06 [Yoichiro Kamei] add - end AF対応
         
         // 予防時対応（要望）
         // 2005/05/31
@@ -1834,6 +1847,14 @@ public class QS001 extends QS001Event {
                 }
             }
             // 2016/10 [Yoichiro Kamei] add - end
+            
+            
+            // 2017/06 [Yoichiro Kamei] add - begin AF対応
+            // AFが登録されている場合
+            if (QkanSjServiceCodeManager.afCodes.contains(skind)) {
+            	isAfExists = true;
+            }            
+            // 2017/06 [Yoichiro Kamei] add - end
             
         }
 
@@ -2141,7 +2162,9 @@ public class QS001 extends QS001Event {
                     }
                 }
             } else if ("50211".equals(systemServiceKindDetail)) {
-                    // 訪問型サービス（独自）の回数チェック
+                // 訪問型サービス（独自）の回数チェック
+                // 算定区分：通常
+                if (ACCastUtilities.toInt(row.getData("9"),1) == 1) {
                     if (ACCastUtilities.toInt(row.getData("5020101"),1) == 4) {
                         countOf50211[0]++;
                         if (countOf50211[0] > 4) {
@@ -2150,27 +2173,28 @@ public class QS001 extends QS001Event {
                             warningTargetLimit = "4回まで";
                         }
                     } else if (ACCastUtilities.toInt(row.getData("5020101"),1) == 5) {
-                    	countOf50211[1]++;
+                        countOf50211[1]++;
                         if (countOf50211[1] > 8) {
                             warningTargetName = "訪問型独自サービスV ";
                             warningTargetSpan = "ひと月に";
                             warningTargetLimit = "5回から8回まで";
                         }
                     } else if (ACCastUtilities.toInt(row.getData("5020101"),1) == 6) {
-                    	countOf50211[2]++;
+                        countOf50211[2]++;
                         if (countOf50211[2] > 12) {
                             warningTargetName = "訪問型独自サービスVI ";
                             warningTargetSpan = "ひと月に";
                             warningTargetLimit = "9回から12回まで";
                         }
                     } else if (ACCastUtilities.toInt(row.getData("5020101"),1) == 7) {
-                    	countOf50211[3]++;
+                        countOf50211[3]++;
                         if (countOf50211[3] > 22) {
                             warningTargetName = "訪問型独自短時間サービス";
                             warningTargetSpan = "ひと月に";
                             warningTargetLimit = "22回まで";
                         }
                     }
+                }
             } else if ("50511".equals(systemServiceKindDetail)) {
                 // 通所型サービス（みなし）の回数チェック
                 // 算定区分：通常 ＆ 回数
@@ -2356,37 +2380,68 @@ public class QS001 extends QS001Event {
             }
         }
         
-        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可 TODO
+        // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add begin 68,69,79のサービス種類は5,6月請求不可 --> 2017/06/16 del
         // 対象年月が4月・5月、かつ、システム日付が7月より前の場合チェックする
-        if ((ACDateUtilities.getDifferenceOnMonth(getTargetDate(),ACDateUtilities.createDate(2015, 6)) < 0)
-        		&& ACDateUtilities.getDifferenceOnMonth(QkanSystemInformation.getInstance().getSystemDate(), ACDateUtilities.createDate(2015, 7)) < 0) {
-	        // 月間表上のサービスを全走査する。
-	        it = list.iterator();
-	        int errorServiceKind = 0;
-	        while (it.hasNext()) {
-	            VRMap row = (VRMap) it.next();
-	            // エラーとなった場合フラグをたてる。
-	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
-	                    BIND_PATH_OF_SYSTEM_SERVICE_KIND_DETAIL, row), 0)) {
-	            case 16811:
-	            case 16911:
-	            case 17911:
-	            	errorServiceKind = 1;
-	            	break;
-	            }
-	        }
-	        if (errorServiceKind != 0) {
-		        if (QkanMessageList.getInstance()
-		                .QS001_WARNING_OF_CLAIM_STARTDATE() == ACMessageBox.RESULT_OK) {
-		        	// OK押下時は処理続行
-		        } else {
-		            // キャンセル・×ボタン押下時
-		            return false;
-		        }
-	        }
-        }
+//        if ((ACDateUtilities.getDifferenceOnMonth(getTargetDate(),ACDateUtilities.createDate(2015, 6)) < 0)
+//        		&& ACDateUtilities.getDifferenceOnMonth(QkanSystemInformation.getInstance().getSystemDate(), ACDateUtilities.createDate(2015, 7)) < 0) {
+//	        // 月間表上のサービスを全走査する。
+//	        it = list.iterator();
+//	        int errorServiceKind = 0;
+//	        while (it.hasNext()) {
+//	            VRMap row = (VRMap) it.next();
+//	            // エラーとなった場合フラグをたてる。
+//	            switch (ACCastUtilities.toInt(VRBindPathParser.get(
+//	                    BIND_PATH_OF_SYSTEM_SERVICE_KIND_DETAIL, row), 0)) {
+//	            case 16811:
+//	            case 16911:
+//	            case 17911:
+//	            	errorServiceKind = 1;
+//	            	break;
+//	            }
+//	        }
+//	        if (errorServiceKind != 0) {
+//		        if (QkanMessageList.getInstance()
+//		                .QS001_WARNING_OF_CLAIM_STARTDATE() == ACMessageBox.RESULT_OK) {
+//		        	// OK押下時は処理続行
+//		        } else {
+//		            // キャンセル・×ボタン押下時
+//		            return false;
+//		        }
+//	        }
+//        }
         // [H27.4法改正対応][Shinobu Hitaka] 2015/02/27 add end
 
+        // 2017/06 [Yoichiro Kamei] add - begin AF対応
+        // AFが登録されている場合
+        if (isAfExists) {
+        	QkanSjAfChecker afChecker = new QkanSjAfChecker(getCalcurater(), QkanSjAfChecker.Mode.SERVICE_UPDATE);
+        	it = list.iterator();
+
+        	try {
+            	while (it.hasNext()) {
+                    VRMap row = (VRMap) it.next();
+                    afChecker.checkCodes(row);
+            	}
+        	} catch (QkanSjAfException e) {
+        		if (QkanSjAfException.Type.YOBO_GENDOGAKU_SV.equals(e.getType())) {
+        	        // エラーメッセージを表示する。
+        	        if (QkanMessageList.getInstance()
+        	                .QS001_WARNING_OF_SJ_AF_YOBO_GENDOGAKU_SV() != ACMessageBox.RESULT_OK) {
+        	            // OK以外は処理を中止
+        	            return false;
+        	        }      			
+        		} else if (QkanSjAfException.Type.YOBO_SHIEN_SV.equals(e.getType())) {
+        	        // エラーメッセージを表示する。
+        	        if (QkanMessageList.getInstance()
+        	                .QS001_ERROR_OF_SJ_AF_YOBO_SHIEN_SV() == ACMessageBox.RESULT_OK) {
+        	            // 処理を中止
+        	            return false;
+        	        }
+        		}
+        	}
+        }            
+        // 2017/06 [Yoichiro Kamei] add - end
+        
         // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
         // 実績保存時に計画単位数が入力されている場合
         if ((getProcessType() == QkanConstants.PROCESS_TYPE_RESULT) 
@@ -2675,10 +2730,22 @@ public class QS001 extends QS001Event {
                         QkanConstants.SERVICE_DETAIL_GET_PLAN, true));
             } else if (getProcessType() == QkanConstants.PROCESS_TYPE_RESULT) {
                 insertUseType = QkanConstants.SERVICE_DETAIL_GET_RESULT;
+
+                // [CCCX: 03987][Shinobu Hitaka] 2017/07/25 add begin
+                // 実績がなくても計画単位数がクリアされないと実績集計一覧に利用者名が表示される 
+                VRList monthlyList = getMonthlyPanel().getSchedule(QkanConstants.SERVICE_DETAIL_GET_RESULT, true);
+
+                // 月間実績がない場合は計画単位数をクリア
+                if (monthlyList.size() == 0) {
+                    getMonthlyPanel().getPlanUnits().clear();
+                }
+                // [CCCX: 03987] add end
+
                 // 月間表からdetailsを取る
                 details.addAll(getWeeklyPanel().getSchedule());
-                details.addAll(getMonthlyPanel().getSchedule(
-                        QkanConstants.SERVICE_DETAIL_GET_RESULT, true));
+//                details.addAll(getMonthlyPanel().getSchedule(
+//                        QkanConstants.SERVICE_DETAIL_GET_RESULT, true));
+                details.addAll(monthlyList);
 
                 // 計画単位数を保存する。
                 Iterator it = getMonthlyPanel().getServicePlanUnits().values()
@@ -2938,7 +3005,7 @@ public class QS001 extends QS001Event {
             // 2016/9/14 [Yoichiro Kamei] mod - end
         }
         
-        // 登録済みの計画単位数をクリア 2016/12/08 [Shinobu Hitaka] add
+        // 2016/12/08 [Shinobu Hitaka] add 登録済みの計画単位数をクリア 
         getMonthlyPanel().getPlanUnits().clear();
         
         // 2016/9/14 [Yoichiro Kamei] mod - begin 総合事業対応

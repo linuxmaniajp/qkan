@@ -225,7 +225,8 @@ public class QP001CSVCreator {
                 		// 利用者向け請求・給付管理票のデータは不要なのでスキップ
                 		continue;
                 	}
-                	if (QkanConstants.CLAIM_STYLE_FORMAT_2_3 == claimStypeType) {
+                	if (QkanConstants.CLAIM_STYLE_FORMAT_2_3 == claimStypeType ||
+                			QkanConstants.CLAIM_STYLE_FORMAT_7_3 == claimStypeType) {
                         //総合事業の場合は社福軽減のデータは出力しない
                 		int categoryNo = ACCastUtilities.toInt(row.get("CATEGORY_NO"), 0);
                         if (categoryNo == QkanConstants.CATEGORY_NO_SOCIAL_WELFARE_REDUCE) {
@@ -280,7 +281,8 @@ public class QP001CSVCreator {
                     claimListTemp = data.getCSVList();
                     style1 = data.getTotalObject();
                     
-                    setTargetRecord(claimListSogo, claimListTemp, QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504);
+                    setTargetRecord(claimListSogo, claimListTemp, QP001StyleAbstract.IDENTIFICATION_NO_2_3_201504 
+                    		+ "," + QP001StyleAbstract.IDENTIFICATION_NO_7_3_201504);
                     style1.parse(claimListSogo);
                 }
 // 2016/7/11 [Yoichiro Kamei] mod - end
@@ -444,7 +446,14 @@ public class QP001CSVCreator {
                 sortkey.append(map.get("201004"));
                 
                 //CSV出力用のデータを生成
-                csvData = makeBaseRecord(map);
+// 2017/6 [Yoichiro Kamei] mod - begin AF対応
+//                csvData = makeBaseRecord(map);                
+                if (QP001StyleAbstract.IDENTIFICATION_NO_7_3_201504.equals(compCode)) {
+                	csvData = makeAFBaseRecord(map);
+                } else {
+                	csvData = makeBaseRecord(map);
+                }
+// 2017/6 [Yoichiro Kamei] mod - end AF対応
                 
             //明細情報レコード
             } else if(map.containsKey("301001")){
@@ -481,9 +490,16 @@ public class QP001CSVCreator {
                 sortkey.append("-");
                 sortkey.append(map.get("301018"));
                 
-                //CSV出力用のデータを生成
-                csvData = makeDetailRecord(map);
-                
+                //CSV出力用のデータを生成    
+// 2017/6 [Yoichiro Kamei] mod - begin AF対応
+//              csvData = makeDetailRecord(map);
+              if (QP001StyleAbstract.IDENTIFICATION_NO_7_3_201504.equals(compCode)) {
+            	  csvData = makeAFDetailRecord(map);
+              } else {
+            	  csvData = makeDetailRecord(map);
+              }
+//2017/6 [Yoichiro Kamei] mod - end AF対応
+              
             //緊急時施設療養情報レコード
             } else if(map.containsKey("401001")){
                 //空レコード対応
@@ -607,8 +623,15 @@ public class QP001CSVCreator {
                 //サービス種類コード2桁
                 sortkey.append(map.get("701007"));
                 
-                //CSV出力用のデータを生成
-                csvData = makeTypeRecord(map);
+                //CSV出力用のデータを生成                
+// 2017/6 [Yoichiro Kamei] mod - begin AF対応
+//              csvData = makeTypeRecord(map);
+              if (QP001StyleAbstract.IDENTIFICATION_NO_7_3_201504.equals(compCode)) {
+            	  csvData = makeAFTypeRecord(map);
+              } else {
+            	  csvData = makeTypeRecord(map);
+              }
+//2017/6 [Yoichiro Kamei] mod - end AF対応
                 
             //特定入所者介護サービス費用情報レコード
             } else if(map.containsKey("801001")){
@@ -865,7 +888,15 @@ public class QP001CSVCreator {
 	            sortkey.append(map.get("1801019"));
 	            
 	            //CSV出力用のデータを生成
-	            csvData = makeDetailJushotiTokureiRecord(map);
+// 2017/6 [Yoichiro Kamei] mod - begin AF対応
+//              csvData = makeDetailJushotiTokureiRecord(map);
+              if (QP001StyleAbstract.IDENTIFICATION_NO_7_3_201504.equals(compCode)) {
+            	  csvData = makeAFDetailJushotiTokureiRecord(map);
+              } else {
+            	  csvData = makeDetailJushotiTokureiRecord(map);
+              }
+//2017/6 [Yoichiro Kamei] mod - end AF対応
+              
 // 2014/12/24 [Yoichiro Kamei] add - end
 	        } else {
             	continue;
@@ -2676,6 +2707,480 @@ public class QP001CSVCreator {
         return sb.toString();
     }
  // 2014/12/24 [Yoichiro Kamei] add - end 
+    
+ // 2017/6 [Yoichiro Kamei] add - begin AF対応
+    /**
+     * 「介護予防ケアマネジメントの基本情報レコードデータ文字列作成」に関する処理を行ないます。
+     * 
+     * @throws Exception
+     *             処理例外
+     */
+    private String makeAFBaseRecord(VRMap map) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        // 交換情報識別番号4桁(SYSTEM_BIND_PATH:201001)
+        sb.append("\"");
+        sb.append(getData(map,"201001"));
+        sb.append(spliter);
+        // レコード種別コード2桁(SYSTEM_BIND_PATH:201002)
+        sb.append(getData(map,"201002"));
+        sb.append(spliter);
+        // サービス提供年月6桁(SYSTEM_BIND_PATH:201003)
+        sb.append(getData(map,"201003"));
+        sb.append(spliter);
+        // 事業所番号10桁(SYSTEM_BIND_PATH:201004)
+        sb.append(getData(map,"201004"));
+        sb.append(spliter);
+        // 証記載保険者番号8桁(SYSTEM_BIND_PATH:201005)
+        //sb.append(getData(map,"201005"));
+        sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"201005"),0)));
+        sb.append(spliter);
+        // 被保険者番号10桁(SYSTEM_BIND_PATH:201006)
+        sb.append(getData(map,"201006"));
+        sb.append(spliter);
+        // (公費1)負担者番号8桁(SYSTEM_BIND_PATH:201007)
+        sb.append(getData(map,"201007"));
+        sb.append(spliter);
+        // (公費1)受給者番号7桁(SYSTEM_BIND_PATH:201008)
+        sb.append(getData(map,"201008"));
+        sb.append(spliter);
+        // (公費2)負担者番号8桁(SYSTEM_BIND_PATH:201009)
+//設定不要        sb.append(getData(map,"201009"));
+        sb.append(spliter);
+        // (公費2)受給者番号7桁(SYSTEM_BIND_PATH:201010)
+//設定不要                sb.append(getData(map,"201010"));
+        sb.append(spliter);
+        // (公費3)負担者番号8桁(SYSTEM_BIND_PATH:201011)
+//設定不要        sb.append(getData(map,"201011"));
+        sb.append(spliter);
+        // (公費3)受給者番号7桁(SYSTEM_BIND_PATH:201012)
+//設定不要        sb.append(getData(map,"201012"));
+        sb.append(spliter);
+        // (被保険者情報)生年月日8桁YYYYMMDD(SYSTEM_BIND_PATH:201013)
+        sb.append(getData(map,"201013"));
+        sb.append(spliter);
+        // (被保険者情報)性別コード1桁(SYSTEM_BIND_PATH:201014)
+        sb.append(getData(map,"201014"));
+        sb.append(spliter);
+        // (被保険者情報)要介護状態区分コード2桁(SYSTEM_BIND_PATH:201015)
+        sb.append(getData(map,"201015"));
+        sb.append(spliter);
+        // (被保険者情報)旧措置入所者特例コード1桁(SYSTEM_BIND_PATH:201016)
+//設定不要         sb.append(getData(map,"201016"));
+        sb.append(spliter);
+        // (被保険者情報)認定有効期間 開始年月日8桁(YYYYMMDD)(SYSTEM_BIND_PATH:201017)
+        sb.append(getData(map,"201017"));
+        sb.append(spliter);
+        // (被保険者情報)認定有効期間 終了年月日8桁(YYYYMMDD)(SYSTEM_BIND_PATH:201018)
+        sb.append(getData(map,"201018"));
+        sb.append(spliter);
+        // (居宅サービス計画)居宅サービス計画作成区分コード(SYSTEM_BIND_PATH:201019)
+//設定不要                     sb.append(getData(map,"201019"));
+        sb.append(spliter);
+//設定不要              sb.append(getData(map,"201020"));
+        sb.append(spliter);
+        // 開始年月日8桁(YYYYMMDD)(SYSTEM_BIND_PATH:201021)
+//設定不要        sb.append(getData(map,"201021"));
+        sb.append(spliter);
+        // 中止年月日8桁(YYYYMMDD)(SYSTEM_BIND_PATH:201022)
+//設定不要      sb.append(getData(map,"201022"));
+        sb.append(spliter);
+        // 中止理由コード1桁(SYSTEM_BIND_PATH:201023)
+//設定不要                  sb.append(getData(map,"201023"));
+        sb.append(spliter);
+        // 入所(院)年月日8桁(YYYYMMDD)(SYSTEM_BIND_PATH:201024)
+//設定不要        sb.append(getData(map,"201024"));
+        sb.append(spliter);
+        // 退所(院)年月日8桁(YYYYMMDD)(SYSTEM_BIND_PATH:201025)
+//設定不要         sb.append(getData(map,"201025"));
+        sb.append(spliter);
+        // 入所(院)実日数2桁(SYSTEM_BIND_PATH:201026)
+//設定不要             sb.append(getData(map,"201026"));
+        sb.append(spliter);
+        // 外泊日数2桁(SYSTEM_BIND_PATH:201027)
+//設定不要            sb.append(getData(map,"201027"));
+        sb.append(spliter);
+        // 退所(院)後の状態コード1桁(SYSTEM_BIND_PATH:201028)
+//設定不要            sb.append(getData(map,"201028"));
+        sb.append(spliter);
+        // 保険給付率3桁(SYSTEM_BIND_PATH:201029)
+//設定不要        sb.append(getData(map,"201029"));
+        sb.append(spliter);
+        // 公費1給付率(SYSTEM_BIND_PATH:201030)
+        int kohiRate1 = ACCastUtilities.toInt(getData(map,"201030"), 0);
+        if (kohiRate1 != 0) { //公費１がある場合のみ出力
+        	sb.append(getData(map,"201030"));
+        }
+        sb.append(spliter);
+        // 公費2給付率(SYSTEM_BIND_PATH:201031)
+//設定不要        sb.append(getData(map,"201031"));
+        sb.append(spliter);
+        // 公費3給付率(SYSTEM_BIND_PATH:201032)
+//設定不要        sb.append(getData(map,"201032"));
+        sb.append(spliter);
+        // (合計情報 保険)サービス単位数8桁(SYSTEM_BIND_PATH:201033)
+        sb.append(getData(map,"201033"));
+        sb.append(spliter);
+        // (合計情報 保険)請求額9桁(SYSTEM_BIND_PATH:201034)
+        sb.append(getData(map,"201034"));
+        sb.append(spliter);
+        // (合計情報 保険)利用者負担額8桁(SYSTEM_BIND_PATH:201035)
+//設定不要       sb.append(getData(map,"201035"));
+        sb.append(spliter);
+        // (合計情報 保険)緊急時施設療養費請求額9桁(SYSTEM_BIND_PATH:201036)
+//設定不要        sb.append(getData(map,"201036"));
+        sb.append(spliter);
+        // (合計情報 保険)特定診療費請求額9桁(SYSTEM_BIND_PATH:201037)
+//設定不要        sb.append(getData(map,"201037"));
+        sb.append(spliter);
+        // (合計情報 保険)特定入所者介護サービス費等請求額8桁(SYSTEM_BIND_PATH:201038)
+//設定不要        sb.append(getData(map,"201038"));
+        sb.append(spliter);
+        // (合計情報 公費1)サービス単位数8桁(SYSTEM_BIND_PATH:201039)
+        if (kohiRate1 != 0) { //公費１がある場合のみ出力
+        	sb.append(getData(map,"201039"));
+        }
+        sb.append(spliter);
+        // (合計情報 公費1)請求額8桁(SYSTEM_BIND_PATH:201040)
+        if (kohiRate1 != 0) { //公費１がある場合のみ出力
+        	sb.append(getData(map,"201040"));
+        }
+        sb.append(spliter);
+        // (合計情報 公費1)本人負担額8桁(SYSTEM_BIND_PATH:201041)
+//設定不要        sb.append(getData(map,"201041"));
+        sb.append(spliter);
+        // (合計情報 公費1)緊急時施設療養費請求額8桁(SYSTEM_BIND_PATH:201042)
+//設定不要        sb.append(getData(map,"201042"));
+        sb.append(spliter);
+        // (合計情報 公費1)特定診療費請求額8桁(SYSTEM_BIND_PATH:201043)
+//設定不要sb.append(getData(map,"201043"));
+        sb.append(spliter);
+        // (合計情報 公費1)特定入所者介護サービス費等請求額8桁(SYSTEM_BIND_PATH:201044)
+//設定不要       sb.append(getData(map,"201044"));
+        sb.append(spliter);
+        // (合計情報 公費2)サービス単位数8桁(SYSTEM_BIND_PATH:201045)
+//設定不要        sb.append(getData(map,"201045"));
+        sb.append(spliter);
+        // (合計情報 公費2)請求額8桁(SYSTEM_BIND_PATH:201046)
+//設定不要        sb.append(getData(map,"201046"));
+        sb.append(spliter);
+        // (合計情報 公費2)本人負担額8桁(SYSTEM_BIND_PATH:201047)
+//設定不要        sb.append(getData(map,"201047"));
+        sb.append(spliter);
+        // (合計情報 公費2)緊急時施設療養費請求額8桁(SYSTEM_BIND_PATH:201048)
+//設定不要        sb.append(getData(map,"201048"));
+        sb.append(spliter);
+        // (合計情報 公費2)特定診療費請求額8桁(SYSTEM_BIND_PATH:201049)
+//設定不要        sb.append(getData(map,"201049"));
+        sb.append(spliter);
+        // (合計情報 公費2)特定入所者介護サービス費等請求額8桁(SYSTEM_BIND_PATH:201050)
+//設定不要        sb.append(getData(map,"201050"));
+        sb.append(spliter);
+        // (合計情報 公費3)サービス単位数8桁(SYSTEM_BIND_PATH:201051)
+//設定不要        sb.append(getData(map,"201051"));
+        sb.append(spliter);
+        // (合計情報 公費3)請求額8桁(SYSTEM_BIND_PATH:201052)
+//設定不要        sb.append(getData(map,"201052"));
+        sb.append(spliter);
+        // (合計情報 公費3)本人負担額8桁(SYSTEM_BIND_PATH:201053)
+//設定不要        sb.append(getData(map,"201053"));
+        sb.append(spliter);
+        // (合計情報 公費3)緊急時施設療養費請求額8桁(SYSTEM_BIND_PATH:201054)
+//設定不要        sb.append(getData(map,"201054"));
+        sb.append(spliter);
+        // (合計情報 公費3)特定診療費請求額8桁(SYSTEM_BIND_PATH:201055)
+//設定不要       sb.append(getData(map,"201055"));
+        sb.append(spliter);
+        // (合計情報 公費3)特定入所者介護サービス費等請求額8桁(SYSTEM_BIND_PATH:201056)
+//設定不要        sb.append(getData(map,"201056"));
+        sb.append("\"");
+                
+        return sb.toString();
+    }
+    
+    /**
+     * 「介護予防ケアマネジメントの明細情報レコードデータ文字列作成」に関する処理を行ないます。
+     * 
+     * @throws Exception
+     *             処理例外
+     */
+    private String makeAFDetailRecord(VRMap map) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        // 以下の文字列をカンマ区切りで生成する。
+        // 交換情報識別番号4桁(SYSTEM_BIND_PATH:301001)
+        sb.append("\"");
+        sb.append(getData(map,"301001"));
+        sb.append(spliter);
+        // レコード種別コード2桁(SYSTEM_BIND_PATH:301002)
+        sb.append(getData(map,"301002"));
+        sb.append(spliter);
+        // サービス提供年月6桁(YYYYMM)(SYSTEM_BIND_PATH:301003)
+        sb.append(getData(map,"301003"));
+        sb.append(spliter);
+        // 事業所番号10桁(SYSTEM_BIND_PATH:301004)
+        sb.append(getData(map,"301004"));
+        sb.append(spliter);
+        // 証記載保険者番号8桁(SYSTEM_BIND_PATH:301005)
+        //sb.append(getData(map,"301005"));
+        sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"301005"),0)));
+        sb.append(spliter);
+        // 被保険者番号10桁(SYSTEM_BIND_PATH:301006)
+        sb.append(getData(map,"301006"));
+        sb.append(spliter);
+        // サービス種類コード2桁(SYSTEM_BIND_PATH:301007)
+        sb.append(getData(map,"301007"));
+        sb.append(spliter);
+        // サービス項目コード4桁(SYSTEM_BIND_PATH:301008)
+        sb.append(getData(map,"301008"));
+        sb.append(spliter);
+        //単位数を記載しないサービスでない場合、単位数を出力する。
+        // [H27.4改正対応][Shinobu Hitaka] 2016/10/05 edit 月額算定を印字しない判定用に引数追加
+        //if(!QP001SpecialCase.isUnitNoCountService(getData(map,"301007"),getData(map,"301008"))){
+        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"301007"),getData(map,"301008"),
+        		ACCastUtilities.toInt(getData(map,"301027"),0))){
+            // 単位数4桁(SYSTEM_BIND_PATH:301009)
+            sb.append(getData(map,"301009"));
+        }
+        sb.append(spliter);
+        // 日数･回数2桁(SYSTEM_BIND_PATH:301010)
+        sb.append(getData(map,"301010"));
+        sb.append(spliter);
+        // 公費1対象日数・回数2桁(SYSTEM_BIND_PATH:301011)
+        sb.append(getData(map,"301011"));
+        sb.append(spliter);
+        // 公費2対象日数・回数2桁(SYSTEM_BIND_PATH:301012)
+//設定不要        sb.append(getData(map,"301012"));
+        sb.append(spliter);
+        // 公費3対象日数・回数2桁(SYSTEM_BIND_PATH:301013)
+//設定不要        sb.append(getData(map,"301013"));
+        sb.append(spliter);
+        // サービス単位数6桁(SYSTEM_BIND_PATH:301014)
+        sb.append(getData(map,"301014"));
+        sb.append(spliter);
+        // 公費1対象サービス単位数6桁(SYSTEM_BIND_PATH:301015)
+        sb.append(getData(map,"301015"));
+        sb.append(spliter);
+        // 公費2対象サービス単位数6桁(SYSTEM_BIND_PATH:301016)
+//設定不要        sb.append(getData(map,"301016"));
+        sb.append(spliter);
+        // 公費3対象サービス単位数6桁(SYSTEM_BIND_PATH:301017)
+//設定不要        sb.append(getData(map,"301017"));
+        sb.append(spliter);
+        // 摘要20桁(SYSTEM_BIND_PATH:301018)
+        sb.append(getData(map,"301018"));
+        sb.append("\"");
+        
+        return sb.toString();
+    }
+    
+    /**
+     * 「明細情報（住所地特例）レコードデータ文字列作成」に関する処理を行ないます。
+     * 
+     * @throws Exception
+     *             処理例外
+     */
+    private String makeAFDetailJushotiTokureiRecord(VRMap map) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        // 以下の文字列をカンマ区切りで生成する。
+        // 交換情報識別番号4桁(SYSTEM_BIND_PATH:1801001)
+        sb.append("\"");
+        sb.append(getData(map,"1801001"));
+        sb.append(spliter);
+        // レコード種別コード2桁(SYSTEM_BIND_PATH:1801002)
+        sb.append(getData(map,"1801002"));
+        sb.append(spliter);
+        // サービス提供年月6桁(YYYYMM)(SYSTEM_BIND_PATH:1801003)
+        sb.append(getData(map,"1801003"));
+        sb.append(spliter);
+        // 事業所番号10桁(SYSTEM_BIND_PATH:1801004)
+        sb.append(getData(map,"1801004"));
+        sb.append(spliter);
+        // 証記載保険者番号8桁(SYSTEM_BIND_PATH:1801005)
+        //sb.append(getData(map,"1801005"));
+        sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"1801005"),0)));
+        sb.append(spliter);
+        // 被保険者番号10桁(SYSTEM_BIND_PATH:1801006)
+        sb.append(getData(map,"1801006"));
+        sb.append(spliter);
+        // サービス種類コード2桁(SYSTEM_BIND_PATH:1801007)
+        sb.append(getData(map,"1801007"));
+        sb.append(spliter);
+        // サービス項目コード4桁(SYSTEM_BIND_PATH:1801008)
+        sb.append(getData(map,"1801008"));
+        sb.append(spliter);
+        //単位数を記載しないサービスでない場合、単位数を出力する。
+        // [H27.4改正対応][Shinobu Hitaka] 2016/10/05 edit 月額算定を印字しない判定用に引数追加
+        //if(!QP001SpecialCase.isUnitNoCountService(getData(map,"1801007"),getData(map,"1801008"))){
+        if(!QP001SpecialCase.isUnitNoCountService(getData(map,"1801007"),getData(map,"1801008"),
+            ACCastUtilities.toInt(getData(map,"1801028"),0))){
+            // 単位数4桁(SYSTEM_BIND_PATH:1801009)
+            sb.append(getData(map,"1801009"));
+        }
+        sb.append(spliter);
+        // 日数･回数2桁(SYSTEM_BIND_PATH:1801010)
+        sb.append(getData(map,"1801010"));
+        sb.append(spliter);
+        // 公費1対象日数・回数2桁(SYSTEM_BIND_PATH:1801011)
+        sb.append(getData(map,"1801011"));
+        sb.append(spliter);
+        // 公費2対象日数・回数2桁(SYSTEM_BIND_PATH:1801012)
+//設定不要        sb.append(getData(map,"1801012"));
+        sb.append(spliter);
+        // 公費3対象日数・回数2桁(SYSTEM_BIND_PATH:1801013)
+//設定不要       sb.append(getData(map,"1801013"));
+        sb.append(spliter);
+        // サービス単位数6桁(SYSTEM_BIND_PATH:1801014)
+        sb.append(getData(map,"1801014"));
+        sb.append(spliter);
+        // 公費1対象サービス単位数6桁(SYSTEM_BIND_PATH:1801015)
+        sb.append(getData(map,"1801015"));
+        sb.append(spliter);
+        // 公費2対象サービス単位数6桁(SYSTEM_BIND_PATH:1801016)
+//設定不要        sb.append(getData(map,"1801016"));
+        sb.append(spliter);
+        // 公費3対象サービス単位数6桁(SYSTEM_BIND_PATH:1801017)
+//設定不要        sb.append(getData(map,"1801017"));
+        sb.append(spliter);
+        // 施設所在保険者番号6桁(SYSTEM_BIND_PATH:1801018)
+        sb.append(getData(map,"1801018"));
+        //sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"1801018"),0)));
+        sb.append(spliter);
+        // 摘要20桁(SYSTEM_BIND_PATH:1801019)
+        sb.append(getData(map,"1801019"));
+        sb.append("\"");
+        
+        return sb.toString();
+    }
+    
+    /**
+     * 「集計情報レコードデータ文字列作成」に関する処理を行ないます。
+     * @throws Exception 処理例外
+     */
+    private String makeAFTypeRecord(VRMap map) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        // 以下の文字列をカンマ区切りで生成する。
+        // 交換情報識別番号4桁(SYSTEM_BIND_PATH:701001)
+        sb.append("\"");
+        sb.append(getData(map,"701001"));
+        sb.append(spliter);
+        // レコード種別コード2桁(SYSTEM_BIND_PATH:701002)
+        sb.append(getData(map,"701002"));
+        sb.append(spliter);
+        // サービス提供年月6桁(YYYYMM)(SYSTEM_BIND_PATH:701003)
+        sb.append(getData(map,"701003"));
+        sb.append(spliter);
+        // 事業所番号10桁(SYSTEM_BIND_PATH:701004)
+        sb.append(getData(map,"701004"));
+        sb.append(spliter);
+        // 証記載保険者番号8桁(SYSTEM_BIND_PATH:701005)
+        //sb.append(getData(map,"701005"));
+        sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"701005"),0)));
+        sb.append(spliter);
+        // 被保険者番号10桁(SYSTEM_BIND_PATH:701006)
+        sb.append(getData(map,"701006"));
+        sb.append(spliter);
+        // サービス種類コード2桁(SYSTEM_BIND_PATH:701007)
+        sb.append(getData(map,"701007"));
+        sb.append(spliter);
+        // サービス実日数2桁(SYSTEM_BIND_PATH:701008)
+//設定不要            sb.append(getData(map,"701008"));
+        sb.append(spliter);
+        // 計画単位数6桁(SYSTEM_BIND_PATH:701009)
+//設定不要        sb.append(getData(map,"701009"));
+        sb.append(spliter);
+        // 限度額管理対象単位数6桁(SYSTEM_BIND_PATH:701010)
+//設定不要        sb.append(getData(map,"701010"));
+        sb.append(spliter);
+        
+        //限度額管理対象外単位数6桁(SYSTEM_BIND_PATH:701011)
+//設定不要            sb.append(getData(map,"701011"));
+        sb.append(spliter);
+        
+        // 短期入所計画日数2桁(SYSTEM_BIND_PATH:701012)
+//設定不要            sb.append(getData(map,"701012"));
+        sb.append(spliter);
+        // 短期入所実日数2桁(SYSTEM_BIND_PATH:701013)
+//設定不要    sb.append(getData(map,"701013"));
+        sb.append(spliter);
+        
+        // (保険)単位数合計8桁(SYSTEM_BIND_PATH:701014)
+        sb.append(getData(map,"701014"));
+        sb.append(spliter);
+        // (保険)単位数単価4桁(SYSTEM_BIND_PATH:701015)
+        sb.append(getTanka(getData(map,"701015")));
+        sb.append(spliter);
+        // (保険)請求額9桁(SYSTEM_BIND_PATH:701016)
+        sb.append(getData(map,"701016"));
+        sb.append(spliter);
+        // (保険)利用者負担額8桁(SYSTEM_BIND_PATH:701017)
+//設定不要        sb.append(getData(map,"701017"));
+        sb.append(spliter);
+        // (公費1)単位数合計6桁(SYSTEM_BIND_PATH:701018)
+        sb.append(getData(map,"701018"));
+        sb.append(spliter);
+        // (公費1)請求額9桁(SYSTEM_BIND_PATH:701019)
+        sb.append(getData(map,"701019"));
+        sb.append(spliter);
+        // (公費1)本人負担額6桁(SYSTEM_BIND_PATH:701020)
+//設定不要        sb.append(getData(map,"701020"));
+        sb.append(spliter);
+        // (公費2)単位数合計6桁(SYSTEM_BIND_PATH:701021)
+//設定不要        sb.append(getData(map,"701021"));
+        sb.append(spliter);
+        // (公費2)請求額9桁(SYSTEM_BIND_PATH:701022)
+//設定不要        sb.append(getData(map,"701022"));
+        sb.append(spliter);
+        // (公費2)本人負担額6桁(SYSTEM_BIND_PATH:701023)
+//設定不要        sb.append(getData(map,"701023"));
+        sb.append(spliter);
+        // (公費3)単位数合計6桁(SYSTEM_BIND_PATH:701024)
+//設定不要       sb.append(getData(map,"701024"));
+        sb.append(spliter);
+        // (公費3)請求額9桁(SYSTEM_BIND_PATH:701025)
+//設定不要        sb.append(getData(map,"701025"));
+        sb.append(spliter);
+        // (公費3)本人負担額6桁(SYSTEM_BIND_PATH:701026)
+//設定不要        sb.append(getData(map,"701026"));
+        sb.append(spliter);
+        // (保険分出来高医療費)単位数合計8桁(SYSTEM_BIND_PATH:701027)
+//設定不要        sb.append(getData(map,"701027"));
+        sb.append(spliter);
+        // (保険分出来高医療費)請求額9桁(SYSTEM_BIND_PATH:701028)
+//設定不要        sb.append(getData(map,"701028"));
+        sb.append(spliter);
+        // (保険分出来高医療費)出来高医療費利用者負担額8桁(SYSTEM_BIND_PATH:701029)
+//設定不要        sb.append(getData(map,"701029"));
+        sb.append(spliter);
+        // (公費1分出来高医療費)単位数合計8桁(SYSTEM_BIND_PATH:701030)
+//設定不要        sb.append(getData(map,"701030"));
+        sb.append(spliter);
+        // (公費1分出来高医療費)請求額9桁(SYSTEM_BIND_PATH:701031)
+//設定不要        sb.append(getData(map,"701031"));
+        sb.append(spliter);
+        // (公費1分出来高医療費)出来高医療費本人負担額8桁(SYSTEM_BIND_PATH:701032)
+//設定不要       sb.append(getData(map,"701032"));
+        sb.append(spliter);
+        // (公費2分出来高医療費)単位数合計8桁(SYSTEM_BIND_PATH:701033)
+//設定不要        sb.append(getData(map,"701033"));
+        sb.append(spliter);
+        // (公費2分出来高医療費)請求額9桁(SYSTEM_BIND_PATH:701034)
+//設定不要        sb.append(getData(map,"701034"));
+        sb.append(spliter);
+        // (公費2分出来高医療費)出来高医療費本人負担額8桁(SYSTEM_BIND_PATH:701035)
+//設定不要        sb.append(getData(map,"701035"));
+        sb.append(spliter);
+        // (公費3分出来高医療費)単位数合計8桁(SYSTEM_BIND_PATH:701036)
+//設定不要        sb.append(getData(map,"701036"));
+        sb.append(spliter);
+        // (公費3分出来高医療費)請求額9桁(SYSTEM_BIND_PATH:701037)
+//設定不要        sb.append(getData(map,"701037"));
+        sb.append(spliter);
+        // (公費3分出来高医療費)出来高医療費本人負担額8桁(SYSTEM_BIND_PATH:701038)
+//設定不要        sb.append(getData(map,"701038"));
+        sb.append("\"");
+        
+        return sb.toString();
+    }
+ // 2017/6 [Yoichiro Kamei] add - end    
     
     private String getData0Rep(VRMap map,String key) throws Exception {
         String result = getData(map,key);

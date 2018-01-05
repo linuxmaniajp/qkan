@@ -44,6 +44,8 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.CareServiceCodeCalcurater;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjAfChecker;
+import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjAfException;
 import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerChecker;
 import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerException;
 import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
@@ -764,7 +766,7 @@ public class QP001 extends QP001Event {
 
     }
     private void setPrintInfoPanel() throws Exception {
-        int[] printCount = new int[19];	// 2016.7.15 edit 18->19
+        int[] printCount = new int[20];	// 2016.7.15 edit 18->19, 2017.7.4 edit 19->20
         // 合計単位数
         int service_unit = 0;
         // 合計金額
@@ -833,6 +835,10 @@ public class QP001 extends QP001Event {
                 case QkanConstants.CLAIM_STYLE_FORMAT_7_2:
                 //[ID:0000476][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
                     printCount[7]++;
+                    printCount[1] = 1;
+                    break;
+                case QkanConstants.CLAIM_STYLE_FORMAT_7_3:	// 2017.7.4 add
+                    printCount[19]++;
                     printCount[1] = 1;
                     break;
                 case QkanConstants.CLAIM_STYLE_FORMAT_8:
@@ -916,6 +922,7 @@ public class QP001 extends QP001Event {
         getType9Count().setText(ACCastUtilities.toString(printCount[9]));
         getType10Count().setText(ACCastUtilities.toString(printCount[10]));
         getType23Count().setText(ACCastUtilities.toString(printCount[18]));	// 2016.7.15 add
+        getType73Count().setText(ACCastUtilities.toString(printCount[19]));	// 2017.7.4 add
         getSupplyCount().setText(ACCastUtilities.toString(printCount[11]));
         getVisitCount().setText(ACCastUtilities.toString(printCount[13]));
         
@@ -1648,7 +1655,12 @@ public class QP001 extends QP001Event {
                     map.put("TARGET_DATE", null);
                     errors.addSjIncorrectLimitOverUnits(map);
                     continue;
-                }
+                } catch (QkanSjAfException e) {	// 2017.06 add AF対応
+                    map.put("PRINT",null);
+                    map.put("TARGET_DATE", null);
+                    errors.addSjAfIncorrectCodes(map);
+                    continue;
+                } 
 // 2016/10/13 [Yoichiro Kamei] mod - end
                 //[ID:0000561][Shin Fujihara] 2009/12/14 edit end 2009年度対応
                 
@@ -1815,6 +1827,10 @@ public class QP001 extends QP001Event {
         CareServiceCodeCalcurater calcurater = getCalcurater(getDBManager(), getTargetDate().getDate(), patient, patientState);
         QkanSjInsurerChecker sjInsurerChecker = new QkanSjInsurerChecker(calcurater);
         // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
+        
+        // 2017/06 [AF対応][Yoichiro Kamei] add - begin
+        boolean isExistsAfCodes = false; //AFの実績データがあるかどうか
+        // 2017/06 [AF対応][Yoichiro Kamei] add - end
         
         // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
         SelfPaymentNumberCalcurater selfPaymentNumberCalcurater = 
@@ -2187,6 +2203,22 @@ public class QP001 extends QP001Event {
                         }
                         break lbl;
                         //[ID:0000447][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
+                    //(様式題7-3)の場合   
+                    case QkanConstants.CLAIM_STYLE_FORMAT_7_3:
+                        QP001Style73 style73 = null;
+                        serial = QP001Style73.getSerialId(getTargetDate().getDate(), serviceDetail,
+                                patientState,type);
+                        if (!styles.containsKey(serial)) {
+                        	style73 = new QP001Style73(type,manager);
+                            styles.put(serial, style73);
+                        } else {
+                        	style73 = (QP001Style73) styles.getData(serial);
+                        }
+                        // 様式第七－三の解析
+                        style73.parse(serviceDetail, getTargetDate().getDate(), patientState,
+                                serviceCode);
+                        isExistsAfCodes = true;	//AF実績データありにセットしてAF関連のチェックを行う
+                        break;
                         
                     //(様式第8)の場合
                     case QkanConstants.CLAIM_STYLE_FORMAT_8:
@@ -2255,6 +2287,17 @@ public class QP001 extends QP001Event {
             }
         }
 
+        // 2017/06 [AF対応][Yoichiro Kamei] add - begin
+        if (isExistsAfCodes) {
+            QkanSjAfChecker sjAfChecker = new QkanSjAfChecker(calcurater, QkanSjAfChecker.Mode.SEIKYU_DATA);
+            // 月次実績データ分ループする。
+            for (int i = 0; i < serviceDetailList.getDataSize(); i++) {
+            	serviceDetail = (VRMap) serviceDetailList.getData(i);
+            	sjAfChecker.checkCodes(serviceDetail);
+            }
+        }
+        // 2017/06 [AF対応][Yoichiro Kamei] add - end
+        
         // データの確定を行う
         it = styles.keySet().iterator();
         while (it.hasNext()) {
@@ -2280,7 +2323,7 @@ public class QP001 extends QP001Event {
                 }
             //[ID:0000561][Shin Fujihara] 2010/01 edit begin 2009年度対応
             //様式第七データの場合
-            } else if (updateData instanceof QP001Style7) {
+            } else if ((updateData instanceof QP001Style7) || (updateData instanceof QP001Style73)) {
             	VRList updateListTemp = updateData.getRecords(patientState.getPatientId(), getClaimDateUpdate().getDate()); 
             	if (updateListTemp.size() == 0){
             		errors.addSelfPlanStyle7(patient);

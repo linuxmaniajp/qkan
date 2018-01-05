@@ -9,6 +9,7 @@ import java.util.List;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
@@ -23,12 +24,22 @@ public class QkanSjServiceCodeManager {
 	
 	// 対象のシステムサービス種類コード（独自）
 	public static List<String> dokujiCodes = Arrays.asList(new String[]{
-		"50211", "50611", "51511" //A2, A6, AF
+		"50211", "50611" //A2, A6
 	});
 	
 	// 対象のサービス種類コード（独自）
 	public static List<String> dokujiKinds  = Arrays.asList(new String[]{
-			"A2", "A6", "AF"
+			"A2", "A6"
+	});
+	
+	// 対象のシステムサービス種類コード（介護予防ケアマネジメント）
+	public static List<String> afCodes = Arrays.asList(new String[]{
+		"51511" //AF
+	});
+	
+	// 対象のサービス種類コード（介護予防ケアマネジメント）
+	public static List<String> afKinds  = Arrays.asList(new String[]{
+			"AF"
 	});
 	
 	// 対象のシステムサービス種類コード（独自定率）
@@ -164,6 +175,35 @@ public class QkanSjServiceCodeManager {
 			serviceCodeCache.put(cacheKey, data);
 			return data;
 		}
+		
+		// 2017/6/21 [Yoichiro Kamei] add - begin 介護予防ケアマネジメント対応
+		if (key == null || "".equals(key)) {
+			return new VRHashMap();
+		}
+		// サービス種類がAFの場合
+		// 保険者独自のマスタが取得できなければ国基準のマスタから取得する
+		String insurerId = key.substring(0, 6);
+		String kind = key.substring(6, 11);
+		String item = key.substring(11, 15);		
+		if (QkanSjServiceCodeManager.afCodes.contains(kind)) {	
+			param = new VRHashMap();			
+			param.put("INSURER_ID", insurerId);
+			param.put("SYSTEM_SERVICE_KIND_DETAIL", kind);
+			param.put("SERVICE_CODE_ITEM", item);
+			list = getAfServiceCode(dbm, targetDate, param);
+			if (list.size() > 0) {
+				VRMap data = (VRMap) list.get(0);
+				if (serviceCodeCache.size() > serviceCodeCacheLimit) {
+					// キャッシュ限界を超えたらすべてクリア（大量件数対策）
+					serviceCodeCache.clear();
+				}
+				
+				// キャッシュに格納
+				serviceCodeCache.put(cacheKey, data);
+				return data;
+			}		
+		}
+		// 2017/6/21 [Yoichiro Kamei] add - end
 
 		return new VRHashMap();
 	}
@@ -324,6 +364,86 @@ public class QkanSjServiceCodeManager {
 		
 		return dbm.executeQuery(sb.toString());
 	}
+	
+	// 2017/6/21 [Yoichiro Kamei] add - begin 介護予防ケアマネジメント対応
+	/**
+	 * 対象年月における国基準の介護予防ケアマネジメントのサービスコードマスタ取得関数です。
+	 * 
+	 * @param dbm
+	 *            DBManager
+	 * @param targetDate
+	 *            対象年月
+	 * @return データベースより取得した結果リスト
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public static VRList getAfServiceCode(ACDBManager dbm, Date targetDate, VRMap param)
+			throws Exception {
+		
+		//保険者独自のAFコード有無を確認
+		VRMap spParam = new VRHashMap();
+		spParam.put("INSURER_ID", param.get("INSURER_ID"));
+		spParam.put("SYSTEM_SERVICE_KIND_DETAIL", param.get("SYSTEM_SERVICE_KIND_DETAIL"));
+		VRList spList = QkanSjServiceCodeManager.getSjServiceCode(dbm, targetDate, spParam);
+		if (spList.size() > 0) {
+			//保険者独自のAFコードが１件でも存在する場合、国基準のコードは参照しない
+			//空のリストを返す（取得データなしとする）
+			return new VRArrayList();
+		}
+		
+		//保険者独自のAFコードが存在しない場合は、国基準のコードを参照する
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT");
+        sb.append(" SYSTEM_SERVICE_KIND_DETAIL");
+		//システムサービス項目コードは総合事業サービスコードマスタに合わせる（国基準コード判別のため保険者番号はオール０としておく）
+		sb.append(",'000000' || SYSTEM_SERVICE_KIND_DETAIL || SERVICE_CODE_ITEM AS SYSTEM_SERVICE_CODE_ITEM");		
+        sb.append(",SERVICE_VALID_START");
+        sb.append(",SERVICE_VALID_END");
+        sb.append(",SERVICE_CODE_KIND");
+        sb.append(",SERVICE_CODE_ITEM");
+        sb.append(",SERVICE_NAME");
+        sb.append(",SERVICE_UNIT");
+        sb.append(",LIMIT_AMOUNT_OBJECT");
+        sb.append(",SERVICE_ADD_FLAG");
+        sb.append(",TOTAL_GROUPING_TYPE");
+        sb.append(",SERVICE_MAIN_FLAG");
+        sb.append(",ROOM_TYPE");
+        sb.append(",SERVICE_ADD_TYPE");
+        sb.append(",SERVICE_STAFF_UNIT");
+        sb.append(",SUMMARY_FLAG");
+        sb.append(",SUMMARY_MEMO");
+        sb.append(",CLASS_TYPE");
+        sb.append(",CODE_ID");
+        sb.append(",EDITABLE_FLAG");
+        sb.append(",LAST_TIME");
+		sb.append(" FROM");
+		sb.append(" M_SERVICE_CODE");
+		sb.append(" WHERE");
+		
+		String systemKind = ACCastUtilities.toString(param.get("SYSTEM_SERVICE_KIND_DETAIL"), "");
+		if (!"".equals(systemKind)) {
+			sb.append(" (SYSTEM_SERVICE_KIND_DETAIL='" + systemKind + "')");
+		}
+		
+		String itemCode = ACCastUtilities.toString(param.get("SERVICE_CODE_ITEM"), "");
+		if (!"".equals(itemCode)) {
+			sb.append(" AND (SERVICE_CODE_ITEM='" + itemCode + "')");
+		}
+		
+		String name = ACCastUtilities.toString(param.get("SERVICE_NAME"), "");
+		if (!"".equals(name)) {
+			sb.append(" AND (SERVICE_NAME like '%" + name + "%')");
+		}
+		
+		String date = VRDateParser.format(targetDate, "yyyy/MM/dd");
+		sb.append(" AND (SERVICE_VALID_START<='" + date + "')");
+		sb.append(" AND (SERVICE_VALID_END>='" + date + "')");
+		sb.append(" ORDER BY");
+		sb.append(" SERVICE_CODE_ITEM ASC");
+		
+		return dbm.executeQuery(sb.toString());
+	}
+	// 2017/6/21 [Yoichiro Kamei] add - end 介護予防ケアマネジメント対応
 	
 	// マスタの最終更新時刻を取得します。
 	private static String getLastUpdateTime(ACDBManager dbm) throws Exception {

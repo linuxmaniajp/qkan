@@ -114,8 +114,14 @@ public class SC_50611_201504 extends Qkan10011_ServiceUnitGetter {
         if(_9 == 2){
             sysSvcCdItems = new ArrayList<HashMap<String, String>>();
 
+            // 加算
+            setKasanServiceByPattern(_5060110, _16, _5060101, _5060105, _5060109, sysSvcCdItems, _5060112);
+            
             // 運動器機能向上加算、栄養改善加算、口腔機能向上加算、選択的サービス複数実施加算
-            setSentakutekiService(_5060113, _5060106, _5060107, _5060108, sysSvcCdItems, _5060112);
+            setSentakutekiServiceByPattern(_5060113, _5060106, _5060107, _5060108, sysSvcCdItems, _5060112);
+            
+            // サービス提供体制強化加算
+            setServiceTeikyoKasanByPattern(_5060101, _5060111, sysSvcCdItems, _5060112);
             
             // 介護職員処遇改善を返却
             switch (_17) {
@@ -171,255 +177,13 @@ public class SC_50611_201504 extends Qkan10011_ServiceUnitGetter {
 
         // 加算
         // ============================================================================
-        
-        // 通所型サービス若年性認知症受入加算
-        if (_5060110 > 1) {
-        	switch (_5060112) {
-        	case 1:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z6109");
-        		break;
-        	case 2:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z6129");
-        		break;
-        	case 3:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z6139");
-        		break;
-        	case 4:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z6149");
-        		break;
-        	case 5:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z6159");
-        		break;
-        	}
-        }
-        
-        // 同一建物居住者へのサービス提供がありの場合
-        if (_16 > 1) {
-            
-            // 通所型サービス費で分岐
-            switch(_5060101) {
-            // 通所型サービス１
-            case 1:
-                // 通所型サービス同一建物減算１
-            	switch (_5060112) {
-            	case 1:
-	                putSystemServiceCodeItem(sysSvcCdItems, "Z6105");
-	        		break;
-	        	case 2:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6125");
-	        		break;
-	        	case 3:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6135");
-	        		break;
-	        	case 4:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6145");
-	        		break;
-	        	case 5:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6155");
-	        		break;
-            	}
-                break;
-            // 通所型サービス２
-            case 2:
-                // 通所型サービス同一建物減算２
-            	switch (_5060112) {
-            	case 1:
-	                putSystemServiceCodeItem(sysSvcCdItems, "Z6106");
-	        		break;
-	        	case 2:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6126");
-	        		break;
-	        	case 3:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6136");
-	        		break;
-	        	case 4:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6146");
-	        		break;
-	        	case 5:
-	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6156");
-	        		break;
-            	}
-                break;
-            }
-            
-        }
-        
-        // 生活機能向上グループ活動加算　1-なし 2-あり
-        if (_5060105 > 1) {
-        	switch (_5060112) {
-        	case 1:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5010");
-        		break;
-        	case 2:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5020");
-        		break;
-        	case 3:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5030");
-        		break;
-        	case 4:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5040");
-        		break;
-        	case 5:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5050");
-        		break;
-        	}
-        }
+        setKasanServiceByPattern(_5060110, _16, _5060101, _5060105, _5060109, sysSvcCdItems, _5060112);
         
         // 運動器機能向上加算、栄養改善加算、口腔機能向上加算、選択的サービス複数実施加算
-        setSentakutekiService(_5060113, _5060106, _5060107, _5060108, sysSvcCdItems, _5060112);
+        setSentakutekiServiceByPattern(_5060113, _5060106, _5060107, _5060108, sysSvcCdItems, _5060112);
         
-        // 事業所評価加算　1-なし 2-あり
-        if (_5060109 > 1) {
-        	switch (_5060112) {
-        	case 1:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5005");
-        		break;
-        	case 2:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5015");
-        		break;
-        	case 3:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5025");
-        		break;
-        	case 4:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5035");
-        		break;
-        	case 5:
-        		putSystemServiceCodeItem(sysSvcCdItems, "Z5045");
-        		break;
-        	}
-        }
-        
-        switch (_5060111) {
-        case 4:
-            if (_5060101 == 1) {
-                // 通所型サービス１の場合
-                // 6101 通所型サービス提供体制加算Iイ１
-            	switch (_5060112) {
-            	case 1:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6107");
-            		break;
-            	case 2:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6127");
-            		break;
-            	case 3:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6137");
-            		break;
-            	case 4:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6147");
-            		break;
-            	case 5:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6157");
-            		break;
-            	}
-            } else if (_5060101 == 2) {
-                // 通所型サービス２の場合
-                // 6102 通所型サービス提供体制加算Iイ２
-            	switch (_5060112) {
-            	case 1:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6108");
-            		break;
-            	case 2:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6128");
-            		break;
-            	case 3:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6138");
-            		break;
-            	case 4:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6148");
-            		break;
-            	case 5:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6158");
-            		break;
-            	}
-            }
-            break;
-        case 2:
-            if (_5060101 == 1) {
-                // 通所型サービス１の場合
-                // 6101 通所型サービス提供体制加算Iロ１
-            	switch (_5060112) {
-            	case 1:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6101");
-            		break;
-            	case 2:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6121");
-            		break;
-            	case 3:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6131");
-            		break;
-            	case 4:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6141");
-            		break;
-            	case 5:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6151");
-            		break;
-            	}
-            } else if (_5060101 == 2) {
-                // 通所型サービス２の場合
-                // 6102 通所型サービス提供体制加算Iロ２
-            	switch (_5060112) {
-            	case 1:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6102");
-            		break;
-            	case 2:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6122");
-            		break;
-            	case 3:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6132");
-            		break;
-            	case 4:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6142");
-            		break;
-            	case 5:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6152");
-            		break;
-            	}
-            }
-            break;
-        case 3:
-            if (_5060101 == 1) {
-                // 通所型サービス１の場合
-                // 6103 通所型サービス提供体制加算II１
-            	switch (_5060112) {
-            	case 1:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6103");
-            		break;
-            	case 2:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6123");
-            		break;
-            	case 3:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6133");
-            		break;
-            	case 4:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6143");
-            		break;
-            	case 5:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6153");
-            		break;
-            	}
-            } else if (_5060101 == 2) {
-                // 通所型サービス２の場合
-                // 6104 通所型サービス提供体制加算II２
-            	switch (_5060112) {
-            	case 1:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6104");
-            		break;
-            	case 2:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6124");
-            		break;
-            	case 3:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6134");
-            		break;
-            	case 4:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6144");
-            		break;
-            	case 5:
-            		putSystemServiceCodeItem(sysSvcCdItems, "Z6154");
-            		break;
-            	}
-            }
-            break;
-        }
+        // サービス提供体制強化加算
+        setServiceTeikyoKasanByPattern(_5060101, _5060111, sysSvcCdItems, _5060112);
         
         
         // 介護職員処遇改善を返却
@@ -484,8 +248,9 @@ public class SC_50611_201504 extends Qkan10011_ServiceUnitGetter {
 	 * @param nourishment 栄養改善加算
 	 * @param mouthFunction 口腔機能向上加算
 	 * @param sysSvcCdItems サービスコードMap
+	 * @param pattern パターン
      */
-    private void setSentakutekiService(int sentakuteki, 
+    private void setSentakutekiServiceByPattern(int sentakuteki, 
     		int moveFunction, int nourishment, int mouthFunction, 
     		ArrayList<HashMap<String, String>> sysSvcCdItems,
     		int pattern) {
@@ -732,4 +497,275 @@ public class SC_50611_201504 extends Qkan10011_ServiceUnitGetter {
         }
     }
 
+    /**
+     * パターンにあった加算を設定します。
+	 * @param _5060110 通所型サービス若年性認知症受入加算
+	 * @param _16      通所型サービス同一建物減算
+	 * @param _5060101 通所型サービス費　1-１ 2-２
+	 * @param _5060105 生活機能向上グループ活動加算
+	 * @param _5060109 事業所評価加算
+	 * @param sysSvcCdItems サービスコードMap
+	 * @param pattern パターン
+     */
+    private void setKasanServiceByPattern(int _5060110, int _16, int _5060101, int _5060105, int _5060109,
+    		ArrayList<HashMap<String, String>> sysSvcCdItems,
+    		int pattern) {
+        // 通所型サービス若年性認知症受入加算
+        if (_5060110 > 1) {
+        	switch (pattern) {
+        	case 1:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z6109");
+        		break;
+        	case 2:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z6129");
+        		break;
+        	case 3:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z6139");
+        		break;
+        	case 4:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z6149");
+        		break;
+        	case 5:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z6159");
+        		break;
+        	}
+        }
+        
+        // 同一建物居住者へのサービス提供がありの場合
+        if (_16 > 1) {
+            
+            // 通所型サービス費で分岐
+            switch(_5060101) {
+            // 通所型サービス１
+            case 1:
+                // 通所型サービス同一建物減算１
+            	switch (pattern) {
+            	case 1:
+	                putSystemServiceCodeItem(sysSvcCdItems, "Z6105");
+	        		break;
+	        	case 2:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6125");
+	        		break;
+	        	case 3:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6135");
+	        		break;
+	        	case 4:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6145");
+	        		break;
+	        	case 5:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6155");
+	        		break;
+            	}
+                break;
+            // 通所型サービス２
+            case 2:
+                // 通所型サービス同一建物減算２
+            	switch (pattern) {
+            	case 1:
+	                putSystemServiceCodeItem(sysSvcCdItems, "Z6106");
+	        		break;
+	        	case 2:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6126");
+	        		break;
+	        	case 3:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6136");
+	        		break;
+	        	case 4:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6146");
+	        		break;
+	        	case 5:
+	        		putSystemServiceCodeItem(sysSvcCdItems, "Z6156");
+	        		break;
+            	}
+                break;
+            }
+            
+        }
+        
+        // 生活機能向上グループ活動加算　1-なし 2-あり
+        if (_5060105 > 1) {
+        	switch (pattern) {
+        	case 1:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5010");
+        		break;
+        	case 2:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5020");
+        		break;
+        	case 3:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5030");
+        		break;
+        	case 4:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5040");
+        		break;
+        	case 5:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5050");
+        		break;
+        	}
+        }
+        
+        // 事業所評価加算　1-なし 2-あり
+        if (_5060109 > 1) {
+        	switch (pattern) {
+        	case 1:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5005");
+        		break;
+        	case 2:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5015");
+        		break;
+        	case 3:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5025");
+        		break;
+        	case 4:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5035");
+        		break;
+        	case 5:
+        		putSystemServiceCodeItem(sysSvcCdItems, "Z5045");
+        		break;
+        	}
+        }
+
+    }
+    
+    /**
+     * サービス提供体制強化加算を設定します。
+	 * @param kihon 通所型サービス費　1-１ 2-２
+	 * @param teikyokasan サービス提供体制強化加算
+	 * @param sysSvcCdItems サービスコードMap
+	 * @param pattern パターン
+     */
+    private void setServiceTeikyoKasanByPattern(int kihon, int teikyokasan,
+    		ArrayList<HashMap<String, String>> sysSvcCdItems,
+    		int pattern){
+        switch (teikyokasan) {
+        case 4:
+            if (kihon == 1) {
+                // 通所型サービス１の場合
+                // 6101 通所型サービス提供体制加算Iイ１
+            	switch (pattern) {
+            	case 1:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6107");
+            		break;
+            	case 2:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6127");
+            		break;
+            	case 3:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6137");
+            		break;
+            	case 4:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6147");
+            		break;
+            	case 5:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6157");
+            		break;
+            	}
+            } else if (kihon == 2) {
+                // 通所型サービス２の場合
+                // 6102 通所型サービス提供体制加算Iイ２
+            	switch (pattern) {
+            	case 1:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6108");
+            		break;
+            	case 2:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6128");
+            		break;
+            	case 3:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6138");
+            		break;
+            	case 4:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6148");
+            		break;
+            	case 5:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6158");
+            		break;
+            	}
+            }
+            break;
+        case 2:
+            if (kihon == 1) {
+                // 通所型サービス１の場合
+                // 6101 通所型サービス提供体制加算Iロ１
+            	switch (pattern) {
+            	case 1:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6101");
+            		break;
+            	case 2:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6121");
+            		break;
+            	case 3:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6131");
+            		break;
+            	case 4:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6141");
+            		break;
+            	case 5:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6151");
+            		break;
+            	}
+            } else if (kihon == 2) {
+                // 通所型サービス２の場合
+                // 6102 通所型サービス提供体制加算Iロ２
+            	switch (pattern) {
+            	case 1:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6102");
+            		break;
+            	case 2:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6122");
+            		break;
+            	case 3:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6132");
+            		break;
+            	case 4:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6142");
+            		break;
+            	case 5:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6152");
+            		break;
+            	}
+            }
+            break;
+        case 3:
+            if (kihon == 1) {
+                // 通所型サービス１の場合
+                // 6103 通所型サービス提供体制加算II１
+            	switch (pattern) {
+            	case 1:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6103");
+            		break;
+            	case 2:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6123");
+            		break;
+            	case 3:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6133");
+            		break;
+            	case 4:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6143");
+            		break;
+            	case 5:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6153");
+            		break;
+            	}
+            } else if (kihon == 2) {
+                // 通所型サービス２の場合
+                // 6104 通所型サービス提供体制加算II２
+            	switch (pattern) {
+            	case 1:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6104");
+            		break;
+            	case 2:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6124");
+            		break;
+            	case 3:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6134");
+            		break;
+            	case 4:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6144");
+            		break;
+            	case 5:
+            		putSystemServiceCodeItem(sysSvcCdItems, "Z6154");
+            		break;
+            	}
+            }
+            break;
+        }
+    }
 }

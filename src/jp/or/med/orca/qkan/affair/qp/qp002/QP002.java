@@ -50,6 +50,7 @@ import jp.nichicom.vr.util.VRLinkedHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.qkan.QkanCommon;
+import jp.or.med.orca.qkan.QkanConstants;
 import jp.or.med.orca.qkan.QkanSystemInformation;
 import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
 import jp.or.med.orca.qkan.affair.QkanMessageList;
@@ -360,9 +361,11 @@ public class QP002 extends QP002Event {
                 
                 // ‹‘îx‰‡‚Ìê‡Ÿ‰æ–Ê‚Ì‘JˆÚ‚ÍŠî–{QP004‚Å‚Í–³‚­QP005‚ÌÚ×•ÒW‰æ–Ê‚É‘JˆÚ‚·‚é
                 // ‹‘î—\–hx‰‡‚Ìê‡Ÿ‰æ–Ê‚Ì‘JˆÚ‚ÍŠî–{QP004‚Å‚Í–³‚­QP005‚ÌÚ×•ÒW‰æ–Ê‚É‘JˆÚ‚·‚é 
+                // ‰îŒì—\–hƒPƒAƒ}ƒlƒWƒƒ“ƒg‚Ìê‡Ÿ‰æ–Ê‚Ì‘JˆÚ‚ÍŠî–{QP004‚Å‚Í–³‚­QP005‚ÌÚ×•ÒW‰æ–Ê‚É‘JˆÚ‚·‚é 2017.07 add
                 ACAffairInfo affair;
-                if(new Integer(10711).equals(map.getData("CLAIM_STYLE_TYPE"))
-                		|| new Integer(10712).equals(map.getData("CLAIM_STYLE_TYPE"))){
+                if(new Integer(QkanConstants.CLAIM_STYLE_FORMAT_7).equals(map.getData("CLAIM_STYLE_TYPE"))
+                		|| new Integer(QkanConstants.CLAIM_STYLE_FORMAT_7_2).equals(map.getData("CLAIM_STYLE_TYPE"))
+                		|| new Integer(QkanConstants.CLAIM_STYLE_FORMAT_7_3).equals(map.getData("CLAIM_STYLE_TYPE"))){
                 	affair = new ACAffairInfo(QP005.class.getName(), param);
                 }else{                
                 	affair = new ACAffairInfo(QP004.class.getName(), param);

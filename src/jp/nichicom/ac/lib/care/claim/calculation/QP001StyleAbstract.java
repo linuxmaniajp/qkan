@@ -132,6 +132,10 @@ public abstract class QP001StyleAbstract {
      */
     protected static final String IDENTIFICATION_NO_7_2_201204 = "8125";
     /**
+     * 様式第七の三　交換識別番号
+     */
+    protected static final String IDENTIFICATION_NO_7_3_201504 = "8171";	// 2017.6 add
+    /**
      * 様式第八 交換識別番号
      */
     protected static final String IDENTIFICATION_NO_8_201204 = "7183";
@@ -233,6 +237,9 @@ public abstract class QP001StyleAbstract {
             break;
         case QkanConstants.CLAIM_STYLE_FORMAT_7_2:
             result = IDENTIFICATION_NO_7_2_201204;
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_7_3:	// 2017/6 add AF対応
+            result = IDENTIFICATION_NO_7_3_201504;
             break;
         case QkanConstants.CLAIM_STYLE_FORMAT_8:
             result = IDENTIFICATION_NO_8_201204;

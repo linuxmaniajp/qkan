@@ -63,6 +63,7 @@ public class QS001_50611_201504 extends QS001_50611_201504Event {
         putImportProviderBindPath("運動機能向上体制", "5060102", "5060106");
         putImportProviderBindPath("栄養改善体制", "5060103", "5060107");
         putImportProviderBindPath("口腔機能向上体制", "5060104", "5060108");
+        putImportProviderBindPath("事業所評価加算の有無", "5060105", "5060109");
         putImportProviderBindPath("サービス提供体制強化加算", "5060107", "5060111");
 
         // 値により入力を禁止する事業所設定項目
@@ -71,6 +72,7 @@ public class QS001_50611_201504 extends QS001_50611_201504Event {
         putRestrictProviderBindPath("栄養改善体制", "5060103", "5060107");
         putRestrictProviderBindPath("口腔機能向上体制", "5060104", "5060108");
         putRestrictProviderBindPath("選択的サービス複数実施加算", "5060109", "5060113");
+        putRestrictProviderBindPath("事業所評価加算の有無", "5060105", "5060109");
 
     }
 

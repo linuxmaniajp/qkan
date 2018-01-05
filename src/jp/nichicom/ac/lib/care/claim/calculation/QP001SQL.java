@@ -318,10 +318,25 @@ public class QP001SQL extends QP001State {
 
             // 利用者一覧（在宅サービス支援事業所請求）
         } else if ("03".equals(affair)) {
-            sb.append(" AND (CLAIM.CLAIM_STYLE_TYPE IN ("
+            sb.append(" AND (CLAIM.CLAIM_STYLE_TYPE IN (");
+
+            String seikyuType = "1";
+            if (VRBindPathParser.has("SEIKYU_TYPE", sqlParam)) {
+                seikyuType = ACCastUtilities.toString(sqlParam.get("SEIKYU_TYPE"));
+            }
+            if ("1".equals(seikyuType) || "2".equals(seikyuType)) {
+                sb.append(""
                     + QkanConstants.CLAIM_STYLE_FORMAT_7 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_7_2
-                    + "))");
+                    );
+            }
+            if ("1".equals(seikyuType)) {
+            	sb.append(",");
+            }
+            if ("1".equals(seikyuType) || "3".equals(seikyuType)) {
+            	sb.append(QkanConstants.CLAIM_STYLE_FORMAT_7_3 ); // 2017.6 add
+            }
+            sb.append("))");
             sb.append(" AND (CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
 
             // 利用者一覧（在宅サービス提供事業所請求）
@@ -333,7 +348,7 @@ public class QP001SQL extends QP001State {
                 seikyuType = ACCastUtilities.toString(sqlParam.get("SEIKYU_TYPE"));
             }
             if ("1".equals(seikyuType) || "2".equals(seikyuType)) {
-                sb.append(
+                sb.append(""
                     + QkanConstants.CLAIM_STYLE_FORMAT_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_2_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_3 + ","
@@ -360,7 +375,6 @@ public class QP001SQL extends QP001State {
             if ("1".equals(seikyuType) || "3".equals(seikyuType)) {
             	sb.append(QkanConstants.CLAIM_STYLE_FORMAT_2_3 );
             }
-                    
             sb.append("))");
             sb.append(" AND (CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
 
@@ -399,6 +413,7 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_6_7 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_7 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_7_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_7_3 + ","	// 2017.6 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_8 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_9 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_10
@@ -426,6 +441,7 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_6_7 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_7 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_7_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_7_3 + ","	// 2017.6 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_8 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_9 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_10
@@ -580,8 +596,15 @@ public class QP001SQL extends QP001State {
         
         //利用者一覧（在宅サービス支援事業所請求）
         if("03".equals(sqlParam.get("AFFAIR"))){
-            sb.append(" AND(CLAIM.CATEGORY_NO = 10)");
-            sb.append(" AND(CLAIM_TEMP.SYSTEM_BIND_PATH = '1001017')");
+            // 2017/07 [AF対応][Shinobu Hitaka] edit begin
+            //sb.append(" AND(CLAIM.CATEGORY_NO = 10)");
+            //sb.append(" AND(CLAIM_TEMP.SYSTEM_BIND_PATH = '1001017')");
+            sb.append(" AND (");
+            sb.append("((CLAIM.CATEGORY_NO = 10) AND CLAIM_TEMP.SYSTEM_BIND_PATH = '1001017')");
+            sb.append(" OR ");
+            sb.append("((CLAIM.CATEGORY_NO = 2) AND CLAIM_TEMP.SYSTEM_BIND_PATH = '201033')");
+            sb.append(" )");
+            // 2017/07 [AF対応][Shinobu Hitaka] edit end
             
             //[ID:0000476][Shin Fujihara] 2009/04 add begin 平成21年4月法改正対応
             sb.append(" GROUP BY");
@@ -676,9 +699,15 @@ public class QP001SQL extends QP001State {
         
         //様式第七の金額を取得
         if("03".equals(sqlParam.get("AFFAIR"))){
-            sb.append(" AND(CLAIM.CATEGORY_NO = 10)");
-            sb.append(" AND(CLAIM_TEMP.SYSTEM_BIND_PATH = '1001018')");
-            
+        	// 2017/07 [AF対応][Shinobu Hitaka] edit begin
+        	//sb.append(" AND(CLAIM.CATEGORY_NO = 10)");
+            //sb.append(" AND(CLAIM_TEMP.SYSTEM_BIND_PATH = '1001018')");
+        	sb.append(" AND (");
+        	sb.append("((CLAIM.CATEGORY_NO = 10) AND CLAIM_TEMP.SYSTEM_BIND_PATH = '1001018')"); //様式第七、様式第七の二
+        	sb.append(" OR ");
+        	sb.append("((CLAIM.CATEGORY_NO = 2) AND CLAIM_TEMP.SYSTEM_BIND_PATH IN ('201034', '201040'))"); //様式第七の三(保険請求額、公費1請求額)
+        	sb.append(")");
+        	// 2017/07 [AF対応][Shinobu Hitaka] edit end
         //医療の請求金額を取得
         } else if("06".equals(sqlParam.get("AFFAIR"))){
             sb.append(" AND(CLAIM.CATEGORY_NO = 13)");
@@ -782,8 +811,7 @@ public class QP001SQL extends QP001State {
 
         // 保険請求額
         sb.append(" SELECT");
-        sb
-                .append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '-' || CLAIM_STYLE_TYPE || '-' || CLAIM.TARGET_DATE AS CODE,");
+        sb.append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '-' || CLAIM_STYLE_TYPE || '-' || CLAIM.TARGET_DATE AS CODE,");
         sb.append(" CLAIM.PATIENT_ID,");
         sb.append(" CLAIM.INSURED_ID,");
         sb.append(" CLAIM_STYLE_TYPE,");
@@ -867,8 +895,7 @@ public class QP001SQL extends QP001State {
         
         // 公費請求
         sb.append(" SELECT");
-        sb
-                .append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '-' || CLAIM_STYLE_TYPE || '-' || CLAIM.TARGET_DATE AS CODE,");
+        sb.append(" CLAIM.PATIENT_ID || '-' || CLAIM.INSURED_ID || '-' || CLAIM_STYLE_TYPE || '-' || CLAIM.TARGET_DATE AS CODE,");
         sb.append(" CLAIM.PATIENT_ID,");
         sb.append(" CLAIM.INSURED_ID,");
         sb.append(" CLAIM_STYLE_TYPE,");

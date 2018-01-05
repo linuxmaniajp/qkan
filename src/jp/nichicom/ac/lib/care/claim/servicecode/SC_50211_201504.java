@@ -80,6 +80,17 @@ public class SC_50211_201504 extends Qkan10011_ServiceUnitGetter {
         int _17 = getIntValue(map,
                 Qkan10011_ServiceUnitGetter.SYOGUKAIZEN_KASAN, 1);
 
+        // [CCCX:04029][Shinobu Hitaka] 2017/06/20 add - begin  加算のみ対応
+        int _9 = getIntValue(map,"9");
+        
+        // 単独加算のみ---------------------------------------------------------------
+        // 単独加算サービス
+        if(_9 == 2){
+        	setKasanServiceByPattern(_5020104, _5020105, sysSvcCdItems, _5020106);
+        	return sysSvcCdItems;
+        }
+        // [CCCX:04029][Shinobu Hitaka] 2017/06/20 add - end
+        
         // 独自コード生成
         // ===========================================================================
         StringBuilder sb = new StringBuilder();
@@ -106,49 +117,8 @@ public class SC_50211_201504 extends Qkan10011_ServiceUnitGetter {
 
         // 加算
         // ============================================================================
-        
-        // 初回加算
-        if (_5020104 > 1) {
-        	switch (_5020106) {
-        	case 1:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4001");
-                break;
-        	case 2:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4011");
-                break;
-        	case 3:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4021");
-                break;
-        	case 4:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4031");
-                break;
-        	case 5:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4041");
-                break;
-        	}
-        }
-
-        // 生活機能向上連携加算
-        if (_5020105 > 1) {
-        	switch (_5020106) {
-        	case 1:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4002");
-                break;
-        	case 2:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4012");
-                break;
-        	case 3:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4022");
-                break;
-        	case 4:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4032");
-                break;
-        	case 5:
-                putSystemServiceCodeItem(sysSvcCdItems, "Z4042");
-                break;
-        	}
-        }
-        
+        // [CCCX:04029][Shinobu Hitaka] 2017/06/20 加算のみ対応
+        setKasanServiceByPattern(_5020104, _5020105, sysSvcCdItems, _5020106);
         
         // 介護職員処遇改善を返却
         switch (_17) {
@@ -240,5 +210,58 @@ public class SC_50211_201504 extends Qkan10011_ServiceUnitGetter {
         }
         
         return sysSvcCdItems;
+    }
+    
+    /**
+     * パターンにあった初回加算、生活機能向上連携加算を設定します。
+	 * @param _5020104 初回加算
+	 * @param _5020105 生活機能向上連携加算
+	 * @param sysSvcCdItems サービスコードMap
+	 * @param pattern パターン
+     */
+    private void setKasanServiceByPattern(int _5020104, int _5020105, 
+    		ArrayList<HashMap<String, String>> sysSvcCdItems,
+    		int pattern) {
+	    // 初回加算
+	    if (_5020104 > 1) {
+	    	switch (pattern) {
+	    	case 1:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4001");
+	            break;
+	    	case 2:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4011");
+	            break;
+	    	case 3:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4021");
+	            break;
+	    	case 4:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4031");
+	            break;
+	    	case 5:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4041");
+	            break;
+	    	}
+	    }
+	
+	    // 生活機能向上連携加算
+	    if (_5020105 > 1) {
+	    	switch (pattern) {
+	    	case 1:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4002");
+	            break;
+	    	case 2:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4012");
+	            break;
+	    	case 3:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4022");
+	            break;
+	    	case 4:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4032");
+	            break;
+	    	case 5:
+	            putSystemServiceCodeItem(sysSvcCdItems, "Z4042");
+	            break;
+	    	}
+	    }
     }
 }

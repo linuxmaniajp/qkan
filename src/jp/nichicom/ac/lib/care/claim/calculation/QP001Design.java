@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2016/12/12  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2017/07/04  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定/請求書出力 (P)
@@ -186,6 +186,10 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
   private ACTextField type7Count;
 
   private ACLabelContainer type7CountContainer;
+
+  private ACTextField type73Count;
+
+  private ACLabelContainer type73CountContainer;
 
   private ACTextField type2Count;
 
@@ -1282,6 +1286,43 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       type7CountContainer.add(getType7Count(), null);
     }
     return type7CountContainer;
+  }
+
+  /**
+   * 様式第七の三・テキストを取得します。
+   * @return 様式第七の三・テキスト
+   */
+  public ACTextField getType73Count(){
+    if(type73Count==null){
+
+      type73Count = new ACTextField();
+
+      getType73CountContainer().setText("様式第七の三件数");
+
+      type73Count.setBindPath("STYLE_73");
+
+      type73Count.setColumns(3);
+
+      type73Count.setEditable(false);
+
+      addType73Count();
+    }
+    return type73Count;
+
+  }
+
+  /**
+   * 様式第七の三・テキストコンテナを取得します。
+   * @return 様式第七の三・テキストコンテナ
+   */
+  protected ACLabelContainer getType73CountContainer(){
+    if(type73CountContainer==null){
+      type73CountContainer = new ACLabelContainer();
+      type73CountContainer.setFollowChildEnabled(true);
+      type73CountContainer.setVAlignment(VRLayout.CENTER);
+      type73CountContainer.add(getType73Count(), null);
+    }
+    return type73CountContainer;
   }
 
   /**
@@ -2409,7 +2450,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       infoTableColumn15.setColumnName("JOTAI_CODE");
 
       infoTableColumn15.setColumns(6);
-      
+
       infoTableColumn15.setMinWidth(60);
 
       addInfoTableColumn15();
@@ -2974,6 +3015,8 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
 
     typeCountInfomation.add(getType7CountContainer(), VRLayout.FLOW_INSETLINE);
 
+    typeCountInfomation.add(getType73CountContainer(), VRLayout.FLOW_INSETLINE);
+
     typeCountInfomation.add(getType2CountContainer(), VRLayout.FLOW_INSETLINE);
 
     typeCountInfomation.add(getType3CountContainer(), VRLayout.FLOW_INSETLINE);
@@ -3020,6 +3063,13 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
    * 様式第七・テキストに内部項目を追加します。
    */
   protected void addType7Count(){
+
+  }
+
+  /**
+   * 様式第七の三・テキストに内部項目を追加します。
+   */
+  protected void addType73Count(){
 
   }
 

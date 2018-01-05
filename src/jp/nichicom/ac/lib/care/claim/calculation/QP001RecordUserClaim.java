@@ -587,6 +587,14 @@ public class QP001RecordUserClaim extends QP001RecordAbstract {
         for(int i = 0; i < claimList.size(); i++){
             VRMap claim = (VRMap)claimList.get(i);
             
+            // 2017/6 [Yoichiro Kamei] add - begin AF対応
+            // AFは利用者向け請求の対象外とする
+            int claimStypeType = ACCastUtilities.toInt(claim.get("CLAIM_STYLE_TYPE"), 0);
+            if (QkanConstants.CLAIM_STYLE_FORMAT_7_3 == claimStypeType) {
+            	continue;
+            }
+            // 2017/6 [Yoichiro Kamei] add - end
+            
             //キーの存在チェック
             //if(claim.containsKey("CATEGORY_NO") && (String.valueOf(claim.get("CATEGORY_NO")).equals("2"))){
             if(claim.containsKey("CATEGORY_NO")){

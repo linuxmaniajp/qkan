@@ -412,43 +412,63 @@ public class QP001PrintControl {
             // 利用者情報
             VRMap patient = (VRLinkedHashMap) QkanCommon.getPatientInfo(dbm, patient_id).get(0);
 
-            // 在宅介護支援介護給付費明細書-様式第七(QP00108)の印刷を行う。
-            // 様式第七は最後にまとめて出力する必用がある。
-            VRMap style7Map = (VRMap) claimList.get(0);
-
-            // 事業所番号 + 対象年月 + 保険者番号 + 公費負担者番号+対象年月をキーにする
-            String key = String.valueOf(style7Map.get("1001002")) + "-"
-                    + String.valueOf(style7Map.get("1001004")) + "-"
-                    + String.valueOf(style7Map.get("1001005")) + "-";
-
-            if (!ACTextUtilities.isNullText(style7Map.get("1001008"))) {
-                key += String.valueOf(style7Map.get("1001008"));
-            }
-
-            // 予防対応開始
-            key += String.valueOf(claimStyleType);
-            // 予防対応終了
-
-            // 様式第七が複数レコードを保持するようになったので、
-            // ロジックを大幅に変更
-            VRMap style7DataMap = new VRHashMap();
-
-            style7DataMap.put("PATIENT_FAMILY_KANA", patient.get("PATIENT_FAMILY_KANA"));
-            style7DataMap.put("PATIENT_FIRST_KANA", patient.get("PATIENT_FIRST_KANA"));
-            style7DataMap.put("PATIENT_FAMILY_NAME", patient.get("PATIENT_FAMILY_NAME"));
-            style7DataMap.put("PATIENT_FIRST_NAME",patient.get("PATIENT_FIRST_NAME"));
-            style7DataMap.put("CLAIM_DATA", claimList);
-
-            VRList style7List = null;
-            if (style7.containsKey(key)) {
-                style7List = style7.get(key);
+            // [2017年4月改正][Shinobu Hitaka] 2017/07/05 add AF国保連経由支払可能に対応
+            if (claimStyleType == QkanConstants.CLAIM_STYLE_FORMAT_7_3) {
+                // 様式第七の三はここで印刷する
+            	
+                // サービスの名称を付加
+                printParam.put("SERVICE_NAME", manager.getServices());
+                // 請求対象日
+                printParam.put("SEIKYU_DATE", claimDate);
+                // 帳票データ
+                printParam.put("STYLE_DATA", claimList);
+                // 利用者情報
+                printParam.put("PATIENT", patient);
+                // 様式番号
+                printParam.put("CLAIM_STYLE_TYPE", String.valueOf(claimStyleType));
+                // 様式第七の三
+                new QP001P073_201504().doPrint(writer, printParam);
+                
             } else {
-                style7List = new VRArrayList();
-                style7.put(key, style7List);
+            
+	            // 在宅介護支援介護給付費明細書-様式第七(QP00108)の印刷を行う。
+	            // 様式第七は最後にまとめて出力する必用がある。
+	            VRMap style7Map = (VRMap) claimList.get(0);
+	
+	            // 事業所番号 + 対象年月 + 保険者番号 + 公費負担者番号+対象年月をキーにする
+	            String key = String.valueOf(style7Map.get("1001002")) + "-"
+	                    + String.valueOf(style7Map.get("1001004")) + "-"
+	                    + String.valueOf(style7Map.get("1001005")) + "-";
+	
+	            if (!ACTextUtilities.isNullText(style7Map.get("1001008"))) {
+	                key += String.valueOf(style7Map.get("1001008"));
+	            }
+	
+	            // 予防対応開始
+	            key += String.valueOf(claimStyleType);
+	            // 予防対応終了
+	
+	            // 様式第七が複数レコードを保持するようになったので、
+	            // ロジックを大幅に変更
+	            VRMap style7DataMap = new VRHashMap();
+	
+	            style7DataMap.put("PATIENT_FAMILY_KANA", patient.get("PATIENT_FAMILY_KANA"));
+	            style7DataMap.put("PATIENT_FIRST_KANA", patient.get("PATIENT_FIRST_KANA"));
+	            style7DataMap.put("PATIENT_FAMILY_NAME", patient.get("PATIENT_FAMILY_NAME"));
+	            style7DataMap.put("PATIENT_FIRST_NAME",patient.get("PATIENT_FIRST_NAME"));
+	            style7DataMap.put("CLAIM_DATA", claimList);
+	
+	            VRList style7List = null;
+	            if (style7.containsKey(key)) {
+	                style7List = style7.get(key);
+	            } else {
+	                style7List = new VRArrayList();
+	                style7.put(key, style7List);
+	            }
+	            style7List.add(style7DataMap);
+            
             }
-            style7List.add(style7DataMap);
         }
-        
         
         Iterator<String> it = style7.keySet().iterator();
         while (it.hasNext()) {
@@ -810,7 +830,8 @@ public class QP001PrintControl {
             		// 利用者向け請求・給付管理票のデータは不要なのでスキップ
             		continue;
             	}
-            	if (QkanConstants.CLAIM_STYLE_FORMAT_2_3 == claimStypeType) {
+            	if (QkanConstants.CLAIM_STYLE_FORMAT_2_3 == claimStypeType
+            			|| QkanConstants.CLAIM_STYLE_FORMAT_7_3 == claimStypeType) {
             		claimListSogo.add(row);
             	} else {
             		claimListTmp.add(row);

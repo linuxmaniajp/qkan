@@ -5012,4 +5012,33 @@ public class QkanMessageList {
 
   }
 
+  /**
+   * 限度額管理対象の予防サービスが算定されています。介護予防支援の可能性があります。＜改行＞このまま介護予防ケアマネジメントを登録してもよろしいですか？」を表示します。
+   * <p>
+   * 介護予防ケアマネジメントと限度額管理対象の予防サービスを同時に貼り付けていた場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_WARNING_OF_SJ_AF_YOBO_GENDOGAKU_SV() throws Exception{
+
+    return ACMessageBox.show("限度額管理対象の予防サービスが算定されています。介護予防支援の可能性があります。" + ACConstants.LINE_SEPARATOR + "このまま介護予防ケアマネジメントを登録してもよろしいですか？", ACMessageBox.BUTTON_OK | ACMessageBox.BUTTON_CANCEL, ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL);
+
+  }
+  
+  /**
+   * メッセージ「[dayOfMonth][serviceKindName]には算定できない保険者が設定されています。＜改行＞内容を確認してください。」を表示します。
+   * <p>
+   * 介護予防支援と介護予防ケアマネジメントのサービスを同時に貼り付けていた場合の保存エラー。
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QS001_ERROR_OF_SJ_AF_YOBO_SHIEN_SV() throws Exception{
+
+    return ACMessageBox.show("介護予防支援と介護予防ケアマネジメントは同時に登録できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
+  
+  
 }

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2016/12/05  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2017/07/04  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定/請求書出力 (P)
@@ -132,6 +132,8 @@ public class QP001State extends QP001Design {
         getNursingCountContainer().setVisible(false);
 
         getType7CountContainer().setVisible(false);
+
+        getType73CountContainer().setVisible(false);
 
         getType2CountContainer().setVisible(false);
 
@@ -269,8 +271,6 @@ public class QP001State extends QP001Design {
 
         getPrintList().setEnabled(false);
 
-        getSeikyuTypeContainer().setVisible(false);
-
   }
 
   /**
@@ -306,6 +306,8 @@ public class QP001State extends QP001Design {
         getNursingCountContainer().setVisible(false);
 
         getType7CountContainer().setVisible(false);
+
+        getType73CountContainer().setVisible(false);
 
         getVisitCountContainer().setVisible(false);
 
@@ -360,6 +362,8 @@ public class QP001State extends QP001Design {
         getNursingCountContainer().setVisible(false);
 
         getType7CountContainer().setVisible(false);
+
+        getType73CountContainer().setVisible(false);
 
         getType2CountContainer().setVisible(false);
 
@@ -424,6 +428,8 @@ public class QP001State extends QP001Design {
         getNursingCountContainer().setVisible(false);
 
         getType7CountContainer().setVisible(false);
+
+        getType73CountContainer().setVisible(false);
 
         getType2CountContainer().setVisible(false);
 
@@ -506,6 +512,8 @@ public class QP001State extends QP001Design {
         getNursingCountContainer().setVisible(false);
 
         getType7CountContainer().setVisible(false);
+
+        getType73CountContainer().setVisible(false);
 
         getType2CountContainer().setVisible(false);
 
@@ -592,6 +600,8 @@ public class QP001State extends QP001Design {
         getSupplyCountContainer().setVisible(false);
 
         getType7CountContainer().setVisible(false);
+
+        getType73CountContainer().setVisible(false);
 
         getType2CountContainer().setVisible(false);
 

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 日高　しのぶ
- * 作成日: 2016/12/02  日本コンピューター株式会社 日高　しのぶ 新規作成
+ * 作成日: 2017/06/20  日本コンピューター株式会社 日高　しのぶ 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -186,6 +186,16 @@ public class QS001_50211_201504Design extends QS001ServicePanelSogo {
   private ACLabelContainer houmonKaigoEndTimeContainer;
 
   private ACComboBoxModelAdapter houmonKaigoEndTimeModel;
+
+  private ACValueArrayRadioButtonGroup calculationDivision;
+
+  private ACLabelContainer calculationDivisionContainer;
+
+  private ACListModelAdapter calculationDivisionModel;
+
+  private ACRadioButtonItem calculationDivisionNormal;
+
+  private ACRadioButtonItem calculationDivisionAddOnly;
 
   private ACPanel tab2;
 
@@ -1163,6 +1173,99 @@ public class QS001_50211_201504Design extends QS001ServicePanelSogo {
   }
 
   /**
+   * 算定区分を取得します。
+   * @return 算定区分
+   */
+  public ACValueArrayRadioButtonGroup getCalculationDivision(){
+    if(calculationDivision==null){
+
+      calculationDivision = new ACValueArrayRadioButtonGroup();
+
+      getCalculationDivisionContainer().setText("算定区分");
+
+      calculationDivision.setBindPath("9");
+
+      calculationDivision.setUseClearButton(false);
+
+      calculationDivision.setModel(getCalculationDivisionModel());
+
+      calculationDivision.setValues(new int[]{1,2});
+
+      addCalculationDivision();
+    }
+    return calculationDivision;
+
+  }
+
+  /**
+   * 算定区分コンテナを取得します。
+   * @return 算定区分コンテナ
+   */
+  protected ACLabelContainer getCalculationDivisionContainer(){
+    if(calculationDivisionContainer==null){
+      calculationDivisionContainer = new ACLabelContainer();
+      calculationDivisionContainer.setFollowChildEnabled(true);
+      calculationDivisionContainer.setVAlignment(VRLayout.CENTER);
+      calculationDivisionContainer.add(getCalculationDivision(), null);
+    }
+    return calculationDivisionContainer;
+  }
+
+  /**
+   * 算定区分モデルを取得します。
+   * @return 算定区分モデル
+   */
+  protected ACListModelAdapter getCalculationDivisionModel(){
+    if(calculationDivisionModel==null){
+      calculationDivisionModel = new ACListModelAdapter();
+      addCalculationDivisionModel();
+    }
+    return calculationDivisionModel;
+  }
+
+  /**
+   * 通常を取得します。
+   * @return 通常
+   */
+  public ACRadioButtonItem getCalculationDivisionNormal(){
+    if(calculationDivisionNormal==null){
+
+      calculationDivisionNormal = new ACRadioButtonItem();
+
+      calculationDivisionNormal.setText("通常");
+
+      calculationDivisionNormal.setGroup(getCalculationDivision());
+
+      calculationDivisionNormal.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionNormal();
+    }
+    return calculationDivisionNormal;
+
+  }
+
+  /**
+   * 加算のみを取得します。
+   * @return 加算のみ
+   */
+  public ACRadioButtonItem getCalculationDivisionAddOnly(){
+    if(calculationDivisionAddOnly==null){
+
+      calculationDivisionAddOnly = new ACRadioButtonItem();
+
+      calculationDivisionAddOnly.setText("加算のみ");
+
+      calculationDivisionAddOnly.setGroup(getCalculationDivision());
+
+      calculationDivisionAddOnly.setConstraints(VRLayout.FLOW);
+
+      addCalculationDivisionAddOnly();
+    }
+    return calculationDivisionAddOnly;
+
+  }
+
+  /**
    * タブ2を取得します。
    * @return タブ2
    */
@@ -1289,6 +1392,8 @@ public class QS001_50211_201504Design extends QS001ServicePanelSogo {
     tab1.add(getPrintable(), VRLayout.FLOW_RETURN);
 
     tab1.add(getHoumonKaigoTimeContainer(), VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
+
+    tab1.add(getCalculationDivisionContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
   }
 
@@ -1652,6 +1757,42 @@ public class QS001_50211_201504Design extends QS001ServicePanelSogo {
    * 終了時刻コンボモデルに内部項目を追加します。
    */
   protected void addHoumonKaigoEndTimeModel(){
+
+  }
+
+  /**
+   * 算定区分に内部項目を追加します。
+   */
+  protected void addCalculationDivision(){
+
+  }
+
+  /**
+   * 算定区分モデルに内部項目を追加します。
+   */
+  protected void addCalculationDivisionModel(){
+
+    getCalculationDivisionNormal().setButtonIndex(1);
+
+    getCalculationDivisionModel().add(getCalculationDivisionNormal());
+
+    getCalculationDivisionAddOnly().setButtonIndex(2);
+
+    getCalculationDivisionModel().add(getCalculationDivisionAddOnly());
+
+  }
+
+  /**
+   * 通常に内部項目を追加します。
+   */
+  protected void addCalculationDivisionNormal(){
+
+  }
+
+  /**
+   * 加算のみに内部項目を追加します。
+   */
+  protected void addCalculationDivisionAddOnly(){
 
   }
 

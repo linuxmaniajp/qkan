@@ -17,19 +17,19 @@
  * 113-8621, Japan.
  *****************************************************************
  * アプリ: QKANCHO
- * 開発者: 田中　統蔵
- * 作成日: 2011/03/23  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 開発者: 樋口　雅彦
+ * 作成日: 2017/07/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス 特定診療費画面 (001)
- * プログラム 特定診療費画面 (QS001199_H2104)
+ * プログラム 特定診療費画面 (QS001S01_201204)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
 /**
- * 特定診療費画面状態定義(QS001199_H2104) 
+ * 特定診療費画面状態定義(QS001S01_201204) 
  */
 @SuppressWarnings("serial")
 public class QS001S01_201204State extends QS001S01_201204Design {
@@ -411,6 +411,14 @@ public class QS001S01_201204State extends QS001S01_201204Design {
           getRehabilitationSystem3Container().getParent().remove(getRehabilitationSystem3Container());
         }
 
+        if(getGroupCommunicationCombo().getParent()!=null){
+          getGroupCommunicationCombo().getParent().remove(getGroupCommunicationCombo());
+        }
+
+        if(getGroupCommunicationContainer().getParent()!=null){
+          getGroupCommunicationContainer().getParent().remove(getGroupCommunicationContainer());
+        }
+
   }
 
   /**
@@ -590,6 +598,26 @@ public class QS001S01_201204State extends QS001S01_201204Design {
   public void setState_VALID_RIHABIRI_SYSTEM3() throws Exception {
 
         getRehabilitationSystem3Combo().setEnabled(true);
+
+  }
+
+  /**
+   * 「集団コミュニケーション・非表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_INVALID_GROUP() throws Exception {
+
+        getGroupCommunicationCombo().setEnabled(false);
+
+  }
+
+  /**
+   * 「集団コミュニケーション・表示」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_VALID_GROUP() throws Exception {
+
+        getGroupCommunicationCombo().setEnabled(true);
 
   }
 

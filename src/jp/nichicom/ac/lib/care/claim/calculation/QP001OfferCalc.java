@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.util.VRArrayList;
@@ -70,6 +71,13 @@ public class QP001OfferCalc {
 		if ((serviceDate == null) || (serviceKind == null)) {
 			return;
 		}
+		
+        // 2017/06 [AF対応][Yoichiro Kamei] add - begin
+        if (QkanSjServiceCodeManager.afKinds.contains(serviceKind)) {
+        	//AFは利用者向け請求に載せないため対象外とする。
+        	return;
+        }
+        // 2017/06 [AF対応][Yoichiro Kamei] add - end
 		
 		//自動的に展開された日割りデータの場合は、計上しない
 		//[ID:0000586][Shin Fujihara] 2010/01 edit begin 2009年度対応

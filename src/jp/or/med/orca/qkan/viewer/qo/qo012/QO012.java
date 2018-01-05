@@ -559,6 +559,16 @@ public class QO012 extends QO012Event {
                 }
                 // [ID:0000448][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
 
+            //[H27.4 改正対応][Shinobu Hitaka] 2017/07/06 add begin 総合事業対応
+            } else if (exchangeType.equals("8171")) {
+                // 8171 H27.4以降 様式第7-3
+            	// チェックは 71系 と同じ
+                if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
+                    // パーサを実行して、解析に問題が有った場合はスキップする
+                    continue;
+                }
+            //[H27.4 改正対応][Shinobu Hitaka] 2017/07/06 add end
+                
             } else if (exchangeType.equals("8222")) {
                 // 8123 様式第11(給付管理表情報)
                 if (!dataRecord822Parser(rowIndex, dataRecordMap)) {
@@ -685,6 +695,7 @@ public class QO012 extends QO012Event {
         //[H28.4 改正対応][Shinobu Hitaka] 2016/01 add 78 追加
         //[H27.4 改正対応][Shinobu Hitaka] 2016/07 add A1,A5 追加
         //[H27.4 改正対応][Shinobu Hitaka] 2016/09 add A2-A4,A6-AE 追加
+        //[H27.4 改正対応][Shinobu Hitaka] 2017/07 add AF 追加
         String[] csvDataTableSchema = new String[] {
                 "YEAR_AND_MONTH", "INSURED_ID", "NAME", "CARE_LEVEL",
                 "11", "12", "13", "14", "15", "16", "17", "21", "22", "23",
@@ -693,7 +704,7 @@ public class QO012 extends QO012Event {
                 "43", "61", "62", "63", "64", "65", "66", "67", "24", "25",
                 "26", "34", "35", "46", "74", "75", "69", "37", "39",
                 "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9",
-                "AA", "AB", "AC", "AD", "AE",
+                "AA", "AB", "AC", "AD", "AE", "AF",
                 "UNIT_TOTAL"
                 };
 
@@ -1503,6 +1514,13 @@ public class QO012 extends QO012Event {
             returnDataMap.setData("46", MATRIX_ON);
             // 集計カウント用フラグを格納する
             returnDataMap.setData("PLAN_FLAG", ON);
+        } else if (getInputCSVFile().getValueAtString(rowIndex,
+                COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE).equals("8171")) {
+            // 総合事業の場合
+            // AF(プラン)をBIND_PATHとしてフラグ1を格納する。
+            returnDataMap.setData("AF", MATRIX_ON);
+            // 集計カウント用フラグを格納する
+            returnDataMap.setData("PLAN_FLAG", ON);
         }
 
         // 単位数を取得する
@@ -1662,6 +1680,13 @@ public class QO012 extends QO012Event {
             // 予防の場合
             // 46(プラン)をBIND_PATHとしてフラグ1を格納する。
             returnDataMap.setData("46", MATRIX_ON);
+            // 集計カウント用フラグを格納する
+            returnDataMap.setData("PLAN_FLAG", ON);
+        } else if (getInputCSVFile().getValueAtString(rowIndex,
+                COMMON_RECORD_FORMAT_3_EXCHANGE_TYPE).equals("8171")) { // 2017.7 add
+            // 総合事業の場合
+            // AF(プラン)をBIND_PATHとしてフラグ1を格納する。
+            returnDataMap.setData("AF", MATRIX_ON);
             // 集計カウント用フラグを格納する
             returnDataMap.setData("PLAN_FLAG", ON);
         }
@@ -2033,6 +2058,10 @@ public class QO012 extends QO012Event {
         serviceCodeSet.add("AD"); //
         serviceCodeSet.add("AE"); //
         //[H27.4 改正対応][Shinobu Hitaka] 2016/09/26 add end
+
+        //[H27.4 改正対応][Shinobu Hitaka] 2017/07/05 add begin AF追加
+        planCodeSet.add("AF");
+        //[H27.4 改正対応][Shinobu Hitaka] 2017/07/05 add end
     }
 
     private Integer getServiceCount(List list) {

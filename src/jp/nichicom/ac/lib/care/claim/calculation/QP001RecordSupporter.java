@@ -37,6 +37,7 @@ import java.util.Map;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
@@ -126,6 +127,15 @@ public class QP001RecordSupporter {
         //setDate(targetDate,serviceDetail);
 		setDate(targetDate,serviceDetail, serviceCode);
         //[ID:0000586][Shin Fujihara] 2010/01 edit end 2009年度対応
+		
+        // 2017/6 [Yoichiro Kamei] add - begin AF対応
+        // AFで生保単独でない場合は、公費適用しない
+		if (QkanSjServiceCodeManager.afCodes.contains(String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")))) {
+			if (!patientState.isSeihoOnly(targetDate)) {
+				return;
+			}
+		}
+		// 2017/6 [Yoichiro Kamei] add - end
         
 		//公費の取得
 //		VRList list = patientState.getKohiDataFromServiceKind(targetDate,systemServiceKindDetail,applicationType,1,medicalFlag);

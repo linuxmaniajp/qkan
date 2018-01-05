@@ -1426,7 +1426,7 @@ public class QP005 extends QP005Event {
 		}
 		
 		// claimStyleTypeの値が10312の場合
-		// "様式第三"を返す。
+		// "様式第三のニ"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE32) {
 			return "様式第三のニ";
 		}
@@ -1438,7 +1438,7 @@ public class QP005 extends QP005Event {
 		}
 
 		// claimStyleTypeの値が10412の場合
-		// "様式第四"を返す。
+		// "様式第四のニ"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE42) {
 			return "様式第四のニ";
 		}
@@ -1450,7 +1450,7 @@ public class QP005 extends QP005Event {
 		}
 
 		// claimStyleTypeの値が10512の場合
-		// "様式第五"を返す。
+		// "様式第五のニ"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE52) {
 			return "様式第五のニ";
 		}
@@ -1462,7 +1462,7 @@ public class QP005 extends QP005Event {
 		}
 
 		// claimStyleTypeの値が10612の場合
-		// "様式第六の三"を返す。
+		// "様式第六のニ"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE62) {
 			return "様式第六のニ";
 		}
@@ -1504,10 +1504,18 @@ public class QP005 extends QP005Event {
 		}
 
 		// claimStyleTypeの値が10712の場合
-		// "様式第七"を返す。
+		// "様式第七のニ"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE72) {
 			return "様式第七のニ";
 		}
+		
+		// 2017/7/7 [Shinobu Hitaka] add - begin AF対応
+		// claimStyleTypeの値が10712の場合
+		// "様式第七の三"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE73) {
+			return "様式第七の三";
+		}
+		// 2017/7/7 [Shinobu Hitaka] add - end
 		
 		// claimStyleTypeの値が10811の場合
 		// "様式第八"を返す。
@@ -1699,12 +1707,22 @@ public class QP005 extends QP005Event {
 		}
 
 		// claimStyleTypeの値が10712の場合
-		// 様式7
+		// 様式7の2
 		if (getClaimStyleType() == FORMAT_STYLE72) {
 			// 画面のVisible制御・Enable制御を行う。
 			setState_TYPE6();
 			// 状態ID：TYPE6
 		}
+		
+		// 2017/7/7 [Shinobu Hitaka] add - begin AF対応
+		// claimStyleTypeの値が10713の場合
+		// 様式7の3
+		if (getClaimStyleType() == FORMAT_STYLE73) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE1();
+			// 状態ID：TYPE1
+		}
+		// 2017/7/7 [Shinobu Hitaka] add - begin AF対応
 		
 		// claimStyleTypeの値が10811の場合
 		// 様式8
@@ -2085,7 +2103,20 @@ public class QP005 extends QP005Event {
 				doSetTableRow(1);
 				break;
 
+			// 2017/6/30 [Yoichiro Kamei] add - begin AF対応
+			case FORMAT_STYLE73:
+				// claimStyleTypeの値が10713の場合
+				// テーブルモデルの設定を行う。
+				//・第一引数：10011001000（2進数表記）
+				doSetTableModel(1224);
 				
+				// テーブルの各行の設定を行う。
+				//・第一引数：10011001000（2進数表記）
+				doSetTableRow(1224);
+				
+				break;
+			// 2017/6/30 [Yoichiro Kamei] add - end
+					
 			case FORMAT_STYLE8:
 				// claimStyleTypeの値が10801の場合
 				// テーブルモデルの設定を行う。

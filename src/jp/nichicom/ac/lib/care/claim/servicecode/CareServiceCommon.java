@@ -1073,6 +1073,7 @@ public class CareServiceCommon {
         switch (systemServiceKindDetail) {
         case 14311:// 居宅介護支援
         case 14611: // 介護予防支援
+        case 51511: // 介護予防ケアマネジメント add 2017.06
             return true;
         }
         return false;
@@ -1521,7 +1522,18 @@ public class CareServiceCommon {
         return false;
     }
 // 2016/7/21 [Yoichiro Kamei] add - end
-    
+// 2017/7/20 [Yoichiro Kamei] add - begin AF対応    
+    /**
+     * 総合事業のサービスであるかであるかを返します。
+     * 
+     * @param service サービス
+     * @return 総合事業のサービスであるか
+     */
+    public static boolean isSogojigyoService(Map service) {
+        return isSogojigyoService(toInt(service));
+    }
+// 2017/7/20 [Yoichiro Kamei] add - end
+
     /**
      * 予防訪問介護の日割でない合成単位を意味するサービスコードであるかを返します。
      * 

@@ -915,6 +915,9 @@ public class QP001PatientState {
 		int endYMD = 0;
 		VRMap map = null;		
 		int targetDateTemp = Integer.parseInt(target);
+// 2017/1/20 [Yoichiro Kamei] add - begin [CCCX: 03393]‘Î‰ž
+		VRMap targetMap = null;
+// 2017/1/20 [Yoichiro Kamei] add - end
 		
 		for(int i = 0; i < ninteiHistory.getDataSize(); i++){
 			map = (VRMap)ninteiHistory.getData(i);
@@ -925,12 +928,21 @@ public class QP001PatientState {
 			endYMD = getInt("SYSTEM_INSURE_VALID_END",map);
 // 2014/12/17 [Yoichiro Kamei] mod - end
 			if((startYMD <= targetDateTemp) && (targetDateTemp <= endYMD)){
+				// 2017/1/20 [Yoichiro Kamei] add - begin [CCCX: 03393]‘Î‰ž
+				targetMap = map;
+				// 2017/1/20 [Yoichiro Kamei] add - end
 				break;
 			}
 		}
-		if(map == null) return result;
-		
-		result = String.valueOf(VRBindPathParser.get(key,map));
+		// 2017/1/20 [Yoichiro Kamei] mod - begin [CCCX: 03393]‘Î‰ž
+//		if(map == null) return result;
+//		
+//		result = String.valueOf(VRBindPathParser.get(key,map));
+		if (targetMap == null) {
+			return result;
+		}
+		result = String.valueOf(VRBindPathParser.get(key, targetMap));
+		// 2017/1/20 [Yoichiro Kamei] mod - end
 		
 		return result;
 	}

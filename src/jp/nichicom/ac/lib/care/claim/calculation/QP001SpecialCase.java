@@ -1319,7 +1319,7 @@ public class QP001SpecialCase {
                 || "A9".equals(serviceCodeKind) || "AA".equals(serviceCodeKind)
                 || "AB".equals(serviceCodeKind) || "AC".equals(serviceCodeKind)
                 || "AD".equals(serviceCodeKind) || "AE".equals(serviceCodeKind)
-                || "AF".equals(serviceCodeKind)) {
+        ) {
         		if (totalGroupingType == 3) {
         			result = true;
         		}

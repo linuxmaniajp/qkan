@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 廣瀬 一海
- * 作成日: 2016/09/26  日本コンピューター株式会社 廣瀬 一海 新規作成
+ * 作成日: 2017/07/05  日本コンピューター株式会社 廣瀬 一海 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -266,6 +266,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn csvDataTableColumn66;
 
   private ACTableColumn csvDataTableColumn67;
+
+  private ACTableColumn csvDataTableColumn68;
 
   private ACTableColumn csvDataTableColumn45;
 
@@ -2395,6 +2397,31 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 総予ケアカラムを取得します。
+   * @return 総予ケアカラム
+   */
+  public ACTableColumn getCsvDataTableColumn68(){
+    if(csvDataTableColumn68==null){
+
+      csvDataTableColumn68 = new ACTableColumn();
+
+      csvDataTableColumn68.setHeaderValue("<html>総<br>予<br>ケ<br>ア</html>");
+
+      csvDataTableColumn68.setColumnName("AF");
+
+      csvDataTableColumn68.setEditable(false);
+
+      csvDataTableColumn68.setColumns(3);
+
+      csvDataTableColumn68.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn68();
+    }
+    return csvDataTableColumn68;
+
+  }
+
+  /**
    * 単位数カラムを取得します。
    * @return 単位数カラム
    */
@@ -2796,6 +2823,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn66());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn67());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn68());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn45());
 
@@ -3260,6 +3289,13 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * 総他額カラムに内部項目を追加します。
    */
   protected void addCsvDataTableColumn67(){
+
+  }
+
+  /**
+   * 総予プランカラムに内部項目を追加します。
+   */
+  protected void addCsvDataTableColumn68(){
 
   }
 

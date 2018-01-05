@@ -38,6 +38,7 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
+import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -921,6 +922,19 @@ public class QP001RecordDetail extends QP001RecordAbstract {
             } else {
                 set_301026(0);
             }
+            
+            // 2017/6 [Yoichiro Kamei] add - begin AF対応
+            // AFの場合
+            if (QkanSjServiceCodeManager.afCodes.contains(get_301021())) {
+            	if (patientState.isSeihoOnly(targetDate)) {
+            		//生保単独は給付率0
+            		set_301026(0);
+            	} else {
+            		//生保単独でなければ給付率100%
+            		set_301026(100);
+            	}            	
+            }
+            // 2017/6 [Yoichiro Kamei] add - end
             
             // [H27.4改正対応][Shinobu Hitaka] 2016/10/04 add - begin 月額算定を印字しない判定用に設定追加
             // type の KEY : 301027(集計集合化区分（算定単位）) に

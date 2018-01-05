@@ -641,7 +641,8 @@ public class QS001003 extends QS001003Event {
 		if (careManagementService != null) {
 			defaultProvider = VRBindPathParser.get("PROVIDER_ID",
 					careManagementService);
-			if (CareServiceCommon.isPreventService(careManagementService)) {
+			if (CareServiceCommon.isPreventService(careManagementService)
+					|| CareServiceCommon.isSogojigyoService(careManagementService)) { //2017.07 add AF対応
 				// 予防サービスの場合
 				planner = 3;
 				if (CareServiceCommon

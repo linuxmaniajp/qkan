@@ -18,12 +18,12 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2010/11/05  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2017/07/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
  * プロセス サービス予定 (001)
- * プログラム 特定診療費画面 (QS001199_H2104)
+ * プログラム 特定診療費画面 (QS001S01_201204)
  *
  *****************************************************************
  */
@@ -36,7 +36,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 
 /**
- * 特定診療費画面イベント定義(QS001199_H2104) 
+ * 特定診療費画面イベント定義(QS001S01_201204) 
  */
 @SuppressWarnings("serial")
 public abstract class QS001S01_201204Event extends QS001S01_201204State {
@@ -242,6 +242,22 @@ public abstract class QS001S01_201204Event extends QS001S01_201204State {
             }
         }
     });
+    getGroupCommunication().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                groupCommunicationActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -329,6 +345,13 @@ public abstract class QS001S01_201204Event extends QS001S01_201204State {
    * @throws Exception 処理例外
    */
   protected abstract void rehabilitationSystem3ActionPerformed(ActionEvent e) throws Exception;
+
+  /**
+   * 「集団コミュニケーション療法の有効状態変更」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void groupCommunicationActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 

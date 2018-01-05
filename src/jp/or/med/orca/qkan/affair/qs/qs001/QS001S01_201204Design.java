@@ -18,40 +18,70 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2011/05/17  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2017/07/13  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
  * プロセス サービス予定週間 (001)
- * プログラム 特定診療費画面 (QS001199_H2104)
+ * プログラム 特定診療費画面 (QS001S01_201204)
  *
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qs.qs001;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACComboBox;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairDialog;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
- * 特定診療費画面画面項目デザイン(QS001199_H2104) 
+ * 特定診療費画面画面項目デザイン(QS001S01_201204) 
  */
-@SuppressWarnings("serial")
 public class QS001S01_201204Design extends QkanAffairDialog {
   //GUIコンポーネント
 
@@ -205,7 +235,13 @@ public class QS001S01_201204Design extends QkanAffairDialog {
 
   private ACIntegerCheckBox concentratedRehabilitation;
 
+  private ACLabelContainer groupCommunicationContainer;
+
   private ACIntegerCheckBox groupCommunication;
+
+  private ACComboBox groupCommunicationCombo;
+
+  private ACComboBoxModelAdapter groupCommunicationComboModel;
 
   private ACIntegerCheckBox dementiaShortRehabilitation;
 
@@ -1598,6 +1634,21 @@ public class QS001S01_201204Design extends QkanAffairDialog {
   }
 
   /**
+   * 集団コミュニケーション療法コンテナを取得します。
+   * @return 集団コミュニケーション療法コンテナ
+   */
+  public ACLabelContainer getGroupCommunicationContainer(){
+    if(groupCommunicationContainer==null){
+
+      groupCommunicationContainer = new ACLabelContainer();
+
+      addGroupCommunicationContainer();
+    }
+    return groupCommunicationContainer;
+
+  }
+
+  /**
    * 集団コミュニケーション療法を取得します。
    * @return 集団コミュニケーション療法
    */
@@ -1608,12 +1659,51 @@ public class QS001S01_201204Design extends QkanAffairDialog {
 
       groupCommunication.setText("集団コミュニケーション療法");
 
-      groupCommunication.setBindPath("3010150");
-
       addGroupCommunication();
     }
     return groupCommunication;
 
+  }
+
+  /**
+   * コンボを取得します。
+   * @return コンボ
+   */
+  public ACComboBox getGroupCommunicationCombo(){
+    if(groupCommunicationCombo==null){
+
+      groupCommunicationCombo = new ACComboBox();
+
+      groupCommunicationCombo.setBindPath("3010150");
+
+      groupCommunicationCombo.setEnabled(false);
+
+      groupCommunicationCombo.setEditable(false);
+
+      groupCommunicationCombo.setModelBindPath("109");
+
+      groupCommunicationCombo.setRenderBindPath("CONTENT");
+
+      groupCommunicationCombo.setModel(getGroupCommunicationComboModel());
+
+      groupCommunicationCombo.setPreferredSize(new Dimension(50,10));
+
+      addGroupCommunicationCombo();
+    }
+    return groupCommunicationCombo;
+
+  }
+
+  /**
+   * コンボモデルを取得します。
+   * @return コンボモデル
+   */
+  protected ACComboBoxModelAdapter getGroupCommunicationComboModel(){
+    if(groupCommunicationComboModel==null){
+      groupCommunicationComboModel = new ACComboBoxModelAdapter();
+      addGroupCommunicationComboModel();
+    }
+    return groupCommunicationComboModel;
   }
 
   /**
@@ -2330,7 +2420,7 @@ public class QS001S01_201204Design extends QkanAffairDialog {
 
     etcFrames.add(getConcentratedRehabilitation(), VRLayout.FLOW_INSETLINE_RETURN);
 
-    etcFrames.add(getGroupCommunication(), VRLayout.FLOW_INSETLINE);
+    etcFrames.add(getGroupCommunicationContainer(), VRLayout.FLOW_INSETLINE_RETURN);
 
     etcFrames.add(getDementiaShortRehabilitation(), VRLayout.FLOW_INSETLINE);
 
@@ -2456,9 +2546,34 @@ public class QS001S01_201204Design extends QkanAffairDialog {
   }
 
   /**
+   * 集団コミュニケーション療法コンテナに内部項目を追加します。
+   */
+  protected void addGroupCommunicationContainer(){
+
+    groupCommunicationContainer.add(getGroupCommunication(), null);
+
+    groupCommunicationContainer.add(getGroupCommunicationCombo(), null);
+
+  }
+
+  /**
    * 集団コミュニケーション療法に内部項目を追加します。
    */
   protected void addGroupCommunication(){
+
+  }
+
+  /**
+   * コンボに内部項目を追加します。
+   */
+  protected void addGroupCommunicationCombo(){
+
+  }
+
+  /**
+   * コンボモデルに内部項目を追加します。
+   */
+  protected void addGroupCommunicationComboModel(){
 
   }
 
