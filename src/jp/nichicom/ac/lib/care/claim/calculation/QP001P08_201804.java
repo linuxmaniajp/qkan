@@ -180,7 +180,10 @@ public class QP001P08_201804 extends QP001P02_10Event {
                         break;
                 }
                 if(isDetailListShow(kohiCount)){
-                	setDetailList(detailList, detailsRecordCount + 1, kohiCount);
+                	//[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - start 様式変更対応
+                	//setDetailList(detailList, detailsRecordCount + 1, kohiCount);
+                	setDetailList(detailList, detailsRecordCount + 1, kohiCount, 6);
+                	//[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - end
                 }
 
 
@@ -244,11 +247,11 @@ public class QP001P08_201804 extends QP001P02_10Event {
                 if (i == 0) {
                 	if(isDetailListShow(kohiCount)){
 	                    //サービス単位数の合計を設定する。(サービス単位数の合算)
-	                    ACChotarouXMLUtilities.setValue(writer, "servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),5));
+	                    ACChotarouXMLUtilities.setValue(writer, "servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),6));
 	                    //公費対象単位数の合計を設定する。(公費対象単位数の合計)
 	                    switch(kohiCount){
 	                    case 0:
-	                        ACChotarouXMLUtilities.setValue(writer, "kohitanitotal", pad(String.valueOf(getKohiTotal1()),5));
+	                        ACChotarouXMLUtilities.setValue(writer, "kohitanitotal", pad(String.valueOf(getKohiTotal1()),6));
 	                        //公費分単位数を設定する。
 	                        ACChotarouXMLUtilities.setValue(writer, "kohibuntani", pad(typeMap.get("701018"),6));
 	                        //公費請求額を設定する。
@@ -257,7 +260,7 @@ public class QP001P08_201804 extends QP001P02_10Event {
 	                        ACChotarouXMLUtilities.setValue(writer, "kohihonnin", pad(typeMap.get("701020"),6));
 	                        break;
 	                    case 1:
-	                        ACChotarouXMLUtilities.setValue(writer, "kohitanitotal", pad(String.valueOf(getKohiTotal2()),5));
+	                        ACChotarouXMLUtilities.setValue(writer, "kohitanitotal", pad(String.valueOf(getKohiTotal2()),6));
 	                        //公費分単位数を設定する。
 	                        ACChotarouXMLUtilities.setValue(writer, "kohibuntani", pad(typeMap.get("701021"),6));
 	                        //公費請求額を設定する。
@@ -266,7 +269,7 @@ public class QP001P08_201804 extends QP001P02_10Event {
 	                        ACChotarouXMLUtilities.setValue(writer, "kohihonnin", pad(typeMap.get("701023"),6));
 	                        break;
 	                    case 2:
-	                        ACChotarouXMLUtilities.setValue(writer, "kohitanitotal", pad(String.valueOf(getKohiTotal3()),5));
+	                        ACChotarouXMLUtilities.setValue(writer, "kohitanitotal", pad(String.valueOf(getKohiTotal3()),6));
 	                        //公費分単位数を設定する。
 	                        ACChotarouXMLUtilities.setValue(writer, "kohibuntani", pad(typeMap.get("701024"),6));
 	                        //公費請求額を設定する。

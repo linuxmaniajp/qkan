@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2018/02/13  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2018/04/20  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム サービス予定作成/変更 (S)
@@ -1718,7 +1718,7 @@ public class QS001_17311_201804Design extends QS001ServicePanel {
 
       getYoungDementiaPatinetAddRadioGroupContainer().setText("若年性認知症受入加算");
 
-      youngDementiaPatinetAddRadioGroup.setBindPath("1330140");
+      youngDementiaPatinetAddRadioGroup.setBindPath("1730117");
 
       youngDementiaPatinetAddRadioGroup.setNoSelectIndex(0);
 
@@ -1813,7 +1813,7 @@ public class QS001_17311_201804Design extends QS001ServicePanel {
 
       getRehabilitationSpecialistPersonnelCooperationRadioGroupContainer().setText("生活機能向上連携加算");
 
-      rehabilitationSpecialistPersonnelCooperationRadioGroup.setBindPath("1760113");
+      rehabilitationSpecialistPersonnelCooperationRadioGroup.setBindPath("1730118");
 
       rehabilitationSpecialistPersonnelCooperationRadioGroup.setNoSelectIndex(0);
 

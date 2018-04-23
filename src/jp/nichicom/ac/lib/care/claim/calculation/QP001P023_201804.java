@@ -28,8 +28,14 @@
  */
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.util.Arrays;
+import java.util.List;
+
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRList;
+import jp.nichicom.vr.util.VRMap;
 
 public class QP001P023_201804 extends QP001P02_201804{
     
@@ -54,7 +60,26 @@ public class QP001P023_201804 extends QP001P02_201804{
     }
 
     public void doPrintReductionList(VRList reductionList) throws Exception {
-    	// 様式第二の三では社福軽減欄がないので出力しない
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 add - begin
+    	//出力対象となるサービス種類
+    	List<String> targetKindList = Arrays.asList(new String[]{
+    			  "A1" //訪問型サービス(みなし)
+    			, "A2" //訪問型サービス(独自)
+    			, "A5" //通所型サービス(みなし)
+    			, "A6" //通所型サービス(独自)
+    	});
+    	if (reductionList.getDataSize() > 0) {
+    		//サービス種類コードが対象に含まれていなければ除く
+            for (int j = 0; j < reductionList.getDataSize(); j++) {
+                VRMap reduction = (VRMap) reductionList.getData(j);
+                String kind = ACCastUtilities.toString(VRBindPathParser.get("901008", reduction));
+                if (!targetKindList.contains(kind)) {
+                	reductionList.remove(j);
+                }
+            }
+    		setReductionList(reductionList, 4);
+    	}    	
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 add - end
     }
 
 }

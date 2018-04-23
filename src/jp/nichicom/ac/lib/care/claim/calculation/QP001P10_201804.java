@@ -198,7 +198,10 @@ public class QP001P10_201804 extends QP001P02_10Event {
                 
                 //明細件数分ループする。※8件を超える場合は、次ページに印字
                 if(isDetailListShow(kohiCount)){
-                	setDetailList(detailList,9,kohiCount);
+                	//[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - start 様式変更対応
+                	//setDetailList(detailList,9,kohiCount);
+                	setDetailList(detailList,9,kohiCount, 6);
+                	//[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - end
                 }
 
                 if(isDiagnosisListShow(kohiCount,diagnosisLastMap)){
@@ -225,26 +228,26 @@ public class QP001P10_201804 extends QP001P02_10Event {
 	                    // 回数を設定する。
 	                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryotimes" + j, pad(diagnosis.get("501011"),2));
 	                    // 保険分単位数を設定する。
-	                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentani" + j, pad(diagnosis.get("501012"),5));
+	                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentani" + j, pad(diagnosis.get("501012"),6));
 	                    
 	                    switch(kohiCount){
 		                    case 0:
 			                    // 公費分回数を設定する。
 			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501014"),2));
 			                    // 公費分単位数を設定する。
-			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501015"),5));
+			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501015"),6));
 			                    break;
 		                    case 1:
 			                    // 公費分回数を設定する。
 			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501017"),2));
 			                    // 公費分単位数を設定する。
-			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501018"),5));
+			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501018"),6));
 			                    break;
 		                    case 2:
 			                    // 公費分回数を設定する。
 			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501020"),2));
 			                    // 公費分単位数を設定する。
-			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501021"),5));
+			                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501021"),6));
 			                    break;
 	                    }
 	                    
@@ -324,17 +327,17 @@ public class QP001P10_201804 extends QP001P02_10Event {
                 	if(isDetailListShow(kohiCount)){
 	                    //給付費明細欄の合計を出力==============================
 	                    //サービス単位数合計を設定する。　※サービス単位数の合算を設定。
-	                    ACChotarouXMLUtilities.setValue(writer,"servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),5));
+	                    ACChotarouXMLUtilities.setValue(writer,"servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),6));
 	                    //公費対象単位数合計を設定する。　※公費対象単位数の合算を設定。
 	                    switch(kohiCount){
 	                    case 0:
-	                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),5));
+	                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),6));
 	                        break;
 	                    case 1:
-	                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),5));
+	                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),6));
 	                        break;
 	                    case 2:
-	                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),5));
+	                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),6));
 	                        break;
 	                    }
                 	}
@@ -346,7 +349,7 @@ public class QP001P10_201804 extends QP001P02_10Event {
 	                    //特定診療費の合計欄を出力
 	                    if(diagnosisLastMap != null){
 	                        //特定診療費の保険分単位数の合計を設定する。 ※特定診療費情報レコード順次番号が99の値を採用する。
-	                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentanitotal", pad(diagnosisLastMap.get("501013"),5));
+	                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentanitotal", pad(diagnosisLastMap.get("501013"),6));
 	                        
 	                    }
                 	}
@@ -428,7 +431,7 @@ public class QP001P10_201804 extends QP001P02_10Event {
 	                        switch(kohiCount){
 	                        case 0:
 	                            //特定診療費の公費分単位数の合計を設定する。　※特定診療費情報レコード順次番号が99の値を採用する。
-	                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501016"),5));
+	                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501016"),6));
 	                            //公費分特定診療費の給付単位数を設定する。
 	                            ACChotarouXMLUtilities.setValue(writer, "kohitokuteikyufutani", pad(diagnosisLastMap.get("501016"),6));
 	                            //公費給付率を設定する。
@@ -441,7 +444,7 @@ public class QP001P10_201804 extends QP001P02_10Event {
 	                            break;
 	                        case 1:
 	                            //特定診療費の公費分単位数の合計を設定する。　※特定診療費情報レコード順次番号が99の値を採用する。
-	                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501019"),5));
+	                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501019"),6));
 	                            //公費分特定診療費の給付単位数を設定する。
 	                            ACChotarouXMLUtilities.setValue(writer, "kohitokuteikyufutani", pad(diagnosisLastMap.get("501019"),6));
 	                            //公費給付率を設定する。
@@ -453,7 +456,7 @@ public class QP001P10_201804 extends QP001P02_10Event {
 	                            break;
 	                        case 2:
 	                            //特定診療費の公費分単位数の合計を設定する。　※特定診療費情報レコード順次番号が99の値を採用する。
-	                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501022"),5));
+	                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501022"),6));
 	                            //公費分特定診療費の給付単位数を設定する。
 	                            ACChotarouXMLUtilities.setValue(writer, "kohitokuteikyufutani", pad(diagnosisLastMap.get("501022"),6));
 	                            //公費給付率を設定する。

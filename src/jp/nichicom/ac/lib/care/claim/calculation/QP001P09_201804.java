@@ -29,8 +29,6 @@
 
 package jp.nichicom.ac.lib.care.claim.calculation;
 
-import java.util.Date;
-
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.text.ACTextUtilities;
@@ -39,9 +37,9 @@ import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 
 /**
- * 施設サービス等介護給付費明細書（介護老人保健施設）(様式第九) -様式第九 帳票定義体ファイル名 ： QP001P090_YYYYMM.xml
+ * 施設サービス等介護給付費明細書（介護老人保健施設・介護医療院）(様式第九) -様式第九 帳票定義体ファイル名 ： QP001P09X_YYYYMM.xml
  */
-public class QP001P09_201804 extends QP001P02_10Event {
+public abstract class QP001P09_201804 extends QP001P02_10Event {
     
 	/* 
 	 * 様式第九 201804以降
@@ -58,13 +56,13 @@ public class QP001P09_201804 extends QP001P02_10Event {
     public QP001P09_201804() {
     }
 
-    public void addFormat() throws Exception {
-        ACChotarouXMLUtilities.addFormat(writer, getFormatId(), "QP001P090_201804.xml");
-    }
-
-    public String getFormatId() throws Exception {
-        return "QP001P090_201804";
-    }   
+//    public void addFormat() throws Exception {
+//        ACChotarouXMLUtilities.addFormat(writer, getFormatId(), "QP001P091_201804.xml");
+//    }
+//
+//    public String getFormatId() throws Exception {
+//        return "QP001P091_201804";
+//    }   
     
     /**
      * 帳票を生成します。
@@ -79,13 +77,19 @@ public class QP001P09_201804 extends QP001P02_10Event {
     public boolean doPrintImpl(VRMap printParam) throws Exception {
         // 基本情報レコード
         VRMap baseMap = getBaseMap();
+        // 基本摘要情報レコード
+        VRList baseSummaryList = getBaseSummaryList(); //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add
         // 明細情報レコード集合
         VRList detailList = getDetailList();
         // 集計情報レコード
         VRMap typeMap = getTypeMap();
 
         // 緊急時施設療養・自施設療養費情報レコード
-        VRMap emergencyOwnFacilityMap = getemErgencyOwnFacilityMap();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
+//        VRMap emergencyOwnFacilityMap = getemErgencyOwnFacilityMap();
+        VRMap emergencyOwnFacilityMap = getEmergencyInfo();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - end
+        
         // 特定入所者介護サービス費用情報レコード
         VRList nursingList = getNursingList();
         
@@ -144,6 +148,13 @@ public class QP001P09_201804 extends QP001P02_10Event {
                 if (pageTemp > pageCount)
                     pageCount = pageTemp;
             }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+            if (baseSummaryList.getDataSize() > 0) {
+                pageTemp = (int) Math.ceil((double) baseSummaryList.getDataSize() / 2d);
+                if (pageTemp > pageCount)
+                    pageCount = pageTemp;
+            }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
             pageCountMax += pageCount;
         }
 
@@ -153,13 +164,18 @@ public class QP001P09_201804 extends QP001P02_10Event {
             parseStyle();
             // 基本情報レコード
             baseMap = getBaseMap();
+            // 基本摘要情報レコード
+            baseSummaryList = getBaseSummaryList(); //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add           
             // 明細情報レコード集合
             detailList = getDetailList();
             // 集計情報レコード
             typeMap = getTypeMap();
 
             // 緊急時施設療養・自施設療養費情報レコード
-            emergencyOwnFacilityMap = getemErgencyOwnFacilityMap();
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
+//            emergencyOwnFacilityMap = getemErgencyOwnFacilityMap();
+            emergencyOwnFacilityMap = getEmergencyInfo();
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - end
             // 特定入所者介護サービス費用情報レコード
             nursingList = getNursingList();
             //特別治療費情報レコード
@@ -193,6 +209,14 @@ public class QP001P09_201804 extends QP001P02_10Event {
                     pageCount = pageTemp;
                 }
             }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+            if (baseSummaryList.getDataSize() > 0) {
+                pageTemp = (int) Math.ceil((double) baseSummaryList.getDataSize() / 2d);
+                if (pageTemp > pageCount){
+                    pageCount = pageTemp;
+                }
+            }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 
             // 印刷ループ
             for (int i = 0; i < pageCount; i++,printPage++) {
@@ -214,6 +238,10 @@ public class QP001P09_201804 extends QP001P02_10Event {
                 }
                 //[ID:0000447][Shin Fujihara] 2009/02 add end 平成21年4月法改正対応
                 
+                // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+                setBaseSummaryList(baseSummaryList, 3);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+                
                 //明細件数分ループする。※5件を超える場合は、次ページに印字
                 //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
                 //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
@@ -223,7 +251,12 @@ public class QP001P09_201804 extends QP001P02_10Event {
                     
                     //[ID:0000447][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
                     //setDetailList(detailList,6,kohiCount);
-                    setDetailList(detailList, detailsRecordCount + 1, kohiCount);
+                	
+                	//[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - start 様式変更対応
+                    //setDetailList(detailList, detailsRecordCount + 1, kohiCount);
+                    setDetailList(detailList, detailsRecordCount + 1, kohiCount, 6);
+                    //[H30.04改正対応][Shinobu Hitaka] 2014/02/12 edit - end
+                    
                     //[ID:0000447][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
                 }
                 
@@ -241,40 +274,45 @@ public class QP001P09_201804 extends QP001P02_10Event {
                         // 識別番号を設定する。
                         ACChotarouXMLUtilities.setValue(writer, diagnosis,
                                 "501009", "shikibetsuno" + j);
-                        // 内容を設定する。※特定診療費マスタ(M_SPECIAL_CLINIC)のSPECIAL_CLINIC_TYPEと結合し、SPECIAL_CLINIC_NAMEを表示。
-                        //[ID:0000454][Shin Fujihara] 2009/05/01 edit begin 障害対応
-                        /*
+                        // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - begin
+//                        // 内容を設定する。※特定診療費マスタ(M_SPECIAL_CLINIC)のSPECIAL_CLINIC_TYPEと結合し、SPECIAL_CLINIC_NAMEを表示。
+//                        //[ID:0000454][Shin Fujihara] 2009/05/01 edit begin 障害対応
+//                        /*
+//                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
+//                                manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2));
+//                        */
+//                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
+//                                manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2, baseMap.get("201003")));
                         ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
-                                manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2));
-                        */
-                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
-                                manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2, baseMap.get("201003")));
+                                manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009"))
+                                		, getSpecialClinicRecordType(), baseMap.get("201003")));
+                        // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - end
                         //[ID:0000454][Shin Fujihara] 2009/05/01 edit end 障害対応
                         // 単位数を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "tokuteishinryotani" + j, pad(diagnosis.get("501010"),4));
                         // 回数を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "tokuteishinryotimes" + j, pad(diagnosis.get("501011"),2));
                         // 保険分単位数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentani" + j, pad(diagnosis.get("501012"),5));
+                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentani" + j, pad(diagnosis.get("501012"),6));
                         
                         switch(kohiCount){
                             case 0:
                                 // 公費分回数を設定する。
                                 ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501014"),2));
                                 // 公費分単位数を設定する。
-                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501015"),5));
+                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501015"),6));
                                 break;
                             case 1:
                                 // 公費分回数を設定する。
                                 ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501017"),2));
                                 // 公費分単位数を設定する。
-                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501018"),5));
+                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501018"),6));
                                 break;
                             case 2:
                                 // 公費分回数を設定する。
                                 ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501020"),2));
                                 // 公費分単位数を設定する。
-                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501021"),5));
+                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501021"),6));
                                 break;
                         }
                         
@@ -357,163 +395,166 @@ public class QP001P09_201804 extends QP001P02_10Event {
                     //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
                             
                         //サービス単位数合計を設定する。　※サービス単位数の合算を設定。
-                        ACChotarouXMLUtilities.setValue(writer,"servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),5));
+                        ACChotarouXMLUtilities.setValue(writer,"servicetimetotal",pad(String.valueOf(getServiceUnitTotal()),6));
                         //公費対象単位数合計を設定する。　※公費対象単位数の合算を設定。
                         switch(kohiCount){
                         case 0:
-                            ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),5));
+                            ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),6));
                             break;
                         case 1:
-                            ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),5));
+                            ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),6));
                             break;
                         case 2:
-                            ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),5));
+                            ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),6));
                             break;
                         }
                     }
                     
                     // 緊急時施設治療費===================================
-                    if(emergencyOwnFacilityMap != null){
-                        
-                        // 特定疾患施設療養費 傷病名１
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701047", "emergency1.h1.w8");
-                        // 特定疾患施設療養費 傷病名２
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701048", "emergency1.h2.w8");
-                        // 特定疾患施設療養費 傷病名３
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701049", "emergency1.h3.w8");
-                        // 特定疾患施設療養費開始年月日１
-                        if (QP001Util.isDate(VRBindPathParser.get("1701050", emergencyOwnFacilityMap))) {
-                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701050", emergencyOwnFacilityMap));
-                            // 特定疾患施設療養費開始年月日１の和暦を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h1.w19", eraFormat.format(start));
-                            // 特定疾患施設療養費開始年月日１の和暦年を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownyear1", eraYearFormat.format(start));
-                            // 特定疾患施設療養費開始年月日１の月を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownmonth1", monthFormat.format(start));
-                            // 特定疾患施設療養費開始年月日１の日を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownday1", dayFormat.format(start));
-                        }
-                        // 特定疾患施設療養費開始年月日２
-                        if (QP001Util.isDate(VRBindPathParser.get("1701051", emergencyOwnFacilityMap))) {
-                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701051", emergencyOwnFacilityMap));
-                            // 特定疾患施設療養費開始年月日２の和暦を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h2.w19", eraFormat.format(start));
-                            // 特定疾患施設療養費開始年月日２の和暦年を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownyear2", eraYearFormat.format(start));
-                            // 特定疾患施設療養費開始年月日２の月を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownmonth2", monthFormat.format(start));
-                            // 特定疾患施設療養費開始年月日２の日を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownday2", dayFormat.format(start));
-                        }
-                        // 特定疾患施設療養費開始年月日３
-                        if (QP001Util.isDate(VRBindPathParser.get("1701052", emergencyOwnFacilityMap))) {
-                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701052", emergencyOwnFacilityMap));
-                            // 特定疾患施設療養費開始年月日３の和暦を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h3.w19", eraFormat.format(start));
-                            // 特定疾患施設療養費開始年月日３の和暦年を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownyear3", eraYearFormat.format(start));
-                            // 特定疾患施設療養費開始年月日３の月を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownmonth3", monthFormat.format(start));
-                            // 特定疾患施設療養費開始年月日３の日を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "ownday3", dayFormat.format(start));
-                        }
-                        // 特定疾患施設療養費(再掲)を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h4.w7", pad(emergencyOwnFacilityMap.get("1701055"),0));
-                        // 特定疾患施設療養費単位数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h4.w10", pad(emergencyOwnFacilityMap.get("1701053"),0));
-                        // 特定疾患施設療養費日数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "owntani", pad(emergencyOwnFacilityMap.get("1701054"),2));
-                        
-                        
-                        // 緊急時傷病名１を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701008", "emergency1.h5.w8");
-                        // 緊急時傷病名２を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701009", "emergency1.h6.w8");
-                        // 緊急時傷病名３を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701010", "emergency1.h7.w8");
-    
-                        // 緊急時治療開始開始年月日１
-                        if (QP001Util.isDate(VRBindPathParser.get("1701011", emergencyOwnFacilityMap))) {
-                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701011", emergencyOwnFacilityMap));
-                            // 緊急時治療開始年月日１の和暦を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h5.w19", eraFormat.format(start));
-                            // 緊急時治療開始年月日１の和暦年を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencyyear1", eraYearFormat.format(start));
-                            // 緊急時治療開始年月日１の月を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencymonth1", monthFormat.format(start));
-                            // 緊急時治療開始年月日１の日を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencyday1", dayFormat.format(start));
-                        }
-    
-                        // 緊急時治療開始年月日２
-                        if (QP001Util.isDate(VRBindPathParser.get("1701012", emergencyOwnFacilityMap))) {
-                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701012", emergencyOwnFacilityMap));
-                            // 緊急時治療開始年月日２の和暦を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h6.w19", eraFormat.format(start));
-                            // 緊急時治療開始年月日２の和暦年を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencyyear2", eraYearFormat.format(start));
-                            // 緊急時治療開始年月日２の月を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencymonth2", monthFormat.format(start));
-                            // 緊急時治療開始年月日２の日を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencyday2", dayFormat.format(start));
-                        }
-    
-                        // 緊急時治療開始年月日３
-                        if (QP001Util.isDate(VRBindPathParser.get("1701013", emergencyOwnFacilityMap))) {
-                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701013", emergencyOwnFacilityMap));
-                            // 緊急時治療開始年月日３の和暦を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h7.w19", eraFormat.format(start));
-                            // 緊急時治療開始年月日３の和暦年を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencyyear3", eraYearFormat.format(start));
-                            // 緊急時治療開始年月日３の月を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencymonth3", monthFormat.format(start));
-                            // 緊急時治療開始年月日３の日を設定する。
-                            ACChotarouXMLUtilities.setValue(writer, "emergencyday3", dayFormat.format(start));
-                        }
-    
-                        // 緊急時治療管理(再掲)を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h8.w7", pad(emergencyOwnFacilityMap.get("1701020"),0));
-                        // 緊急時治療管理単位数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h8.w10", pad(emergencyOwnFacilityMap.get("1701018"),0));
-                        // 緊急時治療管理日数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergencytani", pad(emergencyOwnFacilityMap.get("1701019"),2));
-    
-                        // リハビリテーション点数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h9.w6", pad(emergencyOwnFacilityMap.get("1701021"),0));
-                        // 処置点数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h10.w6", pad(emergencyOwnFacilityMap.get("1701022"),0));
-                        // 手術点数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h11.w6", pad(emergencyOwnFacilityMap.get("1701023"),0));
-                        // 麻酔点数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h12.w6", pad(emergencyOwnFacilityMap.get("1701024"),0));
-                        // 放射線治療点数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h13.w6", pad(emergencyOwnFacilityMap.get("1701025"),0));
-                        // 合計点数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h14.w6", pad(emergencyOwnFacilityMap.get("1701046"),0));
-                        
-                        // 摘要を設定する。※摘要１～摘要２０までを「／」で連結し、出力。
-                        StringBuilder tekiyo = new StringBuilder();
-                        for (int j = 1701026; j < 1701046; j++) {
-                            if (!ACTextUtilities.isNullText(VRBindPathParser.get(ACCastUtilities.toString(j), emergencyOwnFacilityMap))) {
-                                tekiyo.append(VRBindPathParser.get(ACCastUtilities.toString(j), emergencyOwnFacilityMap));
-                                tekiyo.append("／");
-                            }
-                        }
-                        if (tekiyo.length() > 0) {
-                            tekiyo.deleteCharAt(tekiyo.length() - 1);
-                        }
-                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h10.w10",tekiyo.toString());
-                        
-                        // 往診日数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "oushintimes", pad(emergencyOwnFacilityMap.get("1701014"),2));
-                        // 往診医療機関名を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap,"1701015", "emergency3.h15.w8");
-                        
-                        // 通院日数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "tuuintimes", pad(emergencyOwnFacilityMap.get("1701016"),2));
-                        // 通院医療機関を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701017","emergency3.h15.w21");
-                    }
+// [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
+//                    if(emergencyOwnFacilityMap != null){
+//                        
+//                        // 特定疾患施設療養費 傷病名１
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701047", "emergency1.h1.w8");
+//                        // 特定疾患施設療養費 傷病名２
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701048", "emergency1.h2.w8");
+//                        // 特定疾患施設療養費 傷病名３
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701049", "emergency1.h3.w8");
+//                        // 特定疾患施設療養費開始年月日１
+//                        if (QP001Util.isDate(VRBindPathParser.get("1701050", emergencyOwnFacilityMap))) {
+//                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701050", emergencyOwnFacilityMap));
+//                            // 特定疾患施設療養費開始年月日１の和暦を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h1.w19", eraFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日１の和暦年を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownyear1", eraYearFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日１の月を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownmonth1", monthFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日１の日を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownday1", dayFormat.format(start));
+//                        }
+//                        // 特定疾患施設療養費開始年月日２
+//                        if (QP001Util.isDate(VRBindPathParser.get("1701051", emergencyOwnFacilityMap))) {
+//                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701051", emergencyOwnFacilityMap));
+//                            // 特定疾患施設療養費開始年月日２の和暦を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h2.w19", eraFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日２の和暦年を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownyear2", eraYearFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日２の月を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownmonth2", monthFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日２の日を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownday2", dayFormat.format(start));
+//                        }
+//                        // 特定疾患施設療養費開始年月日３
+//                        if (QP001Util.isDate(VRBindPathParser.get("1701052", emergencyOwnFacilityMap))) {
+//                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701052", emergencyOwnFacilityMap));
+//                            // 特定疾患施設療養費開始年月日３の和暦を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h3.w19", eraFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日３の和暦年を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownyear3", eraYearFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日３の月を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownmonth3", monthFormat.format(start));
+//                            // 特定疾患施設療養費開始年月日３の日を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "ownday3", dayFormat.format(start));
+//                        }
+//                        // 特定疾患施設療養費(再掲)を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h4.w7", pad(emergencyOwnFacilityMap.get("1701055"),0));
+//                        // 特定疾患施設療養費単位数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h4.w10", pad(emergencyOwnFacilityMap.get("1701053"),0));
+//                        // 特定疾患施設療養費日数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "owntani", pad(emergencyOwnFacilityMap.get("1701054"),2));
+//                        
+//                        
+//                        // 緊急時傷病名１を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701008", "emergency1.h5.w8");
+//                        // 緊急時傷病名２を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701009", "emergency1.h6.w8");
+//                        // 緊急時傷病名３を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701010", "emergency1.h7.w8");
+//    
+//                        // 緊急時治療開始開始年月日１
+//                        if (QP001Util.isDate(VRBindPathParser.get("1701011", emergencyOwnFacilityMap))) {
+//                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701011", emergencyOwnFacilityMap));
+//                            // 緊急時治療開始年月日１の和暦を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h5.w19", eraFormat.format(start));
+//                            // 緊急時治療開始年月日１の和暦年を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencyyear1", eraYearFormat.format(start));
+//                            // 緊急時治療開始年月日１の月を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencymonth1", monthFormat.format(start));
+//                            // 緊急時治療開始年月日１の日を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencyday1", dayFormat.format(start));
+//                        }
+//    
+//                        // 緊急時治療開始年月日２
+//                        if (QP001Util.isDate(VRBindPathParser.get("1701012", emergencyOwnFacilityMap))) {
+//                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701012", emergencyOwnFacilityMap));
+//                            // 緊急時治療開始年月日２の和暦を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h6.w19", eraFormat.format(start));
+//                            // 緊急時治療開始年月日２の和暦年を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencyyear2", eraYearFormat.format(start));
+//                            // 緊急時治療開始年月日２の月を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencymonth2", monthFormat.format(start));
+//                            // 緊急時治療開始年月日２の日を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencyday2", dayFormat.format(start));
+//                        }
+//    
+//                        // 緊急時治療開始年月日３
+//                        if (QP001Util.isDate(VRBindPathParser.get("1701013", emergencyOwnFacilityMap))) {
+//                            Date start = ACCastUtilities.toDate(VRBindPathParser.get("1701013", emergencyOwnFacilityMap));
+//                            // 緊急時治療開始年月日３の和暦を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergency1.h7.w19", eraFormat.format(start));
+//                            // 緊急時治療開始年月日３の和暦年を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencyyear3", eraYearFormat.format(start));
+//                            // 緊急時治療開始年月日３の月を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencymonth3", monthFormat.format(start));
+//                            // 緊急時治療開始年月日３の日を設定する。
+//                            ACChotarouXMLUtilities.setValue(writer, "emergencyday3", dayFormat.format(start));
+//                        }
+//    
+//                        // 緊急時治療管理(再掲)を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h8.w7", pad(emergencyOwnFacilityMap.get("1701020"),0));
+//                        // 緊急時治療管理単位数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency1.h8.w10", pad(emergencyOwnFacilityMap.get("1701018"),0));
+//                        // 緊急時治療管理日数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergencytani", pad(emergencyOwnFacilityMap.get("1701019"),2));
+//    
+//                        // リハビリテーション点数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h9.w6", pad(emergencyOwnFacilityMap.get("1701021"),0));
+//                        // 処置点数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h10.w6", pad(emergencyOwnFacilityMap.get("1701022"),0));
+//                        // 手術点数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h11.w6", pad(emergencyOwnFacilityMap.get("1701023"),0));
+//                        // 麻酔点数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h12.w6", pad(emergencyOwnFacilityMap.get("1701024"),0));
+//                        // 放射線治療点数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h13.w6", pad(emergencyOwnFacilityMap.get("1701025"),0));
+//                        // 合計点数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h14.w6", pad(emergencyOwnFacilityMap.get("1701046"),0));
+//                        
+//                        // 摘要を設定する。※摘要１～摘要２０までを「／」で連結し、出力。
+//                        StringBuilder tekiyo = new StringBuilder();
+//                        for (int j = 1701026; j < 1701046; j++) {
+//                            if (!ACTextUtilities.isNullText(VRBindPathParser.get(ACCastUtilities.toString(j), emergencyOwnFacilityMap))) {
+//                                tekiyo.append(VRBindPathParser.get(ACCastUtilities.toString(j), emergencyOwnFacilityMap));
+//                                tekiyo.append("／");
+//                            }
+//                        }
+//                        if (tekiyo.length() > 0) {
+//                            tekiyo.deleteCharAt(tekiyo.length() - 1);
+//                        }
+//                        ACChotarouXMLUtilities.setValue(writer, "emergency2.h10.w10",tekiyo.toString());
+//                        
+//                        // 往診日数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "oushintimes", pad(emergencyOwnFacilityMap.get("1701014"),2));
+//                        // 往診医療機関名を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap,"1701015", "emergency3.h15.w8");
+//                        
+//                        // 通院日数を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, "tuuintimes", pad(emergencyOwnFacilityMap.get("1701016"),2));
+//                        // 通院医療機関を設定する。
+//                        ACChotarouXMLUtilities.setValue(writer, emergencyOwnFacilityMap, "1701017","emergency3.h15.w21");
+//                    }
+                    writeEmergency();
+// [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - end
                     
                     //[CCCX:1470][Shinobu Hitaka] 2014/02/12 edit - start 老健の一部公費対象の対応
                     //共通関数から一部公費チェックを行う独自関数の呼び出しへ変更
@@ -528,18 +569,18 @@ public class QP001P09_201804 extends QP001P02_10Event {
                         //特定診療費の合計欄を出力
                         if(diagnosisLastMap != null){
                             //特定診療費の保険分単位数の合計を設定する。 ※特定診療費情報レコード順次番号が99の値を採用する。
-                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentanitotal", pad(diagnosisLastMap.get("501013"),5));
+                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentanitotal", pad(diagnosisLastMap.get("501013"),6));
                             
                             switch(kohiCount){
                             case 0:
                                 //特定診療費の公費分単位数の合計を設定する。　※特定診療費情報レコード順次番号が99の値を採用する。
-                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501016"),5));
+                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501016"),6));
                                 break;
                             case 1:
-                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501019"),5));
+                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501019"),6));
                                 break;
                             case 2:
-                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501022"),5));
+                                ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501022"),6));
                                 break;
                             }
                             
@@ -667,7 +708,7 @@ public class QP001P09_201804 extends QP001P02_10Event {
                         //保険分請求額を設定する。
                         //[ID:0000449][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
                         //ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad(nursingLast.get("801024"),5));
-                        ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad0(nursingLast.get("801024"),5));
+                        ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad0(nursingLast.get("801024"),6));
                         //[ID:0000449][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
                         
                         switch(kohiCount){
@@ -879,4 +920,12 @@ public class QP001P09_201804 extends QP001P02_10Event {
         return true;
     }
 
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - begin
+    // 特別療養費または特別診療費のレコードタイプを取得します。（子クラスで実装）
+    protected abstract int getSpecialClinicRecordType();
+    
+    // 緊急時施設療養・緊急時施設診療情報または、所定疾患施設療養費等情報を出力します。（子クラスで実装）
+    protected abstract VRMap getEmergencyInfo();
+    protected abstract void writeEmergency() throws Exception;
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - end
 }

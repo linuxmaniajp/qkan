@@ -23,7 +23,7 @@
  * システム 給付管理台帳 (Q)
  * サブシステム 請求書出力 (P)
  * プロセス 在宅サービス介護給付費明細書（介護老人保健施設） (001)
- * プログラム 在宅サービス介護給付費明細書（介護老人保健施設） (QP001052)
+ * プログラム 在宅サービス介護給付費明細書（介護老人保健施設） (QP001051)
  *
  *****************************************************************
  */
@@ -33,22 +33,28 @@ package jp.nichicom.ac.lib.care.claim.calculation;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.or.med.orca.qkan.QkanConstants;
 
-public class QP001P042_201804 extends QP001P04_201804{
-    
-    // 様式第四の二 201804以降
+public class QP001P044_201804 extends QP001P04_201804{
+	
+	/* 
+	 * 様式第四の四 201804以降
+	 * 
+	 * addFormat()
+	 * 設定する帳票定義体を変更
+	 * 
+	 * getFormatId()
+	 * フォーマット番号の変更
+	 */
 
     public void addFormat() throws Exception {
-        ACChotarouXMLUtilities.addFormat(writer, getFormatId(), "QP001P042_201804.xml");
+        ACChotarouXMLUtilities.addFormat(writer, getFormatId(), "QP001P044_201804.xml");
     }
 
     public String getFormatId() throws Exception {
-        return "QP001P042_201804";
+        return "QP001P044_201804";
     }
-    
-    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - begin
+
     protected int getSpecialClinicRecordType() {
-    	//特別療養費のレコードタイプを返す
-    	return QkanConstants.SPECIAL_CLINIC_RECORD_TYPE_TOKUBETU_RYOYO;
+    	//特別診療費のレコードタイプを返す
+    	return QkanConstants.SPECIAL_CLINIC_RECORD_TYPE_TOKUBETU_SHINRYO;
     }
-    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - end
 }

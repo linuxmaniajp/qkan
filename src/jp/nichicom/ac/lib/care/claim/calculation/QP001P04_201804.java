@@ -41,7 +41,7 @@ import jp.nichicom.vr.util.VRMap;
 /**
  * 在宅サービス介護給付費明細書（介護老人保健施設）(様式第四) - 帳票定義体ファイル名 ： QP001P04X_YYYYMM.xml
  */
-public class QP001P04_201804 extends QP001P02_10Event {
+public abstract class QP001P04_201804 extends QP001P02_10Event {
 
     /**
      * コンストラクタです。
@@ -59,6 +59,8 @@ public class QP001P04_201804 extends QP001P02_10Event {
 
         // 基本情報レコード
         VRMap baseMap = getBaseMap();
+        // 基本摘要情報レコード
+        VRList baseSummaryList = getBaseSummaryList(); //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add
         // 明細情報レコード集合
         VRList detailList = getDetailList();
         // 集計情報レコード
@@ -120,6 +122,13 @@ public class QP001P04_201804 extends QP001P02_10Event {
                     pageCount = pageTemp;
                 }
             }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+            if (baseSummaryList.getDataSize() > 0) {
+                pageTemp = (int) Math.ceil((double) baseSummaryList.getDataSize() / 1d);
+                if (pageTemp > pageCount)
+                    pageCount = pageTemp;
+            }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
             pageCountMax += pageCount;
         }
 
@@ -129,6 +138,8 @@ public class QP001P04_201804 extends QP001P02_10Event {
             parseStyle();
             // 基本情報レコード
             baseMap = getBaseMap();
+            // 基本摘要情報レコード
+            baseSummaryList = getBaseSummaryList(); //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add
             // 明細情報レコード集合
             detailList = getDetailList();
             // 集計情報レコード
@@ -166,6 +177,14 @@ public class QP001P04_201804 extends QP001P02_10Event {
                     pageCount = pageTemp;
                 }
             }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+            if (baseSummaryList.getDataSize() > 0) {
+                pageTemp = (int) Math.ceil((double) baseSummaryList.getDataSize() / 1d);
+                if (pageTemp > pageCount){
+                    pageCount = pageTemp;
+                }
+            }
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 
             // 印刷ループ
             for (int i = 0; i < pageCount; i++,printPage++) {
@@ -207,8 +226,16 @@ public class QP001P04_201804 extends QP001P02_10Event {
                 // 短期入所の実日数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "tankijitsu", pad(typeMap.get("701013"), 2));
 
-                // 明細件数分ループする。※7件を超える場合は、次ページに印字
-                setDetailList(detailList, 5, kohiCount);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+                setBaseSummaryList(baseSummaryList, 2);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+                
+                // 明細件数分ループする。※5件を超える場合は、次ページに印字
+                //[H30.04改正対応][Shinobu Hitaka] 2018/03/26 edit - start 様式変更対応
+                //setDetailList(detailList, 5, kohiCount);
+                int keta = 6;
+                setDetailList(detailList, 5, kohiCount, keta);
+                //[H30.04改正対応][Shinobu Hitaka] 2018/03/26 edit - end
 
                 // 特定療養費件数分ループする。※2件を超える場合は、次ページに印字
                 for (int j = 1; j < 3; j++) {
@@ -219,39 +246,44 @@ public class QP001P04_201804 extends QP001P02_10Event {
                     // 識別番号を設定する。
                     ACChotarouXMLUtilities.setValue(writer, "shikibetsuno" + j, pad(diagnosis.get("501009"),2));
                     // 内容を設定する。※特定診療費マスタ(M_SPECIAL_CLINIC)のSPECIAL_CLINIC_TYPEと結合し、SPECIAL_CLINIC_NAMEを表示。
-                    //[ID:0000454][Shin Fujihara] 2009/05/01 edit begin 障害対応
-                    /*
-                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
-                            manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2));
-                    */
-                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
-                            manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2,baseMap.get("201003")));
-                    //[ID:0000454][Shin Fujihara] 2009/05/01 edit end 障害対応
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - begin
+//                    //[ID:0000454][Shin Fujihara] 2009/05/01 edit begin 障害対応
+//                    /*
+//                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
+//                            manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2));
+//                    */
+//                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
+//                            manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),2,baseMap.get("201003")));
+//                    //[ID:0000454][Shin Fujihara] 2009/05/01 edit end 障害対応                    
+					ACChotarouXMLUtilities.setValue(writer, "tokuteishinryo.h" + j + ".w4",
+							manager.getSpecialClinicName(String.valueOf(diagnosis.get("501009")),
+									getSpecialClinicRecordType(), baseMap.get("201003")));
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - end
                     // 単位数を設定する。
                     ACChotarouXMLUtilities.setValue(writer, "tokuteishinryotani" + j, pad(diagnosis.get("501010"),4));
                     // 回数を設定する。
                     ACChotarouXMLUtilities.setValue(writer, "tokuteishinryotimes" + j, pad(diagnosis.get("501011"),2));
                     // 保険分単位数を設定する。
-                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentani" + j, pad(diagnosis.get("501012"),5) );
+                    ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentani" + j, pad(diagnosis.get("501012"),keta));
                     
                     switch(kohiCount){
                     case 0:
                         // 公費分回数を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501014"),2));
                         // 公費分単位数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501015"),5));
+                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501015"),keta));
                         break;
                     case 1:
                         // 公費分回数を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501017"),2));
                         // 公費分単位数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501018"),5));
+                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501018"),keta));
                         break;
                     case 2:
                         // 公費分回数を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitimes" + j, pad(diagnosis.get("501020"),2));
                         // 公費分単位数を設定する。
-                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501021"),5));
+                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitani" + j, pad(diagnosis.get("501021"),keta));
                         break;
                     }
                     
@@ -320,23 +352,23 @@ public class QP001P04_201804 extends QP001P02_10Event {
                     // サービス単位数合計を設定する。 ※サービス単位数の合算を設定。
                     // setValue(servicetimetotal);
                     ACChotarouXMLUtilities.setValue(writer, "servicetimetotal",
-                            pad(String.valueOf(getServiceUnitTotal()), 5));
+                            pad(String.valueOf(getServiceUnitTotal()), keta));
                     // 公費対象単位数合計を設定する。 ※公費対象単位数の合算を設定。
                     switch (kohiCount) {
                     case 0:
                         ACChotarouXMLUtilities.setValue(writer,
                                 "kohitanitotal", pad(String
-                                        .valueOf(getKohiTotal1()), 5));
+                                        .valueOf(getKohiTotal1()), keta));
                         break;
                     case 1:
                         ACChotarouXMLUtilities.setValue(writer,
                                 "kohitanitotal", pad(String
-                                        .valueOf(getKohiTotal2()), 5));
+                                        .valueOf(getKohiTotal2()), keta));
                         break;
                     case 2:
                         ACChotarouXMLUtilities.setValue(writer,
                                 "kohitanitotal", pad(String
-                                        .valueOf(getKohiTotal3()), 5));
+                                        .valueOf(getKohiTotal3()), keta));
                         break;
                     }
 
@@ -479,18 +511,18 @@ public class QP001P04_201804 extends QP001P02_10Event {
                     
                     if(diagnosisLastMap != null){ 
                         //特定診療費の保険分単位数の合計を設定する。 ※特定診療費情報レコード順次番号が99の値を採用する。
-                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentanitotal", pad(diagnosisLastMap.get("501013"),5));
+                        ACChotarouXMLUtilities.setValue(writer, "tokuteishinryohokentanitotal", pad(diagnosisLastMap.get("501013"),keta));
                         
                         switch(kohiCount){
                         case 0:
                             //特定診療費の公費分単位数の合計を設定する。　※特定診療費情報レコード順次番号が99の値を採用する。
-                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501016"),5));
+                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501016"),keta));
                             break;
                         case 1:
-                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501019"),5));
+                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501019"),keta));
                             break;
                         case 2:
-                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501022"),5));
+                            ACChotarouXMLUtilities.setValue(writer, "tokuteishinryokohitanitotal", pad(diagnosisLastMap.get("501022"),keta));
                             break;
                         }
                     }
@@ -713,5 +745,9 @@ public class QP001P04_201804 extends QP001P02_10Event {
     }
     //[H20.5 法改正対応] fujihara add end
 
-
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - begin
+    // 特別療養費または特別診療費のレコードタイプを取得します。（子クラスで実装）
+    protected abstract int getSpecialClinicRecordType();
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - end
+    
 }

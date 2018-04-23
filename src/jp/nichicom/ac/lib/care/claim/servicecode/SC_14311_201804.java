@@ -112,6 +112,11 @@ public class SC_14311_201804 extends Qkan10011_ServiceUnitGetter {
                 putSystemServiceCodeItem(sysSvcCdItems, "Z6133");
             }
             
+            // ターミナルケアマネジメント加算
+            if (_1430117 > 1) {
+                putSystemServiceCodeItem(sysSvcCdItems, "Z6100");//2018.04
+            }
+
             return sysSvcCdItems;
         }
         // [ID:0000702][Masahiko.Higuchi] 2012/03 add end

@@ -31,6 +31,7 @@
 package jp.nichicom.ac.lib.care.claim.calculation;
 
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
+import jp.or.med.orca.qkan.QkanConstants;
 
 public class QP001P041_201804 extends QP001P04_201804{
 	
@@ -52,4 +53,10 @@ public class QP001P041_201804 extends QP001P04_201804{
         return "QP001P041_201804";
     }
 
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - begin
+    protected int getSpecialClinicRecordType() {
+    	//特別療養費のレコードタイプを返す
+    	return QkanConstants.SPECIAL_CLINIC_RECORD_TYPE_TOKUBETU_RYOYO;
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - end
 }

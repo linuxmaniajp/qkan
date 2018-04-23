@@ -158,6 +158,19 @@ public class KyouseiUnitCalcurater {
 	}
 	
     /**
+     * 共生型減算の単位数の合算値を取得します。
+     * （calcKyouseiUnit実行後に呼ぶ）
+     * @throws Exception 
+     */
+	public int getTotalKyouseiUnit() {
+		int total = 0;
+		for (int unit : sumKyouseiUnitMap.values()) {
+			total += unit;
+		}
+		return total;		
+	}
+	
+    /**
      * このクラスで計算用に追加したサービスのマップKEYを削除します。
      * （このクラスで計算した共生型減算の単位数を使用した後、サービスに不要なKEYが残っていると不都合がある場合に呼ぶ）
      */

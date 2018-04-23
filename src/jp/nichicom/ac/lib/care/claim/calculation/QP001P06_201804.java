@@ -33,6 +33,7 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * (在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(様式第六) - 帳票定義体ファイル名 ： QP001P06X_YYYYMM.xml
@@ -104,16 +105,20 @@ public class QP001P06_201804 extends QP001P02_10Event {
                 setKyotakuData();
 
                 // 明細件数分ループする。※行数を超える場合は、次ページに印字
-                setDetailList(detailList,getDetailRowCount() + 1, kohiCount);
+                //[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - start 様式変更対応
+                //setDetailList(detailList,getDetailRowCount() + 1, kohiCount);
+                int keta = 6;
+        		setDetailList(detailList,getDetailRowCount() + 1, kohiCount, keta);
+                //[H30.04改正対応][Shinobu Hitaka] 2018/03/18 edit - end
 
                 if (i == 0) {
                     //サービス単位数合計を設定する。　※サービス単位数の合算を設定。
                     //setValue(servicetimetotal);
-                    ACChotarouXMLUtilities.setValue(writer,"servicetimetotal", pad(String.valueOf(getServiceUnitTotal()),5));
+                    ACChotarouXMLUtilities.setValue(writer,"servicetimetotal", pad(String.valueOf(getServiceUnitTotal()),keta));
                     //公費対象単位数合計を設定する。　※公費対象単位数の合算を設定。
                     switch(kohiCount){
                     case 0:
-                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),5));
+                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal1()),keta));
 // 2015/5/21 [Yoichiro Kamei] add - begin 公費関連見直し 
                         //公費給付率を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201030"),3));
@@ -126,7 +131,7 @@ public class QP001P06_201804 extends QP001P02_10Event {
 // 2015/5/21 [Yoichiro Kamei] add - end
                         break;
                     case 1:
-                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),5));
+                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal2()),keta));
 // 2015/5/21 [Yoichiro Kamei] add - begin 公費関連見直し 
                         //公費給付率を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201031"),3));
@@ -139,7 +144,7 @@ public class QP001P06_201804 extends QP001P02_10Event {
 // 2015/5/21 [Yoichiro Kamei] add - end
                         break;
                     case 2:
-                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),5));
+                        ACChotarouXMLUtilities.setValue(writer,"kohitanitotal",pad(String.valueOf(getKohiTotal3()),keta));
 // 2015/5/21 [Yoichiro Kamei] add - begin 公費関連見直し
                         //公費給付率を設定する。
                         ACChotarouXMLUtilities.setValue(writer, "kohikyufu", pad(baseMap.get("201032"),3));
