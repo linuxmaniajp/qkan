@@ -2306,7 +2306,10 @@ public class QkanCommon {
         if (target instanceof VRRadioButtonGroup) {
             // 一つ目の項目を選択する
             if (((VRRadioButtonGroup) target).getButtonCount() > 0) {
-                ((VRRadioButtonGroup) target).getButton(1).setSelected(true);
+                // 2018.1.27 [Shinobu Hitaka] edit - begin インデックスに1がない場合エラーになる
+                //((VRRadioButtonGroup) target).getButton(1).setSelected(true);
+                ((VRRadioButtonGroup) target).getFirstButton().setSelected(true);
+                // 2018.1.27 [Shinobu Hitaka] edit - end
             }
         } else if (target instanceof JCheckBox) {
             ((JCheckBox) target).setSelected(false);
@@ -4183,14 +4186,12 @@ public class QkanCommon {
             throws Exception {
         // パネルで使用する文字列を返却する
         // パネルに応じて返却する文字列を変更できるように分岐させる
-// 2014/1/9 [Yoichiro Kamei] edit - begin H27.4改正対応時
-        //int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2404;
-        int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2704;
-// ここは切替テスト用
-//        if (targetDate != null && ACDateUtilities.getDifferenceOnDay(QkanConstants.H2704, targetDate) < 1) {
-//            lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2704;
-//        }
-// 2014/1/9 [Yoichiro Kamei] edit - end
+
+// 2018/1/8 [Yoichiro Kamei] mod - begin H30.4改正対応
+//        int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H2704;
+    	int lowVersion = QkanConstants.SERVICE_LOW_VERSION_H3004;
+// 2018/1/8 [Yoichiro Kamei] mod - end
+
         String lowVersionString = ACCastUtilities.toString(lowVersion, "");
         lowVersionString = lowVersionString.substring(0, 6);
 
@@ -4224,7 +4225,10 @@ public class QkanCommon {
 //        //メジャーバージョンが6未満は不正なスキーマ
 //        if (ACCastUtilities.toInt(ary[0], 0) < 6) {
         //メジャーバージョンが7未満は不正なスキーマ
-        if (ACCastUtilities.toInt(ary[0], 0) < 7) {
+// 2018/1/8 [Yoichiro Kamei] mod - begin H30.4改正対応
+//        if (ACCastUtilities.toInt(ary[0], 0) < 7) {
+        if (ACCastUtilities.toInt(ary[0], 0) < 8) {
+// 2018/1/8 [Yoichiro Kamei] mod - end
 // 2015/4/17 [H27.4改正対応][Yoichiro Kamei] edit - end
             return false;
         }

@@ -154,6 +154,13 @@ public class CareServiceSchedulePrintManager extends HashMap {
      */
     private boolean printSyoguKaizen = false;
     // [H27.4改正対応][Shinobu Hitaka] 2015/3/16 add - end
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+    /**
+     * 同一建物減算を本表に印刷するか
+     */
+    private boolean printSameBuilding = false;
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
 
     private boolean subParse = true;
 
@@ -501,6 +508,16 @@ public class CareServiceSchedulePrintManager extends HashMap {
         } else {
             setPrintHomeMedicalAdvice(false);
         }
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+        // 同一建物減算を本表に記載するかの設定をチェック
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintSameBuilding")) {
+            setPrintSameBuilding(!"0".equals(ACFrame.getInstance().getProperty(
+                    "PrintConfig/PrintSameBuilding")));
+        } else {
+        	setPrintSameBuilding(false);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
         
         // 本票の自費に△を記載するかの設定をチェック
         if (ACFrame.getInstance().hasProperty("PrintConfig/PrivateExpenses")) {
@@ -879,6 +896,24 @@ public class CareServiceSchedulePrintManager extends HashMap {
         this.printSyoguKaizen = printSyoguKaizen;
     }
     // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - end
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+    /**
+     * 同一建物減算を本表に印刷するか を返します。
+     * @return 同一建物減算を本表に印刷するか
+     */
+    protected boolean isPrintSameBuilding() {
+        return printSameBuilding;
+    }
+
+    /**
+     * 同一建物減算を本表に印刷するか を返します。
+     * @param printSameBuilding 同一建物減算を本表に印刷するか
+     */
+    protected void setPrintSameBuilding(boolean printSameBuilding) {
+        this.printSameBuilding = printSameBuilding;
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
     
     /**
      * 別表情報としても解析するか を返します。
@@ -2433,7 +2468,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 int per=ACCastUtilities.toInt(removeKey, 0);
                 DivedServiceItem.this.outInsureUnits.remove(removeKey);
                 //%加算
-                DivedServiceItem.this.outInsureUnits.put(new Integer((int)Math.round(units*per/100.0)), replaceValue);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                DivedServiceItem.this.outInsureUnits.put(new Integer((int)Math.round(units*per/100.0)), replaceValue);
+                DivedServiceItem.this.outInsureUnits.put(new Integer(CareServiceCommon.calcPercentageUnit(units, per)), replaceValue);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                 
                 // 特別地域・小規模の場合の自己負担額を退避
                 int regulationUnit = 0;
@@ -2442,9 +2480,24 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 int calcUnit = 0;
                 int totalUnit = 0;
                 int result = 0;
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+                if("7".equals(serviceAddFlag)) {
+                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+                    adjustUnit = units - regulationUnit;
+                    calcUnit = new Integer(CareServiceCommon.calcPercentageUnit(adjustUnit, per));
+                    totalUnit = new Integer(CareServiceCommon.calcPercentageUnit(units, per));
+                    result = totalUnit - calcUnit;
+                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
+                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 end
+                
                 // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
                 if("3".equals(serviceAddFlag) && regulationHash.containsKey(findKey)) {
                     regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+                    // 同一建物減算の自己負担も合計する
+                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_7"),0);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end 同一建物減算対応
                     // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
                     adjustUnit = units - regulationUnit;
                     calcUnit = new Integer((int)Math.round(adjustUnit*per/100.0));
@@ -2456,6 +2509,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 
                 if("6".equals(serviceAddFlag)) {
                     regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+                    // 同一建物減算の自己負担も合計する
+                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_7"),0);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end 同一建物減算対応
                     // 特別地域加算の自己負担も合計する
                     regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_3"),0);
                     // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
@@ -2467,8 +2524,51 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit end
                 }
             }
+            
+
         }
         
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 共生型の減算対応
+		/**
+		 * 共生型の%減算の単位数を設定します。
+		 * 
+		 * @param units
+		 *            %減算の対象単位数
+		 * @param isOver30Days
+		 *            30日超
+		 * @throws Exception
+		 *             処理例外
+		 */
+		public void setSubPersentageUnitForKyousei(int units, boolean isOver30Days) throws Exception {
+			Object removeKey = null;
+			Object replaceValue = null;
+			Map targetMap = null;
+			if (isOver30Days) {
+				targetMap = DivedServiceItem.this.inInsureOver30Units;
+			} else {
+				targetMap = DivedServiceItem.this.inInsureUnits;
+			}
+
+			Iterator it = targetMap.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry ent = (Map.Entry) it.next();
+				DivedServiceUnit item = (DivedServiceUnit) ent.getValue();
+				VRMap rec = (VRHashMap) item.get(0);
+				if (CareServiceCommon.isAddPercentageForKyousei(item.code)) {
+					removeKey = ent.getKey();
+					replaceValue = item;
+					break;
+				}
+			}
+			if (removeKey != null) {
+				int per = ACCastUtilities.toInt(removeKey, 0);
+				targetMap.remove(removeKey);
+				// %減算の単位数を設定
+				targetMap.put(new Integer(CareServiceCommon.calcPercentageUnit(units, per)), replaceValue);
+			}
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+
 
         /**
          * 利用票別表を構築します。
@@ -2510,6 +2610,15 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     totalUnit+=units;
                     over30UnitSyoguHash.setData(systemServiceKindDetail, totalUnit);
                 }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 共生型の減算対応
+                else if (CareServiceCommon.isAddPercentageForKyousei(service)) {
+                	totalUnit = ACCastUtilities.toInt(over30UnitSyoguHash.getData(systemServiceKindDetail),0);
+                	//既に計算済みのためunitsではなくunitをそのまま足す
+                	totalUnit += unit;
+                	over30UnitSyoguHash.setData(systemServiceKindDetail, totalUnit);
+                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+                
             }
             
             // 給付限度額管理対象外の単位数から対象を取得
@@ -2660,7 +2769,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     // ここで自己負担分を挿入する
                     findKey = ACCastUtilities.toString(rec.getData("PROVIDER_ID")) + "-" + ACCastUtilities.toString(rec.getData("SYSTEM_SERVICE_KIND_DETAIL"));
                     String serviceAddFlag = ACCastUtilities.toString(services.code.get("SERVICE_ADD_FLAG"));
-                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
+                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "7".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                         findKey += "_" + serviceAddFlag;
                         etcRegulationRate = ACCastUtilities.toInt(regulationHash.get(findKey),0);
                         rec.setData("REGULATION_RATE",etcRegulationRate);
@@ -2710,7 +2822,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
                 	
                     // 特別地域・中山間地域と処遇改善加算系で自己負担がある場合のみ小計に印字する
-                    if(etcRegulationRate > 0 && CareServiceCommon.isAddPercentage(services.code)) {
+                	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                    if(etcRegulationRate > 0 && CareServiceCommon.isAddPercentage(services.code)) {
+                	if(etcRegulationRate != 0 && CareServiceCommon.isAddPercentage(services.code)) {
+                	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                         services.buildUserSubTableTotalDetailRow(buildParam,
                                 provider, insureRate, unit, totals, true, false, isOver30Days);
                     } else {
@@ -3065,6 +3180,9 @@ public class CareServiceSchedulePrintManager extends HashMap {
         // [ID:0000444][Tozo TANAKA] 2009/03/18 add begin 平成21年4月法改正対応
         private Map addPersentageTargetCounts = new HashMap();
         // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+        private Map<String, Map> addPersentageCodes = new HashMap();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
         // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
         private Map syoguMap = new HashMap();
         // [ID:0000734][Masahiko.Higuchi] 2012/04 add end
@@ -3188,9 +3306,17 @@ public class CareServiceSchedulePrintManager extends HashMap {
             it = DivedServiceKind.this.subParseMap.entrySet().iterator();
             //基本単価のサービスコードから、コードと単位数を参照するハッシュを構築する。
             Map simpleUnitHash = new HashMap(); 
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+            Map simpleUnitOver30Hash = new HashMap(); 
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
             
             while (it.hasNext()) {
-                Iterator it2 = ((DivedServiceItem) ((Map.Entry) it.next()).getValue()).inInsureUnits.entrySet().iterator();
+            	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//            	Iterator it2 = ((DivedServiceItem) ((Map.Entry) it.next()).getValue()).inInsureUnits.entrySet().iterator();
+            	DivedServiceItem item = (DivedServiceItem) ((Map.Entry) it.next()).getValue();
+            	Iterator it2 = item.inInsureUnits.entrySet().iterator();
+            	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
+                
                 while(it2.hasNext()){
                     Map.Entry ent = (Map.Entry)it2.next();
                     Map code = ((DivedServiceUnit) ent.getValue()).code;
@@ -3206,6 +3332,42 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         // 2016/10/20 [Yoichiro Kamei] mod - end
                     }
                 }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+                // 居宅療養に特別地域系の加算が追加されたため、管理対象外の基本サービスも対象とする
+                it2 = item.outInsureUnits.entrySet().iterator();
+                while(it2.hasNext()){
+                    Map.Entry ent = (Map.Entry)it2.next();
+                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+                    if(CareServiceCommon.isSimpleUnit(code)){
+                        //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                        // 2016/10/20 [Yoichiro Kamei] mod - begin 総合事業独自対応
+                        //simpleUnitHash.put(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), new Object[]{code, ent.getKey()});
+                        String itemKey = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                        if (QkanSjServiceCodeManager.dokujiCodes.contains(ACCastUtilities.toString(systemServiceKindDetail))) {
+                            itemKey = itemKey + "-" + ACCastUtilities.toString(code.get("INSURER_ID"));
+                        }
+                        simpleUnitHash.put(itemKey, new Object[]{code, ent.getKey()});
+                        // 2016/10/20 [Yoichiro Kamei] mod - end
+                    }
+                }
+                //共生型減算の３０日超の対応
+                it2 = item.inInsureOver30Units.entrySet().iterator();
+                while(it2.hasNext()){
+                    Map.Entry ent = (Map.Entry)it2.next();
+                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+                    if(CareServiceCommon.isSimpleUnit(code)){
+                        //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                        // 2016/10/20 [Yoichiro Kamei] mod - begin 総合事業独自対応
+                        //simpleUnitHash.put(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), new Object[]{code, ent.getKey()});
+                        String itemKey = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                        if (QkanSjServiceCodeManager.dokujiCodes.contains(ACCastUtilities.toString(systemServiceKindDetail))) {
+                            itemKey = itemKey + "-" + ACCastUtilities.toString(code.get("INSURER_ID"));
+                        }
+                        simpleUnitOver30Hash.put(itemKey, new Object[]{code, ent.getKey()});
+                        // 2016/10/20 [Yoichiro Kamei] mod - end
+                    }
+                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
             }            
             //基本単価へサービスコードごとに集計した%加算対象回数を乗じたものを%加算対象単位数として設定する。
             it = DivedServiceKind.this.subParseMap.entrySet().iterator();
@@ -3233,7 +3395,123 @@ public class CareServiceSchedulePrintManager extends HashMap {
                                 //{回数, 地域系%加算ハッシュ}
                                 Object[] unitParam = (Object[])ent3.getValue();
                                 int addCount = ACCastUtilities.toInt(unitParam[0], 0);
-                                Map addAreaHash =(Map)unitParam[1];
+                                
+                                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                                Map addAreaHash =(Map)unitParam[1];
+//                                
+//                                //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+//                                obj = simpleUnitHash.get(simpleCodeItem);
+//                                if(obj instanceof Object[]){
+//                                    //基本単価を取得する。
+//                                    //{コード,単位数}
+//                                    Object[] simpleUnitParams = (Object[])obj;
+//                                    Map simpleCode = (Map)simpleUnitParams[0];
+//                                    int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+//                                    
+//                                    int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
+//                                    units += targetUnit * addCount;
+//                                    
+//                                    if(CareServiceCommon.isAddPercentageForArea(code)){
+//                                        //所定単位＋地域系%加算を対象とする%加算の場合
+//                                        int areaTargetUnit = targetUnit;
+//                                        targetUnit = 0;
+//                                        Iterator it4 = addAreaHash.entrySet().iterator();
+//                                        while (it4.hasNext()) {
+//                                            Map.Entry ent4 = (Map.Entry) it4.next();
+//                                            //地域系%加算SERVICE_CODE_ITEM : {コード,回数}
+//                                            Object[] forAreaTargetCodeParam = (Object[])ent4.getValue();
+//                                            Map forAreaTargetCode = (Map)forAreaTargetCodeParam[0];
+//                                            int forAreaTargetCodeCount = ((Integer)forAreaTargetCodeParam[1]).intValue();
+//
+//                                            int per = ACCastUtilities.toInt(forAreaTargetCode.get("SERVICE_UNIT"),0);
+//                                            // [ID:0000485][Tozo TANAKA] 2009/04/16 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                                            //所定単価＋地域系%加算になるよう、地域系%加算分を合算する。
+//                                            targetUnit += (int)Math.round(areaTargetUnit*forAreaTargetCodeCount*per/100.0);
+//                                            // [ID:0000485][Tozo TANAKA] 2009/04/16 replace end
+//                                            
+//                                        }
+//                                        //所定単位のみを対象とする%加算の場合は、新たに加えることはしない。
+//                                        units += targetUnit;
+//                                    }
+//                                }
+                                //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                                if (simpleUnitHash.containsKey(simpleCodeItem)) {
+                                	Object[] simpleUnitParams = (Object[]) simpleUnitHash.get(simpleCodeItem);
+                                    Map simpleCode = (Map) simpleUnitParams[0];
+                                    int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+                                    
+                                    int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
+                                    units += targetUnit * addCount;
+                                    
+                                    int diffUnit = 0;
+                                                                    
+                                    // 共生型の減算の単位数計算
+                                    int addKyoseiUnit = calcParcentageAddUnit(targetUnit, diffUnit, (Map) unitParam[3]);                                   
+                                    diffUnit += addKyoseiUnit;
+                                    
+                                    // 同一建物減算の単位数計算
+                                    int addDoituUnit = calcParcentageAddUnit(targetUnit, diffUnit, (Map) unitParam[4]);
+                                    diffUnit += addDoituUnit;
+                                                                       
+                                    // 特別地域系の加算の単位数計算
+                                    int addAreaUnit = calcParcentageAddUnit(targetUnit, diffUnit, (Map) unitParam[1]);                                    
+                                    
+                                    // 6:%単位加算のうち計算対象に地域系加算を含む加算の場合
+                                    if (CareServiceCommon.isAddPercentageForArea(code)) {
+                                    	units += addKyoseiUnit;
+                                    	units += addDoituUnit;
+                                    	units += addAreaUnit;
+                                    }
+                                    // 3:%単位加算のうち計算対象に地域系加算を含まない加算の場合
+                                    if (CareServiceCommon.isAddPercentageForSimple(code)) {
+                                    	units += addKyoseiUnit;
+                                    	units += addDoituUnit;
+                                    }
+                                    // 7:減算(対象に共生型減算を含む)加算の場合
+                                    if (CareServiceCommon.isAddPercentageForDoitu(code)) {
+                                    	units += addKyoseiUnit;
+                                    }
+                                }
+                                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
+                            }
+                        }
+                    }
+                    // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
+                    if(CareServiceCommon.isAddPercentageForSyogu(code)){
+                        // 処遇改善は単位数登録しない
+                        continue;
+                    }
+                    // [ID:0000682] 2012/01 end
+                    
+
+                                        
+                }
+                item.setSubPersentageUnit(units);
+                
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 共生型の減算対応
+                //給付管理対象の下位コードを全走査
+                units = 0;
+                it2 = item.inInsureUnits.entrySet().iterator();
+                while (it2.hasNext()) {
+                    Map.Entry ent = (Map.Entry) it2.next();
+                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+
+                    if(CareServiceCommon.isAddPercentageForKyousei(code)){
+                        //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
+                        String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                        Object obj;
+                        //加算サービスコード : 回数等ハッシュ
+                        obj = addPersentageTargetCounts.get(addServiceCodeItem);
+                        if(obj instanceof Map){
+                            //既出の%加算コード
+                            Iterator it3 = ((Map)obj).entrySet().iterator();
+                            while (it3.hasNext()) {
+                                Map.Entry ent3 = (Map.Entry) it3.next();
+                                //基本単位のSERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ }
+                                String simpleCodeItem = ACCastUtilities.toString(ent3.getKey());
+                                //{回数, 地域系%加算ハッシュ}
+                                Object[] unitParam = (Object[])ent3.getValue();
+                                int addCount = ACCastUtilities.toInt(unitParam[0], 0);
                                 
                                 //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
                                 obj = simpleUnitHash.get(simpleCodeItem);
@@ -3246,41 +3524,59 @@ public class CareServiceSchedulePrintManager extends HashMap {
                                     
                                     int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
                                     units += targetUnit * addCount;
-                                    
-                                    if(CareServiceCommon.isAddPercentageForArea(code)){
-                                        //所定単位＋地域系%加算を対象とする%加算の場合
-                                        int areaTargetUnit = targetUnit;
-                                        targetUnit = 0;
-                                        Iterator it4 = addAreaHash.entrySet().iterator();
-                                        while (it4.hasNext()) {
-                                            Map.Entry ent4 = (Map.Entry) it4.next();
-                                            //地域系%加算SERVICE_CODE_ITEM : {コード,回数}
-                                            Object[] forAreaTargetCodeParam = (Object[])ent4.getValue();
-                                            Map forAreaTargetCode = (Map)forAreaTargetCodeParam[0];
-                                            int forAreaTargetCodeCount = ((Integer)forAreaTargetCodeParam[1]).intValue();
-
-                                            int per = ACCastUtilities.toInt(forAreaTargetCode.get("SERVICE_UNIT"),0);
-                                            // [ID:0000485][Tozo TANAKA] 2009/04/16 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                                            //所定単価＋地域系%加算になるよう、地域系%加算分を合算する。
-                                            targetUnit += (int)Math.round(areaTargetUnit*forAreaTargetCodeCount*per/100.0);
-                                            // [ID:0000485][Tozo TANAKA] 2009/04/16 replace end
-                                            
-                                        }
-                                        //所定単位のみを対象とする%加算の場合は、新たに加えることはしない。
-                                        units += targetUnit;
-                                    }
                                 }
                             }
                         }
                     }
-                    // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
-                    if(CareServiceCommon.isAddPercentageForSyogu(code)){
-                        // 処遇改善は単位数登録しない
-                        continue;
-                    }
-                    // [ID:0000682] 2012/01 end
                 }
-                item.setSubPersentageUnit(units);
+                item.setSubPersentageUnitForKyousei(units, false);
+             	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+                
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 共生型の減算対応(30日超分）
+                //30日超の給付管理対象の下位コードを全走査
+                units = 0;
+                it2 = item.inInsureOver30Units.entrySet().iterator();
+                while (it2.hasNext()) {
+                    Map.Entry ent = (Map.Entry) it2.next();
+                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+
+                    if(CareServiceCommon.isAddPercentageForKyousei(code)){
+                        //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
+                        String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                        Object obj;
+                        //加算サービスコード : 回数等ハッシュ
+                        obj = addPersentageTargetCounts.get(addServiceCodeItem);
+                        if(obj instanceof Map){
+                            //既出の%加算コード
+                            Iterator it3 = ((Map)obj).entrySet().iterator();
+                            while (it3.hasNext()) {
+                                Map.Entry ent3 = (Map.Entry) it3.next();
+                                //基本単位のSERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ }
+                                String simpleCodeItem = ACCastUtilities.toString(ent3.getKey());
+                                //{回数, 地域系%加算ハッシュ}
+                                Object[] unitParam = (Object[])ent3.getValue();
+                                int addCount = ACCastUtilities.toInt(unitParam[0], 0);
+                                
+                                //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                                obj = simpleUnitOver30Hash.get(simpleCodeItem);
+                                if(obj instanceof Object[]){
+                                    //基本単価を取得する。
+                                    //{コード,単位数}
+                                    Object[] simpleUnitParams = (Object[])obj;
+                                    Map simpleCode = (Map)simpleUnitParams[0];
+                                    int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+                                    
+                                    int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
+                                    units += targetUnit * addCount;
+                                }
+                            }
+                        }
+                    }
+                }
+                item.setSubPersentageUnitForKyousei(units, true);
+             	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+                
+                
                 // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
                 it2 = item.outInsureUnits.entrySet().iterator();
                 while (it2.hasNext()) {
@@ -3414,6 +3710,12 @@ public class CareServiceSchedulePrintManager extends HashMap {
                             }
                             // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
                             
+                            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+                            if (regulationHash.containsKey(serchKey + "_7")) {
+                                totalRegulation += regulationHash.get(serchKey + "_7");
+                            }
+                            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+                            
                             // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
                             int result = CareServiceCommon.calcSyoguPatientSelf(totalUnit, totalRegulation, serviceUnit, serviceStaffUnit);
                             regulationHash.put(serchKey + "_8", result);
@@ -3430,6 +3732,25 @@ public class CareServiceSchedulePrintManager extends HashMap {
             // [ID:0000682] 2012/01 end
             
         }
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+        private int calcParcentageAddUnit(int targetUnit, int diffUnit, Map<String, Integer> relationMap) {
+        	int unit = 0;
+        	if (relationMap.isEmpty()) {
+        		return unit;
+        	}
+        	for (String kasanItemCode : relationMap.keySet()) {
+        		int kihonCount = ACCastUtilities.toInt(relationMap.get(kasanItemCode), 0);
+        		if (kihonCount > 0) {
+            		Map kasanCode = addPersentageCodes.get(kasanItemCode);        		
+            		int per = ACCastUtilities.toInt(kasanCode.get("SERVICE_UNIT"), 0);
+            		unit += CareServiceCommon.calcPercentageUnit((targetUnit * kihonCount) + diffUnit, per);
+        		}
+        	}
+            return unit;
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+        
         /**
          * 利用票別表を構築します。
          * 
@@ -3785,11 +4106,17 @@ public class CareServiceSchedulePrintManager extends HashMap {
             return (!CareServiceCommon.isAddSpecialAreaOfWelfareEquipment(code)	// 福祉用具の特別地域加算以外
                     && !CareServiceCommon.isAddPercentageForSimple(code)		// 特別地域加算・小規模事業所加算以外
                     && !CareServiceCommon.isAddPercentageForArea(code))			// 中山間地域提供加算以外
+            		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+                    && !CareServiceCommon.isAddPercentageForDoitu(code)			// 同一建物減算以外
+            		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
                     && !CareServiceCommon.isAddPercentageForSyogu(code)			// 介護職員処遇改善加算以外
                     || (CareServiceCommon.isAddSpecialAreaOfWelfareEquipment(code) && isPrintSpecialArea())	// 福祉用具の特別地域加算
                     || (CareServiceCommon.isAddPercentageForSimple(code) && isPrintSpecialArea())			// 特別地域加算・小規模事業所加算
                     || (CareServiceCommon.isAddPercentageForArea(code) && isPrintChusankanArea())			// 中山間地域提供加算
                     || (CareServiceCommon.isAddPercentageForSyogu(code) && isPrintSyoguKaizen())			// 介護職員処遇改善加算
+            		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+                    || (CareServiceCommon.isAddPercentageForDoitu(code) && isPrintSameBuilding())			// 同一建物減算
+            		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
                     || CareServiceCommon.isFacility(service)			// 施設
                     || CareServiceCommon.isLifeCare(service)			// 準施設
                     || CareServiceCommon.isHomeMedicalAdvice(service)	// 居宅療養管理指導
@@ -3808,6 +4135,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
         public void parseSubTable(VRMap service, Map[] totalGroupingCache)
                 throws Exception {
             VRMap serviceAddFlagMap = new VRHashMap();
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+            VRMap kyouseiFlagMap = new VRHashMap();
+            VRMap sameBuildingFlagMap = new VRHashMap();            
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin   
             
             // サービスコード取得
             codes = getCalcurater().getServiceCodes(service);
@@ -3849,310 +4180,536 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     simpleServiceCodeItems.add(itemKey);
                     serviceAddFlagMap.setData(itemKey, code.get("TOTAL_GROUPING_TYPE"));
                     // 2016/10/20 [Yoichiro Kamei] mod - end
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+                    kyouseiFlagMap.setData(itemKey, code.get("KYOUSEI_FLAG"));
+                    sameBuildingFlagMap.setData(itemKey, code.get("SAME_BUILDING_FLAG"));          
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end   
                 }
                 // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
             }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 del - begin            
+//            // [ID:0000444][Tozo TANAKA] 2009/03/18 add begin 平成21年4月法改正対応
+//            //コードごとに基本単価を乗じたものを累積していく
+//            
+//            //【仕様説明】
+//            //「中山間地域等でのサービス提供加算」は、%加算のサービスコードである。
+//            //同様に%加算のサービスコードとして、「特別地域加算」や(中山間地域等の)「小規模事業所加算」がある。
+//            //後者は事業所体制の一種であり、「所定単位数(基本単位数)」に対して任意の%を加算するもので、他の加算の有無には影響を受けない。
+//            //しかし前者は利用者の状況に依存する提供加算であり、「所定単位数(基本単位数)＋地域系%加算」に対して任意の%を加算するものである。
+//            //ここでは、前者を「%加算(対象に地域系加算を含む)」と称する。
+//            //後者の「%加算(対象に地域系加算を含まない)」は、今のところ「特別地域加算」や(中山間地域等の)「小規模事業所加算」のみであるが、
+//            //その両方を「地域系%加算」と称する。
+//            //＜ポイント1＞
+//            //　「%加算(対象に地域系加算を含む)」が対象とする単位数は、「地域系%加算」を求めた後でないと計算できない。
+//            //
+//            //提供加算は、画面上、ラジオであり・なしを切り替えることが多く、同月内・同利用者・同事業所であっても、算定するときと算定しないときがある。
+//            //したがって、「%加算(対象に地域系加算を含む)」が対象とする基本単位は、同加算を提供したときの基本単位に限らねばならない。
+//            //また、事業所体制である「地域系%加算」は、通常、同一事業所であれば提供分すべてが対象になる加算だが、
+//            //「%加算(対象に地域系加算を含む)」が対象とする「地域系%加算」は、このうち同加算を提供したときの「地域系%加算」に限らねばならない。
+//            //＜ポイント2＞
+//            //　「%加算(対象に地域系加算を含む)」が対象とする「地域系%加算」は、提供分すべてにかかる「地域系%加算」とは別に、
+//            //　「%加算(対象に地域系加算を含む)」を提供したときに限って集計せねばならない。
+//            //
+//            //別表用の解析処理「parseSub～」は、サービスの提供情報を解析し、サービスコード単位にばらす処理を行う。
+//            //ばらし終わったあとは「加算Aを提供したときに加算Bを提供したか」というサービスコード同士の関連性を辿ることはできない。
+//            //このため、サービスコード単位にばらす処理と同時に、%加算の対象となる「所定単位数(基本単位数)」やそのサービスコードを、
+//            //%加算のサービスコードと関連付けて退避しておかねばならない。
+//            //※この関連付けを退避したものが、クラス内変数addPersentageTargetCountsである。
+//            //
+//            //関連付けの退避は、以下の手順で実装される。
+//            //(1)まず最初に「%加算(対象に地域系加算を含む)」のサービスコードがあるかを走査する。
+//            //　(2)「%加算(対象に地域系加算を含む)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
+//            //　(3)「地域系%加算」と関連付けるべき「%加算(対象に地域系加算を含む)」としてストックする。
+//            //(4)続いて「%加算(対象に地域系加算を含まない)」のサービスコードがあるかを走査する。
+//            //　(5)「%加算(対象に地域系加算を含まない)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
+//            //　(6)関連付けるべき「%加算(対象に地域系加算を含む)」がストックされているかを確認する。
+//            //　　(7)「%加算(対象に地域系加算を含む)」が対象とすべき「地域系%加算」のサービスコードと提供回数を蓄積する。
+//            //
+//            
+//            // [ID:0000485][Tozo TANAKA] 2009/04/15 add begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//            int serviceDayOfMonth = 100;
+//            Date serviceDate = ACCastUtilities.toDate(VRBindPathParser.get(
+//                    "SERVICE_DATE", service), null);
+//            if (serviceDate != null) {
+//                serviceDayOfMonth = ACDateUtilities
+//                        .getDayOfMonth((Date) serviceDate);
+//            }
+//            // [ID:0000485][Tozo TANAKA] 2009/04/15 add end
+//            
+//            //(1)まず最初に「%加算(対象に地域系加算を含む)」のサービスコードがあるかを走査する。
+//            Map forAreaCodes = new HashMap();
+//            it = codes.iterator();
+//            while (it.hasNext()) {
+//                Map code = (Map) it.next();
+//                if(CareServiceCommon.isAddPercentageForArea(code)){
+//                    //%加算のサービスコードの場合
+//                    
+//                    //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
+//                    String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+//
+//                    Object obj;
+//                    Map simpleUnits;
+//                    obj = addPersentageTargetCounts.get(addServiceCodeItem);
+//                    if(obj instanceof Map){
+//                        //既出の%加算コード
+//                        simpleUnits = (Map)obj;
+//                    }else{
+//                        //新規の%加算コード
+//                        simpleUnits = new HashMap();
+//                        addPersentageTargetCounts.put(addServiceCodeItem, simpleUnits);
+//                    }
+//                    //当該%加算コードが対象とする基本単位コードで下位ハッシュ検索
+//                    Iterator it2 = simpleServiceCodeItems.iterator();
+//                    while(it2.hasNext()){
+//                        //(2)「%加算(対象に地域系加算を含む)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
+//                        String simpleServiceCodeItem = ACCastUtilities.toString(it2.next());
+//                        
+//                        int totalGroupingType = ACCastUtilities.toInt(serviceAddFlagMap.get(simpleServiceCodeItem), 0);
+//                        
+//                        //基本SERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ} 
+//                        obj = simpleUnits.get(simpleServiceCodeItem);
+//                        Object[] unitParam;
+//                        if(obj instanceof Object[]){
+//                            //この%加算コードにおいて、既出の基本単位コード
+//                            unitParam = (Object[])obj;
+//
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                            //unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
+//                            boolean canCountUp = true;
+//                            switch(totalGroupingType){
+//                            case 2:
+//                                //日単位算定
+//                                boolean[] groupingFlags = (boolean[])unitParam[2];
+//                                if(groupingFlags.length > serviceDayOfMonth){
+//                                    if(groupingFlags[serviceDayOfMonth]){
+//                                        //当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
+//                                        canCountUp = false;
+//                                    }else{
+//                                        //当該サービス提供日のフラグをtrueにする。
+//                                        groupingFlags[serviceDayOfMonth] = true;
+//                                    }
+//                                }
+//                                break;
+//                            case 3:
+//                                //月単位算定
+//                                //月単位で既出ということはカウントアップを許さずcontinueする。
+//                                canCountUp = false;
+//                                break;
+//                            }
+//                            if(canCountUp){
+//                                unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
+//                            }
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace end
+//
+//                        }else{
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                            //unitParam = new Object[]{new Integer(1), new HashMap()};
+//                            unitParam = new Object[]{new Integer(1), new HashMap(), new boolean[33]};
+//                            switch(totalGroupingType){
+//                            case 2:
+//                                //日単位算定
+//                                boolean[] groupingFlags = (boolean[])unitParam[2];
+//                                if(groupingFlags.length > serviceDayOfMonth){
+//                                    //当該サービス提供日のフラグをtrueにしておく。
+//                                    groupingFlags[serviceDayOfMonth] = true;
+//                                }
+//                                break;
+//                            }
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 add end
+//                        }
+//                        //この%加算コードにおいて、当該基本単位コードが対象となった回数を更新する。
+//                        simpleUnits.put(simpleServiceCodeItem, unitParam);
+//                        
+//                        //(3)「地域系%加算」と関連付けるべき「%加算(対象に地域系加算を含む)」としてストックする。
+//                        //所定単位＋地域等加算を対象にする%加算のハッシュに追加する。
+//                        forAreaCodes.put(simpleServiceCodeItem, unitParam);
+//                    }
+//                    
+//                }
+//            }
+//            
+//            //(4)続いて「%加算(対象に地域系加算を含まない)」のサービスコードがあるかを走査する。
+//            it = codes.iterator();
+//            while (it.hasNext()) {
+//                Map code = (Map) it.next();
+//                if(CareServiceCommon.isAddPercentageForSimple(code)){
+//                    //%加算のサービスコードの場合
+//                    
+//                    //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
+//                    String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+//                    
+//                    Object obj;
+//                    //加算サービスコード : 回数等ハッシュ
+//                    Map simpleUnits;
+//                    obj = addPersentageTargetCounts.get(addServiceCodeItem);
+//                    if(obj instanceof Map){
+//                        //既出の%加算コード
+//                        simpleUnits = (Map)obj;
+//                    }else{
+//                        //新規の%加算コード
+//                        simpleUnits = new HashMap();
+//                        addPersentageTargetCounts.put(addServiceCodeItem, simpleUnits);
+//                    }
+//                    //当該%加算コードが対象とする基本単位コードで下位ハッシュ検索
+//                    Iterator it2 = simpleServiceCodeItems.iterator();
+//                    while(it2.hasNext()){
+//                        //(5)「%加算(対象に地域系加算を含まない)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
+//                        String simpleServiceCodeItem = ACCastUtilities.toString(it2.next());
+//                        
+//                        int totalGroupingType = ACCastUtilities.toInt(serviceAddFlagMap.get(simpleServiceCodeItem), 0);
+//                        
+//                        //基本SERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ} 
+//                        obj = simpleUnits.get(simpleServiceCodeItem);
+//                        Object[] unitParam;
+//                        if(obj instanceof Object[]){
+//                            //この%加算コードにおいて、既出の基本単位コード
+//                            unitParam = (Object[])obj;
+//                            
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                            //unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
+//                            boolean canCountUp = true;
+//                            switch(totalGroupingType){
+//                            case 2:
+//                                //日単位算定
+//                                boolean[] groupingFlags = (boolean[])unitParam[2];
+//                                if(groupingFlags.length > serviceDayOfMonth){
+//                                    if(groupingFlags[serviceDayOfMonth]){
+//                                        //当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
+//                                        canCountUp = false;
+//                                    }else{
+//                                        //当該サービス提供日のフラグをtrueにする。
+//                                        groupingFlags[serviceDayOfMonth] = true;
+//                                    }
+//                                }
+//                                break;
+//                            case 3:
+//                                //月単位算定
+//                                //月単位で既出ということはカウントアップを許さずcontinueする。
+//                                canCountUp = false;
+//                                break;
+//                            }
+//                            if(canCountUp){
+//                                unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
+//                            }
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace end
+//                            
+//                        }else{
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                            //unitParam = new Object[]{new Integer(1), new HashMap()};
+//                            unitParam = new Object[]{new Integer(1), new HashMap(), new boolean[33]};
+//                            switch(totalGroupingType){
+//                            case 2:
+//                                //日単位算定
+//                                boolean[] groupingFlags = (boolean[])unitParam[2];
+//                                if(groupingFlags.length > serviceDayOfMonth){
+//                                    //当該サービス提供日のフラグをtrueにしておく。
+//                                    groupingFlags[serviceDayOfMonth] = true;
+//                                }
+//                                break;
+//                            }
+//                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace end
+//                        }
+//                        //この%加算コードにおいて、当該基本単位コードが対象となった回数を更新する。
+//                        simpleUnits.put(simpleServiceCodeItem, unitParam);
+//                        
+//                        //さらに「地域系%加算」でもあるかを確認する。
+//                        if(CareServiceCommon.isAddPercentageForAreaTarget(code)){
+//                            //地域系加算サービスコード(特別地域、中山間等小規模)の場合
+//                            //(6)関連付けるべき「%加算(対象に地域系加算を含む)」がストックされているかを確認する。
+//                            obj = forAreaCodes.get(simpleServiceCodeItem);
+//                            if (obj instanceof Object[]) {
+//                                Object[] forAreaCodeParam = (Object[]) obj;
+//                                if ((forAreaCodeParam.length >= 2)
+//                                        && (forAreaCodeParam[1] instanceof Map)) {
+//                                    //(7)「%加算(対象に地域系加算を含む)」が対象とすべき「地域系%加算」のサービスコードと提供回数を蓄積する。
+//                                    //「%加算(対象に地域系加算を含む)」の対象
+//                                    
+//                                    // 所定単位＋地域等加算を対象にする%加算も指定されている場合
+//                                    // 所定単位＋地域等加算を対象にする%加算に対し、対応する地域系加算の指定回数を蓄積する。
+//                                    Map forAreaTargetCodes = (Map) forAreaCodeParam[1];
+//                                    Object[] forAreaTargetCodeParam;
+//                                    //地域系%加算SERVICE_CODE_ITEM : {コード,回数}
+//                                    obj = forAreaTargetCodes
+//                                            .get(addServiceCodeItem);
+//                                    if (obj instanceof Object[]) {
+//                                        forAreaTargetCodeParam = (Object[])obj;
+//
+//                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                                        //forAreaTargetCodeParam[1] = new Integer(((Integer) forAreaTargetCodeParam[1]).intValue() + 1);
+//                                        boolean canCountUp = true;
+//                                        switch(totalGroupingType){
+//                                        case 2:
+//                                            //日単位算定
+//                                            boolean[] groupingFlags = (boolean[])forAreaTargetCodeParam[2];
+//                                            if(groupingFlags.length > serviceDayOfMonth){
+//                                                if(groupingFlags[serviceDayOfMonth]){
+//                                                    //当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
+//                                                    canCountUp = false;
+//                                                }else{
+//                                                    //当該サービス提供日のフラグをtrueにする。
+//                                                    groupingFlags[serviceDayOfMonth] = true;
+//                                                }
+//                                            }
+//                                            break;
+//                                        case 3:
+//                                            //月単位算定
+//                                            //月単位で既出ということはカウントアップを許さずcontinueする。
+//                                            canCountUp = false;
+//                                            break;
+//                                        }
+//                                        if(canCountUp){
+//                                            forAreaTargetCodeParam[1] = new Integer(((Integer) forAreaTargetCodeParam[1]).intValue() + 1);
+//                                        }
+//                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace end
+//                                    } else {
+//                                        
+//                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
+//                                        //forAreaTargetCodeParam = new Object[]{code, new Integer(1)};
+//                                        forAreaTargetCodeParam = new Object[]{code, new Integer(1), new boolean[33]};
+//                                        switch(totalGroupingType){
+//                                        case 2:
+//                                            //日単位算定
+//                                            boolean[] groupingFlags = (boolean[])forAreaTargetCodeParam[2];
+//                                            if(groupingFlags.length > serviceDayOfMonth){
+//                                                //当該サービス提供日のフラグをtrueにしておく。
+//                                                groupingFlags[serviceDayOfMonth] = true;
+//                                            }
+//                                            break;
+//                                        }
+//                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace end
+//                                        forAreaTargetCodes.put(addServiceCodeItem, forAreaTargetCodeParam);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 del - end            
             
-            // [ID:0000444][Tozo TANAKA] 2009/03/18 add begin 平成21年4月法改正対応
-            //コードごとに基本単価を乗じたものを累積していく
-            
-            //【仕様説明】
-            //「中山間地域等でのサービス提供加算」は、%加算のサービスコードである。
-            //同様に%加算のサービスコードとして、「特別地域加算」や(中山間地域等の)「小規模事業所加算」がある。
-            //後者は事業所体制の一種であり、「所定単位数(基本単位数)」に対して任意の%を加算するもので、他の加算の有無には影響を受けない。
-            //しかし前者は利用者の状況に依存する提供加算であり、「所定単位数(基本単位数)＋地域系%加算」に対して任意の%を加算するものである。
-            //ここでは、前者を「%加算(対象に地域系加算を含む)」と称する。
-            //後者の「%加算(対象に地域系加算を含まない)」は、今のところ「特別地域加算」や(中山間地域等の)「小規模事業所加算」のみであるが、
-            //その両方を「地域系%加算」と称する。
-            //＜ポイント1＞
-            //　「%加算(対象に地域系加算を含む)」が対象とする単位数は、「地域系%加算」を求めた後でないと計算できない。
-            //
-            //提供加算は、画面上、ラジオであり・なしを切り替えることが多く、同月内・同利用者・同事業所であっても、算定するときと算定しないときがある。
-            //したがって、「%加算(対象に地域系加算を含む)」が対象とする基本単位は、同加算を提供したときの基本単位に限らねばならない。
-            //また、事業所体制である「地域系%加算」は、通常、同一事業所であれば提供分すべてが対象になる加算だが、
-            //「%加算(対象に地域系加算を含む)」が対象とする「地域系%加算」は、このうち同加算を提供したときの「地域系%加算」に限らねばならない。
-            //＜ポイント2＞
-            //　「%加算(対象に地域系加算を含む)」が対象とする「地域系%加算」は、提供分すべてにかかる「地域系%加算」とは別に、
-            //　「%加算(対象に地域系加算を含む)」を提供したときに限って集計せねばならない。
-            //
-            //別表用の解析処理「parseSub～」は、サービスの提供情報を解析し、サービスコード単位にばらす処理を行う。
-            //ばらし終わったあとは「加算Aを提供したときに加算Bを提供したか」というサービスコード同士の関連性を辿ることはできない。
-            //このため、サービスコード単位にばらす処理と同時に、%加算の対象となる「所定単位数(基本単位数)」やそのサービスコードを、
-            //%加算のサービスコードと関連付けて退避しておかねばならない。
-            //※この関連付けを退避したものが、クラス内変数addPersentageTargetCountsである。
-            //
-            //関連付けの退避は、以下の手順で実装される。
-            //(1)まず最初に「%加算(対象に地域系加算を含む)」のサービスコードがあるかを走査する。
-            //　(2)「%加算(対象に地域系加算を含む)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
-            //　(3)「地域系%加算」と関連付けるべき「%加算(対象に地域系加算を含む)」としてストックする。
-            //(4)続いて「%加算(対象に地域系加算を含まない)」のサービスコードがあるかを走査する。
-            //　(5)「%加算(対象に地域系加算を含まない)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
-            //　(6)関連付けるべき「%加算(対象に地域系加算を含む)」がストックされているかを確認する。
-            //　　(7)「%加算(対象に地域系加算を含む)」が対象とすべき「地域系%加算」のサービスコードと提供回数を蓄積する。
-            //
-            
-            // [ID:0000485][Tozo TANAKA] 2009/04/15 add begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-            int serviceDayOfMonth = 100;
-            Date serviceDate = ACCastUtilities.toDate(VRBindPathParser.get(
-                    "SERVICE_DATE", service), null);
-            if (serviceDate != null) {
-                serviceDayOfMonth = ACDateUtilities
-                        .getDayOfMonth((Date) serviceDate);
-            }
-            // [ID:0000485][Tozo TANAKA] 2009/04/15 add end
-            
-            //(1)まず最初に「%加算(対象に地域系加算を含む)」のサービスコードがあるかを走査する。
-            Map forAreaCodes = new HashMap();
-            it = codes.iterator();
-            while (it.hasNext()) {
-                Map code = (Map) it.next();
-                if(CareServiceCommon.isAddPercentageForArea(code)){
-                    //%加算のサービスコードの場合
-                    
-                    //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
-                    String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+			int serviceDayOfMonth = 100;
+			Date serviceDate = ACCastUtilities.toDate(VRBindPathParser.get("SERVICE_DATE", service), null);
+			if (serviceDate != null) {
+				serviceDayOfMonth = ACDateUtilities.getDayOfMonth((Date) serviceDate);
+			}
+			
+			// KEY:基本サービスのサービス項目コード - 加算サービスのサービス項目コード、値:基本サービスのカウント
+			// このサービスで基本サービスと同時に算定された%加算が基本サービス何回分であったかを保持
+			Map kihonCountMap_3 = new HashMap(); // 3:特別地域系の加算
+			Map kihonCountMap_5 = new HashMap(); // 5:共生型の減算
+			Map kihonCountMap_7 = new HashMap(); // 7:同一建物減算
+			
+			it = codes.iterator();
+			while (it.hasNext()) {
+				Map code = (Map) it.next();
+				if (CareServiceCommon.isAddPercentageForSimple(code) || CareServiceCommon.isAddPercentageForArea(code)
+						|| CareServiceCommon.isAddPercentageForKyousei(code)
+						|| CareServiceCommon.isAddPercentageForDoitu(code)) {
+					// 処理対象の%加算のサービス項目コード
+					String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+					
+					// %加算のコードマスタ情報を保持（後で計算時に使用）
+					if (!addPersentageCodes.containsKey(addServiceCodeItem)) {
+						addPersentageCodes.put(addServiceCodeItem, code);
+					}
+					
+					Map simpleUnits;
+					if (addPersentageTargetCounts.containsKey(addServiceCodeItem)) {
+						// 既出の%加算コード
+						simpleUnits = (Map) addPersentageTargetCounts.get(addServiceCodeItem);
+					} else {
+						// 新規の%加算コード
+						simpleUnits = new HashMap();
+						addPersentageTargetCounts.put(addServiceCodeItem, simpleUnits);
+					}
 
-                    Object obj;
-                    Map simpleUnits;
-                    obj = addPersentageTargetCounts.get(addServiceCodeItem);
-                    if(obj instanceof Map){
-                        //既出の%加算コード
-                        simpleUnits = (Map)obj;
-                    }else{
-                        //新規の%加算コード
-                        simpleUnits = new HashMap();
-                        addPersentageTargetCounts.put(addServiceCodeItem, simpleUnits);
-                    }
-                    //当該%加算コードが対象とする基本単位コードで下位ハッシュ検索
-                    Iterator it2 = simpleServiceCodeItems.iterator();
-                    while(it2.hasNext()){
-                        //(2)「%加算(対象に地域系加算を含む)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
-                        String simpleServiceCodeItem = ACCastUtilities.toString(it2.next());
-                        
-                        int totalGroupingType = ACCastUtilities.toInt(serviceAddFlagMap.get(simpleServiceCodeItem), 0);
-                        
-                        //基本SERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ} 
-                        obj = simpleUnits.get(simpleServiceCodeItem);
-                        Object[] unitParam;
-                        if(obj instanceof Object[]){
-                            //この%加算コードにおいて、既出の基本単位コード
-                            unitParam = (Object[])obj;
+					// このサービスで算定されている基本サービスの分ループ
+					Iterator it2 = simpleServiceCodeItems.iterator();
+					while (it2.hasNext()) {
+						// 基本サービスの項目コード
+						String simpleServiceCodeItem = ACCastUtilities.toString(it2.next());
+						// 基本サービスの集計集合化区分
+						int totalGroupingType = ACCastUtilities.toInt(serviceAddFlagMap.get(simpleServiceCodeItem), 0);
+						// 基本サービスの共生型対象フラグ
+						int kyoseiFlag = ACCastUtilities.toInt(kyouseiFlagMap.get(simpleServiceCodeItem), 0);
+						// 基本サービスの同一建物減算対象フラグ
+						int sameBuildingFlag = ACCastUtilities.toInt(sameBuildingFlagMap.get(simpleServiceCodeItem), 0);
+						
+						// 共生型の減算のコードで基本サービスが共生型の対象でなければスキップ
+						if (CareServiceCommon.isAddPercentageForKyousei(code) && kyoseiFlag == 0) {
+							continue;
+						}
+						// 同一建物減算のコードで基本サービスが同一建物減算対象でなければスキップ
+						if (CareServiceCommon.isAddPercentageForDoitu(code) && sameBuildingFlag == 0) {
+							continue;
+						}
 
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                            //unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
-                            boolean canCountUp = true;
-                            switch(totalGroupingType){
-                            case 2:
-                                //日単位算定
-                                boolean[] groupingFlags = (boolean[])unitParam[2];
-                                if(groupingFlags.length > serviceDayOfMonth){
-                                    if(groupingFlags[serviceDayOfMonth]){
-                                        //当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
-                                        canCountUp = false;
-                                    }else{
-                                        //当該サービス提供日のフラグをtrueにする。
-                                        groupingFlags[serviceDayOfMonth] = true;
-                                    }
-                                }
-                                break;
-                            case 3:
-                                //月単位算定
-                                //月単位で既出ということはカウントアップを許さずcontinueする。
-                                canCountUp = false;
-                                break;
-                            }
-                            if(canCountUp){
-                                unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
-                            }
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace end
+						Object[] unitParam;
+						// この％加算と一緒に算定されている基本サービスのカウントを更新
+						if (simpleUnits.containsKey(simpleServiceCodeItem)) {
+							unitParam = (Object[]) simpleUnits.get(simpleServiceCodeItem);							
+							// 既にこの基本サービスが入っていればカウントを更新
+							boolean canCountUp = true;
+							switch (totalGroupingType) {
+							case 2:
+								// 日単位算定
+								boolean[] groupingFlags = (boolean[]) unitParam[2];
+								if (groupingFlags.length > serviceDayOfMonth) {
+									if (groupingFlags[serviceDayOfMonth]) {
+										// 当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
+										canCountUp = false;
+									} else {
+										// 当該サービス提供日のフラグをtrueにする。
+										groupingFlags[serviceDayOfMonth] = true;
+									}
+								}
+								break;
+							case 3:
+								// 月単位算定
+								// 月単位で既出ということはカウントアップを許さずcontinueする。
+								canCountUp = false;
+								break;
+							}
+							if (canCountUp) {
+								unitParam[0] = new Integer(((Integer) unitParam[0]).intValue() + 1);
+								// 基本サービスと一緒に算定された対象の%加算が基本サービス何回分かを保持
+								// 5:共生型の減算
+								if (CareServiceCommon.isAddPercentageForKyousei(code)) {
+									countUpKihonCountMap(kihonCountMap_5, simpleServiceCodeItem, addServiceCodeItem);
+								}
+								// 7:同一建物減算
+								if (CareServiceCommon.isAddPercentageForDoitu(code)) {
+									countUpKihonCountMap(kihonCountMap_7, simpleServiceCodeItem, addServiceCodeItem);
+								}
+								// 3:特別地域系の加算
+								if (CareServiceCommon.isAddPercentageForSimple(code)) {
+									countUpKihonCountMap(kihonCountMap_3, simpleServiceCodeItem, addServiceCodeItem);
+								}
+							}
 
-                        }else{
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                            //unitParam = new Object[]{new Integer(1), new HashMap()};
-                            unitParam = new Object[]{new Integer(1), new HashMap(), new boolean[33]};
-                            switch(totalGroupingType){
-                            case 2:
-                                //日単位算定
-                                boolean[] groupingFlags = (boolean[])unitParam[2];
-                                if(groupingFlags.length > serviceDayOfMonth){
-                                    //当該サービス提供日のフラグをtrueにしておく。
-                                    groupingFlags[serviceDayOfMonth] = true;
-                                }
-                                break;
-                            }
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 add end
-                        }
-                        //この%加算コードにおいて、当該基本単位コードが対象となった回数を更新する。
-                        simpleUnits.put(simpleServiceCodeItem, unitParam);
-                        
-                        //(3)「地域系%加算」と関連付けるべき「%加算(対象に地域系加算を含む)」としてストックする。
-                        //所定単位＋地域等加算を対象にする%加算のハッシュに追加する。
-                        forAreaCodes.put(simpleServiceCodeItem, unitParam);
-                    }
-                    
-                }
-            }
-            
-            //(4)続いて「%加算(対象に地域系加算を含まない)」のサービスコードがあるかを走査する。
-            it = codes.iterator();
-            while (it.hasNext()) {
-                Map code = (Map) it.next();
-                if(CareServiceCommon.isAddPercentageForSimple(code)){
-                    //%加算のサービスコードの場合
-                    
-                    //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
-                    String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
-                    
-                    Object obj;
-                    //加算サービスコード : 回数等ハッシュ
-                    Map simpleUnits;
-                    obj = addPersentageTargetCounts.get(addServiceCodeItem);
-                    if(obj instanceof Map){
-                        //既出の%加算コード
-                        simpleUnits = (Map)obj;
-                    }else{
-                        //新規の%加算コード
-                        simpleUnits = new HashMap();
-                        addPersentageTargetCounts.put(addServiceCodeItem, simpleUnits);
-                    }
-                    //当該%加算コードが対象とする基本単位コードで下位ハッシュ検索
-                    Iterator it2 = simpleServiceCodeItems.iterator();
-                    while(it2.hasNext()){
-                        //(5)「%加算(対象に地域系加算を含まない)」が対象とすべき「基本単位(所定単位)」のサービスコードと提供回数を蓄積する。
-                        String simpleServiceCodeItem = ACCastUtilities.toString(it2.next());
-                        
-                        int totalGroupingType = ACCastUtilities.toInt(serviceAddFlagMap.get(simpleServiceCodeItem), 0);
-                        
-                        //基本SERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ} 
-                        obj = simpleUnits.get(simpleServiceCodeItem);
-                        Object[] unitParam;
-                        if(obj instanceof Object[]){
-                            //この%加算コードにおいて、既出の基本単位コード
-                            unitParam = (Object[])obj;
-                            
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                            //unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
-                            boolean canCountUp = true;
-                            switch(totalGroupingType){
-                            case 2:
-                                //日単位算定
-                                boolean[] groupingFlags = (boolean[])unitParam[2];
-                                if(groupingFlags.length > serviceDayOfMonth){
-                                    if(groupingFlags[serviceDayOfMonth]){
-                                        //当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
-                                        canCountUp = false;
-                                    }else{
-                                        //当該サービス提供日のフラグをtrueにする。
-                                        groupingFlags[serviceDayOfMonth] = true;
-                                    }
-                                }
-                                break;
-                            case 3:
-                                //月単位算定
-                                //月単位で既出ということはカウントアップを許さずcontinueする。
-                                canCountUp = false;
-                                break;
-                            }
-                            if(canCountUp){
-                                unitParam[0] = new Integer( ((Integer)unitParam[0]).intValue() +1);
-                            }
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace end
-                            
-                        }else{
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                            //unitParam = new Object[]{new Integer(1), new HashMap()};
-                            unitParam = new Object[]{new Integer(1), new HashMap(), new boolean[33]};
-                            switch(totalGroupingType){
-                            case 2:
-                                //日単位算定
-                                boolean[] groupingFlags = (boolean[])unitParam[2];
-                                if(groupingFlags.length > serviceDayOfMonth){
-                                    //当該サービス提供日のフラグをtrueにしておく。
-                                    groupingFlags[serviceDayOfMonth] = true;
-                                }
-                                break;
-                            }
-                            // [ID:0000485][Tozo TANAKA] 2009/04/15 replace end
-                        }
-                        //この%加算コードにおいて、当該基本単位コードが対象となった回数を更新する。
-                        simpleUnits.put(simpleServiceCodeItem, unitParam);
-                        
-                        //さらに「地域系%加算」でもあるかを確認する。
-                        if(CareServiceCommon.isAddPercentageForAreaTarget(code)){
-                            //地域系加算サービスコード(特別地域、中山間等小規模)の場合
-                            //(6)関連付けるべき「%加算(対象に地域系加算を含む)」がストックされているかを確認する。
-                            obj = forAreaCodes.get(simpleServiceCodeItem);
-                            if (obj instanceof Object[]) {
-                                Object[] forAreaCodeParam = (Object[]) obj;
-                                if ((forAreaCodeParam.length >= 2)
-                                        && (forAreaCodeParam[1] instanceof Map)) {
-                                    //(7)「%加算(対象に地域系加算を含む)」が対象とすべき「地域系%加算」のサービスコードと提供回数を蓄積する。
-                                    //「%加算(対象に地域系加算を含む)」の対象
-                                    
-                                    // 所定単位＋地域等加算を対象にする%加算も指定されている場合
-                                    // 所定単位＋地域等加算を対象にする%加算に対し、対応する地域系加算の指定回数を蓄積する。
-                                    Map forAreaTargetCodes = (Map) forAreaCodeParam[1];
-                                    Object[] forAreaTargetCodeParam;
-                                    //地域系%加算SERVICE_CODE_ITEM : {コード,回数}
-                                    obj = forAreaTargetCodes
-                                            .get(addServiceCodeItem);
-                                    if (obj instanceof Object[]) {
-                                        forAreaTargetCodeParam = (Object[])obj;
+						} else {
+							//　入っていなければ、基本サービス保持用オブジェクトの配列を生成する
+							// オブジェクトの配列
+							// [0]:この加算が計算対象とする基本サービスのカウント（日数・回数）
+							// [1]:この加算が計算対象に含む特別地域系の加算（サービス加算フラグ3)
+							// [2]:この加算が計算対象とする基本サービスの提供日保持用の配列
+							// [3]:この加算が計算対象に含む共生型の減算（サービス加算フラグ5)
+							// [4]:この加算が計算対象に含む同一建物減算（サービス加算フラグ7)
+							unitParam = new Object[] { new Integer(1), new HashMap(), new boolean[33],
+									new HashMap(), new HashMap() };
+							switch (totalGroupingType) {
+							case 2:
+								// 日単位算定
+								boolean[] groupingFlags = (boolean[]) unitParam[2];
+								if (groupingFlags.length > serviceDayOfMonth) {
+									// 当該サービス提供日のフラグをtrueにしておく。
+									groupingFlags[serviceDayOfMonth] = true;
+								}
+								break;
+							}
+							
+							// 基本サービスと一緒に算定された対象の%加算が基本サービス何回分かを保持
+							// 5:共生型の減算
+							if (CareServiceCommon.isAddPercentageForKyousei(code)) {
+								countUpKihonCountMap(kihonCountMap_5, simpleServiceCodeItem, addServiceCodeItem);
+							}
+							// 7:同一建物減算
+							if (CareServiceCommon.isAddPercentageForDoitu(code)) {
+								countUpKihonCountMap(kihonCountMap_7, simpleServiceCodeItem, addServiceCodeItem);
+							}
+							// 3:特別地域系の加算
+							if (CareServiceCommon.isAddPercentageForSimple(code)) {
+								countUpKihonCountMap(kihonCountMap_3, simpleServiceCodeItem, addServiceCodeItem);
+							}
+						}
+						// 基本サービスのサービス項目コード毎に格納
+						simpleUnits.put(simpleServiceCodeItem, unitParam);
+					}
+				}
+			}
+			// このサービスでの%加算の関連付けを更新
+			it = codes.iterator();
+			while (it.hasNext()) {
+				Map code = (Map) it.next();
+				if (CareServiceCommon.isAddPercentageForSimple(code) || CareServiceCommon.isAddPercentageForArea(code)
+						|| CareServiceCommon.isAddPercentageForKyousei(code)
+						|| CareServiceCommon.isAddPercentageForDoitu(code)) {
+					// 処理対象の加算のサービス項目コード
+					String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
 
-                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                                        //forAreaTargetCodeParam[1] = new Integer(((Integer) forAreaTargetCodeParam[1]).intValue() + 1);
-                                        boolean canCountUp = true;
-                                        switch(totalGroupingType){
-                                        case 2:
-                                            //日単位算定
-                                            boolean[] groupingFlags = (boolean[])forAreaTargetCodeParam[2];
-                                            if(groupingFlags.length > serviceDayOfMonth){
-                                                if(groupingFlags[serviceDayOfMonth]){
-                                                    //当該サービス提供日のフラグがtrueならば、同日提供済みなのでカウントアップを許さずcontinueする。
-                                                    canCountUp = false;
-                                                }else{
-                                                    //当該サービス提供日のフラグをtrueにする。
-                                                    groupingFlags[serviceDayOfMonth] = true;
-                                                }
-                                            }
-                                            break;
-                                        case 3:
-                                            //月単位算定
-                                            //月単位で既出ということはカウントアップを許さずcontinueする。
-                                            canCountUp = false;
-                                            break;
-                                        }
-                                        if(canCountUp){
-                                            forAreaTargetCodeParam[1] = new Integer(((Integer) forAreaTargetCodeParam[1]).intValue() + 1);
-                                        }
-                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace end
-                                    } else {
-                                        
-                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace begin 利用票・別表において中山間地域加算が対象とする単位の集合化区分考慮
-                                        //forAreaTargetCodeParam = new Object[]{code, new Integer(1)};
-                                        forAreaTargetCodeParam = new Object[]{code, new Integer(1), new boolean[33]};
-                                        switch(totalGroupingType){
-                                        case 2:
-                                            //日単位算定
-                                            boolean[] groupingFlags = (boolean[])forAreaTargetCodeParam[2];
-                                            if(groupingFlags.length > serviceDayOfMonth){
-                                                //当該サービス提供日のフラグをtrueにしておく。
-                                                groupingFlags[serviceDayOfMonth] = true;
-                                            }
-                                            break;
-                                        }
-                                        // [ID:0000485][Tozo TANAKA] 2009/04/16 replace end
-                                        forAreaTargetCodes.put(addServiceCodeItem, forAreaTargetCodeParam);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
+					if (addPersentageTargetCounts.containsKey(addServiceCodeItem)) {
+						Map simpleUnits = (Map) addPersentageTargetCounts.get(addServiceCodeItem);
+						Iterator it2 = simpleServiceCodeItems.iterator();
+						while (it2.hasNext()) {
+							String simpleServiceCodeItem = ACCastUtilities.toString(it2.next());
+
+							if (simpleUnits.containsKey(simpleServiceCodeItem)) {
+								Object[] unitParam = (Object[]) simpleUnits.get(simpleServiceCodeItem);
+								// 7:同一建物減算
+								if (CareServiceCommon.isAddPercentageForDoitu(code)) {
+									// 加算の関連付け
+									setRelationMap(kihonCountMap_5, (Map) unitParam[3], simpleServiceCodeItem);// 5:共生型の減算
+								}
+								// 3:特別地域系の加算
+								if (CareServiceCommon.isAddPercentageForSimple(code)) {
+									// 加算の関連付け
+									setRelationMap(kihonCountMap_5, (Map) unitParam[3], simpleServiceCodeItem);// 5:共生型の減算
+									setRelationMap(kihonCountMap_7, (Map) unitParam[4], simpleServiceCodeItem);// 7:同一建物減算
+								}
+								// 6:中山間等でのサービス提供加算
+								if (CareServiceCommon.isAddPercentageForArea(code)) {
+									// 加算の関連付け
+									setRelationMap(kihonCountMap_3, (Map) unitParam[1], simpleServiceCodeItem);// 3:特別地域系の加算
+									setRelationMap(kihonCountMap_5, (Map) unitParam[3], simpleServiceCodeItem);// 5:共生型の減算
+									setRelationMap(kihonCountMap_7, (Map) unitParam[4], simpleServiceCodeItem);// 7:同一建物減算
+								}
+							}
+						}
+					}
+				}
+			}
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
             
         }
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+        
+        // (%加算計算用) %加算計算時に必要となる関連加算の基本サービス回数をカウントアップする
+        private void countUpKihonCountMap(Map<String, Map<String, Integer>> kihonCountMap
+        		, String kihonItemCode, String kasanItemCode) {
+        	if (!kihonCountMap.containsKey(kihonItemCode)) {
+        		kihonCountMap.put(kihonItemCode, new HashMap<String, Integer>());
+        	}
+        	Map<String, Integer> kasanCountMap = kihonCountMap.get(kihonItemCode);
+        	
+        	if (kasanCountMap.containsKey(kasanItemCode)) {
+        		int nowCount = (Integer) kasanCountMap.get(kasanItemCode);
+        		kasanCountMap.put(kasanItemCode, nowCount + 1);
+        	} else {
+        		kasanCountMap.put(kasanItemCode, 1);
+        	}
+        }
+        
+        // (%加算計算用) %加算計算時に必要となる関連加算について基本サービス回数の紐付けを行う
+        private void setRelationMap(Map<String, Map<String, Integer>> kihonCountMap
+        		, Map<String, Integer> relationMap, String kihonItemCode) {        	
+        	if (!kihonCountMap.containsKey(kihonItemCode)) {
+        		//　更新するカウントが無いため終了
+        		return;
+        	}
+    		Map<String, Integer> kasanCountMap = kihonCountMap.get(kihonItemCode);
+    		for (String kasanItemCode : kasanCountMap.keySet()) {
+            	int diffCount = kasanCountMap.get(kasanItemCode);
+            	int nowCount = 0;
+            	if (relationMap.containsKey(kasanItemCode)) {
+            		nowCount = (Integer) relationMap.get(kasanItemCode);
+            	}
+            	relationMap.put(kasanItemCode, nowCount + diffCount);
+    		}
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
         
         /**
          * 別表用に解析します。
@@ -5015,8 +5572,11 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 //int cost = (int) Math.floor(unitPrice * totalUnit);
                 // [ID:0000441][Masahiko Higuchi] del end
                 // [ID:0000441][Masahiko Higuchi] add begin 費用総額の丸め計算障害対応
-                int cost = (int) Math.floor((double) ((totalUnit * bigDeci
-                        .intValue()) / 100d));
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                int cost = (int) Math.floor((double) ((totalUnit * bigDeci
+//                        .intValue()) / 100d));
+                int cost = CareServiceCommon.calcCost(totalUnit, bigDeci.intValue());
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                 // [ID:0000441][Masahiko Higuchi] add end
                 printCell(buildParam, 15, new Integer(cost), isOver30Days);
                 totals[INDEX_OF_TOTAL_COST] += cost;
@@ -5068,7 +5628,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         }
                     }
                     // 保険給付額(切捨て)
-                    int insureCost = (int) Math.floor(cost * insureRate / 100.0);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                    int insureCost = (int) Math.floor(cost * insureRate / 100.0);
+                    int insureCost = CareServiceCommon.calcCost(cost, insureRate);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                     printCell(buildParam, 17, new Integer(insureCost), isOver30Days);
                     totals[INDEX_OF_INSURE_COST] += insureCost;
   
@@ -5126,7 +5689,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 //}
                 // [ID:0000734][Masahiko.Higuchi] 2012/04 30日超処遇改善加算対応 add end
                 // [ID:0000764][Masahiko.Higuchi] del - end
-                if (overUnit > 0) {
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                if (overUnit > 0) {
+                if (overUnit != 0) {
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                     // 区分支給限度基準を超える単位数が設定されているとき
 //                  printCell(buildParam, 12, new Integer(overUnit), isOver30Days);
                     
@@ -5151,8 +5717,11 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     // 2008/09/03 [Masahiko Higuchi] del - end
                     // 2008/09/03 [Masahiko Higuchi] add - begin 全額自己負担計算式障害（V5.4.3）
                     // 30日超でない場合のみ通るかつ30日超の値が合算されることはない。
-                    overCost = (int) Math.floor((double) ((overUnit * bigDeci
-                            .intValue()) / 100d));
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                    overCost = (int) Math.floor((double) ((overUnit * bigDeci
+//                            .intValue()) / 100d));
+                    overCost = CareServiceCommon.calcCost(overUnit, bigDeci.intValue());
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                     // 2008/09/03 [Masahiko Higuchi] add - end
                     // 小計分をクリア
                     totals[INDEX_OF_LIMIT_OVER_UNIT_FOR_DETAIL] = 0;
@@ -5162,13 +5731,19 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // 2008/09/03 [Masahiko Higuchi] del - end
                 // 2008/09/03 [Masahiko Higuchi] add - begin 全額自己負担計算式障害（V5.4.3）
                 // 丸め計算の問題に対応
-                overCost += (int) Math
-                        .floor((double) ((totals[INDEX_OF_USER_COST_ON_30OVER] * bigDeci
-                                .intValue()) / 100d));
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                overCost += (int) Math
+//                        .floor((double) ((totals[INDEX_OF_USER_COST_ON_30OVER] * bigDeci
+//                                .intValue()) / 100d));
+                overCost += CareServiceCommon.calcCost(totals[INDEX_OF_USER_COST_ON_30OVER], bigDeci.intValue());
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                 // 念のため明示的に開放する
                 bigDeci = null;
                 // 2008/09/03 [Masahiko Higuchi] add - end
-                if(overCost>0){
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//                if(overCost>0){
+                if (overCost != 0) {
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                     //// 利用者負担（全額負担分）
                     buildParam.getTargetPage().put(
                         "main.y" + buildParam.getCurrentRow() + ".x19",

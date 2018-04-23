@@ -169,11 +169,11 @@ public class CareServiceCommon {
             case 3:
                 // %加算
             case 5:
-                // %減算
+                // %減算(共生型)
             case 6:
                 // %加算(対象に地域系加算を含む)
             case 7:
-                // %減算(対象に地域系加算を含む)
+                // %減算(対象に共生型減算を含む)
                 // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
             case 8:
                 // %加算(介護職員処遇改善加算)
@@ -217,8 +217,10 @@ public class CareServiceCommon {
             switch (ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0)) {
             case 3:
                 // %加算
-            case 5:
-                // %減算
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//            case 5:
+//                // %減算
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                 return true;
             }
         }
@@ -237,14 +239,54 @@ public class CareServiceCommon {
             switch (ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0)) {
             case 6:
                 // %加算(対象に地域系加算を含む)
-            case 7:
-                // %減算(対象に地域系加算を含む)
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+//            case 7:
+//                // %減算(対象に地域系加算を含む)
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                 return true;
             }
         }
         return false;
     }
 
+ // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+    /**
+     * ％減算(共生型)のサービスコードであるかを返します。
+     * 
+     * @param code サービスコード
+     * @return %単位加算のうち対象に地域系加算を含まないサービスコードであるか
+     * @throws Exception 処理例外
+     */
+    public static boolean isAddPercentageForKyousei(Map code) throws Exception {
+        if (code != null) {
+            switch (ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0)) {
+            case 5:
+                // %減算(共生型)
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * ％減算のうち(対象に共生型減算を含む)サービスコードであるかを返します。
+     * 
+     * @param code サービスコード
+     * @return ％減算のうち(対象に共生型減算を含む)サービスコードであるか
+     * @throws Exception 処理例外
+     */
+    public static boolean isAddPercentageForDoitu(Map code) throws Exception {
+        if (code != null) {
+            switch (ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0)) {
+            case 7:
+                // ％減算(対象に共生型減算を含む)
+                return true;
+            }
+        }
+        return false;
+    }
+ // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+    
     /**
      * %加算(対象に地域系加算を含む)の対象になる地域系加算サービスコードであるかを返します。
      * 
@@ -293,14 +335,21 @@ public class CareServiceCommon {
         // 本体報酬フラグが有効 And
         // 給付限度額管理対象内 or 外部利用型単位数
         if (code != null) {
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin
+//            if ("1".equals(ACCastUtilities.toString(code
+//                    .get("SERVICE_MAIN_FLAG")))
+//                    && ("1".equals(ACCastUtilities.toString(code
+//                            .get("LIMIT_AMOUNT_OBJECT"))) || ("3"
+//                            .equals(ACCastUtilities.toString(code
+//                                    .get("LIMIT_AMOUNT_OBJECT")))))) {
+//                return true;
+//            }
+        	// 居宅療養に特別地域系の加算が追加されたため、管理対象外の基本サービスも対象とする
             if ("1".equals(ACCastUtilities.toString(code
-                    .get("SERVICE_MAIN_FLAG")))
-                    && ("1".equals(ACCastUtilities.toString(code
-                            .get("LIMIT_AMOUNT_OBJECT"))) || ("3"
-                            .equals(ACCastUtilities.toString(code
-                                    .get("LIMIT_AMOUNT_OBJECT")))))) {
+                    .get("SERVICE_MAIN_FLAG")))) {
                 return true;
             }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
         }
 
         return false;
@@ -525,6 +574,7 @@ public class CareServiceCommon {
         case 15312:// 介護療養型医療施設(療養病床を有する診療所)
         case 15313:// 介護療養型医療施設(老人性認知症疾患療養病棟を有する病院)
         case 15411:// 地域密着型介護福祉施設
+        case 15511:// 介護医療院 [H30.4改正対応]
             return true;
         }
         return false;
@@ -932,6 +982,8 @@ public class CareServiceCommon {
 
         case 12711: // 特定施設入居者生活介護（短期利用）
         case 12811: // 地域密着型特定施設入居者生活介護（短期利用）
+        case 204211: // 短期入所療養介護(介護医療院) [H30.4改正対応]
+        case 204311: // 介護予防短期入所療養介護(介護医療院) [H30.4改正対応]
             return true;
         }
         return false;
@@ -1423,6 +1475,13 @@ public class CareServiceCommon {
                     // %加算(対象に地域系加算を含む)ならば回数を印字しない
                     return false;
                 }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+                if ("7".equals(addFlag)) {
+                    // %減算(対象に共生型の減算を含む)ならば回数を印字しない
+                    return false;
+                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+                
                 // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理
                 if ("8".equals(addFlag)) {
                     // %加算(介護職員処遇改善)
@@ -1435,6 +1494,17 @@ public class CareServiceCommon {
                     return false;
                 }
             }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+            else if ("1".equals(ACCastUtilities.toString(
+                    service.get("LIMIT_AMOUNT_OBJECT"), ""))) {
+                String addFlag = ACCastUtilities.toString(
+                        service.get("SERVICE_ADD_FLAG"), "");
+                if ("5".equals(addFlag)) {
+                    // %減算(共生型)ならば回数を印字しない
+                    return false;
+                }                
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
         } catch (Exception ex) {
         }
         return true;
@@ -1488,6 +1558,7 @@ public class CareServiceCommon {
         case 16911: // 介護予防小規模多機能型居宅介護（短期利用）[H27.4改正対応]
         case 13711: // 介護予防認知症対応型共同生活介護（短期利用以外）
         case 13911: // 介護予防認知症対応型共同生活介護（短期利用）
+        case 204311: // 介護予防短期入所療養介護(介護医療院) [H30.4改正対応]
             return true;
         }
         return false;
@@ -1983,7 +2054,34 @@ public class CareServiceCommon {
 
         return totalSyogu - totalAdjust;
     }
-
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+    /**
+     * ％加算・％減算の単位数を返します。（加算・減算率がマイナスの場合の対応）
+     * 
+     * @param totalUnit 単位数
+     * @param per 加算・減算率
+     * @return 加算・減算の単位数(totalUnit * per / 100.0)を四捨五入した値
+     */
+    public static int calcPercentageUnit(int totalUnit, int per) {
+        int ret = new BigDecimal(totalUnit).multiply(new BigDecimal(per))
+		.divide(new BigDecimal("100.0")).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+        return ret;
+    }
+    /**
+     * 単位数に単価または給付率を掛けた費用金額を返します。（単位数がマイナスの場合の対応）
+     * 
+     * @param unit 単位数
+     * @param tanka 単価（4桁の整数（11.05のときは1105））または給付率（2桁の整数(90））
+     * @return 単位数に単価を掛けた費用金額(unit * tanka / 100.0)を切り捨てした値
+     */
+    public static int calcCost(int unit, int tanka) {
+        int ret = new BigDecimal(unit).multiply(new BigDecimal(tanka))
+		.divide(new BigDecimal("100.0")).setScale(0, BigDecimal.ROUND_DOWN).intValue();
+        return ret;
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+    
     /**
      * 介護老人保健施設で下記公費かどうか判定する
      * 8801:水俣病総合対策、8802:メチル水銀、8701:有機ヒ素、6601:石綿

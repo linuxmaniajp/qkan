@@ -452,8 +452,11 @@ public class QM001Design extends QkanAffairContainer implements ACAffairable {
       
       // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/28 edit - begin
       //subTitle.setBackground(new Color(20,80,20));
-      subTitle.setBackground(new Color(119,74,142));
+      //subTitle.setBackground(new Color(119,74,142));
       // [H27.4‰ü³‘Î‰][Shinobu Hitaka] 2015/1/28 edit - end
+      // [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/1/11 edit - begin
+      subTitle.setBackground(QkanConstants.COLOR_RESOURCE_QKAN_PRIMARY_1);
+      // [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/1/11 edit - begin
 
       subTitle.setForeground(Color.white);
 

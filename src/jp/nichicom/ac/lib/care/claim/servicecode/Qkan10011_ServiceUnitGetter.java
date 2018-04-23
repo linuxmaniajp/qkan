@@ -36,6 +36,11 @@ public abstract class Qkan10011_ServiceUnitGetter {
     // [ID:0000682] 2012/01 start 介護職員処遇改善加算の追加処理 TODO
     public static final String SYOGUKAIZEN_KASAN = "17";
     // [ID:0000682] 2012/01 end
+    
+    // 2018/3/1 [Yoichiro Kamei] add - begin [H30.4改正]対応
+    // 算定項目を使用する加算のシステムサービス項目コードプレフィックス「SK」
+    public static final String SYSTEM_SERVICE_CODE_PREFIX_SK = "SK";
+    // 2018/3/1 [Yoichiro Kamei] add - end
 
  // 2016/8/23 [Yoichiro Kamei] add - begin 総合事業対応
     public static  final String SJ_HOKENSHA_NO_BIND_PATH = "500";
@@ -291,6 +296,8 @@ public abstract class Qkan10011_ServiceUnitGetter {
                     sb.append(",ROOM_TYPE");
                     sb.append(",SERVICE_ADD_TYPE");
                     sb.append(",SERVICE_STAFF_UNIT");
+                    sb.append(",KYOUSEI_FLAG"); //2018.04
+                    sb.append(",SAME_BUILDING_FLAG"); //2018.04
                     sb.append(",SUMMARY_FLAG");
                     sb.append(",SUMMARY_MEMO");
                     sb.append(",CLASS_TYPE");
@@ -371,6 +378,8 @@ public abstract class Qkan10011_ServiceUnitGetter {
                         if (!(ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 3 //％加算(地域系加算)
                                 || ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 6 //％加算(対象に地域系加算を含む)
                                 || ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 8 //処遇改善加算
+                                || ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 5 //共生型の減算[H30.4改正対応]
+                                || ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"), 0) == 7 //同一建物減算[H30.4改正対応]
                             )) {
                             String itemCode = ACCastUtilities.toString(code.getData("SERVICE_CODE_ITEM"));
                             String sjKey = QkanSjServiceCodeManager.createSjServiceCodeKey(insurerId, systemServiceCodeDetail, itemCode);

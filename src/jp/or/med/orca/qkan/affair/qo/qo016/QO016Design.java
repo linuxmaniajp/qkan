@@ -431,7 +431,7 @@ public class QO016Design extends QkanAffairContainer implements ACAffairable {
       targetDate.setBindPath("TARGET_DATE");
 
       try{
-        targetDate.setMinimumDate(QkanConstants.H2704);
+        targetDate.setMinimumDate(QkanConstants.H3004);
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("targetDate の最小年月日に不正な日付が指定されています。"));
       }

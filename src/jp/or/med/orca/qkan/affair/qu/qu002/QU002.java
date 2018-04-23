@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.text.Format;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.swing.event.ListSelectionEvent;
 
@@ -4874,7 +4875,7 @@ public class QU002 extends QU002Event {
 		getPatientInfoList().clear();
 		getKaigoHistoryList().clear();
 		getIdouHistoryList().clear();
-		getShisetsuHistoryList();
+		getShisetsuHistoryList().clear(); // [CCCX:04605][Shinobu Hitaka] 2018/3/12 Cear漏れ
 		setIdouTableChangeFlg(0);
 		setKaigoTableChangeFlg(0);
 		setKaigoDataFlg(0);
@@ -5109,36 +5110,55 @@ public class QU002 extends QU002Event {
 		// サービスマスタレコードを取得し、以下のKEYでmapに設定する。
 		// ・KEY：SERVICE
 		VRList service = new VRArrayList();
-// 2016/2/8 [Shinobu Hitaka] mod - begin H28.4改正対応
-//// 2015/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
-////		setMasterService(QkanCommon.getMasterService(getDBManager(),
-////				QkanConstants.H2404));
-//		setMasterService(QkanCommon.getMasterService(getDBManager(),
-//		QkanConstants.H2704));
-//// 2015/1/9 [Yoichiro Kamei] mod - end
-		setMasterService(QkanCommon.getMasterService(getDBManager(),
-		QkanConstants.H2804));
-// 2016/2/8 [Shinobu Hitaka] mod - end
+// 2018/2/20 [Shinobu Hitaka] mod - begin H30.4改正対応
+//// 2016/2/8 [Shinobu Hitaka] mod - begin H28.4改正対応
+////// 2015/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
+//////		setMasterService(QkanCommon.getMasterService(getDBManager(), QkanConstants.H2404));
+////		setMasterService(QkanCommon.getMasterService(getDBManager(), QkanConstants.H2704));
+////// 2015/1/9 [Yoichiro Kamei] mod - end
+//		setMasterService(QkanCommon.getMasterService(getDBManager(), QkanConstants.H2804));
+//// 2016/2/8 [Shinobu Hitaka] mod - end
+
+		// 2018/3/9 [Shinobu Hitaka] H30.4廃止のサービス種類も表示する（履歴表示エラー回避）
+		VRMap newServiceMap = QkanCommon.getMasterService(getDBManager(),QkanConstants.H3004);
+		VRMap oldServiceMap = QkanCommon.getMasterService(getDBManager(),QkanConstants.H2804);
+		Iterator it = oldServiceMap.values().iterator();
+		while (it.hasNext()) {
+			VRMap serviceMap = (VRMap) it.next();
+			Date edate = ACCastUtilities.toDate(VRBindPathParser.get("SERVICE_VALID_END", serviceMap));
+			int systemServiceKindDetail = ACCastUtilities.toInt(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", serviceMap));
+			// 廃止されたサービス種類を追加
+			if (ACDateUtilities.getDifferenceOnDay(edate, QkanConstants.H3004) < 0) {
+				newServiceMap.put(systemServiceKindDetail, serviceMap);
+			}
+		}
+		setMasterService(newServiceMap);
+// 2018/2/20 [Shinobu Hitaka] mod - end
+
 		VRList temp = new VRArrayList(getMasterService().values());
 
 		if (!(temp == null || temp.size() == 0)) {
 			for (int i = 0; i < temp.size(); i++) {
 				VRMap serviceMap = (VRMap) temp.get(i);
-				int systemServiceKindDetail = ACCastUtilities
-						.toInt(VRBindPathParser.get(
-								"SYSTEM_SERVICE_KIND_DETAIL", serviceMap));
-
+				int systemServiceKindDetail = ACCastUtilities.toInt(VRBindPathParser.get("SYSTEM_SERVICE_KIND_DETAIL", serviceMap));
+				
 				// 「その他」「主な日常生活上の活動」を排除
 				if (!(systemServiceKindDetail == SERVICE_TYPE_OTHER || systemServiceKindDetail == SERVICE_TYPE_ROUTINE)) {
 					// 2016/2/8 [Shinobu Hitaka] add - begin 「サービス種類:サービス名」を表示
 					String serviceName = ACCastUtilities.toString(VRBindPathParser.get("SERVICE_CODE_KIND", serviceMap))
 							+ ":"
 							+ ACCastUtilities.toString(VRBindPathParser.get("SERVICE_ABBREVIATION", serviceMap));
+					
+					// 廃止されたサービス種類を追加
+					Date edate = ACCastUtilities.toDate(VRBindPathParser.get("SERVICE_VALID_END", serviceMap));
+					if (ACDateUtilities.getDifferenceOnDay(edate, QkanConstants.H3004) < 0) {
+						serviceName = serviceName + "(廃止)";
+					}
+					
 					// 2016/2/8 [Shinobu Hitaka] add - end
 					VRBindPathParser.set("SERVICE_ABBREVIATION", serviceMap, serviceName);
 					service.add(serviceMap);
 				}
-
 			}
 		}
 

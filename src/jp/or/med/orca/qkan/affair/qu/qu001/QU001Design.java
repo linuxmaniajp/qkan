@@ -430,7 +430,7 @@ public class QU001Design extends QkanAffairContainer implements ACAffairable {
       targetDate.setAllowedBlank(false);
 
       try{
-        targetDate.setMinimumDate(QkanConstants.H2704);
+        targetDate.setMinimumDate(QkanConstants.H3004);
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("targetDate の最小年月日に不正な日付が指定されています。"));
       }

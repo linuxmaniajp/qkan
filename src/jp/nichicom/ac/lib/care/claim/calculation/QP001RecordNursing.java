@@ -1086,25 +1086,50 @@ public class QP001RecordNursing extends QP001RecordAbstract {
         
         // —l®‚WC‚XC‚P‚O‚Å‚È‚¢‚ÆŒö”ï‚Ì“K—p‚Ís‚í‚ê‚È‚¢B
         if(QP001SpecialCase.isShisetsuDiscriminationNo(get_801001())){
-            
+	
             //¶•Û’P“Æ‚Å‚ ‚ê‚ÎA•ÛŒ¯•ª¿‹‚ğs‚í‚¸A‘SŠzŒö”ï•‰’S‚Æ‚·‚éB
             if(seihoOnly){
+            	
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] mod - begin ¶•Û’P“Æ‚Ì“Á’è“üŠÒƒŒƒR[ƒh‚Ì‚İ‚ÌŒö”ï‚É‘Î‰
+//                //•ÛŒ¯•ª¿‹Šz‚ğ0‚Éİ’è
+//                set_801017(0);
+//                //Œö”ï‚P¿‹Šz‚É”ï—pŠz‚Ì‘SŠz‚ğİ’è‚·‚éB
+//                set_801018(get_801016());
+//                //—˜—pÒ•‰’SŠz‚É0‚ğİ’è‚·‚éB
+//                set_801021(0);
+//                
+//                // add sta 2006.05.18 fujihara.shin
+//                if(isUsingKohi(kohi[0],manager) && kohi[0].getKohiType().startsWith("12")){
+//                	set_801013(kohiManager.getKohiCount(kohi[0]));
+//                } else if(isUsingKohi(kohi[1],manager) && kohi[1].getKohiType().startsWith("12")){
+//                	set_801013(kohiManager.getKohiCount(kohi[1]));
+//                } else if(isUsingKohi(kohi[2],manager) && kohi[2].getKohiType().startsWith("12")){
+//                	set_801013(kohiManager.getKohiCount(kohi[2]));
+//                }
+//                // add end 2006.05.18 fujihara.shin
+                
                 //•ÛŒ¯•ª¿‹Šz‚ğ0‚Éİ’è
                 set_801017(0);
-                //Œö”ï‚P¿‹Šz‚É”ï—pŠz‚Ì‘SŠz‚ğİ’è‚·‚éB
-                set_801018(get_801016());
                 //—˜—pÒ•‰’SŠz‚É0‚ğİ’è‚·‚éB
                 set_801021(0);
                 
-                // add sta 2006.05.18 fujihara.shin
-                if(isUsingKohi(kohi[0],manager) && kohi[0].getKohiType().startsWith("12")){
+                if (isUsingKohi(kohi[0],manager) && kohi[0].getKohiType().startsWith("12")) {
+                    //Œö”ï‚P¿‹Šz‚É”ï—pŠz‚Ì‘SŠz‚ğİ’è‚·‚éB
+                    set_801018(get_801016());
+                    //Œö”ï1“ú”İ’è
                 	set_801013(kohiManager.getKohiCount(kohi[0]));
-                } else if(isUsingKohi(kohi[1],manager) && kohi[1].getKohiType().startsWith("12")){
-                	set_801013(kohiManager.getKohiCount(kohi[1]));
-                } else if(isUsingKohi(kohi[2],manager) && kohi[2].getKohiType().startsWith("12")){
-                	set_801013(kohiManager.getKohiCount(kohi[2]));
+                } else if (isUsingKohi(kohi[1],manager) && kohi[1].getKohiType().startsWith("12")) {
+                    //Œö”ï2¿‹Šz‚É”ï—pŠz‚Ì‘SŠz‚ğİ’è‚·‚éB
+                	set_801019(get_801016());
+                	//Œö”ï2“ú”İ’è
+                	set_801014(kohiManager.getKohiCount(kohi[1]));
+                } else if (isUsingKohi(kohi[2],manager) && kohi[2].getKohiType().startsWith("12")) {
+                    //Œö”ï3¿‹Šz‚É”ï—pŠz‚Ì‘SŠz‚ğİ’è‚·‚éB
+                	set_801020(get_801016());
+                	//Œö”ï3“ú”İ’è
+                	set_801015(kohiManager.getKohiCount(kohi[2]));
                 }
-                // add end 2006.05.18 fujihara.shin
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] mod - end
                 
                 //ˆ—‚ğI—¹
                 return;

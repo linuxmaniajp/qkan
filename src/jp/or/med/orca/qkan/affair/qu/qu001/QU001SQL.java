@@ -1067,6 +1067,8 @@ public class QU001SQL extends QU001State {
 
     sb.append(",PATIENT_SHISETSU_HISTORY.SHISETSU_VALID_END");
 
+    sb.append(",PATIENT_SHISETSU_HISTORY.TOKUTEI_NYUSHO_FLAG"); //add
+
     sb.append(" FROM");
 
     sb.append(" PATIENT_SHISETSU_HISTORY");
@@ -1083,15 +1085,24 @@ public class QU001SQL extends QU001State {
 
     sb.append(")");
 
-    // [CCCX:2846][Shinobu Hitaka] 2015/07/23 add begin 特定入所者有のみを取得
-    sb.append("AND");
+// [CCCX:4273][Shinobu Hitaka] 2017/08/29 edit begin チェック方法変更
+//
+// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add begin 特定入所者有のみを取得
+//    sb.append("AND");
+//
+//    sb.append("(");
+//
+//    sb.append(" PATIENT_SHISETSU_HISTORY.TOKUTEI_NYUSHO_FLAG = 2");
+//    
+//    sb.append(")");
+// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add end
 
-    sb.append("(");
+    sb.append(" ORDER BY");
 
-    sb.append(" PATIENT_SHISETSU_HISTORY.TOKUTEI_NYUSHO_FLAG = 2");
-    
-    sb.append(")");
-    // [CCCX:2846][Shinobu Hitaka] 2015/07/23 add end
+    sb.append(" SHISETSU_VALID_START");
+
+    sb.append(" DESC");
+// [CCCX:4273][Shinobu Hitaka] 2017/08/29 edit end
 
     return sb.toString();
   }

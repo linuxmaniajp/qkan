@@ -437,14 +437,29 @@ public class CareServiceSummaryManager {
 		Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
 		Map[] totalGroupingCacheGaibu = new Map[] { new HashMap(),
 				new HashMap() };
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - begin 共生型減算対応
+		KyouseiUnitCalcurater kyouseiCalc = new KyouseiUnitCalcurater();
+		// 時系列でソートする
+		Collections.sort(services, new ServiceDateTimeLineComparator(ADD_UNIT_NAME));
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - end
+		
 		for (Map<String, Object> service : services) {
 			// このサービスの単位数を求める
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+//			int unit = calcurater
+//					.getReductedUnit(
+//							(VRMap) service,
+//							false,
+//							CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
+//							totalGroupingCache);
 			int unit = calcurater
 					.getReductedUnit(
 							(VRMap) service,
 							false,
 							CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
-							totalGroupingCache);
+							totalGroupingCache,
+							kyouseiCalc);
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
 			// サービスに追加する
 			service.put(ADD_UNIT_NAME, unit);
 			if (unit == 0) {
@@ -468,12 +483,20 @@ public class CareServiceSummaryManager {
 			parsedRow.put("ADJUST", regRate + adjust);
 
 			// 外部利用型の単位数があるか確認
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+//			int gaibuUnit = calcurater
+//					.getReductedUnit(
+//							(VRMap) service,
+//							false,
+//							CareServiceCodeCalcurater.CALC_MODE_OUTER_SERVICE_LIMIT_AMOUNT,
+//							totalGroupingCacheGaibu);
 			int gaibuUnit = calcurater
 					.getReductedUnit(
 							(VRMap) service,
 							false,
 							CareServiceCodeCalcurater.CALC_MODE_OUTER_SERVICE_LIMIT_AMOUNT,
-							totalGroupingCacheGaibu);
+							totalGroupingCacheGaibu, null);
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
 			if (gaibuUnit != 0) {
 				int nowGaibuUnit = ACCastUtilities.toInt(
 						parsedRow.get("GAIBU_UNIT"), 0);
@@ -483,6 +506,14 @@ public class CareServiceSummaryManager {
 			// 対象のサービスを格納しておく
 			((List) parsedRow.get("WARIFURI_SERVICES")).add(service);
 		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+		// 共生型減算の減算単位数をADD_UNIT_NAMEに保持している単位数へ反映する
+		if (kyouseiCalc.hasService()) {
+			kyouseiCalc.calcKyouseiUnit(ADD_UNIT_NAME);
+			kyouseiCalc.removeServiceKey();
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
+		
 		// 単位数の計算
 		calcTotalUnit();
 	}

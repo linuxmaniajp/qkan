@@ -787,6 +787,15 @@ public class QU001 extends QU001Event {
 
 			Date sysDate = QkanSystemInformation.getInstance().getSystemDate();
 			
+			// [H30.4改正対応][Shinobu Hitaka] 2018/02/20 edit begin 平成30年4月の初期設定対応
+			if (("QS001".equals(getNextAffair()) || "QR001"
+					.equals(getNextAffair()))
+					&& (ACDateUtilities.compareOnDay(sysDate,
+							QkanConstants.H3004) < 0)) {
+				sysDate = QkanConstants.H3004;
+			}
+			// [H30.4改正対応][Shinobu Hitaka] 2018/02/20 edit end
+			
 			// [H27.4改正対応][Shinobu Hitaka] 2015/02/20 edit begin 平成27年4月の初期設定対応
 			if (("QS001".equals(getNextAffair()) || "QR001"
 					.equals(getNextAffair()))
@@ -1551,7 +1560,6 @@ public class QU001 extends QU001Event {
 		
 		// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add 対象年月の途中で施設情報（特定入所者）が開始する場合
 		int sameMonthFlag = 0;
-		int afterMonthFlag = 0;
 		
 		// 要介護度の有効期間切れチェック
 		if ((list.size() == 0) || !(QkanCommon.isFullDecisionPatientInsureInfo(getDBManager(), targetDate, patientId))) {
@@ -1561,42 +1569,53 @@ public class QU001 extends QU001Event {
 		}
 		
 		// 施設情報の有効期間切れチェック（対象年月の１日でチェックする）
+		// 負担限度額認定証は適用期間が1年間（毎年8月～翌年7月まで。申請月の初日から有効。）
+		// [CCCX:2846][Shinobu Hitaka] 2015/07/23 月途中から開始かをチェックするロジック追加
+		// [CCCX:4273][Shinobu Hitaka] 2017/08/29 チェック方法変更（有効期間切れ（前月）、月途中開始をチェックする）
 		VRMap sqlParam = new VRHashMap();
 		VRBindPathParser.set("PATIENT_ID", sqlParam, ACCastUtilities.toString(patientId));
 		list = getDBManager().executeQuery(getSQL_GET_SHISETSU_HISTORY_ALL(sqlParam));
 		
 		if (list.size() > 0) {
 			
-			msgFlag += 2;
-			
 			for (int i = 0; i < list.size(); i++) {
 				VRMap row = (VRMap)list.get(i);
 				
 				Date validStart = ACCastUtilities.toDate(row.get("SHISETSU_VALID_START"), null);
 				Date validEnd = ACCastUtilities.toDate(row.get("SHISETSU_VALID_END"), null);
+				int tokuteiFlag = ACCastUtilities.toInt(row.get("TOKUTEI_NYUSHO_FLAG"), 0);
 				
 				if ((validStart == null) || (validEnd == null)) {
 					continue;
 				}
-				
+				// 有効期間内に対象年月が含まれるか
 				int diff = ACDateUtilities.getDuplicateTermCheck(validStart, validEnd, targetDate, targetDate);
 				
-				//「重ならない」以外の結果であれば有効データあり
+				//「重なる」有効データあり（重なるということは月途中開始はない）
 				if (diff != ACDateUtilities.DUPLICATE_NONE) {
-					msgFlag -= 2;
 					break;
 				}
-				
-				// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add begin 月途中から開始かをチェック
-				if (ACDateUtilities.getMonth(validStart) == ACDateUtilities.getMonth(targetDate)) {
-					sameMonthFlag = 1;
-				} else if (ACDateUtilities.getMonth(validStart) > ACDateUtilities.getMonth(targetDate)) {
-					afterMonthFlag += 1;
+				//「重ならない」AND「特定入所者」
+				if (tokuteiFlag == 2) {
+					int diffMonth = 0;
+					// 終了年月チェック
+					diffMonth = ACDateUtilities.getDifferenceOnMonth(validEnd, targetDate);
+					// 前月より前に期限切れならば警告しない
+					if (diffMonth < -1) break;
+					// 終了年月＝対象年月の前月ならば期限切れを警告する
+					if (diffMonth == -1) {
+						msgFlag += 2;
+						break;
+					}
+					// 開始年月チェック
+					diffMonth = ACDateUtilities.getDifferenceOnMonth(validStart, targetDate);
+					// 開始年月＝対象年月 AND 開始日≠１日ならば月途中開始を警告する
+					if (diffMonth == 0 && ACDateUtilities.getDayOfMonth(validStart) > 1) {
+						msgFlag += 2;
+						sameMonthFlag = 1;
+						break;
+					}
 				}
-				// [CCCX:2846][Shinobu Hitaka] 2015/07/23 add end
-			}
-			if (list.size() == afterMonthFlag) {
-				msgFlag -= 2;
 			}
 		}
 		

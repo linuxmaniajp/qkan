@@ -937,6 +937,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
 
             // ’†~——R‚ªu‰îŒì•ÛŒ¯{İv‚Ìê‡
@@ -956,6 +958,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
 
             // ’†~——R‚ªuˆã—Ã‹@ŠÖ“ü‰@v‚Ìê‡
@@ -972,6 +976,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
 
             // ’†~——R‚ªu€–Sv‚Ìê‡
@@ -988,6 +994,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
 
             // ’†~——R‚ªu‚»‚Ì‘¼v‚Ìê‡
@@ -1004,6 +1012,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
                 
             // ’†~——R‚ªu‰îŒì˜Vl•Ÿƒ{İ“üŠv‚Ìê‡
@@ -1020,6 +1030,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
                 
             // ’†~——R‚ªu‰îŒì˜Vl•ÛŒ¯{İ“üŠv‚Ìê‡
@@ -1036,6 +1048,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigofukushi");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
 
             // ’†~——R‚ªu‰îŒì˜Vl•ÛŒ¯{İ“üŠv‚Ìê‡
@@ -1052,6 +1066,26 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigofukushi");
                 //‰îŒì˜Vl•ÛŒ¯{İ“üŠ‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
+                break;
+
+            // ’†~——R‚ªu‰îŒìˆã—Ã‰@“üŠv‚Ìê‡
+            case 9:
+                // ”ñŠY“–‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
+                ACChotarouXMLUtilities.setInvisible(writer, "higaito");
+                //ˆã—Ã‹@ŠÖ“ü‰@‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
+                ACChotarouXMLUtilities.setInvisible(writer, "iryoukikan");
+                //€–S‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
+                ACChotarouXMLUtilities.setInvisible(writer, "shibou");
+                //‚»‚Ì‘¼‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
+                ACChotarouXMLUtilities.setInvisible(writer, "etc");
+                //‰îŒì˜Vl•Ÿƒ{İ“üŠ‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigofukushi");
+                //‰îŒì˜Vl•ÛŒ¯{İ“üŠ‚Ì›‚ğ”ñ•\¦‚É‚·‚éB
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
+                //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
                 break;
                 
             // ã‹LˆÈŠO
@@ -1070,6 +1104,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
                 //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
                 ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+                //‰îŒìˆã—Ã‰@“üŠ
+                ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
                 break;
 
             }
@@ -1088,6 +1124,8 @@ public class QP001P02_10Event extends QP001PrintEvent {
             ACChotarouXMLUtilities.setInvisible(writer, "kaigohoken");
             //‰îŒì—Ã—{Œ^ˆã—Ã‹@ŠÖ“üŠ
             ACChotarouXMLUtilities.setInvisible(writer, "kaigoryoyo");
+            //‰îŒìˆã—Ã‰@“üŠ
+            ACChotarouXMLUtilities.setInvisible(writer, "kaigoiryoin");
         }
     }
     
@@ -1145,6 +1183,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
             //2-‰îŒì{İ(•½¬18”N4ŒˆÈ~”p~)-default‚Ö
             //3-ˆã—Ã‹@ŠÖ“ü‰@
@@ -1155,6 +1194,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
             //4-€–S
             case 4:
@@ -1164,6 +1204,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
             //5-‚»‚Ì‘¼
             case 5:
@@ -1173,6 +1214,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
             //6-‰îŒì˜Vl•Ÿƒ{İ“üŠ
             case 6:
@@ -1182,6 +1224,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"etc");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
             //7-‰îŒì˜Vl•ÛŒ’{İ“üŠ
             case 7:
@@ -1191,6 +1234,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"etc");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
             //8-‰îŒì—Ã—{Œ^ˆã—Ã{İ“ü‰@
             case 8:
@@ -1200,6 +1244,17 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"etc");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
+                break;
+            //9-‰îŒìˆã—Ã‰@“ü‰@
+            case 9:
+                ACChotarouXMLUtilities.setInvisible(writer,"higaito");
+                ACChotarouXMLUtilities.setInvisible(writer,"iryoukikan");
+                ACChotarouXMLUtilities.setInvisible(writer,"shibou");
+                ACChotarouXMLUtilities.setInvisible(writer,"etc");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
                 break;
             default:
                 ACChotarouXMLUtilities.setInvisible(writer,"higaito");
@@ -1209,6 +1264,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken");
                 ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo");
+                ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin");
                 break;
         }
         
@@ -1434,6 +1490,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 2:ˆã—Ã‹@ŠÖ
@@ -1445,6 +1502,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 3:‰îŒì˜Vl•Ÿƒ{İ
@@ -1456,6 +1514,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 4:‰îŒì˜Vl•ÛŒ’{İ
@@ -1467,6 +1526,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 5:‰îŒì—Ã—{Œ^ˆã—Ã{İ
@@ -1478,6 +1538,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 6:”F’mÜ‘Î‰Œ^‹¤¶Šˆ‰îŒì
@@ -1489,6 +1550,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 7:“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
@@ -1500,6 +1562,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
 	        // 8:‚»‚Ì‘¼
@@ -1511,8 +1574,21 @@ public class QP001P02_10Event extends QP001PrintEvent {
 	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 	        	ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 	        	
+	        // 9:‰îŒìˆã—Ã‰@
+	        case 9:
+	        	ACChotarouXMLUtilities.setInvisible(writer,"higaito2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"iryoukikan2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"kaigofukushi2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"kaigohoken2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"kaigoryoyo2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
+		        ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	break;
+
 	        default:
 	        	ACChotarouXMLUtilities.setInvisible(writer,"higaito2");
 		        ACChotarouXMLUtilities.setInvisible(writer,"iryoukikan2");
@@ -1522,6 +1598,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 		        ACChotarouXMLUtilities.setInvisible(writer,"ninchsyou2");
 		        ACChotarouXMLUtilities.setInvisible(writer,"tokuteisisetu2");
 		        ACChotarouXMLUtilities.setInvisible(writer,"etc2");
+	        	ACChotarouXMLUtilities.setInvisible(writer,"kaigoiryoin2");
 	        	break;
 
         }

@@ -262,6 +262,14 @@ public class QS001SQL extends QS001State {
 
     sb.append(" 90000");
 
+    sb.append("AND");
+
+    sb.append(" M_SERVICE.SYSTEM_SERVICE_KIND_DETAIL");
+
+    sb.append(" <");
+
+    sb.append(" 91000");
+
     sb.append(")");
 
     sb.append(")");

@@ -32,10 +32,11 @@ import jp.nichicom.convert.util.PropertyUtil;
 import jp.nichicom.convert.util.XMLDocumentUtil;
 
 /**
- * 給付管理鳥データ移行ツール(Ver.6.0.0向け)
+ * 給付管理鳥データ移行ツール(Ver.8.0.0向け)
  * 
  * @version 1.00 2011.11.25
  * @author shin fujihara
+ * 更新日: 2018/02/21  MIS 日高しのぶ V8.0.0用へ修正
  */
 public class MainFrame extends JFrame implements ActionListener {
 
@@ -53,10 +54,15 @@ public class MainFrame extends JFrame implements ActionListener {
     private XMLDocumentUtil doc = null;
 
     private String lineSeparator = System.getProperty("line.separator");
-// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+// 2018/1/20 [H30.4改正対応][Shinobu Hitaka] mod - begin
 //    private static String TITLE = "給管鳥Ver.6.0.0 データ移行ツール";
-    private static String TITLE = "給管鳥Ver.7.0.0 データ移行ツール";
-// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//    private static String TITLE = "給管鳥Ver.7.0.0 データ移行ツール";
+    private static String TITLE = "給管鳥Ver.8.0.0 データ移行ツール";
+// 2018/1/20 [H30.4改正対応][Shinobu Hitaka] mod - end
+    
+    private static int fromVersion[] = {0, 0, 0};
+    private static int toVersion[] = {0, 0, 0};
+    
     /**
      * LookAndFeelの設定
      */
@@ -124,16 +130,27 @@ public class MainFrame extends JFrame implements ActionListener {
         JPanel p = new JPanel();
         //p.setMaximumSize(new Dimension(500, 10));
         p.setMinimumSize(new Dimension(500, 10));
-// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+// 2018/1/20 [H30.4改正対応][Shinobu Hitaka] mod - begin
 //        p.setBorder(new CompoundBorder(new TitledBorder(
 //                "１．移行元のデータベースファイルを指定してください（V5.5.0以上）"), new EmptyBorder(0, 0,
 //                0, 0)));
+//        p.setBorder(new CompoundBorder(new TitledBorder(
+//                "１．移行元のデータベースファイルを指定してください（V6.1.2以上）"), new EmptyBorder(0, 0,
+//                0, 0)));
         p.setBorder(new CompoundBorder(new TitledBorder(
-                "１．移行元のデータベースファイルを指定してください（V6.1.2以上）"), new EmptyBorder(0, 0,
+                "１．移行元のデータベースファイルを指定してください（V7.3.0以上）"), new EmptyBorder(0, 0,
                 0, 0)));
-// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
+// 2018/1/20 [H30.4改正対応][Shinobu Hitaka] mod - end
         from = new JTextField(30);
         from.setText("");
+
+        // DB名を初期表示
+        // Mac OSだったら初期表示しない
+        final String osName = String.valueOf(System.getProperty("os.name")).toLowerCase();
+        if (osName.indexOf("mac") < 0) {
+            from.setText("C:\\qkan7\\data\\QKAN.FDB");
+        }
+        
         JButton btn = new JButton("開く");
         btn.setActionCommand("from-open");
         btn.addActionListener(this);
@@ -313,24 +330,36 @@ public class MainFrame extends JFrame implements ActionListener {
 
         // 一旦コネクションを貼り、データベースバージョンのチェック
         
-// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
-//        if (!checkVersion(from.getText(), 5)) {
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] mod - begin チェック方法変更
+//// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+////        if (!checkVersion(from.getText(), 5)) {
+////            from.requestFocus();
+////            return false;
+////        }
+////        if (!checkVersion(to.getText(), 6)) {
+////            to.requestFocus();
+////            return false;
+////        }
+//        if (!checkVersion(from.getText(), 6)) {
 //            from.requestFocus();
 //            return false;
 //        }
-//        if (!checkVersion(to.getText(), 6)) {
+//        if (!checkVersion(to.getText(), 7)) {
 //            to.requestFocus();
 //            return false;
 //        }
-        if (!checkVersion(from.getText(), 6)) {
-            from.requestFocus();
-            return false;
-        }
-        if (!checkVersion(to.getText(), 7)) {
-            to.requestFocus();
-            return false;
-        }
-// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+//// 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
+      
+      if (!checkAndSaveVersion(from.getText(), 1)) {
+          from.requestFocus();
+          return false;
+      }
+      if (!checkAndSaveVersion(to.getText(), 2)) {
+          to.requestFocus();
+          return false;
+      }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] mod - end
+        
         return true;
     }
 
@@ -361,6 +390,7 @@ public class MainFrame extends JFrame implements ActionListener {
             int miner = Integer.parseInt(ary[1]);
 // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - begin
             int rev = Integer.parseInt(ary[2]);
+            
 //            int maii = 6;
 //
 //            if (Integer.parseInt(maiExists) == 1) {
@@ -407,7 +437,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 }
 // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] mod - end
             }
-
+            
             return true;
 
         } catch (NumberFormatException e) {
@@ -432,6 +462,11 @@ public class MainFrame extends JFrame implements ActionListener {
             ConvertTask task = new ConvertTask();
             task.putTask(this, new DBConnect(doc, from.getText()),
                     new DBConnect(doc, to.getText()));
+
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
+            task.setFromVersion(fromVersion);
+            task.setToVersion(toVersion);
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
 
             Thread thread = new Thread(task);
             thread.start();
@@ -505,4 +540,83 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
     }
+    
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
+// mode: 1:from, 2:to
+    private boolean checkAndSaveVersion(String path, int mode) {
+    	int newVer = 8;
+
+        try {
+            DBConnect con = new DBConnect(doc, path);
+
+            String scv = con
+                    .execQuerySingle("SELECT SCHEME_VERSION FROM M_QKAN_VERSION");
+
+            String[] ary = scv.split("\\.");
+            int majer = Integer.parseInt(ary[0]);
+            int miner = Integer.parseInt(ary[1]);
+            int rev = Integer.parseInt(ary[2]);
+            
+            if (mode == 1) {
+                // 移行元チェック
+            	fromVersion[0] = majer;
+            	fromVersion[1] = miner;
+            	fromVersion[2] = rev;
+            	
+            	// 範囲チェック
+            	if (majer < 6 || majer > newVer) {
+                    showError("移行元のデータベースファイルに、対象外の給管鳥用データベースファイルが指定されています。"
+                    		+ lineSeparator + "指定されたデータベースファイルのバージョン：" + scv);
+                    return false;
+                }
+                // 移行元チェック（V6のスキーマが最新か）
+                if (majer == 6) {
+                    // 旧バージョンは、スキーマバージョン V6.1.2を要求
+                    if ( !(    ((majer == 6) && (miner == 1) && (rev >= 2))
+                    		|| ((majer == 6) && (miner > 1))
+                    	  )
+                    ) {
+                        showError("移行元のデータベースファイルを最新バージョンにアップデートしてください。"
+                                + lineSeparator + "要求バージョン：6.1.2" + lineSeparator
+                                + "指定されたデータベースファイルのバージョン：" + scv);
+                        return false;
+                    }
+                }
+                // 移行元チェック（V7のスキーマが最新か）
+                if (majer == 7) {
+                    // 旧バージョンは、スキーマバージョン V7.3.0を要求
+                    if ( !(    ((majer == 7) && (miner == 3) && (rev >= 0))
+                    		|| ((majer == 7) && (miner > 3))
+                    	  )
+                    ) {
+                        showError("移行元のデータベースファイルを最新バージョンにアップデートしてください。"
+                                + lineSeparator + "要求バージョン：7.3.0" + lineSeparator
+                                + "指定されたデータベースファイルのバージョン：" + scv);
+                        return false;
+                    }
+                }
+            } else {
+            	// 移行先チェック
+            	toVersion[0] = majer;
+            	toVersion[1] = miner;
+            	toVersion[2] = rev;
+
+            	if (majer != newVer) {
+                    showError("移行先のデータベースファイルに、古いバージョンの給管鳥用データベースファイルが指定されています。"
+                    		+ lineSeparator + "指定されたデータベースファイルのバージョン：" + scv);
+                    return false;
+                }
+            }
+            return true;
+
+        } catch (NumberFormatException e) {
+            showError("バージョン情報の取得に失敗しました。" + lineSeparator + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            showError("データベースの接続に失敗しました。" + lineSeparator + e.getMessage());
+            return false;
+        }
+    }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - end
+
 }

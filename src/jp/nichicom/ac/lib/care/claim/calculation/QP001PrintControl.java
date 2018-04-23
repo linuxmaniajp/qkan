@@ -360,7 +360,7 @@ public class QP001PrintControl {
                     continue;
                 }
 
-                new QP001P11_201204().doPrint(writer, printParam);
+                new QP001P11_201804().doPrint(writer, printParam);
             }
             
         }
@@ -427,7 +427,7 @@ public class QP001PrintControl {
                 // 様式番号
                 printParam.put("CLAIM_STYLE_TYPE", String.valueOf(claimStyleType));
                 // 様式第七の三
-                new QP001P073_201504().doPrint(writer, printParam);
+                new QP001P073_201804().doPrint(writer, printParam);
                 
             } else {
             
@@ -481,11 +481,11 @@ public class QP001PrintControl {
             // 様式第七
             if (key.endsWith(String
                     .valueOf(QkanConstants.CLAIM_STYLE_FORMAT_7))) {
-                new QP001P071_201204().doPrint(writer, printParam);
+                new QP001P071_201804().doPrint(writer, printParam);
                 // 様式第七の二
             } else if (key.endsWith(String
                     .valueOf(QkanConstants.CLAIM_STYLE_FORMAT_7_2))) {
-                new QP001P072_201204().doPrint(writer, printParam);
+                new QP001P072_201804().doPrint(writer, printParam);
             }
         }
         
@@ -537,97 +537,97 @@ public class QP001PrintControl {
             switch (claimStyleType) {
             // 在宅サービス介護給付費明細書（居宅）(QP001P021)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_2:
-                new QP001P021_201204().doPrint(writer, printParam);
+                new QP001P021_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（居宅）(QP001P022)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_2_2:
-                new QP001P022_201204().doPrint(writer, printParam);
+                new QP001P022_201804().doPrint(writer, printParam);
                 break;
 
             // 介護予防・日常生活支援総合事業費明細書（訪問型・通所型・その他の生活支援）(QP001P023)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_2_3:
-                new QP001P023_201504().doPrint(writer, printParam);
+                new QP001P023_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（短期入所生活介護）(QP001P031)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_3:
-                new QP001P031_201204().doPrint(writer, printParam);
+                new QP001P031_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（短期入所生活介護）(QP001P032)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_3_2:
-                new QP001P032_201204().doPrint(writer, printParam);
+                new QP001P032_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（介護老人保健施設）(QP001P041)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_4:
-                new QP001P041_201204().doPrint(writer, printParam);
+                new QP001P041_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（介護老人保健施設）(QP001P042)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_4_2:
-                new QP001P042_201204().doPrint(writer, printParam);
+                new QP001P042_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（病院又は診療所）(QP001P051)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_5:
-                new QP001P051_201204().doPrint(writer, printParam);
+                new QP001P051_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（病院又は診療所）(QP001P052)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_5_2:
-                new QP001P052_201204().doPrint(writer, printParam);
+                new QP001P052_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P061)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6:
-                new QP001P061_201204().doPrint(writer, printParam);
+                new QP001P061_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P062)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6_2:
-                new QP001P062_201204().doPrint(writer, printParam);
+                new QP001P062_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P063)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6_3:
-                new QP001P063_201204().doPrint(writer, printParam);
+                new QP001P063_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P064)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6_4:
-                new QP001P064_201204().doPrint(writer, printParam);
+                new QP001P064_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P065)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6_5:
-                new QP001P065_201204().doPrint(writer, printParam);
+                new QP001P065_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P066)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6_6:
-                new QP001P066_201204().doPrint(writer, printParam);
+                new QP001P066_201804().doPrint(writer, printParam);
                 break;
                 
             // 在宅サービス介護給付費明細書（認知症対応型・特定施設入所者）(QP001P067)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_6_7:
-                new QP001P067_201204().doPrint(writer, printParam);
+                new QP001P067_201804().doPrint(writer, printParam);
                 break;
 
             // 施設サービス等介護給付費明細書（介護福祉施設）(QP001P08)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_8:
-                new QP001P08_201204().doPrint(writer, printParam);
+                new QP001P08_201804().doPrint(writer, printParam);
                 break;
 
             // 在宅サービス介護給付費明細書（介護老人保健施設）(QP001P09)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_9:
-                new QP001P09_201204().doPrint(writer, printParam);
+                new QP001P09_201804().doPrint(writer, printParam);
                 break;
 
             // 施設サービス等介護給付費明細書（介護療養施設）(QP001P10)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_10:
-                new QP001P10_201204().doPrint(writer, printParam);
+                new QP001P10_201804().doPrint(writer, printParam);
                 break;
 
             }
@@ -884,7 +884,7 @@ public class QP001PrintControl {
             printParam.put("STYLE_DATA", style1Sorter.get(it.next()).getRecords());
             printParam.put("SEIKYU_DATE", printDate);
             
-            new QP001P01_201204().doPrint(writer, printParam);
+            new QP001P01_201804().doPrint(writer, printParam);
         }
         
 // 2016/7/11 [Yoichiro Kamei] add - begin 総合事業対応
@@ -894,7 +894,7 @@ public class QP001PrintControl {
             printParam.put("STYLE_DATA", style1_2Sorter.get(it.next()).getRecords());
             printParam.put("SEIKYU_DATE", printDate);
             
-            new QP001P012_201504().doPrint(writer, printParam);
+            new QP001P012_201804().doPrint(writer, printParam);
         }
 // 2016/7/11 [Yoichiro Kamei] add - end
         

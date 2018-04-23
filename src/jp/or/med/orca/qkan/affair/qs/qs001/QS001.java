@@ -1501,12 +1501,20 @@ public class QS001 extends QS001Event {
                 // 変更後の割引後単位数が自費調整額を超える場合、自費調整額を割引後単位数にする。
                 if (rate > 0) {
                     // 1日や1月単位の算定項目（基本夜間対応型訪問介護費など）も自費調整の対象
+                	// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+//                    int limit = getCalcurater()
+//                            .getReductedUnit(
+//                                    service,
+//                                    true,
+//                                    CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
+//                                    null);
                     int limit = getCalcurater()
                             .getReductedUnit(
                                     service,
                                     true,
                                     CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
-                                    null);
+                                    null, null);
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
                     if (rate > limit) {
                         service.put("REGULATION_RATE", new Integer(limit));
                     } else {
@@ -1702,18 +1710,14 @@ public class QS001 extends QS001Event {
 
                 }
             }
-            int lowVer = CareServiceCommon.getServiceLowVersion(row);
-            
-// 2014/1/9 [Yoichiro Kamei] mod - begin H27.4改正対応
-//            // 平成24年4月以降の場合
-//            // 法改正区分による過去データの判別
-//            if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H2404) {
-//                // 法改正区分が20090401以外のサービスの場合
-            // 平成27年4月以降の場合
-            // 法改正区分による過去データの判別
-            if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H2704) {
-                // 法改正区分が20150401以外のサービスの場合
-// 2014/1/9 [Yoichiro Kamei] mod - end
+            int lowVer = CareServiceCommon.getServiceLowVersion(row);            
+            	
+// 2018/1/8 [Yoichiro Kamei] mod - begin H30.4改正対応
+            // if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H2704) {
+            if (lowVer != QkanConstants.SERVICE_LOW_VERSION_H3004) {
+            	// 法改正区分が20180401以外のサービスの場合
+// 2018/1/8 [Yoichiro Kamei] mod - end
+            	
                 Date serviceDate = ACCastUtilities.toDate(
                         VRBindPathParser.get("SERVICE_DATE", row), null);
                 String dayOfMonth = "";
@@ -1771,43 +1775,43 @@ public class QS001 extends QS001Event {
                     }
                 }
             }
-            // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add begin 
+            // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add begin  [H30.4法改正対応] チェックをはずす
             // 対象年月がH28.4以降は、下記サービス種類にて 1:小規模型,5:療養 はNGとする
             // 15:通所介護の施設区分(115113), 33:外部利用通所介護の施設区分(1330126)
-            if (ACDateUtilities.getDifferenceOnMonth(getTargetDate(),ACDateUtilities.createDate(2016, 4)) >= 0) {
-                int kubun = 0;
-                if ("11511".equals(ACCastUtilities.toString(VRBindPathParser
-                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
-                    kubun = ACCastUtilities.toInt(row.getData("1150113"), 0);
-                }
-                if ("13311".equals(ACCastUtilities.toString(VRBindPathParser
-                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
-                    kubun = ACCastUtilities.toInt(row.getData("1330126"), 0);
-                }
-
-                // 施設区分が「1:小規模型」「5:療養」は設定不可
-                if (kubun == 1 || kubun == 5) {
-                    Date serviceDate = ACCastUtilities.toDate(
-                    	    VRBindPathParser.get("SERVICE_DATE", row), null);
-                    String dayOfMonth = "";
-                    if (serviceDate != null) {
-                        dayOfMonth = ACDateUtilities.getDayOfMonth(serviceDate) + "日の";
-                    }
-                    VRMap serviceKind = ACBindUtilities.getMatchRowFromValue(
-                            getServiceKindsList(), "SYSTEM_SERVICE_KIND_DETAIL",
-                            row.get("SYSTEM_SERVICE_KIND_DETAIL"));
-                    String serviceKindName = "サービス";
-                    if (serviceKind != null) {
-                        serviceKindName = ACCastUtilities.toString(serviceKind
-                                .get("SERVICE_ABBREVIATION"));
-                        }
-                    // エラーメッセージ
-                    QkanMessageList.getInstance()
-                        .QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(dayOfMonth,
-                                serviceKindName);
-                    return false;
-                    }
-            }
+//            if (ACDateUtilities.getDifferenceOnMonth(getTargetDate(),ACDateUtilities.createDate(2016, 4)) >= 0) {
+//                int kubun = 0;
+//                if ("11511".equals(ACCastUtilities.toString(VRBindPathParser
+//                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
+//                    kubun = ACCastUtilities.toInt(row.getData("1150113"), 0);
+//                }
+//                if ("13311".equals(ACCastUtilities.toString(VRBindPathParser
+//                        .get("SYSTEM_SERVICE_KIND_DETAIL", row)))) {
+//                    kubun = ACCastUtilities.toInt(row.getData("1330126"), 0);
+//                }
+//
+//                // 施設区分が「1:小規模型」「5:療養」は設定不可
+//                if (kubun == 1 || kubun == 5) {
+//                    Date serviceDate = ACCastUtilities.toDate(
+//                    	    VRBindPathParser.get("SERVICE_DATE", row), null);
+//                    String dayOfMonth = "";
+//                    if (serviceDate != null) {
+//                        dayOfMonth = ACDateUtilities.getDayOfMonth(serviceDate) + "日の";
+//                    }
+//                    VRMap serviceKind = ACBindUtilities.getMatchRowFromValue(
+//                            getServiceKindsList(), "SYSTEM_SERVICE_KIND_DETAIL",
+//                            row.get("SYSTEM_SERVICE_KIND_DETAIL"));
+//                    String serviceKindName = "サービス";
+//                    if (serviceKind != null) {
+//                        serviceKindName = ACCastUtilities.toString(serviceKind
+//                                .get("SERVICE_ABBREVIATION"));
+//                        }
+//                    // エラーメッセージ
+//                    QkanMessageList.getInstance()
+//                        .QS001_ERROR_OF_INVALID_SERVICE_LOW_VERSION(dayOfMonth,
+//                                serviceKindName);
+//                    return false;
+//                    }
+//            }
             // [H28.4法改正対応][Shinobu Hitaka] 2016/01/29 add end 
             
             // 2016/10 [Yoichiro Kamei] add - begin 総合事業独自対応
@@ -2536,6 +2540,13 @@ public class QS001 extends QS001Event {
             Object obj = VRBindPathParser.get(VISITOR_TYPE_PATH, row);
             if (obj != null) {
                 int idx = ACCastUtilities.toInt(obj, 0);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+                // 医師(指導費II) 医学総合管理料の場合、医師とする
+                if (idx == 8) {
+                	idx = 1;
+                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
+                
                 // 月単位の訪問回数
                 visitCounts[idx]++;
 

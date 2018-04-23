@@ -101,7 +101,7 @@ public class QkanTestHelperServiceTab extends JPanel {
         add(fileChooseButton);
 
         final JTextField targetDateTextField = new JTextField(
-                Integer.toString(QkanConstants.SERVICE_LOW_VERSION_H2704));
+                Integer.toString(QkanConstants.SERVICE_LOW_VERSION_H3004)); //[H30.4改正対応] H2704⇒H3004
         add(targetDateTextField);
 
         final JButton testServiceCodePanelButton = new JButton("パネルテスト");

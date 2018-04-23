@@ -1035,6 +1035,7 @@ public abstract class QU002Event extends QU002SQL {
   public static final int CODE_IDOU_REASON_SHISETSU2 = 8;
   public static final int CODE_IDOU_REASON_IRYO_KANGO = 9;
   public static final int CODE_IDOU_REASON_SHISETSU3 = 201;
+  public static final int CODE_IDOU_REASON_NYUSYO_NYUIN = 278;
   public static final int IDOU_SERVICE_KYOTAKU = 1;
   public static final int IDOU_SERVICE_SHISETSU1 = 2;
   public static final int IDOU_SERVICE_SHISETSU2 = 3;
@@ -1059,7 +1060,6 @@ public abstract class QU002Event extends QU002SQL {
   public static final int SERVICE_TYPE_OTHER = 90101;
   public static final int SERVICE_TYPE_ROUTINE = 90201;
   public static final int YOUKAIGODO_HIGAITOU = 1;
-  public static final int CODE_IDOU_REASON_NYUSYO_NYUIN = 278;
   public static final int IDOU_START_SHISETSU1 = 1;
   public static final int IDOU_START_SHISETSU2 = 1;
   public static final int IDOU_START_SHISETSU3 = 1;

@@ -189,7 +189,7 @@ public class QS001ServicePanel extends ACPanel {
      * @see Œp³æ‚Åoverride‚µ‚ÄÀ‘•‚µ‚Ü‚·B
      */
     public int getServiceLowVersion() throws Exception {
-        return QkanConstants.SERVICE_LOW_VERSION_H2704;
+        return QkanConstants.SERVICE_LOW_VERSION_H3004; //[H30.4‰ü³‘Î‰] H2704ËH3004
     }
 
     // [ID:0000666][Masahiko.Higuchi] 2012/12/13 edit End

@@ -1067,9 +1067,13 @@ public class QO004 extends QO004Event {
         //        TARGET_DATE_20150401);
     	// [H27.4改正対応][Shinobu Hitaka] 2015/1/29 edit - end
     	// [H28.4改正対応][Shinobu Hitaka] 2016/1/25 edit - begin 
-        VRMap temp = QkanCommon.getMasterService(getDBManager(),
-                TARGET_DATE_20160401);
+        //VRMap temp = QkanCommon.getMasterService(getDBManager(),
+        //        TARGET_DATE_20160401);
     	// [H28.4改正対応][Shinobu Hitaka] 2016/1/25 edit - end
+    	// [H30.4改正対応][Shinobu Hitaka] 2018/1/21 edit - begin 
+        VRMap temp = QkanCommon.getMasterService(getDBManager(),
+                TARGET_DATE_20180401);
+    	// [H30.4改正対応][Shinobu Hitaka] 2018/1/21 edit - end
         
         if (temp == null) {
             // マスタデータを取得できなかった場合
@@ -1865,9 +1869,9 @@ public class QO004 extends QO004Event {
             sb.append("_");
             // 履歴管理の概念が出てきた場合は、末尾の年月を分岐させる
             
+            sb.append(QkanCommon.getAffairLowVersion("", null));
             // test hitaka
-            //sb.append(QkanCommon.getAffairLowVersion("", null));
-            sb.append("201504");
+            //sb.append("201504"); // 201604の場合は固定
             // test hitaka
             
             // クラス生成

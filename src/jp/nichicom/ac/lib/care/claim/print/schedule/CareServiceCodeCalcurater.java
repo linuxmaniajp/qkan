@@ -327,8 +327,12 @@ public class CareServiceCodeCalcurater {
      * @throws Exception ˆ——áŠO
      * @return int
      */
+// [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+//    public int getServiceUnit(List codes, int mode, int reductRate,
+//            Map service, Map[] totalGroupingCache) throws Exception {
     public int getServiceUnit(List codes, int mode, int reductRate,
-            Map service, Map[] totalGroupingCache) throws Exception {
+            Map service, Map[] totalGroupingCache, KyouseiUnitCalcurater kyouseiCalc) throws Exception {
+// [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - end
         // ‡ŽZ‚ð0‚Å‰Šú‰»‚·‚éB
         int total = 0;
         // ŠÇ—ŒÀ“x‘ÎÛ‚ð‚ ‚ç‚í‚·’è”
@@ -338,6 +342,15 @@ public class CareServiceCodeCalcurater {
             while (it.hasNext()) {
                 // ƒT[ƒrƒXƒR[ƒh‚Ì’PˆÊŽZ’è€–Ú‚ð‘S‘–¸‚·‚éB
                 VRMap code = (VRMap) it.next();
+                // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 add - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+				if (CareServiceCommon.isAddPercentageForKyousei(code)) {
+					if (kyouseiCalc != null) {
+						kyouseiCalc.putKyouseiCode(service, code);
+					}
+					//Œ¸ŽZ’PˆÊ”‚ÌŒvŽZ‚Í‚±‚±‚Å‚¹‚¸AˆÈ~‚Ìˆ—ƒXƒLƒbƒv‚µŽŸ‚ÌƒR[ƒh‚Ö
+					continue;
+				}
+                // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 add - end
 
                 int unit = getServiceUnit(code, mode, service,
                         totalGroupingCache);
@@ -345,6 +358,17 @@ public class CareServiceCodeCalcurater {
 //              total += getReductedServiceCodeUnit(code, unit, total,
 //              reductRate);
                 int reducedUnit = getReductedServiceCodeUnit(code, unit, total, reductRate);
+                // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 add - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+                if (kyouseiCalc != null) {
+                    // ‹¤¶Œ^Œ¸ŽZ‚Ì‘ÎÛ‚ÌŠî–{ƒT[ƒrƒX‚Ìê‡
+                    int kyouseiFlg = ACCastUtilities.toInt(code.get("KYOUSEI_FLAG"), 0);
+                    int serviceMainFlg = ACCastUtilities.toInt(code.get("SERVICE_MAIN_FLAG"), 0);
+                    if (kyouseiFlg == 1 && serviceMainFlg == 1) {
+                    	kyouseiCalc.putKihonUnit(service, reducedUnit);
+                    }
+                }
+                // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 add - end
+                
                 String serviceCodeKind = ACCastUtilities.toString(code.get("SERVICE_CODE_KIND"));
                 String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
                 //ŠÅŽæ‚èŠÖ˜A‚Ì‰ÁŽZƒR[ƒh‚Å‚ ‚ê‚ÎA’PˆÊ”~‰ÁŽZ“ú”‚Æ‚·‚é
@@ -357,6 +381,15 @@ public class CareServiceCodeCalcurater {
                 total += reducedUnit;
  // [H27.4‰ü³‘Î‰ž][Yoichiro Kamei] ŠÅŽæ‚è‰ÁŽZŠÖ˜A‚Ì‰ÁŽZ“ú”‚É‘Î‰ž 2015/3/19 mod - end
             }
+            // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 add - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+            // ‹¤¶Œ^‚ÌŒ¸ŽZ‚Æ‹¤¶Œ^‚Ì‘ÎÛ‚Æ‚È‚éŠî–{ƒT[ƒrƒX‚ª“¯Žž‚ÉŽZ’è‚³‚ê‚Ä‚¢‚éê‡
+            // ‚±‚ÌƒT[ƒrƒX‚ð‹¤¶Œ^Œ¸ŽZ‚ÌŒvŽZƒNƒ‰ƒX‚Ö’Ç‰Á‚·‚é
+            if (kyouseiCalc != null) {
+                if (kyouseiCalc.isKyouseiCalcService(service)) {
+                	kyouseiCalc.addKyouseiService(service);
+                }
+            }
+            // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 add - end
         }
         // ‡ŽZ‚ð•Ô‚·B
         return (int) total;
@@ -429,18 +462,28 @@ public class CareServiceCodeCalcurater {
      * @throws Exception ˆ——áŠO
      * @return int ’PˆÊ
      */
+ // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+//    public int getServiceUnit(VRMap service, boolean check30Over,
+//            Map[] totalGroupingCache) throws Exception {
     public int getServiceUnit(VRMap service, boolean check30Over,
-            Map[] totalGroupingCache) throws Exception {
+            Map[] totalGroupingCache, KyouseiUnitCalcurater kyouseiCalc) throws Exception {
+ // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - end
         if (check30Over && CareServiceCommon.is30DayOver(service)) {
             // ˆø”‚Ì30“ú’´œŠO(remove30Over)‚ª^‚Å‚©‚Âˆø”‚ÌƒT[ƒrƒX‚à30“ú’´‚ÉŠY“–‚µ‚Ä‚¢‚ê‚ÎA0‚ð•Ô‚·B
             return 0;
         }
         // “¯–¼‚ÌŠÖ”‚ðŠÔÚ“I‚ÉŒÄ‚Ño‚µ‚ÄƒT[ƒrƒX’PˆÊ‚ð•Ô‚·B
 
+        // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+//        return getServiceUnit(getServiceCodes(service),
+//                CALC_MODE_IN_LIMIT_AMOUNT,
+//                getReductRate(getProviderID(service), service), service,
+//                totalGroupingCache);
         return getServiceUnit(getServiceCodes(service),
                 CALC_MODE_IN_LIMIT_AMOUNT,
                 getReductRate(getProviderID(service), service), service,
-                totalGroupingCache);
+                totalGroupingCache, kyouseiCalc);
+        // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - end
     }
 
     /**
@@ -717,8 +760,12 @@ public class CareServiceCodeCalcurater {
      * @throws Exception ˆ——áŠO
      * @return int Š„ˆø—¦‰‰ŽZŒã‚ÌƒT[ƒrƒX’PˆÊ
      */
+ // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž    
+//    public int getReductedUnit(VRMap service, boolean check30Over, int mode,
+//            Map[] totalGroupingCache) throws Exception {
     public int getReductedUnit(VRMap service, boolean check30Over, int mode,
-            Map[] totalGroupingCache) throws Exception {
+            Map[] totalGroupingCache, KyouseiUnitCalcurater kyouseiCalc) throws Exception {
+ // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - end
         if (check30Over && CareServiceCommon.is30DayOver(service)) {
             // ˆø”‚Ì30“ú’´œŠO(remove30Over)‚ª^‚Å‚©‚Âˆø”‚ÌƒT[ƒrƒX‚à30“ú’´‚ÉŠY“–‚µ‚Ä‚¢‚ê‚ÎA0‚ð•Ô‚·B
             return 0;
@@ -727,8 +774,12 @@ public class CareServiceCodeCalcurater {
         int reductRate = getReductRate(getProviderService(service));
         if (reductRate > 0) {
             List codes = getServiceCodes(service);
+            // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+//            return getServiceUnit(codes, mode, reductRate, service,
+//                    totalGroupingCache);
             return getServiceUnit(codes, mode, reductRate, service,
-                    totalGroupingCache);
+                    totalGroupingCache, kyouseiCalc);
+            // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - end
         }
         return 0;
     }
@@ -753,8 +804,12 @@ public class CareServiceCodeCalcurater {
         while (it.hasNext()) {
             // ƒT[ƒrƒXƒR[ƒhƒf[ƒ^‚ðŽæ“¾
             VRMap service = (VRMap) it.next();
+            // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - begin ‹¤¶Œ^Œ¸ŽZ‘Î‰ž
+//            int reductedUnit = getReductedUnit(service, true, mode,
+//                    totalGroupingCache);
             int reductedUnit = getReductedUnit(service, true, mode,
-                    totalGroupingCache);
+                    totalGroupingCache, null);
+            // [H30.4‰ü³‘Î‰ž][Yoichiro Kamei] 2018/3/14 mod - end
             
             // [CCCX:1626][Shinobu Hitaka] 2014/05/08 replace begin Œ¸ŽZ‚Ì’PˆÊ”‘Î‰ži’èŠú„‰ñ’ÊŠ—˜—pŒ¸ŽZE•¡‡Œ^–K–âŠÅŒì‚È‚Çj
             //if (reductedUnit > 0) {

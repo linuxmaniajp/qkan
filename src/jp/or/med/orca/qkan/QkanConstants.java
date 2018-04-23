@@ -25,7 +25,7 @@ public interface QkanConstants {
     /**
      * 給管鳥システムのバージョン情報を管理します。
      */
-    public static final String QKAN_SYSTEM_VERSION = "7.0.0";
+    public static final String QKAN_SYSTEM_VERSION = "8.0.0";
 
     // アイコン
     /**
@@ -80,7 +80,7 @@ public interface QkanConstants {
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(90, 120, 230);
     public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(120, 160, 255);
     */
-
+/* 
     // [H27.4改正対応][Shinobu Hitaka] 2015/1/28 add - begin 
     // 紫系 V7.0.0
     public static final Color COLOR_QKAN_THEMA = new Color(102,51,153);
@@ -96,6 +96,18 @@ public interface QkanConstants {
     // 紫系コンテナ背景色
     public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(186,127,207);
     // [H27.4改正対応][Shinobu Hitaka] 2015/1/28 add - end 
+*/
+    
+    // [H30.4改正対応][Shinobu Hitaka] 2018/1/11 add - begin 
+    // 青系 V8.0.0
+    public static final Color COLOR_QKAN_THEMA = new Color(0,104,183);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_1 = new ColorUIResource(40, 90, 160);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_2 = new ColorUIResource(29, 32, 136);
+    public static final ColorUIResource COLOR_RESOURCE_QKAN_PRIMARY_3 = new ColorUIResource(0, 151, 219);
+    
+    // 青系コンテナ背景色
+    public static final ColorUIResource COLOR_BACK_LABEL_CONTAINER = new ColorUIResource(108, 155, 210);
+    // [H30.4改正対応][Shinobu Hitaka] 2018/1/11 add - end 
 
     // フォーマッタ
     /**
@@ -426,12 +438,12 @@ public interface QkanConstants {
      * 10101-様式第1 介護給付費請求書情報を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_BENEFIT_BILL = 10101;
-// 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
+ // 2016/7/8 [Shinobu Hitaka] add - begin 総合事業対応
     /**
      * 10102-様式第1-2 介護給付費請求書情報を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_BENEFIT_BILL_2 = 10102;
-// 2016/7/8 [Shinobu Hitaka] add - end
+ // 2016/7/8 [Shinobu Hitaka] add - end
     /**
      * 10211-様式第2を表す帳票の様式番号定数です。
      */
@@ -459,9 +471,19 @@ public interface QkanConstants {
      */
     public static final int CLAIM_STYLE_FORMAT_4 = 10411;
     /**
-     * 10412-様式第4を表す帳票の様式番号定数です。
+     * 10412-様式第4-2を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_FORMAT_4_2 = 10412;
+ // 2018/1/20 [Shinobu Hitaka] add - begin H30.4改正対応
+    /**
+     * 10413-様式第4-3を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_FORMAT_4_3 = 10413;
+    /**
+     * 10414-様式第4-4を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_FORMAT_4_4 = 10414;
+ // 2018/1/20 add - end
     /**
      * 10511-様式 第5を表す帳票の様式番号定数です。
      */
@@ -521,19 +543,25 @@ public interface QkanConstants {
      */
     public static final int CLAIM_STYLE_FORMAT_8_2 = 10812;
     /**
-     * 9-様式第9を表す帳票の様式番号定数です。
+     * 10911-様式第9を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_FORMAT_9 = 10911;
+ // 2018/1/20 [Shinobu Hitaka] add - begin H30.4改正対応
     /**
-     * 10-様式第10を表す帳票の様式番号定数です。
+     * 10912-様式第9-2を表す帳票の様式番号定数です。
+     */
+    public static final int CLAIM_STYLE_FORMAT_9_2 = 10912;
+ // 2018/1/20 [Shinobu Hitaka] add - end
+    /**
+     * 11011-様式第10を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_FORMAT_10 = 11011;
     /**
-     * 11-給付管理票総括情報を表す帳票の様式番号定数です。
+     * 11111-給付管理票総括情報を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_BENEFIT_SUMMARY = 11111;
     /**
-     * 12-給付管理票情報を表す帳票の様式番号定数です。
+     * 11211-給付管理票情報を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_BENEFIT_MANAGEMENT = 11211;
     /**
@@ -553,7 +581,7 @@ public interface QkanConstants {
      */
     public static final int CLAIM_STYLE_VISIT_BILL_NATIONAL_INSURANCE = 20202;
     /**
-     * 17-利用者向け請求を表す帳票の様式番号定数です。
+     * 30101-利用者向け請求を表す帳票の様式番号定数です。
      */
     public static final int CLAIM_STYLE_BILL_FOR_PATIENT = 30101;
 
@@ -689,7 +717,14 @@ public interface QkanConstants {
     */
    public static final Date H2804 = ACDateUtilities.createDate(2016, 4, 1);
  // 2016/1/28 [Shinobu Hitaka] add - end
-       
+
+ // 2018/1/8 [Yoichiro Kamei] add - begin H30.4改正対応
+   /**
+    * 平成30年4月1日の定数です。
+    */
+   public static final Date H3004 = ACDateUtilities.createDate(2018, 4, 1);
+ // 22018/1/8 [Yoichiro Kamei] add - end
+   
     /**
      * 20090401-サービスの法改正区分における[平成21年4月1日以降]を表す定数です。
      */
@@ -707,6 +742,13 @@ public interface QkanConstants {
      */
     public static final int SERVICE_LOW_VERSION_H2704 = 20150401;
  // 2015/1/9 [Yoichiro Kamei] add - end
+    
+ // 2018/1/8 [Yoichiro Kamei] add - begin H30.4改正対応
+    /**
+     * 20180401-サービスの法改正区分における[平成30年4月1日以降]を表す定数です。
+     */
+    public static final int SERVICE_LOW_VERSION_H3004 = 20180401;
+ // 2018/1/8 [Yoichiro Kamei] add - end
     
     /**
      * 平成24年5月1日の定数です。

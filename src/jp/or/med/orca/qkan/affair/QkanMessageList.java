@@ -5040,5 +5040,17 @@ public class QkanMessageList {
 
   }
   
-  
+  /**
+   * メッセージ「サテライト型は選択できません。」を表示します。
+   * <p>
+   * サテライト型が選択された場合
+   * </p>
+   * @throws Exception 処理例外
+   * @return 選択したボタンID
+   */
+  public int QO004_ERROR_OF_SATERAITO() throws Exception{
+
+    return ACMessageBox.show("サテライト型は選択できません。", ACMessageBox.BUTTON_OK, ACMessageBox.ICON_EXCLAMATION, ACMessageBox.FOCUS_OK);
+
+  }
 }

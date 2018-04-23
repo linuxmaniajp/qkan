@@ -28,6 +28,11 @@ public class ConvertTask implements Runnable {
     
     private Set<Integer> providerServiceId = null;
     private Set<Integer> kohiType = null;
+    
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
+    private int fromVersion[] = {0, 0, 0};
+    private int toVersion[] = {0, 0, 0};
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - end
 
     public void putTask(MainFrame frame, DBConnect from, DBConnect to) {
         this.frame = frame;
@@ -35,6 +40,27 @@ public class ConvertTask implements Runnable {
         this.to = to;
     }
 
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
+    /**
+     * 移行元バージョンを設定します。
+     * @param from バージョン
+     */
+    public void setFromVersion(int from[]){
+        this.fromVersion[0] = from[0];
+        this.fromVersion[1] = from[1];
+        this.fromVersion[2] = from[2];
+    }
+    /**
+     * 移行先バージョンを設定します。
+     * @param to バージョン
+     */
+    public void setToVersion(int to[]){
+        this.toVersion[0] = to[0];
+        this.toVersion[1] = to[1];
+        this.toVersion[2] = to[2];
+    }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - end
+      
     @Override
     public void run() {
         
@@ -43,13 +69,26 @@ public class ConvertTask implements Runnable {
         
         tableListSimple.put("FIXED_FORM", "定型文");
         tableListSimple.put("INSURER", "保険者");
-//        tableListSimple.put("INSURER_LIMIT_RATE", "保険者単価");
-//        tableListSimple.put("INSURER_LIMIT_RATE_DETAIL", "保険者単価詳細");
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
+        if (fromVersion[0] > 6){
+	        tableListSimple.put("INSURER_LIMIT_RATE", "保険者単価");
+	        tableListSimple.put("INSURER_LIMIT_RATE_DETAIL", "保険者単価詳細");
+	        tableListSimple.put("INSURER_UNIT_PRICE", "保険者単位数単価");
+	        tableListSimple.put("INSURER_UNIT_PRICE_DETAIL", "保険者単位数単価詳細");
+	        tableListSimple.put("M_SJ_SERVICE_CODE", "総合事業サービスコード");
+	        tableListSimple.put("M_SJ_SERVICE_CODE_HISTORY", "総合事業サービスコード取込履歴");
+        }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - end
         
         tableListSimple.put("PATIENT", "利用者");
         tableListSimple.put("PATIENT_CHANGES_HISTORY", "利用者変更履歴");
         tableListSimple.put("PATIENT_NINTEI_HISTORY", "利用者認定履歴");
         tableListSimple.put("PATIENT_SHISETSU_HISTORY", "利用者施設履歴");
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
+        if (fromVersion[0] > 6){
+        	tableListSimple.put("PATIENT_JUSHOTI_TOKUREI", "利用者住所地特例履歴");
+        }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin
         
         tableListSimple.put("PROVIDER", "事業所");
         tableListSimple.put("PROVIDER_MENU", "事業所メニュー");
@@ -111,6 +150,9 @@ public class ConvertTask implements Runnable {
 
                 // 最後にM_NO_CONTROLのPROVIDER_SERVICEを移行
                 copyNoControl("PROVIDER_SERVICE", "PROVIDER_SERVICE_ID");
+
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - begin V6からの移行の場合実行する
+                if (fromVersion[0] == 6) {
                 
 // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - begin
                 //介護保険情報のシステム適用期間を設定
@@ -119,6 +161,9 @@ public class ConvertTask implements Runnable {
                 //地域区分　５級地の２⇒５級地
                 updateProviderAreaType();
 // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - end
+                
+                }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] add - end
                 
                 setStatus("終了処理を実行中...", 100);
                 
@@ -273,21 +318,23 @@ public class ConvertTask implements Runnable {
             
             int systemBindPath = rs_from.getInt("SYSTEM_BIND_PATH");
             
-            // providerServiceIdのチェック(認知症対応型通所介護の情報であるか)
-            if (providerServiceId.contains(rs_from.getInt("PROVIDER_SERVICE_ID"))) {
-                
-                switch (systemBindPath) {
-                case 1150102:
-                    systemBindPath = 1720110;
-                    Log.info("変換：" + rs_from.getString("PROVIDER_SERVICE_ID") + ":1150102->1720110:" + rs_from.getString("DETAIL_VALUE"));
-                    break;
-                case 1150103:
-                    systemBindPath = 1720111;
-                    Log.info("変換：" + rs_from.getString("PROVIDER_SERVICE_ID") + ":1150103->1720111:" + rs_from.getString("DETAIL_VALUE"));
-                    break;
-                }
-                
-            }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] del - begin コメント化
+//            // providerServiceIdのチェック(認知症対応型通所介護の情報であるか)
+//            if (providerServiceId.contains(rs_from.getInt("PROVIDER_SERVICE_ID"))) {
+//                
+//                switch (systemBindPath) {
+//                case 1150102:
+//                    systemBindPath = 1720110;
+//                    Log.info("変換：" + rs_from.getString("PROVIDER_SERVICE_ID") + ":1150102->1720110:" + rs_from.getString("DETAIL_VALUE"));
+//                    break;
+//                case 1150103:
+//                    systemBindPath = 1720111;
+//                    Log.info("変換：" + rs_from.getString("PROVIDER_SERVICE_ID") + ":1150103->1720111:" + rs_from.getString("DETAIL_VALUE"));
+//                    break;
+//                }
+//                
+//            }
+// 2018/2/22 [H30.4改正対応][Shinobu Hitaka] del - end
             
             for (int i = 1; i <= columnSize; i++) {
                 try {
@@ -451,7 +498,11 @@ public class ConvertTask implements Runnable {
     
  // 2015/2/2 [H27.4改正対応][Yoichiro Kamei] add - begin
     private void updateSystemInsureValid() throws Exception {
+    	// システム有効期間を設定
         String sql = "UPDATE PATIENT_NINTEI_HISTORY SET SYSTEM_INSURE_VALID_START = INSURE_VALID_START, SYSTEM_INSURE_VALID_END = INSURE_VALID_END";
+        to.exec(sql);
+        // 非該当データは削除
+        sql = "DELETE FROM PATIENT_NINTEI_HISTORY WHERE JOTAI_CODE=1 AND SYSTEM_INSURE_VALID_START = '0001-01-01'";
         to.exec(sql);
     }
     

@@ -252,6 +252,12 @@ public class QkanSjServiceCodeManager {
 		data.put("CODE_ID", 0);
 		// 編集可能フラグ
 		data.put("EDITABLE_FLAG", 0);
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+		// 共生型対象フラグ
+		data.put("KYOUSEI_FLAG", 0);
+		// 同一建物減算対象フラグ
+		data.put("SAME_BUILDING_FLAG", 0);
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
 	}
 
 	/**

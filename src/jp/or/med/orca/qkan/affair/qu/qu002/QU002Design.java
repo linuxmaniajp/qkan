@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口雅彦
- * 作成日: 2016/07/27  日本コンピューター株式会社 樋口雅彦 新規作成
+ * 作成日: 2018/02/21  日本コンピューター株式会社 樋口雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 利用者登録/修正 (U)
@@ -4135,7 +4135,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       shisetsuInfoDinnerBearLimitMoneyLabel = new ACLabel();
 
-      shisetsuInfoDinnerBearLimitMoneyLabel.setText("（円）");
+      shisetsuInfoDinnerBearLimitMoneyLabel.setText("(円)");
 
       addShisetsuInfoDinnerBearLimitMoneyLabel();
     }
@@ -4196,7 +4196,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       shisetsuInfoUnitRoomLimitMoneyLabel = new ACLabel();
 
-      shisetsuInfoUnitRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoUnitRoomLimitMoneyLabel.setText("(円)");
 
       addShisetsuInfoUnitRoomLimitMoneyLabel();
     }
@@ -4205,15 +4205,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ユニット型準個室負担限度額・コンテナを取得します。
-   * @return ユニット型準個室負担限度額・コンテナ
+   * ユニット型個室的多床室負担限度額・コンテナを取得します。
+   * @return ユニット型個室的多床室負担限度額・コンテナ
    */
   public ACLabelContainer getShisetsuInfoUnitSemiRoomLimitMoneyContena(){
     if(shisetsuInfoUnitSemiRoomLimitMoneyContena==null){
 
       shisetsuInfoUnitSemiRoomLimitMoneyContena = new ACLabelContainer();
 
-      shisetsuInfoUnitSemiRoomLimitMoneyContena.setText("ユニット型準個室");
+      shisetsuInfoUnitSemiRoomLimitMoneyContena.setText("ユニット型個室的多床室");
 
       addShisetsuInfoUnitSemiRoomLimitMoneyContena();
     }
@@ -4222,8 +4222,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ユニット型準個室負担限度額・テキストを取得します。
-   * @return ユニット型準個室負担限度額・テキスト
+   * ユニット型個室的多床室負担限度額・テキストを取得します。
+   * @return ユニット型個室的多床室負担限度額・テキスト
    */
   public ACTextField getShisetsuInfoUnitSemiRoomLimitMoneyText(){
     if(shisetsuInfoUnitSemiRoomLimitMoneyText==null){
@@ -4249,15 +4249,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ユニット型準個室負担限度額・ラベルを取得します。
-   * @return ユニット型準個室負担限度額・ラベル
+   * ユニット型個室的多床室負担限度額・ラベルを取得します。
+   * @return ユニット型個室的多床室負担限度額・ラベル
    */
   public ACLabel getShisetsuInfoUnitSemiRoomLimitMoneyLabel(){
     if(shisetsuInfoUnitSemiRoomLimitMoneyLabel==null){
 
       shisetsuInfoUnitSemiRoomLimitMoneyLabel = new ACLabel();
 
-      shisetsuInfoUnitSemiRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoUnitSemiRoomLimitMoneyLabel.setText("(円)");
 
       addShisetsuInfoUnitSemiRoomLimitMoneyLabel();
     }
@@ -4318,7 +4318,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       shisetsuInfoNormalRoomLimitMoneyLabel = new ACLabel();
 
-      shisetsuInfoNormalRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoNormalRoomLimitMoneyLabel.setText("(円)");
 
       addShisetsuInfoNormalRoomLimitMoneyLabel();
     }
@@ -4327,15 +4327,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 従来型個室老健・療養等負担限度額・コンテナを取得します。
-   * @return 従来型個室老健・療養等負担限度額・コンテナ
+   * 従来型個室老健・療養・介護医療院等負担限度額・コンテナを取得します。
+   * @return 従来型個室老健・療養・介護医療院等負担限度額・コンテナ
    */
   public ACLabelContainer getShisetsuInfoNormalRoomLimitMoneyContena2(){
     if(shisetsuInfoNormalRoomLimitMoneyContena2==null){
 
       shisetsuInfoNormalRoomLimitMoneyContena2 = new ACLabelContainer();
 
-      shisetsuInfoNormalRoomLimitMoneyContena2.setText("従来型個室(老健・療養等)");
+      shisetsuInfoNormalRoomLimitMoneyContena2.setText("従来型個室(老健・療養・介護医療院等)");
 
       addShisetsuInfoNormalRoomLimitMoneyContena2();
     }
@@ -4344,8 +4344,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 従来型個室老健・療養等負担限度額・テキストを取得します。
-   * @return 従来型個室老健・療養等負担限度額・テキスト
+   * 従来型個室老健・療養・介護医療院等負担限度額・テキストを取得します。
+   * @return 従来型個室老健・療養・介護医療院等負担限度額・テキスト
    */
   public ACTextField getShisetsuInfoNormalRoomLimitMoneyText2(){
     if(shisetsuInfoNormalRoomLimitMoneyText2==null){
@@ -4371,15 +4371,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 従来型個室老健・療養等負担限度額・ラベルを取得します。
-   * @return 従来型個室老健・療養等負担限度額・ラベル
+   * 従来型個室老健・療養・介護医療院等負担限度額・ラベルを取得します。
+   * @return 従来型個室老健・療養・介護医療院等負担限度額・ラベル
    */
   public ACLabel getShisetsuInfoNormalRoomLimitMoneyLabel2(){
     if(shisetsuInfoNormalRoomLimitMoneyLabel2==null){
 
       shisetsuInfoNormalRoomLimitMoneyLabel2 = new ACLabel();
 
-      shisetsuInfoNormalRoomLimitMoneyLabel2.setText("（円）");
+      shisetsuInfoNormalRoomLimitMoneyLabel2.setText("(円)");
 
       addShisetsuInfoNormalRoomLimitMoneyLabel2();
     }
@@ -4440,7 +4440,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
 
       shisetsuInfoTasyoRoomLimitMoneyLabel = new ACLabel();
 
-      shisetsuInfoTasyoRoomLimitMoneyLabel.setText("（円）");
+      shisetsuInfoTasyoRoomLimitMoneyLabel.setText("(円)");
 
       addShisetsuInfoTasyoRoomLimitMoneyLabel();
     }
@@ -4449,15 +4449,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室老健・療養等負担限度額・コンテナを取得します。
-   * @return 多床室老健・療養等負担限度額・コンテナ
+   * 多床室老健・療養・介護医療院等負担限度額・コンテナを取得します。
+   * @return 多床室老健・療養・介護医療院等負担限度額・コンテナ
    */
   public ACLabelContainer getShisetsuInfoTasyoRoomLimitMoneyContena2(){
     if(shisetsuInfoTasyoRoomLimitMoneyContena2==null){
 
       shisetsuInfoTasyoRoomLimitMoneyContena2 = new ACLabelContainer();
 
-      shisetsuInfoTasyoRoomLimitMoneyContena2.setText("多床室(老健・療養等)");
+      shisetsuInfoTasyoRoomLimitMoneyContena2.setText("多床室(老健・療養・介護医療院等)");
 
       addShisetsuInfoTasyoRoomLimitMoneyContena2();
     }
@@ -4466,8 +4466,8 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室老健・療養等負担限度額・テキストを取得します。
-   * @return 多床室老健・療養等負担限度額・テキスト
+   * 多床室老健・療養・介護医療院等負担限度額・テキストを取得します。
+   * @return 多床室老健・療養・介護医療院等負担限度額・テキスト
    */
   public ACTextField getShisetsuInfoTasyoRoomLimitMoneyText2(){
     if(shisetsuInfoTasyoRoomLimitMoneyText2==null){
@@ -4493,15 +4493,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室老健・療養等負担限度額・ラベルを取得します。
-   * @return 多床室老健・療養等負担限度額・ラベル
+   * 多床室老健・療養・介護医療院等負担限度額・ラベルを取得します。
+   * @return 多床室老健・療養・介護医療院等負担限度額・ラベル
    */
   public ACLabel getShisetsuInfoTasyoRoomLimitMoneyLabel2(){
     if(shisetsuInfoTasyoRoomLimitMoneyLabel2==null){
 
       shisetsuInfoTasyoRoomLimitMoneyLabel2 = new ACLabel();
 
-      shisetsuInfoTasyoRoomLimitMoneyLabel2.setText("（円）");
+      shisetsuInfoTasyoRoomLimitMoneyLabel2.setText("(円)");
 
       addShisetsuInfoTasyoRoomLimitMoneyLabel2();
     }
@@ -4565,15 +4565,15 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 介護老人保健施設・介護療養型医療施設・グループを取得します。
-   * @return 介護老人保健施設・介護療養型医療施設・グループ
+   * 介護老人保健施設・介護療養型医療施設・介護医療院グループを取得します。
+   * @return 介護老人保健施設・介護療養型医療施設・介護医療院グループ
    */
   public ACGroupBox getShisetsuInfoCareOldPersonInsuranceGroup(){
     if(shisetsuInfoCareOldPersonInsuranceGroup==null){
 
       shisetsuInfoCareOldPersonInsuranceGroup = new ACGroupBox();
 
-      shisetsuInfoCareOldPersonInsuranceGroup.setText("介護老人保健施設・介護療養型医療施設");
+      shisetsuInfoCareOldPersonInsuranceGroup.setText("介護老人保健施設・介護療養型医療施設・介護医療院");
 
       addShisetsuInfoCareOldPersonInsuranceGroup();
     }
@@ -7101,7 +7101,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ユニット型準個室負担限度額・コンテナに内部項目を追加します。
+   * ユニット型個室的多床室負担限度額・コンテナに内部項目を追加します。
    */
   protected void addShisetsuInfoUnitSemiRoomLimitMoneyContena(){
 
@@ -7112,14 +7112,14 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ユニット型準個室負担限度額・テキストに内部項目を追加します。
+   * ユニット型個室的多床室負担限度額・テキストに内部項目を追加します。
    */
   protected void addShisetsuInfoUnitSemiRoomLimitMoneyText(){
 
   }
 
   /**
-   * ユニット型準個室負担限度額・ラベルに内部項目を追加します。
+   * ユニット型個室的多床室負担限度額・ラベルに内部項目を追加します。
    */
   protected void addShisetsuInfoUnitSemiRoomLimitMoneyLabel(){
 
@@ -7151,7 +7151,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 従来型個室老健・療養等負担限度額・コンテナに内部項目を追加します。
+   * 従来型個室老健・療養・介護医療院等負担限度額・コンテナに内部項目を追加します。
    */
   protected void addShisetsuInfoNormalRoomLimitMoneyContena2(){
 
@@ -7162,14 +7162,14 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 従来型個室老健・療養等負担限度額・テキストに内部項目を追加します。
+   * 従来型個室老健・療養・介護医療院等負担限度額・テキストに内部項目を追加します。
    */
   protected void addShisetsuInfoNormalRoomLimitMoneyText2(){
 
   }
 
   /**
-   * 従来型個室老健・療養等負担限度額・ラベルに内部項目を追加します。
+   * 従来型個室老健・療養・介護医療院等負担限度額・ラベルに内部項目を追加します。
    */
   protected void addShisetsuInfoNormalRoomLimitMoneyLabel2(){
 
@@ -7201,7 +7201,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室老健・療養等負担限度額・コンテナに内部項目を追加します。
+   * 多床室老健・療養・介護医療院等負担限度額・コンテナに内部項目を追加します。
    */
   protected void addShisetsuInfoTasyoRoomLimitMoneyContena2(){
 
@@ -7212,14 +7212,14 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 多床室老健・療養等負担限度額・テキストに内部項目を追加します。
+   * 多床室老健・療養・介護医療院等負担限度額・テキストに内部項目を追加します。
    */
   protected void addShisetsuInfoTasyoRoomLimitMoneyText2(){
 
   }
 
   /**
-   * 多床室老健・療養等負担限度額・ラベルに内部項目を追加します。
+   * 多床室老健・療養・介護医療院等負担限度額・ラベルに内部項目を追加します。
    */
   protected void addShisetsuInfoTasyoRoomLimitMoneyLabel2(){
 
@@ -7255,7 +7255,7 @@ public class QU002Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 介護老人保健施設・介護療養型医療施設・グループに内部項目を追加します。
+   * 介護老人保健施設・介護療養型医療施設・介護医療院グループに内部項目を追加します。
    */
   protected void addShisetsuInfoCareOldPersonInsuranceGroup(){
 

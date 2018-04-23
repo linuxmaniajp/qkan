@@ -919,6 +919,19 @@ public class QO005 extends QO005Event {
         }
         // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - end
 
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+        // 同一建物減算
+        if (ACFrame.getInstance().hasProperty("PrintConfig/PrintSameBuilding")) {
+            // paramsの KEY : PRINT_SAME_BUILDING のVALUEに、設定ファイルの ID :
+            // PrintConfig/PrintSameBuilding の値を設定する。
+            params.setData("PRINT_SAME_BUILDING",
+                    getProperty("PrintConfig/PrintSameBuilding"));
+        } else {
+            params.setData("PRINT_SAME_BUILDING", new Integer(
+                    CHECKBOX_OFF));
+        }
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
+
         if (ACFrame.getInstance().hasProperty("PrintConfig/OncePerMonth")) {
             // paramsの KEY : ONCE_PER_MONTH のVALUEに、設定ファイルの ID :
             // PrintConfig/oncePerMonth の値を設定する。
@@ -1086,6 +1099,14 @@ public class QO005 extends QO005Event {
             setProperty("PrintConfig/PrintSyoguKaizen",
                     String.valueOf(params.getData("PRINT_SYOGU_KAIZEN")));
             // [H27.4改正対応][Shinobu Hitaka] 2015/3/10 add - end
+                       
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+            // 同一建物減算
+            // 設定ファイルの ID : PrintConfig/PrintSameBuilding の値に、paramsの KEY :
+            // PRINT_SAME_BUILDING のVALUEを設定する。
+            setProperty("PrintConfig/PrintSameBuilding",
+                    String.valueOf(params.getData("PRINT_SAME_BUILDING")));
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
             
             // 設定ファイルの ID : PrintConfig/oncePerMonth の値に、paramsの KEY :
             // ONCE_PER_MONTH のVALUEを設定する。

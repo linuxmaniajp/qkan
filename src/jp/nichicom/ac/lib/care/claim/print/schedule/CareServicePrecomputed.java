@@ -39,6 +39,9 @@ public class CareServicePrecomputed {
     
     private Map<String, String> ryoyoMap = null;
     private Map<String, String> shinryoMap = null;
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+    private Map<String, String> tokubetuShinryoMap = null;
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
     private Map<String, Integer> clinicUnit = null;
     // [ID:0000415][Masahiko.Higuchi] add - begin 特定入所者の履歴管理機能
     private Map<String, String> clinicName = null;
@@ -48,13 +51,13 @@ public class CareServicePrecomputed {
 
 	/**
      * 全サービスを走査し、事前計算を行う。<br/>
-     * 事前計算を行う項目は、利用者負担額、特定診療費・特別療養費<br/>
+     * 事前計算を行う項目は、利用者負担額、特定診療費・特別療養費・特別診療費<br/>
      * 利用者負担額は、第三引数のMapに[事業所番号]-[システム内サービス種類コード]をキーにInteger型で設定<br/>
-     * 特定診療費・特別療養費は、第三引数のMapに[事業所番号]-[システム内サービス種類コード]をキーにInteger型で設定<br/>
+     * 特定診療費・特別療養費・特別診療費は、第四引数のMapに[事業所番号]-[システム内サービス種類コード]をキーにInteger型で設定<br/>
      * @param db ACDBManager
      * @param serviceList 解析対象のサービスmapを含むlist
      * @param regulationMap 利用者負担額を設定するMap
-     * @param diagnosisMap 特定診療費・特別療養費を設定するMap
+     * @param diagnosisMap 特定診療費・特別療養費・特別診療費を設定するMap
      * @throws Exception
      */
     public void setPrecomputedResult(ACDBManager db, List serviceList,
@@ -73,6 +76,9 @@ public class CareServicePrecomputed {
         Map<String, String> codeMap = null;
         Set<String> ryoyo = createRyoyoSet();
         Set<String> shinryo = createShinryoSet();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+        Set<String> tokubetuShinryo = createTokubetuShinryoSet();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
         
         String systemServiceKindDetail;
         int count = serviceList.size();
@@ -117,6 +123,10 @@ public class CareServicePrecomputed {
             //特定診療費
             } else if (shinryo.contains(systemServiceKindDetail)) {
                 codeMap = getShinryoMap();
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+            } else if (tokubetuShinryo.contains(systemServiceKindDetail)) {
+                codeMap = getTokubetuShinryoMap();
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
                 
             //対象外
             } else {
@@ -430,6 +440,65 @@ public class CareServicePrecomputed {
     }
     
     
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+    private Map<String, String> getTokubetuShinryoMap() {
+        
+        if (tokubetuShinryoMap != null) {
+            return tokubetuShinryoMap;
+        }
+        
+        
+        tokubetuShinryoMap = new HashMap<String, String>();
+        
+        tokubetuShinryoMap.put("3010101", "01-3"); //感染対策指導管理
+        tokubetuShinryoMap.put("3010102", "34-3"); //褥瘡管理
+        tokubetuShinryoMap.put("3010103", "05-3"); //初期入所診療管理
+        tokubetuShinryoMap.put("3010104", "35-3"); //重要療養管理
+        tokubetuShinryoMap.put("3010105", "02-3"); //特定施設管理
+        tokubetuShinryoMap.put("3010106", "03-3"); //特定施設管理個室加算
+        tokubetuShinryoMap.put("3010107", "04-3"); //特定施設管理２人部屋加算
+        tokubetuShinryoMap.put("3010108", "06-3"); //重症皮膚潰瘍管理指導
+        tokubetuShinryoMap.put("3010110", "09-3"); //薬剤管理指導
+        tokubetuShinryoMap.put("3010111", "10-3"); //特別薬剤管理指導加算
+        tokubetuShinryoMap.put("3010112", "11-3"); //医学情報提供(Ⅰ
+        tokubetuShinryoMap.put("3010113", "12-3"); //医学情報提供(Ⅱ
+        tokubetuShinryoMap.put("3010114", "14-3"); //理学療法(Ⅰ
+        tokubetuShinryoMap.put("3010115", "16-3"); //理学療法(Ⅱ
+        tokubetuShinryoMap.put("3010116", "18-3"); //理学療法(Ⅲ
+        tokubetuShinryoMap.put("3010117", "19-3"); //理学療法(Ⅳ
+        tokubetuShinryoMap.put("3010118", "40-3"); //理学療法(Ⅰ
+        tokubetuShinryoMap.put("3010119", "41-3"); //理学療法(Ⅱ
+        tokubetuShinryoMap.put("3010120", "42-3"); //理学療法(Ⅲ
+        tokubetuShinryoMap.put("3010121", "43-3"); //理学療法(Ⅳ
+        tokubetuShinryoMap.put("3010122", "36-3"); //理学療法日常生活活動訓練加算回数-0・1・2・3
+        tokubetuShinryoMap.put("3010123", "20-3"); //理学療法リハビリ計画加算
+        tokubetuShinryoMap.put("3010124", "22-3"); //理学療法日常動作訓練指導加算
+        tokubetuShinryoMap.put("3010125", "23-3"); //作業療法(Ⅰ
+        tokubetuShinryoMap.put("3010126", "25-3"); //作業療法(Ⅱ
+        tokubetuShinryoMap.put("3010127", "44-3"); //作業療法(Ⅰ
+        tokubetuShinryoMap.put("3010128", "45-3"); //作業療法(Ⅱ
+        tokubetuShinryoMap.put("3010129", "37-3"); //作業療法日常生活活動訓練加算回数-0・1・2・3
+        tokubetuShinryoMap.put("3010130", "27-3"); //作業療法リハビリ計画加算
+        tokubetuShinryoMap.put("3010131", "29-3"); //作業療法日常動作訓練指導加算
+        tokubetuShinryoMap.put("3010132", "38-3"); //言語聴覚療法(Ⅰ
+        tokubetuShinryoMap.put("3010133", "39-3"); //言語聴覚療法(Ⅱ
+        tokubetuShinryoMap.put("3010134", "46-3"); //言語聴覚療法(Ⅰ
+        tokubetuShinryoMap.put("3010135", "47-3"); //言語聴覚療法(Ⅱ
+        tokubetuShinryoMap.put("3010136", "31-3"); //摂食機能療法
+        tokubetuShinryoMap.put("3010137", "32-3"); //精神科作業療法
+        tokubetuShinryoMap.put("3010138", "33-3"); //認知症入所精神療法
+        tokubetuShinryoMap.put("3010139", "48-3"); //理学療法リハビリ体制強化加算
+        tokubetuShinryoMap.put("3010140", "49-3"); //作業療法リハビリ体制強化加算
+        tokubetuShinryoMap.put("3010141", "50-3"); //言語聴覚療法リハビリ体制強化加算
+        tokubetuShinryoMap.put("3010142", "51-3"); //リハビリマネジメント加算
+        tokubetuShinryoMap.put("3010143", "52-3"); //短期集中リハビリ加算
+        tokubetuShinryoMap.put("3010150", "54-3"); //集団コミュニケーション療法
+        tokubetuShinryoMap.put("3010151", "55-3"); //認知症短期集中リハビリ加算
+       
+        return tokubetuShinryoMap;
+
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
     
     
     
@@ -473,6 +542,22 @@ public class CareServicePrecomputed {
         
         return set;
     }
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - begin
+    //特別診療費のコードセットを作成
+    private Set<String> createTokubetuShinryoSet() {
+        Set<String> set = new HashSet<String>();
+        
+        //介護医療院
+        set.add("15511");
+        //短期入所療養介護(介護医療院)
+        set.add("204211");
+        //介護予防短期入所療養介護(介護医療院)
+        set.add("204311");
+        
+        return set;
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/13 add - end
     
     /**
      * 解析後の特定診療費・特別療養費の設定リストを取得します。

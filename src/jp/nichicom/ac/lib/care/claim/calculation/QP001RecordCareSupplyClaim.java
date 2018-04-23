@@ -663,6 +663,35 @@ public class QP001RecordCareSupplyClaim extends QP001RecordAbstract {
         	// [ID:0000622][Shin Fujihara] 2010/11 edit begin 2010”N“x‘Î‰
             //set_101007(base.get("201001"),base.get("201006"));
             
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] add - begin ¶•Û’P“Æ‚Ì“Á’è“üŠÒƒŒƒR[ƒh‚Ì‚İ‚ÌŒö”ï‚É‘Î‰
+            int seikyu = 0;
+            int nyusho = 0;
+            switch(kohiPosition){
+            case 0:
+                seikyu = ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
+                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+                        + ACCastUtilities.toInt(base.get("201043"), 0); //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
+                nyusho = ACCastUtilities.toInt(base.get("201044"), 0); //(‡Œvî•ñ Œö”ï1)“Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï“™¿‹Šz8Œ…
+                        break;
+            case 1:
+                seikyu = ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
+                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+                        + ACCastUtilities.toInt(base.get("201049"), 0); //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
+                nyusho = ACCastUtilities.toInt(base.get("201050"), 0); //(‡Œvî•ñ Œö”ï2)“Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï“™¿‹Šz8Œ…
+                        break;
+            case 2:
+                seikyu = ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
+                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+                        + ACCastUtilities.toInt(base.get("201055"), 0); //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
+                nyusho = ACCastUtilities.toInt(base.get("201056"), 0); //(‡Œvî•ñ Œö”ï3)“Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï“™¿‹Šz8Œ…
+                        break;
+            }
+            if (seikyu == 0 && nyusho != 0) {
+            	// “Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï‚Ì‚İ‚Ìê‡‚Í’Êí‚ÌƒT[ƒrƒX”ï—p‚Ìİ’è‚Í•s—v‚È‚½‚ßƒXƒLƒbƒv
+            	return;
+            }
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] add - end
+        	
 // 2015/5/12 [Yoichiro Kamei] mod - begin Œö”ïŠÖ˜AŒ©’¼‚µ
             //set_101007(base.get("201001"), base.get("201005"), base.get("201006"));
             
@@ -846,31 +875,48 @@ public class QP001RecordCareSupplyClaim extends QP001RecordAbstract {
 //                        break;
 //            }
 
-            int seikyu = 0;
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] mod - begin ¶•Û’P“Æ‚Ì“Á’è“üŠÒƒŒƒR[ƒh‚Ì‚İ‚ÌŒö”ï‚É‘Î‰
+//            int seikyu = 0;
+//            switch(kohiPosition){
+//            case 0:
+//                seikyu = ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
+//                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201043"), 0); //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                set_101011(get_101011() + seikyu);
+//                set_101012(get_101012() - seikyu);
+//                        break;
+//            case 1:
+//                seikyu = ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
+//                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201049"), 0); //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                set_101011(get_101011() + seikyu);
+//                set_101012(get_101012() - seikyu);
+//                        break;
+//            case 2:
+//                seikyu = ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
+//                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
+//                        + ACCastUtilities.toInt(base.get("201055"), 0); //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
+//                set_101011(get_101011() + seikyu);
+//                set_101012(get_101012() - seikyu);
+//                        break;
+//            }
+//// 2015/5/12 [Yoichiro Kamei] mod - end
+
             switch(kohiPosition){
             case 0:
-                seikyu = ACCastUtilities.toInt(base.get("201040"), 0) // Œö”ï‚P
-                        + ACCastUtilities.toInt(base.get("201042"), 0) //(‡Œvî•ñ Œö”ï1)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201043"), 0); //(‡Œvî•ñ Œö”ï1)“Á’èf—Ã”ï¿‹Šz8Œ…
                 set_101011(get_101011() + seikyu);
                 set_101012(get_101012() - seikyu);
                         break;
             case 1:
-                seikyu = ACCastUtilities.toInt(base.get("201046"), 0) // Œö”ï‚Q
-                        + ACCastUtilities.toInt(base.get("201048"), 0) //(‡Œvî•ñ Œö”ï2)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201049"), 0); //(‡Œvî•ñ Œö”ï2)“Á’èf—Ã”ï¿‹Šz8Œ…
                 set_101011(get_101011() + seikyu);
                 set_101012(get_101012() - seikyu);
                         break;
             case 2:
-                seikyu = ACCastUtilities.toInt(base.get("201052"), 0) // Œö”ï‚R
-                        + ACCastUtilities.toInt(base.get("201054"), 0) //(‡Œvî•ñ Œö”ï3)‹Ù‹}{İ—Ã—{”ï¿‹Šz8Œ…
-                        + ACCastUtilities.toInt(base.get("201055"), 0); //(‡Œvî•ñ Œö”ï3)“Á’èf—Ã”ï¿‹Šz8Œ…
                 set_101011(get_101011() + seikyu);
                 set_101012(get_101012() - seikyu);
                         break;
             }
-// 2015/5/12 [Yoichiro Kamei] mod - end
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] mod - end
             
             // (ƒT[ƒrƒX”ï—p)”ï—p‡Œv12Œ…‚ğİ’è‚·‚éB
             //•ÛŒ¯¿‹Šz+Œö”ï¿‹Šz+—˜—pÒ•‰’SŠz
@@ -1036,6 +1082,13 @@ public class QP001RecordCareSupplyClaim extends QP001RecordAbstract {
         }
         
         if(base.containsKey("801001")){
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] add - begin ¶•Û’P“Æ‚Ì“Á’è“üŠÒƒŒƒR[ƒh‚Ì‚İ‚ÌŒö”ï‚É‘Î‰
+            // ƒT[ƒrƒX’ñ‹Ÿ”NŒ
+            set_101002(String.valueOf(base.get("801003")));
+            // –‹ÆŠ”Ô†
+            set_101003(String.valueOf(base.get("801004")));
+// 2018/2/19 [CCCX: 04509][Yoichiro Kamei] add - end
+            
             // “Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï—pŒ”
             set_101013(get_101013() + 1);
             // “Á’è“üŠÒ‰îŒìƒT[ƒrƒX”ï—p‡Œv

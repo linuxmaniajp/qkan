@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2016/02/26  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2018/03/14  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム その他機能 (O)
@@ -82,7 +82,6 @@ import jp.or.med.orca.qkan.text.*;
 /**
  * 設定変更・メンテナンス画面項目デザイン(QO005) 
  */
-@SuppressWarnings("serial")
 public class QO005Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
 
@@ -155,6 +154,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   private ACIntegerCheckBox printSpecialArea;
 
   private ACIntegerCheckBox printChusankanArea;
+
+  private ACIntegerCheckBox printSameBuilding;
 
   private ACIntegerCheckBox privateExpenses;
 
@@ -765,15 +766,15 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 51～53施設サービスを取得します。
-   * @return 51～53施設サービス
+   * 51～55施設サービスを取得します。
+   * @return 51～55施設サービス
    */
   public ACIntegerCheckBox getShisetsuService(){
     if(shisetsuService==null){
 
       shisetsuService = new ACIntegerCheckBox();
 
-      shisetsuService.setText("51,52,53,54施設サービス");
+      shisetsuService.setText("51,52,53,54,55施設サービス");
 
       shisetsuService.setBindPath("SHISETSU_SERVICE");
 
@@ -837,6 +838,25 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
       addPrintChusankanArea();
     }
     return printChusankanArea;
+
+  }
+
+  /**
+   * 同一建物減算を取得します。
+   * @return 同一建物減算
+   */
+  public ACIntegerCheckBox getPrintSameBuilding(){
+    if(printSameBuilding==null){
+
+      printSameBuilding = new ACIntegerCheckBox();
+
+      printSameBuilding.setText("同一建物減算");
+
+      printSameBuilding.setBindPath("PRINT_SAME_BUILDING");
+
+      addPrintSameBuilding();
+    }
+    return printSameBuilding;
 
   }
 
@@ -1375,6 +1395,8 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
 
     riyohyos.add(getPrintChusankanArea(), VRLayout.FLOW_RETURN);
 
+    riyohyos.add(getPrintSameBuilding(), VRLayout.FLOW);
+
     riyohyos.add(getPrivateExpenses(), VRLayout.FLOW_RETURN);
 
   }
@@ -1394,7 +1416,7 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * 51～53施設サービスに内部項目を追加します。
+   * 51～55施設サービスに内部項目を追加します。
    */
   protected void addShisetsuService(){
 
@@ -1418,6 +1440,13 @@ public class QO005Design extends QkanAffairContainer implements ACAffairable {
    * 中山間地域等提供加算に内部項目を追加します。
    */
   protected void addPrintChusankanArea(){
+
+  }
+
+  /**
+   * 同一建物減算に内部項目を追加します。
+   */
+  protected void addPrintSameBuilding(){
 
   }
 

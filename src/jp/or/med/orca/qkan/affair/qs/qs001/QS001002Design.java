@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 堤 瑞樹
- * 作成日: 2016/09/22  日本コンピューター株式会社 堤 瑞樹 新規作成
+ * 作成日: 2018/03/13  日本コンピューター株式会社 堤 瑞樹 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 予定管理 (S)
@@ -450,17 +450,17 @@ public class QS001002Design extends ACPanel {
   }
 
   /**
-   * 特定診療・特別療養費画面を取得します。
-   * @return 特定診療・特別療養費画面
+   * 特定診・特別療・特別診画面を取得します。
+   * @return 特定診・特別療・特別診画面
    */
   public ACButton getTokubetuButton(){
     if(tokubetuButton==null){
 
       tokubetuButton = new ACButton();
 
-      tokubetuButton.setText("特定診療・特別療養費");
+      tokubetuButton.setText("特定診・特別療・特別診");
 
-      tokubetuButton.setToolTipText("サービス毎の特定診療費・特別療養費を表示します。");
+      tokubetuButton.setToolTipText("サービス毎の特定診療費・特別療養費・特別診療費を表示します。");
 
       addTokubetuButton();
     }
@@ -642,7 +642,7 @@ public class QS001002Design extends ACPanel {
   }
 
   /**
-   * 特定診療・特別療養費画面に内部項目を追加します。
+   * 特定診・特別療・特別診画面に内部項目を追加します。
    */
   protected void addTokubetuButton(){
 

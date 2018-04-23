@@ -602,7 +602,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       targetDate.setBindPath("REST_TARGET_DATE");
 
       try{
-        targetDate.setMinimumDate(ACCastUtilities.toDate(QkanConstants.H2704));
+        targetDate.setMinimumDate(ACCastUtilities.toDate(QkanConstants.H3004));
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("targetDate の最小年月日に不正な日付が指定されています。"));
       }
@@ -1038,7 +1038,7 @@ public class QP001Design extends QkanAffairContainer implements ACAffairable {
       claimDateUpdate.setBindPath("CLAIM_UPDATE_DATE");
 
       try{
-        claimDateUpdate.setMinimumDate(ACCastUtilities.toDate(QkanConstants.H2704));
+        claimDateUpdate.setMinimumDate(ACCastUtilities.toDate(QkanConstants.H3004));
       }catch(Throwable ex){
         ACCommon.getInstance().showExceptionMessage(new IllegalArgumentException("claimDateUpdate の最小年月日に不正な日付が指定されています。"));
       }

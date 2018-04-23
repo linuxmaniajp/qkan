@@ -18,7 +18,7 @@
  *****************************************************************
  * ƒAƒvƒŠ: QKANCHO
  * ŠJ”­Ò: œA£ ˆêŠC
- * ì¬“ú: 2017/07/05  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ œA£ ˆêŠC V‹Kì¬
+ * ì¬“ú: 2018/02/20  “ú–{ƒRƒ“ƒsƒ…[ƒ^[Š”®‰ïĞ œA£ ˆêŠC V‹Kì¬
  * XV“ú: ----/--/--
  * ƒVƒXƒeƒ€ ‹‹•tŠÇ—‘ä’  (Q)
  * ƒTƒuƒVƒXƒeƒ€ ‚»‚Ì‘¼‹@”\ (O)
@@ -163,6 +163,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
   private ACTableColumn csvDataTableColumn14;
 
+  private ACTableColumn csvDataTableColumn69;
+
   private ACTableColumn csvDataTableColumn15;
 
   private ACTableColumn csvDataTableColumn16;
@@ -184,6 +186,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn csvDataTableColumn22;
 
   private ACTableColumn csvDataTableColumn23;
+
+  private ACTableColumn csvDataTableColumn70;
 
   private ACTableColumn csvDataTableColumn24;
 
@@ -222,6 +226,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn csvDataTableColumn36;
 
   private ACTableColumn csvDataTableColumn37;
+
+  private ACTableColumn csvDataTableColumn71;
 
   private ACTableColumn csvDataTableColumn38;
 
@@ -724,7 +730,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTable.setColumnSort(true);
 
-      csvDataTable.setHeaderRows(4);
+      csvDataTable.setHeaderRows(5);
 
       addCsvDataTable();
     }
@@ -855,7 +861,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn5 = new ACTableColumn();
 
-      csvDataTableColumn5.setHeaderValue("<html>–K<br>‰î</html>");
+      csvDataTableColumn5.setHeaderValue("<html>11<br>–K<br>‰î<br><br>@</html>");
 
       csvDataTableColumn5.setColumnName("11");
 
@@ -880,7 +886,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn6 = new ACTableColumn();
 
-      csvDataTableColumn6.setHeaderValue("<html>“ü<br>—</html>");
+      csvDataTableColumn6.setHeaderValue("<html>12<br>“ü<br>—<br><br>@</html>");
 
       csvDataTableColumn6.setColumnName("12");
 
@@ -905,7 +911,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn7 = new ACTableColumn();
 
-      csvDataTableColumn7.setHeaderValue("<html>ŠÅ<br>‰î</html>");
+      csvDataTableColumn7.setHeaderValue("<html>13<br>ŠÅ<br>‰î<br><br>@</html>");
 
       csvDataTableColumn7.setColumnName("13");
 
@@ -930,7 +936,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn8 = new ACTableColumn();
 
-      csvDataTableColumn8.setHeaderValue("<html>–K<br>ƒŠ</html>");
+      csvDataTableColumn8.setHeaderValue("<html>14<br>–K<br>ƒŠ<br><br>@</html>");
 
       csvDataTableColumn8.setColumnName("14");
 
@@ -955,7 +961,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn9 = new ACTableColumn();
 
-      csvDataTableColumn9.setHeaderValue("<html>’Ê<br>‰î</html>");
+      csvDataTableColumn9.setHeaderValue("<html>15<br>’Ê<br>‰î<br><br>@</html>");
 
       csvDataTableColumn9.setColumnName("15");
 
@@ -980,7 +986,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn10 = new ACTableColumn();
 
-      csvDataTableColumn10.setHeaderValue("<html>’Ê<br>ƒŠ</html>");
+      csvDataTableColumn10.setHeaderValue("<html>16<br>’Ê<br>ƒŠ<br><br>@</html>");
 
       csvDataTableColumn10.setColumnName("16");
 
@@ -1005,7 +1011,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn11 = new ACTableColumn();
 
-      csvDataTableColumn11.setHeaderValue("<html>—p<br>‹ï</html>");
+      csvDataTableColumn11.setHeaderValue("<html>17<br>—p<br>‹ï<br><br>@</html>");
 
       csvDataTableColumn11.setColumnName("17");
 
@@ -1030,7 +1036,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn12 = new ACTableColumn();
 
-      csvDataTableColumn12.setHeaderValue("<html>’Z<br>¶</html>");
+      csvDataTableColumn12.setHeaderValue("<html>21<br>’Z<br>¶<br><br>@</html>");
 
       csvDataTableColumn12.setColumnName("21");
 
@@ -1055,7 +1061,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn13 = new ACTableColumn();
 
-      csvDataTableColumn13.setHeaderValue("<html>’Z<br>˜V</html>");
+      csvDataTableColumn13.setHeaderValue("<html>22<br>’Z<br>˜V<br><br>@</html>");
 
       csvDataTableColumn13.setColumnName("22");
 
@@ -1080,7 +1086,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn14 = new ACTableColumn();
 
-      csvDataTableColumn14.setHeaderValue("<html>’Z<br>ˆã</html>");
+      csvDataTableColumn14.setHeaderValue("<html>23<br>’Z<br>ˆã<br><br>@</html>");
 
       csvDataTableColumn14.setColumnName("23");
 
@@ -1097,6 +1103,31 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ’Z‰îˆãƒJƒ‰ƒ€‚ğæ“¾‚µ‚Ü‚·B
+   * @return ’Z‰îˆãƒJƒ‰ƒ€
+   */
+  public ACTableColumn getCsvDataTableColumn69(){
+    if(csvDataTableColumn69==null){
+
+      csvDataTableColumn69 = new ACTableColumn();
+
+      csvDataTableColumn69.setHeaderValue("<html>2A<br>’Z<br>‰î<br>ˆã<br>@</html>");
+
+      csvDataTableColumn69.setColumnName("2A");
+
+      csvDataTableColumn69.setEditable(false);
+
+      csvDataTableColumn69.setColumns(3);
+
+      csvDataTableColumn69.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn69();
+    }
+    return csvDataTableColumn69;
+
+  }
+
+  /**
    * ‹‘îƒJƒ‰ƒ€‚ğæ“¾‚µ‚Ü‚·B
    * @return ‹‘îƒJƒ‰ƒ€
    */
@@ -1105,7 +1136,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn15 = new ACTableColumn();
 
-      csvDataTableColumn15.setHeaderValue("<html>‹<br>‘î</html>");
+      csvDataTableColumn15.setHeaderValue("<html>31<br>‹<br>‘î<br><br>@</html>");
 
       csvDataTableColumn15.setColumnName("31");
 
@@ -1130,7 +1161,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn16 = new ACTableColumn();
 
-      csvDataTableColumn16.setHeaderValue("<html>”F<br>’m</html>");
+      csvDataTableColumn16.setHeaderValue("<html>32<br>”F<br>’m<br><br>@</html>");
 
       csvDataTableColumn16.setColumnName("32");
 
@@ -1155,7 +1186,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn17 = new ACTableColumn();
 
-      csvDataTableColumn17.setHeaderValue("<html>“Á<br>’è</html>");
+      csvDataTableColumn17.setHeaderValue("<html>33<br>“Á<br>’è<br><br>@</html>");
 
       csvDataTableColumn17.setColumnName("33");
 
@@ -1180,7 +1211,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn46 = new ACTableColumn();
 
-      csvDataTableColumn46.setHeaderValue("<html>“Á<br>’è<br>’Z</html>");
+      csvDataTableColumn46.setHeaderValue("<html>27<br>“Á<br>’è<br>’Z<br>@</html>");
 
       csvDataTableColumn46.setColumnName("27");
 
@@ -1205,7 +1236,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn18 = new ACTableColumn();
 
-      csvDataTableColumn18.setHeaderValue("<html>’n<br>“Á</html>");
+      csvDataTableColumn18.setHeaderValue("<html>36<br>’n<br>“Á<br><br>@</html>");
 
       csvDataTableColumn18.setColumnName("36");
 
@@ -1230,7 +1261,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn47 = new ACTableColumn();
 
-      csvDataTableColumn47.setHeaderValue("<html>’n<br>“Á<br>’Z</html>");
+      csvDataTableColumn47.setHeaderValue("<html>28<br>’n<br>“Á<br>’Z<br>@</html>");
 
       csvDataTableColumn47.setColumnName("28");
 
@@ -1255,7 +1286,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn19 = new ACTableColumn();
 
-      csvDataTableColumn19.setHeaderValue("<html>”F<br>’Z</html>");
+      csvDataTableColumn19.setHeaderValue("<html>38<br>”F<br>’Z<br><br>@</html>");
 
       csvDataTableColumn19.setColumnName("38");
 
@@ -1280,7 +1311,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn20 = new ACTableColumn();
 
-      csvDataTableColumn20.setHeaderValue("<html>“Á<br>—{</html>");
+      csvDataTableColumn20.setHeaderValue("<html>51<br>“Á<br>—{<br><br>@</html>");
 
       csvDataTableColumn20.setColumnName("51");
 
@@ -1305,7 +1336,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn21 = new ACTableColumn();
 
-      csvDataTableColumn21.setHeaderValue("<html>˜V<br>Œ’</html>");
+      csvDataTableColumn21.setHeaderValue("<html>52<br>˜V<br>Œ’<br><br>@</html>");
 
       csvDataTableColumn21.setColumnName("52");
 
@@ -1330,7 +1361,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn22 = new ACTableColumn();
 
-      csvDataTableColumn22.setHeaderValue("<html>—Ã<br>—{</html>");
+      csvDataTableColumn22.setHeaderValue("<html>53<br>—Ã<br>—{<br><br>@</html>");
 
       csvDataTableColumn22.setColumnName("53");
 
@@ -1355,7 +1386,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn23 = new ACTableColumn();
 
-      csvDataTableColumn23.setHeaderValue("<html>’n<br>—{</html>");
+      csvDataTableColumn23.setHeaderValue("<html>54<br>’n<br>—{<br><br>@</html>");
 
       csvDataTableColumn23.setColumnName("54");
 
@@ -1372,6 +1403,31 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ‰îˆãƒJƒ‰ƒ€‚ğæ“¾‚µ‚Ü‚·B
+   * @return ‰îˆãƒJƒ‰ƒ€
+   */
+  public ACTableColumn getCsvDataTableColumn70(){
+    if(csvDataTableColumn70==null){
+
+      csvDataTableColumn70 = new ACTableColumn();
+
+      csvDataTableColumn70.setHeaderValue("<html>55<br>‰î<br>ˆã<br><br>@</html>");
+
+      csvDataTableColumn70.setColumnName("55");
+
+      csvDataTableColumn70.setEditable(false);
+
+      csvDataTableColumn70.setColumns(3);
+
+      csvDataTableColumn70.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn70();
+    }
+    return csvDataTableColumn70;
+
+  }
+
+  /**
    * –é‰îƒJƒ‰ƒ€‚ğæ“¾‚µ‚Ü‚·B
    * @return –é‰îƒJƒ‰ƒ€
    */
@@ -1380,7 +1436,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn24 = new ACTableColumn();
 
-      csvDataTableColumn24.setHeaderValue("<html>–é<br>‰î</html>");
+      csvDataTableColumn24.setHeaderValue("<html>71<br>–é<br>‰î<br><br>@</html>");
 
       csvDataTableColumn24.setColumnName("71");
 
@@ -1405,7 +1461,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn25 = new ACTableColumn();
 
-      csvDataTableColumn25.setHeaderValue("<html>”F<br>’Ê</html>");
+      csvDataTableColumn25.setHeaderValue("<html>72<br>”F<br>’Ê<br><br>@</html>");
 
       csvDataTableColumn25.setColumnName("72");
 
@@ -1430,7 +1486,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn48 = new ACTableColumn();
 
-      csvDataTableColumn48.setHeaderValue("<html>’è<br>„<br>–K</html>");
+      csvDataTableColumn48.setHeaderValue("<html>76<br>’è<br>„<br>–K<br>@</html>");
 
       csvDataTableColumn48.setColumnName("76");
 
@@ -1455,7 +1511,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn49 = new ACTableColumn();
 
-      csvDataTableColumn49.setHeaderValue("<html>•¡<br>‡</html>");
+      csvDataTableColumn49.setHeaderValue("<html>77<br>•¡<br>‡<br><br>@</html>");
 
       csvDataTableColumn49.setColumnName("77");
 
@@ -1480,7 +1536,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn50 = new ACTableColumn();
 
-      csvDataTableColumn50.setHeaderValue("<html>•¡<br>‡<br>’Z</html>");
+      csvDataTableColumn50.setHeaderValue("<html>79<br>•¡<br>‡<br>’Z<br>@</html>");
 
       csvDataTableColumn50.setColumnName("79");
 
@@ -1505,7 +1561,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn26 = new ACTableColumn();
 
-      csvDataTableColumn26.setHeaderValue("<html>‹<br>‰î</html>");
+      csvDataTableColumn26.setHeaderValue("<html>73<br>‹<br>‰î<br><br>@</html>");
 
       csvDataTableColumn26.setColumnName("73");
 
@@ -1530,7 +1586,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn51 = new ACTableColumn();
 
-      csvDataTableColumn51.setHeaderValue("<html>‹<br>’Z</html>");
+      csvDataTableColumn51.setHeaderValue("<html>68<br>‹<br>’Z<br><br>@</html>");
 
       csvDataTableColumn51.setColumnName("68");
 
@@ -1555,7 +1611,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn53 = new ACTableColumn();
 
-      csvDataTableColumn53.setHeaderValue("<html>’n<br>’Ê<br>‰î</html>");
+      csvDataTableColumn53.setHeaderValue("<html>78<br>’n<br>’Ê<br>‰î<br>@</html>");
 
       csvDataTableColumn53.setColumnName("78");
 
@@ -1580,7 +1636,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn27 = new ACTableColumn();
 
-      csvDataTableColumn27.setHeaderValue("<html>ƒv<br>ƒ‰<br>ƒ“</html>");
+      csvDataTableColumn27.setHeaderValue("<html>43<br>ƒv<br>ƒ‰<br>ƒ“<br>@</html>");
 
       csvDataTableColumn27.setColumnName("43");
 
@@ -1605,7 +1661,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn28 = new ACTableColumn();
 
-      csvDataTableColumn28.setHeaderValue("<html>—\<br>–h<br>‰î</html>");
+      csvDataTableColumn28.setHeaderValue("<html>61<br>—\<br>–h<br>‰î<br>@</html>");
 
       csvDataTableColumn28.setColumnName("61");
 
@@ -1630,7 +1686,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn29 = new ACTableColumn();
 
-      csvDataTableColumn29.setHeaderValue("<html>—\<br>“ü<br>—</html>");
+      csvDataTableColumn29.setHeaderValue("<html>62<br>—\<br>“ü<br>—<br>@</html>");
 
       csvDataTableColumn29.setColumnName("62");
 
@@ -1655,7 +1711,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn30 = new ACTableColumn();
 
-      csvDataTableColumn30.setHeaderValue("<html>—\<br>ŠÅ<br>‰î</html>");
+      csvDataTableColumn30.setHeaderValue("<html>63<br>—\<br>ŠÅ<br>‰î<br>@</html>");
 
       csvDataTableColumn30.setColumnName("63");
 
@@ -1680,7 +1736,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn31 = new ACTableColumn();
 
-      csvDataTableColumn31.setHeaderValue("<html>—\<br>–K<br>ƒŠ</html>");
+      csvDataTableColumn31.setHeaderValue("<html>64<br>—\<br>–K<br>ƒŠ<br>@</html>");
 
       csvDataTableColumn31.setColumnName("64");
 
@@ -1705,7 +1761,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn32 = new ACTableColumn();
 
-      csvDataTableColumn32.setHeaderValue("<html>—\<br>’Ê<br>‰î</html>");
+      csvDataTableColumn32.setHeaderValue("<html>65<br>—\<br>’Ê<br>‰î<br>@</html>");
 
       csvDataTableColumn32.setColumnName("65");
 
@@ -1730,7 +1786,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn33 = new ACTableColumn();
 
-      csvDataTableColumn33.setHeaderValue("<html>—\<br>’Ê<br>ƒŠ</html>");
+      csvDataTableColumn33.setHeaderValue("<html>66<br>—\<br>’Ê<br>ƒŠ<br>@</html>");
 
       csvDataTableColumn33.setColumnName("66");
 
@@ -1755,7 +1811,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn34 = new ACTableColumn();
 
-      csvDataTableColumn34.setHeaderValue("<html>—\<br>—p<br>‹ï</html>");
+      csvDataTableColumn34.setHeaderValue("<html>67<br>—\<br>—p<br>‹ï<br>@</html>");
 
       csvDataTableColumn34.setColumnName("67");
 
@@ -1780,7 +1836,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn35 = new ACTableColumn();
 
-      csvDataTableColumn35.setHeaderValue("<html>—\<br>’Z<br>¶</html>");
+      csvDataTableColumn35.setHeaderValue("<html>24<br>—\<br>’Z<br>¶<br>@</html>");
 
       csvDataTableColumn35.setColumnName("24");
 
@@ -1805,7 +1861,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn36 = new ACTableColumn();
 
-      csvDataTableColumn36.setHeaderValue("<html>—\<br>˜V<br>Œ’</html>");
+      csvDataTableColumn36.setHeaderValue("<html>25<br>—\<br>˜V<br>Œ’<br>@</html>");
 
       csvDataTableColumn36.setColumnName("25");
 
@@ -1830,7 +1886,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn37 = new ACTableColumn();
 
-      csvDataTableColumn37.setHeaderValue("<html>—\<br>—Ã<br>—{</html>");
+      csvDataTableColumn37.setHeaderValue("<html>26<br>—\<br>—Ã<br>—{<br>@</html>");
 
       csvDataTableColumn37.setColumnName("26");
 
@@ -1847,6 +1903,31 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * —\‰îˆãƒJƒ‰ƒ€‚ğæ“¾‚µ‚Ü‚·B
+   * @return —\‰îˆãƒJƒ‰ƒ€
+   */
+  public ACTableColumn getCsvDataTableColumn71(){
+    if(csvDataTableColumn71==null){
+
+      csvDataTableColumn71 = new ACTableColumn();
+
+      csvDataTableColumn71.setHeaderValue("<html>2B<br>—\<br>‰î<br>ˆã<br>@</html>");
+
+      csvDataTableColumn71.setColumnName("2B");
+
+      csvDataTableColumn71.setEditable(false);
+
+      csvDataTableColumn71.setColumns(3);
+
+      csvDataTableColumn71.setRendererType(VRTableCellViewer.RENDERER_TYPE_LABEL);
+
+      addCsvDataTableColumn71();
+    }
+    return csvDataTableColumn71;
+
+  }
+
+  /**
    * —\‹‘îƒJƒ‰ƒ€‚ğæ“¾‚µ‚Ü‚·B
    * @return —\‹‘îƒJƒ‰ƒ€
    */
@@ -1855,7 +1936,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn38 = new ACTableColumn();
 
-      csvDataTableColumn38.setHeaderValue("<html>—\<br>‹<br>‘î</html>");
+      csvDataTableColumn38.setHeaderValue("<html>34<br>—\<br>‹<br>‘î<br>@</html>");
 
       csvDataTableColumn38.setColumnName("34");
 
@@ -1880,7 +1961,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn39 = new ACTableColumn();
 
-      csvDataTableColumn39.setHeaderValue("<html>—\<br>“Á<br>’è</html>");
+      csvDataTableColumn39.setHeaderValue("<html>35<br>—\<br>“Á<br>’è<br>@</html>");
 
       csvDataTableColumn39.setColumnName("35");
 
@@ -1905,7 +1986,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn40 = new ACTableColumn();
 
-      csvDataTableColumn40.setHeaderValue("<html>—\<br>ƒv<br>ƒ‰<br>ƒ“</html>");
+      csvDataTableColumn40.setHeaderValue("<html>46<br>—\<br>ƒv<br>ƒ‰<br>ƒ“</html>");
 
       csvDataTableColumn40.setColumnName("46");
 
@@ -1930,7 +2011,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn41 = new ACTableColumn();
 
-      csvDataTableColumn41.setHeaderValue("<html>—\<br>”F<br>’Ê</html>");
+      csvDataTableColumn41.setHeaderValue("<html>74<br>—\<br>”F<br>’Ê<br>@</html>");
 
       csvDataTableColumn41.setColumnName("74");
 
@@ -1955,7 +2036,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn42 = new ACTableColumn();
 
-      csvDataTableColumn42.setHeaderValue("<html>—\<br>‹<br>‰î</html>");
+      csvDataTableColumn42.setHeaderValue("<html>75<br>—\<br>‹<br>‰î<br>@</html>");
 
       csvDataTableColumn42.setColumnName("75");
 
@@ -1980,7 +2061,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn52 = new ACTableColumn();
 
-      csvDataTableColumn52.setHeaderValue("<html>—\<br>‹<br>’Z</html>");
+      csvDataTableColumn52.setHeaderValue("<html>69<br>—\<br>‹<br>’Z<br>@</html>");
 
       csvDataTableColumn52.setColumnName("69");
 
@@ -2005,7 +2086,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn43 = new ACTableColumn();
 
-      csvDataTableColumn43.setHeaderValue("<html>—\<br>”F<br>’m</html>");
+      csvDataTableColumn43.setHeaderValue("<html>37<br>—\<br>”F<br>’m<br>@</html>");
 
       csvDataTableColumn43.setColumnName("37");
 
@@ -2030,7 +2111,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn44 = new ACTableColumn();
 
-      csvDataTableColumn44.setHeaderValue("<html>—\<br>”F<br>’Z</html>");
+      csvDataTableColumn44.setHeaderValue("<html>39<br>—\<br>”F<br>’Z<br>@</html>");
 
       csvDataTableColumn44.setColumnName("39");
 
@@ -2055,7 +2136,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn54 = new ACTableColumn();
 
-      csvDataTableColumn54.setHeaderValue("<html>‘<br>–K<br>‚İ</html>");
+      csvDataTableColumn54.setHeaderValue("<html>A1<br>‘<br>–K<br>‚İ<br>@</html>");
 
       csvDataTableColumn54.setColumnName("A1");
 
@@ -2080,7 +2161,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn55 = new ACTableColumn();
 
-      csvDataTableColumn55.setHeaderValue("<html>‘<br>–K<br>“Æ</html>");
+      csvDataTableColumn55.setHeaderValue("<html>A2<br>‘<br>–K<br>“Æ<br>@</html>");
 
       csvDataTableColumn55.setColumnName("A2");
 
@@ -2105,7 +2186,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn56 = new ACTableColumn();
 
-      csvDataTableColumn56.setHeaderValue("<html>‘<br>–K<br>—¦</html>");
+      csvDataTableColumn56.setHeaderValue("<html>A3<br>‘<br>–K<br>—¦<br>@</html>");
 
       csvDataTableColumn56.setColumnName("A3");
 
@@ -2130,7 +2211,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn57 = new ACTableColumn();
 
-      csvDataTableColumn57.setHeaderValue("<html>‘<br>–K<br>Šz</html>");
+      csvDataTableColumn57.setHeaderValue("<html>A4<br>‘<br>–K<br>Šz<br>@</html>");
 
       csvDataTableColumn57.setColumnName("A4");
 
@@ -2155,7 +2236,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn58 = new ACTableColumn();
 
-      csvDataTableColumn58.setHeaderValue("<html>‘<br>’Ê<br>‚İ</html>");
+      csvDataTableColumn58.setHeaderValue("<html>A5<br>‘<br>’Ê<br>‚İ<br>@</html>");
 
       csvDataTableColumn58.setColumnName("A5");
 
@@ -2180,7 +2261,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn59 = new ACTableColumn();
 
-      csvDataTableColumn59.setHeaderValue("<html>‘<br>’Ê<br>“Æ</html>");
+      csvDataTableColumn59.setHeaderValue("<html>A6<br>‘<br>’Ê<br>“Æ<br>@</html>");
 
       csvDataTableColumn59.setColumnName("A6");
 
@@ -2205,7 +2286,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn60 = new ACTableColumn();
 
-      csvDataTableColumn60.setHeaderValue("<html>‘<br>’Ê<br>—¦</html>");
+      csvDataTableColumn60.setHeaderValue("<html>A7<br>‘<br>’Ê<br>—¦<br>@</html>");
 
       csvDataTableColumn60.setColumnName("A7");
 
@@ -2230,7 +2311,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn61 = new ACTableColumn();
 
-      csvDataTableColumn61.setHeaderValue("<html>‘<br>’Ê<br>Šz</html>");
+      csvDataTableColumn61.setHeaderValue("<html>A8<br>‘<br>’Ê<br>Šz<br>@</html>");
 
       csvDataTableColumn61.setColumnName("A8");
 
@@ -2255,7 +2336,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn62 = new ACTableColumn();
 
-      csvDataTableColumn62.setHeaderValue("<html>‘<br>H<br>—¦</html>");
+      csvDataTableColumn62.setHeaderValue("<html>A9<br>‘<br>H<br>—¦<br>@</html>");
 
       csvDataTableColumn62.setColumnName("A9");
 
@@ -2280,7 +2361,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn63 = new ACTableColumn();
 
-      csvDataTableColumn63.setHeaderValue("<html>‘<br>H<br>Šz</html>");
+      csvDataTableColumn63.setHeaderValue("<html>AA<br>‘<br>H<br>Šz<br>@</html>");
 
       csvDataTableColumn63.setColumnName("AA");
 
@@ -2305,7 +2386,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn64 = new ACTableColumn();
 
-      csvDataTableColumn64.setHeaderValue("<html>‘<br>ç<br>—¦</html>");
+      csvDataTableColumn64.setHeaderValue("<html>AB<br>‘<br>ç<br>—¦<br>@</html>");
 
       csvDataTableColumn64.setColumnName("AB");
 
@@ -2330,7 +2411,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn65 = new ACTableColumn();
 
-      csvDataTableColumn65.setHeaderValue("<html>‘<br>ç<br>Šz</html>");
+      csvDataTableColumn65.setHeaderValue("<html>AC<br>‘<br>ç<br>Šz<br>@</html>");
 
       csvDataTableColumn65.setColumnName("AC");
 
@@ -2355,7 +2436,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn66 = new ACTableColumn();
 
-      csvDataTableColumn66.setHeaderValue("<html>‘<br>‘¼<br>—¦</html>");
+      csvDataTableColumn66.setHeaderValue("<html>AD<br>‘<br>‘¼<br>—¦<br>@</html>");
 
       csvDataTableColumn66.setColumnName("AD");
 
@@ -2380,7 +2461,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn67 = new ACTableColumn();
 
-      csvDataTableColumn67.setHeaderValue("<html>‘<br>‘¼<br>Šz</html>");
+      csvDataTableColumn67.setHeaderValue("<html>AE<br>‘<br>‘¼<br>Šz<br>@</html>");
 
       csvDataTableColumn67.setColumnName("AE");
 
@@ -2405,7 +2486,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
       csvDataTableColumn68 = new ACTableColumn();
 
-      csvDataTableColumn68.setHeaderValue("<html>‘<br>—\<br>ƒP<br>ƒA</html>");
+      csvDataTableColumn68.setHeaderValue("<html>AF<br>‘<br>—\<br>ƒP<br>ƒA</html>");
 
       csvDataTableColumn68.setColumnName("AF");
 
@@ -2720,6 +2801,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn14());
 
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn69());
+
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn15());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn16());
@@ -2741,6 +2824,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn22());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn23());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn70());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn24());
 
@@ -2779,6 +2864,8 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn36());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn37());
+
+    getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn71());
 
     getCsvDataTableColumnModel().addColumn(getCsvDataTableColumn38());
 
@@ -2929,6 +3016,13 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * ’Z‰îˆãƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addCsvDataTableColumn69(){
+
+  }
+
+  /**
    * ‹‘îƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addCsvDataTableColumn15(){
@@ -3002,6 +3096,13 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * ’n—{ƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addCsvDataTableColumn23(){
+
+  }
+
+  /**
+   * ‰îˆãƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addCsvDataTableColumn70(){
 
   }
 
@@ -3135,6 +3236,13 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
    * —\—Ã—{ƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addCsvDataTableColumn37(){
+
+  }
+
+  /**
+   * —\‰îˆãƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   */
+  protected void addCsvDataTableColumn71(){
 
   }
 
@@ -3293,7 +3401,7 @@ public class QO012Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
-   * ‘—\ƒvƒ‰ƒ“ƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
+   * ‘—\ƒPƒAƒJƒ‰ƒ€‚É“à•”€–Ú‚ğ’Ç‰Á‚µ‚Ü‚·B
    */
   protected void addCsvDataTableColumn68(){
 
