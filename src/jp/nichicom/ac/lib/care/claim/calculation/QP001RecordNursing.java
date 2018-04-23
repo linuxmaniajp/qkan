@@ -889,6 +889,8 @@ public class QP001RecordNursing extends QP001RecordAbstract {
                || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_3_2_201204)
                || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_4_201204)
                || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204)
+               || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804)	// [H30.4â¸ê≥ëŒâû][Shinobu Hitaka] 2018/3/27 add
+               || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804)	// [H30.4â¸ê≥ëŒâû][Shinobu Hitaka] 2018/3/27 add
                || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_5_201204)
                || identificationNo.equals(QP001StyleAbstract.IDENTIFICATION_NO_5_2_201204)
             	){

@@ -372,6 +372,21 @@ public interface QkanConstants {
      * 4-請求を表す特定診療費属性定数です。
      */
     public static final int SPECIAL_CLINIC_TYPE_BILL = 4;
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - begin
+    /**
+     * 1-特定診療費を表す特定診療費属性定数です。
+     */
+    public static final int SPECIAL_CLINIC_RECORD_TYPE_TOKUTEI_SHINRYO = 1;
+    /**
+     * 2-特別療養費を表す特定診療費属性定数です。
+     */
+    public static final int SPECIAL_CLINIC_RECORD_TYPE_TOKUBETU_RYOYO = 2;
+    /**
+     * 3-特別診療費を表す特定診療費属性定数です。
+     */
+    public static final int SPECIAL_CLINIC_RECORD_TYPE_TOKUBETU_SHINRYO = 3;
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - end
 
     // 詳細マスタ形式
     /**
@@ -660,6 +675,13 @@ public interface QkanConstants {
      */
     public static final Integer CATEGORY_NO_RECORD_DETAILED_JUSHOTI_TOKUREI = new Integer(18);
  // 2014/12/24 [Yoichiro Kamei] add - end
+    
+ // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+    /**
+     * 19：基本摘要情報レコードを表す分類の情報定数です。
+     */
+    public static final Integer CATEGORY_NO_RECORD_BASE_SUMMARY = new Integer(19);
+ // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
     
     // スケジュールカレンダへのドロップ許可フラグ
     /**

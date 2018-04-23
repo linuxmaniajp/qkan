@@ -535,12 +535,12 @@ public class QP001PrintControl {
             printParam.put("CLAIM_STYLE_TYPE", String.valueOf(claimStyleType));
 
             switch (claimStyleType) {
-            // 在宅サービス介護給付費明細書（居宅）(QP001P021)の印刷を行う。
+            // 居宅サービス・地域密着型サービス介護給付費明細書（居宅）(QP001P021)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_2:
                 new QP001P021_201804().doPrint(writer, printParam);
                 break;
 
-            // 在宅サービス介護給付費明細書（居宅）(QP001P022)の印刷を行う。
+            // 介護予防サービス・地域密着型介護予防サービス介護給付費明細書（居宅）(QP001P022)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_2_2:
                 new QP001P022_201804().doPrint(writer, printParam);
                 break;
@@ -569,6 +569,18 @@ public class QP001PrintControl {
             case QkanConstants.CLAIM_STYLE_FORMAT_4_2:
                 new QP001P042_201804().doPrint(writer, printParam);
                 break;
+
+            // [H30年4月改正][Shinobu Hitaka] 2018/03/27 add - begin 介護医療院追加
+            // 居宅サービス介護給付費明細書（短期入所療養介護（介護医療院））(QP001P043)の印刷を行う。
+            case QkanConstants.CLAIM_STYLE_FORMAT_4_3:
+                new QP001P043_201804().doPrint(writer, printParam);
+                break;
+
+            // 介護予防サービス介護給付費明細書（短期入所療養介護（介護医療院））(QP001P043)の印刷を行う。
+            case QkanConstants.CLAIM_STYLE_FORMAT_4_4:
+                new QP001P044_201804().doPrint(writer, printParam);
+                break;
+            // [H30年4月改正][Shinobu Hitaka] 2018/03/27 add - end
 
             // 在宅サービス介護給付費明細書（病院又は診療所）(QP001P051)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_5:
@@ -622,8 +634,15 @@ public class QP001PrintControl {
 
             // 在宅サービス介護給付費明細書（介護老人保健施設）(QP001P09)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_9:
-                new QP001P09_201804().doPrint(writer, printParam);
+                new QP001P091_201804().doPrint(writer, printParam);
                 break;
+
+            // [H30年4月改正][Shinobu Hitaka] 2018/03/27 add - begin 介護医療院追加
+            // 在宅サービス介護給付費明細書（介護医療院）(QP001P092)の印刷を行う。
+            case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+                new QP001P092_201804().doPrint(writer, printParam);
+                break;
+            // [H30年4月改正][Shinobu Hitaka] 2018/03/27 add - end
 
             // 施設サービス等介護給付費明細書（介護療養施設）(QP001P10)の印刷を行う。
             case QkanConstants.CLAIM_STYLE_FORMAT_10:

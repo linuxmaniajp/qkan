@@ -113,7 +113,10 @@ public class QP001InformationProcessing {
         sb.append(" AND(CLAIM.TARGET_DATE = '" + VRDateParser.format(targetDate,"yyyy/MM/dd") + "')");
         sb.append(" AND(CLAIM.PATIENT_ID = " + patient.getPatientId() + ")");
         sb.append(" AND(CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
-        sb.append(" AND (CLAIM.CATEGORY_NO IN (2,3,5,7))");
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 mod - begin 基本摘要レコード追加
+//        sb.append(" AND (CLAIM.CATEGORY_NO IN (2,3,5,7))");
+        sb.append(" AND (CLAIM.CATEGORY_NO IN (2,3,5,7,19))");
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 mod - end
         
         //請求情報を退避
         claim = QkanCommon.getClaimDetailCustom(dbm, claimDate, sb.toString());
@@ -639,6 +642,25 @@ public class QP001InformationProcessing {
 		setMultiRoom(map);
 	}
 	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+	/**
+	 * 様式第四の三(基本摘要情報)の結果反映処理
+	 * @param map
+	 * @throws Exception
+	 */
+	private void reflect43baseSummary(VRMap map) throws Exception {
+		setSameBaseSummary(map);
+	}
+	/**
+	 * 様式第四の四(基本摘要情報)の結果反映処理
+	 * @param map
+	 * @throws Exception
+	 */
+	private void reflect44baseSummary(VRMap map) throws Exception {
+		setSameBaseSummary(map);
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+	
 	/**
 	 * 様式第五(基本情報)の結果反映処理
 	 * @param map
@@ -963,6 +985,17 @@ public class QP001InformationProcessing {
 		// [H27.4改正対応][Shinobu Hitaka] 2015/1/20 edit - end
 	}
 
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+	/**
+	 * 様式第九の二(基本摘要情報)の結果反映処理
+	 * @param map
+	 * @throws Exception
+	 */
+	private void reflect92baseSummary(VRMap map) throws Exception {
+		setSameBaseSummary(map);
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+	
 	/**
 	 * 様式第十(基本情報)の結果反映処理
 	 * @param map
@@ -1248,6 +1281,68 @@ public class QP001InformationProcessing {
 		return false;
 
 	}
+	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+	/**
+	 * 基本摘要レコード　コピー処理
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean setSameBaseSummary(VRMap map) throws Exception {
+		//摘要欄を指定
+		return setSameBaseSummary(map, "1901008");
+	}
+	private boolean setSameBaseSummary(VRMap map, String key) throws Exception {
+		
+		if (claim == null) {
+			return false;
+		}
+		
+		for (int i = 0; i < claim.size(); i++) {
+			VRMap tmp = (VRMap)claim.get(i);
+			
+			if (!tmp.containsKey(key)){
+				continue;
+			}
+			
+			//1901001 交換情報識別番号4桁
+			if (!isEquals(map,tmp,"1901001")) {
+				continue;
+			}
+			//1901002 レコード種別コード2桁(16を設定)
+			if (!isEquals(map,tmp,"1901002")) {
+				continue;
+			}
+			//1901003 サービス提供年月6桁(YYYYMM)
+			if (!isEquals(map,tmp,"1901003")) {
+				continue;
+			}
+			//1901004 事業所番号10桁
+			if (!isEquals(map,tmp,"1901004")) {
+				continue;
+			}
+			//1901005 証記載保険者番号8桁
+			if (!isEquals(map,tmp,"1901005")) {
+				continue;
+			}
+			//1901006 被保険者番号10桁
+			if (!isEquals(map,tmp,"1901006")) {
+				continue;
+			}
+			//1901007 摘要種類コード2桁
+			if (!isEquals(map,tmp,"1901007")) {
+				continue;
+			}
+			
+			//集計前のデータを反映
+			map.put(key, tmp.get(key));
+			return true;
+		}
+		return false;
+
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 	
 	/**
 	 * 傷病名コピー処理
@@ -1554,18 +1649,31 @@ public class QP001InformationProcessing {
 		return false;
 	}
 	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+	private static final String[] TARGET_CATEGORY_ARRAY = new String[] { "2", "3", "5", "19" };
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 	private String[] getStyleCode(VRMap map) throws Exception {
-		String header = "235";
-		String[] style = new String[]{null, null};
-		
-		for (int i = 0; i < header.length(); i++) {
-			String key = header.charAt(i) + "01001";
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 mod - begin 基本摘要レコード追加
+//		String header = "235";
+//		String[] style = new String[]{null, null};
+//		for (int i = 0; i < header.length(); i++) {
+//			String key = header.charAt(i) + "01001";
+//			if (map.containsKey(key)) {
+//				style[0] = ACCastUtilities.toString(map.get(key), null);
+//				style[1] = String.valueOf(header.charAt(i));
+//				break;
+//			}
+//		}		
+		String[] style = new String[] { null, null };
+		for (String category : TARGET_CATEGORY_ARRAY) {
+			String key = category + "01001";
 			if (map.containsKey(key)) {
 				style[0] = ACCastUtilities.toString(map.get(key), null);
-				style[1] = String.valueOf(header.charAt(i));
+				style[1] = category;
 				break;
 			}
 		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 mod - end
 		
 		return style;
 	}
@@ -1632,6 +1740,30 @@ public class QP001InformationProcessing {
 			} else if ("5".equals(style[1])){
 				reflect42diagnosis(map);
 			}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin 介護医療院
+		} else if (QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804.equals(style[0])){
+			if ("2".equals(style[1])){
+				reflect42base(map);
+			} else if ("3".equals(style[1])){
+				reflect42details(map);
+				reflectDetails(map);
+			} else if ("5".equals(style[1])){
+				reflect42diagnosis(map);
+			} else if ("19".equals(style[1])){
+				reflect43baseSummary(map);
+			}
+		} else if (QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804.equals(style[0])){
+			if ("2".equals(style[1])){
+				reflect42base(map);
+			} else if ("3".equals(style[1])){
+				reflect42details(map);
+				reflectDetails(map);
+			} else if ("5".equals(style[1])){
+				reflect42diagnosis(map);
+			} else if ("19".equals(style[1])){
+				reflect44baseSummary(map);
+			}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
 		} else if (QP001StyleAbstract.IDENTIFICATION_NO_5_201204.equals(style[0])){
 			if ("2".equals(style[1])){
 				reflect5base(map);
@@ -1731,6 +1863,19 @@ public class QP001InformationProcessing {
 			} else if ("5".equals(style[1])){
 				reflect9diagnosis(map);
 			}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin 介護医療院
+		} else if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(style[0])){
+			if ("2".equals(style[1])){
+				reflect9base(map);
+			} else if ("3".equals(style[1])){
+				reflect9details(map);
+				reflectDetails(map);
+			} else if ("5".equals(style[1])){
+				reflect9diagnosis(map);
+			} else if ("19".equals(style[1])){
+				reflect92baseSummary(map);
+			}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
 		} else if (QP001StyleAbstract.IDENTIFICATION_NO_10_201204.equals(style[0])){
 			if ("2".equals(style[1])){
 				reflect10base(map);

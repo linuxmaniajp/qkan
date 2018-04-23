@@ -33,6 +33,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -49,6 +50,7 @@ import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjAfException;
 import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerChecker;
 import jp.nichicom.ac.lib.care.claim.print.schedule.QkanSjInsurerException;
 import jp.nichicom.ac.lib.care.claim.print.schedule.SelfPaymentNumberCalcurater;
+import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.Qkan10011_ServiceUnitGetter;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjLimitOverUnitException;
@@ -811,6 +813,8 @@ public class QP001 extends QP001Event {
                     break;
                 case QkanConstants.CLAIM_STYLE_FORMAT_4:
                 case QkanConstants.CLAIM_STYLE_FORMAT_4_2:
+                case QkanConstants.CLAIM_STYLE_FORMAT_4_3:	// 2018.3.27 add
+                case QkanConstants.CLAIM_STYLE_FORMAT_4_4:	// 2018.3.27 add
                     printCount[4]++;
                     printCount[1] = 1;
                     break;
@@ -846,6 +850,7 @@ public class QP001 extends QP001Event {
                     printCount[1] = 1;
                     break;
                 case QkanConstants.CLAIM_STYLE_FORMAT_9:
+                case QkanConstants.CLAIM_STYLE_FORMAT_9_2:	// 2018.3.27 add
                     printCount[9]++;
                     printCount[1] = 1;
                     break;
@@ -1660,6 +1665,11 @@ public class QP001 extends QP001Event {
                     map.put("TARGET_DATE", null);
                     errors.addSjAfIncorrectCodes(map);
                     continue;
+                } catch (QP001TotalPlanUnitException e) {	// 2018.04 add [H30.4改正対応]
+                    map.put("PRINT",null);
+                    map.put("TARGET_DATE", null);
+                    errors.addIncorrectPlanUnits(map);
+                    continue;
                 } 
 // 2016/10/13 [Yoichiro Kamei] mod - end
                 //[ID:0000561][Shin Fujihara] 2009/12/14 edit end 2009年度対応
@@ -1912,6 +1922,14 @@ public class QP001 extends QP001Event {
             }
             // 2016/10 [総合事業独自対応][Yoichiro Kamei] add - end
             
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+            //共生型サービスの対象となるサービス種類の場合
+            if (CareServiceCommon.isKyouseiServiceKind(skind)) {
+            	//共生型減算の関連付けを行う
+            	serviceCodeConvert(serviceCodeList, manager, serviceDetail);
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+            
             boolean first = true;
             // サービス情報分ループする。
             for (int j = 0; j < serviceCodeList.size(); j++) {
@@ -2110,6 +2128,8 @@ public class QP001 extends QP001Event {
                     //(様式第4)の場合
                     case QkanConstants.CLAIM_STYLE_FORMAT_4:
                     case QkanConstants.CLAIM_STYLE_FORMAT_4_2:
+                    case QkanConstants.CLAIM_STYLE_FORMAT_4_3: //[H30.4 法改正対応]
+                    case QkanConstants.CLAIM_STYLE_FORMAT_4_4: //[H30.4 法改正対応]
                         QP001Style4 style4 = null;
                         serial = QP001Style4.getSerialId(getTargetDate().getDate(), serviceDetail,
                                 patientState,type);
@@ -2238,6 +2258,7 @@ public class QP001 extends QP001Event {
                         
                     //(様式第9)の場合
                     case QkanConstants.CLAIM_STYLE_FORMAT_9:
+                    case QkanConstants.CLAIM_STYLE_FORMAT_9_2: //[H30.4 法改正対応]
                         QP001Style9 style9 = null;
                         serial = QP001Style9.getSerialId(getTargetDate().getDate(), serviceDetail,
                                 patientState,type);
@@ -2308,6 +2329,13 @@ public class QP001 extends QP001Event {
                 ((QP001Style2)commitData).arrangement();
             }
             commitData.commitRecords(patientState,styles,planUnitMap);
+            
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+            // 様式第二の場合、住所地特例レコードの変換確認
+            if (commitData instanceof QP001Style2) {
+            	((QP001Style2)commitData).convertJushotiTokureiRecord();
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
         }
         
         // データの登録実行
@@ -2446,9 +2474,29 @@ public class QP001 extends QP001Event {
         VRMap addMap = null;
         VRMap chusanAddMap = null;
         VRMap unitMap = new VRHashMap();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        VRMap kyouseiAddMap = null;
+        VRMap douituAddMap = null;
+        VRMap syoguAddMap = null;
+        VRMap unitMapKyousei = new VRHashMap();
+        VRMap unitMapDouitu = new VRHashMap();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+        List<Map> kihonCodes = null;
+        List<Map> doituKihonCodes = null;
+        List<Map> kyouseiKihonCodes = null;
+        List<Map> notParcentageCodes = new ArrayList();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
         
         for (int j = 0; j < serviceCodeList.size(); j++) {
             VRMap serviceCode = (VRMap) serviceCodeList.get(j);
+            
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 add - begin
+            if (!CareServiceCommon.isAddPercentage(serviceCode)) {
+            	notParcentageCodes.add(serviceCode);
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 add - end
             
             //本体報酬であれば、単位数を退避
             if (ACCastUtilities.toInt(serviceCode.get("SERVICE_MAIN_FLAG"),0) == 1) {
@@ -2469,6 +2517,35 @@ public class QP001 extends QP001Event {
                 
                 unit = new Integer(manager.getServiceUnit(String.valueOf(serviceDetail.get("PROVIDER_ID")),serviceCode));
                 unitMap.put(key,unit);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+                if (ACCastUtilities.toInt(serviceCode.get("KYOUSEI_FLAG") ,0) == 1) {
+                	unitMapKyousei.put(key, unit);
+                }
+                if (ACCastUtilities.toInt(serviceCode.get("SAME_BUILDING_FLAG") ,0) == 1) {
+                	unitMapDouitu.put(key, unit);
+                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+                
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+                // ％加算、％減算の対象となる基本サービスを退避
+            	if (ACCastUtilities.toInt(serviceCode.get("KYOUSEI_FLAG") ,0) == 1) {
+                	if (kyouseiKihonCodes == null) {
+                		kyouseiKihonCodes = new ArrayList();
+                	}
+                	kyouseiKihonCodes.add(serviceCode);
+            	}
+            	if (ACCastUtilities.toInt(serviceCode.get("SAME_BUILDING_FLAG") ,0) == 1) {
+                	if (doituKihonCodes == null) {
+                		doituKihonCodes = new ArrayList();
+                	}
+                	doituKihonCodes.add(serviceCode);
+            	}
+            	if (kihonCodes == null) {
+            		kihonCodes = new ArrayList();
+            	}
+            	kihonCodes.add(serviceCode);
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
+                
                 result = true;
                 continue;
             }
@@ -2483,19 +2560,111 @@ public class QP001 extends QP001Event {
             case 6: //中山間地域加算
             	chusanAddMap = (VRMap) serviceCodeList.get(j);
             	break;
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+            case 5: //共生型減算
+            	kyouseiAddMap = (VRMap) serviceCodeList.get(j);
+            	break;
+            case 7: //同一建物減算
+            	douituAddMap = (VRMap) serviceCodeList.get(j);
+            	break;
+            case 8: //処遇改善加算
+            	syoguAddMap = (VRMap) serviceCodeList.get(j);
+            	break;
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
             }
         }
         
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        if (kyouseiAddMap != null) {
+        	kyouseiAddMap.put("SERVICE_UNIT_MAP_5", unitMapKyousei);        	
+        }
+        if (douituAddMap != null) {
+        	douituAddMap.put("SERVICE_UNIT_MAP_7", unitMapDouitu); 
+            if (kyouseiAddMap != null) {
+            	douituAddMap.put("SERVICE_UNIT_ADD_MAP_5", kyouseiAddMap);
+            }
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+        
         if(addMap != null){
             addMap.put("SERVICE_UNIT_MAP",unitMap);
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+            if (kyouseiAddMap != null) {
+            	addMap.put("SERVICE_UNIT_ADD_MAP_5", kyouseiAddMap);
+            }
+            if (douituAddMap != null) {
+            	addMap.put("SERVICE_UNIT_ADD_MAP_7", douituAddMap);
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
         }
         
         if (chusanAddMap != null) {
         	chusanAddMap.put("SERVICE_UNIT_MAP",unitMap);
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+            if (kyouseiAddMap != null) {
+            	chusanAddMap.put("SERVICE_UNIT_ADD_MAP_5", kyouseiAddMap);
+            }
+            if (douituAddMap != null) {
+            	chusanAddMap.put("SERVICE_UNIT_ADD_MAP_7", douituAddMap);
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
         	if(addMap != null){
         		chusanAddMap.put("SERVICE_UNIT_ADD_MAP",addMap);
         	}
         }
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+        // ％加算、減算が対象とする基本サービスに対象の加算のサービスコードを保持する
+        if (kyouseiKihonCodes != null) {
+            if (kyouseiAddMap != null) {
+            	String kindCode = ACCastUtilities.toString(kyouseiAddMap.get("SERVICE_CODE_KIND"));
+            	String itemCode = ACCastUtilities.toString(kyouseiAddMap.get("SERVICE_CODE_ITEM"));
+            	int per = ACCastUtilities.toInt(kyouseiAddMap.get("SERVICE_UNIT"), 0);
+            	for (Map code : kyouseiKihonCodes) {
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_5, kindCode + itemCode);
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_5_UNIT, per);
+            	}
+            }
+        }
+        if (doituKihonCodes != null) {
+            if (douituAddMap != null) {
+            	String kindCode = ACCastUtilities.toString(douituAddMap.get("SERVICE_CODE_KIND"));
+            	String itemCode = ACCastUtilities.toString(douituAddMap.get("SERVICE_CODE_ITEM"));
+            	int per = ACCastUtilities.toInt(douituAddMap.get("SERVICE_UNIT"), 0);
+            	for (Map code : doituKihonCodes) {
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_7, kindCode + itemCode);
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_7_UNIT, per);
+            	}
+            }
+        }
+        if (kihonCodes != null) {
+            if (addMap != null) {
+            	String kindCode = ACCastUtilities.toString(addMap.get("SERVICE_CODE_KIND"));
+            	String itemCode = ACCastUtilities.toString(addMap.get("SERVICE_CODE_ITEM"));
+            	int per = ACCastUtilities.toInt(addMap.get("SERVICE_UNIT"), 0);
+            	for (Map code : kihonCodes) {
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_3, kindCode + itemCode);
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_3_UNIT, per);
+            	}
+            }
+            if (chusanAddMap != null) {
+            	String kindCode = ACCastUtilities.toString(chusanAddMap.get("SERVICE_CODE_KIND"));
+            	String itemCode = ACCastUtilities.toString(chusanAddMap.get("SERVICE_CODE_ITEM"));
+            	int per = ACCastUtilities.toInt(chusanAddMap.get("SERVICE_UNIT"), 0);
+            	for (Map code : kihonCodes) {
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_6, kindCode + itemCode);
+            		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_6_UNIT, per);
+            	}
+            }
+        }
+        if (syoguAddMap != null) {
+        	String kindCode = ACCastUtilities.toString(syoguAddMap.get("SERVICE_CODE_KIND"));
+        	String itemCode = ACCastUtilities.toString(syoguAddMap.get("SERVICE_CODE_ITEM"));
+        	for (Map code : notParcentageCodes) {
+        		code.put(QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_8, kindCode + itemCode);
+        	}
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
         
         if(!result){
             //加算のみのチェックを確認

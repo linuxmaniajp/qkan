@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.nichicom.ac.core.debugger.ACStaticDebugger;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.vr.util.VRArrayList;
@@ -326,45 +327,49 @@ public abstract class Qkan10011_ServiceUnitGetter {
                     // キャッシュした値を再利用
                     data = (VRList) cacheVal;
                 }
-                System.out.print(systemServiceCodeItem + " = ");
-                if ((data != null) && (!data.isEmpty())) {
-                    VRMap code = (VRMap) data.getData(0);
-                    System.out.print(String.valueOf(code
-                            .getData("SERVICE_CODE_KIND")));
-                    System.out.print(" " + code.getData("SERVICE_CODE_ITEM"));
-                    System.out.print(" " + code.getData("SERVICE_NAME"));
-                    System.out.print(" " + code.getData("SERVICE_UNIT"));
-                    switch (ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"),
-                            0)) {
-                    case 1:
-                        System.out.print("単位");
-                        break;
-                    case 2:
-                        System.out.print("単位加算");
-                        break;
-                    case 3:
-                        System.out.print("%加算");
-                        break;
-                    case 4:
-                        System.out.print("単位減算");
-                        break;
-                    case 5:
-                        System.out.print("%減算");
-                        break;
-                    case 8:
-                        System.out.print("%加算");
-                        break;
-                    case 9:
-                        System.out.print("円");
-                        break;
-                    default:
-                        System.out.print("単位");
-                        break;
-                    }
-                    System.out.print(" → ");
-
+                // デバッガが表示されているときのみ出力
+                if (ACStaticDebugger.getInstance().isVisible()) {
+                
+	                System.out.print(systemServiceCodeItem + " = ");
+	                if ((data != null) && (!data.isEmpty())) {
+	                    VRMap code = (VRMap) data.getData(0);
+	                    System.out.print(String.valueOf(code
+	                            .getData("SERVICE_CODE_KIND")));
+	                    System.out.print(" " + code.getData("SERVICE_CODE_ITEM"));
+	                    System.out.print(" " + code.getData("SERVICE_NAME"));
+	                    System.out.print(" " + code.getData("SERVICE_UNIT"));
+	                    switch (ACCastUtilities.toInt(code.get("SERVICE_ADD_FLAG"),
+	                            0)) {
+	                    case 1:
+	                        System.out.print("単位");
+	                        break;
+	                    case 2:
+	                        System.out.print("単位加算");
+	                        break;
+	                    case 3:
+	                        System.out.print("%加算");
+	                        break;
+	                    case 4:
+	                        System.out.print("単位減算");
+	                        break;
+	                    case 5:
+	                        System.out.print("%減算");
+	                        break;
+	                    case 8:
+	                        System.out.print("%加算");
+	                        break;
+	                    case 9:
+	                        System.out.print("円");
+	                        break;
+	                    default:
+	                        System.out.print("単位");
+	                        break;
+	                    }
+	                    System.out.print(" → ");
+	
+	                }
+	                System.out.println(data);
                 }
-                System.out.println(data);
                 if (data.getDataSize() > 0) {
                     // 2016/8/23 [Yoichiro Kamei] mod - begin 総合事業対応
                     //serviceCode.add((VRMap) data.getData(0));
@@ -397,7 +402,10 @@ public abstract class Qkan10011_ServiceUnitGetter {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        System.out.println("-----------------------------");
+        // デバッガが表示されているときのみ出力
+        if (ACStaticDebugger.getInstance().isVisible()) {
+        	System.out.println("-----------------------------");
+        }
 
         return serviceCode;
     }

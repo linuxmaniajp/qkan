@@ -434,38 +434,50 @@ public class CareServiceSummaryManager {
 	 */
 	private void parseServices(List<Map<String, Object>> services)
 			throws Exception {
-		Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin
+//		Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
 		Map[] totalGroupingCacheGaibu = new Map[] { new HashMap(),
 				new HashMap() };
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - begin 共生型減算対応
-		KyouseiUnitCalcurater kyouseiCalc = new KyouseiUnitCalcurater();
-		// 時系列でソートする
-		Collections.sort(services, new ServiceDateTimeLineComparator(ADD_UNIT_NAME));
+		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - begin
+		// パフォーマンス対策
+		// 限度額管理対象のサービスが無い場合は、単位数取得しない
+		if (parsedData.isEmpty()) {
+			// 単位数のクリア
+			calcTotalUnit();
+			return;
+		}
 		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - end
 		
 		for (Map<String, Object> service : services) {
-			// このサービスの単位数を求める
-			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin
+			// パフォーマンス対策、調整額の割り振り時に単位数取得するよう変更
+//			
+//			// このサービスの単位数を求める
+//			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+////			int unit = calcurater
+////					.getReductedUnit(
+////							(VRMap) service,
+////							false,
+////							CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
+////							totalGroupingCache);
 //			int unit = calcurater
 //					.getReductedUnit(
 //							(VRMap) service,
 //							false,
 //							CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
-//							totalGroupingCache);
-			int unit = calcurater
-					.getReductedUnit(
-							(VRMap) service,
-							false,
-							CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
-							totalGroupingCache,
-							kyouseiCalc);
+//							totalGroupingCache,
+//							kyouseiCalc);
+//			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
+//			// サービスに追加する
+//			service.put(ADD_UNIT_NAME, unit);
+//			if (unit == 0) {
+//				// 限度額管理対象の単位数がなければ、スキップ
+//				continue;
+//			}
 			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
-			// サービスに追加する
-			service.put(ADD_UNIT_NAME, unit);
-			if (unit == 0) {
-				// 限度額管理対象の単位数がなければ、スキップ
-				continue;
-			}
+			
 			// 限度額管理対象の場合
 			// 集計キーを作成する
 			String key = createSummaryKeyFromServiceData(service);
@@ -506,13 +518,6 @@ public class CareServiceSummaryManager {
 			// 対象のサービスを格納しておく
 			((List) parsedRow.get("WARIFURI_SERVICES")).add(service);
 		}
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
-		// 共生型減算の減算単位数をADD_UNIT_NAMEに保持している単位数へ反映する
-		if (kyouseiCalc.hasService()) {
-			kyouseiCalc.calcKyouseiUnit(ADD_UNIT_NAME);
-			kyouseiCalc.removeServiceKey();
-		}
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
 		
 		// 単位数の計算
 		calcTotalUnit();
@@ -753,8 +758,9 @@ public class CareServiceSummaryManager {
 	 * 
 	 * @param row
 	 *            調整額の変更対象行データ
+	 * @throws Exception 
 	 */
-	public void applyAdjustUnit(Map row) {
+	public void applyAdjustUnit(Map row) throws Exception {
 
 		String key = ACCastUtilities.toString(row.get("KEY"), "");
 		Map<String, Object> parsedRow = parsedData.get(key);
@@ -763,9 +769,45 @@ public class CareServiceSummaryManager {
 		// 割振り対象のサービス
 		List<Map<String, Object>> services = (List<Map<String, Object>>) parsedRow
 				.get("WARIFURI_SERVICES");
-
+		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - begin 共生型減算対応
+		List<Map<String, Object>> tmpSvlist = new ArrayList(services);
+		List<Map<String, Object>> unitSvlist = new ArrayList();
+		Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
+		KyouseiUnitCalcurater kyouseiCalc = new KyouseiUnitCalcurater();
+		// 時系列でソートする
+		Collections.sort(tmpSvlist, new ServiceDateTimeLineComparator(null));
+		
+		for (Map<String, Object> service : tmpSvlist) {
+			// このサービスの単位数を求める
+			int unit = calcurater
+					.getReductedUnit(
+							(VRMap) service,
+							false,
+							CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE,
+							totalGroupingCache,
+							kyouseiCalc);
+			// サービスに追加する
+			service.put(ADD_UNIT_NAME, unit);
+			if (unit != 0) {
+				// 調整額割り振り対象のリストに入れる
+				unitSvlist.add(service);
+			}
+		}
+		// 共生型減算の減算単位数をADD_UNIT_NAMEに保持している単位数へ反映する
+		if (kyouseiCalc.hasService()) {
+			kyouseiCalc.calcKyouseiUnit(ADD_UNIT_NAME);
+			kyouseiCalc.removeServiceKey();
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - end
+		
 		// 日付の最後のものから割り当てるために逆順にする
-		List<Map<String, Object>> list = new ArrayList(services);
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin
+//		List<Map<String, Object>> list = new ArrayList(services);
+		// 時系列でソートする
+		Collections.sort(unitSvlist, new ServiceDateTimeLineComparator(ADD_UNIT_NAME));
+		List<Map<String, Object>> list = new ArrayList(unitSvlist);
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
 		Collections.reverse(list);
 		for (Map<String, Object> service : list) {
 			if (CareServiceCommon.is30DayOver((VRMap) service)) {
@@ -918,8 +960,9 @@ public class CareServiceSummaryManager {
 	 *            調整額の変更対象行データ
 	 * @param planUnit
 	 *            計画単位数
+	 * @throws Exception 
 	 */
-	public void applyPlanUnit(Map source, int planUnit) {
+	public void applyPlanUnit(Map source, int planUnit) throws Exception {
 		String key = ACCastUtilities.toString(source.get("KEY"), "");
 		Map<String, Object> parsedRow = parsedData.get(key);
 

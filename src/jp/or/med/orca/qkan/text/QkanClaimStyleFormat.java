@@ -123,6 +123,12 @@ public class QkanClaimStyleFormat extends Format{
     		// 10412-様式第四の二
         } else if ("10412".equals(code)) {
             toAppendTo.append("様式第四の二");
+    		// 10413-様式第四の三 H30.4 add
+        } else if ("10413".equals(code)) {
+            toAppendTo.append("様式第四の三");
+    		// 10414-様式第四の四 H30.4 add
+        } else if ("10414".equals(code)) {
+            toAppendTo.append("様式第四の四");
     		// 10511-様式第五
         } else if ("10511".equals(code)) {
             toAppendTo.append("様式第五");
@@ -165,6 +171,9 @@ public class QkanClaimStyleFormat extends Format{
     		// 10911-様式第九
         } else if ("10911".equals(code)) {
             toAppendTo.append("様式第九");
+    		// 10912-様式第九の二 H30.4 add
+        } else if ("10912".equals(code)) {
+            toAppendTo.append("様式第九の二");
     		// 11011-様式第十
         } else if ("11011".equals(code)) {
             toAppendTo.append("様式第十");
@@ -262,6 +271,12 @@ public class QkanClaimStyleFormat extends Format{
     		// 10412-様式第四の二
         } else if ("様式第四の二".equals(source)) {
             result = "10412";
+    		// 10413-様式第四の三 H30.4 add
+        } else if ("様式第四の三".equals(source)) {
+            result = "10413";
+    		// 10414-様式第四の四 H30.4 add
+        } else if ("様式第四の四".equals(source)) {
+            result = "10414";
     		// 10511-様式第五
         } else if ("様式第五".equals(source)) {
             result = "10511";
@@ -304,6 +319,9 @@ public class QkanClaimStyleFormat extends Format{
     		// 10911-様式第九
         } else if ("様式第九".equals(source)) {
             result = "10911";
+    		// 10912-様式第九の二 H30.4 add
+        } else if ("様式第九の二".equals(source)) {
+            result = "10912";
     		// 11011-様式第十
         } else if ("様式第十".equals(source)) {
             result = "11011";

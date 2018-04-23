@@ -772,20 +772,20 @@ public class QP001Recapitulation {
         
         /*
          * ■居宅療養管理指導、介護予防居宅居宅療養管理指導
-         * ・算定回数に応じて居宅訪問日等を記載すること（訪問日が複数あるときは「、」で区切る）。
-         * 例　6、20日
+         * ・算定回数に応じて居宅訪問日等を記載すること（訪問日が複数あるときは「,」で区切る）。
+         * 例　6,20日
          * 単位を省略することも可。
-         * 例　6、20
+         * 例　6,20
          * 【プログラム中の解釈】
          * サービス種類が
          * 31
          * 
          * ■介護療養施設サービス
          * ・他科受診時費用
-         * 他科受診を行った日を記載すること（複数日行われたときは「、」で区切る）。
-         * 例　6、20日
+         * 他科受診を行った日を記載すること（複数日行われたときは「,」で区切る）。
+         * 例　6,20日
          * 単位を省略することも可。
-         * 例　6、20
+         * 例　6,20
          * 【プログラム中の解釈】
          * isTakajyusin関数を使用し、判断
          * 
@@ -808,8 +808,10 @@ public class QP001Recapitulation {
         if("34".equals(serviceCodeKind)){
             daysUniting = true;
         }
-        //他科受診
+        
+        //介護療養施設
         if("53".equals(serviceCodeKind)){
+            //他科受診
             if("2831".equals(serviceCodeItem)
                || "3831".equals(serviceCodeItem)
                || "4831".equals(serviceCodeItem)){
@@ -817,6 +819,15 @@ public class QP001Recapitulation {
             }
         }
         
+        // [H30.4改正対応][Shinobu Hitaka] add - begin
+        //介護医療院
+        if("55".equals(serviceCodeKind)){
+            //他科受診
+            if("6831".equals(serviceCodeItem)){
+                daysUniting = true;
+            }
+        }
+        // [H30.4改正対応][Shinobu Hitaka] add - end
         
         /* ■介護老人福祉施設、地域密着型介護老人福祉施設
          * 退所前訪問相談援助加算、退所後訪問相談援助加算のチェック
@@ -830,22 +841,24 @@ public class QP001Recapitulation {
             }
         }
         
-        
         /* ■介護保健施設サービス
          * 退所前訪問指導加算、退所後訪問指導加算のチェック
          */
         if ("52".equals(serviceCodeKind)) {
                 
+            //[H30.4改正対応][Shinobu Hitaka] 2018/4/12 edit - begin 指導加算削除
             //保健施設退所前訪問指導加算１(6501)、保健施設退所前訪問指導加算２(6506)
             //保健施設退所後訪問指導加算１(6507)、保健施設退所後訪問指導加算２(6508)
             //保健施設老人訪問看護指示加算(6503)
-            if("6501".equals(serviceCodeItem)
-                || "6506".equals(serviceCodeItem)
-                || "6507".equals(serviceCodeItem)
-                || "6508".equals(serviceCodeItem)
-                || "6503".equals(serviceCodeItem)){
+            //if("6501".equals(serviceCodeItem)
+            //    || "6506".equals(serviceCodeItem)
+            //    || "6507".equals(serviceCodeItem)
+            //    || "6508".equals(serviceCodeItem)
+            //    || "6503".equals(serviceCodeItem)){
+            if("6503".equals(serviceCodeItem)){
                 daysUniting = true;
             }
+            //[H30.4改正対応][Shinobu Hitaka] 2018/4/12 edit - end
             //[H27.4改正対応][Shinobu Hitaka] 2015/4/23 edit - begin 既存と追加コード対応
             //保健施設入所前後訪問指導加算Ⅰ１(6401)、保健施設入所前後訪問指導加算Ⅰ２(6402)
             //保健施設入所前後訪問指導加算Ⅱ１(6403)、保健施設入所前後訪問指導加算Ⅱ２(6404)
@@ -876,7 +889,6 @@ public class QP001Recapitulation {
             }
         }
         
-        
         //[ID:0000561][ID:0000591][Shin Fujihara] 2010/01 add begin 2009年度対応
         /* 看護指示加算のチェック
          サービスの提供日を、カンマ区切りで摘要欄に記載する
@@ -891,6 +903,23 @@ public class QP001Recapitulation {
         	daysUniting = true;
         }
         //[ID:0000561][ID:0000591][Shin Fujihara] 2010/01 add end 2009年度対応
+        
+        // [H30.4改正対応][Shinobu Hitaka] add - begin
+        /* ■介護医療院サービス
+         * 医療院退所前訪問指導加算、医療院退所後訪問指導加算、
+         * 医療院訪問看護指示加算
+         */
+        if ("55".equals(serviceCodeKind)) {
+            
+            //医療院退所前訪問指導加算(6501)、医療院退所後訪問指導加算(6507)
+        	//医療院訪問看護指示加算(6503)
+            if("6501".equals(serviceCodeItem)
+                || "6507".equals(serviceCodeItem)
+                || "6503".equals(serviceCodeItem)){
+                daysUniting = true;
+            }
+        }
+        // [H30.4改正対応][Shinobu Hitaka] add - end
         
         //居宅療養管理指導または他科受診
         if(daysUniting){

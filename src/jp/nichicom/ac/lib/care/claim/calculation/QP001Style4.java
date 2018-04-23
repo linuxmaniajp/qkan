@@ -44,6 +44,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * 様式第四 一帳票分の情報
@@ -79,10 +80,16 @@ public class QP001Style4 extends QP001StyleAbstract {
     private QP001RecordEmergency emergency = new QP001RecordEmergency();
     
     /**
-     * 特定診療費情報レコード
+     * 特別療養費・特別診療費情報レコード
      */
     private Map<String, QP001RecordDiagnosis> diagnosisMap = new TreeMap<String, QP001RecordDiagnosis>();
     
+ // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+    /**
+     * 基本摘要情報レコード集合
+     */
+    private Map<String, QP001RecordBaseSummary> baseSummaryMap = new TreeMap<String, QP001RecordBaseSummary>();
+ // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
     
     /**
      * 内部様式番号
@@ -173,14 +180,26 @@ public class QP001Style4 extends QP001StyleAbstract {
         }
 
         //[H20.5 法改正対応] fujihara add start
-        /* 特定診療費情報レコード */
+        /* 特別療養費・特別診療費情報レコード */
         QP001RecordDiagnosisMaker diagnosisMaker = new QP001RecordDiagnosisMaker(
                 identificationNo, serviceDetail, targetDate,
                 targetServiceDate, patientState, serviceCode, diagnosisMap,manager);
         
         if(firstRecord){
-            // 特定診療費情報レコードの作成
-            diagnosisMap = diagnosisMaker.makeRecuperation();
+            // 特別療養費・特別診療費情報レコードの作成
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - begin
+//            diagnosisMap = diagnosisMaker.makeRecuperation();
+            switch (claimStyleFormat) {
+            case QkanConstants.CLAIM_STYLE_FORMAT_4:
+            case QkanConstants.CLAIM_STYLE_FORMAT_4_2:
+            	diagnosisMap = diagnosisMaker.makeRecuperation();
+                break;
+            case QkanConstants.CLAIM_STYLE_FORMAT_4_3:
+            case QkanConstants.CLAIM_STYLE_FORMAT_4_4:
+            	diagnosisMap = diagnosisMaker.makeTokubetuShinryo();
+                break;
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - end
         }
         //[H20.5 法改正対応] fujihara add end
         
@@ -200,6 +219,15 @@ public class QP001Style4 extends QP001StyleAbstract {
                     identificationNo,manager);
         }
 
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        // 基本摘要レコード
+        if (QP001RecordBaseSummaryMaker.isMakeRecord(identificationNo, serviceDetail, serviceCode)) {
+        	QP001RecordBaseSummaryMaker summaryMaker = new QP001RecordBaseSummaryMaker(
+        			identificationNo, serviceDetail, targetDate,
+                    targetServiceDate, patientState, serviceCode, baseSummaryMap, manager);
+        	baseSummaryMap = summaryMaker.make();
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
     }
 
     /**
@@ -292,6 +320,13 @@ public class QP001Style4 extends QP001StyleAbstract {
             ((QP001RecordDetail) detailMap.get(it.next()))
                     .commitRecord(kohiTypes,patientState);
         }
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        // 基本摘要レコードの確定処理
+        for (QP001RecordBaseSummary summary : baseSummaryMap.values()) {
+        	summary.commitRecord(patientState);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 
         // 特定入所者レコードの確定処理
         //全額利用者請求対応
@@ -372,7 +407,7 @@ public class QP001Style4 extends QP001StyleAbstract {
         base.parse(emergency);
         
         //[H20.5 法改正対応] fujihara add start
-        //特定診療費レコードの確定処理
+        //特別療養費・特別診療費レコードの確定処理
         base.parse(diagnosis,patientState,kohiTypes);
         //[H20.5 法改正対応] fujihara add end
     }
@@ -431,13 +466,20 @@ public class QP001Style4 extends QP001StyleAbstract {
         }
 
         //[H20.5 法改正対応] fujihara edit start
-        //特定診療費情報レコード
+        //特別療養費・特別診療費情報レコード
         it = diagnosisMap.keySet().iterator();
         while (it.hasNext()) {
             list.add(((QP001RecordDiagnosis) diagnosisMap.get(it.next()))
                     .getRecord(style));
         }
         //[H20.5 法改正対応] fujihara edit end
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        //基本摘要情報レコード
+        for (QP001RecordBaseSummary summary : baseSummaryMap.values()) {
+        	list.add(summary.getRecord(style));
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
         
         //社福減免レコード
         list.add(emergency.getRecord(style));

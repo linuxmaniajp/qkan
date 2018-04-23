@@ -259,6 +259,11 @@ public class QP001Style3 extends QP001StyleAbstract {
                     .commitRecord(kohiTypes,patientState);
         }
         
+		// [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/10 add - begin
+		// %‰ÁZƒŒƒR[ƒh‚ÌŠm’èˆ—
+		commitParcentageAddRecord(detailMap, kohiTypes);
+		// [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/10 add - end
+		
         //[ID:0000682][Shin Fujihara] add begin y–@‰ü³‘Î‰z‰îŒìEˆõˆ‹ö‰ü‘P‰ÁZ
         commitTreatmentImprovement(detailMap, patientState, styles, planUnitMap);
         //[ID:0000682][Shin Fujihara] add end y–@‰ü³‘Î‰z‰îŒìEˆõˆ‹ö‰ü‘P‰ÁZ

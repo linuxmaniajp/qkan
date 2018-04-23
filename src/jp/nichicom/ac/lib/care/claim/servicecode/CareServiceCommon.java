@@ -86,6 +86,10 @@ public class CareServiceCommon {
         	|| "12".equals(serviceCodeKind)		// 訪問入浴介護
         	|| "62".equals(serviceCodeKind)		// 予防訪問入浴介護
         	|| "63".equals(serviceCodeKind)		// 予防訪問看護
+        	|| "14".equals(serviceCodeKind)		// 訪問リハ [H30.4改正対応]
+        	|| "64".equals(serviceCodeKind)		// 予防訪問リハ [H30.4改正対応]
+        	|| "31".equals(serviceCodeKind)		// 居宅療養管理指導 [H30.4改正対応]
+        	|| "34".equals(serviceCodeKind)		// 予防居宅療養管理指導 [H30.4改正対応]
         	) {
         	// 特別地域加算
             if ("8000".equals(serviceCodeItem)) {
@@ -409,6 +413,8 @@ public class CareServiceCommon {
         String serviceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"), "");
         if ("13".equals(serviceCodeKind)		// 訪問看護
             || "63".equals(serviceCodeKind)		// 予防訪問看護
+            || "76".equals(serviceCodeKind)		// 定期巡回
+            || "77".equals(serviceCodeKind)		// 看護小規模
         	) {
         	//4000:特別管理加算１ or 4001:特別管理加算２
         	if ("4000".equals(serviceCodeItem) || "4001".equals(serviceCodeItem)) {
@@ -443,6 +449,9 @@ public class CareServiceCommon {
         if ("22".equals(serviceCodeKind)		// 短期入所
             || "25".equals(serviceCodeKind)		// 予防短期入所
             || "52".equals(serviceCodeKind)		// 保健施設
+            || "2A".equals(serviceCodeKind)		// 短期介護医療院 [H30.4改正対応]
+            || "2B".equals(serviceCodeKind)		// 予防短期介護医療院 [H30.4改正対応]
+            || "55".equals(serviceCodeKind)		// 介護医療院 [H30.4改正対応]
         	) {
         	//9000:緊急時治療管理１ or 6000:緊急時治療管理２
         	if ("9000".equals(serviceCodeItem) || "6000".equals(serviceCodeItem)) {
@@ -502,6 +511,15 @@ public class CareServiceCommon {
             		) {
                     return true;
                 }
+        }
+        if ("43".equals(serviceCodeKind)    //居宅支援
+        	|| "76".equals(serviceCodeKind) //定期巡回
+        	|| "77".equals(serviceCodeKind) //看護小規模
+        	) {
+        	//6100:ターミナルケア加算
+        	if ("6100".equals(serviceCodeItem)) {
+                return true;
+            }
         }
         // [H27.4改正対応][Shinobu Hitaka] 2015/1/22 edit - end   サービスコード英数化
         return false;
@@ -1331,6 +1349,35 @@ public class CareServiceCommon {
     public static boolean isHomeMedicalAdvice(String systemServiceKindDetail) {
         return isHomeMedicalAdvice(toInt(systemServiceKindDetail));
     }
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+    /**
+     * 共生型サービスの対象サービス種類であるかを返します。
+     * 
+     * @param systemServiceKindDetail サービス種類
+     * @return 共生型サービスの対象サービス種類であるか
+     */
+    public static boolean isKyouseiServiceKind(String systemServiceKindDetail) {
+        return isKyouseiServiceKind(toInt(systemServiceKindDetail));
+    }
+    /**
+     * 共生型サービスの対象サービス種類であるかを返します。
+     * 
+     * @param systemServiceKindDetail サービス種類
+     * @return 共生型サービスの対象サービス種類であるか
+     */
+    public static boolean isKyouseiServiceKind(int systemServiceKindDetail) {
+        switch (systemServiceKindDetail) {
+        case 11111:// 訪問介護
+        case 11511:// 通所介護
+        case 12111:// 短期入所生活介護
+        case 12411: // 介護予防短期入所生活介護
+        case 17811: // 地域密着型通所介護        
+            return true;
+        }
+        return false;
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
 
     /**
      * 外泊の実績であるかを返します。
@@ -1383,7 +1430,9 @@ public class CareServiceCommon {
             } else if (service.containsKey("1530119")) {
                 // 2006/07/11 療養型対応 // 試行的退院サービス費
                 result = ACCastUtilities.toInt(service.get("1530119"), 0);
-                // 外泊のフラグを参照
+            } else if (service.containsKey("1550115")) { // [H30.4改正対応]
+                result = ACCastUtilities.toInt(service.get("1550115"), 0);
+            // 外泊のフラグを参照
             } else if (service.containsKey("1510111")) {
                 result = ACCastUtilities.toInt(service.get("1510111"), 0);
             } else if (service.containsKey("1520107")) {
@@ -1396,7 +1445,9 @@ public class CareServiceCommon {
                 result = ACCastUtilities.toInt(service.get("1530305"), 0);
             } else if (service.containsKey("1540112")) {
                 result = ACCastUtilities.toInt(service.get("1540112"), 0);
-                // 他科受診のフラグを参照
+            } else if (service.containsKey("1550114")) { // [H30.4改正対応]
+                result = ACCastUtilities.toInt(service.get("1550114"), 0);
+            // 他科受診のフラグを参照
             } else if (service.containsKey("1530110")) {
                 if (ACCastUtilities.toInt(service.get("1530110"), 0) == 2) {
                     result = 1;
@@ -1409,8 +1460,12 @@ public class CareServiceCommon {
                 if (ACCastUtilities.toInt(service.get("1530307"), 0) == 2) {
                     result = 1;
                 }
+            } else if (service.containsKey("1550116")) { // [H30.4改正対応]
+                if (ACCastUtilities.toInt(service.get("1550116"), 0) == 2) {
+                    result = 1;
+                }
             } else {
-                // ショートステイ対象なら外泊無しと判定
+            // ショートステイ対象なら外泊無しと判定
                 if (isShortStay(service)) {
                     result = 1;
                 } else {
@@ -1777,6 +1832,7 @@ public class CareServiceCommon {
      * [H27.4改正対応][Shinobu Hitaka] 2015/03/06 68,69,79のサービス種類追加
      * [H28.4改正対応][Shinobu Hitaka] 2016/01/29 78のサービス種類追加
      * [総合事業対応][Y.Kamei]   2016/09/06 A1-AFのサービス種類追加
+     * [H30.4改正対応][Y.Kamei]  2018/03/29 2A,2Bのサービス種類追加
      * @return 計画単位数のバインドパス配列
      */
 // 2016/9/6 [Yoichiro Kamei] add - begin 総合事業対応
@@ -1818,6 +1874,8 @@ public class CareServiceCommon {
     	planUnitBindPathKindKeyMap.put("74","1074");
     	planUnitBindPathKindKeyMap.put("75","1075");
     	planUnitBindPathKindKeyMap.put("69","1069");
+    	planUnitBindPathKindKeyMap.put("2A","2042");//2018.04改正
+    	planUnitBindPathKindKeyMap.put("2B","2043");//2018.04改正
     	// 総合事業
     	planUnitBindPathKindKeyMap.put("A1","1101");
     	planUnitBindPathKindKeyMap.put("A2","1102");

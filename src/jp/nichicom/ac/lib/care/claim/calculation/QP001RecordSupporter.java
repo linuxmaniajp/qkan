@@ -39,7 +39,6 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.CareServiceCommon;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.text.ACTextUtilities;
-import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
@@ -79,6 +78,12 @@ public class QP001RecordSupporter {
 	private Map<Integer, Object> kohiApplicationTimesPerCount = new HashMap<Integer, Object>();
 	// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - end
 	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/9 add - begin
+	private QP001PercentageAddInfo percentageAddInfo;
+    public QP001PercentageAddInfo getPercentageAddInfo() {
+    	return percentageAddInfo;
+    }
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/9 add - end
     /**
      * 
      * @param targetDate
@@ -141,6 +146,15 @@ public class QP001RecordSupporter {
 //		VRList list = patientState.getKohiDataFromServiceKind(targetDate,systemServiceKindDetail,applicationType,1,medicalFlag);
         VRList list = patientState.getKohiDataFromServiceKind(targetDate,String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")),applicationType,1,medicalFlag,manager);
 		
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/16 add - begin
+        // 緊急時治療管理のコードの場合、applicationType=「2:緊急時施設療養管理」を指定して適用可能な公費を取得
+        String serviceCodeKind = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND"), "");
+        String serviceCodeItem = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"), "");
+        if (QP001SpecialCase.isEmergencyCode(serviceCodeKind, serviceCodeItem)) {
+            list = patientState.getKohiDataFromServiceKind(targetDate,String.valueOf(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL")),"2",1,medicalFlag,manager);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/16 add - end
+        
 		//未知のパタンであるか確認
 		//シリアルを取得して同じ公費の適用パタンがないか参照
 		String serial = QP001RecordSupporterCalc.getSerialId(list,patientState,targetDate,1);
@@ -148,6 +162,15 @@ public class QP001RecordSupporter {
 		
         for(int i = 0; i < list.getDataSize(); i++) {
             VRMap kohi = (VRMap)list.getData(i);
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/6 add - begin            
+            String kohiType = ACCastUtilities.toString(kohi.get("KOHI_TYPE"), "");
+            // 生保単独と月途中難病のパターンに対応（記載例１２－３）
+            // 対象の公費タイプが100%公費の最優先順では無い場合、serialに含まれていないので
+            // 含まれていない場合は適用対象外としてスキップする
+            if (!serial.contains(kohiType)) {
+            	continue;
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/6 add - end
             //公費適用順位への追加を行う
             QP001KohiKey kohiKey = new QP001KohiKey(kohi);
             if (!kohiRankMap.containsKey(kohiKey)) {
@@ -167,9 +190,26 @@ public class QP001RecordSupporter {
 //		calc.addTime(serviceDetail,serviceCode);
 // [Yoichiro Kamei] [公費関連修正] 2015/4/27 comment out - end
 		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/9 add - begin
+		if (percentageAddInfo == null) {
+			percentageAddInfo = new QP001PercentageAddInfo(service_unit);
+		}
+		percentageAddInfo.parseService(serviceCode);
+		percentageAddInfo.addKihonCount(serviceCode, count);
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/9 add - end
+		
 		//特定の公費パタンで何回適用があるかが知りたい
 		for(int i = 0; i < list.getDataSize(); i++){
 			VRMap kohi = (VRMap)list.getData(i);
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/6 add - begin
+            String kohiType = ACCastUtilities.toString(kohi.get("KOHI_TYPE"), "");
+            // 生保単独と月途中難病のパターンに対応（記載例１２－３）
+            // 対象の公費タイプが100%公費の最優先順では無い場合、serialに含まれていないので
+            // 含まれていない場合は適用対象外としてスキップする
+            if (!serial.contains(kohiType)) {
+            	continue;
+            }
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/6 add - end
 			int countTemp = count;
 			//公費の設定がある場合
 			QP001KohiKey kohiKey = new QP001KohiKey(kohi);
@@ -178,6 +218,10 @@ public class QP001RecordSupporter {
                 countTemp += count;
 			}
 			kohiApplicationTimes.setData(kohiKey,new Integer(countTemp));
+			
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/9 add - begin
+			percentageAddInfo.addKohiCount(serviceCode, kohiKey, count);
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/9 add - end
 		}
 		
 		// [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応

@@ -123,6 +123,12 @@ public class QP001P02_10Event extends QP001PrintEvent {
     private VRList detailJushotiTokureiList = null;
  // 2015/1/14 [Yoichiro Kamei] add - end
 
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+    // 基本摘要情報レコード（複数レコード）
+    private VRList baseSummaryList = null;
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+    
+    
     // サービス単位数合計
     private int serviceUnitTotal = 0;
     // 公費１単位数合計
@@ -306,6 +312,11 @@ public class QP001P02_10Event extends QP001PrintEvent {
  // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
         detailJushotiTokureiList = new VRArrayList();
  // 2015/1/14 [Yoichiro Kamei] add - end
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        // 基本摘要情報レコード（複数レコード）
+        baseSummaryList = new VRArrayList();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 
         VRMap map = null;
         int categoryNo = 0;
@@ -365,6 +376,13 @@ public class QP001P02_10Event extends QP001PrintEvent {
             	detailJushotiTokureiList.add(map);
                 break;            
 // 2015/1/14 [Yoichiro Kamei] add - end
+                
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+            case 19:
+                // 基本摘要情報レコード（複数レコード）
+                baseSummaryList.add(map);
+                break;
+            // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
             }
 
         }
@@ -379,6 +397,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 // 2015/1/14 [Yoichiro Kamei] add - begin 住所地特例対応
         Collections.sort(detailJushotiTokureiList,new RecordComparator());
 // 2015/1/14 [Yoichiro Kamei] add - end
+        Collections.sort(baseSummaryList,new RecordComparator());//[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add
         
 
     }
@@ -1272,13 +1291,30 @@ public class QP001P02_10Event extends QP001PrintEvent {
     }
     
     /**
-     * 明細情報を設定する。
+     * 明細情報を設定する。（単位数が5桁用）
      * @param detailList
      * @param loopCount
      * @param kohiCount
      * @throws Exception
      */
     protected void setDetailList(VRList detailList,int loopCount,int kohiCount) throws Exception {
+    	setDetailList(detailList, loopCount, kohiCount, 5);
+    }
+    
+    /**
+     * 明細情報を設定する。
+     * @param detailList
+     * @param loopCount
+     * @param kohiCount
+     * @param keta 単位数の印字桁（5桁または6桁） 2018.04 add
+     * @throws Exception
+     */
+    protected void setDetailList(VRList detailList,int loopCount,int kohiCount,int keta) throws Exception {
+    	// [H30.04改正対応][Shinobu Hitaka] 2018/03/18 add 単位数の桁数
+    	if (keta <= 0 || keta >= 7) {
+    		keta = 5;
+    	}
+    	
         // 明細件数分ループする。
         for (int j = 1; j < loopCount; j++) {
             if (detailList.getDataSize() == 0)
@@ -1310,7 +1346,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
             
             // サービス単位数を設定する。
             ACChotarouXMLUtilities.setValue(writer, "servicetime" + j,
-                    pad(VRBindPathParser.get("301014", detail), 5));
+                    pad(VRBindPathParser.get("301014", detail), keta));
 
             
             switch (kohiCount) {
@@ -1323,7 +1359,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 
                 // 公費対象単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
-                        pad(VRBindPathParser.get("301015", detail), 5));
+                        pad(VRBindPathParser.get("301015", detail), keta));
 
                 break;
             // 公費2
@@ -1335,7 +1371,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
                 
                 // 公費対象単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
-                        pad(VRBindPathParser.get("301016", detail), 5));
+                        pad(VRBindPathParser.get("301016", detail), keta));
 
                 break;
             // 公費3
@@ -1347,7 +1383,7 @@ public class QP001P02_10Event extends QP001PrintEvent {
 
                 // 公費対象単位数を設定する。
                 ACChotarouXMLUtilities.setValue(writer, "kohitani" + j,
-                        pad(VRBindPathParser.get("301017", detail), 5));
+                        pad(VRBindPathParser.get("301017", detail), keta));
 
                 break;
             }
@@ -1358,6 +1394,35 @@ public class QP001P02_10Event extends QP001PrintEvent {
             detailList.remove(0);
         }
     }
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+	/**
+	 * 基本摘要情報を設定する。
+	 * 
+	 * @param baseSummaryList
+	 * @param loopCount
+	 * @throws Exception
+	 */
+	protected void setBaseSummaryList(VRList baseSummaryList, int loopCount) throws Exception {
+		// 明細件数分ループする。
+		for (int j = 1; j < loopCount; j++) {
+			if (baseSummaryList.getDataSize() == 0) {
+				break;
+			}
+			VRMap baseSummary = (VRMap) baseSummaryList.get(0);
+			// 摘要内容が設定されている場合のみ出力
+			if (!ACTextUtilities.isNullText(baseSummary.get("1901008"))) {
+				// 摘要種類を設定する。
+				ACChotarouXMLUtilities.setValue(writer, "kihontekiyono" + j,
+						pad(VRBindPathParser.get("1901007", baseSummary), 2));
+				// 摘要内容を設定する。
+				ACChotarouXMLUtilities.setValue(writer, "kihontekiyo" + j,
+						VRBindPathParser.get("1901008", baseSummary));
+			}
+			baseSummaryList.remove(0);
+		}
+	}
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 
 // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - begin
     public VRMap getServiceName() {
@@ -1769,6 +1834,17 @@ public class QP001P02_10Event extends QP001PrintEvent {
         return getStyleList(detailJushotiTokureiList);
     }
 // 2015/1/26 [H27.4改正対応][Yoichiro Kamei] add - end
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+    /**
+     * 基本摘要情報レコードリストを取得します。
+     * @return
+     */
+    protected VRList getBaseSummaryList() {
+        return getStyleList(baseSummaryList);
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+    
     /**
      * 明細情報レコードを取得します。
      * @return
@@ -2119,6 +2195,12 @@ public class QP001P02_10Event extends QP001PrintEvent {
                                 + String.valueOf(maps[i].get("1801019"));
                         break;
 // 2015/1/14 [Yoichiro Kamei] add - end
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+                    case 19:
+                        // 基本摘要情報レコード 摘要種類コードでソート
+                        values[i] = String.valueOf(maps[i].get("1901007"));
+                        break;
+                    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
                     }
             	}
             } catch(Exception e){

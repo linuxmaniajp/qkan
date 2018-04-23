@@ -57,6 +57,9 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_9_201204.equals(discriminationNo)) {
             return true;
         }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
         if (QP001StyleAbstract.IDENTIFICATION_NO_10_201204.equals(discriminationNo)) {
             return true;
         }
@@ -85,8 +88,11 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_9_201204.equals(discriminationNo)) {
             return false;
         }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return false;
+        }
         if (QP001StyleAbstract.IDENTIFICATION_NO_10_201204.equals(discriminationNo)) {
-            return true;
+            return false; // 2018.3.27 true‚ğfalse‚ÉC³
         }
         
         return true;
@@ -120,6 +126,9 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_9_201204.equals(discriminationNo)) {
             return true;
         }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
         if (QP001StyleAbstract.IDENTIFICATION_NO_10_201204.equals(discriminationNo)) {
             return true;
         }
@@ -142,6 +151,12 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204.equals(discriminationNo)) {
             return true;
         }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
         if (QP001StyleAbstract.IDENTIFICATION_NO_5_201204.equals(discriminationNo)) {
             return true;
         }
@@ -149,6 +164,9 @@ public class QP001SpecialCase {
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_9_201204.equals(discriminationNo)) {
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_10_201204.equals(discriminationNo)) {
@@ -175,6 +193,12 @@ public class QP001SpecialCase {
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204.equals(discriminationNo)) {
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_5_201204.equals(discriminationNo)) {
@@ -222,6 +246,9 @@ public class QP001SpecialCase {
         if (QP001StyleAbstract.IDENTIFICATION_NO_9_201204.equals(discriminationNo)) {
             return true;
         }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
         if (QP001StyleAbstract.IDENTIFICATION_NO_10_201204.equals(discriminationNo)) {
             return true;
         }
@@ -249,6 +276,10 @@ public class QP001SpecialCase {
         sb.append(",");
         sb.append(QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204);
         sb.append(",");
+        sb.append(QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804);	// 2018.3.27 add
+        sb.append(",");
+        sb.append(QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804);	// 2018.3.27 add
+        sb.append(",");
         sb.append(QP001StyleAbstract.IDENTIFICATION_NO_5_201204);
         sb.append(",");
         sb.append(QP001StyleAbstract.IDENTIFICATION_NO_5_2_201204);
@@ -274,6 +305,8 @@ public class QP001SpecialCase {
         sb.append(QP001StyleAbstract.IDENTIFICATION_NO_8_201204);
         sb.append(",");
         sb.append(QP001StyleAbstract.IDENTIFICATION_NO_9_201204);
+        sb.append(",");
+        sb.append(QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804);	// 2018.3.27 add
         sb.append(",");
         sb.append(QP001StyleAbstract.IDENTIFICATION_NO_10_201204);
         
@@ -318,6 +351,12 @@ public class QP001SpecialCase {
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204.equals(discriminationNo)) {
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_5_201204.equals(discriminationNo)) {
@@ -369,6 +408,12 @@ public class QP001SpecialCase {
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204.equals(discriminationNo)) {
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
+            return true;
+        }
+        if (QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804.equals(discriminationNo)) {	// [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/3/27 add
             return true;
         }
         if (QP001StyleAbstract.IDENTIFICATION_NO_5_201204.equals(discriminationNo)) {
@@ -746,7 +791,9 @@ public class QP001SpecialCase {
             	|| "1727".equals(item)	//—\–hŠO•”’Ê‰î•¡”ƒT[ƒrƒX‰ÁZ‡T‚R
             	|| "1728".equals(item)	//—\–hŠO•”’Ê‰î•¡”ƒT[ƒrƒX‰ÁZ‡U
             	|| "1811".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚P‚P
-            	|| "1812".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚P‚Q
+            	|| "1812".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚P‚Q           	
+            	|| "1835".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚R‚P 2018.04 add
+            	|| "1836".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‚R‚Q 2018.04 add            	
             	|| "1821".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‰^“®Ší‰ÁZ
             	|| "1822".equals(item)	//—\–hŠO•”’ÊŠƒŠƒn‰h—{‰ü‘P‰ÁZ
             	|| "1823".equals(item)	//—\–hŠO•”’ÊŠƒŠƒnŒûo‹@”\‰ÁZ
@@ -841,7 +888,9 @@ public class QP001SpecialCase {
             if ("1111".equals(item)		//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚P
             	|| "1121".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚Q
             	|| "2111".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚P
-            	|| "2121".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚Q
+            	|| "2121".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚Q            	
+            	|| "2131".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚P 2018.04 add
+            	|| "2141".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚Q 2018.04 add            	
             	|| "5002".equals(item)	//—\–h’ÊŠƒŠƒn‰^“®Ší‹@”\Œüã‰ÁZ
             	|| "5003".equals(item)	//—\–h’ÊŠƒŠƒn‰h—{‰ü‘P‰ÁZ
             	|| "5004".equals(item)	//—\–h’ÊŠƒŠƒnŒûo‹@”\Œüã‰ÁZ
@@ -859,17 +908,44 @@ public class QP001SpecialCase {
             	|| "6105".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚P‚P
             	|| "6106".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚P‚Q
             	|| "6107".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚Q‚P
-            	|| "6108".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚Q‚Q
+            	|| "6108".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚Q‚Q           	
+            	|| "5615".equals(item)	//—\–h’ÊŠƒŠƒnƒ}ƒlƒWƒƒ“ƒg‰ÁZ 2018.04 add
+            	|| "6255".equals(item)	//—\–h’ÊŠƒŠƒn¶Šˆsˆ×ŒüãƒŠƒn‰ÁZ‚P 2018.04 add
+            	|| "6256".equals(item)	//—\–h’ÊŠƒŠƒn¶Šˆsˆ×ŒüãƒŠƒn‰ÁZ‚Q 2018.04 add            	
+            	|| "6119".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚R‚P 2018.04 add
+            	|| "6120".equals(item)	//—\–h’ÊŠƒŠƒn“¯ˆêŒš•¨Œ¸Z‚R‚Q 2018.04 add           	
             	|| "6109".equals(item)	//—\–h’ÊŠƒŠƒná”N«”F’mÇó“ü‰ÁZ
             	|| "8001".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PE’è’´
             	|| "8011".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QE’è’´
             	|| "8110".equals(item)	//—\–h’ÊŠƒŠƒn’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ
             	|| "8201".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PE’è’´
-            	|| "8211".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QE’è’´
+            	|| "8211".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QE’è’´          	
+            	|| "8301".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚PE’è’´ 2018.04 add
+            	|| "8311".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚QE’è’´ 2018.04 add
             	|| "9001".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PElŒ‡
             	|| "9011".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QElŒ‡
             	|| "9201".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PElŒ‡
-            	|| "9211".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QElŒ‡
+            	|| "9211".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QElŒ‡            	
+            	|| "9301".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚PElŒ‡ 2018.04 add
+            	|| "9311".equals(item)	//—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚QElŒ‡ 2018.04 add
+            	|| "7001".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PEŒp‘± 2018.04 add
+            	|| "7002".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QEŒp‘± 2018.04 add
+            	|| "7003".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PEŒp‘± 2018.04 add
+            	|| "7004".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QEŒp‘± 2018.04 add
+            	|| "7005".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚PEŒp‘± 2018.04 add
+            	|| "7006".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚QEŒp‘± 2018.04 add
+            	|| "7007".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PE’è’´EŒp‘± 2018.04 add
+            	|| "7008".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QE’è’´EŒp‘± 2018.04 add
+            	|| "7009".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PE’è’´EŒp‘± 2018.04 add
+            	|| "7010".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QE’è’´EŒp‘± 2018.04 add
+            	|| "7011".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚PE’è’´EŒp‘± 2018.04 add
+            	|| "7012".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚QE’è’´EŒp‘± 2018.04 add
+            	|| "7013".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚PElŒ‡EŒp‘± 2018.04 add
+            	|| "7014".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚P‚QElŒ‡EŒp‘± 2018.04 add
+            	|| "7015".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚PElŒ‡EŒp‘± 2018.04 add
+            	|| "7016".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚Q‚QElŒ‡EŒp‘± 2018.04 add
+            	|| "7017".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚PElŒ‡EŒp‘± 2018.04 add
+            	|| "7018".equals(item) //—\–h’ÊŠƒŠƒnƒrƒŠ‚R‚QElŒ‡EŒp‘± 2018.04 add
         		) {
                 result = true;
             }
@@ -1027,6 +1103,9 @@ public class QP001SpecialCase {
             	|| "9143".equals(item)	//¬‹K–Í‘½‹@”\‚Q‚SElŒ‡E‰ß­ 2015/03/25 add
             	|| "9151".equals(item)	//¬‹K–Í‘½‹@”\‚Q‚TElŒ‡       2015/03/25 add
             	|| "9153".equals(item)	//¬‹K–Í‘½‹@”\‚Q‚TElŒ‡E‰ß­ 2015/03/25 add
+            	|| "6109".equals(item)	//¬‘½‹@”\Œ^á”N«”F’mÇó“ü‰ÁZ 2018.04 add
+            	|| "4002".equals(item)	//¬‘½‹@”\Œ^¶Šˆ‹@”\Œüã˜AŒg‰ÁZI 2018.04 add
+            	|| "4003".equals(item)	//¬‘½‹@”\Œ^¶Šˆ‹@”\Œüã˜AŒg‰ÁZII 2018.04 add            	
             	) {
                 result = true;
             }
@@ -1076,6 +1155,9 @@ public class QP001SpecialCase {
 	            || "9113".equals(item)	//—\¬‹K–Í‘½‹@”\‚Q‚PEŒ‡E‰ß­ 2015/03/25 add
 	            || "9121".equals(item)	//—\¬‹K–Í‘½‹@”\‚Q‚QEŒ‡       2015/03/25 add
 	            || "9123".equals(item)	//—\¬‹K–Í‘½‹@”\‚Q‚QEŒ‡E‰ß­ 2015/03/25 add
+            	|| "6109".equals(item)	//—\¬‘½‹@”\á”N«”F’mÇó“ü‰ÁZ 2018.04 add
+            	|| "4002".equals(item)	//—\¬‘½‹@”\¶Šˆ‹@”\Œüã˜AŒg‰ÁZI 2018.04 add
+            	|| "4003".equals(item)	//—\¬‘½‹@”\¶Šˆ‹@”\Œüã˜AŒg‰ÁZII 2018.04 add  
 	            ) {
                 result = true;
             }
@@ -1106,7 +1188,10 @@ public class QP001SpecialCase {
 	            || "4000".equals(item)	//’èŠú„‰ñ“Á•ÊŠÇ—‰ÁZ‡T
 	            || "4001".equals(item)	//’èŠú„‰ñ“Á•ÊŠÇ—‰ÁZ‡U
 	            || "4010".equals(item)	//’èŠú„‰ñ‘‡ƒ}ƒlƒWƒƒ“ƒg‘Ì§‰ÁZ 2015/03/25 add
-	            || "4111".equals(item)	//’èŠú„‰ñ“¯ˆêŒš•¨Œ¸Z             2015/03/25 add
+	            || "4111".equals(item)	//’èŠú„‰ñ“¯ˆêŒš•¨Œ¸Z             2015/03/25 add	            
+	            || "4113".equals(item)	//’èŠú„‰ñ“¯ˆêŒš•¨Œ¸Z‚Q    2018.04 add  	            
+	            || "4012".equals(item)	//’èŠú„‰ñ¶Šˆ‹@”\Œüã˜AŒg‰ÁZI    2018.04 add
+	            || "4013".equals(item)	//’èŠú„‰ñ¶Šˆ‹@”\Œüã˜AŒg‰ÁZII   2018.04 add  	            
 	            || "6100".equals(item)	//’èŠú„‰ñƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ
 	            || "6111".equals(item)	//’èŠú„‰ñƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚P 2015/03/25 add
 	            || "6101".equals(item)	//’èŠú„‰ñƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚Q
@@ -1151,11 +1236,33 @@ public class QP001SpecialCase {
 	            || "1243".equals(item)	//ŠÅŒì¬‹K–Í‚P‚SE‰ß­ 2015/03/25 add
 	            || "1251".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚T       2015/03/25 add
 	            || "1253".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚TE‰ß­ 2015/03/25 add
+	            || "1311".equals(item) //ŠÅŒì¬‹K–Í‚P‚PEƒT–¢ 2018.04 add
+	            || "1313".equals(item) //ŠÅŒì¬‹K–Í‚P‚PE‰ß­EƒT–¢ 2018.04 add
+	            || "1321".equals(item) //ŠÅŒì¬‹K–Í‚P‚QEƒT–¢ 2018.04 add
+	            || "1323".equals(item) //ŠÅŒì¬‹K–Í‚P‚QE‰ß­EƒT–¢ 2018.04 add
+	            || "1331".equals(item) //ŠÅŒì¬‹K–Í‚P‚REƒT–¢ 2018.04 add
+	            || "1333".equals(item) //ŠÅŒì¬‹K–Í‚P‚RE‰ß­EƒT–¢ 2018.04 add
+	            || "1341".equals(item) //ŠÅŒì¬‹K–Í‚P‚SEƒT–¢ 2018.04 add
+	            || "1343".equals(item) //ŠÅŒì¬‹K–Í‚P‚SE‰ß­EƒT–¢ 2018.04 add
+	            || "1351".equals(item) //ŠÅŒì¬‹K–Í‚P‚TEƒT–¢ 2018.04 add
+	            || "1353".equals(item) //ŠÅŒì¬‹K–Í‚P‚TE‰ß­EƒT–¢ 2018.04 add
+	            || "1411".equals(item) //ŠÅŒì¬‹K–Í‚Q‚PEƒT–¢ 2018.04 add
+	            || "1413".equals(item) //ŠÅŒì¬‹K–Í‚Q‚PE‰ß­EƒT–¢ 2018.04 add
+	            || "1421".equals(item) //ŠÅŒì¬‹K–Í‚Q‚QEƒT–¢ 2018.04 add
+	            || "1423".equals(item) //ŠÅŒì¬‹K–Í‚Q‚QE‰ß­EƒT–¢ 2018.04 add
+	            || "1431".equals(item) //ŠÅŒì¬‹K–Í‚Q‚REƒT–¢ 2018.04 add
+	            || "1433".equals(item) //ŠÅŒì¬‹K–Í‚Q‚RE‰ß­EƒT–¢ 2018.04 add
+	            || "1441".equals(item) //ŠÅŒì¬‹K–Í‚Q‚SEƒT–¢ 2018.04 add
+	            || "1443".equals(item) //ŠÅŒì¬‹K–Í‚Q‚SE‰ß­EƒT–¢ 2018.04 add
+	            || "1451".equals(item) //ŠÅŒì¬‹K–Í‚Q‚TEƒT–¢ 2018.04 add
+	            || "1453".equals(item) //ŠÅŒì¬‹K–Í‚Q‚TE‰ß­EƒT–¢ 2018.04 add
 	            || "3100".equals(item)	//ŠÅŒì¬‹K–Í‹Ù‹}–K–âŠÅŒì‰ÁZ
 	            || "4000".equals(item)	//ŠÅŒì¬‹K–Í“Á•ÊŠÇ—‰ÁZ‡T
-	            || "4001".equals(item)	//ŠÅŒì¬‹K–Í“Á•ÊŠÇ—‰ÁZ‡U
-	            || "4010".equals(item)	//ŠÅŒì¬‹K–Í‘‡ƒ}ƒlƒWƒƒ“ƒg‰ÁZ 2015/03/25 add
-	            || "4015".equals(item)	//ŠÅŒì¬‹K–Í–K–âŠÅŒì‘Ì§‹­‰»‰ÁZ 2015/03/25 add
+	            || "4001".equals(item)	//ŠÅŒì¬‹K–Í“Á•ÊŠÇ—‰ÁZ‡U	            
+	            || "4005".equals(item)	//ŠÅŒì¬‹K–Í–K–â‘Ì§‹­‰»‰ÁZ 2018.04 add	            
+	            || "4010".equals(item)	//ŠÅŒì¬‹K–Í‘‡ƒ}ƒlƒWƒƒ“ƒg‰ÁZ 2015/03/25 add	            
+	            || "4014".equals(item)	//ŠÅŒì¬‹K–ÍŠÅŒì‘Ì§‹­‰»‰ÁZI  2018.04 add
+	            || "4015".equals(item)	//ŠÅŒì¬‹K–ÍŠÅŒì‘Ì§‹­‰»‰ÁZII 2015/03/25 add
 	            || "6001".equals(item)	//ŠÅŒì¬‹K–Íˆã—Ã–K–âŠÅŒìŒ¸Z‚P
 	            || "6003".equals(item)	//ŠÅŒì¬‹K–Íˆã—Ã–K–âŠÅŒìŒ¸Z‚Q
 	            || "6005".equals(item)	//ŠÅŒì¬‹K–Íˆã—Ã–K–âŠÅŒìŒ¸Z‚R
@@ -1173,7 +1280,9 @@ public class QP001SpecialCase {
 	            || "6103".equals(item)	//ŠÅŒì¬‹K–ÍƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
 	            || "6128".equals(item)	//ŠÅŒì¬‹K–Í”F’mÇ‰ÁZ‡T
 	            || "6129".equals(item)	//ŠÅŒì¬‹K–Í”F’mÇ‰ÁZ‡U
-	            || "6139".equals(item)	//ŠÅŒì¬‹K–Í–‹ÆŠJnx‰‡‰ÁZ
+	            || "6139".equals(item)	//ŠÅŒì¬‹K–Í–‹ÆŠJnx‰‡‰ÁZ	            
+	            || "6310".equals(item)	//ŠÅŒì¬‹K–Í’†RŠÔ’nˆæ“™’ñ‹Ÿ‰ÁZ 2018.04 add
+	            || "6109".equals(item)	//ŠÅŒì¬‹K–Íá”N«”F’mÇó“ü‰ÁZ 2018.04 add	            
 	            || "7101".equals(item)	//ŠÅŒì¬‹K–Ís’¬‘º“Æ©‰ÁZ‚P
 	            || "7103".equals(item)	//ŠÅŒì¬‹K–Ís’¬‘º“Æ©‰ÁZ‚Q
 	            || "7105".equals(item)	//ŠÅŒì¬‹K–Ís’¬‘º“Æ©‰ÁZ‚R
@@ -1214,6 +1323,26 @@ public class QP001SpecialCase {
 	            || "8143".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚SE’è’´E‰ß­ 2015/03/25 add
 	            || "8151".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚TE’è’´       2015/03/25 add
 	            || "8153".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚TE’è’´E‰ß­ 2015/03/25 add
+	            || "8211".equals(item) //ŠÅŒì¬‹K–Í‚P‚PE’è’´EƒT–¢ 2018.04 add
+	            || "8213".equals(item) //ŠÅŒì¬‹K–Í‚P‚PE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8221".equals(item) //ŠÅŒì¬‹K–Í‚P‚QE’è’´EƒT–¢ 2018.04 add
+	            || "8223".equals(item) //ŠÅŒì¬‹K–Í‚P‚QE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8231".equals(item) //ŠÅŒì¬‹K–Í‚P‚RE’è’´EƒT–¢ 2018.04 add
+	            || "8233".equals(item) //ŠÅŒì¬‹K–Í‚P‚RE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8241".equals(item) //ŠÅŒì¬‹K–Í‚P‚SE’è’´EƒT–¢ 2018.04 add
+	            || "8243".equals(item) //ŠÅŒì¬‹K–Í‚P‚SE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8251".equals(item) //ŠÅŒì¬‹K–Í‚P‚TE’è’´EƒT–¢ 2018.04 add
+	            || "8253".equals(item) //ŠÅŒì¬‹K–Í‚P‚TE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8311".equals(item) //ŠÅŒì¬‹K–Í‚Q‚PE’è’´EƒT–¢ 2018.04 add
+	            || "8313".equals(item) //ŠÅŒì¬‹K–Í‚Q‚PE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8321".equals(item) //ŠÅŒì¬‹K–Í‚Q‚QE’è’´EƒT–¢ 2018.04 add
+	            || "8323".equals(item) //ŠÅŒì¬‹K–Í‚Q‚QE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8331".equals(item) //ŠÅŒì¬‹K–Í‚Q‚RE’è’´EƒT–¢ 2018.04 add
+	            || "8333".equals(item) //ŠÅŒì¬‹K–Í‚Q‚RE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8341".equals(item) //ŠÅŒì¬‹K–Í‚Q‚SE’è’´EƒT–¢ 2018.04 add
+	            || "8343".equals(item) //ŠÅŒì¬‹K–Í‚Q‚SE’è’´E‰ß­EƒT–¢ 2018.04 add
+	            || "8351".equals(item) //ŠÅŒì¬‹K–Í‚Q‚TE’è’´EƒT–¢ 2018.04 add
+	            || "8353".equals(item) //ŠÅŒì¬‹K–Í‚Q‚TE’è’´E‰ß­EƒT–¢ 2018.04 add
 	            || "9011".equals(item)	//ŠÅŒì¬‹K–Í‚P‚PElŒ‡
 	            || "9013".equals(item)	//ŠÅŒì¬‹K–Í‚P‚PElŒ‡E‰ß­
 	            || "9021".equals(item)	//ŠÅŒì¬‹K–Í‚P‚QElŒ‡
@@ -1234,6 +1363,26 @@ public class QP001SpecialCase {
 	            || "9143".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚SElŒ‡E‰ß­ 2015/03/25 add
 	            || "9151".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚TElŒ‡       2015/03/25 add
 	            || "9153".equals(item)	//ŠÅŒì¬‹K–Í‚Q‚TElŒ‡E‰ß­ 2015/03/25 add
+	            || "9211".equals(item) //ŠÅŒì¬‹K–Í‚P‚PElŒ‡EƒT–¢ 2018.04 add
+	            || "9213".equals(item) //ŠÅŒì¬‹K–Í‚P‚PElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9221".equals(item) //ŠÅŒì¬‹K–Í‚P‚QElŒ‡EƒT–¢ 2018.04 add
+	            || "9223".equals(item) //ŠÅŒì¬‹K–Í‚P‚QElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9231".equals(item) //ŠÅŒì¬‹K–Í‚P‚RElŒ‡EƒT–¢ 2018.04 add
+	            || "9233".equals(item) //ŠÅŒì¬‹K–Í‚P‚RElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9241".equals(item) //ŠÅŒì¬‹K–Í‚P‚SElŒ‡EƒT–¢ 2018.04 add
+	            || "9243".equals(item) //ŠÅŒì¬‹K–Í‚P‚SElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9251".equals(item) //ŠÅŒì¬‹K–Í‚P‚TElŒ‡EƒT–¢ 2018.04 add
+	            || "9253".equals(item) //ŠÅŒì¬‹K–Í‚P‚TElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9311".equals(item) //ŠÅŒì¬‹K–Í‚Q‚PElŒ‡EƒT–¢ 2018.04 add
+	            || "9313".equals(item) //ŠÅŒì¬‹K–Í‚Q‚PElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9321".equals(item) //ŠÅŒì¬‹K–Í‚Q‚QElŒ‡EƒT–¢ 2018.04 add
+	            || "9323".equals(item) //ŠÅŒì¬‹K–Í‚Q‚QElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9331".equals(item) //ŠÅŒì¬‹K–Í‚Q‚RElŒ‡EƒT–¢ 2018.04 add
+	            || "9333".equals(item) //ŠÅŒì¬‹K–Í‚Q‚RElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9341".equals(item) //ŠÅŒì¬‹K–Í‚Q‚SElŒ‡EƒT–¢ 2018.04 add
+	            || "9343".equals(item) //ŠÅŒì¬‹K–Í‚Q‚SElŒ‡E‰ß­EƒT–¢ 2018.04 add
+	            || "9351".equals(item) //ŠÅŒì¬‹K–Í‚Q‚TElŒ‡EƒT–¢ 2018.04 add
+	            || "9353".equals(item) //ŠÅŒì¬‹K–Í‚Q‚TElŒ‡E‰ß­EƒT–¢ 2018.04 add
 	            ) {
                 result = true;
             }
@@ -2014,7 +2163,10 @@ public class QP001SpecialCase {
 	        	|| "6100".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚P 2015/03/25 add
 	        	|| "6101".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡T‚Q
 	        	|| "6102".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡U
-	        	|| "6103".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V
+	        	|| "6103".equals(item)	//—\¬‘½‹@”\ƒT[ƒrƒX’ñ‹Ÿ‘Ì§‰ÁZ‡V	        	
+	        	|| "6109".equals(item)	//—\¬‘½‹@”\á”N«”F’mÇó“ü‰ÁZ        2018.04 add
+	        	|| "4002".equals(item)	//—\¬‘½‹@”\¶Šˆ‹@”\Œüã˜AŒg‰ÁZI   2018.04 add
+	        	|| "4003".equals(item)	//—\¬‘½‹@”\¶Šˆ‹@”\Œüã˜AŒg‰ÁZII  2018.04 add
 	        	|| "8011".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE’è’´
 	        	|| "8013".equals(item)	//—\¬‹K–Í‘½‹@”\‚PE’è’´E‰ß­
 	        	|| "8021".equals(item)	//—\¬‹K–Í‘½‹@”\‚QE’è’´
@@ -2355,30 +2507,34 @@ public class QP001SpecialCase {
                 result = true;
         	}
         }
-        //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
-        if ("73".equals(kind)) {
-            if ("1101".equals(item)		//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìŒo
-	            || "1111".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚P
-	            || "1121".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚Q
-	            || "1131".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚R
-	            || "1141".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚S
-	            || "1151".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚T
-	            || "8001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoE’è’´
-	            || "8011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚PE’è’´
-	            || "8021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚QE’è’´
-	            || "8031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚RE’è’´
-	            || "8041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚SE’è’´
-	            || "8051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚TE’è’´
-	            || "9001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoElŒ‡
-	            || "9011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚PElŒ‡
-	            || "9021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚QElŒ‡
-	            || "9031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚RElŒ‡
-	            || "9041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚SElŒ‡
-	            || "9051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚TElŒ‡
-            ) {
-                result = true;
-            }
-        }
+// [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/5 del - begin
+// ˆÈ‰º‚ÌƒR[ƒh‚ÍuisSingleCountServicev‚Ì‘ÎÛ‚Æ‚È‚Á‚Ä‚¨‚èA‰ñ”‚P‚É•ÏX‚³‚ê‚éB‚±‚ÌƒR[ƒh‚Í–³ˆÓ–¡‚È‚Ì‚Åíœ
+//        //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì
+//        if ("73".equals(kind)) {
+//            if ("1101".equals(item)		//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìŒo
+//	            || "1111".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚P
+//	            || "1121".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚Q
+//	            || "1131".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚R
+//	            || "1141".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚S
+//	            || "1151".equals(item)	//¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒì‚T
+//	            || "8001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoE’è’´
+//	            || "8011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚PE’è’´
+//	            || "8021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚QE’è’´
+//	            || "8031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚RE’è’´
+//	            || "8041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚SE’è’´
+//	            || "8051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰î‚TE’è’´
+//	            || "9001".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒìŒoElŒ‡
+//	            || "9011".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚PElŒ‡
+//	            || "9021".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚QElŒ‡
+//	            || "9031".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚RElŒ‡
+//	            || "9041".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚SElŒ‡
+//	            || "9051".equals(item)	//¬‘½‹@”\Œ^‹‘î‰îŒì‚TElŒ‡
+//            ) {
+//                result = true;
+//            }
+//        }
+// [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/5 del - end
+        
         //‰îŒì—\–h“Á’è{İ“ü‹Ò¶Šˆ‰îŒì
         if ("35".equals(kind)) {
         	if ("1901".equals(item)		//—\–hŠO•”Ô‚¢‚·‘İ—^
@@ -3639,14 +3795,21 @@ public class QP001SpecialCase {
             if("6125".equals(serviceCodeItem) || "6126".equals(serviceCodeItem)){
                 count = ACCastUtilities.toInt(serviceDetail.get("1330133"),1);
             }
-// 2015/3/9 [H27.4‰ü³‘Î‰][Yoichiro Kamei] add - begin
+// 2015/3/9 [H27.4‰ü³‘Î‰][Yoichiro Kamei] add - end
         //‰îŒì•Ÿƒ{İ
         } else if ("51".equals(serviceCodeKind)) {
             
-            //6276:•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚P 6277:•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚Q
+            //6276:•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZI‚P 6277:•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZI‚Q
             if("6276".equals(serviceCodeItem) || "6277".equals(serviceCodeItem)){
                 count = ACCastUtilities.toInt(serviceDetail.get("1510132"),1);
             }
+            
+            // [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/5 add - begin
+            //6284:•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZII‚P 6285:•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZII‚Q
+            if("6284".equals(serviceCodeItem) || "6285".equals(serviceCodeItem)){
+                count = ACCastUtilities.toInt(serviceDetail.get("1510132"),1);
+            }
+            // [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/5 add - end
             
             
         //‰îŒì•ÛŒ’{İ
@@ -3665,10 +3828,16 @@ public class QP001SpecialCase {
         //’nˆæ–§’…Œ^‰îŒì•Ÿƒ{İ
         } else if ("54".equals(serviceCodeKind)) {
             
-            //6276:’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚P 6277:’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚Q
+            //6276:’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZI‚P 6277:’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZI‚Q
             if("6276".equals(serviceCodeItem) || "6277".equals(serviceCodeItem)){
                 count = ACCastUtilities.toInt(serviceDetail.get("1540128"),1);
             }
+            // [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/5 add - begin
+            //6284:’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZII‚P 6285:’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZII‚Q
+            if("6284".equals(serviceCodeItem) || "6285".equals(serviceCodeItem)){
+                count = ACCastUtilities.toInt(serviceDetail.get("1540128"),1);
+            }
+            // [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/5 add - end
         
 // 2015/3/17 [H27.4‰ü³‘Î‰][Shinobu Hitaka] add - begin
         //¬‹K–Í‘½‹@”\Œ^‹‘î‰îŒìi’ZŠú—˜—pˆÈŠOj
@@ -3704,22 +3873,26 @@ public class QP001SpecialCase {
             }
         }
         
-        //•Ÿƒ{İ
-        if ("51".equals(serviceCodeKind)) {
-            //•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚R
-            if ("6283".equals(serviceCodeItem)) {
-                return true;
-            }
-        }
-        
-        //’n•Ÿƒ{
-        if ("54".equals(serviceCodeKind)) {
-            //’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚R
-            if ("6283".equals(serviceCodeItem)) {
-                return true;
-            }
-        }
-        
+        // [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/4/14 del - begin €–SŠÔEêŠ‹LÚ‚Ö•ÏX
+        ////•Ÿƒ{İ
+        //if ("51".equals(serviceCodeKind)) {
+        //    //•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚R
+        //    if ("6283".equals(serviceCodeItem)
+        //    	|| "6286".equals(serviceCodeItem)) { // [H30.4‰ü³‘Î‰] •Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZII‚R
+        //        return true;
+        //    }
+        //}
+        //
+        ////’n•Ÿƒ{
+        //if ("54".equals(serviceCodeKind)) {
+        //    //’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZ‚R
+        //    if ("6283".equals(serviceCodeItem)
+        //    	|| "6286".equals(serviceCodeItem)) { // [H30.4‰ü³‘Î‰] ’n•Ÿƒ{İŠÅæ‚è‰îŒì‰ÁZII‚R
+        //        return true;
+        //    }
+        //}
+        // [H30.4‰ü³‘Î‰][Shinobu Hitaka] 2018/4/14 del - end
+
         //•ÛŒ’{İ
         if ("52".equals(serviceCodeKind)) {
             //•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚PA•ÛŒ’{İƒ^[ƒ~ƒiƒ‹ƒPƒA‰ÁZ‚R‚Q
@@ -3817,5 +3990,39 @@ public class QP001SpecialCase {
     }
     // [H27.4‰ü³‘Î‰][Yoichiro Kamei] 2015/4/23 add - end
     
+
+    // [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/16 add - begin
+    /**
+     * ‹Ù‹}¡—ÃŠÇ—‚ÌƒT[ƒrƒXƒR[ƒh‚Å‚ ‚é‚©
+     * @param serviceCodeKind ƒT[ƒrƒXí—ŞƒR[ƒh
+     * @param serviceCodeItem ƒT[ƒrƒX€–ÚƒR[ƒh
+     * @return true:€–S“ú‚Ì‰ÁZ false:’Êí‚ÌƒT[ƒrƒXƒR[ƒh
+     * @throws Exception
+     */
+    public static boolean isEmergencyCode(String serviceCodeKind, String serviceCodeItem) throws Exception {
+        //‰îŒìˆã—Ã‰@
+        if ("55".equals(serviceCodeKind)) {
+            //ˆã—Ã‰@‹Ù‹}¡—ÃŠÇ—
+            if ("6000".equals(serviceCodeItem)) {
+                return true;
+            }
+        }
+        //’ZŠú“üŠ—Ã—{‰îŒì(‰îŒìˆã—Ã‰@)
+        if ("2A".equals(serviceCodeKind)) {
+            //ˆã—Ã‰@’ZŠú‹Ù‹}¡—ÃŠÇ—
+            if ("6000".equals(serviceCodeItem)) {
+                return true;
+            }
+        }
+        //‰îŒì—\–h’ZŠú“üŠ—Ã—{‰îŒì(‰îŒìˆã—Ã‰@)
+        if ("2B".equals(serviceCodeKind)) {
+            //—\–hˆã—Ã‰@’ZŠú‹Ù‹}¡—ÃŠÇ—
+            if ("6000".equals(serviceCodeItem)) {
+                return true;
+            }
+        }
+    	return false;
+    }
+    // [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/16 add - end
     
 }

@@ -46,6 +46,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.qkan.QkanConstants;
 
 /**
  * 様式第九 一帳票分の情報
@@ -83,6 +84,17 @@ public class QP001Style9 extends QP001StyleAbstract {
      * 特定診療費情報レコード
      */
     private Map diagnosisMap = new TreeMap();
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+    /**
+     * 緊急時施設療養情報レコード
+     */
+    private QP001RecordEmergency emergency = new QP001RecordEmergency();
+    /**
+     * 基本摘要情報レコード集合
+     */
+    private Map<String, QP001RecordBaseSummary> baseSummaryMap = new TreeMap<String, QP001RecordBaseSummary>();
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
     
     /**
      * 内部様式番号
@@ -163,12 +175,31 @@ public class QP001Style9 extends QP001StyleAbstract {
             //明細情報データ解析
             detail.parse(serviceDetail,targetDate,patientState,serviceCode,identificationNo,manager);
         }
-
-        /* 緊急時緊急時施設療養レコード */
-        // [ID:0000698][Shin Fujihara] 2012/03 add end 平成24年4月法改正対応
-        // parse内で、レコードを作成するか判断するよう変更
-        emergencyOwnFacility.parse(serviceDetail, targetDate, patientState,serviceCode, identificationNo, manager);
-        // [ID:0000698][Shin Fujihara] 2012/03 add end 平成24年4月法改正対応
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - begin       
+//        /* 緊急時緊急時施設療養レコード */
+//        // [ID:0000698][Shin Fujihara] 2012/03 add end 平成24年4月法改正対応
+//        // parse内で、レコードを作成するか判断するよう変更
+//        emergencyOwnFacility.parse(serviceDetail, targetDate, patientState,serviceCode, identificationNo, manager);
+//        // [ID:0000698][Shin Fujihara] 2012/03 add end 平成24年4月法改正対応
+        switch (claimStyleFormat) {
+        case QkanConstants.CLAIM_STYLE_FORMAT_9:
+        	// 所定疾患施設療養費等情報レコード
+        	emergencyOwnFacility.parse(serviceDetail, targetDate, patientState,serviceCode, identificationNo, manager);
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+            /* 緊急時緊急時施設療養レコード */
+            // 緊急時治療管理加算がある場合
+            String systemServiceCode = String.valueOf(serviceCode.get("SYSTEM_SERVICE_CODE_ITEM"));
+            if("Z9000".equals(systemServiceCode)
+                    || "Z6000".equals(systemServiceCode)){
+                // 緊急時治療加算レコードを設定する。
+                emergency.parse(serviceDetail, targetDate, patientState,serviceCode,
+                        identificationNo,manager);
+            }
+            break;
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - end
         
         
         /* 特定入所者介護サービス */
@@ -195,10 +226,29 @@ public class QP001Style9 extends QP001StyleAbstract {
         
         if(firstRecord){
             // 特定診療費情報レコードの作成
-            diagnosisMap = diagnosisMaker.makeRecuperation();
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - begin
+//            diagnosisMap = diagnosisMaker.makeRecuperation();
+            switch (claimStyleFormat) {
+            case QkanConstants.CLAIM_STYLE_FORMAT_9:
+            	diagnosisMap = diagnosisMaker.makeRecuperation();
+                break;
+            case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+            	diagnosisMap = diagnosisMaker.makeTokubetuShinryo();
+                break;
+            }
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/28 mod - end
         }
         //[H20.5 法改正対応] fujihara add end
 
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        // 基本摘要レコード
+        if (QP001RecordBaseSummaryMaker.isMakeRecord(identificationNo, serviceDetail, serviceCode)) {
+        	QP001RecordBaseSummaryMaker summaryMaker = new QP001RecordBaseSummaryMaker(
+        			identificationNo, serviceDetail, targetDate,
+                    targetServiceDate, patientState, serviceCode, baseSummaryMap, manager);
+        	baseSummaryMap = summaryMaker.make();
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
     }
 
     /**
@@ -414,6 +464,13 @@ public class QP001Style9 extends QP001StyleAbstract {
         commitDetails(detailMap, kohiTypes, patientState);
         //[ID:0000721][Shin Fujihara] 2012/04 add end 2012年度対応
 
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        // 基本摘要レコードの確定処理
+        for (QP001RecordBaseSummary summary : baseSummaryMap.values()) {
+        	summary.commitRecord(patientState);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+        
         // 特定入所者レコードの確定処理
         //全額利用者請求対応
         QP001RecordNursing nursingLast = null;
@@ -452,7 +509,17 @@ public class QP001Style9 extends QP001StyleAbstract {
         //[ID:0000682][Shin Fujihara] add end 【法改正対応】介護職員処遇改善加算
         
         // 緊急時のレコードの確定処理
-        emergencyOwnFacility.commitRecord();
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - begin
+//        emergencyOwnFacility.commitRecord();
+        switch (claimStyleFormat) {
+        case QkanConstants.CLAIM_STYLE_FORMAT_9:
+        	emergencyOwnFacility.commitRecord();
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+        	emergency.commitRecord();
+            break;
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - end
 
         it = detailMap.keySet().iterator();
         // 集計情報レコードの作成
@@ -460,7 +527,17 @@ public class QP001Style9 extends QP001StyleAbstract {
             detail = ((QP001RecordDetail) detailMap.get(it.next()));
             type.parse(detail,patientState,manager);
         }
-        type.parse(emergencyOwnFacility,kohiTypes,patientState);
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - begin
+//        type.parse(emergencyOwnFacility,kohiTypes,patientState);
+        switch (claimStyleFormat) {
+        case QkanConstants.CLAIM_STYLE_FORMAT_9:
+        	type.parse(emergencyOwnFacility,kohiTypes,patientState);;
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+        	type.parse(emergency,kohiTypes,patientState);;
+            break;
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - end
         
         // 集計情報レコードの確定処理
         type.commitRecord(kohiTypes, patientState,styles,planUnitMap,nursingLast);
@@ -494,8 +571,22 @@ public class QP001Style9 extends QP001StyleAbstract {
         base.parse(type, patientState,kohiTypes,manager);
         //base.parse(nursing);
         base.parse(nursingLast,patientState,kohiTypes);
-        //緊急時レコードを基本情報レコードに設定
-        base.parse(emergencyOwnFacility);
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - begin
+//        //緊急時レコードを基本情報レコードに設定
+//        base.parse(emergencyOwnFacility);
+        switch (claimStyleFormat) {
+        case QkanConstants.CLAIM_STYLE_FORMAT_9:
+			//緊急時レコードを基本情報レコードに設定
+			base.parse(emergencyOwnFacility);
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+            //緊急時レコードを基本情報レコードに設定
+            base.parse(emergency);
+            break;
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - end
+        
         //[H20.5 法改正対応] fujihara add start
         //特定診療費レコードの確定処理
         base.parse(diagnosis,patientState,kohiTypes);
@@ -564,8 +655,25 @@ public class QP001Style9 extends QP001StyleAbstract {
         }
         //[H20.5 法改正対応] fujihara edit end
         
-        //社福減免レコード
-        list.add(emergencyOwnFacility.getRecord(style));
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+        //基本摘要情報レコード
+        for (QP001RecordBaseSummary summary : baseSummaryMap.values()) {
+        	list.add(summary.getRecord(style));
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - begin
+//        //社福減免レコード
+//        list.add(emergencyOwnFacility.getRecord(style));
+        switch (claimStyleFormat) {
+        case QkanConstants.CLAIM_STYLE_FORMAT_9:
+        	list.add(emergencyOwnFacility.getRecord(style));
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_9_2:
+        	list.add(emergency.getRecord(style));
+            break;
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 mod - end
 
         //集計情報レコード
         list.add(type.getRecord(style));

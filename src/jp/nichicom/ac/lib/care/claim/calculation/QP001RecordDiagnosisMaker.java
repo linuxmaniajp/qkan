@@ -472,6 +472,198 @@ public class QP001RecordDiagnosisMaker {
 	}
 	//[H20.5 法改正対応] fujihara add end
 	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - begin
+	/**
+	 * 特別診療費のデータを作成します。
+	 * @return
+	 * @throws Exception
+	 */
+	protected Map<String, QP001RecordDiagnosis> makeTokubetuShinryo() throws Exception{
+        
+        //外泊ならば作成を中断する。
+        if(gaihaku == 2){
+            return diagnosisMap;
+        }
+        
+        //30日超なら作成を中断する。
+        if(over30){
+            return diagnosisMap;
+        }
+        
+		int result = 0;
+		//(特別診療費 指導管理等)感染対策指導管理チェック
+		result = getValue("3010101");
+		if(result != 0){
+			parseRecordTokubetuShinryo("01",result);
+		}
+		//(特別診療費 指導管理等)褥瘡管理チェック
+		result = getValue("3010102");
+		if(result != 0){
+			parseRecordTokubetuShinryo("34",result);
+		}
+		//(特別診療費 指導管理等)初期入所診療管理チェック
+		result = getValue("3010103");
+		if(result != 0){
+			parseRecordTokubetuShinryo("05",result);
+		}
+		//(特別診療費 指導管理等)重要療養管理チェック
+		result = getValue("3010104");
+		if(result != 0){
+			parseRecordTokubetuShinryo("35",result);
+		}
+		//(特別診療費 指導管理等)特定施設管理チェック
+		result = getValue("3010105");
+		if(result != 0){
+			parseRecordTokubetuShinryo("02",result);
+		}
+		//(特別診療費 指導管理等)特定施設管理個室加算チェック
+		result = getValue("3010106");
+		if(result != 0){
+			parseRecordTokubetuShinryo("03",result);
+		}
+		//(特別診療費 指導管理等)特定施設管理２人部屋加算チェック
+		result = getValue("3010107");
+		if(result != 0){
+			parseRecordTokubetuShinryo("04",result);
+		}
+		//(特別診療費 指導管理等)重症皮膚潰瘍管理指導チェック
+		result = getValue("3010108");
+		if(result != 0){
+			parseRecordTokubetuShinryo("06",result);
+		}
+		//(特別診療費 指導管理等)薬剤管理指導チェック
+		result = getValue("3010110");
+		if(result != 0){
+			parseRecordTokubetuShinryo("09",result);
+		}
+		//(特別診療費 指導管理等)特別薬剤管理指導加算チェック
+		result = getValue("3010111");
+		if(result != 0){
+			parseRecordTokubetuShinryo("10",result);
+		}
+		//(特別診療費 指導管理等)医学情報提供(Ⅰ)チェック
+		result = getValue("3010112");
+		if(result != 0){
+			parseRecordTokubetuShinryo("11",result);
+		}
+		//(特別診療費 指導管理等)医学情報提供(Ⅱ)チェック
+		result = getValue("3010113");
+		if(result != 0){
+			parseRecordTokubetuShinryo("12",result);
+		}
+		//(特別診療費 リハビリテーション)理学療法(Ⅰ)回数-0・1・2・3
+		result = getValue("3010116");
+		if(result != 0){
+			parseRecordTokubetuShinryo("18",result);
+		}
+		//(特別診療費 リハビリテーション)理学療法(Ⅱ)回数-0・1・2・3
+		result = getValue("3010117");
+		if(result != 0){
+			parseRecordTokubetuShinryo("19",result);
+		}
+		//(特別診療費 リハビリテーション)理学療法(Ⅰ)(減算)回数-0・1・2・3
+		result = getValue("3010120");
+		if(result != 0){
+			parseRecordTokubetuShinryo("42",result);
+		}
+		//(特別診療費 リハビリテーション)理学療法(Ⅱ)(減算)回数-0・1・2・3
+		result = getValue("3010121");
+		if(result != 0){
+			parseRecordTokubetuShinryo("43",result);
+		}
+		//(特別診療費 リハビリテーション)理学療法リハビリ計画加算チェック
+		result = getValue("3010123");
+		if(result != 0){
+			parseRecordTokubetuShinryo("20",result);
+		}
+		//(特別診療費 リハビリテーション)理学療法日常動作訓練指導加算チェック
+		result = getValue("3010124");
+		if(result != 0){
+			parseRecordTokubetuShinryo("22",result);
+		}
+		//(特別診療費 リハビリテーション)作業療法回数-0・1・2・3
+		result = getValue("3010126");
+		if(result != 0){
+			parseRecordTokubetuShinryo("25",result);
+		}
+		//(特別診療費 リハビリテーション)作業療法(減算)回数-0・1・2・3
+		result = getValue("3010128");
+		if(result != 0){
+			parseRecordTokubetuShinryo("45",result);
+		}
+		//(特別診療費 リハビリテーション)作業療法リハビリ計画加算チェック
+		result = getValue("3010130");
+		if(result != 0){
+			parseRecordTokubetuShinryo("27",result);
+		}
+		//(特別診療費 リハビリテーション)作業療法日常動作訓練指導加算チェック
+		result = getValue("3010131");
+		if(result != 0){
+			parseRecordTokubetuShinryo("29",result);
+		}
+		//(特別診療費 リハビリテーション)言語聴覚療法回数-0・1・2・3
+		result = getValue("3010133");
+		if(result != 0){
+			parseRecordTokubetuShinryo("39",result);
+		}
+		//(特別診療費 リハビリテーション)言語聴覚療法(減算)回数-0・1・2・3
+		result = getValue("3010135");
+		if(result != 0){
+			parseRecordTokubetuShinryo("47",result);
+		}
+		//(特別診療費 リハビリテーション)摂食機能療法チェック
+		result = getValue("3010136");
+		if(result != 0){
+			parseRecordTokubetuShinryo("31",result);
+		}
+		//(特別診療費 精神科専門療法)精神科作業療法チェック
+		result = getValue("3010137");
+		if(result != 0){
+			parseRecordTokubetuShinryo("32",result);
+		}
+		//(特別診療費 精神科専門療法)認知症入所精神療法チェック
+		result = getValue("3010138");
+		if(result != 0){
+			parseRecordTokubetuShinryo("33",result);
+		}
+        //(特別診療費 リハビリテーション)理学療法リハビリ体制強化加算チェック
+        result = getValue("3010139");
+        if(result != 0){
+            parseRecordTokubetuShinryo("48",result);
+        }
+        //(特別診療費 リハビリテーション)作業療法リハビリ体制強化加算チェック
+        result = getValue("3010140");
+        if(result != 0){
+            parseRecordTokubetuShinryo("49",result);
+        }
+        //(特別診療費 リハビリテーション)言語聴覚療法リハビリ体制強化加算チェック
+        result = getValue("3010141");
+        if(result != 0){
+            parseRecordTokubetuShinryo("50",result);
+        }
+        //短期集中リハビリ加算
+        result = getValue("3010143");
+        if(result != 0){
+            parseRecordTokubetuShinryo("52",result);
+        }
+        //集団コミュニケーション療法
+        result = getValue("3010150");
+        if(result != 0){
+            parseRecordTokubetuShinryo("54",result);
+        }
+        //認知症短期集中リハビリ加算
+        result = getValue("3010151");
+        if(result != 0){
+            parseRecordTokubetuShinryo("55",result);
+        }
+        
+		return diagnosisMap;
+	}
+	private void parseRecordTokubetuShinryo(String specialClinicType, int count) throws Exception {
+		parseRecord(specialClinicType, count, 3);
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/28 add - end
+	
 	private int getValue(String key) throws Exception {
 		int result = 0;
 		//キーが存在するか確認

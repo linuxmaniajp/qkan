@@ -29,9 +29,11 @@
 
 package jp.nichicom.ac.lib.care.claim.calculation;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import jp.nichicom.ac.core.ACFrame;
@@ -150,31 +152,83 @@ public class QP001RecordDetail extends QP001RecordAbstract {
     // 集計タイプ
     private int totalGroupingType = 0;
     
-    //特別地域加算用
-    private VRMap serviceUnitMap = new VRHashMap();
-
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 del - begin    
+//    //特別地域加算用
+//    private VRMap serviceUnitMap = new VRHashMap();
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 del - end
+    
     // 公費順位決定オブジェクト
     private QP001RecordSupporter kohiManager = new QP001RecordSupporter();
     
     // 摘要記載事項作成オブジェクト
     private QP001Recapitulation recapitulation = new QP001Recapitulation();
     
-    //[ID:0000467][Shin Fujihara] 2009/04 add begin 平成21年4月法改正対応
-    //中山間地域加算算定オブジェクト
-    private QP001MountainousAreaAdder mountainousAreaAdder = new QP001MountainousAreaAdder();
-    //[ID:0000467][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
- 
-// 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
-    /**
-     * 中山間地域加算算定オブジェクトを取得する。
-     * @return 中山間地域加算算定オブジェクト
-     */
-    protected QP001MountainousAreaAdder getMountainousAreaAdder() {
-        return mountainousAreaAdder;
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+//    
+//    //[ID:0000467][Shin Fujihara] 2009/04 add begin 平成21年4月法改正対応
+//    //中山間地域加算算定オブジェクト
+//    private QP001MountainousAreaAdder mountainousAreaAdder = new QP001MountainousAreaAdder();
+//    //[ID:0000467][Shin Fujihara] 2009/04 add end 平成21年4月法改正対応
+// 
+//// 2016/7/21 [Yoichiro Kamei] add - begin 総合事業対応
+//    /**
+//     * 中山間地域加算算定オブジェクトを取得する。
+//     * @return 中山間地域加算算定オブジェクト
+//     */
+//    protected QP001MountainousAreaAdder getMountainousAreaAdder() {
+//        return mountainousAreaAdder;
+//    }
+//// 2016/7/21 [Yoichiro Kamei] add - end
+    QP001PercentageAdder kyouseiAdder = new QP001PercentageAdder();
+    QP001PercentageAdder sameBuildingAdder = new QP001PercentageAdder();
+    QP001PercentageAdder specialAreaAdder = new QP001PercentageAdder();
+    QP001PercentageAdder mountainousAreaAdder = new QP001PercentageAdder();
+    protected List<QP001PercentageAdder> getPercentageAdderList() {
+    	List<QP001PercentageAdder> adderList = new ArrayList<QP001PercentageAdder>();
+    	adderList.add(kyouseiAdder);
+    	adderList.add(sameBuildingAdder);
+    	adderList.add(specialAreaAdder);
+    	adderList.add(mountainousAreaAdder);    	
+    	return adderList;
     }
-// 2016/7/21 [Yoichiro Kamei] add - end
+    //%加算、減算が対象とする基本サービスのKeySetを取得
+    protected Set<String> getPercentageAdderKihonSet() {
+    	Set<String> ret = new HashSet<String>();
+    	ret.addAll(kyouseiAdder.getKihonKeySet());
+    	ret.addAll(sameBuildingAdder.getKihonKeySet());
+    	ret.addAll(specialAreaAdder.getKihonKeySet());
+    	ret.addAll(mountainousAreaAdder.getKihonKeySet());
+    	return ret;
+    }
     
-    //[ID:0000682][Shin Fujihara] add begin 【法改正対応】介護職員処遇改善加算
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end
+    
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+    //住所地特例の記載対応
+    //このレコードが％加算、％減算の対象となる基本サービスの場合
+    //対象の加算のサービスコードを保持
+    private Set<String> parcentageTargetAddCodeSet = new HashSet<String>();
+    public Set<String> getParcentageTargetAddCodeSet() {
+    	return parcentageTargetAddCodeSet;
+    }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
+    
+// [H30.4改正対応][Yoichiro Kamei] 2018/4/10 add - begin
+    public QP001PercentageAddInfo getPercentageAddInfo() {
+    	return kohiManager.getPercentageAddInfo();
+    }
+    
+    //処遇改善加算のレコードの場合、既存の計算処理を行うかどうか
+    private boolean isSyoguCalcOriginal = true;
+    public boolean isSyoguCalcOriginal() {
+		return isSyoguCalcOriginal;
+	}
+	public void setSyoguCalcOriginal(boolean isSyoguCalcOriginal) {
+		this.isSyoguCalcOriginal = isSyoguCalcOriginal;
+	}
+// [H30.4改正対応][Yoichiro Kamei] 2018/4/10 add - end
+    
+//[ID:0000682][Shin Fujihara] add begin 【法改正対応】介護職員処遇改善加算
     //処遇改善単位数の計算に使用する割合
     private int serviceUnit = 0;
     private int serviceStaffUnit = 0;
@@ -697,22 +751,23 @@ public class QP001RecordDetail extends QP001RecordAbstract {
 	}
     // 2016/10/11 [Yoichiro Kamei] add - end
     
-    /**
-     * 特地加算算出用のMapを取得する。
-     * @return
-     */
-    protected VRMap getServiceUnitMap(){
-    	return serviceUnitMap;
-    }
-    
-    /**
-     * 特地加算算出用のMapを設定する。
-     * @param serviceUnitMap
-     */
-    protected void setServiceUnitMap(VRMap serviceUnitMap){
-    	this.serviceUnitMap = serviceUnitMap;
-    }
-    
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 del - begin 
+//    /**
+//     * 特地加算算出用のMapを取得する。
+//     * @return
+//     */
+//    protected VRMap getServiceUnitMap(){
+//    	return serviceUnitMap;
+//    }
+//    
+//    /**
+//     * 特地加算算出用のMapを設定する。
+//     * @param serviceUnitMap
+//     */
+//    protected void setServiceUnitMap(VRMap serviceUnitMap){
+//    	this.serviceUnitMap = serviceUnitMap;
+//    }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 del - end 
     
     //[ID:0000682][Shin Fujihara] add begin 【法改正対応】介護職員処遇改善加算
     /**
@@ -1018,65 +1073,80 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         //[ID:0000682][Shin Fujihara] edit begin 【法改正対応】介護職員処遇改善加算
         //switch (ACCastUtilities.toInt(serviceCode.get("SERVICE_ADD_FLAG"),0)) {
         switch (serviceAddFlag) {
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        //共生型減算対応
+        case 5:
+            serviceUnit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
+            kyouseiAdder.parse(serviceCode, targetServiceDate);
+        	break;
+        //同一建物減算対応
+        case 7:
+            serviceUnit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
+            sameBuildingAdder.parse(serviceCode, targetServiceDate);
+        	break;
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
         //[ID:0000682][Shin Fujihara] edit end 【法改正対応】介護職員処遇改善加算
         //特別地域加算対応
         case 3:
             //[ID:0000682][Shin Fujihara] add begin 【法改正対応】介護職員処遇改善加算
             serviceUnit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
-            //[ID:0000682][Shin Fujihara] add end 【法改正対応】介護職員処遇改善加算
-            //リストを保持していない場合は処理終了
-            if(!serviceCode.containsKey("SERVICE_UNIT_MAP")){
-                break;
-            }
-            
-            VRMap unitMap = (VRMap)serviceCode.get("SERVICE_UNIT_MAP");
-            Iterator it = unitMap.keySet().iterator();
-            String key = "";
-            String offer = VRDateParser.format(ACCastUtilities.toDate(targetServiceDate), "yyyyMMdd");
-            
-            //特別地域加算の単位数、回数を退避する。
-            //レコード確定時に一括集計
-            while(it.hasNext()){
-                key = String.valueOf(it.next());
-                VRMap map = null;
-                Integer times = null;
-                Set<String> offerDay = null;
-                
-                //登録済みのサービスの場合
-                if(serviceUnitMap.containsKey(key)){
-                    map = (VRMap)serviceUnitMap.get(key);
-                    times = (Integer)map.get("TIMES");
-                    offerDay = (Set)map.get("OFFER");
-                } else {
-                    map = new VRHashMap();
-                    map.put("UNIT",unitMap.get(key));
-                    serviceUnitMap.put(key,map);
-                    times = new Integer(0);
-                    offerDay = new HashSet<String>();
-                }
-                
-                //グループ化フラグを参照
-                //日単位
-                if (key.endsWith("2")) {
-                    //既に提供済であればスキップ
-                    if (offerDay.contains(offer)) {
-                        continue;
-                    }
-                    
-                //月単位
-                } else if (key.endsWith("3")) {
-                    //既に提供済であればスキップ
-                    if (!offerDay.isEmpty()) {
-                        continue;
-                    }
-                }
-                
-                //提供日を設定
-                offerDay.add(offer);
-                times = new Integer(times.intValue() + 1);
-                map.put("TIMES",times);
-                map.put("OFFER",offerDay);
-            }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+//            //[ID:0000682][Shin Fujihara] add end 【法改正対応】介護職員処遇改善加算
+//            //リストを保持していない場合は処理終了
+//            if(!serviceCode.containsKey("SERVICE_UNIT_MAP")){
+//                break;
+//            }
+//            
+//            VRMap unitMap = (VRMap)serviceCode.get("SERVICE_UNIT_MAP");
+//            Iterator it = unitMap.keySet().iterator();
+//            String key = "";
+//            String offer = VRDateParser.format(ACCastUtilities.toDate(targetServiceDate), "yyyyMMdd");
+//            
+//            //特別地域加算の単位数、回数を退避する。
+//            //レコード確定時に一括集計
+//            while(it.hasNext()){
+//                key = String.valueOf(it.next());
+//                VRMap map = null;
+//                Integer times = null;
+//                Set<String> offerDay = null;
+//                
+//                //登録済みのサービスの場合
+//                if(serviceUnitMap.containsKey(key)){
+//                    map = (VRMap)serviceUnitMap.get(key);
+//                    times = (Integer)map.get("TIMES");
+//                    offerDay = (Set)map.get("OFFER");
+//                } else {
+//                    map = new VRHashMap();
+//                    map.put("UNIT",unitMap.get(key));
+//                    serviceUnitMap.put(key,map);
+//                    times = new Integer(0);
+//                    offerDay = new HashSet<String>();
+//                }
+//                
+//                //グループ化フラグを参照
+//                //日単位
+//                if (key.endsWith("2")) {
+//                    //既に提供済であればスキップ
+//                    if (offerDay.contains(offer)) {
+//                        continue;
+//                    }
+//                    
+//                //月単位
+//                } else if (key.endsWith("3")) {
+//                    //既に提供済であればスキップ
+//                    if (!offerDay.isEmpty()) {
+//                        continue;
+//                    }
+//                }
+//                
+//                //提供日を設定
+//                offerDay.add(offer);
+//                times = new Integer(times.intValue() + 1);
+//                map.put("TIMES",times);
+//                map.put("OFFER",offerDay);
+//            }
+            specialAreaAdder.parse(serviceCode, targetServiceDate);
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end
             break;
         //中山間地域加算対応
         case 6:
@@ -1097,6 +1167,27 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         }
         //[ID:0000467][Shin Fujihara] 2009/04 edit end 平成21年4月法改正対応
         
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+        // 住所地特例の対応
+        // ％加算、％減算の対象となる基本サービスの場合、対象の加算のサービスコードを保持
+        if (QP001SpecialCase.isRegionStickingServiceForJushotiTokurei
+        		(ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_KIND")))) {
+        	String[] keyArray = new String[] {
+        			QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_3,
+        			QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_6,
+        			QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_5,
+        			QP001PercentageAddInfo.PARCENTAGE_ADD_TARGET_KEY_7
+        	};
+        	for (String key : keyArray) {
+            	if (serviceCode.containsKey(key)) {
+            		String addSvCode = ACCastUtilities.toString(serviceCode.get(key), "");
+                	if (!"".equals(addSvCode)) {
+                		parcentageTargetAddCodeSet.add(addSvCode);
+                	}
+            	}
+        	}
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
         
         // 公費順位の登録を行う。
         kohiManager.setExtraData(targetServiceDate,serviceDetail, patientState, serviceCode,
@@ -1119,6 +1210,10 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         switch(ACCastUtilities.toInt(serviceCode.get("SERVICE_ADD_FLAG"),0)) {
         case 3: //特別地域加算
         case 6: //中山間地域加算
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        case 5: //共生型減算
+        case 7: //同一建物減算
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
             return result;
         }
         
@@ -1386,27 +1481,56 @@ public class QP001RecordDetail extends QP001RecordAbstract {
         //摘要欄の内容を確定
         set_301018(recapitulation.getRecapitulation(getRealDays(),patientState));
         
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        //共生型減算の単位数計算
+        if (kyouseiAdder.hasData()){
+        	int kyouseiBaseUnit = kyouseiAdder.getUnit();
+        	int kyouseiUnit = CareServiceCommon.calcPercentageUnit(kyouseiBaseUnit, get_301009());
+            set_301009(kyouseiUnit);
+            set_301010(1);
+            kohiManager.replaceCalcRate(kyouseiBaseUnit);
+            //根拠となる単位数を退避
+            setAdditionBasisUnit(kyouseiBaseUnit);
+        }
+        //同一建物減算の単位数計算
+        if (sameBuildingAdder.hasData()){
+        	int doituBaseUnit = sameBuildingAdder.getUnit();
+        	int doituUnit = CareServiceCommon.calcPercentageUnit(doituBaseUnit, get_301009());
+            set_301009(doituUnit);
+            set_301010(1);
+            kohiManager.replaceCalcRate(doituBaseUnit);
+            //根拠となる単位数を退避
+            setAdditionBasisUnit(doituBaseUnit);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+        
         //特別地域加算レコードの処理
-        if(serviceUnitMap.size() > 0){
-            int specialUnit = 0;
-            int ratio = get_301009();
-            
-            Iterator it = serviceUnitMap.keySet().iterator();
-            while(it.hasNext()){
-                String key = String.valueOf(it.next());
-                //単位数-回数
-                VRMap map = (VRMap)serviceUnitMap.get(key);
-                Integer unit = (Integer)map.get("UNIT");
-                Integer times = (Integer)map.get("TIMES");
-                
-                //四捨五入
-                //合算を四捨五入するよう変更
-                //specialUnit += (int)Math.round((double)(unit.intValue() * times.intValue() * ratio) / 100d);
-                specialUnit += unit.intValue() * times.intValue();
-            }
-            
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+//        if(serviceUnitMap.size() > 0){
+//            int specialUnit = 0;
+//            int ratio = get_301009();
+//            
+//            Iterator it = serviceUnitMap.keySet().iterator();
+//            while(it.hasNext()){
+//                String key = String.valueOf(it.next());
+//                //単位数-回数
+//                VRMap map = (VRMap)serviceUnitMap.get(key);
+//                Integer unit = (Integer)map.get("UNIT");
+//                Integer times = (Integer)map.get("TIMES");
+//                
+//                //四捨五入
+//                //合算を四捨五入するよう変更
+//                //specialUnit += (int)Math.round((double)(unit.intValue() * times.intValue() * ratio) / 100d);
+//                specialUnit += unit.intValue() * times.intValue();
+//            }
+        if (specialAreaAdder.hasData()) {
+        	int specialUnit = specialAreaAdder.getUnit();
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end
             //set_301009(specialUnit);
-            set_301009((int)Math.round((double)(specialUnit * ratio) / 100d));
+        	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+//            set_301009((int)Math.round((double)(specialUnit * ratio) / 100d));
+        	set_301009((int)Math.round((double)(specialUnit * get_301009()) / 100d));
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end
             set_301010(1);
             
             kohiManager.replaceCalcRate(specialUnit);
@@ -1516,8 +1640,21 @@ public class QP001RecordDetail extends QP001RecordAbstract {
 //                return;
         }
         
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        switch (serviceAddFlag) {
+        //共生型減算、同一建物減算の単位数は０とする
+        case 5:
+        case 7:
+            //単位数を0に変更
+            set_301009(0);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+        
         //加算であれば処理を終了する。
-        if(serviceUnitMap.size() > 0){
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+//        if(serviceUnitMap.size() > 0){
+        if (specialAreaAdder.hasData()) {
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end        	
             return;
         }
         

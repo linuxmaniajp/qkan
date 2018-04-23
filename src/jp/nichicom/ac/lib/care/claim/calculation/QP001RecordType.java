@@ -1603,6 +1603,13 @@ public class QP001RecordType extends QP001RecordAbstract {
         //給付単位数を設定する。
         set_701014(unit + get_701011() + get_701011_temp());
         
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        if (get_701009() > 0 && get_701014() <= 0) {
+        	//計画単位数が小さすぎて、同一建物減算等を合算した場合に給付単位数が０以下になる場合
+        	throw new QP001TotalPlanUnitException(get_701007(), "給付単位数が０以下");
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+        
         //外部利用型使用の場合、処遇改善単位数を転記
         if (externalUse) {
             set_701011(get_701011_temp());
@@ -2292,7 +2299,10 @@ public class QP001RecordType extends QP001RecordAbstract {
 			result = total - kyufu - reduction;
 		} else if ((ratio == 100) && (get_701014() == (unit + tumiageUnit))) {
 		    //公費給付率が100%で公費対象単位数を積み上げた結果がサービス単位数と等しい場合
-		    result = hokenTotal - kyufu - reduction;
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/10 mod - begin
+//			result = hokenTotal - kyufu - reduction;
+		    result = hokenTotal - get_701016() - reduction;
+		    // [H30.4改正対応][Yoichiro Kamei] 2018/4/10 mod - end
 		}else {
 			//合計金額*(公費給付率-保険給付率-)
 		    if (usedRate != 100) {

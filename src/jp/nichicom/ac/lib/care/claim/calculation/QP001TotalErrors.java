@@ -103,6 +103,18 @@ public class QP001TotalErrors {
 	}
 	// 2017/6 [Yoichiro Kamei] add - end
 	
+	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+	private VRList incorrectPlanUnits = new VRArrayList();
+	/**
+	 * 計画単位数不正エラーを登録する。
+	 * @param patient
+	 */
+	public void addIncorrectPlanUnits(VRMap patient) {
+		addErrorArray(getFullName(patient), incorrectPlanUnits);
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+	
 	//private ACDateFormat errorDateFormat = new ACDateFormat("MM月dd日");
 	
 	/**
@@ -211,6 +223,7 @@ public class QP001TotalErrors {
 		if (sjIncorrectInsurers.size() != 0) return true; // add 2016.10 総合事業独自対応
 		if (sjIncorrectLimitOverUnits.size() != 0) return true; // add 2016.10 総合事業独自対応
 		if (sjAfIncorrectCodes.size() != 0) return true; // add 2017.06 AF対応
+		if (incorrectPlanUnits.size() != 0) return true; // add 2018.04 改正対応		
 		
 		
 		return false;
@@ -231,6 +244,7 @@ public class QP001TotalErrors {
 		makeErrorMessage("総合事業で請求できない保険者のサービスが設定されています。", sjIncorrectInsurers, msg);// add 2016.10 総合事業独自対応
 		makeErrorMessage("区分支給超単位数が不正です。実績管理で[総合事業 区分支給超単位数調整]を行ってください。", sjIncorrectLimitOverUnits, msg);// add 2016.10 総合事業独自対応
 		makeErrorMessage("介護予防支援と介護予防ケアマネジメントは同時に登録できません。", sjAfIncorrectCodes, msg);// add 2017.06 AF対応
+		makeErrorMessage("給付単位数が０以下となります。計画単位数を見直してください。", incorrectPlanUnits, msg);// add 2018.04 改正対応		
 		
 		return msg.toString();
 	}

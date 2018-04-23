@@ -355,6 +355,8 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_3_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_4_3 + ","	// 2018.3.27 add
+                    + QkanConstants.CLAIM_STYLE_FORMAT_4_4 + ","	// 2018.3.27 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_5 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_5_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_6 + ","
@@ -366,6 +368,7 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_6_7 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_8 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_9 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_9_2 + ","	// 2018.3.27 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_10
                     );
             }
@@ -402,6 +405,8 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_3_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_4_3 + ","	// 2018.3.27 add
+                    + QkanConstants.CLAIM_STYLE_FORMAT_4_4 + ","	// 2018.3.27 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_5 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_5_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_6 + ","
@@ -416,6 +421,7 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_7_3 + ","	// 2017.6 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_8 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_9 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_9_2 + ","	// 2018.3.27 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_10
                     + "))");
             sb.append(" AND (CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
@@ -430,6 +436,8 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_3_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_4_2 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_4_3 + ","	// 2018.3.27 add
+                    + QkanConstants.CLAIM_STYLE_FORMAT_4_4 + ","	// 2018.3.27 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_5 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_5_2 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_6 + ","
@@ -444,6 +452,7 @@ public class QP001SQL extends QP001State {
                     + QkanConstants.CLAIM_STYLE_FORMAT_7_3 + ","	// 2017.6 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_8 + ","
                     + QkanConstants.CLAIM_STYLE_FORMAT_9 + ","
+                    + QkanConstants.CLAIM_STYLE_FORMAT_9_2 + ","	// 2018.3.27 add
                     + QkanConstants.CLAIM_STYLE_FORMAT_10
                     + "))");
             sb.append(" AND (CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");

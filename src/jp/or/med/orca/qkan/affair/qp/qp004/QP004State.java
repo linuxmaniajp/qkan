@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 上司　和善
- * 作成日: 2009/04/03  日本コンピューター株式会社 上司　和善 新規作成
+ * 作成日: 2018/03/30  日本コンピューター株式会社 上司　和善 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -28,7 +28,56 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp004;
-import java.awt.Container;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
 /**
  * 明細書基本情報編集状態定義(QP004) 
  */
@@ -45,21 +94,7 @@ public class QP004State extends QP004Design {
    */
   public void setState_STATE_TYPE_2() throws Exception {
 
-        getTekiyos().setVisible(true);
-
-        getShinryos().setVisible(false);
-
-        getKyotakuIdouGroup().setVisible(true);
-
-        getShisetsuIdouGroup().setVisible(false);
-
-  }
-
-  /**
-   * 「状態コントロール様式第二の三」の状態に設定します。
-   * @throws Exception 処理例外
-   */
-  public void setState_STATE_TYPE_23() throws Exception {
+        getBaseSummaryArea().setVisible(false);
 
         getTekiyos().setVisible(true);
 
@@ -68,13 +103,6 @@ public class QP004State extends QP004Design {
         getKyotakuIdouGroup().setVisible(true);
 
         getShisetsuIdouGroup().setVisible(false);
-
-        if(getContentsStopReasons().getParent()!=null){
-          Container parentContainer = getContentsStopReasons().getParent();
-          if(parentContainer.getParent()!=null){
-            parentContainer.getParent().remove(parentContainer);
-          }
-        }
 
   }
 
@@ -91,6 +119,8 @@ public class QP004State extends QP004Design {
         getContentsGaihakuDays().getParent().setVisible(false);
 
         getContentsTaishoJotais().getParent().setVisible(false);
+
+        getBaseSummaryArea().setVisible(false);
 
         getTekiyos().setVisible(true);
 
@@ -116,6 +146,8 @@ public class QP004State extends QP004Design {
 
         getContentsTaishoJotais().getParent().setVisible(false);
 
+        getBaseSummaryArea().setVisible(false);
+
         getTekiyos().setVisible(true);
 
         getShinryos().setVisible(false);
@@ -140,6 +172,8 @@ public class QP004State extends QP004Design {
 
         getContentsTaishoJotais().getParent().setVisible(false);
 
+        getBaseSummaryArea().setVisible(false);
+
         getTekiyos().setVisible(true);
 
         getShinryos().setVisible(true);
@@ -159,6 +193,8 @@ public class QP004State extends QP004Design {
         getContentsNyushoDays().getParent().setVisible(true);
 
         getContentsTankiNyushoDays().getParent().setVisible(false);
+
+        getBaseSummaryArea().setVisible(false);
 
         getTekiyos().setVisible(true);
 
@@ -180,6 +216,8 @@ public class QP004State extends QP004Design {
 
         getContentsTankiNyushoDays().getParent().setVisible(false);
 
+        getBaseSummaryArea().setVisible(false);
+
         getTekiyos().setVisible(true);
 
         getShinryos().setVisible(false);
@@ -200,6 +238,8 @@ public class QP004State extends QP004Design {
 
         getContentsTankiNyushoDays().getParent().setVisible(false);
 
+        getBaseSummaryArea().setVisible(false);
+
         getTekiyos().setVisible(true);
 
         getShinryos().setVisible(false);
@@ -219,6 +259,8 @@ public class QP004State extends QP004Design {
         getContentsNyushoDays().getParent().setVisible(true);
 
         getContentsTankiNyushoDays().getParent().setVisible(false);
+
+        getBaseSummaryArea().setVisible(false);
 
         getTekiyos().setVisible(true);
 
@@ -243,6 +285,8 @@ public class QP004State extends QP004Design {
         getContentsGaihakuDays().getParent().setVisible(false);
 
         getContentsTaishoJotais().getParent().setVisible(false);
+
+        getBaseSummaryArea().setVisible(false);
 
         getTekiyos().setVisible(true);
 
@@ -276,6 +320,72 @@ public class QP004State extends QP004Design {
   public void setState_STATE_NYUSYO_SHOW() throws Exception {
 
         getContentsNyushoJotais().setVisible(true);
+
+  }
+
+  /**
+   * 「状態コントロール様式第二の三」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STATE_TYPE_23() throws Exception {
+
+        getBaseSummaryArea().setVisible(false);
+
+        getTekiyos().setVisible(true);
+
+        getShinryos().setVisible(false);
+
+        getKyotakuIdouGroup().setVisible(true);
+
+        getShisetsuIdouGroup().setVisible(false);
+
+  }
+
+  /**
+   * 「状態コントロール様式第四の三及び四の四」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STATE_TYPE_43() throws Exception {
+
+        getContentsNyushoDays().getParent().setVisible(false);
+
+        getContentsTankiNyushoDays().getParent().setVisible(true);
+
+        getContentsGaihakuDays().getParent().setVisible(false);
+
+        getContentsTaishoJotais().getParent().setVisible(false);
+
+        getBaseSummaryArea().setVisible(true);
+
+        getTekiyos().setVisible(true);
+
+        getShinryos().setVisible(false);
+
+        getKyotakuIdouGroup().setVisible(false);
+
+        getShisetsuIdouGroup().setVisible(true);
+
+  }
+
+  /**
+   * 「状態コントロール様式第九の二」の状態に設定します。
+   * @throws Exception 処理例外
+   */
+  public void setState_STATE_TYPE_92() throws Exception {
+
+        getContentsNyushoDays().getParent().setVisible(true);
+
+        getContentsTankiNyushoDays().getParent().setVisible(false);
+
+        getBaseSummaryArea().setVisible(true);
+
+        getTekiyos().setVisible(true);
+
+        getShinryos().setVisible(false);
+
+        getKyotakuIdouGroup().setVisible(false);
+
+        getShisetsuIdouGroup().setVisible(true);
 
   }
 

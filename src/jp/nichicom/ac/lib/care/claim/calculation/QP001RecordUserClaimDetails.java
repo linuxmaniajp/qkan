@@ -1116,6 +1116,19 @@ public class QP001RecordUserClaimDetails extends QP001RecordAbstract {
             }
             //[H20.5 –@‰ü³‘Î‰] fujihara add end
             // 2006.05.09 edit end
+        	// [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/15 add - begin
+        	else if ("7157,7158,7196".indexOf(styleNo) != -1) {
+        		int[] costs = unitCalc.getRecuperationCost(claim);
+        		//“Á’è¡—Ã”ï‚Ì©ŒÈ•‰’S‚ª‘¶İ‚·‚é
+        		if (costs[0] != 0){
+        			setServiceData("“Á’è¡—Ã”ï(‰îŒìˆã—Ã‰@)—˜—pÒ•‰’S",costs[0],claim, false);
+        		}
+        		//“Á•Êf—Ã”ï‚Ì©ŒÈ•‰’S‚ª‘¶İ‚·‚é
+        		if (costs[1] != 0){
+        			setServiceData("“Á•Êf—Ã”ï—˜—pÒ•‰’S",costs[1],claim, false);
+        		}
+        	}
+        	// [H30.4‰ü³‘Î‰][Yoichiro Kamei] 2018/4/15 add - end
         }
         
         if(kohiType == null){

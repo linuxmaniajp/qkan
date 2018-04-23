@@ -454,6 +454,20 @@ public class QO012 extends QO012Event {
                     // パーサを実行して、解析に問題が有った場合はスキップする
                     continue;
                 }
+                //[H30.4 改正対応][Shinobu Hitaka] 2018/04/11 add begin 介護医療院対応
+            } else if (exchangeType.equals("7157")) {
+                // 7157 様式第4-3
+                if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
+                    // パーサを実行して、解析に問題が有った場合はスキップする
+                    continue;
+                }
+            } else if (exchangeType.equals("7158")) {
+                // 7158 様式第4-4
+                if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
+                    // パーサを実行して、解析に問題が有った場合はスキップする
+                    continue;
+                }
+                //[H30.4 改正対応][Shinobu Hitaka] 2018/04/11 add end
             } else if (exchangeType.equals("7164")) {
                 // 7164 様式第5
                 if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
@@ -525,6 +539,14 @@ public class QO012 extends QO012Event {
                     // パーサを実行して、解析に問題が有った場合はスキップする
                     continue;
                 }
+                //[H30.4 改正対応][Shinobu Hitaka] 2018/04/11 add begin 介護医療院対応
+            } else if (exchangeType.equals("7196")) {
+                // 7196 様式第9-2
+                if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
+                    // パーサを実行して、解析に問題が有った場合はスキップする
+                    continue;
+                }
+                //[H30.4 改正対応][Shinobu Hitaka] 2018/04/11 add end
             } else if (exchangeType.equals("71A3")) {
                 // 7193 様式第10
                 if (!dataRecord711Parser(rowIndex, dataRecordMap)) {
@@ -1072,7 +1094,7 @@ public class QO012 extends QO012Event {
             break;
 
         case 4:
-            // レコードタイプ4(特定診療費)
+            // レコードタイプ4（特定診療費）
             if (!dataType711Paser04(rowIndex, returnDataMap)) {
                 return false;
             }
@@ -1086,12 +1108,17 @@ public class QO012 extends QO012Event {
             break;
 //[H27.4 改正対応][Yoichiro Kamei] 2015/03 add begin 住所地特例レコード追加
         case 14:
-            // レコードタイプ14(明細情報（住所地特例）)
+            // レコードタイプ14（明細情報（住所地特例））
             if (!dataType711Paser02(rowIndex, returnDataMap)) {
                 return false;
             }
             break;
-//[H27.4 改正対応][Yoichiro Kamei] 2015/03 add begin
+//[H27.4 改正対応][Yoichiro Kamei] 2015/03 add end
+//[H30.4 改正対応][Shinobu Hitaka] 2018/04 add begin 基本摘要レコード追加
+        case 16:
+            // レコードタイプ16（基本摘要情報）
+            break;
+//[H30.4 改正対応][Shinobu Hitaka] 2018/04 add end
         default:
             // それ以外の場合
             break;

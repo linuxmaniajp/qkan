@@ -47,6 +47,7 @@ import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.table.ACTableCellViewerCustomCell;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.core.ACPDFCreatable;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanSjServiceCodeManager;
 import jp.nichicom.ac.lib.care.claim.servicecode.QkanValidServiceCommon;
@@ -317,7 +318,7 @@ public class QP004 extends QP004Event {
 
 			}
 		}
-
+		
 		// 詳細に受け渡すパラメータを格納、作成する。
 		VRMap parameters = new VRHashMap();
 		parameters.setData("PATIENT_ID", ACCastUtilities.toInteger(getPatientId()));
@@ -375,7 +376,27 @@ public class QP004 extends QP004Event {
 		}
 
 	}
-
+	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+	/**
+	 * 「摘要欄説明を表示」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	@Override
+	protected void baseSummaryTableSelectionChanged(ListSelectionEvent e) throws Exception {
+		if (getBaseSummaryTable().isSelected()) {
+			VRMap selectedRowValueMap = (VRMap) getBaseSummaryTable().getSelectedModelRowValue();
+			getBaseSummaryText().setText(ACCastUtilities.toString(selectedRowValueMap.getData("BASE_SUMMARY_MEMO")));
+		} else {
+			getBaseSummaryText().setText(FIRST_SUMMARY_MEMO);
+		}
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
+	
 	/**
 	 * 「変更フラグを立てる」イベントです。
 	 * 
@@ -401,6 +422,44 @@ public class QP004 extends QP004Event {
 		// tableChangedFlgに1（変更あり）を代入する。
 		setTableChangedFlg(FLAG_ON);
 	}
+	
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+	/**
+	 * 「変更フラグを立てる」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	@Override
+	protected void baseSummaryNaiyoColumnCellEditing(ChangeEvent e) throws Exception {
+		// tableChangedFlgに1（変更あり）を代入する。
+		setTableChangedFlg(FLAG_ON);
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
+
+	// [H30.4改正対応][Shinobu Hitaka] 2018/4/20 add - begin
+	/**
+	 * 「摘要記載説明PDFを表示」イベントです。
+	 * 
+	 * @param e
+	 *            イベント情報
+	 * @throws Exception
+	 *             処理例外
+	 */
+	@Override
+	protected void tekiyoHelpActionPerformed(ActionEvent e) throws Exception {
+		// tekiyo.pdfを開く
+		if (ACFrame.getInstance().getFrameEventProcesser() instanceof ACPDFCreatable) {
+            ACPDFCreatable processer = (ACPDFCreatable) ACFrame.getInstance()
+                    .getFrameEventProcesser();
+
+            // 生成したPDFを開く
+            processer.openPDF("tekiyo.pdf");
+        }
+	}
+	// [H30.4改正対応][Shinobu Hitaka] 2018/4/20 add - end
 
 	public static void main(String[] args) {
 		// デフォルトデバッグ起動
@@ -433,10 +492,13 @@ public class QP004 extends QP004Event {
 		// 請求データを取得するためのwhere句を用意する。
 		// WHERE句
 		
-// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
-//		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
-		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18))";
-// 2015/1/14 [Yoichiro Kamei] mod - end
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod -begin
+//// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+////		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
+//		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18))";
+//// 2015/1/14 [Yoichiro Kamei] mod - end
+		String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18, 19))";
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod -end
 		
 		try {
 			// トランザクションを開始する。
@@ -470,6 +532,8 @@ public class QP004 extends QP004Event {
 			        || getClaimStyleType() == CLAIM_STYLE_TYPE32
 			        || getClaimStyleType() == CLAIM_STYLE_TYPE41
 			        || getClaimStyleType() == CLAIM_STYLE_TYPE42
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE43	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+			        || getClaimStyleType() == CLAIM_STYLE_TYPE44	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
 			        || getClaimStyleType() == CLAIM_STYLE_TYPE51
 			        || getClaimStyleType() == CLAIM_STYLE_TYPE52
 			        || getClaimStyleType() == CLAIM_STYLE_TYPE65
@@ -502,6 +566,16 @@ public class QP004 extends QP004Event {
 			getSinryoTable().setSelectedSortedFirstRow();
 		}
 
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add -begin
+		// 基本摘要レコード集合がnullでない場合
+		// tableModelBaseSummaryに設定する。
+		if (!(getClaimListBaseSummary() == null || getClaimListBaseSummary().isEmpty())) {
+			getTableModelBaseSummary().setAdaptee(getClaimListBaseSummary());
+			getBaseSummaryTable().setSelectedSortedFirstRow();
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add -end
+		
+		
 		// mapを「クライアント領域（contents）」に設定する。
 		// 画面に展開する。
 		bindSource();
@@ -573,11 +647,24 @@ public class QP004 extends QP004Event {
 				}
 				// 2016/10/11 [Yoichiro Kamei] mod - end
 
-				if (new Integer(FLAG_OFF).equals(firstServiceCodeMaster.getData("SUMMARY_FLAG"))) {
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+				int summaryFlg = ACCastUtilities.toInt(firstServiceCodeMaster.getData("SUMMARY_FLAG"), 0);
+				int classType = ACCastUtilities.toInt(firstServiceCodeMaster.getData("CLASS_TYPE"), 0);
+				boolean isTekiyoDisplay = (summaryFlg > 0) && (classType > 0);				
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
+				
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod - begin
+				//if (new Integer(FLAG_OFF).equals(firstServiceCodeMaster.getData("SUMMARY_FLAG"))) {
+				if (!isTekiyoDisplay) {
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod - end
 					// 明細情報レコードをclaimListHideDetail（表示しない明細情報レコード）に追加する。
 					// ループ開始へ戻る。
-					getClaimListHideDetail().addData(claimDataMap);
-				} else if (new Integer(FLAG_ON).equals(firstServiceCodeMaster.getData("SUMMARY_FLAG"))) {
+					getClaimListHideDetail().addData(claimDataMap);					
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod - begin
+				//} else if (new Integer(FLAG_ON).equals(firstServiceCodeMaster.getData("SUMMARY_FLAG"))) {
+				} else {
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod - end	
+				
 					// DBより取得したデータの最初のレコードの摘要欄記載必須フラグ（SUMMARY_FLAG）が1の場合
 					// DBより取得したデータの最初のレコードのデータを、明細情報レコードに下記のKEY/VALUEで設定する。
 					// ・KEY：SERVICE_NAME VALUE：SERVICE_NAME（DBより取得したサービス名称）
@@ -638,6 +725,13 @@ public class QP004 extends QP004Event {
 					case CLAIM_STYLE_TYPE9:
 						param.setData("RECORD_TYPE", "2");
 						break;
+					// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+					case CLAIM_STYLE_TYPE43:
+					case CLAIM_STYLE_TYPE44:
+					case CLAIM_STYLE_TYPE92:
+						param.setData("RECORD_TYPE", "3");
+						break;
+					// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
 				}
 				//[H20.5 法改正対応] fujihara add end
 
@@ -679,6 +773,36 @@ public class QP004 extends QP004Event {
 				getClaimListSpecialClinic().addData(claimDataMap);
 
 			}
+			
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+			// 基本摘要レコードの場合
+			if (new Integer(CATEGORY_NO19).equals(claimDataMap.getData("CATEGORY_NO"))) {
+				// 摘要種類コード
+				String baseSummaryKindCode = ACCastUtilities.toString(claimDataMap.getData("1901007"));
+				if ("01".equals(baseSummaryKindCode)) {
+					//DPCコード６桁
+					claimDataMap.setData("BASE_SUMMARY_NAME", "DPCコード(疾患コード)");
+					claimDataMap.setData("BASE_SUMMARY_MEMO", "傷病名(DPCコード上6桁)を半角で記載します。");
+					claimDataMap.setData("CLASS_TYPE", 1);
+					claimDataMap.setData("CODE_ID", 0);
+				} else if ("02".equals(baseSummaryKindCode)) {
+					//利用者状態等コード
+					claimDataMap.setData("BASE_SUMMARY_NAME", "利用者状態等コード");
+					claimDataMap.setData("BASE_SUMMARY_MEMO", "イからヌまでに適合する患者については状態を記載します。複数の状態に該当する場合は主たる状態のみを記載します。");
+					claimDataMap.setData("CLASS_TYPE", 2);
+					claimDataMap.setData("CODE_ID", 288);					
+				}
+				
+				// 画面表示用にデータを変換する。
+				doChangeTekiyoForDisplayCategory19(claimDataMap);
+				
+				// 基本摘要一覧テーブルの行のコンポーネントの設定を行う。
+				doSetTableRow(claimDataMap, getColumnListBaseSummary(), ACCastUtilities.toInt(claimDataMap.getData("CATEGORY_NO")));
+
+				// 明細情報レコードをclaimListDetailに追加する。
+				getClaimListBaseSummary().addData(claimDataMap);
+			}
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
 
 			// 集計情報レコードの場合（CATEGORY_NO = 7）
 			if (new Integer(CATEGORY_NO7).equals(claimDataMap.getData("CATEGORY_NO"))) {
@@ -691,6 +815,9 @@ public class QP004 extends QP004Event {
 		// columnListSpecialClinicを特定診療費一覧テーブルの「摘要」列に設定する。
 		getTekiyoTekiyoColumn().setCustomCells(getColumnListDetail());
 		getSinryoTekiyoColumn().setCustomCells(getColumnListSpecialClinic());
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+		getBaseSummaryNaiyoColumn().setCustomCells(getColumnListBaseSummary());
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
 	}
 
 	/**
@@ -737,6 +864,19 @@ public class QP004 extends QP004Event {
             setState_STATE_NYUSYO_HIDE();
 		}
 
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+		// 帳票様式第4の3と4の4場合（claimStyleType = 43と44）
+		// 画面のVisible制御を行う。
+		if (getClaimStyleType() == CLAIM_STYLE_TYPE43 || getClaimStyleType() == CLAIM_STYLE_TYPE44) {
+			setState_STATE_TYPE_43();
+			// ・状態ID：STATE_TYPE_43
+            getShinryos().setVisible(true);
+            getShinryos().setText("特別診療費");
+            
+            setState_STATE_NYUSYO_HIDE();
+		}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+
 		// 帳票様式第5の場合（claimStyleType = 5）
 		// 画面のVisible制御を行う。
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE51 || getClaimStyleType() == CLAIM_STYLE_TYPE52) {
@@ -769,8 +909,8 @@ public class QP004 extends QP004Event {
 			setState_STATE_NYUSYO_SHOW();
 		}
 
+		// 帳票様式第9の場合（claimStyleType = 9）
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE9) {
-			// 帳票様式第9の場合（claimStyleType = 9）
 			// 画面のVisible制御を行う。
 			setState_STATE_TYPE_9();
 			// ・状態ID：STATE_TYPE_9
@@ -780,8 +920,21 @@ public class QP004 extends QP004Event {
             setState_STATE_NYUSYO_SHOW();
 		}
 
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+		// 帳票様式第9の2場合（claimStyleType = 92）
+		if (getClaimStyleType() == CLAIM_STYLE_TYPE92) {
+			// 画面のVisible制御を行う。
+			setState_STATE_TYPE_92();
+			// ・状態ID：STATE_TYPE_92
+            getShinryos().setVisible(true);
+            getShinryos().setText("特別診療費");
+            
+            setState_STATE_NYUSYO_SHOW();
+		}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+
+		// 帳票様式第10の場合（claimStyleType = 10）
 		if (getClaimStyleType() == CLAIM_STYLE_TYPE10) {
-			// 帳票様式第10の場合（claimStyleType = 10）
 			// 画面のVisible制御を行う。
 			setState_STATE_TYPE_10();
 			// ・状態ID：STATE_TYPE_10
@@ -950,6 +1103,8 @@ public class QP004 extends QP004Event {
 				        || getClaimStyleType() == CLAIM_STYLE_TYPE32
 				        || getClaimStyleType() == CLAIM_STYLE_TYPE41
 				        || getClaimStyleType() == CLAIM_STYLE_TYPE42
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE43	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+				        || getClaimStyleType() == CLAIM_STYLE_TYPE44	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
 				        || getClaimStyleType() == CLAIM_STYLE_TYPE51
 				        || getClaimStyleType() == CLAIM_STYLE_TYPE52
 				        || getClaimStyleType() == CLAIM_STYLE_TYPE65 
@@ -963,6 +1118,17 @@ public class QP004 extends QP004Event {
 					}
 					saveMap.remove("701008");
 				}
+				
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+		        //基本摘要レコードがnulではない場合
+		        if (!(getClaimListBaseSummary() == null || getClaimListBaseSummary().isEmpty())) {
+		        	Iterator it = getClaimListBaseSummary().listIterator();		        	
+		        	while (it.hasNext()) {
+		        		VRMap row = (VRMap) it.next();
+		        		doChangeTekiyoForUpdateCategory19(row);
+		        	}
+		        }
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
 				
 		        //[ID:0000737][Shin Fujihara] 2012/05 add begin 重度療養管理加算のコード変換
 		        //明細情報レコードがnulではない場合
@@ -1023,6 +1189,7 @@ public class QP004 extends QP004Event {
 				VRList allList = new VRArrayList();
 
 				allList.addAll(getClaimListBasic());
+				allList.addAll(getClaimListBaseSummary()); // [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add
 				allList.addAll(getClaimListDetail());
 				allList.addAll(getClaimListHideDetail());
 				allList.addAll(getClaimListSpecialClinic());
@@ -1031,10 +1198,13 @@ public class QP004 extends QP004Event {
 				// データ登録のためのWHERE句を作成する。
 				// WHERE句
 				
-// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
-//				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
-				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18))";
-// 2015/1/14 [Yoichiro Kamei] mod - end
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod -begin
+//// 2015/1/14 [Yoichiro Kamei] mod - begin 住所地特例対応
+////				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7))";
+//				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18))";
+//// 2015/1/14 [Yoichiro Kamei] mod - end
+				String whereStr = "(PATIENT_ID = " + getPatientId() + ") " + "AND (INSURED_ID = '" + getInsuredId() + "') " + "AND (TARGET_DATE = '" + VRDateParser.format(getTargetDate(), "yyyy-MM-dd") + "') " + "AND (CLAIM_DATE = '" + VRDateParser.format(getClaimDate(), "yyyy-MM-dd") + "') " + "AND (PROVIDER_ID = '" + getProviderId() + "') " + "AND (CLAIM_STYLE_TYPE = " + getClaimStyleType() + ") " + "AND (CATEGORY_NO IN (2, 3, 5, 7, 18, 19))";
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 mod -end
 				
 				// まとめたレコード集合でDBを更新する。
 				QkanCommon.updateClaimDetailCustom(getDBManager(), allList, getTargetDate(), whereStr);
@@ -1049,6 +1219,7 @@ public class QP004 extends QP004Event {
 				// add start 2006.06.06 shin.fujihara [QKAN500:0000152]最新データを画面に反映するよう修整//
 				//保持しているデータを一旦消去
 				getClaimListBasic().clear();
+				getClaimListBaseSummary().clear(); // [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add
 				getClaimListDetail().clear();
 				getClaimListHideDetail().clear();
 				getClaimListSpecialClinic().clear();
@@ -1428,7 +1599,62 @@ public class QP004 extends QP004Event {
 				colomListDetail.add(cell);
 
 				break;
-
+			
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+			case CATEGORY_NO19:
+				// レコードのCLASS_TYPEが1（テキスト）の場合
+				if (new Integer(TEXT).equals(claimDataMap.getData("CLASS_TYPE"))) {
+					// テキストを生成する。
+					ACTextField cellTextField = new ACTextField();
+					cell.setEditor(cellTextField);
+					cellTextField.setMaxLength(20);
+					cellTextField.setByteMaxLength(true);
+					cellTextField.setBindPath("1901008");
+					cell.setEditable(true);
+				} else if (new Integer(COMBO).equals(claimDataMap.getData("CLASS_TYPE"))) {
+					// レコードのCLASS_TYPEが2（コンボ）の場合
+					ACComboBox cellComboBox = new ACComboBox();
+					cellComboBox.setEditable(false);
+	
+					// レコードのCODE_IDを用いて、masterCodeより以下の情報を持つArrayList（コンボの選択肢）を取得する。
+					// ・CONTENT_KEY
+					// ・CONTENT
+					int id = ACCastUtilities.toInt(claimDataMap.getData("CODE_ID"));
+					VRList masterCodeData = QkanCommon.getArrayFromMasterCode(id, "1901008");
+	
+					VRList newList = new VRArrayList();
+					for (int i = 0; i < masterCodeData.size(); i++) {
+						VRMap codeMap = (VRMap) masterCodeData.get(i);
+						codeMap = (VRMap) codeMap.clone();
+						String newKey = ACCastUtilities.toString(VRBindPathParser.get("1901008", codeMap));
+						VRBindPathParser.set("1901008", codeMap, newKey);
+						newList.add(codeMap);
+					}
+					masterCodeData = newList;
+					
+					ACLabel cellLabel = new ACLabel();
+					cellLabel.setFormat(new QkanCustomForClaimCodeMasterFormat(id));
+					cell.setRenderer(cellLabel);
+	
+					// bindPathを"CONTENT"で設定する。
+					// renderBindPathを"CONTENT"で設定する。
+					cellComboBox.setBindPath("1901008");
+					cellComboBox.setFormat(new QkanCustomForClaimCodeMasterFormat(id));
+					cellComboBox.setRenderBindPath("CONTENT");
+	
+					// 取得したArrayListをコンボの選択肢として設定する。
+					cellComboBox.setModel(masterCodeData);
+	
+					// cellのeditorに生成したコンボを追加する。
+					cell.setEditor(cellComboBox);
+					cell.setEditable(true);
+				}
+				
+				// cellをcolumnListに追加する。
+				colomListDetail.add(cell);
+				
+				break;
+			// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
 			default:
 				// 何もしない
 				break;
@@ -1477,6 +1703,17 @@ public class QP004 extends QP004Event {
 		// 初期化した後に格納
 		setTableModelSpecialClinic(new ACTableModelAdapter());
 		getTableModelSpecialClinic().setColumns(tableSpecialClinicColums);
+		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+		String[] tableBaseSummaryColums = new String[3];
+		tableBaseSummaryColums[0] = "1901007"; // 摘要種類コード
+		tableBaseSummaryColums[1] = "BASE_SUMMARY_NAME"; // 名称
+		tableBaseSummaryColums[2] = "1901008"; // 摘要内容
+		setTableModelBaseSummary(new ACTableModelAdapter());
+		getTableModelBaseSummary().setColumns(tableBaseSummaryColums);
+		getBaseSummaryTable().setModel(getTableModelBaseSummary());
+		getBaseSummaryText().setText(FIRST_SUMMARY_MEMO);		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
 
 		// テーブルモデルを各画面テーブルに設定する。
 		// ・tableModelDetail 摘要記載事項一覧テーブル（tekiyoTable）
@@ -1669,6 +1906,8 @@ public class QP004 extends QP004Event {
 		        || getClaimStyleType() == CLAIM_STYLE_TYPE32
 		        || getClaimStyleType() == CLAIM_STYLE_TYPE41
 		        || getClaimStyleType() == CLAIM_STYLE_TYPE42
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE43	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+		        || getClaimStyleType() == CLAIM_STYLE_TYPE44	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
 		        || getClaimStyleType() == CLAIM_STYLE_TYPE51
 		        || getClaimStyleType() == CLAIM_STYLE_TYPE52
 		        || getClaimStyleType() == CLAIM_STYLE_TYPE65
@@ -1687,10 +1926,22 @@ public class QP004 extends QP004Event {
          * スナップショットに使用するデータは全てディープコピーしたリストにする。
          */
         VRList copyClaimListBasic =  QkanValidServiceCommon.deepCopyVRList(getClaimListBasic());
+        VRList copyClaimListBaseSummary = QkanValidServiceCommon.deepCopyVRList(getClaimListBaseSummary()); // [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add
         VRList copyClaimListHideDetail =  QkanValidServiceCommon.deepCopyVRList(getClaimListHideDetail());
         VRList copyClaimListDetail =  QkanValidServiceCommon.deepCopyVRList(getClaimListDetail());
         VRList copyClaimListSpecialClinic = QkanValidServiceCommon.deepCopyVRList(getClaimListSpecialClinic());
-        VRList copyClaimListTotal = QkanValidServiceCommon.deepCopyVRList(getClaimListTotal());
+        VRList copyClaimListTotal = QkanValidServiceCommon.deepCopyVRList(getClaimListTotal());        
+        
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+        //基本摘要レコードがnulではない場合
+        if (!(copyClaimListBaseSummary == null || copyClaimListBaseSummary.isEmpty())) {
+        	Iterator it = copyClaimListBaseSummary.listIterator();		        	
+        	while (it.hasNext()) {
+        		VRMap row = (VRMap) it.next();
+        		doChangeTekiyoForUpdateCategory19(row);
+        	}
+        }
+		// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
         
         //[ID:0000737][Shin Fujihara] 2012/05 add begin 重度療養管理加算のコード変換
         //明細情報レコードがnulではない場合
@@ -1735,6 +1986,7 @@ public class QP004 extends QP004Event {
 		VRList list = new VRArrayList();
 		
 		list.addAll(copyClaimListBasic);
+		list.addAll(copyClaimListBaseSummary); // [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add
 		list.addAll(copyClaimListHideDetail);
 		list.addAll(copyClaimListDetail);
 		list.addAll(copyClaimListSpecialClinic);
@@ -2032,4 +2284,193 @@ public class QP004 extends QP004Event {
 		// [H27.4改正対応][Shinobu Hitaka] 2015/3/23 edit - end
 	}
 	//[ID:0000737][Shin Fujihara] 2012/05 add end
+
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - begin
+	/**
+	 * 「画面表示用にデータ変換」に関する処理を行ないます。
+	 * 基本摘要レコード用
+	 * 
+	 * @throws Exception　処理例外
+	 */
+	public VRMap doChangeTekiyoForDisplayCategory19(VRMap claimDataMap) throws Exception {
+		// 画面表示用にデータ変換
+		
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 288) {
+			return claimDataMap;
+		}
+		
+		String _1901008 = ACCastUtilities.toString(claimDataMap.get("1901008"), "");
+		
+		if (ACTextUtilities.isNullText(_1901008)) {
+			return claimDataMap;
+		}
+		
+		//CODE_ID=288(療養施設の患者状態)の場合
+		if (_1901008.length() > 2) {
+			return claimDataMap;
+		}
+		
+		//画面表示用に値を変換
+		switch(_1901008.charAt(0)) {
+		case 'ｲ':
+			claimDataMap.setData("1901008", "1");
+			break;
+		case 'ﾛ':
+			claimDataMap.setData("1901008", "2");
+			break;
+		case 'ﾊ':
+			switch (_1901008.charAt(1) ) {
+			case 'A':
+				claimDataMap.setData("1901008", "3");
+				break;
+			case 'B':
+				claimDataMap.setData("1901008", "4");
+				break;
+			case 'C':
+				claimDataMap.setData("1901008", "5");
+				break;
+			case 'D':
+				claimDataMap.setData("1901008", "6");
+				break;
+			}
+			break;
+		case 'ﾆ':
+			claimDataMap.setData("1901008", "7");
+			break;
+		case 'ﾎ':
+			claimDataMap.setData("1901008", "8");
+			break;
+		case 'ﾍ':
+			claimDataMap.setData("1901008", "9");
+			break;
+		case 'ﾄ':
+			claimDataMap.setData("1901008", "10");
+			break;
+		case 'ﾁ':
+			claimDataMap.setData("1901008", "11");
+			break;
+		case 'ﾘ':
+			switch (_1901008.charAt(1) ) {
+			case 'A':
+				claimDataMap.setData("1901008", "12");
+				break;
+			case 'B':
+				claimDataMap.setData("1901008", "13");
+				break;
+			case 'C':
+				claimDataMap.setData("1901008", "14");
+				break;
+			case 'D':
+				claimDataMap.setData("1901008", "15");
+				break;
+			case 'E':
+				claimDataMap.setData("1901008", "16");
+				break;
+			case 'F':
+				claimDataMap.setData("1901008", "17");
+				break;
+			case 'G':
+				claimDataMap.setData("1901008", "18");
+				break;
+			case 'H':
+				claimDataMap.setData("1901008", "19");
+				break;
+			}
+			break;
+		case 'ﾇ':
+			claimDataMap.setData("1901008", "20");
+			break;
+		default:
+			claimDataMap.setData("1901008", "");
+			break;
+		}
+		
+		return claimDataMap;
+	}
+	
+	/**
+	 * 「DB更新用にデータ変換」に関する処理を行ないます。
+	 * ※基本摘要レコード用
+	 * 
+	 * @throws Exception
+	 *             処理例外
+	 */
+	public VRMap doChangeTekiyoForUpdateCategory19(VRMap claimDataMap) throws Exception {
+		// DB更新用にデータ変換		
+		if (ACCastUtilities.toInt(claimDataMap.get("CODE_ID"), 0) != 288) {
+			return claimDataMap;
+		}
+		
+		int selectedCode = ACCastUtilities.toInt(claimDataMap.get("1901008"), 0); 
+		String value = "";
+		
+		switch(selectedCode) {
+		case 1:
+			value = "ｲ";
+			break;
+		case 2:
+			value = "ﾛ";
+			break;
+		case 3:
+			value = "ﾊA";
+			break;
+		case 4:
+			value = "ﾊB";
+			break;
+		case 5:
+			value = "ﾊC";
+			break;
+		case 6:
+			value = "ﾊD";
+			break;
+		case 7:
+			value = "ﾆ";
+			break;
+		case 8:
+			value = "ﾎ";
+			break;
+		case 9:
+			value = "ﾍ";
+			break;
+		case 10:
+			value = "ﾄ";
+			break;
+		case 11:
+			value = "ﾁ";
+			break;
+		case 12:
+			value = "ﾘA";
+			break;
+		case 13:
+			value = "ﾘB";
+			break;
+		case 14:
+			value = "ﾘC";
+			break;
+		case 15:
+			value = "ﾘD";
+			break;
+		case 16:
+			value = "ﾘE";
+			break;
+		case 17:
+			value = "ﾘF";
+			break;
+		case 18:
+			value = "ﾘG";
+			break;
+		case 19:
+			value = "ﾘH";
+			break;
+		case 20:
+			value = "ﾇ";
+			break;
+		}
+		
+		claimDataMap.setData("1901008", value);
+		
+		return claimDataMap;
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add - end
+
 }

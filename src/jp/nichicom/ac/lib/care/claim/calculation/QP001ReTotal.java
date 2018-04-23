@@ -279,10 +279,26 @@ public class QP001ReTotal {
                 .equals(style)) {
             systemServiceKind = "12511";
 
+            // 様式第四の三　短期入所療養介護(介護医療院) [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+        } else if (QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804
+                .equals(style)) {
+            systemServiceKind = "204211";
+
+            // 様式第四の四　介護予防短期入所療養介護(介護医療院) [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+        } else if (QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804
+                .equals(style)) {
+            systemServiceKind = "204311";
+
             // 様式第九　介護老人保健施設
         } else if (QP001StyleAbstract.IDENTIFICATION_NO_9_201204.equals(style)) {
             systemServiceKind = "15211";
+
+            // 様式第九　介護医療院 [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+        } else if (QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804
+                .equals(style)) {
+            systemServiceKind = "15511";
         }
+
 
         if (ACTextUtilities.isNullText(systemServiceKind)) {
             return;
@@ -1564,8 +1580,12 @@ public class QP001ReTotal {
 
             String identity = toString(map, "701001");
             // この条件に入る場合は、集計情報レコードは1レコードの場合のみ
+            // [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add 介護医療院（様式4-3,4-4,9-2）を追加
             if (QP001StyleAbstract.IDENTIFICATION_NO_4_201204.equals(identity)
-                    || QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204.equals(identity)) {
+                    || QP001StyleAbstract.IDENTIFICATION_NO_4_2_201204.equals(identity)
+                    || QP001StyleAbstract.IDENTIFICATION_NO_4_3_201804.equals(identity)
+                    || QP001StyleAbstract.IDENTIFICATION_NO_4_4_201804.equals(identity)
+                    || QP001StyleAbstract.IDENTIFICATION_NO_9_2_201804.equals(identity)) {
                 // 様式第四、
                 // 確定処理実行
                 commitEmergency(map);

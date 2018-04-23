@@ -94,6 +94,15 @@ public class QP001PatientState {
     private VRMap abandonedDays = new VRHashMap();
     //2008/09/03 [Shin Fujihara] add - begin 30日超の単位数をPatientStateに保持するよう変更
     
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 add - begin
+    //30日超の共生型減算の計算用
+    //Map<サービス種類コード, Map<サービスコード, QP001PercentageAdder>>
+    Map<String, Map<String, QP001PercentageAdder>> kyouseiAdderKindMap 
+    	= new HashMap<String, Map<String, QP001PercentageAdder>>();
+    //Map<サービスコード, サービスコードマスタ情報>
+    Map<String, Map<String, Object>> kyouseiCodes = new HashMap<String, Map<String, Object>>();
+    // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 add - end
+    
     //[ID:0000734][Shin Fujihara] 2012/04 add start 30日超の処遇改善加算の計算
     private VRMap abandonedUnitAddition = new VRHashMap();
     //[ID:0000734][Shin Fujihara] 2012/04 add end 30日超の処遇改善加算の計算
@@ -464,14 +473,18 @@ public class QP001PatientState {
         sb.append(" AND(CLAIM.PATIENT_ID = " + patient_id + ")");
         sb.append(" AND(CLAIM.PROVIDER_ID = '" + QkanSystemInformation.getInstance().getLoginProviderID() + "')");
         
-        //履歴は、明細情報と特定診療費、訪問看護医療のみでよい
-        //[ID:0000447][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
-        //sb.append(" AND (CLAIM.CATEGORY_NO IN (3,5,13))");
-        //中止理由・入所（院）前の状況コードの引継ぎ仕様追加に伴い、
-        //基本情報レコードも退避
-        sb.append(" AND (CLAIM.CATEGORY_NO IN (2,3,5,13))");
-        //[ID:0000447][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
-        //必要であれば、さらに条件を絞る(例：明細情報レコードのみ etc...)
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 mod - begin
+        // 基本摘要も取得
+//        //履歴は、明細情報と特定診療費、訪問看護医療のみでよい
+//        //[ID:0000447][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
+//        //sb.append(" AND (CLAIM.CATEGORY_NO IN (3,5,13))");
+//        //中止理由・入所（院）前の状況コードの引継ぎ仕様追加に伴い、
+//        //基本情報レコードも退避
+//        sb.append(" AND (CLAIM.CATEGORY_NO IN (2,3,5,13))");
+//        //[ID:0000447][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
+//        //必要であれば、さらに条件を絞る(例：明細情報レコードのみ etc...)   
+        sb.append(" AND (CLAIM.CATEGORY_NO IN (2,3,5,13,19))");
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 mod - end
         
         //先月分の請求情報を退避
         claim = QkanCommon.getClaimDetailCustom(dbm, claimDate, sb.toString());
@@ -1526,6 +1539,59 @@ public class QP001PatientState {
     	return result;
     }
     
+ // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+	/**
+	 * 指定した交換識別番号、摘要種類コードの前月分の基本摘要情報の摘要欄を取得する
+	 * 
+	 * @param styleIdentificationNo
+	 *            交換識別番号
+	 * @param baseSummariKind
+	 *            摘要種類コード
+	 * @return 取得した基本摘要欄記載事項
+	 * @throws Exception
+	 */
+	protected String getLastRecapitulationCategory19(String styleIdentificationNo, String baseSummariKind)
+			throws Exception {
+		String result = "";
+		if ((claim == null) || (claim.size() == 0)) {
+			return result;
+		}
+
+		for (int i = 0; i < claim.size(); i++) {
+			VRMap map = (VRMap) claim.get(i);
+			String lastStyleIdentificationNo = "";
+			String lastBaseSummariKind = "";
+			int categoryNo = ACCastUtilities.toInt(map.get("CATEGORY_NO"), 0);
+
+			// レコード種別が19(基本摘要レコード)以外のレコードは読み飛ばす
+			if (categoryNo != 19) {
+				continue;
+			}
+			// 交換識別番号
+			lastStyleIdentificationNo = ACCastUtilities.toString(map.get("1901001"), "");
+
+			if (!lastStyleIdentificationNo.equals(styleIdentificationNo)) {
+				continue;
+			}
+
+			// 摘要種類コード
+			lastBaseSummariKind = ACCastUtilities.toString(map.get("1901007"), "");
+
+			if (!lastBaseSummariKind.equals(baseSummariKind)) {
+				continue;
+			}
+
+			// 摘要欄を取得
+			if (!ACTextUtilities.isNullText(ACCastUtilities.toString(map.get("1901008"), ""))) {
+				result = ACCastUtilities.toString(map.get("1901008"), "");
+				break;
+			}
+		}
+
+		return result;
+	}
+ // [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
+    
     /**
      * 指定したバインドパスの訪問看護医療前月分の情報を取得する。
      * @param systemBindPath 取得対象のバインドパス
@@ -1627,6 +1693,30 @@ public class QP001PatientState {
         }
         //[ID:0000717][Shin Fujihara] 2012/04 add end 平成24年4月法改正対応
         
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 add - begin
+        // 共生型減算のサービスコードの場合
+        if (CareServiceCommon.isAddPercentageForKyousei(serviceCode)) {        	
+        	//サービスコードを保持（後で計算に使用）
+        	if (!kyouseiCodes.containsKey(key)) {
+        		kyouseiCodes.put(key, serviceCode);
+        	}
+        	if (!kyouseiAdderKindMap.containsKey(serviceCodeKind)) {
+        		kyouseiAdderKindMap.put(serviceCodeKind, new HashMap<String, QP001PercentageAdder>());
+        	}
+        	Map<String, QP001PercentageAdder> kyouseiAdderMap = kyouseiAdderKindMap.get(serviceCodeKind);
+        	//共生型減算の対象となる基本サービスの単位数を保持        	
+        	if (!kyouseiAdderMap.containsKey(key)) {
+        		kyouseiAdderMap.put(key, new QP001PercentageAdder());
+        	}
+        	QP001PercentageAdder kyouseiAdder = kyouseiAdderMap.get(key);
+        	Object targetServiceDate = VRBindPathParser.get("SERVICE_DATE", serviceDetail);
+        	kyouseiAdder.parse(serviceCode, targetServiceDate);
+        	
+        	//以降の処理は行わずリターンする
+        	return;
+        }        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 add - end
+        
     	switch(ACCastUtilities.toInt(serviceCode.get("TOTAL_GROUPING_TYPE"),0)){
     	//2-日単位
     	case 2:
@@ -1674,22 +1764,41 @@ public class QP001PatientState {
     	String key;
     	int unit = 0;
     	//加算のチェック
-    	//特別地域
-    	key = serviceCodeKind + "_3";
-    	if (abandonedUnitAddition.containsKey(key)) {
-    	    serviceCode = (VRMap)abandonedUnitAddition.get(key);
-    	    unit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
-    	    result += (int) Math.round((double) ( result * unit) / 100d);
-    	}
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/23 mod - begin　処遇改善加算以外の％減算はすべて保険請求とするよう変更
+//    	//特別地域
+//    	key = serviceCodeKind + "_3";
+//    	if (abandonedUnitAddition.containsKey(key)) {
+//    	    serviceCode = (VRMap)abandonedUnitAddition.get(key);
+//    	    unit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
+//    	    result += (int) Math.round((double) ( result * unit) / 100d);
+//    	}
+//    	
+//    	//中山間
+//    	key = serviceCodeKind + "_6";
+//        if (abandonedUnitAddition.containsKey(key)) {
+//            serviceCode = (VRMap)abandonedUnitAddition.get(key);
+//            unit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
+//            result += (int) Math.round((double) ( result * unit) / 100d);
+//        }
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/23 mod - end
     	
-    	//中山間
-    	key = serviceCodeKind + "_6";
-        if (abandonedUnitAddition.containsKey(key)) {
-            serviceCode = (VRMap)abandonedUnitAddition.get(key);
-            unit = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
-            result += (int) Math.round((double) ( result * unit) / 100d);
-        }
-        
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/23 add - begin
+    	// 共生型減算の反映
+    	if (kyouseiAdderKindMap.containsKey(serviceCodeKind)) {
+    		Map<String, QP001PercentageAdder> kyouseiAdderMap = kyouseiAdderKindMap.get(serviceCodeKind);
+        	int kyouseiUnit = 0;
+        	for (String svCode : kyouseiAdderMap.keySet()) {
+        		QP001PercentageAdder kyouseiAdder = kyouseiAdderMap.get(svCode);
+        		Map code = kyouseiCodes.get(svCode);
+        		//減算率
+        		int per = ACCastUtilities.toInt(code.get("SERVICE_UNIT"), 0);
+        		int totalUnit = kyouseiAdder.getUnit();
+        		kyouseiUnit += CareServiceCommon.calcPercentageUnit(totalUnit, per);
+        	}
+        	result += kyouseiUnit;
+    	}
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/23 add - end
+    	
         //処遇改善
         key = serviceCodeKind + "_8";
         if (abandonedUnitAddition.containsKey(key)) {

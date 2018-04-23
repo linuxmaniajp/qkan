@@ -32,9 +32,11 @@ package jp.nichicom.ac.lib.care.claim.calculation;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import jp.nichicom.ac.lang.ACCastUtilities;
@@ -303,15 +305,207 @@ public class QP001Style2 extends QP001StyleAbstract{
 		while(it.hasNext()){
 			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
 			for (String key : removeKeys) {
-				// 特別地域加算
-				detail.getServiceUnitMap().remove(key);
-				// 中山間地域等提供加算
-				detail.getMountainousAreaAdder().removeService(key);
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+//				// 特別地域加算
+//				detail.getServiceUnitMap().remove(key);
+//				// 中山間地域等提供加算
+//				detail.getMountainousAreaAdder().removeService(key);
+				List<QP001PercentageAdder> adderList = detail.getPercentageAdderList();
+				for (QP001PercentageAdder adder : adderList) {
+					adder.removeService(key);
+				}
+				// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end
 			}
 		}
 // 2016/7/21 [Yoichiro Kamei] mod - end
     }
     
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - begin
+    /**
+     * 住所地特例レコードの変換を行う
+     * ％加算の対象となる基本サービスの算定状況により住所地特例レコードと通常レコードを変換
+     * @throws Exception
+     */
+    public void convertJushotiTokureiRecord() throws Exception {
+    	//住所地特例対象のサービス種類で％加算、％減算があるか確認
+    	List<String> parsentageAddSerials = new ArrayList<String>();
+		Iterator it = detailMap.keySet().iterator();
+		while (it.hasNext()) {
+			String serial = (String) it.next();
+			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(serial));
+			//住所地特例対象のサービス種類
+			if (QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(detail.get_301007())) {
+				// %加算、減算の場合
+				if (detail.getServiceAddFlag() == 3 
+						|| detail.getServiceAddFlag() == 6 
+						|| detail.getServiceAddFlag() == 5
+						|| detail.getServiceAddFlag() == 7) {
+					parsentageAddSerials.add(serial);
+				}
+			}
+		}
+		if (parsentageAddSerials.isEmpty()) {
+			//対象の％加算、％減算が１件もない場合は処理不要
+			return;
+		}
+    	
+    	Map<String, QP001RecordDetailJushotiTokurei> jushotiTokureiRecs 
+    		= new HashMap<String, QP001RecordDetailJushotiTokurei>();
+    	Map<String, QP001RecordDetail> nomalRecs = new HashMap<String, QP001RecordDetail>();
+		it = detailMap.keySet().iterator();
+		while (it.hasNext()) {
+			QP001RecordDetail detail = ((QP001RecordDetail) detailMap.get(it.next()));
+			
+			//住所地特例対象のサービス種類ではない場合
+			if (!QP001SpecialCase.isRegionStickingServiceForJushotiTokurei(detail.get_301007())) {
+				continue;
+			}
+			
+			//通常レコードと住所地特例レコードに分けてサービスコードを保持する
+            String key = String.valueOf(detail.get_301021()) + "-"
+                    + String.valueOf(detail.get_301022()) + "-"
+                    + String.valueOf(detail.get_301027());
+            
+			if (detail instanceof QP001RecordDetailJushotiTokurei) {
+                // 独自の場合はkeyの先頭に保険者番号を付ける
+                if (QkanSjServiceCodeManager.dokujiKinds.contains(detail.get_301007())) {
+                	String insurerId = ((QP001RecordDetailJushotiTokurei) detail).get_1801018();
+                	key = insurerId + "-" + key;
+                }
+                jushotiTokureiRecs.put(key, (QP001RecordDetailJushotiTokurei) detail);
+			} else {
+				nomalRecs.put(key, detail);
+			}
+		}
+		if (jushotiTokureiRecs.isEmpty()) {
+			//住所地特例レコードが１件もない場合は処理不要
+			return;
+		}
+		
+		//処理対象の％加算、％減算の分ループ
+		for (String serial : parsentageAddSerials) {
+			QP001RecordDetail detail = (QP001RecordDetail) detailMap.get(serial);
+			String addSvCode = detail.get_301007() + detail.get_301008();
+			//変換が必要か確認
+			if (detail instanceof QP001RecordDetailJushotiTokurei) {
+				//処理対象の％加算、％減算が住所地特例のレコードの場合
+				boolean doConvert = true;
+				//対象となる基本サービスのkeySetを取得する
+				Set<String> kihonKeySet = detail.getPercentageAdderKihonSet();
+				for (String kihonKey : kihonKeySet) {
+					//加算の対象となる基本サービスが住所地特例のレコードにあれば変換しない
+					if (jushotiTokureiRecs.containsKey(kihonKey)) {
+						QP001RecordDetail kihonRec = jushotiTokureiRecs.get(kihonKey);
+						if (kihonRec.getParcentageTargetAddCodeSet().contains(addSvCode)) {
+							doConvert = false;
+						}						
+					}
+				}
+				if (doConvert) {
+					//住所地特例⇒通常レコードへ変換
+					detailMap.put(serial, convertToNomal((QP001RecordDetailJushotiTokurei) detail));
+				}
+				
+			} else {
+				//処理対象の％加算、％減算が	通常のレコードの場合
+				boolean doConvert = true;
+				String insurerId = "";
+				//対象となる基本サービスのkeySetを取得する
+				Set<String> kihonKeySet = detail.getPercentageAdderKihonSet();
+				for (String kihonKey : kihonKeySet) {
+					//加算の対象となる基本サービスが通常のレコードにあれば変換しない
+					if (nomalRecs.containsKey(kihonKey)) {
+						QP001RecordDetail kihonRec = nomalRecs.get(kihonKey);
+						if (kihonRec.getParcentageTargetAddCodeSet().contains(addSvCode)) {
+							doConvert = false;
+						}
+					}
+					//加算の対象となる基本サービスが住所地特例のレコードにある場合
+					if (jushotiTokureiRecs.containsKey(kihonKey)) {
+						QP001RecordDetailJushotiTokurei kihonDetail = jushotiTokureiRecs.get(kihonKey);
+						//住所地特例の施設所在保険者番号を取得
+						insurerId = kihonDetail.get_1801018();
+					}
+				}
+				if (doConvert) {
+					//通常⇒住所地特例レコードへ変換
+					if (!"".equals(insurerId)) {
+						//住所地特例⇒通常レコードへ変換
+						detailMap.put(serial, convertToJushotiTokurei(detail, insurerId));
+					}
+				}
+			}
+		}
+    }
+    
+    //住所地特例⇒通常レコードへ変換
+    private QP001RecordDetail convertToNomal(QP001RecordDetailJushotiTokurei detail) {
+    	QP001RecordDetail dest = new QP001RecordDetail();
+    	dest.set_301001(detail.get_301001());
+    	dest.set_301003(detail.get_301003());
+    	dest.set_301004(detail.get_301004());
+    	dest.set_301005(detail.get_301005());
+    	dest.set_301006(detail.get_301006());
+    	dest.set_301007(detail.get_301007());
+    	dest.set_301008(detail.get_301008());
+    	dest.set_301009(detail.get_301009());
+    	dest.set_301010(detail.get_301010());    	
+    	dest.set_301011(detail.get_301011());
+    	dest.set_301012(detail.get_301012());
+    	dest.set_301013(detail.get_301013());
+    	dest.set_301014(detail.get_301014());
+    	dest.set_301015(detail.get_301015());
+    	dest.set_301016(detail.get_301016());
+    	dest.set_301017(detail.get_301017());
+    	dest.set_301018(detail.get_301018());
+    	dest.set_301019(detail.get_301019());
+    	dest.set_301020(detail.get_301020());    	
+    	dest.set_301021(detail.get_301021());
+    	dest.set_301022(detail.get_301022());
+    	dest.set_301023(detail.get_301023());
+    	dest.set_301024(detail.get_301024());
+    	dest.set_301025(detail.get_301025());
+    	dest.set_301026(detail.get_301026());
+    	dest.set_301027(detail.get_301027());
+    	dest.set_301028(detail.get_301028());
+    	dest.set_301029(detail.get_301029());
+    	return dest;
+    }
+    //通常⇒住所地特例レコードへ変換
+    private QP001RecordDetailJushotiTokurei convertToJushotiTokurei(QP001RecordDetail detail, String insurerId) {
+    	QP001RecordDetailJushotiTokurei dest = new QP001RecordDetailJushotiTokurei();
+    	dest.set_301001(detail.get_301001());
+    	dest.set_301003(detail.get_301003());
+    	dest.set_301004(detail.get_301004());
+    	dest.set_301005(detail.get_301005());
+    	dest.set_301006(detail.get_301006());
+    	dest.set_301007(detail.get_301007());
+    	dest.set_301008(detail.get_301008());
+    	dest.set_301009(detail.get_301009());
+    	dest.set_301010(detail.get_301010());    	
+    	dest.set_301011(detail.get_301011());
+    	dest.set_301012(detail.get_301012());
+    	dest.set_301013(detail.get_301013());
+    	dest.set_301014(detail.get_301014());
+    	dest.set_301015(detail.get_301015());
+    	dest.set_301016(detail.get_301016());
+    	dest.set_301017(detail.get_301017());
+    	dest.set_301018(detail.get_301018());
+    	dest.set_301019(detail.get_301019());
+    	dest.set_301020(detail.get_301020());    	
+    	dest.set_301021(detail.get_301021());
+    	dest.set_301022(detail.get_301022());
+    	dest.set_301023(detail.get_301023());
+    	dest.set_301024(detail.get_301024());
+    	dest.set_301025(detail.get_301025());
+    	dest.set_301026(detail.get_301026());
+    	dest.set_301027(detail.get_301027());
+    	dest.set_301028(detail.get_301028());
+    	dest.set_301029(detail.get_301029());    	
+    	dest.set_1801018(insurerId);
+    	return dest;
+    }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/27 add - end
 	
 	/**
 	 * データの確定を行う。
@@ -363,6 +557,11 @@ public class QP001Style2 extends QP001StyleAbstract{
 			//作成した明細情報レコードの確定を行う。
 			((QP001RecordDetail)detailMap.get(it.next())).commitRecord(kohiTypes,patientState);
 		}
+		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/10 add - begin
+		// %加算レコードの確定処理
+		commitParcentageAddRecord(detailMap, kohiTypes);
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/10 add - end
 		
 		//[ID:0000682][Shin Fujihara] add begin 【法改正対応】介護職員処遇改善加算
 		commitTreatmentImprovement(detailMap, patientState, styles, planUnitMap);

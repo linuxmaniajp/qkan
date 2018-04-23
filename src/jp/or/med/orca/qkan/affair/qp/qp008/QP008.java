@@ -129,7 +129,10 @@ public class QP008 extends QP008Event {
                 // Claim-DriveがEの場合
             } else if ("E".equals(drive)) {
                 // 「伝送ISDN(mediumDivisionRadioItem3)」を選択状態にする。
-                settings.put("MEDIUM_DIVISION", new Integer(3));
+                // [H30.4改正対応][Shinobu Hitaka] 2018/4/12 mod - begin　ISDN廃止
+                //settings.put("MEDIUM_DIVISION", new Integer(3));
+                settings.put("MEDIUM_DIVISION", new Integer(4));
+                // [H30.4改正対応][Shinobu Hitaka] 2018/4/12 mod - end
                 
             //[CCCX:1938][Shinobu Hitaka] 2014/10 add begin 平成26年11月インターネット請求開始対応
             } else if ("I".equals(drive)) {
@@ -139,6 +142,10 @@ public class QP008 extends QP008Event {
             //[CCCX:1938][Shinobu Hitaka] 2014/10 add end   平成26年11月インターネット請求開始対応
         }
         //settings.removeData("MEDIUM_DIVISION");
+        
+		// [H30.4改正対応][Shinobu Hitaka] 2018/4/12 add - begin　ISDN廃止
+        getMediumDivisionRadioItem3().setVisible(false);
+		// [H30.4改正対応][Shinobu Hitaka] 2018/4/12 add - end
 
         // 画面の設定を行う。
         setState_INIT();

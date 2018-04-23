@@ -124,6 +124,22 @@ public abstract class QP004Event extends QP004SQL {
             }
         }
     });
+    getBaseSummaryTable().addListSelectionListener(new ListSelectionListener(){
+        private boolean lockFlag = false;
+        public void valueChanged(ListSelectionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                baseSummaryTableSelectionChanged(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
     getTekiyoTekiyoColumn().addCellEditorListener(new CellEditorListener(){
         private boolean lockFlag = false;
         public void editingStopped(ChangeEvent e) {
@@ -168,6 +184,44 @@ public abstract class QP004Event extends QP004SQL {
             }
         }
     });
+    getBaseSummaryNaiyoColumn().addCellEditorListener(new CellEditorListener(){
+        private boolean lockFlag = false;
+        public void editingStopped(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void editingCanceled(ChangeEvent e) {
+          cellEditing(e);
+        }
+        public void cellEditing(ChangeEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                baseSummaryNaiyoColumnCellEditing(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
+    getTekiyoHelp().addActionListener(new ActionListener(){
+        private boolean lockFlag = false;
+        public void actionPerformed(ActionEvent e) {
+            if (lockFlag) {
+                return;
+            }
+            lockFlag = true;
+            try {
+                tekiyoHelpActionPerformed(e);
+            }catch(Throwable ex){
+                ACCommon.getInstance().showExceptionMessage(ex);
+            }finally{
+                lockFlag = false;
+            }
+        }
+    });
 
   }
   //コンポーネントイベント
@@ -201,6 +255,13 @@ public abstract class QP004Event extends QP004SQL {
   protected abstract void sinryoTableSelectionChanged(ListSelectionEvent e) throws Exception;
 
   /**
+   * 「摘要欄説明を表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void baseSummaryTableSelectionChanged(ListSelectionEvent e) throws Exception;
+  
+  /**
    * 「変更フラグを立てる」イベントです。
    * @param e イベント情報
    * @throws Exception 処理例外
@@ -213,6 +274,20 @@ public abstract class QP004Event extends QP004SQL {
    * @throws Exception 処理例外
    */
   protected abstract void sinryoTekiyoColumnCellEditing(ChangeEvent e) throws Exception;
+  
+  /**
+   * 「変更フラグを立てる」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void baseSummaryNaiyoColumnCellEditing(ChangeEvent e) throws Exception;
+
+  /**
+   * 「摘要記載説明PDFを表示」イベントです。
+   * @param e イベント情報
+   * @throws Exception 処理例外
+   */
+  protected abstract void tekiyoHelpActionPerformed(ActionEvent e) throws Exception;
 
   //変数定義
 
@@ -234,6 +309,8 @@ public abstract class QP004Event extends QP004SQL {
   public static final int CLAIM_STYLE_TYPE32	= 10312;
   public static final int CLAIM_STYLE_TYPE41	= 10411;
   public static final int CLAIM_STYLE_TYPE42	= 10412;
+  public static final int CLAIM_STYLE_TYPE43	= 10413;	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+  public static final int CLAIM_STYLE_TYPE44	= 10414;	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
   public static final int CLAIM_STYLE_TYPE51	= 10511;
   public static final int CLAIM_STYLE_TYPE52	= 10512;
   public static final int CLAIM_STYLE_TYPE61	= 10611;
@@ -245,6 +322,7 @@ public abstract class QP004Event extends QP004SQL {
   public static final int CLAIM_STYLE_TYPE67    = 10617;
   public static final int CLAIM_STYLE_TYPE8	= 10811;
   public static final int CLAIM_STYLE_TYPE9	= 10911;
+  public static final int CLAIM_STYLE_TYPE92	= 10912;	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
   public static final int CLAIM_STYLE_TYPE10	= 11011;
 
   public static final int CATEGORY_NO2 = 2;
@@ -252,6 +330,7 @@ public abstract class QP004Event extends QP004SQL {
   public static final int CATEGORY_NO5 = 5;
   public static final int CATEGORY_NO7 = 7;
   public static final int CATEGORY_NO18 = 18;
+  public static final int CATEGORY_NO19 = 19; // [H30.4改正対応][Yoichiro Kamei] 2018/3/30 add
   
   // システムサービス種類コード(5桁)
   public static final String SYSTEM_SERVICE_KIND_CODE = "301021"; 
@@ -275,11 +354,14 @@ public abstract class QP004Event extends QP004SQL {
   private VRList claimListHideDetail = new VRArrayList();
   private VRList claimListSpecialClinic = new VRArrayList();
   private VRList claimListTotal = new VRArrayList();
+  private VRList claimListBaseSummary = new VRArrayList();
   private VRList columnListDetail = new VRArrayList();
   private VRList columnListSpecialClinic = new VRArrayList();
+  private VRList columnListBaseSummary = new VRArrayList();
   private VRList snapList = new VRArrayList();
   private ACTableModelAdapter tableModelDetail;
   private ACTableModelAdapter tableModelSpecialClinic;
+  private ACTableModelAdapter tableModelBaseSummary;
   //getter/setter
 
   /**
@@ -508,6 +590,21 @@ public abstract class QP004Event extends QP004SQL {
   }
 
   /**
+   * claimListBaseSummaryを返します。
+   * @return claimListBaseSummary
+   */
+  protected VRList getClaimListBaseSummary(){
+    return claimListBaseSummary;
+  }
+  /**
+   * claimListBaseSummaryを設定します。
+   * @param claimListBaseSummary claimListBaseSummary
+   */
+  protected void setClaimListBaseSummary(VRList claimListBaseSummary){
+    this.claimListBaseSummary = claimListBaseSummary;
+  }
+  
+  /**
    * columnListDetailを返します。
    * @return columnListDetail
    */
@@ -537,6 +634,21 @@ public abstract class QP004Event extends QP004SQL {
     this.columnListSpecialClinic = columnListSpecialClinic;
   }
 
+  /**
+   * columnListBaseSummaryを返します。
+   * @return columnListBaseSummary
+   */
+  protected VRList getColumnListBaseSummary(){
+    return columnListBaseSummary;
+  }
+  /**
+   * columnListBaseSummaryを設定します。
+   * @param columnListBaseSummary columnListBaseSummary
+   */
+  protected void setColumnListBaseSummary(VRList columnListBaseSummary){
+    this.columnListBaseSummary = columnListBaseSummary;
+  }
+  
   /**
    * snapListを返します。
    * @return snapList
@@ -580,6 +692,21 @@ public abstract class QP004Event extends QP004SQL {
    */
   protected void setTableModelSpecialClinic(ACTableModelAdapter tableModelSpecialClinic){
     this.tableModelSpecialClinic = tableModelSpecialClinic;
+  }
+  
+  /**
+   * tableModelBaseSummaryを返します。
+   * @return tableModelBaseSummary
+   */
+  protected ACTableModelAdapter getTableModelBaseSummary(){
+    return tableModelBaseSummary;
+  }
+  /**
+   * tableModelBaseSummaryを設定します。
+   * @param tableModelBaseSummary tableModelBaseSummary
+   */
+  protected void setTableModelBaseSummary(ACTableModelAdapter tableModelBaseSummary){
+    this.tableModelBaseSummary = tableModelBaseSummary;
   }
 
   //内部関数

@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2012/02/29  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2018/04/12  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 実績確定／請求書出力 (P)
@@ -28,27 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp008;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-
-import jp.nichicom.ac.ACCommon;
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairDialog;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * フォルダ選択画面項目デザイン(QP008) 
  */
@@ -100,7 +130,7 @@ public class QP008Design extends QkanAffairDialog {
   private ACRadioButtonItem mediumDivisionRadioItem3;
 
   private ACRadioButtonItem mediumDivisionRadioItem4;
-  
+
   private ACPanel buttons;
 
   private ACPanel buttonsDetail;
@@ -497,15 +527,15 @@ public class QP008Design extends QkanAffairDialog {
   }
 
   /**
-   * 伝送ソフト受渡し用を取得します。
-   * @return 伝送ソフト受渡し用
+   * 伝送ソフト受渡し用（ＩＳＤＮ）を取得します。
+   * @return 伝送ソフト受渡し用（ＩＳＤＮ）
    */
   public ACRadioButtonItem getMediumDivisionRadioItem3(){
     if(mediumDivisionRadioItem3==null){
 
       mediumDivisionRadioItem3 = new ACRadioButtonItem();
 
-      mediumDivisionRadioItem3.setText("伝送ソフト受渡し用（ISDN）");
+      mediumDivisionRadioItem3.setText("伝送ソフト受渡し用（ＩＳＤＮ）");
 
       mediumDivisionRadioItem3.setGroup(getMediumDivisionRadio());
 
@@ -518,8 +548,8 @@ public class QP008Design extends QkanAffairDialog {
   }
 
   /**
-   * 伝送ソフト受渡し用を取得します。
-   * @return 伝送ソフト受渡し用
+   * 伝送ソフト受渡し用（インターネット）を取得します。
+   * @return 伝送ソフト受渡し用（インターネット）
    */
   public ACRadioButtonItem getMediumDivisionRadioItem4(){
     if(mediumDivisionRadioItem4==null){
@@ -844,17 +874,21 @@ public class QP008Design extends QkanAffairDialog {
   protected void addMediumDivisionRadioModel(){
 
     getMediumDivisionRadioItem1().setButtonIndex(1);
+
     getMediumDivisionRadioModel().add(getMediumDivisionRadioItem1());
 
     getMediumDivisionRadioItem2().setButtonIndex(2);
+
     getMediumDivisionRadioModel().add(getMediumDivisionRadioItem2());
 
     getMediumDivisionRadioItem3().setButtonIndex(3);
+
     getMediumDivisionRadioModel().add(getMediumDivisionRadioItem3());
 
     getMediumDivisionRadioItem4().setButtonIndex(4);
+
     getMediumDivisionRadioModel().add(getMediumDivisionRadioItem4());
-    
+
   }
 
   /**
@@ -872,14 +906,14 @@ public class QP008Design extends QkanAffairDialog {
   }
 
   /**
-   * 伝送ソフト受渡し用に内部項目を追加します。
+   * 伝送ソフト受渡し用（ＩＳＤＮ）に内部項目を追加します。
    */
   protected void addMediumDivisionRadioItem3(){
 
   }
 
   /**
-   * 伝送ソフト受渡し用に内部項目を追加します。
+   * 伝送ソフト受渡し用（インターネット）に内部項目を追加します。
    */
   protected void addMediumDivisionRadioItem4(){
 

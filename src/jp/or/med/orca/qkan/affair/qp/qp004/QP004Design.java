@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 藤原　伸
- * 作成日: 2009/08/31  日本コンピューター株式会社 藤原　伸 新規作成
+ * 作成日: 2018/04/20  日本コンピューター株式会社 藤原　伸 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -28,39 +28,57 @@
  *****************************************************************
  */
 package jp.or.med.orca.qkan.affair.qp.qp004;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.im.InputSubset;
-
-import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
-
-import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.component.ACAffairButton;
-import jp.nichicom.ac.component.ACAffairButtonBar;
-import jp.nichicom.ac.component.ACLabel;
-import jp.nichicom.ac.component.ACRadioButtonItem;
-import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.component.ACValueArrayRadioButtonGroup;
-import jp.nichicom.ac.component.table.ACTable;
-import jp.nichicom.ac.component.table.ACTableCellViewer;
-import jp.nichicom.ac.component.table.ACTableColumn;
-import jp.nichicom.ac.container.ACGroupBox;
-import jp.nichicom.ac.container.ACLabelContainer;
-import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.core.ACAffairInfo;
-import jp.nichicom.ac.core.ACAffairable;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.text.ACCharacterConverter;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
-import jp.nichicom.vr.component.table.VRTableCellViewer;
-import jp.nichicom.vr.component.table.VRTableColumnModel;
-import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRMap;
-import jp.or.med.orca.qkan.affair.QkanAffairContainer;
-import jp.or.med.orca.qkan.affair.QkanFrameEventProcesser;
-import jp.or.med.orca.qkan.component.QkanDateTextField;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.im.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import jp.nichicom.ac.*;
+import jp.nichicom.ac.bind.*;
+import jp.nichicom.ac.component.*;
+import jp.nichicom.ac.component.dnd.*;
+import jp.nichicom.ac.component.dnd.event.*;
+import jp.nichicom.ac.component.event.*;
+import jp.nichicom.ac.component.mainmenu.*;
+import jp.nichicom.ac.component.table.*;
+import jp.nichicom.ac.component.table.event.*;
+import jp.nichicom.ac.container.*;
+import jp.nichicom.ac.core.*;
+import jp.nichicom.ac.filechooser.*;
+import jp.nichicom.ac.io.*;
+import jp.nichicom.ac.lang.*;
+import jp.nichicom.ac.pdf.*;
+import jp.nichicom.ac.sql.*;
+import jp.nichicom.ac.text.*;
+import jp.nichicom.ac.util.*;
+import jp.nichicom.ac.util.adapter.*;
+import jp.nichicom.vr.*;
+import jp.nichicom.vr.bind.*;
+import jp.nichicom.vr.bind.event.*;
+import jp.nichicom.vr.border.*;
+import jp.nichicom.vr.component.*;
+import jp.nichicom.vr.component.event.*;
+import jp.nichicom.vr.component.table.*;
+import jp.nichicom.vr.container.*;
+import jp.nichicom.vr.focus.*;
+import jp.nichicom.vr.image.*;
+import jp.nichicom.vr.io.*;
+import jp.nichicom.vr.layout.*;
+import jp.nichicom.vr.text.*;
+import jp.nichicom.vr.text.parsers.*;
+import jp.nichicom.vr.util.*;
+import jp.nichicom.vr.util.adapter.*;
+import jp.nichicom.vr.util.logging.*;
+import jp.or.med.orca.qkan.*;
+import jp.or.med.orca.qkan.affair.*;
+import jp.or.med.orca.qkan.component.*;
+import jp.or.med.orca.qkan.text.*;
 /**
  * 明細書基本情報編集画面画面項目デザイン(QP004) 
  */
@@ -68,6 +86,8 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   //GUIコンポーネント
 
   private ACAffairButtonBar buttons;
+
+  private ACAffairButton tekiyoHelp;
 
   private ACAffairButton detail;
 
@@ -117,6 +137,8 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem contentsStopReaseonRyoyo;
 
+  private ACRadioButtonItem contentsStopReaseonIryoin;
+
   private ACGroupBox shisetsuIdouGroup;
 
   private QkanDateTextField contentsNyushoDate;
@@ -161,6 +183,8 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem contentsNyushoEtc;
 
+  private ACRadioButtonItem contentsNyushoIryoin;
+
   private ACValueArrayRadioButtonGroup contentsTaishoJotais;
 
   private ACLabelContainer contentsTaishoJotaisContainer;
@@ -181,7 +205,25 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
   private ACRadioButtonItem contentsTaishoJotaiRyoyo;
 
+  private ACRadioButtonItem contentsTaishoJotaiIryoin;
+
   private ACPanel editTekiyoPanel;
+
+  private ACGroupBox baseSummaryArea;
+
+  private ACTextField baseSummaryText;
+
+  private ACTable baseSummaryTable;
+
+  private VRTableColumnModel baseSummaryTableColumnModel;
+
+  private ACTableColumn baseSummaryNoColumn;
+
+  private ACTableColumn baseSummaryKindCodeColumn;
+
+  private ACTableColumn baseSummaryNameColumn;
+
+  private ACTableColumn baseSummaryNaiyoColumn;
 
   private ACGroupBox tekiyos;
 
@@ -243,6 +285,29 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
       addButtons();
     }
     return buttons;
+
+  }
+
+  /**
+   * 摘要表示ボタン(H)を取得します。
+   * @return 摘要表示ボタン(H)
+   */
+  public ACAffairButton getTekiyoHelp(){
+    if(tekiyoHelp==null){
+
+      tekiyoHelp = new ACAffairButton();
+
+      tekiyoHelp.setText("摘要記載(H)");
+
+      tekiyoHelp.setToolTipText("摘要欄記載事項についての説明を表示します。");
+
+      tekiyoHelp.setMnemonic('H');
+
+      tekiyoHelp.setIconPath(ACConstants.ICON_PATH_QUESTION_24);
+
+      addTekiyoHelp();
+    }
+    return tekiyoHelp;
 
   }
 
@@ -531,7 +596,7 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
       contentsStopReasons.setModel(getContentsStopReasonsModel());
 
-      contentsStopReasons.setValues(new int[]{1,3,4,5,6,7,8});
+      contentsStopReasons.setValues(new int[]{1,3,4,5,6,7,8,9});
 
       addContentsStopReasons();
     }
@@ -709,6 +774,27 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
       addContentsStopReaseonRyoyo();
     }
     return contentsStopReaseonRyoyo;
+
+  }
+
+  /**
+   * 9.介護医療院入所を取得します。
+   * @return 9.介護医療院入所
+   */
+  public ACRadioButtonItem getContentsStopReaseonIryoin(){
+    if(contentsStopReaseonIryoin==null){
+
+      contentsStopReaseonIryoin = new ACRadioButtonItem();
+
+      contentsStopReaseonIryoin.setText("9.介護医療院入所");
+
+      contentsStopReaseonIryoin.setGroup(getContentsStopReasons());
+
+      contentsStopReaseonIryoin.setConstraints(VRLayout.FLOW);
+
+      addContentsStopReaseonIryoin();
+    }
+    return contentsStopReaseonIryoin;
 
   }
 
@@ -947,7 +1033,7 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
       contentsNyushoJotais.setModel(getContentsNyushoJotaisModel());
 
-      contentsNyushoJotais.setValues(new int[]{1,2,3,4,5,6,7,8});
+      contentsNyushoJotais.setValues(new int[]{1,2,3,4,5,6,7,8,9});
 
       addContentsNyushoJotais();
     }
@@ -1150,6 +1236,27 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 9.介護医療院を取得します。
+   * @return 9.介護医療院
+   */
+  public ACRadioButtonItem getContentsNyushoIryoin(){
+    if(contentsNyushoIryoin==null){
+
+      contentsNyushoIryoin = new ACRadioButtonItem();
+
+      contentsNyushoIryoin.setText("9.介護医療院");
+
+      contentsNyushoIryoin.setGroup(getContentsNyushoJotais());
+
+      contentsNyushoIryoin.setConstraints(VRLayout.FLOW);
+
+      addContentsNyushoIryoin();
+    }
+    return contentsNyushoIryoin;
+
+  }
+
+  /**
    * 退所(院)後の状態コードを取得します。
    * @return 退所(院)後の状態コード
    */
@@ -1168,7 +1275,7 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
       contentsTaishoJotais.setModel(getContentsTaishoJotaisModel());
 
-      contentsTaishoJotais.setValues(new int[]{1,3,4,5,6,7,8});
+      contentsTaishoJotais.setValues(new int[]{1,3,4,5,6,7,8,9});
 
       addContentsTaishoJotais();
     }
@@ -1350,6 +1457,27 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 9.介護医療院入所を取得します。
+   * @return 9.介護医療院入所
+   */
+  public ACRadioButtonItem getContentsTaishoJotaiIryoin(){
+    if(contentsTaishoJotaiIryoin==null){
+
+      contentsTaishoJotaiIryoin = new ACRadioButtonItem();
+
+      contentsTaishoJotaiIryoin.setText("9.介護医療院入所");
+
+      contentsTaishoJotaiIryoin.setGroup(getContentsTaishoJotais());
+
+      contentsTaishoJotaiIryoin.setConstraints(VRLayout.FLOW);
+
+      addContentsTaishoJotaiIryoin();
+    }
+    return contentsTaishoJotaiIryoin;
+
+  }
+
+  /**
    * 摘要欄編集領域を取得します。
    * @return 摘要欄編集領域
    */
@@ -1361,6 +1489,153 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
       addEditTekiyoPanel();
     }
     return editTekiyoPanel;
+
+  }
+
+  /**
+   * 基本摘要表示領域を取得します。
+   * @return 基本摘要表示領域
+   */
+  public ACGroupBox getBaseSummaryArea(){
+    if(baseSummaryArea==null){
+
+      baseSummaryArea = new ACGroupBox();
+
+      baseSummaryArea.setText("基本摘要");
+
+      addBaseSummaryArea();
+    }
+    return baseSummaryArea;
+
+  }
+
+  /**
+   * 基本摘要コメントを取得します。
+   * @return 基本摘要コメント
+   */
+  public ACTextField getBaseSummaryText(){
+    if(baseSummaryText==null){
+
+      baseSummaryText = new ACTextField();
+
+      baseSummaryText.setBindPath("BASE_SUMMARY_MEMO");
+
+      baseSummaryText.setEditable(false);
+
+      addBaseSummaryText();
+    }
+    return baseSummaryText;
+
+  }
+
+  /**
+   * 基本摘要一覧を取得します。
+   * @return 基本摘要一覧
+   */
+  public ACTable getBaseSummaryTable(){
+    if(baseSummaryTable==null){
+
+      baseSummaryTable = new ACTable();
+
+      baseSummaryTable.setColumnModel(getBaseSummaryTableColumnModel());
+
+      baseSummaryTable.setColumnSort(false);
+
+      addBaseSummaryTable();
+    }
+    return baseSummaryTable;
+
+  }
+
+  /**
+   * 基本摘要一覧カラムモデルを取得します。
+   * @return 基本摘要一覧カラムモデル
+   */
+  protected VRTableColumnModel getBaseSummaryTableColumnModel(){
+    if(baseSummaryTableColumnModel==null){
+      baseSummaryTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addBaseSummaryTableColumnModel();
+    }
+    return baseSummaryTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getBaseSummaryNoColumn(){
+    if(baseSummaryNoColumn==null){
+
+      baseSummaryNoColumn = new ACTableColumn(0, 40);
+
+      baseSummaryNoColumn.setHeaderValue("No.");
+
+      baseSummaryNoColumn.setColumns(4);
+
+      baseSummaryNoColumn.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      baseSummaryNoColumn.setSortable(false);
+
+      addBaseSummaryNoColumn();
+    }
+    return baseSummaryNoColumn;
+
+  }
+
+  /**
+   * 摘要種別コードを取得します。
+   * @return 摘要種別コード
+   */
+  public ACTableColumn getBaseSummaryKindCodeColumn(){
+    if(baseSummaryKindCodeColumn==null){
+
+      baseSummaryKindCodeColumn = new ACTableColumn(0, 100);
+
+      baseSummaryKindCodeColumn.setHeaderValue("摘要種別コード");
+
+      baseSummaryKindCodeColumn.setColumns(9);
+
+      addBaseSummaryKindCodeColumn();
+    }
+    return baseSummaryKindCodeColumn;
+
+  }
+
+  /**
+   * 名称を取得します。
+   * @return 名称
+   */
+  public ACTableColumn getBaseSummaryNameColumn(){
+    if(baseSummaryNameColumn==null){
+
+      baseSummaryNameColumn = new ACTableColumn(1);
+
+      baseSummaryNameColumn.setHeaderValue("名称");
+
+      baseSummaryNameColumn.setColumns(20);
+
+      addBaseSummaryNameColumn();
+    }
+    return baseSummaryNameColumn;
+
+  }
+
+  /**
+   * 摘要内容を取得します。
+   * @return 摘要内容
+   */
+  public ACTableColumn getBaseSummaryNaiyoColumn(){
+    if(baseSummaryNaiyoColumn==null){
+
+      baseSummaryNaiyoColumn = new ACTableColumn(2, 400);
+
+      baseSummaryNaiyoColumn.setHeaderValue("摘要内容");
+
+      baseSummaryNaiyoColumn.setEditable(true);
+
+      addBaseSummaryNaiyoColumn();
+    }
+    return baseSummaryNaiyoColumn;
 
   }
 
@@ -1825,6 +2100,14 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
     buttons.add(getUpdate(), VRLayout.EAST);
     buttons.add(getDetail(), VRLayout.EAST);
+    buttons.add(getTekiyoHelp(), VRLayout.EAST);
+  }
+
+  /**
+   * 摘要表示ボタン(H)に内部項目を追加します。
+   */
+  protected void addTekiyoHelp(){
+
   }
 
   /**
@@ -1973,6 +2256,10 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
     getContentsStopReasonsModel().add(getContentsStopReaseonRyoyo());
 
+    getContentsStopReaseonIryoin().setButtonIndex(9);
+
+    getContentsStopReasonsModel().add(getContentsStopReaseonIryoin());
+
   }
 
   /**
@@ -2021,6 +2308,13 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
    * 8.介護療養型医療施設入院に内部項目を追加します。
    */
   protected void addContentsStopReaseonRyoyo(){
+
+  }
+
+  /**
+   * 9.介護医療院入所に内部項目を追加します。
+   */
+  protected void addContentsStopReaseonIryoin(){
 
   }
 
@@ -2124,6 +2418,10 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
 
     getContentsNyushoJotaisModel().add(getContentsNyushoEtc());
 
+    getContentsNyushoIryoin().setButtonIndex(9);
+
+    getContentsNyushoJotaisModel().add(getContentsNyushoIryoin());
+
   }
 
   /**
@@ -2183,6 +2481,13 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 9.介護医療院に内部項目を追加します。
+   */
+  protected void addContentsNyushoIryoin(){
+
+  }
+
+  /**
    * 退所(院)後の状態コードに内部項目を追加します。
    */
   protected void addContentsTaishoJotais(){
@@ -2221,6 +2526,10 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
     getContentsTaishoJotaiRyoyo().setButtonIndex(8);
 
     getContentsTaishoJotaisModel().add(getContentsTaishoJotaiRyoyo());
+
+    getContentsTaishoJotaiIryoin().setButtonIndex(9);
+
+    getContentsTaishoJotaisModel().add(getContentsTaishoJotaiIryoin());
 
   }
 
@@ -2274,13 +2583,90 @@ public class QP004Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 9.介護医療院入所に内部項目を追加します。
+   */
+  protected void addContentsTaishoJotaiIryoin(){
+
+  }
+
+  /**
    * 摘要欄編集領域に内部項目を追加します。
    */
   protected void addEditTekiyoPanel(){
 
+    editTekiyoPanel.add(getBaseSummaryArea(), VRLayout.NORTH);
+
     editTekiyoPanel.add(getTekiyos(), VRLayout.NORTH);
 
     editTekiyoPanel.add(getShinryos(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 基本摘要表示領域に内部項目を追加します。
+   */
+  protected void addBaseSummaryArea(){
+
+    baseSummaryArea.add(getBaseSummaryText(), VRLayout.NORTH);
+
+    baseSummaryArea.add(getBaseSummaryTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 基本摘要コメントに内部項目を追加します。
+   */
+  protected void addBaseSummaryText(){
+
+  }
+
+  /**
+   * 基本摘要一覧に内部項目を追加します。
+   */
+  protected void addBaseSummaryTable(){
+
+  }
+
+  /**
+   * 基本摘要一覧カラムモデルに内部項目を追加します。
+   */
+  protected void addBaseSummaryTableColumnModel(){
+
+    getBaseSummaryTableColumnModel().addColumn(getBaseSummaryNoColumn());
+
+    getBaseSummaryTableColumnModel().addColumn(getBaseSummaryKindCodeColumn());
+
+    getBaseSummaryTableColumnModel().addColumn(getBaseSummaryNameColumn());
+
+    getBaseSummaryTableColumnModel().addColumn(getBaseSummaryNaiyoColumn());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addBaseSummaryNoColumn(){
+
+  }
+
+  /**
+   * 摘要種別コードに内部項目を追加します。
+   */
+  protected void addBaseSummaryKindCodeColumn(){
+
+  }
+
+  /**
+   * 名称に内部項目を追加します。
+   */
+  protected void addBaseSummaryNameColumn(){
+
+  }
+
+  /**
+   * 摘要内容に内部項目を追加します。
+   */
+  protected void addBaseSummaryNaiyoColumn(){
 
   }
 

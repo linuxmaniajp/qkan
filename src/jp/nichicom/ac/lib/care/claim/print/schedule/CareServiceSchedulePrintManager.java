@@ -2473,56 +2473,58 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 DivedServiceItem.this.outInsureUnits.put(new Integer(CareServiceCommon.calcPercentageUnit(units, per)), replaceValue);
                 // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
                 
-                // 特別地域・小規模の場合の自己負担額を退避
-                int regulationUnit = 0;
-                // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
-                int adjustUnit = 0;
-                int calcUnit = 0;
-                int totalUnit = 0;
-                int result = 0;
-                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
-                if("7".equals(serviceAddFlag)) {
-                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
-                    adjustUnit = units - regulationUnit;
-                    calcUnit = new Integer(CareServiceCommon.calcPercentageUnit(adjustUnit, per));
-                    totalUnit = new Integer(CareServiceCommon.calcPercentageUnit(units, per));
-                    result = totalUnit - calcUnit;
-                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
-                }
-                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 end
-                
-                // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
-                if("3".equals(serviceAddFlag) && regulationHash.containsKey(findKey)) {
-                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
-                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
-                    // 同一建物減算の自己負担も合計する
-                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_7"),0);
-                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end 同一建物減算対応
-                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
-                    adjustUnit = units - regulationUnit;
-                    calcUnit = new Integer((int)Math.round(adjustUnit*per/100.0));
-                    totalUnit = new Integer((int)Math.round(units*per/100.0));
-                    result = totalUnit - calcUnit;
-                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
-                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit end
-                }
-                
-                if("6".equals(serviceAddFlag)) {
-                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
-                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
-                    // 同一建物減算の自己負担も合計する
-                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_7"),0);
-                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end 同一建物減算対応
-                    // 特別地域加算の自己負担も合計する
-                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_3"),0);
-                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
-                    adjustUnit = units - regulationUnit;
-                    calcUnit = new Integer((int)Math.round(adjustUnit*per/100.0));
-                    totalUnit = new Integer((int)Math.round(units*per/100.0));
-                    result = totalUnit - calcUnit;
-                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
-                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit end
-                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 mod - begin 処遇改善加算以外の％減算はすべて保険請求とするよう変更
+//                // 特別地域・小規模の場合の自己負担額を退避
+//                int regulationUnit = 0;
+//                // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
+//                int adjustUnit = 0;
+//                int calcUnit = 0;
+//                int totalUnit = 0;
+//                int result = 0;
+//                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+//                if("7".equals(serviceAddFlag)) {
+//                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+//                    adjustUnit = units - regulationUnit;
+//                    calcUnit = new Integer(CareServiceCommon.calcPercentageUnit(adjustUnit, per));
+//                    totalUnit = new Integer(CareServiceCommon.calcPercentageUnit(units, per));
+//                    result = totalUnit - calcUnit;
+//                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
+//                }
+//                // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 end
+//                
+//                // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add end
+//                if("3".equals(serviceAddFlag) && regulationHash.containsKey(findKey)) {
+//                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+//                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+//                    // 同一建物減算の自己負担も合計する
+//                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_7"),0);
+//                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end 同一建物減算対応
+//                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
+//                    adjustUnit = units - regulationUnit;
+//                    calcUnit = new Integer((int)Math.round(adjustUnit*per/100.0));
+//                    totalUnit = new Integer((int)Math.round(units*per/100.0));
+//                    result = totalUnit - calcUnit;
+//                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
+//                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit end
+//                }
+//                
+//                if("6".equals(serviceAddFlag)) {
+//                    regulationUnit = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+//                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 同一建物減算対応
+//                    // 同一建物減算の自己負担も合計する
+//                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_7"),0);
+//                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end 同一建物減算対応
+//                    // 特別地域加算の自己負担も合計する
+//                    regulationUnit += ACCastUtilities.toInt(regulationHash.get(findKey + "_3"),0);
+//                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit begin
+//                    adjustUnit = units - regulationUnit;
+//                    calcUnit = new Integer((int)Math.round(adjustUnit*per/100.0));
+//                    totalUnit = new Integer((int)Math.round(units*per/100.0));
+//                    result = totalUnit - calcUnit;
+//                    regulationHash.put(findKey + "_" + serviceAddFlag, new Integer(result));
+//                    // [ID:0000728][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 edit end
+//                }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 mod - end
             }
             
 
@@ -2765,19 +2767,29 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 // こうしておかないと、addRedulationRate内での比較に失敗する
                 rec.setData("REGULATION_RATE", mainRegulationRate);
                 
-                if(CareServiceCommon.isAddPercentage(services.code)) {
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 mod - begin　処遇改善加算以外の％減算はすべて保険請求とするよう変更
+//                if(CareServiceCommon.isAddPercentage(services.code)) {
+//                    // ここで自己負担分を挿入する
+//                    findKey = ACCastUtilities.toString(rec.getData("PROVIDER_ID")) + "-" + ACCastUtilities.toString(rec.getData("SYSTEM_SERVICE_KIND_DETAIL"));
+//                    String serviceAddFlag = ACCastUtilities.toString(services.code.get("SERVICE_ADD_FLAG"));
+//                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
+////                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
+//                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "7".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
+//                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
+//                        findKey += "_" + serviceAddFlag;
+//                        etcRegulationRate = ACCastUtilities.toInt(regulationHash.get(findKey),0);
+//                        rec.setData("REGULATION_RATE",etcRegulationRate);
+//                    }
+//                }
+                if (CareServiceCommon.isAddPercentageForSyogu(services.code)) {
                     // ここで自己負担分を挿入する
                     findKey = ACCastUtilities.toString(rec.getData("PROVIDER_ID")) + "-" + ACCastUtilities.toString(rec.getData("SYSTEM_SERVICE_KIND_DETAIL"));
                     String serviceAddFlag = ACCastUtilities.toString(services.code.get("SERVICE_ADD_FLAG"));
-                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - begin
-//                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
-                    if("3".equals(serviceAddFlag) || "6".equals(serviceAddFlag) || "7".equals(serviceAddFlag) || "8".equals(serviceAddFlag)) {
-                    // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 mod - end
-                        findKey += "_" + serviceAddFlag;
-                        etcRegulationRate = ACCastUtilities.toInt(regulationHash.get(findKey),0);
-                        rec.setData("REGULATION_RATE",etcRegulationRate);
-                    }
+                    findKey += "_" + serviceAddFlag;
+                    etcRegulationRate = ACCastUtilities.toInt(regulationHash.get(findKey), 0);
+                    rec.setData("REGULATION_RATE", etcRegulationRate);
                 }
+                // [H30.4改正対応][Yoichiro Kamei] 2018/3/23 mod - end
                 
                 // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
                 boolean teikyoAddFlg = false;
@@ -3182,6 +3194,7 @@ public class CareServiceSchedulePrintManager extends HashMap {
         // [ID:0000444][Tozo TANAKA] 2009/03/18 add end
         // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
         private Map<String, Map> addPersentageCodes = new HashMap();
+        private Map addPersentageTargetCounts30Over = new HashMap();
         // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
         // [ID:0000734][Masahiko.Higuchi] 2012/04 平成24年4月法改正対応 add begin
         private Map syoguMap = new HashMap();
@@ -3333,7 +3346,8 @@ public class CareServiceSchedulePrintManager extends HashMap {
                     }
                 }
                 // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
-                // 居宅療養に特別地域系の加算が追加されたため、管理対象外の基本サービスも対象とする
+                // 管理対象外の基本サービスも対象とする
+                // 同一建物減算が管理対象外となったため、また居宅療養に特別地域系の加算が追加されたため
                 it2 = item.outInsureUnits.entrySet().iterator();
                 while(it2.hasNext()){
                     Map.Entry ent = (Map.Entry)it2.next();
@@ -3350,21 +3364,25 @@ public class CareServiceSchedulePrintManager extends HashMap {
                         // 2016/10/20 [Yoichiro Kamei] mod - end
                     }
                 }
+
                 //共生型減算の３０日超の対応
-                it2 = item.inInsureOver30Units.entrySet().iterator();
-                while(it2.hasNext()){
-                    Map.Entry ent = (Map.Entry)it2.next();
-                    Map code = ((DivedServiceUnit) ent.getValue()).code;
-                    if(CareServiceCommon.isSimpleUnit(code)){
-                        //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
-                        // 2016/10/20 [Yoichiro Kamei] mod - begin 総合事業独自対応
-                        //simpleUnitHash.put(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), new Object[]{code, ent.getKey()});
-                        String itemKey = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
-                        if (QkanSjServiceCodeManager.dokujiCodes.contains(ACCastUtilities.toString(systemServiceKindDetail))) {
-                            itemKey = itemKey + "-" + ACCastUtilities.toString(code.get("INSURER_ID"));
+                if (CareServiceCommon.isKyouseiServiceKind(systemServiceKindDetail) && 
+                		CareServiceCommon.isShortStay(systemServiceKindDetail)) {
+                    it2 = item.inInsureOver30Units.entrySet().iterator();
+                    while(it2.hasNext()){
+                        Map.Entry ent = (Map.Entry)it2.next();
+                        Map code = ((DivedServiceUnit) ent.getValue()).code;
+                        if(CareServiceCommon.isSimpleUnit(code)){
+                            //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                            // 2016/10/20 [Yoichiro Kamei] mod - begin 総合事業独自対応
+                            //simpleUnitHash.put(ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM")), new Object[]{code, ent.getKey()});
+                            String itemKey = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                            if (QkanSjServiceCodeManager.dokujiCodes.contains(ACCastUtilities.toString(systemServiceKindDetail))) {
+                                itemKey = itemKey + "-" + ACCastUtilities.toString(code.get("INSURER_ID"));
+                            }
+                            simpleUnitOver30Hash.put(itemKey, new Object[]{code, ent.getKey()});
+                            // 2016/10/20 [Yoichiro Kamei] mod - end
                         }
-                        simpleUnitOver30Hash.put(itemKey, new Object[]{code, ent.getKey()});
-                        // 2016/10/20 [Yoichiro Kamei] mod - end
                     }
                 }
                 // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
@@ -3489,91 +3507,96 @@ public class CareServiceSchedulePrintManager extends HashMap {
                 item.setSubPersentageUnit(units);
                 
                 // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 共生型の減算対応
-                //給付管理対象の下位コードを全走査
-                units = 0;
-                it2 = item.inInsureUnits.entrySet().iterator();
-                while (it2.hasNext()) {
-                    Map.Entry ent = (Map.Entry) it2.next();
-                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+                if (CareServiceCommon.isKyouseiServiceKind(systemServiceKindDetail)) {
+                    //給付管理対象の下位コードを全走査
+                    units = 0;
+                    it2 = item.inInsureUnits.entrySet().iterator();
+                    while (it2.hasNext()) {
+                        Map.Entry ent = (Map.Entry) it2.next();
+                        Map code = ((DivedServiceUnit) ent.getValue()).code;
 
-                    if(CareServiceCommon.isAddPercentageForKyousei(code)){
-                        //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
-                        String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
-                        Object obj;
-                        //加算サービスコード : 回数等ハッシュ
-                        obj = addPersentageTargetCounts.get(addServiceCodeItem);
-                        if(obj instanceof Map){
-                            //既出の%加算コード
-                            Iterator it3 = ((Map)obj).entrySet().iterator();
-                            while (it3.hasNext()) {
-                                Map.Entry ent3 = (Map.Entry) it3.next();
-                                //基本単位のSERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ }
-                                String simpleCodeItem = ACCastUtilities.toString(ent3.getKey());
-                                //{回数, 地域系%加算ハッシュ}
-                                Object[] unitParam = (Object[])ent3.getValue();
-                                int addCount = ACCastUtilities.toInt(unitParam[0], 0);
-                                
-                                //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
-                                obj = simpleUnitHash.get(simpleCodeItem);
-                                if(obj instanceof Object[]){
-                                    //基本単価を取得する。
-                                    //{コード,単位数}
-                                    Object[] simpleUnitParams = (Object[])obj;
-                                    Map simpleCode = (Map)simpleUnitParams[0];
-                                    int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+                        if(CareServiceCommon.isAddPercentageForKyousei(code)){
+                            //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
+                            String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                            Object obj;
+                            //加算サービスコード : 回数等ハッシュ
+                            obj = addPersentageTargetCounts.get(addServiceCodeItem);
+                            if(obj instanceof Map){
+                                //既出の%加算コード
+                                Iterator it3 = ((Map)obj).entrySet().iterator();
+                                while (it3.hasNext()) {
+                                    Map.Entry ent3 = (Map.Entry) it3.next();
+                                    //基本単位のSERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ }
+                                    String simpleCodeItem = ACCastUtilities.toString(ent3.getKey());
+                                    //{回数, 地域系%加算ハッシュ}
+                                    Object[] unitParam = (Object[])ent3.getValue();
+                                    int addCount = ACCastUtilities.toInt(unitParam[0], 0);
                                     
-                                    int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
-                                    units += targetUnit * addCount;
+                                    //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                                    obj = simpleUnitHash.get(simpleCodeItem);
+                                    if(obj instanceof Object[]){
+                                        //基本単価を取得する。
+                                        //{コード,単位数}
+                                        Object[] simpleUnitParams = (Object[])obj;
+                                        Map simpleCode = (Map)simpleUnitParams[0];
+                                        int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+                                        
+                                        int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
+                                        units += targetUnit * addCount;
+                                    }
                                 }
                             }
                         }
                     }
+                    item.setSubPersentageUnitForKyousei(units, false);
                 }
-                item.setSubPersentageUnitForKyousei(units, false);
              	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
                 
                 // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin 共生型の減算対応(30日超分）
-                //30日超の給付管理対象の下位コードを全走査
-                units = 0;
-                it2 = item.inInsureOver30Units.entrySet().iterator();
-                while (it2.hasNext()) {
-                    Map.Entry ent = (Map.Entry) it2.next();
-                    Map code = ((DivedServiceUnit) ent.getValue()).code;
+                if (CareServiceCommon.isKyouseiServiceKind(systemServiceKindDetail) && 
+                		CareServiceCommon.isShortStay(systemServiceKindDetail)) {
+                	//30日超の給付管理対象の下位コードを全走査
+                    units = 0;
+                    it2 = item.inInsureOver30Units.entrySet().iterator();
+                    while (it2.hasNext()) {
+                        Map.Entry ent = (Map.Entry) it2.next();
+                        Map code = ((DivedServiceUnit) ent.getValue()).code;
 
-                    if(CareServiceCommon.isAddPercentageForKyousei(code)){
-                        //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
-                        String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
-                        Object obj;
-                        //加算サービスコード : 回数等ハッシュ
-                        obj = addPersentageTargetCounts.get(addServiceCodeItem);
-                        if(obj instanceof Map){
-                            //既出の%加算コード
-                            Iterator it3 = ((Map)obj).entrySet().iterator();
-                            while (it3.hasNext()) {
-                                Map.Entry ent3 = (Map.Entry) it3.next();
-                                //基本単位のSERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ }
-                                String simpleCodeItem = ACCastUtilities.toString(ent3.getKey());
-                                //{回数, 地域系%加算ハッシュ}
-                                Object[] unitParam = (Object[])ent3.getValue();
-                                int addCount = ACCastUtilities.toInt(unitParam[0], 0);
-                                
-                                //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
-                                obj = simpleUnitOver30Hash.get(simpleCodeItem);
-                                if(obj instanceof Object[]){
-                                    //基本単価を取得する。
-                                    //{コード,単位数}
-                                    Object[] simpleUnitParams = (Object[])obj;
-                                    Map simpleCode = (Map)simpleUnitParams[0];
-                                    int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+                        if(CareServiceCommon.isAddPercentageForKyousei(code)){
+                            //%加算の対象回数ハッシュから、%加算のコードでハッシュ検索
+                            String addServiceCodeItem = ACCastUtilities.toString(code.get("SERVICE_CODE_ITEM"));
+                            Object obj;
+                            //加算サービスコード : 回数等ハッシュ
+                            obj = addPersentageTargetCounts30Over.get(addServiceCodeItem);
+                            if(obj instanceof Map){
+                                //既出の%加算コード
+                                Iterator it3 = ((Map)obj).entrySet().iterator();
+                                while (it3.hasNext()) {
+                                    Map.Entry ent3 = (Map.Entry) it3.next();
+                                    //基本単位のSERVICE_CODE_ITEM : {回数, 地域系%加算ハッシュ }
+                                    String simpleCodeItem = ACCastUtilities.toString(ent3.getKey());
+                                    //{回数, 地域系%加算ハッシュ}
+                                    Object[] unitParam = (Object[])ent3.getValue();
+                                    int addCount = ACCastUtilities.toInt(unitParam[0], 0);
                                     
-                                    int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
-                                    units += targetUnit * addCount;
+                                    //基本単価のSERVICE_CODE_ITEM : {コード,単位数}
+                                    obj = simpleUnitOver30Hash.get(simpleCodeItem);
+                                    if(obj instanceof Object[]){
+                                        //基本単価を取得する。
+                                        //{コード,単位数}
+                                        Object[] simpleUnitParams = (Object[])obj;
+                                        Map simpleCode = (Map)simpleUnitParams[0];
+                                        int simpleUnit = ACCastUtilities.toInt(simpleUnitParams[1], 0);
+                                        
+                                        int targetUnit = getCalcurater().getReductedUnit(providerID, simpleCode, simpleUnit);
+                                        units += targetUnit * addCount;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                item.setSubPersentageUnitForKyousei(units, true);
+                    item.setSubPersentageUnitForKyousei(units, true);
+                }                
              	// [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end
                 
                 
@@ -4138,7 +4161,7 @@ public class CareServiceSchedulePrintManager extends HashMap {
             // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
             VRMap kyouseiFlagMap = new VRHashMap();
             VRMap sameBuildingFlagMap = new VRHashMap();            
-            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin   
+            // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - end   
             
             // サービスコード取得
             codes = getCalcurater().getServiceCodes(service);
@@ -4489,6 +4512,10 @@ public class CareServiceSchedulePrintManager extends HashMap {
 // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 del - end            
             
             // [H30.4改正対応][Yoichiro Kamei] 2018/3/7 add - begin
+            Map<String, Map> addPersentageTargetCounts = this.addPersentageTargetCounts;
+            if (CareServiceCommon.is30DayOver(service)) {
+            	addPersentageTargetCounts = this.addPersentageTargetCounts30Over;
+            }
 			int serviceDayOfMonth = 100;
 			Date serviceDate = ACCastUtilities.toDate(VRBindPathParser.get("SERVICE_DATE", service), null);
 			if (serviceDate != null) {

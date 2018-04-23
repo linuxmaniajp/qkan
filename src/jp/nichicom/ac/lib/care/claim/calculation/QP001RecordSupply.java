@@ -31,6 +31,7 @@
 package jp.nichicom.ac.lib.care.claim.calculation;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -609,6 +610,12 @@ public class QP001RecordSupply extends QP001RecordAbstract {
      */
     private boolean individualPaymentFlag = false;
     
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+    Map<String, QP001PercentageAdder> kyouseiAdderMap = new HashMap<String, QP001PercentageAdder>();
+    Map<String, Map<String, Object>> kyouseiCodes = new HashMap<String, Map<String, Object>>();
+    private boolean kyouseiTeikyoSumiFlag = false;
+	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+    
     /**
      * データのパースを実行します。
      * 
@@ -629,6 +636,26 @@ public class QP001RecordSupply extends QP001RecordAbstract {
     	boolean result = first;
 
         Object targetServiceDate = VRBindPathParser.get("SERVICE_DATE",serviceDetail);
+        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+        // 共生型減算のサービスコードの場合
+        if (CareServiceCommon.isAddPercentageForKyousei(serviceCode)) {
+        	//サービスコードを保持（後で計算に使用）
+        	String itemCode = ACCastUtilities.toString(serviceCode.get("SERVICE_CODE_ITEM"));
+        	if (!kyouseiCodes.containsKey(itemCode)) {
+        		kyouseiCodes.put(itemCode, serviceCode);
+        	}
+        	//共生型減算の対象となる基本サービスの単位数を保持        	
+        	if (!kyouseiAdderMap.containsKey(itemCode)) {
+        		kyouseiAdderMap.put(itemCode, new QP001PercentageAdder());
+        	}
+        	QP001PercentageAdder kyouseiAdder = kyouseiAdderMap.get(itemCode);
+        	kyouseiAdder.parse(serviceCode, targetServiceDate);
+        	
+        	//以降の処理は行わずリターンする
+        	return result;
+        }        
+        // [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
         
         // データ設定の可否を判定する。
         if(!isSetData(targetServiceDate,serviceCode)){
@@ -983,6 +1010,26 @@ public class QP001RecordSupply extends QP001RecordAbstract {
      * レコード内容の確定を行う。
      */
     protected void commitRecord() throws Exception {
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - begin
+    	if (!kyouseiTeikyoSumiFlag) {
+        	if (!kyouseiAdderMap.isEmpty()) {
+            	// 共生型減算を反映する
+            	int kyouseiUnit = 0;
+            	for (String itemCode : kyouseiAdderMap.keySet()) {
+            		QP001PercentageAdder kyouseiAdder = kyouseiAdderMap.get(itemCode);
+            		Map serviceCode = kyouseiCodes.get(itemCode);
+            		//減算率
+            		int per = ACCastUtilities.toInt(serviceCode.get("SERVICE_UNIT"), 0);
+            		int totalUnit = kyouseiAdder.getUnit();
+            		kyouseiUnit += CareServiceCommon.calcPercentageUnit(totalUnit, per);
+            	}
+            	set_1201020(get_1201020() + kyouseiUnit);
+            	//このメソッドが２回呼ばれるので、再度減算分を適用しないようにする
+            	kyouseiTeikyoSumiFlag = true;
+        	}
+    	}
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 add - end
+    	
         //自費調整額を反映させたか確認する。
         if(!individualPaymentFlag){
             //自費調整総額を反映

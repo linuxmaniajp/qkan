@@ -239,13 +239,25 @@ public class SelfPaymentNumberCalcurater {
         Set<Date> keijosumiDates = new HashSet<Date>();
         
         //積み上げ対象となるサービスの総単位数
-        int totalUnit = parseServiceList(serviceCode, targetProviderId);
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - begin 共生型減算対応
+//      int totalUnit = parseServiceList(serviceCode, targetProviderId);
+        KyouseiUnitCalcurater kyouseiCalc = new KyouseiUnitCalcurater();
+        int totalUnit = parseServiceList(serviceCode, targetProviderId, kyouseiCalc);
+		// 共生型減算の減算単位数を計算する
+        int totalKyouseiUnit = 0;
+		if (kyouseiCalc.hasService()) {
+			kyouseiCalc.calcKyouseiUnit();
+			totalKyouseiUnit = kyouseiCalc.getTotalKyouseiUnit();
+			//単位数の合計に共生型の減算を反映させる
+			totalUnit += totalKyouseiUnit;
+		}
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - end
         
-        // [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
-        // ソートはparseServiceListメソッド内で行うよう変更
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - begin 共生型減算対応
 //        // サービスを時系列でソートする
 //        Collections.sort(this.targetServiceList, new ServiceDateTimeLineComparator());
-        // [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
+        Collections.sort(this.targetServiceList, new ServiceDateTimeLineComparator(ADD_UNIT_NAME));
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - end
         
         //限度額オーバーを判定する単位数
         int limitPoint = totalUnit - limitOverUnit;
@@ -253,6 +265,10 @@ public class SelfPaymentNumberCalcurater {
         int limitInNum = 0; //限度内としての回数
         int limitOverNum = 0; //限度外としての回数
         int tumiageUnit = 0; //積み上げ中の単位数
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - begin 共生型減算対応
+        // あらかじめ、共生型減算の単位数を反映しておく（マイナス値からのスタート）
+        tumiageUnit += totalKyouseiUnit;
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - end
         boolean overFlg = false;
         if (limitPoint == 0) {
             //限度額を使い切っているのでオーバーとみなす
@@ -347,12 +363,13 @@ public class SelfPaymentNumberCalcurater {
 	
 	// 全体のサービスリストから積み上げ対象となるサービスのリストに移す。
 	// 積み上げ対象となるサービスの単位数を合計して返す。
-	private int parseServiceList(Map<String, Object> serviceCode, String targetProviderId) throws Exception {
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - begin 共生型減算対応
+//	private int parseServiceList(Map<String, Object> serviceCode, String targetProviderId) throws Exception {
+	private int parseServiceList(Map<String, Object> serviceCode, String targetProviderId
+			, KyouseiUnitCalcurater kyouseiCalc) throws Exception {
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - end
 		int totalUnit = 0;
 		targetServiceList = new ArrayList<Map<String, Object>>();
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - begin 共生型減算対応
-		List<Map<String, Object>> filteredList = new ArrayList<Map<String, Object>>();
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - end
 		
 		String targetServiceKind = ACCastUtilities.toString(serviceCode.get("SYSTEM_SERVICE_KIND_DETAIL"));
 		Map[] totalGroupingCache = new Map[] { new HashMap(), new HashMap() };
@@ -369,33 +386,13 @@ public class SelfPaymentNumberCalcurater {
 				//30日超であれば、対象外なのでスキップ
 				continue;
 			}
-			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - begin 共生型減算対応
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - begin 共生型減算対応
 //			//サービスからコード集合を取得して、支給限度額管理対象の単位数の合計を求める
 //			int unit = calcurater.getReductedUnit((VRMap) service, false, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE, totalGroupingCache);
-//			//単位数0の場合は、算定単位「1日につき」を1日に2回以上算定している場合等なので、
-//			//算定対象外のサービスとみなして、0でなければ積み上げ対象に追加
-//			if (unit != 0) {
-//				service.put(ADD_UNIT_NAME, unit);
-//				totalUnit += unit;
-//				
-//				//積み上げ対象となるサービスのリストに移す
-//				targetServiceList.add(service);
-//			}
-			//一旦、対象サービスを格納する
-			filteredList.add(service);
-			// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 mod - end
-		}
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - begin 共生型減算対応
-		// 時系列でソートする
-		Collections.sort(filteredList, new ServiceDateTimeLineComparator(ADD_UNIT_NAME));
-		
-		// 単位数を取得する
-		KyouseiUnitCalcurater kyouseiCalc = new KyouseiUnitCalcurater();
-		for (Map<String, Object> service : filteredList) {
-			//サービスからコード集合を取得して、支給限度額管理対象の単位数の合計を求める
 			int unit = calcurater.getReductedUnit((VRMap) service, false
 					, CareServiceCodeCalcurater.CALC_MODE_IN_LIMIT_AMOUNT_OR_OUTER_SERVICE
 					, totalGroupingCache, kyouseiCalc);
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - end
 			//単位数0の場合は、算定単位「1日につき」を1日に2回以上算定している場合等なので、
 			//算定対象外のサービスとみなして、0でなければ積み上げ対象に追加
 			if (unit != 0) {
@@ -404,19 +401,8 @@ public class SelfPaymentNumberCalcurater {
 				
 				//積み上げ対象となるサービスのリストに移す
 				targetServiceList.add(service);
-			}
-		}
-		// 共生型減算の減算単位数をADD_UNIT_NAMEに保持している単位数へ反映する
-		if (kyouseiCalc.hasService()) {
-			kyouseiCalc.calcKyouseiUnit(ADD_UNIT_NAME);
-			//合計単位数を再計算する
-			totalUnit = 0;
-			for (Map<String, Object> service : targetServiceList) {
-				int unit = ACCastUtilities.toInt(service.get(ADD_UNIT_NAME), 0);
-				totalUnit += unit;
 			}			
 		}
-		// [H30.4改正対応][Yoichiro Kamei] 2018/3/14 add - end
 		
 		return totalUnit;
 	}

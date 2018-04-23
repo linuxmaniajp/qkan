@@ -227,11 +227,20 @@ public class QP001CSVCreator {
                 	}
                 	if (QkanConstants.CLAIM_STYLE_FORMAT_2_3 == claimStypeType ||
                 			QkanConstants.CLAIM_STYLE_FORMAT_7_3 == claimStypeType) {
-                        //総合事業の場合は社福軽減のデータは出力しない
-                		int categoryNo = ACCastUtilities.toInt(row.get("CATEGORY_NO"), 0);
-                        if (categoryNo == QkanConstants.CATEGORY_NO_SOCIAL_WELFARE_REDUCE) {
-                            continue;
-                        }
+                		// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - begin　様式２－３の場合は社福軽減のデータ出力
+//                        //総合事業の場合は社福軽減のデータは出力しない
+//                		int categoryNo = ACCastUtilities.toInt(row.get("CATEGORY_NO"), 0);
+//                        if (categoryNo == QkanConstants.CATEGORY_NO_SOCIAL_WELFARE_REDUCE) {
+//                            continue;
+//                        }                		
+                		if (QkanConstants.CLAIM_STYLE_FORMAT_7_3 == claimStypeType) {
+                			// 様式７－３の場合は社福軽減のデータは出力しない
+                    		int categoryNo = ACCastUtilities.toInt(row.get("CATEGORY_NO"), 0);
+                            if (categoryNo == QkanConstants.CATEGORY_NO_SOCIAL_WELFARE_REDUCE) {
+                                continue;
+                            }
+                		}
+                		// [H30.4改正対応][Yoichiro Kamei] 2018/4/4 mod - end
                 		claimListSogo.add(row);
                 	} else {
                 		claimListTmp.add(row);
@@ -897,6 +906,39 @@ public class QP001CSVCreator {
               }
 //2017/6 [Yoichiro Kamei] mod - end AF対応
               
+            //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+			} else if (map.containsKey("1901001")) {
+				// 空レコード対応
+				if (ACTextUtilities.isNullText(map.get("1901008"))) {
+					continue;
+				}
+				compCode = ACCastUtilities.toString(map.get("1901001"));
+
+				// サービス提供年月6桁(YYYYMM)
+				sortkey.append(map.get("1901003"));
+				sortkey.append("-");
+				// 交換情報識別番号4桁
+				sortkey.append(map.get("1901001"));
+				sortkey.append("-");
+				// 証記載保険者番号8桁
+				sortkey.append(map.get("1901005"));
+				sortkey.append("-");
+				// 被保険者番号10桁
+				sortkey.append(map.get("1901006"));
+				sortkey.append("-");
+
+				// レコード種別コード2桁(16を設定)
+				sortkey.append(map.get("1901002"));
+				sortkey.append("-");
+				// 事業所番号10桁
+				sortkey.append(map.get("1901004"));
+				sortkey.append("-");
+				// 摘要種類コード2桁
+				sortkey.append(map.get("1901007"));
+				
+                //CSV出力用のデータを生成
+                csvData = makeBaseSummaryRecord(map);
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
 // 2014/12/24 [Yoichiro Kamei] add - end
 	        } else {
             	continue;
@@ -2707,6 +2749,46 @@ public class QP001CSVCreator {
         return sb.toString();
     }
  // 2014/12/24 [Yoichiro Kamei] add - end 
+    
+ //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - begin
+    /**
+     * 「基本摘要情報レコードデータ文字列作成」に関する処理を行ないます。
+     * 
+     * @throws Exception
+     *             処理例外
+     */
+    public String makeBaseSummaryRecord(VRMap map) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        // 以下の文字列をカンマ区切りで生成する。
+        // 交換情報識別番号4桁(SYSTEM_BIND_PATH:1901001)
+        sb.append("\"");
+        sb.append(getData(map,"1901001"));
+        sb.append(spliter);
+        // レコード種別コード2桁(SYSTEM_BIND_PATH:1901002)
+        sb.append(getData(map,"1901002"));
+        sb.append(spliter);
+        // サービス提供年月6桁(YYYYMM)(SYSTEM_BIND_PATH:1901003)
+        sb.append(getData(map,"1901003"));
+        sb.append(spliter);
+        // 事業所番号10桁(SYSTEM_BIND_PATH:1901004)
+        sb.append(getData(map,"1901004"));
+        sb.append(spliter);
+        // 証記載保険者番号8桁(SYSTEM_BIND_PATH:1901005)
+        sb.append(insureNoFormat.format(ACCastUtilities.toLong(getData(map,"1901005"),0)));
+        sb.append(spliter);
+        // 被保険者番号10桁(SYSTEM_BIND_PATH:1901006)
+        sb.append(getData(map,"1901006"));
+        sb.append(spliter);
+        // 摘要種類コード2桁(SYSTEM_BIND_PATH:1901007)
+        sb.append(getData(map,"1901007"));
+        sb.append(spliter);
+        // 内容 20桁(SYSTEM_BIND_PATH:1901008)
+        sb.append(getData(map,"1901008"));        
+        sb.append("\"");
+        
+        return sb.toString();
+    }
+ //[H30.4改正対応][Yoichiro Kamei] 2018/4/2 add - end
     
  // 2017/6 [Yoichiro Kamei] add - begin AF対応
     /**

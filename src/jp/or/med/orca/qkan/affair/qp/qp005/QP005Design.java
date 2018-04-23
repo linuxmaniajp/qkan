@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 樋口　雅彦
- * 作成日: 2015/03/13  日本コンピューター株式会社 樋口　雅彦 新規作成
+ * 作成日: 2018/04/05  日本コンピューター株式会社 樋口　雅彦 新規作成
  * 更新日: ----/--/--
  * システム 給付管理台帳 (Q)
  * サブシステム 請求データ作成 (P)
@@ -676,6 +676,42 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   private ACTableColumn detailsJushotiTokureiInfoRevisionTablecolumn2;
 
   private ACTableColumn detailsJushotiTokureiInfoRevisionTablecolumn3;
+
+  private ACPanel baseSummaryInfos;
+
+  private ACPanel baseSummaryPanel;
+
+  private ACLabel baseSummaryLabel;
+
+  private ACTable baseSummaryInfoTable;
+
+  private VRTableColumnModel baseSummaryInfoTableColumnModel;
+
+  private ACTableColumn baseSummaryInfoTablecolumn0;
+
+  private ACTableColumn baseSummaryInfoTablecolumn1;
+
+  private ACTableColumn baseSummaryInfoTablecolumn2;
+
+  private ACPanel baseSummaryInfoRevisionPanel;
+
+  private ACLabel baseSummaryInfoRevisionLabel;
+
+  private ACLabel baseSummaryInfoRevision;
+
+  private ACIntegerCheckBox baseSummaryInfoRevisionCheck;
+
+  private ACTable baseSummaryInfoRevisionTable;
+
+  private VRTableColumnModel baseSummaryInfoRevisionTableColumnModel;
+
+  private ACTableColumn baseSummaryInfoRevisionTablecolumn0;
+
+  private ACTableColumn baseSummaryInfoRevisionTablecolumn1;
+
+  private ACTableColumn baseSummaryInfoRevisionTablecolumn2;
+
+  private ACTableColumn baseSummaryInfoRevisionTablecolumn3;
 
   //getter
 
@@ -5784,6 +5820,318 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
   }
 
   /**
+   * 基本摘要情報領域を取得します。
+   * @return 基本摘要情報領域
+   */
+  public ACPanel getBaseSummaryInfos(){
+    if(baseSummaryInfos==null){
+
+      baseSummaryInfos = new ACPanel();
+
+      addBaseSummaryInfos();
+    }
+    return baseSummaryInfos;
+
+  }
+
+  /**
+   * 基本摘要情報パネルを取得します。
+   * @return 基本摘要情報パネル
+   */
+  public ACPanel getBaseSummaryPanel(){
+    if(baseSummaryPanel==null){
+
+      baseSummaryPanel = new ACPanel();
+
+      addBaseSummaryPanel();
+    }
+    return baseSummaryPanel;
+
+  }
+
+  /**
+   * 基本摘要情報ラベルを取得します。
+   * @return 基本摘要情報ラベル
+   */
+  public ACLabel getBaseSummaryLabel(){
+    if(baseSummaryLabel==null){
+
+      baseSummaryLabel = new ACLabel();
+
+      baseSummaryLabel.setText("基本摘要情報");
+
+      addBaseSummaryLabel();
+    }
+    return baseSummaryLabel;
+
+  }
+
+  /**
+   * 基本摘要情報テーブルを取得します。
+   * @return 基本摘要情報テーブル
+   */
+  public ACTable getBaseSummaryInfoTable(){
+    if(baseSummaryInfoTable==null){
+
+      baseSummaryInfoTable = new ACTable();
+
+      baseSummaryInfoTable.setColumnModel(getBaseSummaryInfoTableColumnModel());
+
+      baseSummaryInfoTable.setColumnSort(false);
+
+      addBaseSummaryInfoTable();
+    }
+    return baseSummaryInfoTable;
+
+  }
+
+  /**
+   * 基本摘要情報テーブルカラムモデルを取得します。
+   * @return 基本摘要情報テーブルカラムモデル
+   */
+  protected VRTableColumnModel getBaseSummaryInfoTableColumnModel(){
+    if(baseSummaryInfoTableColumnModel==null){
+      baseSummaryInfoTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addBaseSummaryInfoTableColumnModel();
+    }
+    return baseSummaryInfoTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getBaseSummaryInfoTablecolumn0(){
+    if(baseSummaryInfoTablecolumn0==null){
+
+      baseSummaryInfoTablecolumn0 = new ACTableColumn(0, 30);
+
+      baseSummaryInfoTablecolumn0.setHeaderValue("　");
+
+      baseSummaryInfoTablecolumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      baseSummaryInfoTablecolumn0.setSortable(false);
+
+      addBaseSummaryInfoTablecolumn0();
+    }
+    return baseSummaryInfoTablecolumn0;
+
+  }
+
+  /**
+   * サービスコードを取得します。
+   * @return サービスコード
+   */
+  public ACTableColumn getBaseSummaryInfoTablecolumn1(){
+    if(baseSummaryInfoTablecolumn1==null){
+
+      baseSummaryInfoTablecolumn1 = new ACTableColumn(0, 105);
+
+      baseSummaryInfoTablecolumn1.setHeaderValue("摘要種類コード");
+
+      addBaseSummaryInfoTablecolumn1();
+    }
+    return baseSummaryInfoTablecolumn1;
+
+  }
+
+  /**
+   * 摘要(半角英数カナ)を取得します。
+   * @return 摘要(半角英数カナ)
+   */
+  public ACTableColumn getBaseSummaryInfoTablecolumn2(){
+    if(baseSummaryInfoTablecolumn2==null){
+
+      baseSummaryInfoTablecolumn2 = new ACTableColumn(1, 105);
+
+      baseSummaryInfoTablecolumn2.setHeaderValue("摘要内容(半角英数カナ)");
+
+      addBaseSummaryInfoTablecolumn2();
+    }
+    return baseSummaryInfoTablecolumn2;
+
+  }
+
+  /**
+   * 明細設定内容修正パネルを取得します。
+   * @return 明細設定内容修正パネル
+   */
+  public ACPanel getBaseSummaryInfoRevisionPanel(){
+    if(baseSummaryInfoRevisionPanel==null){
+
+      baseSummaryInfoRevisionPanel = new ACPanel();
+
+      addBaseSummaryInfoRevisionPanel();
+    }
+    return baseSummaryInfoRevisionPanel;
+
+  }
+
+  /**
+   * 設定内容修正欄ラベルを取得します。
+   * @return 設定内容修正欄ラベル
+   */
+  public ACLabel getBaseSummaryInfoRevisionLabel(){
+    if(baseSummaryInfoRevisionLabel==null){
+
+      baseSummaryInfoRevisionLabel = new ACLabel();
+
+      baseSummaryInfoRevisionLabel.setText("設定内容修正欄");
+
+      addBaseSummaryInfoRevisionLabel();
+    }
+    return baseSummaryInfoRevisionLabel;
+
+  }
+
+  /**
+   * 基本摘要情報を取得します。
+   * @return 基本摘要情報
+   */
+  public ACLabel getBaseSummaryInfoRevision(){
+    if(baseSummaryInfoRevision==null){
+
+      baseSummaryInfoRevision = new ACLabel();
+
+      baseSummaryInfoRevision.setText("基本摘要情報");
+
+      addBaseSummaryInfoRevision();
+    }
+    return baseSummaryInfoRevision;
+
+  }
+
+  /**
+   * 全ての情報を表示を取得します。
+   * @return 全ての情報を表示
+   */
+  public ACIntegerCheckBox getBaseSummaryInfoRevisionCheck(){
+    if(baseSummaryInfoRevisionCheck==null){
+
+      baseSummaryInfoRevisionCheck = new ACIntegerCheckBox();
+
+      baseSummaryInfoRevisionCheck.setText("すべての情報を表示（A）");
+
+      baseSummaryInfoRevisionCheck.setMnemonic('A');
+
+      addBaseSummaryInfoRevisionCheck();
+    }
+    return baseSummaryInfoRevisionCheck;
+
+  }
+
+  /**
+   * 基本摘要情報詳細テーブルを取得します。
+   * @return 基本摘要情報詳細テーブル
+   */
+  public ACTable getBaseSummaryInfoRevisionTable(){
+    if(baseSummaryInfoRevisionTable==null){
+
+      baseSummaryInfoRevisionTable = new ACTable();
+
+      baseSummaryInfoRevisionTable.setColumnModel(getBaseSummaryInfoRevisionTableColumnModel());
+
+      baseSummaryInfoRevisionTable.setColumnSort(false);
+
+      addBaseSummaryInfoRevisionTable();
+    }
+    return baseSummaryInfoRevisionTable;
+
+  }
+
+  /**
+   * 基本摘要情報詳細テーブルカラムモデルを取得します。
+   * @return 基本摘要情報詳細テーブルカラムモデル
+   */
+  protected VRTableColumnModel getBaseSummaryInfoRevisionTableColumnModel(){
+    if(baseSummaryInfoRevisionTableColumnModel==null){
+      baseSummaryInfoRevisionTableColumnModel = new VRTableColumnModel(new TableColumn[]{});
+      addBaseSummaryInfoRevisionTableColumnModel();
+    }
+    return baseSummaryInfoRevisionTableColumnModel;
+  }
+
+  /**
+   * No.を取得します。
+   * @return No.
+   */
+  public ACTableColumn getBaseSummaryInfoRevisionTablecolumn0(){
+    if(baseSummaryInfoRevisionTablecolumn0==null){
+
+      baseSummaryInfoRevisionTablecolumn0 = new ACTableColumn(0, 30);
+
+      baseSummaryInfoRevisionTablecolumn0.setHeaderValue("　");
+
+      baseSummaryInfoRevisionTablecolumn0.setRendererType(ACTableCellViewer.RENDERER_TYPE_SERIAL_NO);
+
+      baseSummaryInfoRevisionTablecolumn0.setSortable(false);
+
+      addBaseSummaryInfoRevisionTablecolumn0();
+    }
+    return baseSummaryInfoRevisionTablecolumn0;
+
+  }
+
+  /**
+   * 項目名を取得します。
+   * @return 項目名
+   */
+  public ACTableColumn getBaseSummaryInfoRevisionTablecolumn1(){
+    if(baseSummaryInfoRevisionTablecolumn1==null){
+
+      baseSummaryInfoRevisionTablecolumn1 = new ACTableColumn(0, 55);
+
+      baseSummaryInfoRevisionTablecolumn1.setHeaderValue("項目名");
+
+      baseSummaryInfoRevisionTablecolumn1.setColumns(15);
+
+      addBaseSummaryInfoRevisionTablecolumn1();
+    }
+    return baseSummaryInfoRevisionTablecolumn1;
+
+  }
+
+  /**
+   * 設定値を取得します。
+   * @return 設定値
+   */
+  public ACTableColumn getBaseSummaryInfoRevisionTablecolumn2(){
+    if(baseSummaryInfoRevisionTablecolumn2==null){
+
+      baseSummaryInfoRevisionTablecolumn2 = new ACTableColumn(1, 55);
+
+      baseSummaryInfoRevisionTablecolumn2.setHeaderValue("設定値");
+
+      baseSummaryInfoRevisionTablecolumn2.setEditable(true);
+
+      baseSummaryInfoRevisionTablecolumn2.setColumns(8);
+
+      addBaseSummaryInfoRevisionTablecolumn2();
+    }
+    return baseSummaryInfoRevisionTablecolumn2;
+
+  }
+
+  /**
+   * コメントを取得します。
+   * @return コメント
+   */
+  public ACTableColumn getBaseSummaryInfoRevisionTablecolumn3(){
+    if(baseSummaryInfoRevisionTablecolumn3==null){
+
+      baseSummaryInfoRevisionTablecolumn3 = new ACTableColumn(2, 55);
+
+      baseSummaryInfoRevisionTablecolumn3.setHeaderValue("コメント");
+
+      baseSummaryInfoRevisionTablecolumn3.setColumns(30);
+
+      addBaseSummaryInfoRevisionTablecolumn3();
+    }
+    return baseSummaryInfoRevisionTablecolumn3;
+
+  }
+
+  /**
    * コンストラクタです。
    */
   public QP005Design() {
@@ -5938,6 +6286,8 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
     etcInfoTabs.addTab("特別療養費情報", getRecuperationInfos());
 
     etcInfoTabs.addTab("明細情報（住所地特例）", getDetailsJushotiTokureiInfos());
+
+    etcInfoTabs.addTab("基本摘要情報", getBaseSummaryInfos());
 
   }
 
@@ -8429,6 +8779,162 @@ public class QP005Design extends QkanAffairContainer implements ACAffairable {
    * コメントに内部項目を追加します。
    */
   protected void addDetailsJushotiTokureiInfoRevisionTablecolumn3(){
+
+  }
+
+  /**
+   * 基本摘要情報領域に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfos(){
+
+    baseSummaryInfos.add(getBaseSummaryPanel(), VRLayout.NORTH);
+
+    baseSummaryInfos.add(getBaseSummaryInfoTable(), VRLayout.NORTH);
+
+    baseSummaryInfos.add(getBaseSummaryInfoRevisionPanel(), VRLayout.NORTH);
+
+    baseSummaryInfos.add(getBaseSummaryInfoRevisionTable(), VRLayout.CLIENT);
+
+  }
+
+  /**
+   * 基本摘要情報パネルに内部項目を追加します。
+   */
+  protected void addBaseSummaryPanel(){
+
+    baseSummaryPanel.add(getBaseSummaryLabel(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 基本摘要情報ラベルに内部項目を追加します。
+   */
+  protected void addBaseSummaryLabel(){
+
+  }
+
+  /**
+   * 基本摘要情報テーブルに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoTable(){
+
+  }
+
+  /**
+   * 基本摘要情報テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoTableColumnModel(){
+
+    getBaseSummaryInfoTableColumnModel().addColumn(getBaseSummaryInfoTablecolumn0());
+
+    getBaseSummaryInfoTableColumnModel().addColumn(getBaseSummaryInfoTablecolumn1());
+
+    getBaseSummaryInfoTableColumnModel().addColumn(getBaseSummaryInfoTablecolumn2());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoTablecolumn0(){
+
+  }
+
+  /**
+   * サービスコードに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoTablecolumn1(){
+
+  }
+
+  /**
+   * 摘要(半角英数カナ)に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoTablecolumn2(){
+
+  }
+
+  /**
+   * 明細設定内容修正パネルに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionPanel(){
+
+    baseSummaryInfoRevisionPanel.add(getBaseSummaryInfoRevisionLabel(), VRLayout.FLOW);
+
+    baseSummaryInfoRevisionPanel.add(getBaseSummaryInfoRevision(), VRLayout.FLOW);
+
+    baseSummaryInfoRevisionPanel.add(getBaseSummaryInfoRevisionCheck(), VRLayout.FLOW);
+
+  }
+
+  /**
+   * 設定内容修正欄ラベルに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionLabel(){
+
+  }
+
+  /**
+   * 基本摘要情報に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevision(){
+
+  }
+
+  /**
+   * 全ての情報を表示に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionCheck(){
+
+  }
+
+  /**
+   * 基本摘要情報詳細テーブルに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionTable(){
+
+  }
+
+  /**
+   * 基本摘要情報詳細テーブルカラムモデルに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionTableColumnModel(){
+
+    getBaseSummaryInfoRevisionTableColumnModel().addColumn(getBaseSummaryInfoRevisionTablecolumn0());
+
+    getBaseSummaryInfoRevisionTableColumnModel().addColumn(getBaseSummaryInfoRevisionTablecolumn1());
+
+    getBaseSummaryInfoRevisionTableColumnModel().addColumn(getBaseSummaryInfoRevisionTablecolumn2());
+
+    getBaseSummaryInfoRevisionTableColumnModel().addColumn(getBaseSummaryInfoRevisionTablecolumn3());
+
+  }
+
+  /**
+   * No.に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionTablecolumn0(){
+
+  }
+
+  /**
+   * 項目名に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionTablecolumn1(){
+
+  }
+
+  /**
+   * 設定値に内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionTablecolumn2(){
+
+  }
+
+  /**
+   * コメントに内部項目を追加します。
+   */
+  protected void addBaseSummaryInfoRevisionTablecolumn3(){
 
   }
 

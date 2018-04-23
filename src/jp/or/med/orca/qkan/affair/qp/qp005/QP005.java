@@ -130,15 +130,34 @@ public class QP005 extends QP005Event {
 		switch (getClaimStyleType()){
 			case FORMAT_STYLE4:
 			case FORMAT_STYLE42:
+			case FORMAT_STYLE43:	// 2018.4 add
+			case FORMAT_STYLE44:	// 2018.4 add
 			case FORMAT_STYLE9:
+			case FORMAT_STYLE92:	// 2018.4 add
 				break;
 				
-			//上記様式以外では、特定療養費タブを消去する。
+			//上記様式以外では、特別療養費・特別診療費タブを消去する。
 			default:
 			    getEtcInfoTabs().remove(getRecuperationInfos());
 			    break;
 		}
 
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+		switch (getClaimStyleType()) {
+		case FORMAT_STYLE43:
+		case FORMAT_STYLE44:
+		case FORMAT_STYLE92:
+			// mac表示幅が足りないので住所地特例タブを消去する。
+			getEtcInfoTabs().remove(getDetailsJushotiTokureiInfos());
+			break;
+
+		// 上記様式以外では、基本摘要情報タブを消去する。
+		default:
+			getEtcInfoTabs().remove(getBaseSummaryInfos());
+			break;
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
+		
 		//[ID:0000429][Shin Fujihara] 2009/07 add start 2009年度対応
 		//サービス追加ボタン制御
 		switch (getClaimStyleType()){
@@ -146,10 +165,13 @@ public class QP005 extends QP005Event {
 		case FORMAT_STYLE32:
 		case FORMAT_STYLE4:
 		case FORMAT_STYLE42:
+		case FORMAT_STYLE43:	// 2018.4 add
+		case FORMAT_STYLE44:	// 2018.4 add
 		case FORMAT_STYLE5:
 		case FORMAT_STYLE52:
 		case FORMAT_STYLE8:
 		case FORMAT_STYLE9:
+		case FORMAT_STYLE92:	// 2018.4 add
 		case FORMAT_STYLE10:
 			break;
 		default:
@@ -503,6 +525,15 @@ public class QP005 extends QP005Event {
     }
  // 2014/12/24 [Yoichiro Kamei] add - end
     
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+	@Override
+	protected void baseSummaryInfoTableSelectionChanged(ListSelectionEvent e) throws Exception {
+		if (getBaseSummaryInfoTable().isSelected()) {
+			doShowClaimDetail("BASE_SUMMARY");
+		}
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
+	
 	/**
 	 * 「データ切り替え処理」イベントです。
 	 * 
@@ -1038,6 +1069,62 @@ public class QP005 extends QP005Event {
     }
  // 2014/12/24 [Yoichiro Kamei] add - end
     
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+	@Override
+	protected void baseSummaryInfoRevisionCheckActionPerformed(ActionEvent e) throws Exception {
+		if (getBaseSummaryInfoRevisionCheck().isSelected()) {
+			// 基本摘要情報領域（baseSummaryInfos）のEnableがtrueの場合
+			if (getBaseSummaryInfos().isEnabled()) {
+				// ※項目名列の設定
+				// columnList9NameをbaseSummaryInfoRevisionTablecolumn1に設定する。
+				getBaseSummaryInfoRevisionTablecolumn1().setCustomCells(getColumnList9Name());
+				// ※設定値列の設定
+				// columnList9ValueをbaseSummaryInfoRevisionTablecolumn2に設定する。
+				getBaseSummaryInfoRevisionTablecolumn2().setCustomCells(getColumnList9Value());
+				// ※コメント列の設定
+				// columnList9CommentをbaseSummaryInfoRevisionTablecolumn3に設定する。
+				getBaseSummaryInfoRevisionTablecolumn3().setCustomCells(getColumnList9Comment());
+
+				// 基本摘要情報テーブルのVisibleがtrueの場合
+				// 基本摘要情報テーブルでレコードが選択されている場合
+				if (getBaseSummaryInfoTable().isVisible() && getBaseSummaryInfoTable().isSelected()) {
+					// 基本摘要情報テーブルで選択されているレコードを基本摘要情報詳細テーブルに表示する。
+					// ・第一引数："BASE_SUMMARY"
+					doShowClaimDetail("BASE_SUMMARY");
+				}
+			}
+			getBaseSummaryInfoRevisionCheck().setSelected(true);
+		} else {
+			// チェックボックスがオフの場合
+			// 基本摘要情報領域（baseSummaryInfos）のEnableがtrueの場合
+			if (getBaseSummaryInfos().isEnabled()) {
+				// ※項目名列の設定
+				// columnList9NameよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をbaseSummaryInfoRevisionTablecolumn1に設定する。
+				getBaseSummaryInfoRevisionTablecolumn1().setCustomCells(getColumnList9NameSimple());
+				// ※設定値列の設定
+				// columnList9ValueよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をbaseSummaryInfoRevisionTablecolumn2に設定する。
+				getBaseSummaryInfoRevisionTablecolumn2().setCustomCells(getColumnList9ValueSimple());
+				// ※コメント列の設定
+				// columnList9CommentよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+				// 取得したレコード集合をbaseSummaryInfoRevisionTablecolumn3に設定する。
+				getBaseSummaryInfoRevisionTablecolumn3().setCustomCells(getColumnList9CommentSimple());
+				// 基本摘要情報テーブルのVisibleがtrueの場合
+				// 基本摘要情報テーブルでレコードが選択されている場合
+				if (getBaseSummaryInfoTable().isVisible() && getBaseSummaryInfoTable().isSelected()) {
+					// 基本摘要情報テーブルで選択されているレコードを基本摘要情報詳細テーブルに表示する。
+					// ・第一引数："BASE_SUMMARY"
+					doShowClaimDetail("BASE_SUMMARY");
+				}
+			}
+			getBaseSummaryInfoRevisionCheck().setSelected(false);
+		}
+		getBaseSummaryInfoTable().validate();
+		getBaseSummaryInfoTable().repaint();
+	}
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
+   	
 	/**
 	 * 「データ変更時処理」イベントです。
 	 * 
@@ -1171,6 +1258,17 @@ public class QP005 extends QP005Event {
 		
 	}
 	//[ID:0000429][Shin Fujihara] 2009/07 add end 2009年度対応
+
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+	@Override
+	protected void baseSummaryInfoRevisionTablecolumn2CellEditing(ChangeEvent e) throws Exception {
+		// tableChangeFlgに1を代入する。
+		setTableChangeFlg(ON);		
+		// 基本摘要情報テーブルを再描画する。
+		getBaseSummaryInfoTable().validate();
+		getBaseSummaryInfoTable().repaint();
+	}
+	// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 
 	public static void main(String[] args) {
 		// デフォルトデバッグ起動
@@ -1443,6 +1541,20 @@ public class QP005 extends QP005Event {
 			return "様式第四のニ";
 		}
 		
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+		// claimStyleTypeの値が10413の場合
+		// "様式第四の三"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE43) {
+			return "様式第四の三";
+		}
+		
+		// claimStyleTypeの値が10414の場合
+		// "様式第四の四"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE44) {
+			return "様式第四の四";
+		}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+		
 		// claimStyleTypeの値が10511の場合
 		// "様式第五"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE5) {
@@ -1529,6 +1641,14 @@ public class QP005 extends QP005Event {
 			return "様式第九";
 		}
 
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+		// claimStyleTypeの値が10912の場合
+		// "様式第九のニ"を返す。
+		if (getClaimStyleType() == FORMAT_STYLE92) {
+			return "様式第九のニ";
+		}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+
 		// claimStyleTypeの値が11011の場合
 		// "様式第十"を返す。
 		if (getClaimStyleType() == FORMAT_STYLE10) {
@@ -1589,6 +1709,7 @@ public class QP005 extends QP005Event {
 			// 状態ID：TYPE2
 		}
 
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
 		// claimStyleTypeの値が10411の場合
 		// 様式4
 		if (getClaimStyleType() == FORMAT_STYLE4) {
@@ -1609,6 +1730,32 @@ public class QP005 extends QP005Event {
 			// 以下のコントロールのキャプションを"特定治療費"に設定する。
 			// ・particularInfos
 			getEtcInfoTabs().setTitleAt(2, "特定治療費");
+		}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+
+		// claimStyleTypeの値が10413の場合
+		// 様式4の3
+		if (getClaimStyleType() == FORMAT_STYLE43) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE3();
+			// 状態ID：TYPE3
+			// 以下のコントロールのキャプションを"特定治療費"に設定する。
+			// ・particularInfos
+			getEtcInfoTabs().setTitleAt(6, "特別診療費情報");
+			getRecuperationInfoLabel().setText("特別診療費情報");
+			getRecuperationInfoRevision().setText("特別診療費情報");
+		}
+		// claimStyleTypeの値が10414の場合
+		// 様式4の4
+		if (getClaimStyleType() == FORMAT_STYLE44) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE3();
+			// 状態ID：TYPE3
+			// 以下のコントロールのキャプションを"特定治療費"に設定する。
+			// ・particularInfos
+			getEtcInfoTabs().setTitleAt(6, "特別診療費情報");
+			getRecuperationInfoLabel().setText("特別診療費情報");
+			getRecuperationInfoRevision().setText("特別診療費情報");
 		}
 
 		// claimStyleTypeの値が10511の場合
@@ -1743,6 +1890,21 @@ public class QP005 extends QP005Event {
 			getEtcInfoTabs().setTitleAt(2, "特定治療費");
 		}
 
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+		// claimStyleTypeの値が10912の場合
+		// 様式9の2
+		if (getClaimStyleType() == FORMAT_STYLE92) {
+			// 画面のVisible制御・Enable制御を行う。
+			setState_TYPE3();
+			// 状態ID：TYPE3
+			// 以下のコントロールのキャプションを"特別診療費"に設定する。
+			// ・particularInfos
+			getEtcInfoTabs().setTitleAt(6, "特別診療費情報");
+			getRecuperationInfoLabel().setText("特別診療費情報");
+			getRecuperationInfoRevision().setText("特別診療費情報");
+		}
+		// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+
 		// claimStyleTypeの値が11011の場合
 		// 様式10
 		if (getClaimStyleType() == FORMAT_STYLE10) {
@@ -1791,7 +1953,7 @@ public class QP005 extends QP005Event {
 					// 2016.7.22 [Shinobu Hitaka] edit - begin 総合事業対応
 					//map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院");
 					if (getClaimStyleType() != FORMAT_STYLE23) {
-						map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院");
+						map.put("COMMENT", "1:非該当 3:医療機関入院 4:死亡 5:その他 6:介護老人福祉施設入所 7:介護老人保健施設入所 8:介護療養型医療施設入院 9:介護医療院入所"); // 2018.04 介護医療院追加
 					} else {
 						map.put("COMMENT", "設定不要です。");
 					}
@@ -1980,6 +2142,27 @@ public class QP005 extends QP005Event {
 
 				break;
 
+			// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+			case FORMAT_STYLE43:
+				// claimStyleTypeの値が10413の場合
+				// テーブルモデルの設定を行う。
+				doSetTableModel(2540);
+				// ・第一引数：100111101100（2進数表記）
+				// テーブルの各行の設定を行う。
+				doSetTableRow(2540);
+				// ・第一引数：100111101100（2進数表記）
+				break;
+				
+			case FORMAT_STYLE44:
+				// claimStyleTypeの値が10414の場合
+				// テーブルモデルの設定を行う。
+				doSetTableModel(2540);
+				// ・第一引数：100111101100（2進数表記）
+				// テーブルの各行の設定を行う。
+				doSetTableRow(2540);
+				// ・第一引数：100111101100（2進数表記）
+				break;
+			// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
 				
 			case FORMAT_STYLE5:
 				// claimStyleTypeの値が10511の場合
@@ -2145,6 +2328,19 @@ public class QP005 extends QP005Event {
 				//[H20.5 法改正対応] fujihara edit end
 				break;
 
+			// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin
+			case FORMAT_STYLE92:
+				// claimStyleTypeの値が10902の場合
+				// テーブルモデルの設定を行う。
+				// ・第一引数：100111101100（2進数表記）
+				doSetTableModel(2540);
+
+				// テーブルの各行の設定を行う。
+				// ・第一引数：100111101100（2進数表記）
+				doSetTableRow(2540);
+				break;
+			// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - end
+				
 			case FORMAT_STYLE10:
 				// claimStyleTypeの値が11001の場合
 				// テーブルモデルの設定を行う。
@@ -2206,7 +2402,10 @@ public class QP005 extends QP005Event {
 				switch (getClaimStyleType()){
 					case FORMAT_STYLE4:
 					case FORMAT_STYLE42:
+					case FORMAT_STYLE43:	// 2018.4 add
+					case FORMAT_STYLE44:	// 2018.4 add
 					case FORMAT_STYLE9:
+					case FORMAT_STYLE92:	// 2018.4 add
 						getTableClaimList7().addData(claimDataMap);
 						break;
 					default:
@@ -2247,6 +2446,13 @@ public class QP005 extends QP005Event {
 				getTableClaimList8().addData(claimDataMap);
 				break;
 // 2014/12/24 [Yoichiro Kamei] add - end
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+			case 19:
+				// categoryNoの値が19の場合
+				// tableClaimList9にrecordを追加する。
+				getTableClaimList9().addData(claimDataMap);
+				break;
+			// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 			default:
 				break;
 		}
@@ -2866,6 +3072,45 @@ public class QP005 extends QP005Event {
 		}
 // 2014/12/24 [Yoichiro Kamei] add - end 
 		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+		// 第一引数と100000000000（2進数表記）の論理積の値が0でない場合
+		if (!((firstArg & 2048) == 0)) {
+			// ※基本摘要情報テーブルと基本摘要詳細テーブルのテーブルモデルの設定。
+			// tableModelList9を以下のフィールドで設定する。
+
+			String[] tableModelList9 = new String[2];
+			tableModelList9[0] = "1901007"; // "1901007（摘要種類コード）"
+			tableModelList9[1] = "1901008"; // "1901008（摘要内容）"
+
+			// 格納
+			setTableModelList9(new ACTableModelAdapter());
+			getTableModelList9().setColumns(tableModelList9);
+
+			// tableModelList9を基本摘要情報テーブル（baseSummaryInfoTable）に設定する。
+			getBaseSummaryInfoTable().setModel(getTableModelList9());
+
+			// tableModelDetail9を以下のフィールドで設定する。
+			// "DETAIL_NAME" "DETAIL_VALUE" "COMMENT"
+			String[] tableModelDetail9 = new String[3];
+			tableModelDetail9[0] = "DETAIL_NAME";
+			tableModelDetail9[1] = "DETAIL_VALUE";
+			tableModelDetail9[2] = "COMMENT";
+
+			// 格納
+			setTableModelDetail9(new ACTableModelAdapter());
+			getTableModelDetail9().setColumns(tableModelDetail9);
+
+			// tableModelDetail9を基本摘要情報詳細テーブル（baseSummaryRevisionTable）に設定する。
+			getBaseSummaryInfoRevisionTable().setModel(getTableModelDetail9());
+
+			// ※キャプションの設定
+			// 以下のラベルのキャプションに "基本摘要情報" を設定する。
+			getEtcInfoTabs().setTitleAt(7, "基本摘要情報");
+			getBaseSummaryLabel().setText("基本摘要情報");
+			getBaseSummaryInfoRevision().setText("基本摘要情報");
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
+		
 	}
 
 	/**
@@ -3278,6 +3523,43 @@ public class QP005 extends QP005Event {
 		}
 // 2014/12/24 [Yoichiro Kamei] add - end
 		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+     	// 第一引数と100000000000（2進数表記）の論理積の値が0でない場合
+		if (!((firstArg & 2048) == 0)) {
+			// ※基本摘要情報詳細テーブルの各行の設定。
+			// 各行のコンポーネントを生成し、引数のArrayListに格納する。
+			// doMakeComponent();
+			// ・第一引数：3
+			// ・第二引数：detailList9
+			// ・第三引数：columnList9Name
+			// ・第四引数：columnList9Value
+			// ・第五引数：columnList9Comment
+			setDetailList9(new VRArrayList());
+			setColumnList9Name(new VRArrayList());
+			setColumnList9Value(new VRArrayList());
+			setColumnList9Comment(new VRArrayList());
+			setColumnList9NameSimple(new VRArrayList());
+			setColumnList9ValueSimple(new VRArrayList());
+			setColumnList9CommentSimple(new VRArrayList());
+
+			doMakeComponent(CATEGORY_NO19, getDetailList9(), getColumnList9Name(), getColumnList9Value(), getColumnList9Comment(), getColumnList9NameSimple(), getColumnList9ValueSimple(), getColumnList9CommentSimple());
+
+			// ※項目名列の設定
+			// columnList9NameよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をbaseSummaryInfoRevisionTablecolumn1に設定する。
+			getBaseSummaryInfoRevisionTablecolumn1().setCustomCells(getColumnList9NameSimple());
+
+			// ※設定値列の設定
+			// columnList9ValueよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をbaseSummaryInfoRevisionTablecolumn2に設定する。
+			getBaseSummaryInfoRevisionTablecolumn2().setCustomCells(getColumnList9ValueSimple());
+
+			// ※コメント列の設定
+			// columnList9CommentよりKEY：SHOW_FLAGの値が1のレコードを取得する。
+			// 取得したレコード集合をbaseSummaryInfoRevisionTablecolumn3に設定する。
+			getBaseSummaryInfoRevisionTablecolumn3().setCustomCells(getColumnList9CommentSimple());
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 	}
 
 	/**
@@ -3534,7 +3816,10 @@ public class QP005 extends QP005Event {
 			switch(getClaimStyleType()){
 			case FORMAT_STYLE4:
 			case FORMAT_STYLE42:
+			case FORMAT_STYLE43:	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+			case FORMAT_STYLE44:	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
 			case FORMAT_STYLE9:
+			case FORMAT_STYLE92:	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
 				break;
 			case FORMAT_STYLE5:
 			case FORMAT_STYLE52:
@@ -3631,6 +3916,20 @@ public class QP005 extends QP005Event {
 			getDetailsJushotiTokureiInfoTable().setSelectedSortedFirstRow();
 		}
 // 2014/12/24 [Yoichiro Kamei] add - end
+		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+		if (!getTableClaimList9().isEmpty()) {
+			// ソートする。
+			// 1901007 基本摘要情報 摘要種類コード2桁
+			String[] keys = new String[]{"1901007"};
+			int[] digits = new int[]{2};
+			setTableClaimList9(getSortedData(getTableClaimList9(), keys, digits));
+			// tableClaimList9をtableModelList9に設定する。
+			getTableModelList9().setAdaptee(getTableClaimList9());
+			// バインド先のBaseSummaryInfoTableの1行目を選択した状態にする。
+			getBaseSummaryInfoTable().setSelectedSortedFirstRow();
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 	}
 
 	/**
@@ -4144,6 +4443,41 @@ public class QP005 extends QP005Event {
 			}
 		}
 // 2014/12/24 [Yoichiro Kamei] add - end
+		
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+		// 渡された引数の値が"BASE_SUMMARY"の場合
+		if (recordDataType.equals("BASE_SUMMARY")) {
+			// 基本摘要情報テーブルで選択されている行のレコード（以下、選択レコード）を取得する。
+			
+			if (getBaseSummaryInfoRevisionCheck().isSelected()) {
+				// 全ての情報を表示チェックボックス（baseSummaryInfoRevisionCheck）がオンになっている場合
+				// 詳細テーブルに表示するために、詳細テーブル表示用のデータを作成する。
+				if (!(getDetailList9().isEmpty())) {
+					
+					doMakeDetailTableList((VRMap) getBaseSummaryInfoTable().getSelectedModelRowValue(), getDetailList9());
+					// ・第一引数：選択レコード
+					// ・第二引数：detailList9
+
+					// detailList9をテーブルモデル（tableModelDetail9）に設定する。
+					getTableModelDetail9().setAdaptee(getDetailList9());
+				}
+
+			} else {
+				// 全ての情報を表示チェックボックス（detailsJushotiTokureiInfoRevisionCheck）がオフになっている場合
+				// detailList9よりKEY：SHOW_FLAGの値が1のレコードを取得する。（以下、tempList）
+				if (!(getDetailList9().isEmpty())) {
+					VRList tempList = (VRList) ACBindUtilities.getMatchListFromValue(getDetailList9(), "SHOW_FLAG", ACCastUtilities.toInteger(ON));
+					// 詳細テーブルに表示するために、詳細テーブル表示用のデータを作成する。
+					doMakeDetailTableList((VRMap) getBaseSummaryInfoTable().getSelectedModelRowValue(), tempList);
+					// ・第一引数：選択レコード
+					// ・第二引数：tempList
+
+					// tempListをテーブルモデル（tableModelDetail9）に設定する。
+					getTableModelDetail9().setAdaptee(tempList);
+				}
+			}
+		}
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 	}
 
 	/**
@@ -4182,6 +4516,9 @@ public class QP005 extends QP005Event {
 // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
 				allList.addAll(getTableClaimList8());
 // 2014/12/24 [Yoichiro Kamei] add - end
+				// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+				allList.addAll(getTableClaimList9());
+				// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 				
 				// DBを更新するためのWHERE句を作成する。
 				// WHERE句
@@ -4467,6 +4804,9 @@ public class QP005 extends QP005Event {
 // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
 		list.add(deepCopy(getTableClaimList8()));
 // 2014/12/24 [Yoichiro Kamei] add - end
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+		list.add(deepCopy(getTableClaimList9()));
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 		
 		setSnapList(list);
 	}
@@ -4510,6 +4850,9 @@ public class QP005 extends QP005Event {
 // 2014/12/24 [Yoichiro Kamei] add - begin 住所地特例対応
 		list.add(getTableClaimList8());
 // 2014/12/24 [Yoichiro Kamei] add - end
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - begin
+		list.add(getTableClaimList9());
+		// [H30.4改正対応][Yoichiro Kamei] 2018/4/3 add - end
 				
 		if (getSnapList().size() != list.size()) {
 			return true;

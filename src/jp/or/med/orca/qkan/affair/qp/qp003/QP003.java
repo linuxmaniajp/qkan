@@ -1870,9 +1870,12 @@ public class QP003 extends QP003Event {
                 || "63".equals(serviceCodeKind) || "64".equals(serviceCodeKind) || "66".equals(serviceCodeKind)
                 || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_4)  // “Á’è“üŠÒ ’ZŠú˜VŒ’
                 || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_4_2)// “Á’è“üŠÒ —\–h’ZŠú˜VŒ’
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_4_3)// “Á’è“üŠÒ ’ZŠú‰îŒìˆã—Ã‰@ H30.4‰ü³‘Î‰
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_4_4)// “Á’è“üŠÒ —\–h’ZŠú‰îŒìˆã—Ã‰@ H30.4‰ü³‘Î‰
                 || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_5)  // “Á’è“üŠÒ ’ZŠú—Ã—{
                 || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_5_2)// “Á’è“üŠÒ —\–h’ZŠú—Ã—{
                 || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_9)  // “Á’è“üŠÒ ˜VŒ’
+                || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_9_2)// “Á’è“üŠÒ ‰îŒìˆã—Ã‰@ H30.4‰ü³‘Î‰
                 || ("".equals(serviceCodeKind) && styleType == QkanConstants.CLAIM_STYLE_FORMAT_10) // “Á’è“üŠÒ —Ã—{
             	) {
             	iryoTotal = iryoTotal + unit;

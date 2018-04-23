@@ -87,6 +87,16 @@ public abstract class QP001StyleAbstract {
      * 様式第四の二 交換識別番号
      */
     protected static final String IDENTIFICATION_NO_4_2_201204 = "7156";
+    // [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin 
+    /**
+     * 様式第四の三 交換識別番号
+     */
+    protected static final String IDENTIFICATION_NO_4_3_201804 = "7157";
+    /**
+     * 様式第四の四 交換識別番号
+     */
+    protected static final String IDENTIFICATION_NO_4_4_201804 = "7158";
+    // [H30.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
     /**
      * 様式第五 交換識別番号
      */
@@ -143,6 +153,12 @@ public abstract class QP001StyleAbstract {
      * 様式第九 交換識別番号
      */
     protected static final String IDENTIFICATION_NO_9_201204 = "7195";
+    // [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add - begin 
+    /**
+     * 様式第九の二 交換識別番号
+     */
+    protected static final String IDENTIFICATION_NO_9_2_201804 = "7196";
+    // [H30.4改正対応][Shinobu Hitaka] 2016/7/8 add - end
     /**
      * 様式第十 交換識別番号
      */
@@ -205,6 +221,12 @@ public abstract class QP001StyleAbstract {
         case QkanConstants.CLAIM_STYLE_FORMAT_4_2:
             result = IDENTIFICATION_NO_4_2_201204;
             break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_4_3:	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+            result = IDENTIFICATION_NO_4_3_201804;
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_4_4:	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+            result = IDENTIFICATION_NO_4_4_201804;
+            break;
         case QkanConstants.CLAIM_STYLE_FORMAT_5:
             result = IDENTIFICATION_NO_5_201204;
             break;
@@ -246,6 +268,9 @@ public abstract class QP001StyleAbstract {
             break;
         case QkanConstants.CLAIM_STYLE_FORMAT_9:
             result = IDENTIFICATION_NO_9_201204;
+            break;
+        case QkanConstants.CLAIM_STYLE_FORMAT_9_2:	// [H30.4改正対応][Shinobu Hitaka] 2018/3/27 add
+            result = IDENTIFICATION_NO_9_2_201804;
             break;
         case QkanConstants.CLAIM_STYLE_FORMAT_10:
             result = IDENTIFICATION_NO_10_201204;
@@ -498,33 +523,53 @@ public abstract class QP001StyleAbstract {
             _301017 += detail.get_301017();
         }
         
-        //処遇改善レコードに合算値を設定
-        target.set_301014(_301014);
-        target.set_301015(_301015);
-        target.set_301016(_301016);
-        target.set_301017(_301017);
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
+        //月途中公費の場合に公費対象単位数がおかしい場合があるため修正
+//        target.set_301014(_301014);
+//        target.set_301015(_301015);
+//        target.set_301016(_301016);
+//        target.set_301017(_301017);
+        //公費対応版で計算した対象単位数が上記計算結果と同じ場合は、既存の計算をしない
+        if (target.getAdditionBasisUnit() == _301014) {
+        	target.setSyoguCalcOriginal(false);
+        }
+        if (target.isSyoguCalcOriginal()) {
+            //処遇改善レコードに合算値を設定
+            target.set_301014(_301014);
+            target.set_301015(_301015);
+            target.set_301016(_301016);
+            target.set_301017(_301017);
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
     }
     
     private void definitionTreatmentImprovement(QP001RecordDetail target) throws Exception {
         
-        //[ID:0000730][Shin Fujihara] add begin  【サービス利用票別表・実績集計】自己負担発生時の％系加算の計算について
-        //処遇改善加算の根拠単位数を退避
-        target.setAdditionBasisUnit(target.get_301014());
-        //[ID:0000730][Shin Fujihara] add end
-        
-        //サービス単位数6桁
-        target.set_301014(CareServiceCommon.calcSyogu(target.get_301014(), target.getServiceUnit(), target.getServiceStaffUnit()));
-        //単位数に転記
-        target.set_301009(target.get_301014());
-        
-        //公費1対象サービス単位数6桁
-        target.set_301015(CareServiceCommon.calcSyogu(target.get_301015(), target.getServiceUnit(), target.getServiceStaffUnit()));
-        
-        //公費2対象サービス単位数6桁
-        target.set_301016(CareServiceCommon.calcSyogu(target.get_301016(), target.getServiceUnit(), target.getServiceStaffUnit()));
-        
-        //公費3対象サービス単位数6桁
-        target.set_301017(CareServiceCommon.calcSyogu(target.get_301017(), target.getServiceUnit(), target.getServiceStaffUnit()));
+    	// [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
+        // 月途中公費の場合に公費対象単位数がおかしい場合があるため修正
+        if (target.isSyoguCalcOriginal()) {
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - end
+            //[ID:0000730][Shin Fujihara] add begin  【サービス利用票別表・実績集計】自己負担発生時の％系加算の計算について
+            //処遇改善加算の根拠単位数を退避
+            target.setAdditionBasisUnit(target.get_301014());
+            //[ID:0000730][Shin Fujihara] add end
+            
+            //サービス単位数6桁
+            target.set_301014(CareServiceCommon.calcSyogu(target.get_301014(), target.getServiceUnit(), target.getServiceStaffUnit()));
+            //単位数に転記
+            target.set_301009(target.get_301014());
+            
+            //公費1対象サービス単位数6桁
+            target.set_301015(CareServiceCommon.calcSyogu(target.get_301015(), target.getServiceUnit(), target.getServiceStaffUnit()));
+            
+            //公費2対象サービス単位数6桁
+            target.set_301016(CareServiceCommon.calcSyogu(target.get_301016(), target.getServiceUnit(), target.getServiceStaffUnit()));
+            
+            //公費3対象サービス単位数6桁
+            target.set_301017(CareServiceCommon.calcSyogu(target.get_301017(), target.getServiceUnit(), target.getServiceStaffUnit()));
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - begin
+        }
+        // [H30.4改正対応][Yoichiro Kamei] 2018/4/11 mod - end
         
         //[CCCX:1470][Shinobu Hitaka] 2014/02/10 add - start 老健の一部公費対象の対応
         //公費1～3に老健の一部公費が含まれている場合
@@ -610,47 +655,49 @@ public abstract class QP001StyleAbstract {
             int selfPay = Integer.MIN_VALUE;
             
             //以下の順番で計算していく
-            
-            //特地加算を算定している場合
-            if (detailAdd.containsKey(systemServiceKind + "_3")) {
-                detail = detailAdd.get(systemServiceKind + "_3");
-                
-                selfPay = getSelfpay(styles, patientState, planUnitMap, detail, serviceUnit, selfPay);
-                //自己負担が発生していない場合は処理終了
-                if (selfPay == 0) {
-                    continue;
-                }
-                
-                int unit = getSelfpayUnit(detail, selfPay, stackedSelfUnit, serviceUnit);
-                stackedSelfUnit += unit;
-                
-                //自己負担分を引く
-                removeSelfPay(detail, unit);
-                
-                //引いた分を全額自己負担へ
-                patientState.putAddSelfpay(detail.get_301007(), unit);
-            }
-            
-            
-            //中山間加算を算定している場合
-            if (detailAdd.containsKey(systemServiceKind + "_6")) {
-                detail = detailAdd.get(systemServiceKind + "_6");
-                
-                selfPay = getSelfpay(styles, patientState, planUnitMap, detail, serviceUnit, selfPay);
-                //自己負担が発生していない場合は処理終了
-                if (selfPay == 0) {
-                    continue;
-                }
-                
-                int unit = getSelfpayUnit(detail, selfPay, stackedSelfUnit, serviceUnit);
-                stackedSelfUnit += unit;
-                
-                //自己負担分を引く
-                removeSelfPay(detail, unit);
-                
-                //引いた分を全額自己負担へ
-                patientState.putAddSelfpay(detail.get_301007(), unit);
-            }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - begin
+// 限度額超過の場合、特地加算、中山間地域等提供加算はすべて保険請求に含める
+//            //特地加算を算定している場合
+//            if (detailAdd.containsKey(systemServiceKind + "_3")) {
+//                detail = detailAdd.get(systemServiceKind + "_3");
+//                
+//                selfPay = getSelfpay(styles, patientState, planUnitMap, detail, serviceUnit, selfPay);
+//                //自己負担が発生していない場合は処理終了
+//                if (selfPay == 0) {
+//                    continue;
+//                }
+//                
+//                int unit = getSelfpayUnit(detail, selfPay, stackedSelfUnit, serviceUnit);
+//                stackedSelfUnit += unit;
+//                
+//                //自己負担分を引く
+//                removeSelfPay(detail, unit);
+//                
+//                //引いた分を全額自己負担へ
+//                patientState.putAddSelfpay(detail.get_301007(), unit);
+//            }
+//            
+//            
+//            //中山間加算を算定している場合
+//            if (detailAdd.containsKey(systemServiceKind + "_6")) {
+//                detail = detailAdd.get(systemServiceKind + "_6");
+//                
+//                selfPay = getSelfpay(styles, patientState, planUnitMap, detail, serviceUnit, selfPay);
+//                //自己負担が発生していない場合は処理終了
+//                if (selfPay == 0) {
+//                    continue;
+//                }
+//                
+//                int unit = getSelfpayUnit(detail, selfPay, stackedSelfUnit, serviceUnit);
+//                stackedSelfUnit += unit;
+//                
+//                //自己負担分を引く
+//                removeSelfPay(detail, unit);
+//                
+//                //引いた分を全額自己負担へ
+//                patientState.putAddSelfpay(detail.get_301007(), unit);
+//            }
+// [H30.4改正対応][Yoichiro Kamei] 2018/3/20 mod - end
             
             // [H27.4改正対応][Yoichiro Kamei] 2015/4/3 add - begin サービス提供体制加算の自己負担対応
             //自己負担対象の回数加算を算定している場合
@@ -931,7 +978,11 @@ public abstract class QP001StyleAbstract {
             }
 //[CCCX:2815][Yoichiro Kamei] add - begin 回数調整でゼロ単位となった分を削除
             if (detail.isSelfPaymentNumberAddRecord()) {
-                if (detail.get_301014() <= 0) {
+                // [H30.4改正対応][Yoichiro Kamei] 2018/4/20 mod - begin
+                // 減算のコードが誤って削除されてしまうため修正
+//                if (detail.get_301014() <= 0) {
+                if (detail.get_301014() == 0) {
+                // [H30.4改正対応][Yoichiro Kamei] 2018/4/20 mod - end
                     removeTarget.add(key);
                 }
             }
@@ -954,10 +1005,16 @@ public abstract class QP001StyleAbstract {
         
         //摘要欄のコピー対象サービスコード
         Set<String> copyTargetList = new HashSet<String>();
-        copyTargetList.add("516276"); //福祉施設看取り介護加算１
-        copyTargetList.add("516277"); //福祉施設看取り介護加算２
-        copyTargetList.add("546276"); //地福祉施設看取り介護加算１
-        copyTargetList.add("546277"); //地福祉施設看取り介護加算２
+        // [H30.4改正対応][Shinobu Hitaka] 2018/4/14 del - begin 死亡時間・場所記載へ変更
+        //copyTargetList.add("516276"); //福祉施設看取り介護加算１
+        //copyTargetList.add("516277"); //福祉施設看取り介護加算２
+        //copyTargetList.add("516284"); //福祉施設看取り介護加算II１ // 2018.04 add
+        //copyTargetList.add("516285"); //福祉施設看取り介護加算II２ // 2018.04 add
+        //copyTargetList.add("546276"); //地福祉施設看取り介護加算１
+        //copyTargetList.add("546277"); //地福祉施設看取り介護加算２
+        //copyTargetList.add("546284"); //地福祉施設看取り介護加算II１ // 2018.04 add
+        //copyTargetList.add("546285"); //地福祉施設看取り介護加算II２ // 2018.04 add
+        // [H30.4改正対応][Shinobu Hitaka] 2018/4/14 del - end
         copyTargetList.add("526600"); //保健施設ターミナルケア加算１１
         copyTargetList.add("526001"); //保健施設ターミナルケア加算１２
         copyTargetList.add("526602"); //保健施設ターミナルケア加算２１
@@ -1060,4 +1117,334 @@ public abstract class QP001StyleAbstract {
         return kohiTypes;
     }
 // 2015/5/12 [Yoichiro Kamei] add - end
+    
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/10 add - begin
+    /**
+     * %加算・%減算の単位数確定処理を行います。（主に公費対象単位数）
+     * @param detailMap
+     * @param kohi QP001KohiKey[]
+     * @throws Exception
+     */
+    public void commitParcentageAddRecord(VRMap detailMap, QP001KohiKey[] kohiTypes) throws Exception {
+        Map<String, QP001RecordDetail> detailAdd_5 = new HashMap<String, QP001RecordDetail>();
+        Map<String, QP001RecordDetail> detailAdd_7 = new HashMap<String, QP001RecordDetail>();
+        Map<String, QP001RecordDetail> detailAdd_3 = new HashMap<String, QP001RecordDetail>();
+        Map<String, QP001RecordDetail> detailAdd_6 = new HashMap<String, QP001RecordDetail>();
+        Map<String, QP001RecordDetail> detailAdd_8 = new HashMap<String, QP001RecordDetail>();
+        
+        //%加算・%減算のサービスコードごとに詳細レコードの加算情報リストを保持するマップ
+        Map<String, List<QP001PercentageAddInfo>> addInfoMap = new HashMap<String, List<QP001PercentageAddInfo>>();
+        //加算種別ごとに分ける
+    	Iterator it = detailMap.keySet().iterator();
+        while (it.hasNext()) {
+        	QP001RecordDetail detail = (QP001RecordDetail) detailMap.get(it.next());
+            int serviceAddFlag = detail.getServiceAddFlag();
+            String serviceCode = detail.get_301007() + detail.get_301008();
+            switch (serviceAddFlag) {
+            case 3: //特別地域加算
+            	detailAdd_3.put(serviceCode, detail);
+                break;
+            case 6: //中山間地域等提供加算
+            	detailAdd_6.put(serviceCode, detail);
+                break;
+            case 5: //共生型減算
+            	detailAdd_5.put(serviceCode, detail);
+                break;
+            case 7: //同一建物減算
+            	detailAdd_7.put(serviceCode, detail);
+                break;
+            case 8: //処遇改善加算
+            	detailAdd_8.put(serviceCode, detail);
+                break;
+            default: //通常レコード
+            	//%加算の対象となる情報を取得して、サービスコードごとに格納
+            	QP001PercentageAddInfo addInfo = detail.getPercentageAddInfo();
+            	for (String svCode : addInfo.getHoldSvCodeSet()) {
+            		if (!addInfoMap.containsKey(svCode)) {
+            			addInfoMap.put(svCode, new ArrayList<QP001PercentageAddInfo>());
+            		}
+            		addInfoMap.get(svCode).add(addInfo);
+            	}
+            }
+        }
+        
+        
+        //単位数の計算
+        // 共生型減算
+        calcParcentageAddRecord(kohiTypes, addInfoMap, detailAdd_5);
+        // 同一建物減算
+        calcParcentageAddRecord(kohiTypes, addInfoMap, detailAdd_7);
+        // 特別地域加算
+        calcParcentageAddRecord(kohiTypes, addInfoMap, detailAdd_3);
+        // 中山間地域等提供加算
+        calcParcentageAddRecord(kohiTypes, addInfoMap, detailAdd_6);
+        // 処遇改善加算
+        calcParcentageAddRecord(kohiTypes, addInfoMap, detailAdd_8);
+    }
+    
+    //%加算、%減算レコードの計算を行います。
+    private void calcParcentageAddRecord(QP001KohiKey[] kohi,
+    		Map<String, List<QP001PercentageAddInfo>> addInfoMap,
+    		Map<String, QP001RecordDetail> detailAdd) {
+    	
+        for (String svCode : detailAdd.keySet()) {
+        	QP001RecordDetail detail = detailAdd.get(svCode);
+        	
+        	Map<Integer, Map<Integer, Integer>> baseRelateUnitMap = new HashMap<Integer, Map<Integer, Integer>>();
+        	Map<Integer, List<Map<Integer, Integer>>> kohiRelateUnitMap = new HashMap<Integer, List<Map<Integer, Integer>>>();
+
+        	//対象とする基本サービスのレコード分まわす
+        	List<QP001PercentageAddInfo> kihonList = addInfoMap.get(svCode);
+        	//関連加算分の単位数を計算して対象単位数へ反映
+        	int diffUnit = calcRelateAddUnit(svCode, kihonList, baseRelateUnitMap);
+        	int totalBaseUnit = diffUnit;
+        	for (QP001PercentageAddInfo info : kihonList) {
+        		int baseUnit = info.getKasanBaseUnit(svCode);
+        		totalBaseUnit += baseUnit;
+        	}
+        	//加算・減算率
+        	int per = detail.getServiceUnit();
+        	int addUnit = 0;
+        	if (detail.isSyoguRecoed()) {
+        		addUnit = CareServiceCommon.calcSyogu(totalBaseUnit, per, detail.getServiceStaffUnit());
+        	} else {
+        		addUnit = CareServiceCommon.calcPercentageUnit(totalBaseUnit, per);
+        	}
+        	//%加算の対象単位数を保持（限度額オーバの際の処遇改善加算の自己負担算出用）
+        	detail.setAdditionBasisUnit(totalBaseUnit);
+        	
+        	//単位数、回数、サービス単位数設定
+        	detail.set_301009(addUnit);
+        	detail.set_301010(1);
+        	detail.set_301014(addUnit);
+        	
+        	boolean kohiLimit = false; 
+        	int totalKohiUnit = 0; //基本サービスの公費対象単位数の積み上げ
+        	int totalAddKohiUnit = 0; //計算済みの公費対象単位数の積み上げ
+        	
+        	//公費１対象単位数
+        	if ((kohi[0] != null) && (!"".equals(kohi[0].getKohiType()))) {
+        		int kohiUnit = calcRelateAddKohiUnit(kohi[0], svCode, kihonList, baseRelateUnitMap, kohiRelateUnitMap);
+            	for (QP001PercentageAddInfo info : kihonList) {
+            		kohiUnit += info.getKasanBaseKohiUnit(svCode, kohi[0]);
+            	}
+            	totalKohiUnit += kohiUnit;
+            	
+            	int addKohiUnit = 0;
+            	// サービス単位数＝公費１対象単位数の場合
+            	if (totalBaseUnit == totalKohiUnit) {
+            		// 公費１対象単位数にサービス単位数をセット
+            		addKohiUnit = detail.get_301014() - totalAddKohiUnit;
+            		detail.set_301015(addKohiUnit);
+            		detail.set_301011(1);
+            		kohiLimit = true;
+            	} else if (totalBaseUnit > totalKohiUnit) {
+            		// 公費１対象単位数を計算
+            		if (detail.isSyoguRecoed()) {
+            			addKohiUnit = CareServiceCommon.calcSyogu(kohiUnit, per, detail.getServiceStaffUnit());
+            		} else {
+            			addKohiUnit = CareServiceCommon.calcPercentageUnit(kohiUnit, per);
+            		}
+            		detail.set_301015(addKohiUnit);
+            		detail.set_301011(1);
+            		totalAddKohiUnit += addKohiUnit;
+            	}
+        	}
+        	
+        	//公費２対象単位数
+        	if ((!kohiLimit) && (kohi[1] != null) && (!"".equals(kohi[1].getKohiType()))) {
+        		int kohiUnit = calcRelateAddKohiUnit(kohi[1], svCode, kihonList, baseRelateUnitMap, kohiRelateUnitMap);
+            	for (QP001PercentageAddInfo info : kihonList) {
+            		kohiUnit += info.getKasanBaseKohiUnit(svCode, kohi[1]);
+            	}
+            	totalKohiUnit += kohiUnit;
+            	
+            	int addKohiUnit = 0;
+            	// サービス単位数＝公費対象単位数の積み上げの場合
+            	if (totalBaseUnit == totalKohiUnit) {
+            		// 公費２対象単位数にサービス単位数-計算済みの公費対象単位数の積み上げをセット
+            		addKohiUnit = detail.get_301014() - totalAddKohiUnit;
+            		detail.set_301016(addKohiUnit);
+            		detail.set_301012(1);
+            		kohiLimit = true;
+            	} else if (totalBaseUnit > totalKohiUnit) {
+            		// 公費２対象単位数を計算
+            		if (detail.isSyoguRecoed()) {
+            			addKohiUnit = CareServiceCommon.calcSyogu(kohiUnit, per, detail.getServiceStaffUnit());
+            		} else {
+            			addKohiUnit = CareServiceCommon.calcPercentageUnit(kohiUnit, per);
+            		}
+            		detail.set_301016(addKohiUnit);
+            		detail.set_301012(1);
+            		totalAddKohiUnit += addKohiUnit;
+            	}
+        	}
+        	
+        	//公費３対象単位数
+        	if ((!kohiLimit) && (kohi[2] != null) && (!"".equals(kohi[2].getKohiType()))) {
+        		int kohiUnit = calcRelateAddKohiUnit(kohi[2], svCode, kihonList, baseRelateUnitMap, kohiRelateUnitMap);
+            	for (QP001PercentageAddInfo info : kihonList) {
+            		kohiUnit += info.getKasanBaseKohiUnit(svCode, kohi[2]);
+            	}
+            	totalKohiUnit += kohiUnit;
+            	
+            	int addKohiUnit = 0;
+            	// サービス単位数＝公費対象単位数の積み上げの場合
+            	if (totalBaseUnit == totalKohiUnit) {
+            		// 公費３対象単位数にサービス単位数-計算済みの公費対象単位数の積み上げをセット
+            		addKohiUnit = detail.get_301014() - totalAddKohiUnit;
+            		detail.set_301017(addKohiUnit);
+            		detail.set_301013(1);
+            		kohiLimit = true;
+            	} else if (totalBaseUnit > totalKohiUnit) {
+            		// 公費３対象単位数を計算
+            		if (detail.isSyoguRecoed()) {
+            			addKohiUnit = CareServiceCommon.calcSyogu(kohiUnit, per, detail.getServiceStaffUnit());
+            		} else {
+            			addKohiUnit = CareServiceCommon.calcPercentageUnit(kohiUnit, per);
+            		}
+            		detail.set_301017(addKohiUnit);
+            		detail.set_301013(1);
+            		totalAddKohiUnit += addKohiUnit;
+            	}
+        	}
+        	
+        	// 共生型減算、同一建物減算の場合は単位数の記載省略
+        	if (detail.getServiceAddFlag() == 5
+        			|| detail.getServiceAddFlag() == 7) {
+        		detail.set_301009(0);
+        	}
+        }
+    }
+    
+    //指定した%加算の計算に含める他の%加算の単位数を計算します。
+    private int calcRelateAddUnit(String svCode, List<QP001PercentageAddInfo> kihonList, 
+    		Map<Integer, Map<Integer, Integer>> baseRelateUnitMap) {
+    	int diffUnit = 0;
+    	//以下の順に計算する
+    	//共生型減算の分を計算
+    	diffUnit += calcRelateAddUnitSub(baseRelateUnitMap, diffUnit, QP001PercentageAddInfo.SERVICE_ADD_FLAG_KYOUSEI, svCode, kihonList);
+    	//同一建物減算の分を計算
+    	diffUnit += calcRelateAddUnitSub(baseRelateUnitMap, diffUnit, QP001PercentageAddInfo.SERVICE_ADD_FLAG_SAME_BUILDING, svCode, kihonList);
+    	//特地系の加算の分を計算
+    	diffUnit += calcRelateAddUnitSub(baseRelateUnitMap, diffUnit, QP001PercentageAddInfo.SERVICE_ADD_FLAG_TOKUCHI, svCode, kihonList);
+    	//中山間地域等提供加算の分を計算
+    	diffUnit += calcRelateAddUnitSub(baseRelateUnitMap, diffUnit, QP001PercentageAddInfo.SERVICE_ADD_FLAG_CHUSAN, svCode, kihonList);
+    	return diffUnit;
+    }
+    
+    //対象の公費について指定した%加算の計算に含める他の%加算の単位数を計算します。
+    private int calcRelateAddKohiUnit(QP001KohiKey kohiKey, String svCode, List<QP001PercentageAddInfo> kihonList,
+    		Map<Integer, Map<Integer, Integer>> baseRelateUnitMap,
+    		Map<Integer, List<Map<Integer, Integer>>> kohiRelateUnitMap
+    		) {
+    	int diffUnit = 0;
+    	//以下の順に計算する
+    	//共生型減算の分を計算
+    	diffUnit += calcRelateAddKohiUnitSub(baseRelateUnitMap, kohiRelateUnitMap, diffUnit, kohiKey, QP001PercentageAddInfo.SERVICE_ADD_FLAG_KYOUSEI, svCode, kihonList);
+    	//同一建物減算の分を計算
+    	diffUnit += calcRelateAddKohiUnitSub(baseRelateUnitMap, kohiRelateUnitMap, diffUnit, kohiKey, QP001PercentageAddInfo.SERVICE_ADD_FLAG_SAME_BUILDING, svCode, kihonList);
+    	//特地系の加算の分を計算
+    	diffUnit += calcRelateAddKohiUnitSub(baseRelateUnitMap, kohiRelateUnitMap, diffUnit, kohiKey, QP001PercentageAddInfo.SERVICE_ADD_FLAG_TOKUCHI, svCode, kihonList);
+    	//中山間地域等提供加算の分を計算
+    	diffUnit += calcRelateAddKohiUnitSub(baseRelateUnitMap, kohiRelateUnitMap, diffUnit, kohiKey, QP001PercentageAddInfo.SERVICE_ADD_FLAG_CHUSAN, svCode, kihonList);
+    	return diffUnit;
+    }
+    
+    //対象のサービス加算フラグ分の関連%加算の単位数を計算
+    private int calcRelateAddUnitSub(Map<Integer, Map<Integer, Integer>> baseRelateUnitMap,
+    		int diffUnit, int addFlg, String svCode, List<QP001PercentageAddInfo> kihonList) {
+    	int ret = 0;
+    	Map<Integer, Integer> sumPerUnitMap = new HashMap<Integer, Integer>();
+    	for (QP001PercentageAddInfo info : kihonList) {
+    		//関連加算分の加算率、対象単位数を取得
+    		Map<Integer, Integer> perUnitMap = info.getRelateAddUnit(svCode, addFlg);
+    		//加算率ごとに集計
+    		for (int per : perUnitMap.keySet()) {
+    			int unit = ACCastUtilities.toInt(perUnitMap.get(per), 0);
+    			int nowUnit = 0;
+        		if (sumPerUnitMap.containsKey(per)) {
+        			nowUnit = ACCastUtilities.toInt(sumPerUnitMap.get(per), 0);
+        		}
+        		sumPerUnitMap.put(per, unit + nowUnit);
+    		}
+    	}
+    	//加算・減算の単位数を計算
+    	for (int per : sumPerUnitMap.keySet()) {
+    		int totalUnit = ACCastUtilities.toInt(sumPerUnitMap.get(per), 0);
+    		//この%加算に含める計算済みの%加算の単位数を反映
+    		totalUnit += diffUnit;
+    		sumPerUnitMap.put(per, totalUnit);
+    		ret += CareServiceCommon.calcPercentageUnit(totalUnit, per);
+    	}
+    	if (!sumPerUnitMap.isEmpty()) {
+    		baseRelateUnitMap.put(addFlg, sumPerUnitMap);
+    	}
+    	return ret;
+    }
+    
+    //対象の公費についてサービス加算フラグ分の関連%加算の単位数を計算
+    private int calcRelateAddKohiUnitSub(Map<Integer, Map<Integer, Integer>> baseRelateUnitMap,
+    		Map<Integer, List<Map<Integer, Integer>>> kohiRelateUnitMap,
+    		int diffUnit, QP001KohiKey kohiKey, int addFlg, String svCode, List<QP001PercentageAddInfo> kihonList) {
+    	int ret = 0;
+    	Map<Integer, Integer> sumPerUnitMap = new HashMap<Integer, Integer>();
+    	for (QP001PercentageAddInfo info : kihonList) {
+    		//関連加算分の加算率、対象単位数を取得
+    		Map<Integer, Integer> perUnitMap = info.getRelateAddKohiUnit(kohiKey, svCode, addFlg);
+    		//加算率ごとに集計
+    		for (int per : perUnitMap.keySet()) {
+    			int unit = ACCastUtilities.toInt(perUnitMap.get(per), 0);
+    			int nowUnit = 0;
+        		if (sumPerUnitMap.containsKey(per)) {
+        			nowUnit = ACCastUtilities.toInt(sumPerUnitMap.get(per), 0);
+        		}
+        		sumPerUnitMap.put(per, unit + nowUnit);
+    		}
+    	}
+    	
+    	//これまでの積み上げ単位数
+    	if (!baseRelateUnitMap.containsKey(addFlg)) {
+    		baseRelateUnitMap.put(addFlg, new HashMap<Integer, Integer>());
+    	}
+    	Map<Integer, Integer> baseRelate = baseRelateUnitMap.get(addFlg);
+		if (!kohiRelateUnitMap.containsKey(addFlg)) {
+			kohiRelateUnitMap.put(addFlg, new ArrayList<Map<Integer, Integer>>());
+		}
+    	List<Map<Integer, Integer>> kohiRelateUnitList = kohiRelateUnitMap.get(addFlg);
+    	
+    	
+    	//加算・減算の単位数を計算
+    	for (int per : sumPerUnitMap.keySet()) {
+    		int totalUnit = ACCastUtilities.toInt(sumPerUnitMap.get(per), 0);
+    		//この%加算に含める計算済みの%加算の単位数を反映
+    		totalUnit += diffUnit;
+    		sumPerUnitMap.put(per, totalUnit);
+    		
+    		//基本の単位数とこれまでの積み上げが等しいか
+    		int tBase = ACCastUtilities.toInt(baseRelate.get(per), 0);
+    		int tDiff = 0;
+    		for (Map<Integer, Integer> kohiUnitMap : kohiRelateUnitList) {
+    			tDiff += ACCastUtilities.toInt(kohiUnitMap.get(per), 0);
+    		}
+    		if (tBase == (tDiff + totalUnit)) {
+    			int tDiffUnit = 0;
+    			for (Map<Integer, Integer> kohiUnitMap : kohiRelateUnitList) {
+    				int unit = ACCastUtilities.toInt(kohiUnitMap.get(per), 0);
+    				tDiffUnit += CareServiceCommon.calcPercentageUnit(unit, per);
+    			}
+    			int tBaseUnit = CareServiceCommon.calcPercentageUnit(tBase, per);
+    			ret += (tBaseUnit - tDiffUnit);
+    		} else {
+        		ret += CareServiceCommon.calcPercentageUnit(totalUnit, per);
+    		}
+    	}
+    	//公費対象単位数を退避
+    	if (!sumPerUnitMap.isEmpty()) {
+    		kohiRelateUnitList.add(sumPerUnitMap);
+    	}
+    	return ret;
+    }
+    // [H30.4改正対応][Yoichiro Kamei] 2018/4/10 add - end
+    
 }
