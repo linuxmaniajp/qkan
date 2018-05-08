@@ -6121,10 +6121,13 @@ public class CareServiceSchedulePrintManager extends HashMap {
         protected void removeCode(String key) {
             if (subParseMap.containsKey(key)) {
                 Map code = ((DivedServiceItem) subParseMap.get(key)).subFormatCode;
-                String insurerId = ACCastUtilities.toString(code.get("INSURER_ID"), "");
-                if (!"".equals(insurerId)) {
-                    key = key + insurerId;
-                }
+                // 2018/5/2 [Yoichiro Kamei] mod - begin
+                // ˆø”‚Ìkey‚É‚ÍŠù‚É•ÛŒ¯Ò”Ô†‚ª•t‚¢‚Ä‚¢‚é‚½‚ß‚±‚±‚Å‚Í•s—v
+                //String insurerId = ACCastUtilities.toString(code.get("INSURER_ID"), "");
+                //if (!"".equals(insurerId)) {
+                //    key = key + insurerId;
+                //}
+                // 2018/5/2 [Yoichiro Kamei] mod - end
                 if (CareServiceCommon.isInLimitAmount(code)) {
                     limitAmoutSize--;
                 }

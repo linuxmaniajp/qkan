@@ -253,20 +253,42 @@ public class QP001Style2 extends QP001StyleAbstract{
     		return;
     	}
     	
-    	int unit = Integer.MAX_VALUE;
-		Iterator it = detailMap.keySet().iterator();
-		while(it.hasNext()){
-			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
-			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
-				// 対象の単位数の中で最小のものを取得する
-				if(detail.get_301009() < unit){
-					unit = detail.get_301009();
-				}
-			}
-		}
-		if (unit == Integer.MAX_VALUE) {
-			return;
-		}
+    	// [Yoichiro Kamei] 2018/5/2 mod - begin サービス種類を考慮するよう修正
+//    	int unit = Integer.MAX_VALUE;
+//		Iterator it = detailMap.keySet().iterator();
+//		while(it.hasNext()){
+//			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
+//			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
+//				// 対象の単位数の中で最小のものを取得する
+//				if(detail.get_301009() < unit){
+//					unit = detail.get_301009();
+//				}
+//			}
+//		}
+//		if (unit == Integer.MAX_VALUE) {
+//			return;
+//		}
+    	
+    	Map<String, Integer> minUnitMap = new HashMap<String, Integer>();
+    	Iterator it = detailMap.keySet().iterator();
+    	while(it.hasNext()) {
+    		QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
+    		String kind = detail.get_301007();
+    		String item = detail.get_301008();
+    		if (QP001SpecialCase.isArrangementData(kind, item)) {
+    			int minUnit = ACCastUtilities.toInt(minUnitMap.get(kind), 0);
+    			int unit = detail.get_301009();
+    			if ((minUnit == 0) || (unit < minUnit)) {
+    				minUnit = unit;
+    				minUnitMap.put(kind, minUnit);
+    			}
+    		}
+    	}
+    	if (minUnitMap.isEmpty()) {
+    		return;
+    	}
+    	// [Yoichiro Kamei] 2018/5/2 mod - end
+    	
 		// 上記で取得した単位数以外のものは削除する
 		List<String> removeKeys = new ArrayList<String>();
 		it = detailMap.keySet().iterator();
@@ -274,6 +296,12 @@ public class QP001Style2 extends QP001StyleAbstract{
 			//作成した明細情報レコードの確定を行う。
 			QP001RecordDetail detail = ((QP001RecordDetail)detailMap.get(it.next()));
 			if(QP001SpecialCase.isArrangementData(detail.get_301007(),detail.get_301008())){
+				// [Yoichiro Kamei] 2018/5/2 mod - begin サービス種類を考慮するよう修正
+				int unit = ACCastUtilities.toInt(minUnitMap.get(detail.get_301007()), 0);
+				if (unit == 0) {
+					continue;
+				}
+				// [Yoichiro Kamei] 2018/5/2 mod - end
 				if(detail.get_301009() != unit){
 	                String key = String.valueOf(detail.get_301021()) + "-"
 	                        + String.valueOf(detail.get_301022()) + "-"

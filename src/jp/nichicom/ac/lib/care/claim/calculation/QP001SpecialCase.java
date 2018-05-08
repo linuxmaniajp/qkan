@@ -1448,7 +1448,7 @@ public class QP001SpecialCase {
         if ("A2".equals(serviceCodeKind)) {
         	// ŒŠzZ’è‚Ì‚¤‚¿ˆ‹ö‰ü‘P‰ÁZˆÈŠO‚Í‘S‚Ä‘ÎÛ
         	if (totalGroupingType == 3 && 
-        		!("6270".equals(item) || "6271".equals(item)
+        		!("6269".equals(item) || "6270".equals(item) || "6271".equals(item)
         			|| "6273".equals(item) || "6275".equals(item))){
         		result = true;
         	}
@@ -1457,7 +1457,7 @@ public class QP001SpecialCase {
         if ("A6".equals(serviceCodeKind)) {
         	// ŒŠzZ’è‚Ì‚¤‚¿ˆ‹ö‰ü‘P‰ÁZˆÈŠO‚Í‘S‚Ä‘ÎÛ
         	if (totalGroupingType == 3 && 
-        		!("6110".equals(item) || "6111".equals(item)
+        		!("6100".equals(item) || "6110".equals(item) || "6111".equals(item)
         			|| "6113".equals(item) || "6115".equals(item))){
         		result = true;
         	}

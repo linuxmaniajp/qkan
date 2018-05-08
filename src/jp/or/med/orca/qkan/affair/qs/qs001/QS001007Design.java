@@ -231,7 +231,7 @@ public class QS001007Design extends QkanAffairDialog {
     try {
       initialize();
 
-      setSize(450, 85);
+      setSize(450, 105);
 
       // ウィンドウを中央に配置
       Point pos;

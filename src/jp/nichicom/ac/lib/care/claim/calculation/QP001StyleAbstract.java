@@ -1195,6 +1195,9 @@ public abstract class QP001StyleAbstract {
 
         	//対象とする基本サービスのレコード分まわす
         	List<QP001PercentageAddInfo> kihonList = addInfoMap.get(svCode);
+        	if (kihonList == null) {
+        		continue;
+        	}
         	//関連加算分の単位数を計算して対象単位数へ反映
         	int diffUnit = calcRelateAddUnit(svCode, kihonList, baseRelateUnitMap);
         	int totalBaseUnit = diffUnit;
@@ -1246,7 +1249,14 @@ public abstract class QP001StyleAbstract {
             			addKohiUnit = CareServiceCommon.calcPercentageUnit(kohiUnit, per);
             		}
             		detail.set_301015(addKohiUnit);
-            		detail.set_301011(1);
+            		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] mod - begin
+            		//detail.set_301011(1);
+            		if (addKohiUnit == 0) {
+            			detail.set_301011(0);
+            		} else {
+            			detail.set_301011(1);
+            		}
+            		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] mod - end
             		totalAddKohiUnit += addKohiUnit;
             	}
         	}
@@ -1275,7 +1285,14 @@ public abstract class QP001StyleAbstract {
             			addKohiUnit = CareServiceCommon.calcPercentageUnit(kohiUnit, per);
             		}
             		detail.set_301016(addKohiUnit);
-            		detail.set_301012(1);
+            		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] mod - begin
+            		//detail.set_301012(1);
+            		if (addKohiUnit == 0) {
+            			detail.set_301012(0);
+            		} else {
+            			detail.set_301012(1);
+            		}
+            		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] mod - end
             		totalAddKohiUnit += addKohiUnit;
             	}
         	}
@@ -1304,7 +1321,14 @@ public abstract class QP001StyleAbstract {
             			addKohiUnit = CareServiceCommon.calcPercentageUnit(kohiUnit, per);
             		}
             		detail.set_301017(addKohiUnit);
-            		detail.set_301013(1);
+            		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] mod - begin
+            		//detail.set_301013(1);
+            		if (addKohiUnit == 0) {
+            			detail.set_301013(0);
+            		} else {
+            			detail.set_301013(1);
+            		}
+            		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] mod - end
             		totalAddKohiUnit += addKohiUnit;
             	}
         	}
