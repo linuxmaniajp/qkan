@@ -65,8 +65,12 @@ public class QP001P023_201804 extends QP001P02_201804{
     	List<String> targetKindList = Arrays.asList(new String[]{
     			  "A1" //訪問型サービス(みなし)
     			, "A2" //訪問型サービス(独自)
+    			, "A3" //訪問型サービス(独自／定率)
+    			, "A4" //訪問型サービス(独自／定額)
     			, "A5" //通所型サービス(みなし)
     			, "A6" //通所型サービス(独自)
+    			, "A7" //通所型サービス(独自／定率)
+    			, "A8" //通所型サービス(独自／定額)
     	});
     	if (reductionList.getDataSize() > 0) {
     		//サービス種類コードが対象に含まれていなければ除く

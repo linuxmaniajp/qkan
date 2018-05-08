@@ -401,6 +401,12 @@ public class QP001PercentageAddInfo {
 	 */
 	public int getKasanBaseKohiUnit(String svCode, QP001KohiKey kohiKey) {
 		Map<QP001KohiKey, Integer> kohiCountKeyMap = kohiCountMap.get(svCode);
+		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] add - begin
+		// 対象となるコードに公費が適用されない場合を考慮
+		if (kohiCountKeyMap == null) {
+			return 0;
+		}
+		// 2018/5/2 [CCCX:04849][Yoichiro Kamei] add - end
 		int count = ACCastUtilities.toInt(kohiCountKeyMap.get(kohiKey), 0);
 		return count * kihonUnit;
 	}
