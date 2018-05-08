@@ -705,12 +705,14 @@ public abstract class QP001P09_201804 extends QP001P02_10Event {
                         
                         //保険者負担額の合計を設定する。
                         ACChotarouXMLUtilities.setValue(writer,"tokuteihokentotal", pad(nursingLast.get("801023"),6));
-                        //保険分請求額を設定する。
-                        //[ID:0000449][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
-                        //ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad(nursingLast.get("801024"),5));
-                        ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad0(nursingLast.get("801024"),6));
-                        //[ID:0000449][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
-                        
+                        // 2018/4/26 [CCCX:04822][Yoichiro Kamei] mod - begin
+                        //利用者負担額の合計を設定する。
+//                        //[ID:0000449][Shin Fujihara] 2009/02 edit begin 平成21年4月法改正対応
+//                        //ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad(nursingLast.get("801024"),5));
+//                        ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad0(nursingLast.get("801024"),6));
+//                        //[ID:0000449][Shin Fujihara] 2009/02 edit end 平成21年4月法改正対応
+                        ACChotarouXMLUtilities.setValue(writer,"tokuteiriyoshatotal", pad0(nursingLast.get("801024"),5));
+                        // 2018/4/26 [CCCX:04822][Yoichiro Kamei] mod - end
                         switch(kohiCount){
                         case 0:
                             //公費分合計を設定する。
